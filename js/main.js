@@ -29,7 +29,7 @@
         '<span>English With Tom<small>Luyện tập các kỹ năng ngôn ngữ</small></span>' +
       '</a>' +
       '<nav class="nav-links" id="navLinks">' + links + '</nav>' +
-      '<div class="nav-actions">' +
+      '<div class="nav-actions" id="navActions">' +
         '<a class="btn btn-sm" href="login.html">Đăng nhập</a>' +
         '<a class="btn btn-primary btn-sm" href="login.html#register">Đăng ký</a>' +
         '<button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>' +
@@ -65,6 +65,47 @@
   if (toggle) toggle.addEventListener('click', function () {
     document.getElementById('navLinks').classList.toggle('open');
   });
+
+  /* ===== Trạng thái đăng nhập + chặn quyền ===== */
+  var roleLabel = { student: 'Học sinh', teacher: 'Giáo viên', admin: 'Quản trị' };
+  fetch('/api/me', { credentials: 'same-origin' })
+    .then(function (r) { return r.ok ? r.json() : { user: null }; })
+    .then(function (d) { applyAuth(d.user); })
+    .catch(function () { applyAuth(null); }); // chạy trên GitHub Pages (không có API) -> coi như chưa đăng nhập
+
+  function applyAuth(user) {
+    var actions = document.getElementById('navActions');
+    if (actions) {
+      if (user) {
+        var initials = (user.name || '?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+        var teacherLink = (user.role === 'teacher' || user.role === 'admin')
+          ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
+        actions.innerHTML =
+          teacherLink +
+          '<span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);">' +
+            '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;">' + initials + '</span>' +
+            '<span>' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
+          '</span>' +
+          '<button class="btn btn-sm" id="logoutBtn">Đăng xuất</button>' +
+          '<button class="menu-toggle" id="menuToggle2" aria-label="Menu">☰</button>';
+        var lo = document.getElementById('logoutBtn');
+        if (lo) lo.onclick = function () {
+          fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
+            .then(function () { location.href = 'index.html'; });
+        };
+        var mt2 = document.getElementById('menuToggle2');
+        if (mt2) mt2.onclick = function () { document.getElementById('navLinks').classList.toggle('open'); };
+      }
+    }
+
+    /* Chặn truy cập theo vai trò */
+    var guard = document.body.getAttribute('data-guard');
+    if (guard === 'auth' && !user) {
+      location.href = 'login.html?next=' + encodeURIComponent(location.pathname.split('/').pop());
+    } else if (guard === 'teacher' && (!user || user.role === 'student')) {
+      location.href = 'login.html?next=teacher.html';
+    }
+  }
 
   /* Đồng hồ đếm ngược demo cho trang làm bài */
   var t = document.getElementById('timer');

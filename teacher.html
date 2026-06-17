@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=3">
 </head>
-<body data-page="">
+<body data-page="" data-guard="teacher">
 <div id="site-header"></div>
 
 <section class="page-hero">
@@ -33,17 +33,17 @@
       <div class="card" style="margin-bottom:0;">
         <div class="card-head"><h3>➕ Nhập đề mới</h3></div>
 
+        <div id="exMsg" style="display:none;" class="note"></div>
         <div class="field"><label>Chương trình</label>
-          <select><option>IELTS</option><option>KET</option><option>PET</option><option>FCE</option><option>APTIS</option></select>
+          <select id="exProgram"><option>IELTS</option><option>KET</option><option>PET</option><option>FCE</option><option>APTIS</option></select>
         </div>
         <div class="field"><label>Kỹ năng</label>
-          <select><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
+          <select id="exSkill"><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
         </div>
-        <div class="field"><label>Tên bài</label><input type="text" placeholder="VD: IELTS Reading — Test 4"></div>
-        <div class="field"><label>Nội dung đề / đoạn văn</label><textarea placeholder="Dán nội dung đề bài, đoạn văn hoặc câu hỏi vào đây..."></textarea></div>
-        <div class="field"><label>Đáp án (cho Reading/Listening)</label><input type="text" placeholder="VD: 1-B, 2-C, 3-A, 4-B"></div>
-        <div class="field"><label>Tệp đính kèm (audio, PDF)</label><input type="file"></div>
-        <button class="btn btn-primary btn-block" onclick="alert('Demo: đề đã được lưu vào ngân hàng đề.');">Lưu đề vào ngân hàng</button>
+        <div class="field"><label>Tên bài</label><input type="text" id="exTitle" placeholder="VD: IELTS Reading — Test 4"></div>
+        <div class="field"><label>Nội dung đề / đoạn văn</label><textarea id="exContent" placeholder="Dán nội dung đề bài, đoạn văn hoặc câu hỏi vào đây..."></textarea></div>
+        <div class="field"><label>Đáp án — phân cách bằng dấu phẩy (để trống nếu là Writing/Speaking)</label><input type="text" id="exAnswer" placeholder="VD: B, C, A, B"></div>
+        <button class="btn btn-primary btn-block" id="saveExBtn">Lưu đề vào ngân hàng</button>
       </div>
 
       <!-- Giao bài + chấm -->
@@ -75,12 +75,9 @@
     <div class="card" style="margin-top:22px;">
       <div class="card-head"><h3>📚 Ngân hàng đề gần đây</h3></div>
       <table class="table">
-        <thead><tr><th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Người tạo</th><th>Ngày</th></tr></thead>
-        <tbody>
-          <tr><td>IELTS Reading — Test 3</td><td>IELTS</td><td>Reading</td><td>Thầy Tom</td><td>15/06/2026</td></tr>
-          <tr><td>IELTS Writing Task 2 — Môi trường</td><td>IELTS</td><td>Writing</td><td>Thầy Tom</td><td>14/06/2026</td></tr>
-          <tr><td>PET Reading — Part 4</td><td>PET</td><td>Reading</td><td>Cô Lan</td><td>12/06/2026</td></tr>
-          <tr><td>FCE Listening — Test 1</td><td>FCE</td><td>Listening</td><td>Admin</td><td>10/06/2026</td></tr>
+        <thead><tr><th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Chấm</th><th>Ngày</th></tr></thead>
+        <tbody id="exBank">
+          <tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr>
         </tbody>
       </table>
     </div>
@@ -89,6 +86,43 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
+<script>
+  function fmtDate(iso){ try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); } catch(e){ return ''; } }
+
+  async function loadBank(){
+    var d = await fetch('/api/exercises',{credentials:'same-origin'}).then(r=>r.json());
+    var body = document.getElementById('exBank');
+    if (!d.exercises.length){ body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa có đề nào.</td></tr>'; return; }
+    body.innerHTML = d.exercises.map(function(e){
+      var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
+      return '<tr><td>'+e.title+'</td><td>'+e.program+'</td><td>'+e.skill+'</td><td>'+grade+'</td><td>'+fmtDate(e.created_at)+'</td></tr>';
+    }).join('');
+  }
+
+  function msg(text, ok){
+    var el = document.getElementById('exMsg');
+    el.style.display='flex'; el.style.background = ok?'var(--success-soft)':'var(--warning-soft)';
+    el.style.borderColor='transparent'; el.style.color = ok?'var(--success)':'var(--warning)';
+    el.innerHTML = '<span>'+(ok?'✅':'⚠️')+'</span><div>'+text+'</div>';
+  }
+
+  document.getElementById('saveExBtn').onclick = async function(){
+    var payload = {
+      program: document.getElementById('exProgram').value,
+      skill: document.getElementById('exSkill').value,
+      title: document.getElementById('exTitle').value.trim(),
+      content: document.getElementById('exContent').value,
+      answer_key: document.getElementById('exAnswer').value
+    };
+    if (!payload.title){ msg('Vui lòng nhập tên bài.', false); return; }
+    var r = await fetch('/api/exercises',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    var data = await r.json().catch(()=>({}));
+    if (r.ok){ msg('Đã lưu đề "'+payload.title+'" vào ngân hàng!', true); document.getElementById('exTitle').value=''; document.getElementById('exContent').value=''; document.getElementById('exAnswer').value=''; loadBank(); }
+    else { msg(data.error || 'Lưu thất bại.', false); }
+  };
+
+  loadBank();
+</script>
 </body>
 </html>

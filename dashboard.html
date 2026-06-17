@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=3">
 </head>
-<body data-page="dashboard">
+<body data-page="dashboard" data-guard="auth">
 <div id="site-header"></div>
 
 <section class="page-hero">
@@ -23,10 +23,10 @@
   <div class="container">
 
     <div class="profile-row">
-      <div class="avatar">NA</div>
+      <div class="avatar" id="pfAvatar">?</div>
       <div>
-        <h2>Nguyễn An</h2>
-        <div class="sub">Học sinh · Lớp IELTS 6.5 của thầy Tom</div>
+        <h2 id="pfName">Đang tải...</h2>
+        <div class="sub" id="pfRole"></div>
       </div>
     </div>
 
@@ -34,20 +34,20 @@
       <div class="stat-card">
         <span class="stat-ico">📝</span>
         <div class="label">Số bài đã làm</div>
-        <div class="value">42</div>
-        <div class="delta">+5 trong tuần này</div>
+        <div class="value" id="statDone">–</div>
+        <div class="delta" id="statDoneNote">&nbsp;</div>
       </div>
       <div class="stat-card">
         <span class="stat-ico">✅</span>
         <div class="label">Số bài đã chấm</div>
-        <div class="value">38</div>
-        <div class="delta">4 bài đang chờ chấm</div>
+        <div class="value" id="statGraded">–</div>
+        <div class="delta" id="statGradedNote">&nbsp;</div>
       </div>
       <div class="stat-card accent">
         <span class="stat-ico">⭐</span>
         <div class="label">Điểm trung bình</div>
-        <div class="value">6.5</div>
-        <div class="delta">+0.5 so với tháng trước</div>
+        <div class="value" id="statAvg">–</div>
+        <div class="delta">tính trên các bài đã chấm</div>
       </div>
     </div>
 
@@ -113,12 +113,8 @@
       <div class="card-head"><h3>Lịch sử bài làm gần đây</h3></div>
       <table class="table">
         <thead><tr><th>Bài</th><th>Chương trình</th><th>Ngày làm</th><th>Kết quả</th><th>Trạng thái</th></tr></thead>
-        <tbody>
-          <tr><td>Writing Task 2 — Môi trường</td><td>IELTS</td><td>16/06/2026</td><td>—</td><td><span class="badge badge-grading">Đang chấm</span></td></tr>
-          <tr><td>Listening Test 2</td><td>IELTS</td><td>14/06/2026</td><td>7.0</td><td><span class="badge badge-done">Đã chấm</span></td></tr>
-          <tr><td>Reading Part 4</td><td>PET</td><td>12/06/2026</td><td>8/10</td><td><span class="badge badge-done">Đã chấm</span></td></tr>
-          <tr><td>Speaking Part 1</td><td>IELTS</td><td>10/06/2026</td><td>6.0</td><td><span class="badge badge-done">Đã chấm</span></td></tr>
-          <tr><td>Reading Part 1–2</td><td>FCE</td><td>08/06/2026</td><td>15/20</td><td><span class="badge badge-done">Đã chấm</span></td></tr>
+        <tbody id="historyBody">
+          <tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr>
         </tbody>
       </table>
     </div>
@@ -127,6 +123,39 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
+<script>
+  var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
+  function fmtDate(iso){ try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); } catch(e){ return ''; } }
+
+  (async function(){
+    var me = await fetch('/api/me',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({user:null}));
+    if (!me.user) return; // main.js sẽ chuyển sang trang đăng nhập
+    var u = me.user;
+    document.getElementById('pfName').textContent = u.name;
+    document.getElementById('pfRole').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
+    document.getElementById('pfAvatar').textContent = (u.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+
+    var st = await fetch('/api/me/stats',{credentials:'same-origin'}).then(r=>r.json());
+    document.getElementById('statDone').textContent = st.done;
+    document.getElementById('statGraded').textContent = st.graded;
+    document.getElementById('statGradedNote').textContent = (st.done - st.graded) + ' bài đang chờ chấm';
+    document.getElementById('statAvg').textContent = st.avgPercent==null ? '–' : st.avgPercent + '%';
+
+    var sub = await fetch('/api/me/submissions',{credentials:'same-origin'}).then(r=>r.json());
+    var body = document.getElementById('historyBody');
+    if (!sub.submissions.length) {
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Chưa có bài làm nào. Hãy vào một chương trình và làm bài đầu tiên nhé!</td></tr>';
+      return;
+    }
+    body.innerHTML = sub.submissions.map(function(s){
+      var result = s.status==='graded' ? (s.score + '/' + s.max_score) : '—';
+      var badge = s.status==='graded'
+        ? '<span class="badge badge-done">Đã chấm</span>'
+        : '<span class="badge badge-grading">Chờ chấm</span>';
+      return '<tr><td>'+s.title+'</td><td>'+s.program+'</td><td>'+fmtDate(s.submitted_at)+'</td><td>'+result+'</td><td>'+badge+'</td></tr>';
+    }).join('');
+  })();
+</script>
 </body>
 </html>

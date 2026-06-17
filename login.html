@@ -26,16 +26,16 @@
           <h2 style="font-size:22px; margin-bottom:6px;">Chào mừng trở lại 👋</h2>
           <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Đăng nhập để tiếp tục luyện thi.</p>
 
-          <button class="btn btn-block btn-google" style="margin-bottom:4px;">
+          <button class="btn btn-block btn-google" id="googleLogin" style="margin-bottom:4px;">
             <span style="font-weight:700; color:#4285F4;">G</span> Tiếp tục với Google
           </button>
           <div class="divider">hoặc dùng email</div>
 
-          <div class="field"><label>Email</label><input type="email" placeholder="ban@email.com"></div>
-          <div class="field"><label>Mật khẩu</label><input type="password" placeholder="••••••••"></div>
-          <a class="btn btn-primary btn-block" href="dashboard.html">Đăng nhập</a>
-          <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:14px;">Quên mật khẩu?</p>
-          <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:8px;">Học sinh và giáo viên đều đăng nhập tại đây. Tài khoản giáo viên do quản trị viên cấp.</p>
+          <div id="loginMsg" style="display:none;" class="note"></div>
+          <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="ban@email.com"></div>
+          <div class="field"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+          <button class="btn btn-primary btn-block" id="loginBtn">Đăng nhập</button>
+          <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:12px;">Học sinh và giáo viên đều đăng nhập tại đây. Tài khoản giáo viên do quản trị viên cấp.</p>
         </div>
 
         <!-- ĐĂNG KÝ -->
@@ -48,25 +48,26 @@
             <div>Đăng ký công khai chỉ dành cho <strong>học sinh</strong>. Tài khoản <strong>giáo viên</strong> do quản trị viên cấp sẵn — giáo viên vui lòng dùng tab <strong>Đăng nhập</strong>.</div>
           </div>
 
-          <button class="btn btn-block btn-google" style="margin-bottom:4px;">
+          <button class="btn btn-block btn-google" id="googleReg" style="margin-bottom:4px;">
             <span style="font-weight:700; color:#4285F4;">G</span> Đăng ký với Google
           </button>
           <div class="divider">hoặc dùng email</div>
 
-          <div class="field"><label>Họ và tên</label><input type="text" placeholder="Nguyễn Văn A"></div>
-          <div class="field"><label>Email</label><input type="email" placeholder="ban@email.com"></div>
-          <div class="field"><label>Mật khẩu</label><input type="password" placeholder="Tối thiểu 8 ký tự"></div>
-          <a class="btn btn-primary btn-block" href="dashboard.html">Tạo tài khoản</a>
+          <div id="regMsg" style="display:none;" class="note"></div>
+          <div class="field"><label>Họ và tên</label><input type="text" id="regName" placeholder="Nguyễn Văn A"></div>
+          <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="ban@email.com"></div>
+          <div class="field"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Tối thiểu 6 ký tự"></div>
+          <button class="btn btn-primary btn-block" id="regBtn">Tạo tài khoản</button>
         </div>
       </div>
 
-      <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:16px;">Đây là bản demo giao diện — chưa kết nối tài khoản thật.</p>
+      <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:16px;">Tài khoản dùng thử: giáo viên <strong>tom@ewt.vn</strong> / <strong>Tom@1234</strong></p>
     </div>
   </div>
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
 <script>
   var tabL = document.getElementById('tabLogin'), tabR = document.getElementById('tabReg');
   var paneL = document.getElementById('paneLogin'), paneR = document.getElementById('paneReg');
@@ -81,6 +82,49 @@
   tabL.onclick = function(){ show(false); };
   tabR.onclick = function(){ show(true); };
   if (location.hash === '#register') show(true);
+
+  /* ===== Nối API thật ===== */
+  function qp(name){ return new URLSearchParams(location.search).get(name); }
+  var nextPage = qp('next') || 'dashboard.html';
+
+  function msg(el, text, ok){
+    el.style.display = 'flex';
+    el.style.background = ok ? 'var(--success-soft)' : 'var(--warning-soft)';
+    el.style.borderColor = 'transparent';
+    el.style.color = ok ? 'var(--success)' : 'var(--warning)';
+    el.innerHTML = '<span>' + (ok ? '✅' : '⚠️') + '</span><div>' + text + '</div>';
+  }
+
+  async function postJSON(url, data){
+    var r = await fetch(url, {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+    });
+    return { ok: r.ok, data: await r.json().catch(function(){ return {}; }) };
+  }
+
+  document.getElementById('loginBtn').onclick = async function(){
+    var res = await postJSON('/api/login', {
+      email: document.getElementById('loginEmail').value,
+      password: document.getElementById('loginPass').value
+    });
+    if (res.ok) { location.href = nextPage; }
+    else { msg(document.getElementById('loginMsg'), res.data.error || 'Đăng nhập thất bại.', false); }
+  };
+
+  document.getElementById('regBtn').onclick = async function(){
+    var res = await postJSON('/api/register', {
+      name: document.getElementById('regName').value,
+      email: document.getElementById('regEmail').value,
+      password: document.getElementById('regPass').value
+    });
+    if (res.ok) { location.href = nextPage; }
+    else { msg(document.getElementById('regMsg'), res.data.error || 'Đăng ký thất bại.', false); }
+  };
+
+  function soon(){ alert('Đăng nhập bằng Google sẽ được bổ sung ở bước sau. Hiện tại bạn dùng email + mật khẩu nhé.'); }
+  document.getElementById('googleLogin').onclick = soon;
+  document.getElementById('googleReg').onclick = soon;
 </script>
 </body>
 </html>

@@ -77,23 +77,50 @@
     <div class="card" id="result" style="display:none; margin-top:22px; border:2px solid var(--success);">
       <div class="card-head"><h3>✅ Đã nộp bài thành công</h3><span class="badge badge-done">Đã chấm tự động</span></div>
       <div class="stat-grid" style="margin-bottom:0;">
-        <div class="stat-card"><div class="label">Số câu đúng</div><div class="value">3/4</div></div>
-        <div class="stat-card accent"><div class="label">Điểm ước tính</div><div class="value">7.0</div></div>
-        <div class="stat-card"><div class="label">Trạng thái</div><div class="value" style="font-size:18px; color:var(--info); padding-top:8px;">Đã gửi giáo viên 📩</div></div>
+        <div class="stat-card"><div class="label">Số câu đúng</div><div class="value" id="resScore">–</div></div>
+        <div class="stat-card accent"><div class="label">Tỷ lệ đúng</div><div class="value" id="resPercent">–</div></div>
+        <div class="stat-card"><div class="label">Trạng thái</div><div class="value" style="font-size:18px; color:var(--success); padding-top:8px;">Đã lưu vào hệ thống ✓</div></div>
       </div>
-      <div class="note" style="margin-top:18px;"><span>🤖</span><div>Với bài Writing/Speaking, AI sẽ chấm theo từng tiêu chí và đưa nhận xét chi tiết tại đây.</div></div>
+      <div class="note" style="margin-top:18px;"><span>🤖</span><div>Bài đã được lưu vào tài khoản của bạn — xem lại ở trang <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a>. Với bài Writing/Speaking, AI sẽ chấm theo từng tiêu chí (bổ sung sau).</div></div>
     </div>
 
   </div>
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
 <script>
-  document.getElementById('submitBtn').addEventListener('click', function(){
-    var r = document.getElementById('result');
-    r.style.display = 'block';
-    r.scrollIntoView({behavior:'smooth'});
+  var EXERCISE_ID = 1; // IELTS Reading — Test 3 (đề mẫu trong database)
+  var letters = ['A','B','C'];
+
+  document.getElementById('submitBtn').addEventListener('click', async function(){
+    var answers = ['q1','q2','q3','q4'].map(function(name){
+      var inputs = document.querySelectorAll('input[name="'+name+'"]');
+      var ans = '';
+      inputs.forEach(function(inp, idx){ if (inp.checked) ans = letters[idx]; });
+      return ans;
+    });
+
+    var r = await fetch('/api/submissions', {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: answers })
+    });
+
+    if (r.status === 401) {
+      alert('Bạn cần đăng nhập để nộp bài.');
+      location.href = 'login.html?next=practice-reading.html';
+      return;
+    }
+    var data = await r.json().catch(function(){ return {}; });
+    if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
+
+    document.getElementById('resScore').textContent = data.score + '/' + data.max_score;
+    var pct = data.max_score ? Math.round(data.score / data.max_score * 100) : 0;
+    document.getElementById('resPercent').textContent = pct + '%';
+    var res = document.getElementById('result');
+    res.style.display = 'block';
+    res.scrollIntoView({ behavior:'smooth' });
   });
 </script>
 </body>
