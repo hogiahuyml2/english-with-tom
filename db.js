@@ -3,7 +3,10 @@ const { DatabaseSync } = require('node:sqlite');
 const crypto = require('crypto');
 const path = require('path');
 
-const db = new DatabaseSync(path.join(__dirname, 'data.db'));
+// Trên Railway dữ liệu cần nằm ở ổ đĩa bền vững (đặt qua biến DATA_DIR=/data).
+// Chạy local thì lưu ngay trong thư mục dự án.
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+const db = new DatabaseSync(path.join(DATA_DIR, 'data.db'));
 
 // ===== Tạo bảng nếu chưa có =====
 db.exec(`
