@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Từ vựng — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=3">
+<style>
+  .flash { perspective: 1000px; max-width: 460px; margin: 0 auto; }
+  .flash-inner { position: relative; width: 100%; height: 230px; transition: transform .5s; transform-style: preserve-3d; cursor: pointer; }
+  .flash.flipped .flash-inner { transform: rotateY(180deg); }
+  .flash-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+  .flash-front { background: var(--gradient); color: #fff; }
+  .flash-back { background: #fff; border: 1px solid var(--border); transform: rotateY(180deg); }
+  .flash-front .word { font-size: 34px; font-weight: 700; }
+  .flash-front .ipa { font-size: 15px; opacity: .85; margin-top: 6px; }
+  .flash-back .mean { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+  .flash-back .ex { font-size: 14px; color: var(--text-muted); font-style: italic; }
+  .flash-hint { text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px; }
+</style>
+</head>
+<body data-page="vocabulary">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › Từ vựng</div>
+    <h1>Từ vựng 📚</h1>
+    <p>Học và ôn từ vựng bằng flashcards thông minh, theo chủ đề và trình độ.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px;">
+  <div class="container">
+
+    <!-- Flashcard tương tác -->
+    <div class="card">
+      <div class="card-head">
+        <h3>🃏 Flashcards — Chủ đề Môi trường</h3>
+        <span class="tag" id="counter">1 / 5</span>
+      </div>
+
+      <div class="flash" id="flash">
+        <div class="flash-inner">
+          <div class="flash-face flash-front">
+            <div class="word" id="word">environment</div>
+            <div class="ipa" id="ipa">/ɪnˈvaɪrənmənt/</div>
+            <div style="margin-top:14px; font-size:13px; opacity:.85;">Bấm để xem nghĩa</div>
+          </div>
+          <div class="flash-face flash-back">
+            <div class="mean" id="mean">môi trường</div>
+            <div class="ex" id="ex">"We must protect the environment."</div>
+          </div>
+        </div>
+      </div>
+      <div class="flash-hint">Bấm vào thẻ để lật · dùng nút bên dưới để chuyển từ</div>
+
+      <div style="display:flex; justify-content:center; gap:10px; margin-top:18px;">
+        <button class="btn" id="prev">‹ Trước</button>
+        <button class="btn" id="known" style="color:var(--success); border-color:var(--success);">✓ Đã thuộc</button>
+        <button class="btn btn-primary" id="next">Tiếp ›</button>
+      </div>
+    </div>
+
+    <!-- Bộ từ vựng -->
+    <div class="section-head" style="text-align:left; margin:32px 0 18px;">
+      <h2 style="font-size:22px;">Bộ từ vựng theo chủ đề</h2>
+    </div>
+    <div class="grid grid-3">
+      <a class="course-card" href="#"><div class="course-ico ico-teal">🌍</div><h3>Môi trường</h3><p>40 từ · trình độ B1–B2</p><div class="course-meta"><span>🃏 Flashcards</span><span>📝 Quiz</span></div></a>
+      <a class="course-card" href="#"><div class="course-ico ico-blue">💼</div><h3>Công việc</h3><p>52 từ · trình độ B1–B2</p><div class="course-meta"><span>🃏 Flashcards</span><span>📝 Quiz</span></div></a>
+      <a class="course-card" href="#"><div class="course-ico ico-amber">🎓</div><h3>Giáo dục</h3><p>48 từ · trình độ B2</p><div class="course-meta"><span>🃏 Flashcards</span><span>📝 Quiz</span></div></a>
+      <a class="course-card" href="#"><div class="course-ico ico-purple">✈️</div><h3>Du lịch</h3><p>36 từ · trình độ A2–B1</p><div class="course-meta"><span>🃏 Flashcards</span><span>📝 Quiz</span></div></a>
+      <a class="course-card" href="#"><div class="course-ico ico-pink">🍜</div><h3>Ẩm thực</h3><p>30 từ · trình độ A2</p><div class="course-meta"><span>🃏 Flashcards</span><span>📝 Quiz</span></div></a>
+      <a class="course-card" href="#"><div class="course-ico ico-blue">💻</div><h3>Công nghệ</h3><p>44 từ · trình độ B2–C1</p><div class="course-meta"><span>🃏 Flashcards</span><span>📝 Quiz</span></div></a>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=3"></script>
+<script>
+  var cards = [
+    { w:'environment', ipa:'/ɪnˈvaɪrənmənt/', m:'môi trường', ex:'"We must protect the environment."' },
+    { w:'pollution', ipa:'/pəˈluːʃn/', m:'sự ô nhiễm', ex:'"Air pollution is a serious problem."' },
+    { w:'recycle', ipa:'/ˌriːˈsaɪkl/', m:'tái chế', ex:'"We recycle paper and plastic."' },
+    { w:'climate', ipa:'/ˈklaɪmət/', m:'khí hậu', ex:'"Climate change affects everyone."' },
+    { w:'renewable', ipa:'/rɪˈnjuːəbl/', m:'có thể tái tạo', ex:'"Solar power is a renewable energy."' }
+  ];
+  var i = 0;
+  var flash = document.getElementById('flash');
+  function show(){
+    var c = cards[i];
+    document.getElementById('word').textContent = c.w;
+    document.getElementById('ipa').textContent = c.ipa;
+    document.getElementById('mean').textContent = c.m;
+    document.getElementById('ex').textContent = c.ex;
+    document.getElementById('counter').textContent = (i+1) + ' / ' + cards.length;
+    flash.classList.remove('flipped');
+  }
+  flash.onclick = function(){ flash.classList.toggle('flipped'); };
+  document.getElementById('next').onclick = function(){ i = (i+1) % cards.length; show(); };
+  document.getElementById('prev').onclick = function(){ i = (i-1+cards.length) % cards.length; show(); };
+  document.getElementById('known').onclick = function(){ i = (i+1) % cards.length; show(); };
+  show();
+</script>
+</body>
+</html>

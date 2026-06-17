@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khu vực giáo viên — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body data-page="">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › Khu vực giáo viên</div>
+    <h1>Khu vực giáo viên 👨‍🏫</h1>
+    <p>Nhập đề mới lên web, giao bài cho lớp và chấm bài học sinh. Dành cho tài khoản giáo viên và quản trị viên.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px;">
+  <div class="container">
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Học sinh trong lớp</div><div class="value">128</div></div>
+      <div class="stat-card"><div class="label">Đề đã đăng</div><div class="value">64</div></div>
+      <div class="stat-card accent"><div class="label">Bài chờ chấm</div><div class="value">7</div></div>
+    </div>
+
+    <div class="two-col">
+      <!-- Form nhập đề -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-head"><h3>➕ Nhập đề mới</h3></div>
+
+        <div class="field"><label>Chương trình</label>
+          <select><option>IELTS</option><option>KET</option><option>PET</option><option>FCE</option><option>APTIS</option></select>
+        </div>
+        <div class="field"><label>Kỹ năng</label>
+          <select><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
+        </div>
+        <div class="field"><label>Tên bài</label><input type="text" placeholder="VD: IELTS Reading — Test 4"></div>
+        <div class="field"><label>Nội dung đề / đoạn văn</label><textarea placeholder="Dán nội dung đề bài, đoạn văn hoặc câu hỏi vào đây..."></textarea></div>
+        <div class="field"><label>Đáp án (cho Reading/Listening)</label><input type="text" placeholder="VD: 1-B, 2-C, 3-A, 4-B"></div>
+        <div class="field"><label>Tệp đính kèm (audio, PDF)</label><input type="file"></div>
+        <button class="btn btn-primary btn-block" onclick="alert('Demo: đề đã được lưu vào ngân hàng đề.');">Lưu đề vào ngân hàng</button>
+      </div>
+
+      <!-- Giao bài + chấm -->
+      <div>
+        <div class="card">
+          <div class="card-head"><h3>📤 Giao bài cho lớp</h3></div>
+          <div class="field"><label>Chọn đề</label><select><option>IELTS Reading — Test 3</option><option>IELTS Writing Task 2 — Môi trường</option></select></div>
+          <div class="field"><label>Giao cho</label><select><option>Lớp IELTS 6.5</option><option>Lớp PET buổi tối</option><option>Tất cả học sinh</option></select></div>
+          <div class="field"><label>Hạn nộp</label><input type="date"></div>
+          <button class="btn btn-primary btn-block" onclick="alert('Demo: đã giao bài và thông báo cho học sinh.');">Giao bài</button>
+        </div>
+
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-head"><h3>📥 Bài chờ chấm</h3></div>
+          <div class="task">
+            <div class="task-left"><div class="task-ico ico-amber">✍️</div>
+              <div class="task-info"><h4>Nguyễn An — Writing Task 2</h4><div class="meta">AI gợi ý: 6.0 · cần giáo viên duyệt</div></div></div>
+            <button class="btn btn-sm" onclick="alert('Demo: mở bài để chấm.');">Chấm</button>
+          </div>
+          <div class="task">
+            <div class="task-left"><div class="task-ico ico-pink">🗣️</div>
+              <div class="task-info"><h4>Trần Bình — Speaking Part 2</h4><div class="meta">AI gợi ý: 5.5 · cần giáo viên duyệt</div></div></div>
+            <button class="btn btn-sm" onclick="alert('Demo: mở bài để chấm.');">Chấm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <div class="card-head"><h3>📚 Ngân hàng đề gần đây</h3></div>
+      <table class="table">
+        <thead><tr><th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Người tạo</th><th>Ngày</th></tr></thead>
+        <tbody>
+          <tr><td>IELTS Reading — Test 3</td><td>IELTS</td><td>Reading</td><td>Thầy Tom</td><td>15/06/2026</td></tr>
+          <tr><td>IELTS Writing Task 2 — Môi trường</td><td>IELTS</td><td>Writing</td><td>Thầy Tom</td><td>14/06/2026</td></tr>
+          <tr><td>PET Reading — Part 4</td><td>PET</td><td>Reading</td><td>Cô Lan</td><td>12/06/2026</td></tr>
+          <tr><td>FCE Listening — Test 1</td><td>FCE</td><td>Listening</td><td>Admin</td><td>10/06/2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=3"></script>
+</body>
+</html>

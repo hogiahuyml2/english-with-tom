@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện tập — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body data-page="practice">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › Luyện tập</div>
+    <h1>Luyện tập 🎯</h1>
+    <p>Rèn kỹ năng qua bài tập viết câu và trò chơi ngôn ngữ — học mà chơi, nhớ lâu hơn.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px;">
+  <div class="container">
+
+    <div class="section-head" style="text-align:left; margin-bottom:22px;">
+      <h2 style="font-size:22px;">Chọn dạng luyện tập</h2>
+    </div>
+    <div class="grid grid-3" style="margin-bottom:40px;">
+      <a class="course-card" href="#viet-cau"><div class="course-ico ico-purple">✍️</div><h3>Viết câu</h3><p>Đặt câu theo từ gợi ý, AI kiểm tra ngữ pháp và gợi ý sửa.</p></a>
+      <a class="course-card" href="#sap-xep"><div class="course-ico ico-blue">🔀</div><h3>Sắp xếp câu</h3><p>Kéo/chọn từ để ghép thành câu đúng trật tự.</p></a>
+      <a class="course-card" href="#"><div class="course-ico ico-teal">🧩</div><h3>Điền vào chỗ trống</h3><p>Hoàn thành câu với từ hoặc dạng đúng của động từ.</p></a>
+      <a class="course-card" href="#"><div class="course-ico ico-amber">🔗</div><h3>Ghép cặp</h3><p>Nối từ với nghĩa, hình ảnh hoặc từ đồng nghĩa.</p></a>
+      <a class="course-card" href="#"><div class="course-ico ico-pink">🔤</div><h3>Chia động từ</h3><p>Luyện thì và dạng động từ qua bài tập nhanh.</p></a>
+      <a class="course-card" href="#"><div class="course-ico ico-purple">🛠️</div><h3>Tìm lỗi sai</h3><p>Phát hiện và sửa lỗi trong câu — luyện mắt tinh.</p></a>
+    </div>
+
+    <!-- Trò chơi: Viết câu -->
+    <div class="card" id="viet-cau">
+      <div class="card-head"><h3>✍️ Viết câu với từ cho sẵn</h3><span class="tag">Demo</span></div>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:14px;">Đặt một câu tiếng Anh có dùng từ: <strong style="color:var(--primary);">environment</strong></p>
+      <div class="field"><textarea id="sentenceInput" placeholder="Nhập câu của bạn..."></textarea></div>
+      <button class="btn btn-primary" id="checkSentence">Kiểm tra bằng AI</button>
+      <div id="sentenceFeedback" style="display:none; margin-top:16px;" class="note"><span>🤖</span><div id="fbText"></div></div>
+    </div>
+
+    <!-- Trò chơi: Sắp xếp câu -->
+    <div class="card" id="sap-xep">
+      <div class="card-head"><h3>🔀 Sắp xếp từ thành câu</h3><span class="tag">Demo</span></div>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:14px;">Bấm các từ theo đúng thứ tự để tạo câu hoàn chỉnh.</p>
+      <div id="answerArea" style="min-height:46px; border:1px dashed var(--border); border-radius:10px; padding:10px; margin-bottom:14px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+        <span id="placeholder" style="color:var(--text-faint); font-size:14px;">Câu của bạn sẽ hiện ở đây...</span>
+      </div>
+      <div id="wordBank" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary" id="checkOrder">Kiểm tra</button>
+        <button class="btn" id="resetOrder">Làm lại</button>
+      </div>
+      <div id="orderFeedback" style="display:none; margin-top:14px;"></div>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=3"></script>
+<script>
+  /* Viết câu */
+  document.getElementById('checkSentence').addEventListener('click', function(){
+    var v = document.getElementById('sentenceInput').value.trim();
+    var box = document.getElementById('sentenceFeedback');
+    var txt = document.getElementById('fbText');
+    if (!v) { txt.innerHTML = 'Bạn hãy nhập một câu trước nhé.'; }
+    else if (v.toLowerCase().indexOf('environment') === -1) { txt.innerHTML = 'Câu chưa chứa từ <strong>environment</strong>. Thử lại nhé!'; }
+    else { txt.innerHTML = '<strong>Tốt lắm!</strong> Câu của bạn có dùng đúng từ khóa. Khi nối Claude API, AI sẽ chấm ngữ pháp, gợi ý từ hay hơn và cho điểm.'; }
+    box.style.display = 'flex';
+  });
+
+  /* Sắp xếp câu */
+  var correct = ['We', 'must', 'protect', 'the', 'environment', 'together'];
+  var shuffled = correct.slice().sort(function(){ return Math.random() - 0.5; });
+  var bank = document.getElementById('wordBank');
+  var area = document.getElementById('answerArea');
+  var ph = document.getElementById('placeholder');
+  var picked = [];
+  function chip(w){
+    var b = document.createElement('button');
+    b.className = 'btn btn-sm'; b.textContent = w; b.style.background = 'var(--primary-soft)'; b.style.color = 'var(--primary)'; b.style.border = 'none';
+    return b;
+  }
+  function render(){
+    bank.innerHTML = '';
+    shuffled.forEach(function(w, i){
+      if (picked.indexOf(i) > -1) return;
+      var b = chip(w);
+      b.onclick = function(){ picked.push(i); draw(); };
+      bank.appendChild(b);
+    });
+  }
+  function draw(){
+    area.querySelectorAll('.picked').forEach(function(e){ e.remove(); });
+    ph.style.display = picked.length ? 'none' : 'inline';
+    picked.forEach(function(idx, pos){
+      var b = chip(shuffled[idx]); b.classList.add('picked');
+      b.onclick = function(){ picked.splice(pos,1); draw(); };
+      area.appendChild(b);
+    });
+    render();
+    document.getElementById('orderFeedback').style.display = 'none';
+  }
+  document.getElementById('checkOrder').onclick = function(){
+    var made = picked.map(function(i){ return shuffled[i]; }).join(' ');
+    var fb = document.getElementById('orderFeedback');
+    var ok = made === correct.join(' ');
+    fb.className = 'note'; fb.style.display = 'flex';
+    fb.style.background = ok ? 'var(--success-soft)' : 'var(--warning-soft)';
+    fb.style.borderColor = 'transparent';
+    fb.innerHTML = ok ? '<span>🎉</span><div style="color:var(--success)"><strong>Chính xác!</strong> "' + made + '"</div>'
+                      : '<span>🤔</span><div style="color:var(--warning)">Chưa đúng. Gợi ý: câu bắt đầu bằng "We". Thử lại nhé!</div>';
+  };
+  document.getElementById('resetOrder').onclick = function(){ picked = []; draw(); };
+  draw();
+</script>
+</body>
+</html>

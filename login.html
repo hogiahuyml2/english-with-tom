@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng nhập — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body data-page="login">
+<div id="site-header"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="form-wrap">
+
+      <div style="display:flex; gap:8px; margin-bottom:18px; background:var(--primary-soft); padding:5px; border-radius:12px;">
+        <button class="btn btn-block" id="tabLogin" style="background:#fff;">Đăng nhập</button>
+        <button class="btn btn-block btn-ghost" id="tabReg">Đăng ký</button>
+      </div>
+
+      <div class="auth-card">
+        <!-- ĐĂNG NHẬP -->
+        <div id="paneLogin">
+          <h2 style="font-size:22px; margin-bottom:6px;">Chào mừng trở lại 👋</h2>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Đăng nhập để tiếp tục luyện thi.</p>
+
+          <button class="btn btn-block btn-google" style="margin-bottom:4px;">
+            <span style="font-weight:700; color:#4285F4;">G</span> Tiếp tục với Google
+          </button>
+          <div class="divider">hoặc dùng email</div>
+
+          <div class="field"><label>Email</label><input type="email" placeholder="ban@email.com"></div>
+          <div class="field"><label>Mật khẩu</label><input type="password" placeholder="••••••••"></div>
+          <a class="btn btn-primary btn-block" href="dashboard.html">Đăng nhập</a>
+          <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:14px;">Quên mật khẩu?</p>
+          <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:8px;">Học sinh và giáo viên đều đăng nhập tại đây. Tài khoản giáo viên do quản trị viên cấp.</p>
+        </div>
+
+        <!-- ĐĂNG KÝ -->
+        <div id="paneReg" style="display:none;">
+          <h2 style="font-size:22px; margin-bottom:6px;">Tạo tài khoản học sinh</h2>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:18px;">Miễn phí — bắt đầu trong 1 phút.</p>
+
+          <div class="note" style="margin-bottom:18px;">
+            <span>👨‍🏫</span>
+            <div>Đăng ký công khai chỉ dành cho <strong>học sinh</strong>. Tài khoản <strong>giáo viên</strong> do quản trị viên cấp sẵn — giáo viên vui lòng dùng tab <strong>Đăng nhập</strong>.</div>
+          </div>
+
+          <button class="btn btn-block btn-google" style="margin-bottom:4px;">
+            <span style="font-weight:700; color:#4285F4;">G</span> Đăng ký với Google
+          </button>
+          <div class="divider">hoặc dùng email</div>
+
+          <div class="field"><label>Họ và tên</label><input type="text" placeholder="Nguyễn Văn A"></div>
+          <div class="field"><label>Email</label><input type="email" placeholder="ban@email.com"></div>
+          <div class="field"><label>Mật khẩu</label><input type="password" placeholder="Tối thiểu 8 ký tự"></div>
+          <a class="btn btn-primary btn-block" href="dashboard.html">Tạo tài khoản</a>
+        </div>
+      </div>
+
+      <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:16px;">Đây là bản demo giao diện — chưa kết nối tài khoản thật.</p>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=3"></script>
+<script>
+  var tabL = document.getElementById('tabLogin'), tabR = document.getElementById('tabReg');
+  var paneL = document.getElementById('paneLogin'), paneR = document.getElementById('paneReg');
+  function show(reg){
+    paneL.style.display = reg ? 'none' : 'block';
+    paneR.style.display = reg ? 'block' : 'none';
+    tabL.style.background = reg ? 'transparent' : '#fff';
+    tabR.style.background = reg ? '#fff' : 'transparent';
+    tabL.classList.toggle('btn-ghost', reg);
+    tabR.classList.toggle('btn-ghost', !reg);
+  }
+  tabL.onclick = function(){ show(false); };
+  tabR.onclick = function(){ show(true); };
+  if (location.hash === '#register') show(true);
+</script>
+</body>
+</html>
