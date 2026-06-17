@@ -5,16 +5,28 @@ Tone màu pastel xanh–tím, giao diện tiếng Việt.
 
 ## Cách chạy trên máy của bạn
 
-Mở **Terminal**, dán lần lượt 2 dòng sau:
+Mở **Terminal**, dán lần lượt các dòng sau:
 
 ```bash
 cd "/Users/ghuyho/Claude GH/english-with-tom"
-python3 -m http.server 8000
+npm install     # chỉ cần chạy lần đầu
+npm start
 ```
 
-Sau đó mở trình duyệt và vào địa chỉ: **http://localhost:8000**
+Sau đó mở trình duyệt và vào địa chỉ: **http://localhost:3000**
 
 Để dừng máy chủ: bấm `Ctrl + C` trong Terminal.
+
+## Tài khoản có sẵn (để thử)
+
+| Vai trò | Email | Mật khẩu |
+|---------|-------|----------|
+| Quản trị viên | `admin@ewt.vn` | `Admin@123` |
+| Giáo viên (Tom) | `tom@ewt.vn` | `Tom@1234` |
+| Học sinh | tự đăng ký trên trang Đăng ký | — |
+
+> ⚠️ Đây là mật khẩu mẫu — hãy đổi trước khi dùng thật.
+> Dữ liệu lưu trong file `data.db` (không đẩy lên GitHub).
 
 ## Các trang đã có
 
