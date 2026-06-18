@@ -129,6 +129,7 @@
   // Hiện thông báo lỗi nếu Google chuyển về kèm ?error=
   var err = qp('error');
   if (err) { show(false); msg(document.getElementById('loginMsg'), err, false); }
+  if (qp('verified')) { show(false); msg(document.getElementById('loginMsg'), 'Email đã được xác thực thành công! Mời bạn đăng nhập.', true); }
 
   // Nếu Google chưa cấu hình thì làm mờ nút cho rõ
   fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){

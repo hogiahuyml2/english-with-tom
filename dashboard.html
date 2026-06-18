@@ -30,6 +30,8 @@
       </div>
     </div>
 
+    <div id="verifyBanner" style="display:none;"></div>
+
     <div class="stat-grid">
       <div class="stat-card">
         <span class="stat-ico">📝</span>
@@ -135,6 +137,20 @@
     document.getElementById('pfName').textContent = u.name;
     document.getElementById('pfRole').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
     document.getElementById('pfAvatar').textContent = (u.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+
+    if (!u.email_verified) {
+      var vb = document.getElementById('verifyBanner');
+      vb.className = 'note';
+      vb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;background:var(--warning-soft);border-color:transparent;color:var(--warning)';
+      vb.innerHTML = '<span style="display:flex;gap:10px;align-items:center">✉️ <span>Email của bạn chưa được xác thực. Vui lòng kiểm tra hộp thư (cả mục Spam).</span></span>' +
+        '<button class="btn btn-sm" id="resendBtn" style="white-space:nowrap">Gửi lại email</button>';
+      var rb = document.getElementById('resendBtn');
+      rb.onclick = async function(){
+        rb.textContent = 'Đang gửi...';
+        var r = await fetch('/api/me/resend-verification',{method:'POST',credentials:'same-origin'});
+        rb.textContent = r.ok ? 'Đã gửi ✓' : 'Lỗi, thử lại';
+      };
+    }
 
     var st = await fetch('/api/me/stats',{credentials:'same-origin'}).then(r=>r.json());
     document.getElementById('statDone').textContent = st.done;

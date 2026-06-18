@@ -14,6 +14,33 @@ function baseUrl(req) {
   return process.env.PUBLIC_URL || (proto + '://' + req.get('host'));
 }
 
+// ===== Gửi email qua Brevo (HTTP API, không cần thư viện) =====
+function emailEnabled() { return !!process.env.BREVO_API_KEY && !!process.env.FROM_EMAIL; }
+
+async function sendVerificationEmail(user, link) {
+  if (!emailEnabled()) return false;
+  try {
+    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({
+        sender: { name: process.env.SENDER_NAME || 'English With Tom', email: process.env.FROM_EMAIL },
+        to: [{ email: user.email, name: user.name }],
+        subject: 'Xác thực email — English With Tom',
+        htmlContent:
+          '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6">' +
+          '<h2 style="color:#6F58EE">Chào ' + user.name + '! 👋</h2>' +
+          '<p>Cảm ơn bạn đã đăng ký <b>English With Tom</b>. Bấm nút bên dưới để xác thực email của bạn:</p>' +
+          '<p style="margin:22px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Xác thực email</a></p>' +
+          '<p style="font-size:13px;color:#888">Hoặc mở liên kết: <a href="' + link + '">' + link + '</a></p>' +
+          '<p style="font-size:13px;color:#888">Nếu bạn không đăng ký tài khoản này, hãy bỏ qua email.</p>' +
+          '</div>'
+      })
+    });
+    return r.ok;
+  } catch (e) { return false; }
+}
+
 // ===== Phân tích cookie thủ công (không cần thư viện) =====
 function parseCookies(req) {
   const out = {};
@@ -29,7 +56,7 @@ app.use((req, res, next) => {
   const token = parseCookies(req).ewt_session;
   if (token) {
     const s = db.prepare('SELECT user_id FROM sessions WHERE token=?').get(token);
-    if (s) req.user = db.prepare('SELECT id,name,email,role FROM users WHERE id=?').get(s.user_id);
+    if (s) req.user = db.prepare('SELECT id,name,email,role,email_verified FROM users WHERE id=?').get(s.user_id);
   }
   next();
 });
@@ -55,16 +82,22 @@ function startSession(res, userId) {
 // ===================== API XÁC THỰC =====================
 
 // Đăng ký — CHỈ tạo tài khoản học sinh (giáo viên do admin cấp)
-app.post('/api/register', (req, res) => {
+app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body || {};
   if (!name || !email || !password) return res.status(400).json({ error: 'Vui lòng nhập đủ họ tên, email và mật khẩu.' });
   if (password.length < 6) return res.status(400).json({ error: 'Mật khẩu cần tối thiểu 6 ký tự.' });
-  const exists = db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase());
-  if (exists) return res.status(409).json({ error: 'Email này đã được đăng ký.' });
-  const r = db.prepare('INSERT INTO users (name,email,pass,role,created_at) VALUES (?,?,?,?,?)')
-    .run(name, email.toLowerCase(), hashPassword(password), 'student', now());
+  const mail = email.toLowerCase();
+  if (db.prepare('SELECT id FROM users WHERE email=?').get(mail))
+    return res.status(409).json({ error: 'Email này đã được đăng ký.' });
+
+  const needVerify = emailEnabled();
+  const token = needVerify ? crypto.randomBytes(24).toString('hex') : null;
+  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,verify_token,created_at) VALUES (?,?,?,?,?,?,?)')
+    .run(name, mail, hashPassword(password), 'student', needVerify ? 0 : 1, token, now());
+
+  if (needVerify) await sendVerificationEmail({ name, email: mail }, baseUrl(req) + '/api/verify-email?token=' + token);
   startSession(res, Number(r.lastInsertRowid));
-  res.json({ user: { id: Number(r.lastInsertRowid), name, email: email.toLowerCase(), role: 'student' } });
+  res.json({ user: { id: Number(r.lastInsertRowid), name, email: mail, role: 'student' }, needVerify });
 });
 
 // Đăng nhập — học sinh và giáo viên đều dùng
@@ -100,7 +133,33 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
 
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
-  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID });
+  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled() });
+});
+
+// ===================== XÁC THỰC EMAIL =====================
+
+// Người dùng bấm link trong email
+app.get('/api/verify-email', (req, res) => {
+  const { token } = req.query;
+  if (!token) return res.redirect('/login.html?error=' + encodeURIComponent('Link xác thực không hợp lệ.'));
+  const u = db.prepare('SELECT id FROM users WHERE verify_token=?').get(token);
+  if (!u) return res.redirect('/login.html?error=' + encodeURIComponent('Link xác thực đã hết hạn hoặc không đúng.'));
+  db.prepare('UPDATE users SET email_verified=1, verify_token=NULL WHERE id=?').run(u.id);
+  res.redirect('/login.html?verified=1');
+});
+
+// Gửi lại email xác thực (cho người đang đăng nhập, chưa xác thực)
+app.post('/api/me/resend-verification', requireAuth, async (req, res) => {
+  const u = db.prepare('SELECT * FROM users WHERE id=?').get(req.user.id);
+  if (u.email_verified) return res.json({ ok: true, already: true });
+  if (!emailEnabled()) return res.status(400).json({ error: 'Hệ thống email chưa được cấu hình.' });
+  let token = u.verify_token;
+  if (!token) {
+    token = crypto.randomBytes(24).toString('hex');
+    db.prepare('UPDATE users SET verify_token=? WHERE id=?').run(token, u.id);
+  }
+  const ok = await sendVerificationEmail({ name: u.name, email: u.email }, baseUrl(req) + '/api/verify-email?token=' + token);
+  return ok ? res.json({ ok: true }) : res.status(500).json({ error: 'Gửi email thất bại, thử lại sau.' });
 });
 
 // ===================== ĐĂNG NHẬP GOOGLE (OAuth 2.0) =====================
