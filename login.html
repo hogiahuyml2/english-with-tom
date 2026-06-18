@@ -122,9 +122,24 @@
     else { msg(document.getElementById('regMsg'), res.data.error || 'Đăng ký thất bại.', false); }
   };
 
-  function soon(){ alert('Đăng nhập bằng Google sẽ được bổ sung ở bước sau. Hiện tại bạn dùng email + mật khẩu nhé.'); }
-  document.getElementById('googleLogin').onclick = soon;
-  document.getElementById('googleReg').onclick = soon;
+  function goGoogle(){ location.href = '/api/auth/google'; }
+  document.getElementById('googleLogin').onclick = goGoogle;
+  document.getElementById('googleReg').onclick = goGoogle;
+
+  // Hiện thông báo lỗi nếu Google chuyển về kèm ?error=
+  var err = qp('error');
+  if (err) { show(false); msg(document.getElementById('loginMsg'), err, false); }
+
+  // Nếu Google chưa cấu hình thì làm mờ nút cho rõ
+  fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
+    if (!c.googleEnabled) {
+      ['googleLogin','googleReg'].forEach(function(id){
+        var b = document.getElementById(id);
+        b.style.opacity = '.55';
+        b.title = 'Đăng nhập Google sắp có';
+      });
+    }
+  }).catch(function(){});
 </script>
 </body>
 </html>

@@ -5,7 +5,14 @@ const path = require('path');
 const { db, hashPassword, verifyPassword, now } = require('./db');
 
 const app = express();
+app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
 app.use(express.json());
+
+// URL gốc của web (để tạo redirect_uri cho Google, link xác thực email...)
+function baseUrl(req) {
+  const proto = req.headers['x-forwarded-proto'] || req.protocol;
+  return process.env.PUBLIC_URL || (proto + '://' + req.get('host'));
+}
 
 // ===== Phân tích cookie thủ công (không cần thư viện) =====
 function parseCookies(req) {
@@ -89,6 +96,63 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng.' });
   db.prepare('UPDATE users SET pass=? WHERE id=?').run(hashPassword(newPassword), req.user.id);
   res.json({ ok: true });
+});
+
+// Cho giao diện biết tính năng nào đã bật
+app.get('/api/config', (req, res) => {
+  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID });
+});
+
+// ===================== ĐĂNG NHẬP GOOGLE (OAuth 2.0) =====================
+
+app.get('/api/auth/google', (req, res) => {
+  if (!process.env.GOOGLE_CLIENT_ID)
+    return res.redirect('/login.html?error=' + encodeURIComponent('Đăng nhập Google chưa được cấu hình.'));
+  const state = crypto.randomBytes(16).toString('hex');
+  res.setHeader('Set-Cookie', `ewt_oauth=${state}; HttpOnly; Path=/; Max-Age=600; SameSite=Lax`);
+  const params = new URLSearchParams({
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    redirect_uri: baseUrl(req) + '/api/auth/google/callback',
+    response_type: 'code',
+    scope: 'openid email profile',
+    state, access_type: 'online', prompt: 'select_account'
+  });
+  res.redirect('https://accounts.google.com/o/oauth2/v2/auth?' + params);
+});
+
+app.get('/api/auth/google/callback', async (req, res) => {
+  const fail = (m) => res.redirect('/login.html?error=' + encodeURIComponent(m));
+  const { code, state } = req.query;
+  if (!code || !state || state !== parseCookies(req).ewt_oauth) return fail('Xác thực Google thất bại, thử lại nhé.');
+  try {
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code, client_id: process.env.GOOGLE_CLIENT_ID, client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: baseUrl(req) + '/api/auth/google/callback', grant_type: 'authorization_code'
+      })
+    });
+    const tok = await tokenRes.json();
+    if (!tok.access_token) throw new Error('no token');
+    const info = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: 'Bearer ' + tok.access_token }
+    }).then(r => r.json());
+    const email = (info.email || '').toLowerCase();
+    if (!email) throw new Error('no email');
+
+    let u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
+    if (!u) {
+      const r2 = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
+        .run(info.name || email, email, 'google-oauth', 'student', now());
+      u = { id: Number(r2.lastInsertRowid) };
+    } else if (!u.email_verified) {
+      db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id); // Google đã xác thực email
+    }
+    startSession(res, u.id);
+    res.redirect('/dashboard.html');
+  } catch (e) {
+    fail('Đăng nhập Google thất bại, thử lại nhé.');
+  }
 });
 
 // ===================== API ĐỀ BÀI =====================

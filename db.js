@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT UNIQUE NOT NULL,
   pass TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'student',
+  email_verified INTEGER NOT NULL DEFAULT 0,
+  verify_token TEXT,
   created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS sessions (
@@ -46,6 +48,11 @@ CREATE TABLE IF NOT EXISTS submissions (
 );
 `);
 
+// ===== Migration: thêm cột cho database đã tạo từ trước (Railway) =====
+const userCols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
+if (!userCols.includes('email_verified')) db.exec('ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0');
+if (!userCols.includes('verify_token')) db.exec('ALTER TABLE users ADD COLUMN verify_token TEXT');
+
 // ===== Băm & kiểm tra mật khẩu (scrypt, an toàn, không cần thư viện ngoài) =====
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -67,7 +74,7 @@ function seed() {
   const count = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
   if (count > 0) return;
 
-  const insUser = db.prepare('INSERT INTO users (name,email,pass,role,created_at) VALUES (?,?,?,?,?)');
+  const insUser = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)');
   insUser.run('Quản trị viên', 'admin@ewt.vn', hashPassword('Admin@123'), 'admin', now());
   const tom = insUser.run('Thầy Tom', 'tom@ewt.vn', hashPassword('Tom@1234'), 'teacher', now());
   const teacherId = Number(tom.lastInsertRowid);
