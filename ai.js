@@ -104,14 +104,16 @@ async function gradeWithGemini(exercise, essay) {
       generationConfig: {
         responseMimeType: 'application/json',
         responseSchema: GEMINI_SCHEMA,
-        maxOutputTokens: 2000
+        maxOutputTokens: 4000,
+        thinkingConfig: { thinkingBudget: 0 } // tắt "thinking" để JSON không bị cắt
       }
     })
   });
   if (!r.ok) throw new Error('Gemini ' + r.status + ': ' + (await r.text()));
   const data = await r.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Gemini: phản hồi rỗng');
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  const text = parts.map(p => p.text || '').join('');
+  if (!text) throw new Error('Gemini: phản hồi rỗng (finishReason=' + (data?.candidates?.[0]?.finishReason) + ')');
   return JSON.parse(text);
 }
 
