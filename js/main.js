@@ -82,10 +82,10 @@
           ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
         actions.innerHTML =
           teacherLink +
-          '<span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);">' +
+          '<a href="account.html" title="Tài khoản" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;">' + initials + '</span>' +
             '<span>' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
-          '</span>' +
+          '</a>' +
           '<button class="btn btn-sm" id="logoutBtn">Đăng xuất</button>' +
           '<button class="menu-toggle" id="menuToggle2" aria-label="Menu">☰</button>';
         var lo = document.getElementById('logoutBtn');

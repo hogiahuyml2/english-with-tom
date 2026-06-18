@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tài khoản — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › Tài khoản</div>
+    <h1>Tài khoản của bạn</h1>
+    <p>Xem thông tin và đổi mật khẩu đăng nhập.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px;">
+  <div class="container" style="max-width:640px;">
+
+    <div class="card">
+      <div class="card-head"><h3>Thông tin tài khoản</h3></div>
+      <div class="profile-row" style="margin-bottom:0;">
+        <div class="avatar" id="acAvatar">?</div>
+        <div>
+          <h2 id="acName" style="font-size:18px;">Đang tải...</h2>
+          <div class="sub" id="acInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>🔒 Đổi mật khẩu</h3></div>
+      <div id="pwMsg" style="display:none; margin-bottom:14px;" class="note"></div>
+      <div class="field"><label>Mật khẩu hiện tại</label><input type="password" id="curPw" placeholder="••••••••"></div>
+      <div class="field"><label>Mật khẩu mới</label><input type="password" id="newPw" placeholder="Tối thiểu 6 ký tự"></div>
+      <div class="field"><label>Nhập lại mật khẩu mới</label><input type="password" id="confPw" placeholder="••••••••"></div>
+      <button class="btn btn-primary" id="pwBtn">Cập nhật mật khẩu</button>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=5"></script>
+<script>
+  var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
+
+  (async function(){
+    var me = await fetch('/api/me',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({user:null}));
+    if (!me.user) return; // main.js sẽ chuyển sang trang đăng nhập
+    var u = me.user;
+    document.getElementById('acName').textContent = u.name;
+    document.getElementById('acInfo').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
+    document.getElementById('acAvatar').textContent = (u.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+  })();
+
+  function msg(text, ok){
+    var el = document.getElementById('pwMsg');
+    el.style.display='flex'; el.style.background = ok?'var(--success-soft)':'var(--warning-soft)';
+    el.style.borderColor='transparent'; el.style.color = ok?'var(--success)':'var(--warning)';
+    el.innerHTML = '<span>'+(ok?'✅':'⚠️')+'</span><div>'+text+'</div>';
+  }
+
+  document.getElementById('pwBtn').onclick = async function(){
+    var cur = document.getElementById('curPw').value;
+    var nw = document.getElementById('newPw').value;
+    var cf = document.getElementById('confPw').value;
+    if (nw.length < 6) { msg('Mật khẩu mới cần tối thiểu 6 ký tự.', false); return; }
+    if (nw !== cf) { msg('Hai ô mật khẩu mới chưa khớp nhau.', false); return; }
+    var r = await fetch('/api/me/change-password', {
+      method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ currentPassword: cur, newPassword: nw })
+    });
+    var data = await r.json().catch(()=>({}));
+    if (r.ok) {
+      msg('Đổi mật khẩu thành công! Lần sau hãy đăng nhập bằng mật khẩu mới.', true);
+      document.getElementById('curPw').value=''; document.getElementById('newPw').value=''; document.getElementById('confPw').value='';
+    } else {
+      msg(data.error || 'Đổi mật khẩu thất bại.', false);
+    }
+  };
+</script>
+</body>
+</html>

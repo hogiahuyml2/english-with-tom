@@ -79,6 +79,18 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/me', (req, res) => res.json({ user: req.user || null }));
 
+// Đổi mật khẩu (cho người đang đăng nhập)
+app.post('/api/me/change-password', requireAuth, (req, res) => {
+  const { currentPassword, newPassword } = req.body || {};
+  if (!newPassword || newPassword.length < 6)
+    return res.status(400).json({ error: 'Mật khẩu mới cần tối thiểu 6 ký tự.' });
+  const u = db.prepare('SELECT * FROM users WHERE id=?').get(req.user.id);
+  if (!verifyPassword(currentPassword || '', u.pass))
+    return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng.' });
+  db.prepare('UPDATE users SET pass=? WHERE id=?').run(hashPassword(newPassword), req.user.id);
+  res.json({ ok: true });
+});
+
 // ===================== API ĐỀ BÀI =====================
 
 app.get('/api/exercises', (req, res) => {
