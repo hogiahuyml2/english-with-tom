@@ -37,8 +37,14 @@ async function sendVerificationEmail(user, link) {
           '</div>'
       })
     });
-    return r.ok;
-  } catch (e) { return false; }
+    if (r.ok) return { ok: true };
+    const detail = await r.text();
+    console.error('Brevo error', r.status, detail);
+    return { ok: false, status: r.status, detail: detail };
+  } catch (e) {
+    console.error('Brevo exception', e.message);
+    return { ok: false, detail: e.message };
+  }
 }
 
 // ===== Phân tích cookie thủ công (không cần thư viện) =====
@@ -158,8 +164,9 @@ app.post('/api/me/resend-verification', requireAuth, async (req, res) => {
     token = crypto.randomBytes(24).toString('hex');
     db.prepare('UPDATE users SET verify_token=? WHERE id=?').run(token, u.id);
   }
-  const ok = await sendVerificationEmail({ name: u.name, email: u.email }, baseUrl(req) + '/api/verify-email?token=' + token);
-  return ok ? res.json({ ok: true }) : res.status(500).json({ error: 'Gửi email thất bại, thử lại sau.' });
+  const result = await sendVerificationEmail({ name: u.name, email: u.email }, baseUrl(req) + '/api/verify-email?token=' + token);
+  return result.ok ? res.json({ ok: true })
+    : res.status(500).json({ error: 'Gửi email thất bại.', status: result.status, detail: result.detail });
 });
 
 // ===================== ĐĂNG NHẬP GOOGLE (OAuth 2.0) =====================
