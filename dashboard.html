@@ -165,7 +165,11 @@
       return;
     }
     body.innerHTML = sub.submissions.map(function(s){
-      var result = s.status==='graded' ? (s.score + '/' + s.max_score) : '—';
+      var result = '—';
+      if (s.status==='graded') {
+        if (s.feedback) { try { result = 'Band ' + JSON.parse(s.feedback).overall_band; } catch(e) { result = '✓'; } }
+        else if (s.max_score) { result = s.score + '/' + s.max_score; }
+      }
       var badge = s.status==='graded'
         ? '<span class="badge badge-done">Đã chấm</span>'
         : '<span class="badge badge-grading">Chờ chấm</span>';

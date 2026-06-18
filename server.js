@@ -3,6 +3,7 @@ const express = require('express');
 const crypto = require('crypto');
 const path = require('path');
 const { db, hashPassword, verifyPassword, now } = require('./db');
+const { aiEnabled, gradeWriting, MODEL } = require('./ai');
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
@@ -139,7 +140,31 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
 
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
-  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled() });
+  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled(), aiEnabled: aiEnabled() });
+});
+
+// AI chấm bài Writing (Claude)
+app.post('/api/grade-writing', requireAuth, async (req, res) => {
+  const { exercise_id, essay } = req.body || {};
+  if (!essay || essay.trim().split(/\s+/).length < 20)
+    return res.status(400).json({ error: 'Bài viết quá ngắn (tối thiểu khoảng 20 từ).' });
+  const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+
+  if (!aiEnabled()) {
+    db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
+      .run(req.user.id, exercise_id, JSON.stringify({ essay }), 'pending', now());
+    return res.json({ pending: true });
+  }
+  try {
+    const result = await gradeWriting(ex, essay);
+    const r = db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,feedback,submitted_at) VALUES (?,?,?,?,?,?)')
+      .run(req.user.id, exercise_id, JSON.stringify({ essay }), 'graded', JSON.stringify(result), now());
+    res.json({ id: Number(r.lastInsertRowid), result });
+  } catch (e) {
+    console.error('AI grading error', e.message);
+    res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.' });
+  }
 });
 
 // ===================== XÁC THỰC EMAIL =====================
@@ -274,7 +299,7 @@ app.post('/api/submissions', requireAuth, (req, res) => {
 // Lịch sử bài làm của tôi
 app.get('/api/me/submissions', requireAuth, (req, res) => {
   const rows = db.prepare(`
-    SELECT s.id, s.score, s.max_score, s.status, s.submitted_at,
+    SELECT s.id, s.score, s.max_score, s.status, s.feedback, s.submitted_at,
            e.title, e.program, e.skill
     FROM submissions s JOIN exercises e ON e.id = s.exercise_id
     WHERE s.user_id = ? ORDER BY s.id DESC`).all(req.user.id);
