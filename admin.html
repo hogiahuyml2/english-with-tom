@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản trị — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body data-page="" data-guard="admin">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › Quản trị</div>
+    <h1>Khu vực quản trị 🛠️</h1>
+    <p>Quản lý người dùng, phân quyền, cấp tài khoản giáo viên và quản lý ngân hàng đề.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px;">
+  <div class="container">
+
+    <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="stat-card"><div class="label">Tổng người dùng</div><div class="value" id="stUsers">–</div></div>
+      <div class="stat-card"><div class="label">Học sinh</div><div class="value" id="stStudents">–</div></div>
+      <div class="stat-card"><div class="label">Giáo viên</div><div class="value" id="stTeachers">–</div></div>
+      <div class="stat-card accent"><div class="label">Đề trong ngân hàng</div><div class="value" id="stEx">–</div></div>
+    </div>
+
+    <!-- Cấp tài khoản giáo viên -->
+    <div class="card">
+      <div class="card-head"><h3>👨‍🏫 Cấp tài khoản giáo viên</h3></div>
+      <div id="ctMsg" style="display:none; margin-bottom:12px;" class="note"></div>
+      <div class="grid grid-3" style="gap:12px;">
+        <div class="field" style="margin:0;"><label>Họ tên</label><input type="text" id="ctName" placeholder="Cô Lan"></div>
+        <div class="field" style="margin:0;"><label>Email</label><input type="email" id="ctEmail" placeholder="gv@email.com"></div>
+        <div class="field" style="margin:0;"><label>Mật khẩu</label><input type="text" id="ctPass" placeholder="Tối thiểu 6 ký tự"></div>
+      </div>
+      <button class="btn btn-primary" id="ctBtn" style="margin-top:12px;">Tạo tài khoản giáo viên</button>
+    </div>
+
+    <!-- Người dùng -->
+    <div class="card">
+      <div class="card-head">
+        <h3>👥 Người dùng</h3>
+        <button class="btn btn-sm" id="cleanupBtn" style="color:var(--danger); border-color:var(--danger);">🧹 Dọn tài khoản test</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="table" style="min-width:640px;">
+          <thead><tr><th>Tên</th><th>Email</th><th>Vai trò</th><th>Email</th><th>Bài</th><th></th></tr></thead>
+          <tbody id="usersBody"><tr><td colspan="6" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Đề bài -->
+    <div class="card">
+      <div class="card-head"><h3>📚 Ngân hàng đề</h3></div>
+      <div style="overflow-x:auto;">
+        <table class="table" style="min-width:560px;">
+          <thead><tr><th>Tên đề</th><th>Chương trình</th><th>Kỹ năng</th><th></th></tr></thead>
+          <tbody id="exBody"><tr><td colspan="4" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=6"></script>
+<script>
+  var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị' };
+  var me = null;
+
+  async function api(path, opts){ var r = await fetch(path, Object.assign({credentials:'same-origin'}, opts||{})); return { ok:r.ok, data: await r.json().catch(function(){return{};}) }; }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+  async function loadUsers(){
+    var res = await api('/api/admin/users');
+    var rows = res.data.users || [];
+    document.getElementById('stUsers').textContent = rows.length;
+    document.getElementById('stStudents').textContent = rows.filter(u=>u.role==='student').length;
+    document.getElementById('stTeachers').textContent = rows.filter(u=>u.role==='teacher').length;
+    var body = document.getElementById('usersBody');
+    body.innerHTML = rows.map(function(u){
+      var sel = '<select data-id="'+u.id+'" class="roleSel" '+(u.id===(me&&me.id)?'disabled':'')+'>'+
+        ['student','teacher','admin'].map(function(r){ return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+roleLabel[r]+'</option>'; }).join('')+'</select>';
+      var verified = u.email_verified ? '<span class="badge badge-done">✓</span>' : '<span class="badge badge-todo">chưa</span>';
+      var del = u.id===(me&&me.id) ? '<span style="color:var(--text-faint);font-size:12px;">(bạn)</span>'
+        : '<button class="btn btn-sm delUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button>';
+      return '<tr><td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+del+'</td></tr>';
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa có người dùng.</td></tr>';
+
+    document.querySelectorAll('.roleSel').forEach(function(s){
+      s.onchange = async function(){
+        var r = await api('/api/admin/users/'+s.getAttribute('data-id')+'/role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role:s.value})});
+        if (!r.ok) { alert(r.data.error||'Lỗi'); loadUsers(); }
+      };
+    });
+    document.querySelectorAll('.delUser').forEach(function(b){
+      b.onclick = async function(){
+        if (!confirm('Xoá tài khoản "'+b.getAttribute('data-name')+'"? Mọi bài làm của họ cũng bị xoá.')) return;
+        var r = await api('/api/admin/users/'+b.getAttribute('data-id'), {method:'DELETE'});
+        if (r.ok) loadUsers(); else alert(r.data.error||'Lỗi');
+      };
+    });
+  }
+
+  async function loadExercises(){
+    var res = await api('/api/exercises');
+    var rows = res.data.exercises || [];
+    document.getElementById('stEx').textContent = rows.length;
+    var body = document.getElementById('exBody');
+    body.innerHTML = rows.map(function(e){
+      return '<tr><td>'+esc(e.title)+'</td><td>'+esc(e.program)+'</td><td>'+esc(e.skill)+'</td><td><button class="btn btn-sm delEx" data-id="'+e.id+'" data-name="'+esc(e.title)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button></td></tr>';
+    }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--text-faint);">Chưa có đề.</td></tr>';
+    document.querySelectorAll('.delEx').forEach(function(b){
+      b.onclick = async function(){
+        if (!confirm('Xoá đề "'+b.getAttribute('data-name')+'"?')) return;
+        var r = await api('/api/admin/exercises/'+b.getAttribute('data-id'), {method:'DELETE'});
+        if (r.ok) loadExercises(); else alert(r.data.error||'Lỗi');
+      };
+    });
+  }
+
+  document.getElementById('cleanupBtn').onclick = async function(){
+    if (!confirm('Xoá tất cả tài khoản test (email kết thúc bằng "ewt-test.com")? Tài khoản thật và tài khoản @ewt.vn sẽ KHÔNG bị ảnh hưởng.')) return;
+    var r = await api('/api/admin/cleanup-test', {method:'POST'});
+    alert('Đã xoá ' + (r.data.deleted||0) + ' tài khoản test.');
+    loadUsers();
+  };
+
+  document.getElementById('ctBtn').onclick = async function(){
+    var payload = { name: document.getElementById('ctName').value.trim(), email: document.getElementById('ctEmail').value.trim(), password: document.getElementById('ctPass').value };
+    var el = document.getElementById('ctMsg');
+    var r = await api('/api/admin/create-teacher', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    el.style.display='flex'; el.style.borderColor='transparent';
+    el.style.background = r.ok?'var(--success-soft)':'var(--warning-soft)'; el.style.color = r.ok?'var(--success)':'var(--warning)';
+    el.innerHTML = '<span>'+(r.ok?'✅':'⚠️')+'</span><div>'+(r.ok?('Đã tạo giáo viên '+esc(payload.email)):(r.data.error||'Lỗi')) +'</div>';
+    if (r.ok){ document.getElementById('ctName').value=''; document.getElementById('ctEmail').value=''; document.getElementById('ctPass').value=''; loadUsers(); }
+  };
+
+  (async function(){
+    var m = await api('/api/me'); me = m.data.user;
+    loadUsers(); loadExercises();
+  })();
+</script>
+</body>
+</html>

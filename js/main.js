@@ -80,8 +80,10 @@
         var initials = (user.name || '?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
         var teacherLink = (user.role === 'teacher' || user.role === 'admin')
           ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
+        var adminLink = (user.role === 'admin')
+          ? '<a class="btn btn-sm" href="admin.html">Quản trị</a>' : '';
         actions.innerHTML =
-          teacherLink +
+          adminLink + teacherLink +
           '<a href="account.html" title="Tài khoản" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;">' + initials + '</span>' +
             '<span>' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
@@ -104,6 +106,8 @@
       location.href = 'login.html?next=' + encodeURIComponent(location.pathname.split('/').pop());
     } else if (guard === 'teacher' && (!user || user.role === 'student')) {
       location.href = 'login.html?next=teacher.html';
+    } else if (guard === 'admin' && (!user || user.role !== 'admin')) {
+      location.href = 'login.html?next=admin.html';
     }
   }
 

@@ -324,9 +324,56 @@ app.post('/api/admin/create-teacher', requireRole('admin'), (req, res) => {
   if (!name || !email || !password) return res.status(400).json({ error: 'Thiếu thông tin.' });
   if (db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase()))
     return res.status(409).json({ error: 'Email đã tồn tại.' });
-  const r = db.prepare('INSERT INTO users (name,email,pass,role,created_at) VALUES (?,?,?,?,?)')
+  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
     .run(name, email.toLowerCase(), hashPassword(password), 'teacher', now());
   res.json({ id: Number(r.lastInsertRowid) });
+});
+
+// Danh sách người dùng
+app.get('/api/admin/users', requireRole('admin'), (req, res) => {
+  const rows = db.prepare(`
+    SELECT u.id, u.name, u.email, u.role, u.email_verified, u.created_at,
+           (SELECT COUNT(*) FROM submissions s WHERE s.user_id = u.id) AS submissions
+    FROM users u ORDER BY u.id DESC`).all();
+  res.json({ users: rows });
+});
+
+// Đổi vai trò
+app.post('/api/admin/users/:id/role', requireRole('admin'), (req, res) => {
+  const { role } = req.body || {};
+  if (!['student', 'teacher', 'admin'].includes(role)) return res.status(400).json({ error: 'Vai trò không hợp lệ.' });
+  const id = Number(req.params.id);
+  if (id === req.user.id) return res.status(400).json({ error: 'Không thể đổi vai trò của chính bạn.' });
+  db.prepare('UPDATE users SET role=? WHERE id=?').run(role, id);
+  res.json({ ok: true });
+});
+
+// Xoá người dùng (kèm phiên & bài làm)
+app.delete('/api/admin/users/:id', requireRole('admin'), (req, res) => {
+  const id = Number(req.params.id);
+  if (id === req.user.id) return res.status(400).json({ error: 'Không thể xoá chính bạn.' });
+  if (!db.prepare('SELECT id FROM users WHERE id=?').get(id)) return res.status(404).json({ error: 'Không tìm thấy.' });
+  db.prepare('DELETE FROM submissions WHERE user_id=?').run(id);
+  db.prepare('DELETE FROM sessions WHERE user_id=?').run(id);
+  db.prepare('DELETE FROM users WHERE id=?').run(id);
+  res.json({ ok: true });
+});
+
+// Dọn nhanh các tài khoản test (email kết thúc bằng ewt-test.com)
+app.post('/api/admin/cleanup-test', requireRole('admin'), (req, res) => {
+  const ids = db.prepare("SELECT id FROM users WHERE email LIKE '%ewt-test.com'").all().map(r => r.id);
+  ids.forEach(id => {
+    db.prepare('DELETE FROM submissions WHERE user_id=?').run(id);
+    db.prepare('DELETE FROM sessions WHERE user_id=?').run(id);
+    db.prepare('DELETE FROM users WHERE id=?').run(id);
+  });
+  res.json({ deleted: ids.length });
+});
+
+// Xoá đề
+app.delete('/api/admin/exercises/:id', requireRole('admin'), (req, res) => {
+  db.prepare('DELETE FROM exercises WHERE id=?').run(Number(req.params.id));
+  res.json({ ok: true });
 });
 
 // ===================== TĨNH =====================
