@@ -3,7 +3,7 @@ const express = require('express');
 const crypto = require('crypto');
 const path = require('path');
 const { db, hashPassword, verifyPassword, now } = require('./db');
-const { aiEnabled, gradeWriting, MODEL } = require('./ai');
+const { aiEnabled, gradeWriting, provider } = require('./ai');
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
@@ -140,7 +140,7 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
 
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
-  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled(), aiEnabled: aiEnabled() });
+  res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled(), aiEnabled: aiEnabled(), aiProvider: provider() });
 });
 
 // AI chấm bài Writing (Claude)
