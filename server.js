@@ -163,7 +163,7 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     res.json({ id: Number(r.lastInsertRowid), result });
   } catch (e) {
     console.error('AI grading error', e.message);
-    res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.' });
+    res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.', detail: String(e.message).slice(0, 400) });
   }
 });
 
