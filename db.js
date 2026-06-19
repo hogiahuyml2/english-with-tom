@@ -119,6 +119,143 @@ const KET_WRITING = [
     content:'Your friend Sam lent you a book. Write a note to Sam.\nTell Sam:\n- that you have finished the book\n- what you thought of it\n- when you can return it\n\nWrite 25 words or more.' },
   { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email mời dự sinh nhật',
     content:'You are having a birthday party. Write an email to your friend Jordan.\nTell Jordan:\n- when the party is\n- where it will be\n- what to bring\n\nWrite 25 words or more.' },
+  // ---- 14 đề Part 1 từ file PDF (KET Writing Part 6 / Part 1) ----
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn đi xem phim cuối tuần',
+    content:`You want to go to the cinema with your English friend, Sarah, this weekend. Write an email to Sarah.
+In your email:
+• ask Sarah to go to the cinema with you
+• tell her what film you want to watch
+• suggest a time and place to meet
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email khoe thú cưng mới và mời bạn đến thăm',
+    content:`You have just got a new pet. Write an email to your English friend, Tom.
+In your email:
+• tell Tom what pet you have got
+• describe what your new pet looks like
+• invite Tom to come to your house to see it
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn đi mua sắm quần áo',
+    content:`You are going shopping for some new clothes on Saturday. Write an email to your English friend, Alex.
+In your email:
+• ask Alex to go shopping with you
+• say what clothes you need to buy
+• suggest how you can travel to the shopping centre
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email nhờ bạn giúp dự án khoa học',
+    content:`You need some help with your science project. Write an email to your English friend, Emma.
+In your email:
+• explain what the science project is about
+• ask Emma to help you with it
+• suggest a day to study together
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn tham gia câu lạc bộ thể thao',
+    content:`You want to join a new sports club at school. Write an email to your English friend, David.
+In your email:
+• say which sports club you want to join
+• tell David why you like this sport
+• ask David to join the club with you
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn đi dã ngoại trong công viên',
+    content:`You want to go to the park for a picnic with your English friend, John, on Sunday. Write an email to John.
+In your email:
+• say what time you want to go
+• tell him what food you will bring
+• suggest an activity to do there
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email khoe trò chơi điện tử mới và mời bạn chơi cùng',
+    content:`You have just bought a new video game. Write an email to your English friend, Leo.
+In your email:
+• say what the video game is called
+• explain why you like playing it
+• invite Leo to come to your house to play it with you
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email mời bạn đến xem buổi biểu diễn âm nhạc',
+    content:`You are performing in a school music concert next week. Write an email to your English friend, Chloe.
+In your email:
+• tell Chloe what day and time the concert is
+• say what instrument you will play
+• ask Chloe to come and watch you
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn đi đạp xe chiều thứ Bảy',
+    content:`You want to go for a bike ride this Saturday afternoon. Write an email to your English friend, Jack.
+In your email:
+• suggest a nice place to ride your bikes
+• say what time you should start
+• remind him what he needs to bring
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email mời bạn đến nhà làm bánh cùng',
+    content:`You are going to bake a cake at home this afternoon. Write an email to your English friend, Amy.
+In your email:
+• tell Amy what kind of cake you are making
+• invite her to come to your house to help you
+• ask her to bring one ingredient (e.g. eggs, milk, sugar)
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn thử nhà hàng mới trong phố',
+    content:`There is a new restaurant in your town. Write an email to your English friend, Sam.
+In your email:
+• ask Sam to go to the restaurant with you
+• say what kind of food the restaurant sells
+• suggest a day to go there
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email nhờ bạn giúp tìm áo khoác bị mất ở trường',
+    content:`You have lost your jacket at school. Write an email to your English friend, Katy.
+In your email:
+• tell Katy what your jacket looks like
+• say where you think you left it
+• ask Katy to help you look for it
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email thông báo chuyến đi leo núi và mượn áo len',
+    content:`You are going on a trip to the mountains this weekend. Write an email to your English friend, Harry.
+In your email:
+• say who you are going with
+• tell Harry what you are going to do there
+• ask to borrow a warm sweater from him
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email khoe sở thích mới và mời bạn cùng thử',
+    content:`You have started a new hobby. Write an email to your English friend, Megan.
+In your email:
+• tell Megan what your new hobby is
+• explain why you enjoy doing it
+• invite Megan to try it with you
+
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email rủ bạn gặp nhau sau khi đi thư viện',
+    content:`You are going to the town library tomorrow. Write an email to your English friend, Paul.
+In your email:
+• say why you are going to the library
+• ask if Paul wants you to borrow a book for him
+• suggest a place to meet after you finish
+
+Write 25 words or more.` },
+
+  // ---- KET Writing Part 2 (câu chuyện) ----
   { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Câu chuyện: một ngày ở biển',
     content:'Write a story.\nYour story must begin with this sentence:\n"Last Saturday, Tom and his friends went to the beach."\n\nWrite 35 words or more.' },
   { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Câu chuyện: bất ngờ sau cánh cửa',
