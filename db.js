@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS exercises (
   title TEXT NOT NULL,
   content TEXT,
   answer_key TEXT,
+  questions TEXT,
   auto_grade INTEGER NOT NULL DEFAULT 1,
   created_by INTEGER,
   created_at TEXT NOT NULL
@@ -55,6 +56,8 @@ if (!userCols.includes('email_verified')) db.exec('ALTER TABLE users ADD COLUMN 
 if (!userCols.includes('verify_token')) db.exec('ALTER TABLE users ADD COLUMN verify_token TEXT');
 const subCols = db.prepare('PRAGMA table_info(submissions)').all().map(c => c.name);
 if (!subCols.includes('feedback')) db.exec('ALTER TABLE submissions ADD COLUMN feedback TEXT');
+const exCols = db.prepare('PRAGMA table_info(exercises)').all().map(c => c.name);
+if (!exCols.includes('questions')) db.exec('ALTER TABLE exercises ADD COLUMN questions TEXT');
 
 // ===== Băm & kiểm tra mật khẩu (scrypt, an toàn, không cần thư viện ngoài) =====
 function hashPassword(pw) {

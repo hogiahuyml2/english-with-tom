@@ -250,7 +250,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
 
 app.get('/api/exercises', (req, res) => {
   const { program, skill } = req.query;
-  let sql = 'SELECT id,program,skill,title,auto_grade,created_at FROM exercises';
+  let sql = 'SELECT id,program,skill,title,auto_grade,created_at, (questions IS NOT NULL) AS has_questions FROM exercises';
   const cond = [], params = [];
   if (program) { cond.push('program=?'); params.push(program); }
   if (skill) { cond.push('skill=?'); params.push(skill); }
@@ -260,22 +260,30 @@ app.get('/api/exercises', (req, res) => {
 });
 
 app.get('/api/exercises/:id', (req, res) => {
-  const ex = db.prepare('SELECT id,program,skill,title,content,auto_grade,created_at FROM exercises WHERE id=?').get(req.params.id);
+  const ex = db.prepare('SELECT id,program,skill,title,content,questions,auto_grade,created_at FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
-  res.json({ exercise: ex }); // không trả đáp án cho học sinh
+  ex.questions = ex.questions ? JSON.parse(ex.questions) : null; // câu hỏi (không kèm đáp án)
+  res.json({ exercise: ex });
 });
 
-// Giáo viên/Admin tạo đề mới
+// Giáo viên/Admin tạo đề mới (Writing = AI chấm; Quiz = trắc nghiệm tự chấm)
 app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
-  const { program, skill, title, content, answer_key } = req.body || {};
+  const { program, skill, title, content, type, questions, answer_key } = req.body || {};
   if (!program || !skill || !title) return res.status(400).json({ error: 'Thiếu chương trình, kỹ năng hoặc tên đề.' });
-  let key = null, auto = 0;
-  if (answer_key && answer_key.trim()) {
-    key = JSON.stringify(answer_key.split(',').map(s => s.trim().toUpperCase()).filter(Boolean));
+
+  let key = null, qJson = null, auto = 0;
+  if (type === 'quiz') {
+    if (!Array.isArray(questions) || !questions.length) return res.status(400).json({ error: 'Đề trắc nghiệm cần ít nhất 1 câu hỏi.' });
+    key = JSON.stringify(questions.map(q => String(q.answer || '').trim().toUpperCase()));
+    qJson = JSON.stringify(questions.map(q => ({ q: q.q, options: q.options })));
+    auto = 1;
+  } else if (answer_key && String(answer_key).trim()) {
+    // tương thích cũ: nhập đáp án bằng chuỗi phân cách dấu phẩy
+    key = JSON.stringify(String(answer_key).split(',').map(s => s.trim().toUpperCase()).filter(Boolean));
     auto = 1;
   }
-  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,auto_grade,created_by,created_at) VALUES (?,?,?,?,?,?,?,?)')
-    .run(program, skill, title, content || '', key, auto, req.user.id, now());
+  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,auto_grade,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?)')
+    .run(program, skill, title, content || '', key, qJson, auto, req.user.id, now());
   res.json({ id: Number(r.lastInsertRowid) });
 });
 

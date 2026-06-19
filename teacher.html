@@ -34,16 +34,32 @@
         <div class="card-head"><h3>➕ Nhập đề mới</h3></div>
 
         <div id="exMsg" style="display:none;" class="note"></div>
-        <div class="field"><label>Chương trình</label>
-          <select id="exProgram"><option>IELTS</option><option>KET</option><option>PET</option><option>FCE</option><option>APTIS</option></select>
+        <div class="field"><label>Loại đề</label>
+          <select id="exType">
+            <option value="writing">✍️ Writing — AI chấm</option>
+            <option value="quiz">📝 Trắc nghiệm (Reading/Listening) — tự chấm</option>
+          </select>
         </div>
-        <div class="field"><label>Kỹ năng</label>
-          <select id="exSkill"><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
+        <div class="grid grid-2" style="gap:12px;">
+          <div class="field" style="margin:0;"><label>Chương trình</label>
+            <select id="exProgram"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option></select>
+          </div>
+          <div class="field" style="margin:0;"><label>Kỹ năng</label>
+            <select id="exSkill"><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
+          </div>
         </div>
-        <div class="field"><label>Tên bài</label><input type="text" id="exTitle" placeholder="VD: IELTS Reading — Test 4"></div>
-        <div class="field"><label>Nội dung đề / đoạn văn</label><textarea id="exContent" placeholder="Dán nội dung đề bài, đoạn văn hoặc câu hỏi vào đây..."></textarea></div>
-        <div class="field"><label>Đáp án — phân cách bằng dấu phẩy (để trống nếu là Writing/Speaking)</label><input type="text" id="exAnswer" placeholder="VD: B, C, A, B"></div>
-        <button class="btn btn-primary btn-block" id="saveExBtn">Lưu đề vào ngân hàng</button>
+        <div class="field"><label>Tên đề</label><input type="text" id="exTitle" placeholder="VD: KET Reading — Test 4"></div>
+        <div class="field"><label id="contentLabel">Đề bài / đoạn văn</label><textarea id="exContent" placeholder="Dán đề bài hoặc đoạn văn (đề Writing: dán yêu cầu đề; trắc nghiệm: dán đoạn văn/đoạn nghe)..."></textarea></div>
+
+        <div id="writingNote" class="note" style="margin-bottom:12px;"><span>🤖</span><div>Đề Writing sẽ được AI chấm theo tiêu chí kỳ thi — không cần nhập đáp án.</div></div>
+
+        <div id="quizBuilder" style="display:none;">
+          <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Câu hỏi trắc nghiệm</label>
+          <div id="qList"></div>
+          <button class="btn btn-sm" type="button" id="addQ">➕ Thêm câu hỏi</button>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="saveExBtn" style="margin-top:14px;">Lưu đề vào ngân hàng</button>
       </div>
 
       <!-- Giao bài + chấm -->
@@ -86,7 +102,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=6"></script>
+<script src="js/main.js?v=7"></script>
 <script>
   function fmtDate(iso){ try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); } catch(e){ return ''; } }
 
@@ -107,20 +123,80 @@
     el.innerHTML = '<span>'+(ok?'✅':'⚠️')+'</span><div>'+text+'</div>';
   }
 
+  // ===== Toggle loại đề =====
+  var exType = document.getElementById('exType');
+  var exSkill = document.getElementById('exSkill');
+  function syncType(){
+    var quiz = exType.value === 'quiz';
+    document.getElementById('quizBuilder').style.display = quiz ? 'block' : 'none';
+    document.getElementById('writingNote').style.display = quiz ? 'none' : 'flex';
+    document.getElementById('contentLabel').textContent = quiz ? 'Đoạn văn / đoạn nghe (tuỳ chọn)' : 'Yêu cầu đề bài';
+    if (quiz && exSkill.value === 'Writing') exSkill.value = 'Reading';
+    if (!quiz) exSkill.value = 'Writing';
+    if (quiz && !document.querySelectorAll('.qbuild').length) addQuestion();
+  }
+  exType.onchange = syncType;
+
+  // ===== Trình tạo câu hỏi trắc nghiệm =====
+  var qList = document.getElementById('qList');
+  function addQuestion(){
+    var div = document.createElement('div');
+    div.className = 'qbuild';
+    div.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;';
+    div.innerHTML =
+      '<div class="field" style="margin:0 0 8px;"><label>Câu hỏi</label><input class="qtext" type="text" placeholder="Nội dung câu hỏi"></div>' +
+      ['A','B','C','D'].map(function(L){ return '<div class="field" style="margin:0 0 6px;"><label>Lựa chọn '+L+'</label><input class="qopt" data-letter="'+L+'" type="text" placeholder="'+( (L==='C'||L==='D') ? 'để trống nếu không dùng' : '')+'"></div>'; }).join('') +
+      '<div style="display:flex; gap:10px; align-items:flex-end;">' +
+        '<div class="field" style="margin:0; flex:1;"><label>Đáp án đúng</label><select class="qans"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>' +
+        '<button class="btn btn-sm qdel" type="button" style="color:var(--danger);border-color:var(--danger);">Xoá câu</button>' +
+      '</div>';
+    qList.appendChild(div);
+    div.querySelector('.qdel').onclick = function(){ div.remove(); };
+  }
+  document.getElementById('addQ').onclick = addQuestion;
+
+  function collectQuestions(){
+    var out = [], err = null;
+    document.querySelectorAll('.qbuild').forEach(function(div, i){
+      if (err) return;
+      var q = div.querySelector('.qtext').value.trim();
+      var opts = [], letters = [];
+      div.querySelectorAll('.qopt').forEach(function(inp){ var v=inp.value.trim(); if(v){ opts.push(v); letters.push(inp.getAttribute('data-letter')); } });
+      var ans = div.querySelector('.qans').value;
+      if (!q) { err = 'Câu '+(i+1)+' chưa có nội dung.'; return; }
+      if (opts.length < 2) { err = 'Câu '+(i+1)+' cần ít nhất 2 lựa chọn.'; return; }
+      if (letters.indexOf(ans) === -1) { err = 'Câu '+(i+1)+': đáp án đúng ('+ans+') phải là một lựa chọn đã điền.'; return; }
+      out.push({ q: q, options: opts, answer: String.fromCharCode(65 + letters.indexOf(ans)) });
+    });
+    return { questions: out, error: err };
+  }
+
   document.getElementById('saveExBtn').onclick = async function(){
+    var type = exType.value;
     var payload = {
       program: document.getElementById('exProgram').value,
-      skill: document.getElementById('exSkill').value,
+      skill: exSkill.value,
       title: document.getElementById('exTitle').value.trim(),
       content: document.getElementById('exContent').value,
-      answer_key: document.getElementById('exAnswer').value
+      type: type
     };
-    if (!payload.title){ msg('Vui lòng nhập tên bài.', false); return; }
+    if (!payload.title){ msg('Vui lòng nhập tên đề.', false); return; }
+    if (type === 'quiz'){
+      var c = collectQuestions();
+      if (c.error){ msg(c.error, false); return; }
+      if (!c.questions.length){ msg('Hãy thêm ít nhất 1 câu hỏi.', false); return; }
+      payload.questions = c.questions;
+    }
     var r = await fetch('/api/exercises',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     var data = await r.json().catch(()=>({}));
-    if (r.ok){ msg('Đã lưu đề "'+payload.title+'" vào ngân hàng!', true); document.getElementById('exTitle').value=''; document.getElementById('exContent').value=''; document.getElementById('exAnswer').value=''; loadBank(); }
-    else { msg(data.error || 'Lưu thất bại.', false); }
+    if (r.ok){
+      msg('Đã lưu đề "'+payload.title+'"! Học sinh có thể làm ở Ngân hàng đề.', true);
+      document.getElementById('exTitle').value=''; document.getElementById('exContent').value=''; qList.innerHTML='';
+      if (type==='quiz') addQuestion();
+      loadBank();
+    } else { msg(data.error || 'Lưu thất bại.', false); }
   };
+  syncType();
 
   loadBank();
 </script>

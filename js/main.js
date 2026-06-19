@@ -47,7 +47,7 @@
           '<a href="ket.html">KET</a><a href="pet.html">PET</a><a href="fce.html">FCE</a><a href="aptis.html">APTIS</a><a href="ielts.html">IELTS</a>' +
         '</div>' +
         '<div><h4>Tài khoản</h4>' +
-          '<a href="login.html">Đăng nhập</a><a href="dashboard.html">Tiến trình học</a><a href="assigned.html">Bài tập được giao</a>' +
+          '<a href="login.html">Đăng nhập</a><a href="dashboard.html">Tiến trình học</a><a href="exercises.html">Ngân hàng đề</a><a href="assigned.html">Bài tập được giao</a>' +
         '</div>' +
         '<div><h4>Giáo viên</h4>' +
           '<a href="teacher.html">Quản lý đề</a><a href="teacher.html">Giao bài tập</a><a href="teacher.html">Chấm bài</a>' +
