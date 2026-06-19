@@ -221,6 +221,8 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Bài viết quá ngắn (tối thiểu khoảng 20 từ).' });
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  if (ex.is_private && req.user.role === 'student')
+    return res.status(403).json({ error: 'Đề bài riêng này do giáo viên chấm, không dùng AI.' });
 
   if (!aiEnabled()) {
     db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
@@ -320,20 +322,33 @@ app.get('/api/auth/google/callback', async (req, res) => {
 // ===================== API ĐỀ BÀI =====================
 
 app.get('/api/exercises', (req, res) => {
-  const { program, skill } = req.query;
-  let sql = 'SELECT id,program,skill,title,auto_grade,created_at, (questions IS NOT NULL) AS has_questions FROM exercises';
+  const { program, skill, private_only } = req.query;
+  const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
+  let sql = 'SELECT id,program,skill,title,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions FROM exercises';
   const cond = [], params = [];
   if (program) { cond.push('program=?'); params.push(program); }
-  if (skill) { cond.push('skill=?'); params.push(skill); }
+  if (skill)   { cond.push('skill=?');   params.push(skill); }
+  if (private_only === '1' && isTeacher) {
+    cond.push('is_private=1'); cond.push('created_by=?'); params.push(req.user.id);
+  } else if (!isTeacher) {
+    cond.push('is_private=0');
+  }
   if (cond.length) sql += ' WHERE ' + cond.join(' AND ');
   sql += ' ORDER BY id ASC';
   res.json({ exercises: db.prepare(sql).all(...params) });
 });
 
 app.get('/api/exercises/:id', (req, res) => {
-  const ex = db.prepare('SELECT id,program,skill,title,content,questions,image_url,audio_url,auto_grade,created_at FROM exercises WHERE id=?').get(req.params.id);
+  const ex = db.prepare('SELECT id,program,skill,title,content,questions,image_url,audio_url,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
-  ex.questions = ex.questions ? JSON.parse(ex.questions) : null; // câu hỏi (không kèm đáp án)
+  if (ex.is_private) {
+    if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
+    if (!['teacher','admin'].includes(req.user.role)) {
+      const ok = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(req.params.id, req.user.email);
+      if (!ok) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+    }
+  }
+  ex.questions = ex.questions ? JSON.parse(ex.questions) : null;
   res.json({ exercise: ex });
 });
 
@@ -348,7 +363,7 @@ app.post('/api/upload', requireRole('teacher', 'admin'), (req, res) => {
 
 // Giáo viên/Admin tạo đề mới (Writing = AI chấm; Quiz = trắc nghiệm tự chấm)
 app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
-  const { program, skill, title, content, type, questions, answer_key, image_url, audio_url } = req.body || {};
+  const { program, skill, title, content, type, questions, answer_key, image_url, audio_url, is_private } = req.body || {};
   if (!program || !skill || !title) return res.status(400).json({ error: 'Thiếu chương trình, kỹ năng hoặc tên đề.' });
 
   let key = null, qJson = null, auto = 0;
@@ -362,8 +377,8 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
     key = JSON.stringify(String(answer_key).split(',').map(s => s.trim().toUpperCase()).filter(Boolean));
     auto = 1;
   }
-  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
-    .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, req.user.id, now());
+  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,is_private,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
+    .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, is_private ? 1 : 0, req.user.id, now());
   res.json({ id: Number(r.lastInsertRowid) });
 });
 
@@ -373,6 +388,10 @@ app.post('/api/submissions', requireAuth, (req, res) => {
   const { exercise_id, answers } = req.body || {};
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  if (ex.is_private && req.user.role === 'student') {
+    const ok = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, req.user.email);
+    if (!ok) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+  }
 
   let score = null, max = null, status = 'pending';
   if (ex.auto_grade && ex.answer_key) {
@@ -465,6 +484,124 @@ app.post('/api/admin/cleanup-test', requireRole('admin'), (req, res) => {
 app.delete('/api/admin/exercises/:id', requireRole('admin'), (req, res) => {
   db.prepare('DELETE FROM exercises WHERE id=?').run(Number(req.params.id));
   res.json({ ok: true });
+});
+
+// ===================== API GIAO BÀI RIÊNG =====================
+
+// Giáo viên giao đề cho học sinh theo email
+app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) => {
+  const { exercise_id, student_emails, deadline, note } = req.body || {};
+  if (!exercise_id || !Array.isArray(student_emails) || !student_emails.length)
+    return res.status(400).json({ error: 'Thiếu thông tin đề hoặc danh sách học sinh.' });
+  const ex = db.prepare('SELECT id,title,is_private FROM exercises WHERE id=?').get(exercise_id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+
+  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at) VALUES (?,?,?,?,?,?)');
+  let count = 0;
+  for (const raw of student_emails) {
+    const email = raw.trim().toLowerCase();
+    if (!email) continue;
+    const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
+    if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now()); count++; }
+    if (emailEnabled()) {
+      const u = db.prepare('SELECT name FROM users WHERE email=?').get(email);
+      const dline = deadline ? `<p>⏰ Hạn nộp: <b>${deadline}</b></p>` : '';
+      const noteHtml = note ? `<p>📌 Ghi chú: ${note}</p>` : '';
+      const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
+      await sendBrevoEmail({ email, name: u ? u.name : email },
+        'Bạn có bài tập mới — English With Tom',
+        `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
+          <h2 style="color:#6F58EE">📝 Thầy/Cô vừa giao bài cho bạn!</h2>
+          <p>Bài tập: <b>${ex.title}</b></p>
+          ${dline}${noteHtml}
+          <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem bài tập ngay</a></p>
+          <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này để xem bài được giao.</p>
+        </div>`
+      ).catch(() => {});
+    }
+  }
+  res.json({ ok: true, assigned: count });
+});
+
+// Học sinh xem bài tập được giao cho mình
+app.get('/api/my-assignments', requireAuth, (req, res) => {
+  const rows = db.prepare(`
+    SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
+           e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
+           u.name AS teacher_name,
+           (SELECT COUNT(*) FROM submissions s WHERE s.exercise_id=e.id AND s.user_id=?) AS submitted
+    FROM assignments a
+    JOIN exercises e ON e.id = a.exercise_id
+    JOIN users u ON u.id = a.assigned_by
+    WHERE a.student_email = ?
+    ORDER BY a.id DESC
+  `).all(req.user.id, req.user.email);
+  res.json({ assignments: rows });
+});
+
+// Giáo viên xem tất cả bài đã giao kèm trạng thái nộp
+app.get('/api/teacher/assignments', requireRole('teacher','admin'), (req, res) => {
+  const rows = db.prepare(`
+    SELECT a.id, a.student_email, a.deadline, a.note, a.created_at,
+           e.id AS exercise_id, e.title, e.program, e.skill,
+           u.name AS student_name,
+           sub.id AS sub_id, sub.status, sub.score, sub.max_score, sub.submitted_at
+    FROM assignments a
+    JOIN exercises e ON e.id = a.exercise_id
+    LEFT JOIN users u ON u.email = a.student_email
+    LEFT JOIN submissions sub ON sub.exercise_id = a.exercise_id AND sub.user_id = u.id
+    WHERE a.assigned_by = ?
+    ORDER BY a.id DESC
+  `).all(req.user.id);
+  res.json({ assignments: rows });
+});
+
+// Giáo viên xem chi tiết bài nộp của học sinh (kèm nội dung bài viết)
+app.get('/api/teacher/submission/:id', requireRole('teacher','admin'), (req, res) => {
+  const sub = db.prepare(`
+    SELECT s.*, u.name AS student_name, u.email AS student_email,
+           e.title, e.program, e.skill, e.content AS exercise_content
+    FROM submissions s
+    JOIN users u ON u.id = s.user_id
+    JOIN exercises e ON e.id = s.exercise_id
+    WHERE s.id = ?
+  `).get(Number(req.params.id));
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
+  res.json({ submission: sub });
+});
+
+// Giáo viên chấm thủ công bài nộp
+app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), (req, res) => {
+  const { score, max_score, feedback } = req.body || {};
+  const sub = db.prepare('SELECT id FROM submissions WHERE id=?').get(Number(req.params.id));
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
+  db.prepare('UPDATE submissions SET score=?, max_score=?, status=?, feedback=? WHERE id=?')
+    .run(score ?? null, max_score ?? 10, 'graded', feedback || null, Number(req.params.id));
+  res.json({ ok: true });
+});
+
+// Giáo viên xoá bài đã giao
+app.delete('/api/teacher/assignments/:id', requireRole('teacher','admin'), (req, res) => {
+  db.prepare('DELETE FROM assignments WHERE id=? AND assigned_by=?').run(Number(req.params.id), req.user.id);
+  res.json({ ok: true });
+});
+
+// Giáo viên xoá đề do mình tạo
+app.delete('/api/teacher/exercises/:id', requireRole('teacher','admin'), (req, res) => {
+  db.prepare('DELETE FROM exercises WHERE id=? AND created_by=?').run(Number(req.params.id), req.user.id);
+  res.json({ ok: true });
+});
+
+// Thống kê cho giáo viên
+app.get('/api/teacher/stats', requireRole('teacher','admin'), (req, res) => {
+  const studentCount = db.prepare("SELECT COUNT(*) AS c FROM users WHERE role='student'").get().c;
+  const exerciseCount = db.prepare('SELECT COUNT(*) AS c FROM exercises WHERE created_by=?').get(req.user.id).c;
+  const pendingCount = db.prepare(`
+    SELECT COUNT(*) AS c FROM submissions s
+    JOIN exercises e ON e.id=s.exercise_id
+    WHERE e.created_by=? AND s.status='pending'
+  `).get(req.user.id).c;
+  res.json({ studentCount, exerciseCount, pendingCount });
 });
 
 // ===================== TĨNH =====================

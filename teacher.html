@@ -6,7 +6,17 @@
 <title>Khu vực giáo viên — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=9">
+<style>
+  .img-preview { max-width:100%; max-height:180px; border-radius:8px; margin-top:8px; display:none; border:1px solid var(--border); }
+  .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .sub-essay { background:var(--bg-soft,#f8f7ff); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:14px; white-space:pre-wrap; line-height:1.7; max-height:260px; overflow-y:auto; }
+  .grade-row { display:flex; gap:10px; align-items:flex-end; margin-top:10px; flex-wrap:wrap; }
+  .grade-row .field { margin:0; flex:1; min-width:80px; }
+  .assign-email-tag { display:inline-flex; align-items:center; gap:5px; background:#ede9ff; color:#5a3d8a; border-radius:20px; padding:4px 12px; font-size:13px; margin:3px; }
+  .assign-email-tag button { background:none; border:none; cursor:pointer; color:#a07cc5; font-size:15px; line-height:1; padding:0; }
+  .private-badge { background:#fff3cd; color:#7a5c00; border:1px solid #ffe08a; border-radius:12px; padding:2px 10px; font-size:12px; font-weight:600; }
+</style>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -15,31 +25,41 @@
   <div class="container">
     <div class="crumb">Trang chủ › Khu vực giáo viên</div>
     <h1>Khu vực giáo viên 👨‍🏫</h1>
-    <p>Nhập đề mới lên web, giao bài cho lớp và chấm bài học sinh. Dành cho tài khoản giáo viên và quản trị viên.</p>
+    <p>Tạo đề mới (kèm ảnh), giao bài riêng cho từng học sinh và chấm bài nộp.</p>
   </div>
 </section>
 
 <section class="section" style="padding-top:34px;">
   <div class="container">
 
-    <div class="stat-grid">
-      <div class="stat-card"><div class="label">Học sinh trong lớp</div><div class="value">128</div></div>
-      <div class="stat-card"><div class="label">Đề đã đăng</div><div class="value">64</div></div>
-      <div class="stat-card accent"><div class="label">Bài chờ chấm</div><div class="value">7</div></div>
+    <div class="stat-grid" id="statsGrid">
+      <div class="stat-card"><div class="label">Học sinh</div><div class="value" id="statStudents">…</div></div>
+      <div class="stat-card"><div class="label">Đề đã tạo</div><div class="value" id="statExercises">…</div></div>
+      <div class="stat-card accent"><div class="label">Bài chờ chấm</div><div class="value" id="statPending">…</div></div>
     </div>
 
-    <div class="two-col">
-      <!-- Form nhập đề -->
-      <div class="card" style="margin-bottom:0;">
-        <div class="card-head"><h3>➕ Nhập đề mới</h3></div>
+    <!-- ===== TABS ===== -->
+    <div style="display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;">
+      <button class="btn" id="tabCreateBtn" onclick="showTab('create')" style="font-weight:700;">➕ Tạo đề mới</button>
+      <button class="btn" id="tabAssignBtn" onclick="showTab('assign')">📤 Giao bài riêng</button>
+      <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
+      <button class="btn" id="tabBankBtn"   onclick="showTab('bank')">📚 Ngân hàng đề</button>
+    </div>
+
+    <!-- ===== TAB: TẠO ĐỀ ===== -->
+    <div id="tabCreate">
+      <div class="card">
+        <div class="card-head"><h3>➕ Tạo đề mới</h3></div>
 
         <div id="exMsg" style="display:none;" class="note"></div>
+
         <div class="field"><label>Loại đề</label>
           <select id="exType">
-            <option value="writing">✍️ Writing — AI chấm</option>
-            <option value="quiz">📝 Trắc nghiệm (Reading/Listening) — tự chấm</option>
+            <option value="writing">✍️ Writing — AI chấm (đề công khai) hoặc giáo viên chấm (đề riêng)</option>
+            <option value="quiz">📝 Trắc nghiệm (Reading / Listening) — tự chấm</option>
           </select>
         </div>
+
         <div class="grid grid-2" style="gap:12px;">
           <div class="field" style="margin:0;"><label>Chương trình</label>
             <select id="exProgram"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option></select>
@@ -48,10 +68,38 @@
             <select id="exSkill"><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
           </div>
         </div>
-        <div class="field"><label>Tên đề</label><input type="text" id="exTitle" placeholder="VD: KET Reading — Test 4"></div>
-        <div class="field"><label id="contentLabel">Đề bài / đoạn văn</label><textarea id="exContent" placeholder="Dán đề bài hoặc đoạn văn (đề Writing: dán yêu cầu đề; trắc nghiệm: dán đoạn văn/đoạn nghe)..."></textarea></div>
 
-        <div id="writingNote" class="note" style="margin-bottom:12px;"><span>🤖</span><div>Đề Writing sẽ được AI chấm theo tiêu chí kỳ thi — không cần nhập đáp án.</div></div>
+        <div class="field"><label>Tên đề</label>
+          <input type="text" id="exTitle" placeholder="VD: KET Writing Part 1 — Email rủ bạn đi dã ngoại">
+        </div>
+
+        <div class="field"><label id="contentLabel">Yêu cầu đề bài</label>
+          <textarea id="exContent" style="min-height:120px;" placeholder="Dán yêu cầu đề bài hoặc đoạn văn..."></textarea>
+        </div>
+
+        <!-- Upload ảnh -->
+        <div class="field">
+          <label>Ảnh đề bài <span style="font-weight:400;color:var(--text-faint);">(tuỳ chọn — cho đề có hình)</span></label>
+          <div class="upload-row">
+            <input type="file" id="imgFile" accept="image/*" style="display:none;">
+            <button class="btn btn-sm" type="button" onclick="document.getElementById('imgFile').click();">📎 Chọn ảnh</button>
+            <span id="imgName" style="font-size:13px; color:var(--text-muted);">Chưa chọn ảnh</span>
+            <button class="btn btn-sm" id="uploadImgBtn" style="display:none;" type="button">⬆️ Tải lên</button>
+            <span id="uploadStatus" style="font-size:13px; color:var(--success); display:none;">✅ Đã tải lên</span>
+          </div>
+          <img id="imgPreview" class="img-preview" alt="Xem trước ảnh">
+          <input type="hidden" id="imageUrl" value="">
+        </div>
+
+        <div id="writingNote" class="note" style="margin-bottom:12px;"><span>🤖</span>
+          <div>Đề Writing <b>công khai</b>: AI tự động chấm khi học sinh nộp. <b>Đề riêng</b>: giáo viên chấm thủ công.</div>
+        </div>
+
+        <!-- Đề riêng -->
+        <div class="field" style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+          <input type="checkbox" id="isPrivate" style="width:16px;height:16px;cursor:pointer;">
+          <label for="isPrivate" style="cursor:pointer; font-weight:600; margin:0;">🔒 Đề riêng (chỉ học sinh được giao mới làm được)</label>
+        </div>
 
         <div id="quizBuilder" style="display:none;">
           <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Câu hỏi trắc nghiệm</label>
@@ -59,146 +107,385 @@
           <button class="btn btn-sm" type="button" id="addQ">➕ Thêm câu hỏi</button>
         </div>
 
-        <button class="btn btn-primary btn-block" id="saveExBtn" style="margin-top:14px;">Lưu đề vào ngân hàng</button>
-      </div>
-
-      <!-- Giao bài + chấm -->
-      <div>
-        <div class="card">
-          <div class="card-head"><h3>📤 Giao bài cho lớp</h3></div>
-          <div class="field"><label>Chọn đề</label><select><option>IELTS Reading — Test 3</option><option>IELTS Writing Task 2 — Môi trường</option></select></div>
-          <div class="field"><label>Giao cho</label><select><option>Lớp IELTS 6.5</option><option>Lớp PET buổi tối</option><option>Tất cả học sinh</option></select></div>
-          <div class="field"><label>Hạn nộp</label><input type="date"></div>
-          <button class="btn btn-primary btn-block" onclick="alert('Demo: đã giao bài và thông báo cho học sinh.');">Giao bài</button>
-        </div>
-
-        <div class="card" style="margin-bottom:0;">
-          <div class="card-head"><h3>📥 Bài chờ chấm</h3></div>
-          <div class="task">
-            <div class="task-left"><div class="task-ico ico-amber">✍️</div>
-              <div class="task-info"><h4>Nguyễn An — Writing Task 2</h4><div class="meta">AI gợi ý: 6.0 · cần giáo viên duyệt</div></div></div>
-            <button class="btn btn-sm" onclick="alert('Demo: mở bài để chấm.');">Chấm</button>
-          </div>
-          <div class="task">
-            <div class="task-left"><div class="task-ico ico-pink">🗣️</div>
-              <div class="task-info"><h4>Trần Bình — Speaking Part 2</h4><div class="meta">AI gợi ý: 5.5 · cần giáo viên duyệt</div></div></div>
-            <button class="btn btn-sm" onclick="alert('Demo: mở bài để chấm.');">Chấm</button>
-          </div>
-        </div>
+        <button class="btn btn-primary btn-block" id="saveExBtn" style="margin-top:14px;">Lưu đề</button>
       </div>
     </div>
 
-    <div class="card" style="margin-top:22px;">
-      <div class="card-head"><h3>📚 Ngân hàng đề gần đây</h3></div>
-      <table class="table">
-        <thead><tr><th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Chấm</th><th>Ngày</th></tr></thead>
-        <tbody id="exBank">
-          <tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr>
-        </tbody>
-      </table>
+    <!-- ===== TAB: GIAO BÀI RIÊNG ===== -->
+    <div id="tabAssign" style="display:none;">
+      <div class="card">
+        <div class="card-head"><h3>📤 Giao bài riêng cho học sinh</h3></div>
+
+        <div id="assignMsg" style="display:none;" class="note"></div>
+
+        <div class="field">
+          <label>Chọn đề riêng <span style="font-weight:400;color:var(--text-faint);">(chỉ hiện đề bạn đã đánh dấu 🔒)</span></label>
+          <select id="assignExId"><option value="">-- Đang tải đề --</option></select>
+        </div>
+
+        <div class="field">
+          <label>Email học sinh</label>
+          <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <input type="email" id="assignEmailInput" placeholder="email@example.com" style="flex:1;">
+            <button class="btn btn-sm" type="button" id="addEmailBtn">Thêm</button>
+          </div>
+          <div id="emailTags" style="min-height:32px;"></div>
+          <p style="font-size:12.5px;color:var(--text-faint);margin-top:6px;">Nhập email rồi bấm "Thêm" — có thể thêm nhiều học sinh.</p>
+        </div>
+
+        <div class="grid grid-2" style="gap:12px;">
+          <div class="field" style="margin:0;"><label>Hạn nộp <span style="font-weight:400;color:var(--text-faint);">(tuỳ chọn)</span></label>
+            <input type="date" id="assignDeadline">
+          </div>
+          <div class="field" style="margin:0;"><label>Ghi chú cho học sinh</label>
+            <input type="text" id="assignNote" placeholder="VD: Làm bài trước buổi học thứ Tư">
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="assignBtn" style="margin-top:14px;">📤 Giao bài &amp; gửi email thông báo</button>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <div class="card-head"><h3>📋 Danh sách bài đã giao</h3><button class="btn btn-sm" onclick="loadAssignments()">🔄 Làm mới</button></div>
+        <table class="table">
+          <thead><tr><th>Học sinh</th><th>Đề bài</th><th>Hạn nộp</th><th>Trạng thái</th><th></th></tr></thead>
+          <tbody id="assignTable"><tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== TAB: BÀI NỘP & CHẤM ===== -->
+    <div id="tabGrade" style="display:none;">
+      <div class="card" id="gradePanel">
+        <div class="card-head"><h3>📥 Bài nộp từ bài giao riêng</h3><button class="btn btn-sm" onclick="loadSubmissions()">🔄 Làm mới</button></div>
+        <div id="submissionList"><p style="color:var(--text-faint);text-align:center;padding:20px;">Đang tải...</p></div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: NGÂN HÀNG ĐỀ ===== -->
+    <div id="tabBank" style="display:none;">
+      <div class="card">
+        <div class="card-head"><h3>📚 Đề bạn đã tạo</h3><button class="btn btn-sm" onclick="loadBank()">🔄 Làm mới</button></div>
+        <table class="table">
+          <thead><tr><th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Loại</th><th>Ngày</th><th></th></tr></thead>
+          <tbody id="exBank"><tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
   </div>
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=7"></script>
+<script src="js/main.js?v=9"></script>
 <script>
-  function fmtDate(iso){ try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); } catch(e){ return ''; } }
-
-  async function loadBank(){
-    var d = await fetch('/api/exercises',{credentials:'same-origin'}).then(r=>r.json());
-    var body = document.getElementById('exBank');
-    if (!d.exercises.length){ body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa có đề nào.</td></tr>'; return; }
-    body.innerHTML = d.exercises.map(function(e){
-      var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
-      return '<tr><td>'+e.title+'</td><td>'+e.program+'</td><td>'+e.skill+'</td><td>'+grade+'</td><td>'+fmtDate(e.created_at)+'</td></tr>';
-    }).join('');
+  /* ===== TABS ===== */
+  var TABS = ['create','assign','grade','bank'];
+  function showTab(t) {
+    TABS.forEach(function(id){
+      document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).style.display = (id===t)?'block':'none';
+      document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)+'Btn').style.fontWeight = (id===t)?'700':'400';
+    });
+    if (t==='assign') { loadPrivateExercises(); loadAssignments(); }
+    if (t==='grade')  loadSubmissions();
+    if (t==='bank')   loadBank();
   }
 
-  function msg(text, ok){
-    var el = document.getElementById('exMsg');
-    el.style.display='flex'; el.style.background = ok?'var(--success-soft)':'var(--warning-soft)';
-    el.style.borderColor='transparent'; el.style.color = ok?'var(--success)':'var(--warning)';
-    el.innerHTML = '<span>'+(ok?'✅':'⚠️')+'</span><div>'+text+'</div>';
-  }
+  /* ===== STATS ===== */
+  fetch('/api/teacher/stats',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+    document.getElementById('statStudents').textContent  = d.studentCount ?? '–';
+    document.getElementById('statExercises').textContent = d.exerciseCount ?? '–';
+    document.getElementById('statPending').textContent   = d.pendingCount ?? '–';
+  }).catch(function(){});
 
-  // ===== Toggle loại đề =====
+  /* ===== UPLOAD ẢNH ===== */
+  var imgFile = document.getElementById('imgFile');
+  var imgPreview = document.getElementById('imgPreview');
+  imgFile.addEventListener('change', function(){
+    var f = imgFile.files[0];
+    if (!f) return;
+    document.getElementById('imgName').textContent = f.name;
+    document.getElementById('uploadImgBtn').style.display = 'inline-block';
+    document.getElementById('uploadStatus').style.display = 'none';
+    document.getElementById('imageUrl').value = '';
+    var reader = new FileReader();
+    reader.onload = function(e){ imgPreview.src = e.target.result; imgPreview.style.display = 'block'; };
+    reader.readAsDataURL(f);
+  });
+  document.getElementById('uploadImgBtn').addEventListener('click', async function(){
+    var f = imgFile.files[0]; if (!f) return;
+    var fd = new FormData(); fd.append('file', f);
+    this.disabled = true; this.textContent = '⏳ Đang tải...';
+    var r = await fetch('/api/upload',{method:'POST',credentials:'same-origin',body:fd});
+    this.disabled = false; this.textContent = '⬆️ Tải lên';
+    var data = await r.json().catch(function(){return {};});
+    if (r.ok && data.url) {
+      document.getElementById('imageUrl').value = data.url;
+      document.getElementById('uploadStatus').style.display = 'inline';
+      imgPreview.src = data.url;
+    } else { alert(data.error || 'Tải ảnh thất bại.'); }
+  });
+
+  /* ===== TOGGLE LOẠI ĐỀ ===== */
   var exType = document.getElementById('exType');
   var exSkill = document.getElementById('exSkill');
   function syncType(){
     var quiz = exType.value === 'quiz';
-    document.getElementById('quizBuilder').style.display = quiz ? 'block' : 'none';
-    document.getElementById('writingNote').style.display = quiz ? 'none' : 'flex';
-    document.getElementById('contentLabel').textContent = quiz ? 'Đoạn văn / đoạn nghe (tuỳ chọn)' : 'Yêu cầu đề bài';
+    document.getElementById('quizBuilder').style.display   = quiz ? 'block' : 'none';
+    document.getElementById('writingNote').style.display   = quiz ? 'none'  : 'flex';
+    document.getElementById('contentLabel').textContent    = quiz ? 'Đoạn văn / nội dung đề (tuỳ chọn)' : 'Yêu cầu đề bài';
     if (quiz && exSkill.value === 'Writing') exSkill.value = 'Reading';
     if (!quiz) exSkill.value = 'Writing';
     if (quiz && !document.querySelectorAll('.qbuild').length) addQuestion();
   }
   exType.onchange = syncType;
 
-  // ===== Trình tạo câu hỏi trắc nghiệm =====
-  var qList = document.getElementById('qList');
+  /* ===== TRÌNH TẠO CÂU HỎI ===== */
   function addQuestion(){
     var div = document.createElement('div');
     div.className = 'qbuild';
     div.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;';
     div.innerHTML =
       '<div class="field" style="margin:0 0 8px;"><label>Câu hỏi</label><input class="qtext" type="text" placeholder="Nội dung câu hỏi"></div>' +
-      ['A','B','C','D'].map(function(L){ return '<div class="field" style="margin:0 0 6px;"><label>Lựa chọn '+L+'</label><input class="qopt" data-letter="'+L+'" type="text" placeholder="'+( (L==='C'||L==='D') ? 'để trống nếu không dùng' : '')+'"></div>'; }).join('') +
-      '<div style="display:flex; gap:10px; align-items:flex-end;">' +
-        '<div class="field" style="margin:0; flex:1;"><label>Đáp án đúng</label><select class="qans"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>' +
+      ['A','B','C','D'].map(function(L){
+        return '<div class="field" style="margin:0 0 6px;"><label>Lựa chọn '+L+'</label><input class="qopt" data-letter="'+L+'" type="text" placeholder="'+(L==='C'||L==='D'?'Để trống nếu không dùng':'')+'"></div>';
+      }).join('') +
+      '<div style="display:flex;gap:10px;align-items:flex-end;">' +
+        '<div class="field" style="margin:0;flex:1;"><label>Đáp án đúng</label><select class="qans"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>' +
         '<button class="btn btn-sm qdel" type="button" style="color:var(--danger);border-color:var(--danger);">Xoá câu</button>' +
       '</div>';
-    qList.appendChild(div);
+    document.getElementById('qList').appendChild(div);
     div.querySelector('.qdel').onclick = function(){ div.remove(); };
   }
   document.getElementById('addQ').onclick = addQuestion;
 
   function collectQuestions(){
     var out = [], err = null;
-    document.querySelectorAll('.qbuild').forEach(function(div, i){
+    document.querySelectorAll('.qbuild').forEach(function(div,i){
       if (err) return;
       var q = div.querySelector('.qtext').value.trim();
       var opts = [], letters = [];
       div.querySelectorAll('.qopt').forEach(function(inp){ var v=inp.value.trim(); if(v){ opts.push(v); letters.push(inp.getAttribute('data-letter')); } });
       var ans = div.querySelector('.qans').value;
-      if (!q) { err = 'Câu '+(i+1)+' chưa có nội dung.'; return; }
-      if (opts.length < 2) { err = 'Câu '+(i+1)+' cần ít nhất 2 lựa chọn.'; return; }
-      if (letters.indexOf(ans) === -1) { err = 'Câu '+(i+1)+': đáp án đúng ('+ans+') phải là một lựa chọn đã điền.'; return; }
-      out.push({ q: q, options: opts, answer: String.fromCharCode(65 + letters.indexOf(ans)) });
+      if (!q){ err='Câu '+(i+1)+' chưa có nội dung.'; return; }
+      if (opts.length<2){ err='Câu '+(i+1)+' cần ít nhất 2 lựa chọn.'; return; }
+      if (letters.indexOf(ans)===-1){ err='Câu '+(i+1)+': đáp án đúng ('+ans+') phải là lựa chọn đã điền.'; return; }
+      out.push({ q:q, options:opts, answer:String.fromCharCode(65+letters.indexOf(ans)) });
     });
-    return { questions: out, error: err };
+    return { questions:out, error:err };
+  }
+
+  /* ===== LƯU ĐỀ ===== */
+  function msg(text, ok, id){
+    id = id || 'exMsg';
+    var el = document.getElementById(id);
+    el.style.display='flex'; el.style.background=ok?'var(--success-soft)':'var(--warning-soft)';
+    el.style.borderColor='transparent'; el.style.color=ok?'var(--success)':'var(--warning)';
+    el.innerHTML='<span>'+(ok?'✅':'⚠️')+'</span><div>'+text+'</div>';
   }
 
   document.getElementById('saveExBtn').onclick = async function(){
     var type = exType.value;
+    var imgUrl = document.getElementById('imageUrl').value;
     var payload = {
       program: document.getElementById('exProgram').value,
-      skill: exSkill.value,
-      title: document.getElementById('exTitle').value.trim(),
+      skill:   exSkill.value,
+      title:   document.getElementById('exTitle').value.trim(),
       content: document.getElementById('exContent').value,
-      type: type
+      type:    type,
+      is_private: document.getElementById('isPrivate').checked ? 1 : 0,
+      image_url: imgUrl || null
     };
     if (!payload.title){ msg('Vui lòng nhập tên đề.', false); return; }
-    if (type === 'quiz'){
+    if (type==='quiz'){
       var c = collectQuestions();
       if (c.error){ msg(c.error, false); return; }
       if (!c.questions.length){ msg('Hãy thêm ít nhất 1 câu hỏi.', false); return; }
       payload.questions = c.questions;
     }
     var r = await fetch('/api/exercises',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    var data = await r.json().catch(()=>({}));
+    var data = await r.json().catch(function(){return {};});
     if (r.ok){
-      msg('Đã lưu đề "'+payload.title+'"! Học sinh có thể làm ở Ngân hàng đề.', true);
-      document.getElementById('exTitle').value=''; document.getElementById('exContent').value=''; qList.innerHTML='';
+      var priv = payload.is_private ? ' 🔒 (đề riêng)' : '';
+      msg('Đã lưu đề "'+payload.title+'"'+priv+'!', true);
+      document.getElementById('exTitle').value='';
+      document.getElementById('exContent').value='';
+      document.getElementById('imageUrl').value='';
+      document.getElementById('imgPreview').style.display='none';
+      document.getElementById('imgName').textContent='Chưa chọn ảnh';
+      document.getElementById('uploadImgBtn').style.display='none';
+      document.getElementById('uploadStatus').style.display='none';
+      document.getElementById('isPrivate').checked=false;
+      document.getElementById('qList').innerHTML='';
       if (type==='quiz') addQuestion();
-      loadBank();
     } else { msg(data.error || 'Lưu thất bại.', false); }
   };
+
   syncType();
 
-  loadBank();
+  /* ===== GIAO BÀI ===== */
+  var pendingEmails = [];
+
+  function loadPrivateExercises(){
+    fetch('/api/exercises?private_only=1',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      var sel = document.getElementById('assignExId');
+      if (!d.exercises || !d.exercises.length){
+        sel.innerHTML = '<option value="">-- Chưa có đề riêng nào (hãy tạo đề và tick 🔒) --</option>';
+        return;
+      }
+      sel.innerHTML = d.exercises.map(function(e){
+        return '<option value="'+e.id+'">'+e.title+' ('+e.program+' · '+e.skill+')</option>';
+      }).join('');
+    }).catch(function(){});
+  }
+
+  function renderEmailTags(){
+    document.getElementById('emailTags').innerHTML = pendingEmails.map(function(em){
+      return '<span class="assign-email-tag">'+em+'<button onclick="removeEmail(\''+em+'\')">×</button></span>';
+    }).join('');
+  }
+  function removeEmail(em){ pendingEmails = pendingEmails.filter(function(x){return x!==em;}); renderEmailTags(); }
+
+  document.getElementById('addEmailBtn').onclick = function(){
+    var val = document.getElementById('assignEmailInput').value.trim().toLowerCase();
+    if (!val || !val.includes('@')){ alert('Email không hợp lệ.'); return; }
+    if (!pendingEmails.includes(val)) pendingEmails.push(val);
+    document.getElementById('assignEmailInput').value = '';
+    renderEmailTags();
+  };
+  document.getElementById('assignEmailInput').addEventListener('keydown', function(e){
+    if (e.key==='Enter'){ e.preventDefault(); document.getElementById('addEmailBtn').click(); }
+  });
+
+  document.getElementById('assignBtn').onclick = async function(){
+    var exId = document.getElementById('assignExId').value;
+    if (!exId){ msg('Chọn đề cần giao.', false, 'assignMsg'); return; }
+    if (!pendingEmails.length){ msg('Thêm ít nhất 1 email học sinh.', false, 'assignMsg'); return; }
+    var payload = {
+      exercise_id: Number(exId),
+      student_emails: pendingEmails,
+      deadline: document.getElementById('assignDeadline').value || null,
+      note:     document.getElementById('assignNote').value.trim() || null
+    };
+    this.disabled = true;
+    var r = await fetch('/api/assignments',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    this.disabled = false;
+    var data = await r.json().catch(function(){return {};});
+    if (r.ok){
+      msg('Đã giao cho '+data.assigned+' học sinh'+(data.assigned<pendingEmails.length?' ('+( pendingEmails.length-data.assigned)+' đã giao trước đó)':'')+'! Email thông báo đã được gửi.', true, 'assignMsg');
+      pendingEmails = []; renderEmailTags();
+      document.getElementById('assignDeadline').value = '';
+      document.getElementById('assignNote').value = '';
+      loadAssignments();
+    } else { msg(data.error || 'Giao bài thất bại.', false, 'assignMsg'); }
+  };
+
+  function fmtDate(iso){
+    if (!iso) return '–';
+    try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
+    catch(e){ return iso.slice(0,10); }
+  }
+
+  function loadAssignments(){
+    fetch('/api/teacher/assignments',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      var tbody = document.getElementById('assignTable');
+      if (!d.assignments || !d.assignments.length){
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa giao bài nào.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = d.assignments.map(function(a){
+        var statusBadge = a.sub_id
+          ? (a.status==='graded'
+              ? '<span class="badge badge-done">Đã chấm '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'')+'</span>'
+              : '<span class="badge badge-grading">Đã nộp — chờ chấm</span>')
+          : '<span class="badge" style="background:#f5f5f5;color:#888;">Chưa nộp</span>';
+        return '<tr><td>'+(a.student_name||a.student_email)+'<br><span style="font-size:12px;color:var(--text-faint);">'+a.student_email+'</span></td>'+
+          '<td>'+a.title+'</td><td>'+fmtDate(a.deadline)+'</td><td>'+statusBadge+'</td>'+
+          '<td><button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteAssignment('+a.id+')">Xoá</button></td></tr>';
+      }).join('');
+    }).catch(function(){});
+  }
+
+  function deleteAssignment(id){
+    if (!confirm('Xoá bài đã giao này?')) return;
+    fetch('/api/teacher/assignments/'+id,{method:'DELETE',credentials:'same-origin'}).then(function(){loadAssignments();});
+  }
+
+  /* ===== BÀI NỘP & CHẤM ===== */
+  function loadSubmissions(){
+    fetch('/api/teacher/assignments',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      var list = document.getElementById('submissionList');
+      var subs = (d.assignments||[]).filter(function(a){ return a.sub_id; });
+      if (!subs.length){ list.innerHTML='<p style="color:var(--text-faint);text-align:center;padding:20px;">Chưa có học sinh nào nộp bài.</p>'; return; }
+      list.innerHTML = subs.map(function(a){
+        var graded = a.status === 'graded';
+        return '<div class="card" style="margin-bottom:14px;">' +
+          '<div class="card-head"><div><h4 style="margin:0;">'+(a.student_name||a.student_email)+'</h4><div style="font-size:13px;color:var(--text-muted);">'+a.title+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>' +
+          (graded ? '<span class="badge badge-done">Đã chấm: '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'–')+'</span>' : '<span class="badge badge-grading">Chờ chấm</span>') +
+          '</div>' +
+          '<button class="btn btn-sm" onclick="loadAndGrade('+a.sub_id+',this)">📖 Xem bài &amp; chấm</button>' +
+          '<div id="gradeBox'+a.sub_id+'" style="display:none;margin-top:12px;"></div>' +
+          '</div>';
+      }).join('');
+    }).catch(function(){});
+  }
+
+  async function loadAndGrade(subId, btn){
+    var box = document.getElementById('gradeBox'+subId);
+    if (box.style.display !== 'none'){ box.style.display='none'; btn.textContent='📖 Xem bài & chấm'; return; }
+    btn.textContent = '⏳ Đang tải...';
+    var d = await fetch('/api/teacher/submission/'+subId,{credentials:'same-origin'}).then(r=>r.json()).catch(function(){return {};});
+    btn.textContent = '📖 Xem bài & chấm';
+    var sub = d.submission;
+    if (!sub){ box.innerHTML='<p style="color:var(--danger);">Không tải được bài nộp.</p>'; box.style.display='block'; return; }
+
+    var essayText = '';
+    try { var ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers; essayText = ans.essay || JSON.stringify(ans); } catch(e){ essayText = sub.answers || ''; }
+
+    var feedbackVal = '';
+    try { var fb = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback; feedbackVal = fb && fb.summary ? fb.summary : (sub.feedback || ''); } catch(e){ feedbackVal = sub.feedback || ''; }
+
+    box.innerHTML =
+      '<p style="font-size:13px;font-weight:600;margin-bottom:6px;">Bài làm của học sinh:</p>' +
+      '<div class="sub-essay">'+escHtml(essayText)+'</div>' +
+      '<div class="grade-row">' +
+        '<div class="field"><label>Điểm</label><input type="number" id="sc'+subId+'" min="0" max="100" value="'+(sub.score!=null?sub.score:'')+'" placeholder="VD: 8"></div>' +
+        '<div class="field"><label>Điểm tối đa</label><input type="number" id="mx'+subId+'" min="1" max="100" value="'+(sub.max_score||10)+'" placeholder="10"></div>' +
+        '<div class="field" style="flex:3;"><label>Nhận xét cho học sinh</label><input type="text" id="fb'+subId+'" value="'+escHtml(String(feedbackVal))+'" placeholder="Nhận xét..."></div>' +
+        '<button class="btn btn-primary" onclick="saveGrade('+subId+')">💾 Lưu</button>' +
+      '</div>' +
+      '<p id="gradeMsg'+subId+'" style="display:none;font-size:13px;margin-top:8px;"></p>';
+    box.style.display = 'block';
+  }
+
+  async function saveGrade(subId){
+    var score    = Number(document.getElementById('sc'+subId).value);
+    var max      = Number(document.getElementById('mx'+subId).value) || 10;
+    var feedback = document.getElementById('fb'+subId).value.trim();
+    var r = await fetch('/api/teacher/grade/'+subId,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({score,max_score:max,feedback})});
+    var p = document.getElementById('gradeMsg'+subId);
+    if (r.ok){ p.style.color='var(--success)'; p.textContent='✅ Đã lưu điểm thành công!'; }
+    else      { p.style.color='var(--danger)';  p.textContent='Lưu thất bại.'; }
+    p.style.display='block';
+    loadSubmissions();
+  }
+
+  function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+  /* ===== NGÂN HÀNG ĐỀ ===== */
+  function loadBank(){
+    fetch('/api/exercises',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      var tbody = document.getElementById('exBank');
+      // Lọc chỉ đề do giáo viên này tạo (server đã trả is_private đúng role)
+      var exs = d.exercises || [];
+      if (!exs.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa có đề nào.</td></tr>'; return; }
+      tbody.innerHTML = exs.map(function(e){
+        var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
+        var priv  = e.is_private ? '<span class="private-badge">🔒 Riêng</span>' : '';
+        return '<tr><td>'+escHtml(e.title)+'</td><td>'+e.program+'</td><td>'+e.skill+'</td><td>'+grade+' '+priv+'</td><td>'+fmtDate(e.created_at)+'</td><td></td></tr>';
+      }).join('');
+    }).catch(function(){});
+  }
 </script>
 </body>
 </html>

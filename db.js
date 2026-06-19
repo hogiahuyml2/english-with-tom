@@ -64,6 +64,19 @@ const exCols = db.prepare('PRAGMA table_info(exercises)').all().map(c => c.name)
 if (!exCols.includes('questions'))  db.exec('ALTER TABLE exercises ADD COLUMN questions TEXT');
 if (!exCols.includes('image_url'))  db.exec('ALTER TABLE exercises ADD COLUMN image_url TEXT');
 if (!exCols.includes('audio_url'))  db.exec('ALTER TABLE exercises ADD COLUMN audio_url TEXT');
+if (!exCols.includes('is_private')) db.exec('ALTER TABLE exercises ADD COLUMN is_private INTEGER NOT NULL DEFAULT 0');
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS assignments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  exercise_id INTEGER NOT NULL,
+  student_email TEXT NOT NULL,
+  assigned_by INTEGER NOT NULL,
+  deadline TEXT,
+  note TEXT,
+  created_at TEXT NOT NULL
+);
+`);
 
 // ===== Băm & kiểm tra mật khẩu =====
 function hashPassword(pw) {
