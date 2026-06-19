@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Làm bài: IELTS Writing — English With Tom</title>
+<title>Làm bài Writing — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=5">
 <style>
-  .band-big { font-size:40px; font-weight:700; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .band-big { font-size:38px; font-weight:700; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
   .crit { border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; }
   .crit-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
   .crit-band { font-weight:700; color:var(--primary); }
   .crit p { font-size:13.5px; color:var(--text-muted); margin:0; line-height:1.6; }
   .sugg li { font-size:14px; color:var(--text); margin-bottom:7px; line-height:1.6; }
+  .prompt-text { white-space:pre-line; }
 </style>
 </head>
 <body data-page="">
@@ -22,13 +23,13 @@
 <section class="section" style="padding-top:24px;">
   <div class="container">
     <div class="crumb" style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
-      <a href="ielts.html" style="color:var(--primary);">‹ IELTS</a> › Writing Task 2
+      <a href="#" id="backLink" style="color:var(--primary);">‹ Quay lại</a> › <span id="crumbTitle">Writing</span>
     </div>
 
     <div class="practice-bar">
       <div>
-        <div style="font-weight:700; font-size:16px;">IELTS Writing Task 2 — Chủ đề Môi trường</div>
-        <div style="font-size:12.5px; color:var(--text-faint);">Viết tối thiểu 250 từ · AI chấm theo band IELTS</div>
+        <div style="font-weight:700; font-size:16px;" id="exTitle">Đang tải đề...</div>
+        <div style="font-size:12.5px; color:var(--text-faint);" id="exSub">AI chấm tự động</div>
       </div>
       <div class="timer">⏱ <span id="timer">20:00</span></div>
     </div>
@@ -37,35 +38,31 @@
       <!-- Đề bài -->
       <div class="passage">
         <h3>Đề bài</h3>
-        <p>Some people believe that protecting the environment is the responsibility of governments, while others think individuals should take action.</p>
-        <p><strong>Discuss both views and give your own opinion.</strong></p>
-        <p style="font-size:13px; color:var(--text-faint);">Write at least 250 words. Bạn nên viết mở bài, 2 đoạn thân bài và kết bài.</p>
+        <div class="prompt-text" id="promptText" style="font-size:14.5px; color:#403d57;">...</div>
       </div>
 
       <!-- Vùng viết -->
       <div class="q-block">
         <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Bài viết của bạn (tiếng Anh):</p>
-        <div class="field"><textarea id="essay" style="min-height:300px;" placeholder="Viết bài luận của bạn ở đây..."></textarea></div>
+        <div class="field"><textarea id="essay" style="min-height:300px;" placeholder="Viết bài của bạn ở đây..."></textarea></div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <span style="font-size:12.5px; color:var(--text-faint);">Số từ: <strong id="wordCount">0</strong></span>
           <span id="aiNote" style="font-size:12px; color:var(--text-faint);"></span>
         </div>
         <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài & chấm bằng AI</button>
-        <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;">AI sẽ chấm theo 4 tiêu chí IELTS và đưa nhận xét chi tiết.</p>
+        <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;">AI sẽ chấm theo tiêu chí của kỳ thi và đưa nhận xét chi tiết.</p>
       </div>
     </div>
 
-    <!-- Đang chấm -->
     <div class="card" id="loading" style="display:none; text-align:center; margin-top:22px;">
       <div style="font-size:30px;">🤖</div>
       <p style="color:var(--text-muted); margin-top:8px;">AI đang đọc và chấm bài của bạn... (khoảng 10–20 giây)</p>
     </div>
 
-    <!-- Kết quả -->
     <div class="card" id="result" style="display:none; margin-top:22px; border:2px solid var(--primary);">
       <div class="card-head" style="align-items:center;">
         <h3>📊 Kết quả chấm bằng AI</h3>
-        <div style="text-align:right;"><div style="font-size:12px; color:var(--text-muted);">Band tổng</div><div class="band-big" id="overall">–</div></div>
+        <div style="text-align:right;"><div style="font-size:12px; color:var(--text-muted);" id="scaleLabel">Điểm tổng</div><div class="band-big" id="overall">–</div></div>
       </div>
       <div id="criteria"></div>
       <div class="note" style="margin-top:6px;"><span>📝</span><div id="summary"></div></div>
@@ -80,63 +77,59 @@
 <div id="site-footer"></div>
 <script src="js/main.js?v=6"></script>
 <script>
-  var EXERCISE_ID = 3; // IELTS Writing Task 2 — Môi trường (đề mẫu trong database)
+  function qp(n){ return new URLSearchParams(location.search).get(n); }
+  var EXERCISE_ID = parseInt(qp('id') || '3', 10);
   var essay = document.getElementById('essay');
   var wc = document.getElementById('wordCount');
   essay.addEventListener('input', function(){
-    var n = essay.value.trim() ? essay.value.trim().split(/\s+/).length : 0;
-    wc.textContent = n;
+    wc.textContent = essay.value.trim() ? essay.value.trim().split(/\s+/).length : 0;
   });
 
-  // Cho biết AI đã bật chưa
+  // Tải đề bài
+  fetch('/api/exercises/' + EXERCISE_ID).then(r=>r.json()).then(function(d){
+    var e = d.exercise;
+    if (!e) { document.getElementById('exTitle').textContent = 'Không tìm thấy đề'; return; }
+    document.getElementById('exTitle').textContent = e.title;
+    document.getElementById('crumbTitle').textContent = e.program + ' Writing';
+    document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · AI chấm tự động';
+    document.getElementById('promptText').textContent = e.content || '';
+    var back = document.getElementById('backLink');
+    back.textContent = '‹ ' + e.program;
+    back.href = (e.program === 'KET' ? 'ket-writing.html' : e.program.toLowerCase() + '.html');
+  }).catch(function(){});
+
   fetch('/api/config').then(r=>r.json()).then(function(c){
     if (!c.aiEnabled) document.getElementById('aiNote').textContent = '⚠️ AI chưa được cấu hình — bài sẽ lưu chờ chấm.';
   }).catch(function(){});
 
-  var labels = {
-    task_response: 'Task Response (trả lời đề)',
-    coherence_cohesion: 'Coherence & Cohesion (mạch lạc)',
-    lexical_resource: 'Lexical Resource (từ vựng)',
-    grammatical_range_accuracy: 'Grammar (ngữ pháp)'
-  };
-
   document.getElementById('submitBtn').addEventListener('click', async function(){
     var text = essay.value.trim();
-    if (text.split(/\s+/).length < 20) { alert('Bài viết quá ngắn (tối thiểu ~20 từ).'); return; }
-
+    if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn.'); return; }
     document.getElementById('loading').style.display = 'block';
     document.getElementById('result').style.display = 'none';
     this.disabled = true;
 
     var r = await fetch('/api/grade-writing', {
-      method:'POST', credentials:'same-origin',
-      headers:{'Content-Type':'application/json'},
+      method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ exercise_id: EXERCISE_ID, essay: text })
     });
     this.disabled = false;
     document.getElementById('loading').style.display = 'none';
 
-    if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next=practice-writing.html'; return; }
+    if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next=' + encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
     var data = await r.json().catch(function(){ return {}; });
     if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
-
-    if (data.pending) {
-      alert('Bài đã được lưu và đang chờ chấm (AI chưa được cấu hình).');
-      location.href = 'dashboard.html';
-      return;
-    }
+    if (data.pending) { alert('Bài đã được lưu và đang chờ chấm (AI chưa được cấu hình).'); location.href='dashboard.html'; return; }
 
     var res = data.result;
-    document.getElementById('overall').textContent = res.overall_band;
-    var crit = document.getElementById('criteria');
-    crit.innerHTML = Object.keys(labels).map(function(k){
-      return '<div class="crit"><div class="crit-head"><span>'+labels[k]+'</span><span class="crit-band">'+res[k].band+'</span></div><p>'+res[k].comment+'</p></div>';
+    document.getElementById('overall').textContent = res.overall_score;
+    document.getElementById('scaleLabel').textContent = res.scale_label || 'Điểm tổng';
+    document.getElementById('criteria').innerHTML = (res.criteria||[]).map(function(c){
+      return '<div class="crit"><div class="crit-head"><span>'+c.name+'</span><span class="crit-band">'+c.score+'/'+c.max+'</span></div><p>'+c.comment+'</p></div>';
     }).join('');
     document.getElementById('summary').textContent = res.summary;
     document.getElementById('suggestions').innerHTML = (res.suggestions||[]).map(function(s){ return '<li>'+s+'</li>'; }).join('');
-    var box = document.getElementById('result');
-    box.style.display = 'block';
-    box.scrollIntoView({ behavior:'smooth' });
+    var box = document.getElementById('result'); box.style.display='block'; box.scrollIntoView({behavior:'smooth'});
   });
 </script>
 </body>

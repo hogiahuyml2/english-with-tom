@@ -167,7 +167,7 @@
     body.innerHTML = sub.submissions.map(function(s){
       var result = '—';
       if (s.status==='graded') {
-        if (s.feedback) { try { result = 'Band ' + JSON.parse(s.feedback).overall_band; } catch(e) { result = '✓'; } }
+        if (s.feedback) { try { var f = JSON.parse(s.feedback); result = '' + (f.overall_score != null ? f.overall_score : f.overall_band); } catch(e) { result = '✓'; } }
         else if (s.max_score) { result = s.score + '/' + s.max_score; }
       }
       var badge = s.status==='graded'

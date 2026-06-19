@@ -249,11 +249,14 @@ app.get('/api/auth/google/callback', async (req, res) => {
 // ===================== API ĐỀ BÀI =====================
 
 app.get('/api/exercises', (req, res) => {
-  const { program } = req.query;
-  const rows = program
-    ? db.prepare('SELECT id,program,skill,title,auto_grade,created_at FROM exercises WHERE program=? ORDER BY id DESC').all(program)
-    : db.prepare('SELECT id,program,skill,title,auto_grade,created_at FROM exercises ORDER BY id DESC').all();
-  res.json({ exercises: rows });
+  const { program, skill } = req.query;
+  let sql = 'SELECT id,program,skill,title,auto_grade,created_at FROM exercises';
+  const cond = [], params = [];
+  if (program) { cond.push('program=?'); params.push(program); }
+  if (skill) { cond.push('skill=?'); params.push(skill); }
+  if (cond.length) sql += ' WHERE ' + cond.join(' AND ');
+  sql += ' ORDER BY id ASC';
+  res.json({ exercises: db.prepare(sql).all(...params) });
 });
 
 app.get('/api/exercises/:id', (req, res) => {

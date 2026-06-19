@@ -102,4 +102,29 @@ function seed() {
 }
 seed();
 
+// ===== Đề thật bổ sung (chèn idempotent — chạy mỗi lần khởi động, chỉ thêm nếu chưa có) =====
+const KET_WRITING = [
+  { program: 'KET', skill: 'Writing', title: 'KET Writing Part 1 — Email hẹn gặp bạn cuối tuần',
+    content: 'Write an email to your English friend Alex.\nSay:\n- what you want to do this weekend\n- where you want to meet\n- what time to meet\n\nWrite 25 words or more.' },
+  { program: 'KET', skill: 'Writing', title: 'KET Writing Part 1 — Lời nhắn trả sách cho bạn',
+    content: 'Your friend Sam lent you a book. Write a note to Sam.\nTell Sam:\n- that you have finished the book\n- what you thought of it\n- when you can return it\n\nWrite 25 words or more.' },
+  { program: 'KET', skill: 'Writing', title: 'KET Writing Part 1 — Email mời dự sinh nhật',
+    content: 'You are having a birthday party. Write an email to your friend Jordan.\nTell Jordan:\n- when the party is\n- where it will be\n- what to bring\n\nWrite 25 words or more.' },
+  { program: 'KET', skill: 'Writing', title: 'KET Writing Part 2 — Câu chuyện: một ngày ở biển',
+    content: 'Write a story.\nYour story must begin with this sentence:\n"Last Saturday, Tom and his friends went to the beach."\n\nWrite 35 words or more.' },
+  { program: 'KET', skill: 'Writing', title: 'KET Writing Part 2 — Câu chuyện: bất ngờ sau cánh cửa',
+    content: 'Write a story.\nYour story must begin with this sentence:\n"When Maria opened the door, she saw a big surprise."\n\nWrite 35 words or more.' },
+  { program: 'KET', skill: 'Writing', title: 'KET Writing Part 2 — Câu chuyện: buổi sáng trời mưa',
+    content: 'Write a story.\nYour story must begin with this sentence:\n"It was raining when Daniel left his house in the morning."\n\nWrite 35 words or more.' }
+];
+
+function ensureExercises() {
+  const tom = db.prepare("SELECT id FROM users WHERE email='tom@ewt.vn'").get();
+  const by = tom ? tom.id : null;
+  const has = db.prepare('SELECT id FROM exercises WHERE title=?');
+  const ins = db.prepare('INSERT INTO exercises (program,skill,title,content,auto_grade,created_by,created_at) VALUES (?,?,?,?,0,?,?)');
+  KET_WRITING.forEach(e => { if (!has.get(e.title)) ins.run(e.program, e.skill, e.title, e.content, by, now()); });
+}
+ensureExercises();
+
 module.exports = { db, hashPassword, verifyPassword, now };
