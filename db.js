@@ -255,6 +255,82 @@ In your email:
 
 Write 25 words or more.` },
 
+  // ---- 5 đề Part 1 dạng email-reply (Read & Reply) ----
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email trả lời bạn về chuyến đi biển ngày mai',
+    content:`Read this email from your English friend, Maria.
+────────────────────────────────
+From: Maria
+To: ...
+Subject: The beach!
+
+Hi,
+I am so excited that we are going to the beach tomorrow! What time should we leave? What are we going to do there? Also, what food should I bring for our picnic?
+See you soon,
+Maria
+────────────────────────────────
+Write an email to Maria and answer her questions.
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email trả lời bạn về bữa tiệc sinh nhật',
+    content:`Read this email from your English friend, Mark.
+────────────────────────────────
+From: Mark
+To: ...
+Subject: Your birthday party
+
+Hi,
+Thanks for inviting me to your birthday party next week. I can't wait! Where are we going to have the party? Who else is coming? And what kind of present would you like?
+Bye for now,
+Mark
+────────────────────────────────
+Write an email to Mark and answer his questions.
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email trả lời bạn về buổi hòa nhạc rock',
+    content:`Read this email from your English friend, Lisa.
+────────────────────────────────
+From: Lisa
+To: ...
+Subject: Rock Concert
+
+Hi,
+My dad bought two tickets for the rock concert this Saturday. Would you like to come with me? How will we get to the stadium? What should we wear?
+Write soon!
+Lisa
+────────────────────────────────
+Write an email to Lisa and answer her questions.
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email trả lời bạn về các buổi học tiếng Tây Ban Nha',
+    content:`Read this email from your English friend, Ben.
+────────────────────────────────
+From: Ben
+To: ...
+Subject: Spanish classes
+
+Hi,
+I heard you are learning Spanish! That's great. Why did you decide to learn Spanish? Is it a difficult language to learn? How often do you have classes?
+Best,
+Ben
+────────────────────────────────
+Write an email to Ben and answer his questions.
+Write 25 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 1 — Email trả lời bạn về kế hoạch nghỉ hè',
+    content:`Read this email from your English friend, Anna.
+────────────────────────────────
+From: Anna
+To: ...
+Subject: Next summer
+
+Hi,
+Summer holiday is coming soon! Are you going to travel anywhere this summer with your family? Where are you going to stay? What do you want to do there?
+Your friend,
+Anna
+────────────────────────────────
+Write an email to Anna and answer her questions.
+Write 25 words or more.` },
+
   // ---- KET Writing Part 2 (câu chuyện) ----
   { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Câu chuyện: một ngày ở biển',
     content:'Write a story.\nYour story must begin with this sentence:\n"Last Saturday, Tom and his friends went to the beach."\n\nWrite 35 words or more.' },
