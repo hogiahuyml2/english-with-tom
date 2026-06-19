@@ -604,8 +604,24 @@ app.get('/api/teacher/stats', requireRole('teacher','admin'), (req, res) => {
   res.json({ studentCount, exerciseCount, pendingCount });
 });
 
+// Admin tải về bản sao database (backup)
+app.get('/api/admin/backup-db', requireRole('admin'), (req, res) => {
+  const dbPath = path.join(DATA_DIR, 'data.db');
+  const stamp = new Date().toISOString().slice(0,10);
+  res.download(dbPath, 'ewt-backup-' + stamp + '.db', (err) => {
+    if (err) res.status(500).json({ error: 'Không thể tải file backup.' });
+  });
+});
+
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log('English With Tom đang chạy tại cổng ' + port));
+app.listen(port, () => {
+  console.log('English With Tom đang chạy tại cổng ' + port);
+  console.log('📁 Database:', path.join(DATA_DIR, 'data.db'));
+  if (DATA_DIR === __dirname)
+    console.warn('⚠️  DATA_DIR chưa set — database nằm trong thư mục app, SẼ MẤT khi Railway redeploy! Hãy tạo Volume trong Railway và set DATA_DIR=/data');
+  else
+    console.log('✅ DATA_DIR =', DATA_DIR, '— dữ liệu an toàn qua các lần deploy');
+});
