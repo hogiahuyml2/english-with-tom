@@ -2,12 +2,34 @@
 const express = require('express');
 const crypto = require('crypto');
 const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const { db, hashPassword, verifyPassword, now } = require('./db');
 const { aiEnabled, gradeWriting, provider } = require('./ai');
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
 app.use(express.json());
+
+// ===== Tải file ảnh/âm thanh — lưu trên ổ đĩa bền vững (/data/uploads trên Railway) =====
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+const uploadsDir = path.join(DATA_DIR, 'uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
+app.use('/uploads', express.static(uploadsDir, { maxAge: '7d' }));
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: uploadsDir,
+    filename: (req, file, cb) => {
+      const ext = (path.extname(file.originalname) || '').slice(0, 8).replace(/[^.a-zA-Z0-9]/g, '');
+      cb(null, crypto.randomBytes(12).toString('hex') + ext);
+    }
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // tối đa 20MB
+  fileFilter: (req, file, cb) => {
+    if (/^(image|audio)\//.test(file.mimetype)) cb(null, true);
+    else cb(new Error('Chỉ chấp nhận tệp ảnh hoặc âm thanh.'));
+  }
+});
 
 // URL gốc của web (để tạo redirect_uri cho Google, link xác thực email...)
 function baseUrl(req) {
@@ -18,34 +40,38 @@ function baseUrl(req) {
 // ===== Gửi email qua Brevo (HTTP API, không cần thư viện) =====
 function emailEnabled() { return !!process.env.BREVO_API_KEY && !!process.env.FROM_EMAIL; }
 
-async function sendVerificationEmail(user, link) {
-  if (!emailEnabled()) return false;
+async function sendBrevoEmail(to, subject, htmlContent) {
+  if (!emailEnabled()) return { ok: false, detail: 'Email chưa cấu hình' };
   try {
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
         sender: { name: process.env.SENDER_NAME || 'English With Tom', email: process.env.FROM_EMAIL },
-        to: [{ email: user.email, name: user.name }],
-        subject: 'Xác thực email — English With Tom',
-        htmlContent:
-          '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6">' +
-          '<h2 style="color:#6F58EE">Chào ' + user.name + '! 👋</h2>' +
-          '<p>Cảm ơn bạn đã đăng ký <b>English With Tom</b>. Bấm nút bên dưới để xác thực email của bạn:</p>' +
-          '<p style="margin:22px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Xác thực email</a></p>' +
-          '<p style="font-size:13px;color:#888">Hoặc mở liên kết: <a href="' + link + '">' + link + '</a></p>' +
-          '<p style="font-size:13px;color:#888">Nếu bạn không đăng ký tài khoản này, hãy bỏ qua email.</p>' +
-          '</div>'
+        to: [{ email: to.email, name: to.name }],
+        subject, htmlContent
       })
     });
     if (r.ok) return { ok: true };
     const detail = await r.text();
     console.error('Brevo error', r.status, detail);
-    return { ok: false, status: r.status, detail: detail };
+    return { ok: false, status: r.status, detail };
   } catch (e) {
     console.error('Brevo exception', e.message);
     return { ok: false, detail: e.message };
   }
+}
+
+async function sendVerificationEmail(user, link) {
+  const html =
+    '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6">' +
+    '<h2 style="color:#6F58EE">Chào ' + user.name + '! 👋</h2>' +
+    '<p>Cảm ơn bạn đã đăng ký <b>English With Tom</b>. Bấm nút bên dưới để xác thực email của bạn:</p>' +
+    '<p style="margin:22px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Xác thực email</a></p>' +
+    '<p style="font-size:13px;color:#888">Hoặc mở liên kết: <a href="' + link + '">' + link + '</a></p>' +
+    '<p style="font-size:13px;color:#888">Nếu bạn không đăng ký tài khoản này, hãy bỏ qua email.</p>' +
+    '</div>';
+  return sendBrevoEmail(user, 'Xác thực email — English With Tom', html);
 }
 
 // ===== Phân tích cookie thủ công (không cần thư viện) =====
@@ -125,6 +151,51 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.get('/api/me', (req, res) => res.json({ user: req.user || null }));
+
+// ===== QUÊN MẬT KHẨU =====
+
+// Bước 1: Gửi email chứa link reset
+app.post('/api/forgot-password', async (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Vui lòng nhập email.' });
+  if (!emailEnabled()) return res.status(400).json({ error: 'Tính năng đặt lại mật khẩu yêu cầu cấu hình email. Vui lòng liên hệ quản trị viên.' });
+
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email.toLowerCase());
+  // Luôn trả ok để không lộ thông tin tài khoản có tồn tại hay không
+  if (!u || u.pass === 'google-oauth') return res.json({ ok: true });
+
+  const token = crypto.randomBytes(24).toString('hex');
+  const expiry = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // hết hạn sau 1 giờ
+  db.prepare('UPDATE users SET reset_token=?, reset_token_expiry=? WHERE id=?').run(token, expiry, u.id);
+
+  const link = baseUrl(req) + '/reset-password.html?token=' + token;
+  const html =
+    '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6">' +
+    '<h2 style="color:#6F58EE">Đặt lại mật khẩu 🔑</h2>' +
+    '<p>Bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu cho tài khoản <b>' + u.email + '</b> trên English With Tom.</p>' +
+    '<p style="margin:22px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Đặt lại mật khẩu</a></p>' +
+    '<p style="font-size:13px;color:#888">Link có hiệu lực trong <b>1 giờ</b>. Sau đó bạn cần yêu cầu lại.</p>' +
+    '<p style="font-size:13px;color:#888">Nếu bạn không yêu cầu điều này, hãy bỏ qua email này — tài khoản của bạn vẫn an toàn.</p>' +
+    '</div>';
+  await sendBrevoEmail({ email: u.email, name: u.name }, 'Đặt lại mật khẩu — English With Tom', html);
+  res.json({ ok: true });
+});
+
+// Bước 2: Xác thực token và đặt mật khẩu mới
+app.post('/api/reset-password', (req, res) => {
+  const { token, newPassword } = req.body || {};
+  if (!token || !newPassword) return res.status(400).json({ error: 'Thiếu thông tin.' });
+  if (newPassword.length < 6) return res.status(400).json({ error: 'Mật khẩu mới cần tối thiểu 6 ký tự.' });
+
+  const u = db.prepare('SELECT * FROM users WHERE reset_token=?').get(token);
+  if (!u) return res.status(400).json({ error: 'Link đặt lại mật khẩu không hợp lệ hoặc đã được dùng.' });
+  if (new Date(u.reset_token_expiry) < new Date())
+    return res.status(400).json({ error: 'Link đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới.' });
+
+  db.prepare('UPDATE users SET pass=?, reset_token=NULL, reset_token_expiry=NULL WHERE id=?')
+    .run(hashPassword(newPassword), u.id);
+  res.json({ ok: true });
+});
 
 // Đổi mật khẩu (cho người đang đăng nhập)
 app.post('/api/me/change-password', requireAuth, (req, res) => {
@@ -260,15 +331,24 @@ app.get('/api/exercises', (req, res) => {
 });
 
 app.get('/api/exercises/:id', (req, res) => {
-  const ex = db.prepare('SELECT id,program,skill,title,content,questions,auto_grade,created_at FROM exercises WHERE id=?').get(req.params.id);
+  const ex = db.prepare('SELECT id,program,skill,title,content,questions,image_url,audio_url,auto_grade,created_at FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   ex.questions = ex.questions ? JSON.parse(ex.questions) : null; // câu hỏi (không kèm đáp án)
   res.json({ exercise: ex });
 });
 
+// Giáo viên/Admin tải ảnh hoặc âm thanh, trả về đường dẫn để gắn vào đề
+app.post('/api/upload', requireRole('teacher', 'admin'), (req, res) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    if (!req.file) return res.status(400).json({ error: 'Thiếu tệp.' });
+    res.json({ url: '/uploads/' + req.file.filename });
+  });
+});
+
 // Giáo viên/Admin tạo đề mới (Writing = AI chấm; Quiz = trắc nghiệm tự chấm)
 app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
-  const { program, skill, title, content, type, questions, answer_key } = req.body || {};
+  const { program, skill, title, content, type, questions, answer_key, image_url, audio_url } = req.body || {};
   if (!program || !skill || !title) return res.status(400).json({ error: 'Thiếu chương trình, kỹ năng hoặc tên đề.' });
 
   let key = null, qJson = null, auto = 0;
@@ -282,8 +362,8 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
     key = JSON.stringify(String(answer_key).split(',').map(s => s.trim().toUpperCase()).filter(Boolean));
     auto = 1;
   }
-  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,auto_grade,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?)')
-    .run(program, skill, title, content || '', key, qJson, auto, req.user.id, now());
+  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+    .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, req.user.id, now());
   res.json({ id: Number(r.lastInsertRowid) });
 });
 

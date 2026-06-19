@@ -1,5 +1,5 @@
 // Chấm bài Writing bằng AI — hỗ trợ Gemini (Google) hoặc Claude (Anthropic)
-// Chấm theo đúng tiêu chí của từng kỳ thi (IELTS band, KET A2 Key, ...).
+// Trả về kết quả chấm + bài viết gợi ý (suggested_writing) theo tiêu chí từng kỳ thi
 const Anthropic = require('@anthropic-ai/sdk');
 
 function provider() {
@@ -29,26 +29,34 @@ Chấm theo THANG ĐIỂM CHUNG (General Mark Scheme) của Cambridge — MỘT 
 - 1: Kém. Người đọc phải rất cố gắng. Truyền đạt được rất ít thông điệp.
 - 0: Nội dung hoàn toàn lạc đề, hoặc quá ít ngôn ngữ để đánh giá.
 overall_score = điểm 0–5 này. scale_label = "A2 Key Part 1 (0–5)".
-criteria gồm DUY NHẤT MỘT mục: name = "Mức độ truyền đạt thông điệp", max = 5, score = điểm trên, comment giải thích còn thiếu/đạt ý nào.`;
+criteria gồm DUY NHẤT MỘT mục: name = "Mức độ truyền đạt thông điệp", max = 5, score = điểm trên, comment giải thích còn thiếu/đạt ý nào.
+suggested_writing: Viết bài mẫu EMAIL/LỜI NHẮN ngắn TIẾNG ANH (25–35 từ) truyền đạt đầy đủ 3 ý yêu cầu của đề, đạt điểm 5.`;
   }
   return `Đây là KET (A2 Key) WRITING PART 2 (viết truyện ngắn, ~35 từ, bắt đầu bằng câu cho sẵn).
 Chấm theo THANG ĐÁNH GIÁ (Assessment Scale) của Cambridge A2 với 4 tiêu chí, MỖI tiêu chí 0–5:
-- "Content (Nội dung)": 5 = mọi nội dung liên quan đề, người đọc nắm đủ thông tin; 3 = vài chỗ lạc/thiếu nhỏ, người đọc nhìn chung vẫn hiểu; 1 = nhiều chỗ lạc/hiểu sai đề, người đọc nắm rất ít; 0 = hoàn toàn lạc đề.
+- "Content (Nội dung)": 5 = mọi nội dung liên quan đề; 3 = vài chỗ lạc/thiếu nhỏ; 1 = nhiều chỗ lạc; 0 = hoàn toàn lạc đề.
 - "Communicative Achievement (Hiệu quả giao tiếp)": dùng đúng quy ước của dạng bài viết truyện, truyền đạt các ý đơn giản một cách phù hợp.
-- "Organisation (Tổ chức)": văn bản mạch lạc, liên kết, dùng từ nối cơ bản (and, but, then, because...) và một số phương tiện liên kết.
-- "Language (Ngôn ngữ)": dùng từ vựng hằng ngày phù hợp (đôi khi lặp từ); dùng cấu trúc ngữ pháp đơn giản với độ chính xác khá; lỗi có thể thấy nhưng vẫn hiểu được nghĩa.
-overall_score = điểm TRUNG BÌNH của 4 tiêu chí, làm tròn về 0.5 gần nhất, trên thang 0–5. scale_label = "A2 Key Part 2 (0–5)".
-criteria gồm ĐÚNG 4 mục với name như trên (giữ song ngữ), mỗi mục max = 5.`;
+- "Organisation (Tổ chức)": văn bản mạch lạc, liên kết, dùng từ nối cơ bản (and, but, then, because...).
+- "Language (Ngôn ngữ)": dùng từ vựng hằng ngày; cấu trúc ngữ pháp đơn giản; lỗi có thể thấy nhưng vẫn hiểu được nghĩa.
+overall_score = điểm TRUNG BÌNH của 4 tiêu chí, làm tròn về 0.5 gần nhất, thang 0–5. scale_label = "A2 Key Part 2 (0–5)".
+criteria gồm ĐÚNG 4 mục với name như trên (giữ song ngữ).
+suggested_writing: Viết bài mẫu TRUYỆN NGẮN TIẾNG ANH (35–55 từ) bắt đầu bằng câu cho sẵn trong đề, liên tục mạch lạc, đạt điểm cao.`;
 }
 
 // Rubric riêng cho từng kỳ thi
 function rubricFor(exercise) {
   const program = exercise.program;
   if (program === 'KET') return ketRubric(exercise.title || '');
-  if (program === 'IELTS') return 'Chấm theo thang BAND IELTS từ 0 đến 9 (bước 0.5). Dùng 4 tiêu chí (mỗi tiêu chí max 9): Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. overall_score là band tổng (trung bình 4 tiêu chí, làm tròn 0.5). scale_label = "IELTS Band (0–9)".';
-  if (program === 'PET') return 'Chấm theo chuẩn Cambridge B1 Preliminary (PET). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B1 Preliminary (0–5)".';
-  if (program === 'FCE') return 'Chấm theo chuẩn Cambridge B2 First (FCE). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B2 First (0–5)".';
-  return 'Chấm theo thang điểm phù hợp với kỳ thi ' + program + '. Dùng các tiêu chí hợp lý (Content, Organisation, Language). overall_score trên thang 0–5. scale_label mô tả ngắn thang điểm.';
+  if (program === 'IELTS') return `Chấm theo thang BAND IELTS từ 0 đến 9 (bước 0.5). Dùng 4 tiêu chí (mỗi tiêu chí max 9): Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. overall_score là band tổng (trung bình 4 tiêu chí, làm tròn 0.5). scale_label = "IELTS Band (0–9)".
+suggested_writing: Xác định đây là Task 1 hay Task 2 dựa trên tên đề. Task 1: viết bài mẫu TIẾNG ANH 150–180 từ mô tả biểu đồ/số liệu trong đề (nếu là bar chart/line graph thì dựa vào dữ liệu mô tả trong nội dung đề). Task 2: viết bài luận TIẾNG ANH 250–280 từ đạt Band 7–8.`;
+  if (program === 'PET') return `Chấm theo chuẩn Cambridge B1 Preliminary (PET). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B1 Preliminary (0–5)".
+suggested_writing: Viết bài mẫu TIẾNG ANH 80–120 từ đáp ứng đầy đủ yêu cầu đề PET, đạt điểm gần tối đa.`;
+  if (program === 'FCE') return `Chấm theo chuẩn Cambridge B2 First (FCE). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B2 First (0–5)".
+suggested_writing: Viết bài mẫu TIẾNG ANH 140–190 từ (đúng dạng bài yêu cầu: essay, article, review, letter...) đạt điểm cao.`;
+  if (program === 'APTIS') return `Chấm theo chuẩn APTIS General/Advanced của British Council. Dùng các tiêu chí phù hợp (Content/Task Achievement, Vocabulary, Grammar, Organisation). overall_score trên thang 0–5. scale_label = "APTIS (0–5)".
+suggested_writing: Viết bài mẫu TIẾNG ANH đúng độ dài yêu cầu của component APTIS, đạt điểm cao theo rubric APTIS.`;
+  return `Chấm theo thang điểm phù hợp với kỳ thi ${program}. Dùng các tiêu chí hợp lý (Content, Organisation, Language). overall_score trên thang 0–5. scale_label mô tả ngắn thang điểm.
+suggested_writing: Viết bài mẫu TIẾNG ANH đạt yêu cầu đề bài và điểm cao.`;
 }
 
 function buildSystem(exercise) {
@@ -56,9 +64,12 @@ function buildSystem(exercise) {
 ${rubricFor(exercise)}
 
 Quy tắc chung:
-- Mọi nhận xét (name có thể song ngữ; comment, summary, suggestions) viết bằng TIẾNG VIỆT, cụ thể, mang tính xây dựng, kèm ví dụ ngắn.
-- criteria: danh sách tiêu chí, mỗi tiêu chí gồm name, score, max, comment.
-- summary: 2–3 câu tổng quan. suggestions: 3–5 gợi ý cải thiện cụ thể.`;
+- Mọi nhận xét (comment, summary, suggestions, suggested_notes) viết bằng TIẾNG VIỆT, cụ thể, mang tính xây dựng, kèm ví dụ ngắn.
+- criteria: danh sách tiêu chí, mỗi tiêu chí gồm name (song ngữ), score, max, comment.
+- summary: 2–3 câu tổng quan bằng tiếng Việt.
+- suggestions: 3–5 gợi ý cải thiện cụ thể bằng tiếng Việt.
+- suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu (xem hướng dẫn rubric ở trên). Bài mẫu phải đáp ứng đề bài cụ thể của học sinh, KHÔNG được viết generic. Phải thể hiện rõ cách đạt điểm cao theo tiêu chí của kỳ thi.
+- suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao: nêu từng tiêu chí và cách bài mẫu đáp ứng. Ví dụ: "Bài mẫu đạt Content 5/5 vì truyền đạt đủ 3 ý yêu cầu (nơi gặp, thời gian, hoạt động). Về Language, bài dùng đa dạng thì (present simple, future)..."`;
 }
 
 function buildUser(exercise, essay) {
@@ -82,9 +93,11 @@ const CLAUDE_SCHEMA = {
       }
     },
     summary: { type: 'string' },
-    suggestions: { type: 'array', items: { type: 'string' } }
+    suggestions: { type: 'array', items: { type: 'string' } },
+    suggested_writing: { type: 'string' },
+    suggested_notes: { type: 'string' }
   },
-  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions'],
+  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes'],
   additionalProperties: false
 };
 
@@ -92,7 +105,7 @@ async function gradeWithClaude(exercise, essay) {
   const client = new Anthropic();
   const model = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
   const resp = await client.messages.create({
-    model, max_tokens: 2500, system: buildSystem(exercise),
+    model, max_tokens: 5000, system: buildSystem(exercise),
     messages: [{ role: 'user', content: buildUser(exercise, essay) }],
     output_config: { format: { type: 'json_schema', schema: CLAUDE_SCHEMA } }
   });
@@ -115,9 +128,11 @@ const GEMINI_SCHEMA = {
       }
     },
     summary: { type: 'STRING' },
-    suggestions: { type: 'ARRAY', items: { type: 'STRING' } }
+    suggestions: { type: 'ARRAY', items: { type: 'STRING' } },
+    suggested_writing: { type: 'STRING' },
+    suggested_notes: { type: 'STRING' }
   },
-  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions']
+  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes']
 };
 
 async function gradeWithGemini(exercise, essay) {
@@ -132,7 +147,7 @@ async function gradeWithGemini(exercise, essay) {
       generationConfig: {
         responseMimeType: 'application/json',
         responseSchema: GEMINI_SCHEMA,
-        maxOutputTokens: 4000,
+        maxOutputTokens: 8000,
         thinkingConfig: { thinkingBudget: 0 }
       }
     })

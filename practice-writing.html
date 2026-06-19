@@ -6,7 +6,7 @@
 <title>Làm bài Writing — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=8">
 <style>
   .band-big { font-size:38px; font-weight:700; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
   .crit { border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; }
@@ -15,6 +15,8 @@
   .crit p { font-size:13.5px; color:var(--text-muted); margin:0; line-height:1.6; }
   .sugg li { font-size:14px; color:var(--text); margin-bottom:7px; line-height:1.6; }
   .prompt-text { white-space:pre-line; }
+  .ex-image { max-width:100%; border-radius:10px; margin-bottom:14px; display:block; }
+  .suggested-body { white-space:pre-wrap; font-size:14.5px; line-height:1.9; color:#2E2B45; background:var(--bg-soft,#f8f7ff); padding:18px; border-radius:10px; margin-bottom:14px; border:1px solid var(--border); font-family:Georgia,serif; }
 </style>
 </head>
 <body data-page="">
@@ -38,6 +40,7 @@
       <!-- Đề bài -->
       <div class="passage">
         <h3>Đề bài</h3>
+        <div id="exImageWrap"></div>
         <div class="prompt-text" id="promptText" style="font-size:14.5px; color:#403d57;">...</div>
       </div>
 
@@ -49,16 +52,17 @@
           <span style="font-size:12.5px; color:var(--text-faint);">Số từ: <strong id="wordCount">0</strong></span>
           <span id="aiNote" style="font-size:12px; color:var(--text-faint);"></span>
         </div>
-        <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài & chấm bằng AI</button>
+        <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài &amp; chấm bằng AI</button>
         <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;">AI sẽ chấm theo tiêu chí của kỳ thi và đưa nhận xét chi tiết.</p>
       </div>
     </div>
 
     <div class="card" id="loading" style="display:none; text-align:center; margin-top:22px;">
       <div style="font-size:30px;">🤖</div>
-      <p style="color:var(--text-muted); margin-top:8px;">AI đang đọc và chấm bài của bạn... (khoảng 10–20 giây)</p>
+      <p style="color:var(--text-muted); margin-top:8px;">AI đang đọc và chấm bài của bạn... (khoảng 15–25 giây)</p>
     </div>
 
+    <!-- Kết quả chấm -->
     <div class="card" id="result" style="display:none; margin-top:22px; border:2px solid var(--primary);">
       <div class="card-head" style="align-items:center;">
         <h3>📊 Kết quả chấm bằng AI</h3>
@@ -71,11 +75,25 @@
       <p style="font-size:12.5px; color:var(--text-faint); margin-top:14px;">Bài đã được lưu vào <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a> của bạn.</p>
     </div>
 
+    <!-- Bài viết gợi ý -->
+    <div class="card" id="suggestedSection" style="display:none; margin-top:18px; border:2px solid #9b59b6;">
+      <div class="card-head" style="align-items:center;">
+        <h3>✍️ Bài viết gợi ý</h3>
+        <span class="badge" style="background:#f3eeff; color:#9b59b6; font-size:12px; padding:4px 10px; border-radius:20px;">Tham khảo</span>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Đây là bài viết mẫu được tạo theo đúng yêu cầu đề bài và tiêu chí chấm của kỳ thi. Dùng để học hỏi cách diễn đạt, cấu trúc và từ vựng.</p>
+      <div class="suggested-body" id="suggestedWriting"></div>
+      <div class="note" style="margin-top:0; background:#f3eeff; border-color:#d7bef7;">
+        <span>💡</span>
+        <div id="suggestedNotes" style="font-size:13.5px; color:#5a3d8a;"></div>
+      </div>
+    </div>
+
   </div>
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=7"></script>
+<script src="js/main.js?v=8"></script>
 <script>
   function qp(n){ return new URLSearchParams(location.search).get(n); }
   var EXERCISE_ID = parseInt(qp('id') || '3', 10);
@@ -96,6 +114,13 @@
     var back = document.getElementById('backLink');
     back.textContent = '‹ ' + e.program;
     back.href = (e.program === 'KET' ? 'ket-writing.html' : e.program.toLowerCase() + '.html');
+    // Hiện ảnh đề nếu có
+    if (e.image_url) {
+      var img = document.createElement('img');
+      img.src = e.image_url; img.alt = 'Hình ảnh đề bài';
+      img.className = 'ex-image';
+      document.getElementById('exImageWrap').appendChild(img);
+    }
   }).catch(function(){});
 
   fetch('/api/config').then(r=>r.json()).then(function(c){
@@ -107,6 +132,7 @@
     if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn.'); return; }
     document.getElementById('loading').style.display = 'block';
     document.getElementById('result').style.display = 'none';
+    document.getElementById('suggestedSection').style.display = 'none';
     this.disabled = true;
 
     var r = await fetch('/api/grade-writing', {
@@ -130,6 +156,13 @@
     document.getElementById('summary').textContent = res.summary;
     document.getElementById('suggestions').innerHTML = (res.suggestions||[]).map(function(s){ return '<li>'+s+'</li>'; }).join('');
     var box = document.getElementById('result'); box.style.display='block'; box.scrollIntoView({behavior:'smooth'});
+
+    // Bài viết gợi ý
+    if (res.suggested_writing) {
+      document.getElementById('suggestedWriting').textContent = res.suggested_writing;
+      document.getElementById('suggestedNotes').textContent = res.suggested_notes || '';
+      document.getElementById('suggestedSection').style.display = 'block';
+    }
   });
 </script>
 </body>

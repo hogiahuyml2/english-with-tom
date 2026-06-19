@@ -6,8 +6,14 @@
 <title>Làm bài trắc nghiệm — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
-<style>.prompt-text{ white-space:pre-line; }</style>
+<link rel="stylesheet" href="css/style.css?v=8">
+<style>
+  .prompt-text { white-space:pre-line; }
+  .ex-image { max-width:100%; border-radius:10px; margin-bottom:14px; display:block; }
+  .audio-player { width:100%; margin-bottom:18px; border-radius:8px; }
+  .audio-wrap { background:var(--primary-soft,#f0eeff); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:18px; }
+  .audio-wrap p { font-size:13px; color:var(--text-muted); margin-bottom:8px; }
+</style>
 </head>
 <body data-page="">
 <div id="site-header"></div>
@@ -27,11 +33,21 @@
     </div>
 
     <div class="two-col">
+      <!-- Đề bài / Đoạn văn -->
       <div class="passage">
         <h3>Đề bài / Đoạn văn</h3>
+        <div id="exImageWrap"></div>
         <div class="prompt-text" id="promptText" style="font-size:14.5px; color:#403d57;">...</div>
       </div>
+
+      <!-- Câu hỏi -->
       <div class="q-block">
+        <!-- Audio player (hiện nếu đề Listening có file âm thanh) -->
+        <div id="audioWrap" style="display:none;" class="audio-wrap">
+          <p>🎧 Nhấn Play để nghe bài. Bạn có thể nghe lại nhiều lần trước khi nộp bài.</p>
+          <audio id="audioPlayer" class="audio-player" controls></audio>
+        </div>
+
         <div id="questions"><p style="color:var(--text-faint);">Đang tải câu hỏi...</p></div>
         <button class="btn btn-primary btn-block" id="submitBtn" style="margin-top:16px;">Nộp bài</button>
         <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;">Bài sẽ được chấm tự động và lưu vào Tiến trình.</p>
@@ -51,10 +67,10 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=7"></script>
+<script src="js/main.js?v=8"></script>
 <script>
   function qp(n){ return new URLSearchParams(location.search).get(n); }
-  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
   var EXERCISE_ID = parseInt(qp('id')||'0',10);
   var LETTERS = ['A','B','C','D','E'];
   var QS = [];
@@ -67,7 +83,24 @@
     document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · chấm tự động';
     document.getElementById('promptText').textContent = e.content || '(Không có đoạn văn)';
     var back = document.getElementById('backLink');
-    back.textContent = '‹ ' + e.program; back.href = 'exercises.html?program=' + encodeURIComponent(e.program);
+    back.textContent = '‹ ' + e.program;
+    back.href = 'exercises.html?program=' + encodeURIComponent(e.program);
+
+    // Hiện ảnh đề nếu có
+    if (e.image_url) {
+      var img = document.createElement('img');
+      img.src = e.image_url; img.alt = 'Hình ảnh đề bài';
+      img.className = 'ex-image';
+      document.getElementById('exImageWrap').appendChild(img);
+    }
+
+    // Hiện audio nếu có (đề Listening)
+    if (e.audio_url) {
+      var player = document.getElementById('audioPlayer');
+      player.src = e.audio_url;
+      document.getElementById('audioWrap').style.display = 'block';
+    }
+
     QS = e.questions || [];
     var box = document.getElementById('questions');
     if (!QS.length) { box.innerHTML = '<p style="color:var(--text-faint);">Đề này chưa có câu hỏi.</p>'; return; }
