@@ -331,13 +331,64 @@ Anna
 Write an email to Anna and answer her questions.
 Write 25 words or more.` },
 
-  // ---- KET Writing Part 2 (câu chuyện) ----
+  // ---- KET Writing Part 2 (câu chuyện từ câu cho sẵn) ----
   { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Câu chuyện: một ngày ở biển',
     content:'Write a story.\nYour story must begin with this sentence:\n"Last Saturday, Tom and his friends went to the beach."\n\nWrite 35 words or more.' },
   { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Câu chuyện: bất ngờ sau cánh cửa',
     content:'Write a story.\nYour story must begin with this sentence:\n"When Maria opened the door, she saw a big surprise."\n\nWrite 35 words or more.' },
   { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Câu chuyện: buổi sáng trời mưa',
     content:'Write a story.\nYour story must begin with this sentence:\n"It was raining when Daniel left his house in the morning."\n\nWrite 35 words or more.' },
+
+  // ---- KET Writing Part 2 (câu chuyện từ tranh — Part 7 Cambridge) ----
+  { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Tranh: chú chó lạc ở bãi biển',
+    content:`Look at the three pictures and write the story.
+
+[Tranh 1] Một nhóm trẻ em đang vui chơi tại bãi biển — bơi lội, chạy nhảy và chơi bóng dưới nắng. Có ô che nắng và thuyền buồm xa xa trên biển.
+[Tranh 2] Các bạn nhìn thấy một chú chó nằm một mình trên bãi cát, bên cạnh có tấm biển "ALONE" (Một mình). Các bạn dừng lại và tỏ ra lo lắng.
+[Tranh 3] Các bạn đưa chú chó về nhà và giới thiệu với mẹ. Cả gia đình vây quanh chú chó, ai cũng vui mừng và hạnh phúc.
+
+Write the story shown in the pictures.
+Write 35 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Tranh: mua điện thoại mới',
+    content:`Look at the three pictures and write the story.
+
+[Tranh 1] Hai cô bạn gái đang đi bộ cùng nhau trên vỉa hè. Một người đang nói chuyện với vẻ hào hứng, có vẻ như họ đang lên kế hoạch đi đâu đó.
+[Tranh 2] Hai cô bạn bước vào một cửa hàng điện thoại. Một nhân viên nữ đứng phía sau quầy trưng bày nhiều mẫu điện thoại. Các cô gái nhìn vào và chỉ trỏ thích thú.
+[Tranh 3] Một cô gái cầm điện thoại mới và mỉm cười rạng rỡ. Người bạn đứng bên cạnh cũng vui lây, trông cả hai đều rất hài lòng.
+
+Write the story shown in the pictures.
+Write 35 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Tranh: muốn xem phim nhưng phải học bài',
+    content:`Look at the three pictures and write the story.
+
+[Tranh 1] Hai cô bạn đang nói chuyện điện thoại. Một cô nói "Movies!" (Xem phim đi!) với vẻ mặt vui vẻ, rủ rê. Cô kia có vẻ muốn đồng ý.
+[Tranh 2] Mẹ (hoặc giáo viên) bước vào phòng cầm tờ bài kiểm tra có điểm kém (chữ F), nhìn cô bé với vẻ nghiêm nghị và không vui. Cô bé cúi đầu.
+[Tranh 3] Cô bé ngồi một mình bên bàn học, mở sách vở ra học bài chăm chỉ. Trên bàn có bút chì và sách giáo khoa, trông cô bé đang cố gắng tập trung.
+
+Write the story shown in the pictures.
+Write 35 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Tranh: tìm thấy túi bị mất và trả lại',
+    content:`Look at the three pictures and write the story.
+
+[Tranh 1] Hai cậu bé đứng trong hành lang trường học. Một chiếc túi chấm bi rơi trên sàn, không có ai nhận. Một cậu bé chỉ vào chiếc túi, trông có vẻ ngạc nhiên.
+[Tranh 2] Cậu bé nhặt chiếc túi lên và mở ra để tìm thông tin của chủ nhân. Cậu cầm thứ gì đó bên trong (có thể là ví hoặc thẻ ID) và mỉm cười — cậu đã biết ai là chủ nhân.
+[Tranh 3] Cậu bé đưa chiếc túi đến tận nhà trả lại. Một người phụ nữ mở cửa với hai đứa trẻ nhỏ đứng bên cạnh. Bà cảm ơn cậu bé rất nhiệt tình.
+
+Write the story shown in the pictures.
+Write 35 words or more.` },
+
+  { program:'KET', skill:'Writing', title:'KET Writing Part 2 — Tranh: cuộc gọi rủ bạn chơi bóng đá',
+    content:`Look at the three pictures and write the story.
+
+[Tranh 1] Một cậu bé đang ngồi trên giường trong phòng, ánh nắng chiều chiếu qua cửa sổ. Cậu đang nói chuyện điện thoại và trông rất vui mừng, hào hứng.
+[Tranh 2] Một nhóm bạn bè đang chạy vội ra ngoài cùng nhau, vui vẻ và náo nhiệt. Trông như họ đang hẹn nhau ở sân chơi hoặc bãi đất trống.
+[Tranh 3] Cả nhóm đang chơi bóng đá trên một sân cỏ rộng có khung thành. Các bạn chạy, tranh bóng và sút cầu môn — ai cũng đang thỏa sức vui đùa.
+
+Write the story shown in the pictures.
+Write 35 words or more.` },
 ];
 
 // ---------- KET READING ----------
