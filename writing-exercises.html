@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body data-page="">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb" id="crumb">Trang chủ</div>
+    <h1 id="pageTitle">Writing ✍️</h1>
+    <p id="pageDesc">Luyện viết kèm AI chấm và nhận xét tiếng Việt.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px;">
+  <div class="container" id="partContainer">
+    <div class="skill-card">
+      <div class="test-row"><div class="name" style="color:var(--text-faint)">Đang tải...</div></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=7"></script>
+<script>
+(function(){
+  /* ── Cấu hình theo từng chương trình ── */
+  var PROGRAMS = {
+    KET:   { label:'KET', tag:'A2 Key', parent:'ket.html',
+              parts:{ 'Part 1':'Email/Lời nhắn ngắn (≥25 từ)', 'Part 2':'Viết truyện ngắn từ tranh (≥35 từ)' } },
+    PET:   { label:'PET', tag:'B1 Preliminary', parent:'pet.html',
+              parts:{ 'Part 1':'Email hoặc lời nhắn (≥100 từ)', 'Part 2':'Article, câu chuyện hoặc review (≥100 từ)' } },
+    FCE:   { label:'FCE', tag:'B2 First', parent:'fce.html',
+              parts:{ 'Part 1':'Essay nghị luận (140–190 từ)', 'Part 2':'Article / Review / Story (140–190 từ)' } },
+    IELTS: { label:'IELTS', tag:'Band 0–9', parent:'ielts.html',
+              parts:{ 'Task 1':'Mô tả biểu đồ / thư (≥150 từ)', 'Task 2':'Essay nghị luận (≥250 từ)' } },
+    APTIS: { label:'APTIS', tag:'British Council', parent:'aptis.html',
+              parts:{ 'Component 1':'Câu trả lời ngắn', 'Component 2':'Trả lời email', 'Component 3':'Bài viết dài', 'Component 4':'Essay' } },
+  };
+
+  /* ── Đọc ?program= từ URL ── */
+  var params  = new URLSearchParams(location.search);
+  var program = (params.get('program') || 'KET').toUpperCase();
+  var cfg     = PROGRAMS[program] || PROGRAMS.KET;
+
+  /* ── Cập nhật header ── */
+  document.title = cfg.label + ' Writing — English With Tom';
+  document.getElementById('crumb').innerHTML =
+    '<a href="' + cfg.parent + '" style="color:inherit;">' + cfg.label + '</a> › Writing';
+  document.getElementById('pageTitle').textContent = cfg.label + ' Writing ✍️';
+  document.getElementById('pageDesc').textContent =
+    'Cambridge ' + cfg.tag + ' — luyện viết theo đúng định dạng, AI chấm kèm nhận xét tiếng Việt.';
+
+  /* ── Tiện ích ── */
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+  function getPartKey(title){
+    var m = title.match(/(Task|Part|Component)\s*(\d+)/i);
+    if (!m) return { label:'Khác', order:999 };
+    var type = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
+    return { label: type + ' ' + m[2], order: parseInt(m[2],10) };
+  }
+
+  function row(e){
+    var levelMap = {
+      KET:'A2 Key', PET:'B1 Preliminary', FCE:'B2 First', IELTS:'IELTS', APTIS:'APTIS'
+    };
+    var lvl = (levelMap[e.program] || e.program) + ' · AI chấm';
+    return '<div class="test-row"><div><div class="name">' + esc(e.title) + '</div>' +
+           '<div class="lvl">' + lvl + '</div></div>' +
+           '<a class="btn btn-sm" href="practice-writing.html?id=' + e.id + '">Làm bài</a></div>';
+  }
+
+  function renderEmpty(){
+    return '<div class="test-row"><div class="name" style="color:var(--text-faint)">Chưa có đề. Giáo viên sẽ cập nhật sớm.</div></div>';
+  }
+
+  /* ── Tải đề từ API ── */
+  fetch('/api/exercises?program=' + encodeURIComponent(program) + '&skill=Writing', {credentials:'same-origin'})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var list = (data.exercises || []).filter(function(e){ return !e.is_private; });
+      var container = document.getElementById('partContainer');
+
+      if (!list.length){
+        container.innerHTML =
+          '<div class="skill-card">' + renderEmpty() + '</div>';
+        return;
+      }
+
+      /* Nhóm theo Part / Task / Component */
+      var groups = {};
+      list.forEach(function(e){
+        var pk = getPartKey(e.title);
+        if (!groups[pk.label]) groups[pk.label] = { order: pk.order, items: [] };
+        groups[pk.label].items.push(e);
+      });
+
+      /* Sắp xếp nhóm theo số thứ tự */
+      var sorted = Object.keys(groups).sort(function(a,b){
+        return groups[a].order - groups[b].order;
+      });
+
+      var partIcons = { 'Part 1':'📧', 'Part 2':'📖', 'Part 3':'📝',
+                        'Task 1':'📊', 'Task 2':'✍️',
+                        'Component 1':'1️⃣','Component 2':'2️⃣','Component 3':'3️⃣','Component 4':'4️⃣',
+                        'Khác':'📄' };
+
+      container.innerHTML = sorted.map(function(label, idx){
+        var desc = cfg.parts[label] || 'AI chấm theo chuẩn ' + cfg.tag;
+        var icon = partIcons[label] || '✍️';
+        var icoColor = ['ico-amber','ico-pink','ico-blue','ico-teal'][idx % 4];
+        return '<div class="skill-card" style="margin-bottom:20px;">' +
+          '<h3><span class="course-ico ' + icoColor + '" style="width:40px;height:40px;font-size:19px;margin:0;">' + icon + '</span> Writing ' + esc(label) + '</h3>' +
+          '<p>' + esc(desc) + '</p>' +
+          groups[label].items.map(row).join('') +
+          '</div>';
+      }).join('');
+    })
+    .catch(function(){
+      document.getElementById('partContainer').innerHTML =
+        '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--danger)">Không thể tải đề — vui lòng thử lại.</div></div></div>';
+    });
+})();
+</script>
+</body>
+</html>

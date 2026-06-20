@@ -62,11 +62,18 @@
 
         <div class="grid grid-2" style="gap:12px;">
           <div class="field" style="margin:0;"><label>Chương trình</label>
-            <select id="exProgram"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option></select>
+            <select id="exProgram" onchange="syncPart()"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option></select>
           </div>
           <div class="field" style="margin:0;"><label>Kỹ năng</label>
-            <select id="exSkill"><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
+            <select id="exSkill" onchange="syncPart()"><option>Reading</option><option>Listening</option><option>Writing</option><option>Speaking</option></select>
           </div>
+        </div>
+
+        <div class="field" id="partField" style="margin-top:12px;">
+          <label>Part / Task <span style="font-weight:400;color:var(--text-faint);">(chọn để tự điền tiêu đề mẫu)</span></label>
+          <select id="exPart" onchange="applyPartPrefix()">
+            <option value="">-- Không chọn part --</option>
+          </select>
         </div>
 
         <div class="field"><label>Tên đề</label>
@@ -237,8 +244,51 @@
     if (quiz && exSkill.value === 'Writing') exSkill.value = 'Reading';
     if (!quiz) exSkill.value = 'Writing';
     if (quiz && !document.querySelectorAll('.qbuild').length) addQuestion();
+    syncPart();
   }
   exType.onchange = syncType;
+
+  /* ===== PART / TASK SELECTOR ===== */
+  var PART_OPTIONS = {
+    KET:   { Writing: ['Part 1','Part 2'] },
+    PET:   { Writing: ['Part 1','Part 2'] },
+    FCE:   { Writing: ['Part 1','Part 2'] },
+    IELTS: { Writing: ['Task 1','Task 2'] },
+    APTIS: { Writing: ['Component 1','Component 2','Component 3','Component 4'] },
+    _default: ['Part 1','Part 2','Part 3','Part 4','Part 5'],
+  };
+
+  function syncPart(){
+    var prog  = document.getElementById('exProgram').value;
+    var skill = document.getElementById('exSkill').value;
+    var sel   = document.getElementById('exPart');
+    var pf    = document.getElementById('partField');
+    var opts  = (PART_OPTIONS[prog] && PART_OPTIONS[prog][skill]) || PART_OPTIONS._default;
+    pf.style.display = 'block';
+    sel.innerHTML = '<option value="">-- Không chọn part --</option>' +
+      opts.map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('');
+  }
+
+  function applyPartPrefix(){
+    var prog  = document.getElementById('exProgram').value;
+    var skill = document.getElementById('exSkill').value;
+    var part  = document.getElementById('exPart').value;
+    var titleEl = document.getElementById('exTitle');
+    if (!part) return;
+    var prefix = prog + ' ' + skill + ' ' + part + ' — ';
+    var cur = titleEl.value;
+    /* Nếu tiêu đề trống hoặc đang là tiêu đề mẫu cũ → ghi đè */
+    if (!cur.trim() || /^[A-Z]+ [A-Za-z]+ (Part|Task|Component) \d+ — /.test(cur)) {
+      titleEl.value = prefix;
+    }
+    titleEl.placeholder = prefix + 'mô tả ngắn về đề...';
+    titleEl.focus();
+    /* Đặt con trỏ cuối chuỗi */
+    var len = titleEl.value.length;
+    titleEl.setSelectionRange(len, len);
+  }
+
+  syncPart();
 
   /* ===== TRÌNH TẠO CÂU HỎI ===== */
   function addQuestion(){
