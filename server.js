@@ -321,7 +321,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
 
 // ===================== API ĐỀ BÀI =====================
 
-app.get('/api/exercises', (req, res) => {
+app.get('/api/exercises', requireAuth, (req, res) => {
   const { program, skill, private_only } = req.query;
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
   let sql = 'SELECT id,program,skill,title,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions FROM exercises';
@@ -338,7 +338,7 @@ app.get('/api/exercises', (req, res) => {
   res.json({ exercises: db.prepare(sql).all(...params) });
 });
 
-app.get('/api/exercises/:id', (req, res) => {
+app.get('/api/exercises/:id', requireAuth, (req, res) => {
   const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private) {
