@@ -54,10 +54,26 @@
         <h3>👥 Người dùng</h3>
         <button class="btn btn-sm" id="cleanupBtn" style="color:var(--danger); border-color:var(--danger);">🧹 Dọn tài khoản test</button>
       </div>
+      <!-- Bulk bar users -->
+      <div id="userBulkBar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:10px;background:var(--primary-soft);border-radius:8px;">
+        <span id="userSelectedCount" style="font-size:13.5px;font-weight:600;color:var(--primary);">0 người được chọn</span>
+        <button class="btn btn-sm" onclick="selectAllUsers()">☑️ Chọn tất cả</button>
+        <button class="btn btn-sm" onclick="clearSelectionUsers()">✕ Bỏ chọn</button>
+        <select id="bulkRoleSel" style="padding:5px 9px;border:1px solid var(--border);border-radius:7px;font-size:13px;">
+          <option value="student">→ Học sinh</option>
+          <option value="teacher">→ Giáo viên</option>
+          <option value="admin">→ Quản trị</option>
+        </select>
+        <button class="btn btn-sm btn-primary" onclick="bulkRoleUsers()">Đổi role</button>
+        <button class="btn btn-sm" style="color:#fff;background:var(--danger,#e53e3e);border-color:var(--danger,#e53e3e);" onclick="bulkDeleteUsers()">🗑️ Xoá đã chọn</button>
+      </div>
       <div style="overflow-x:auto;">
         <table class="table" style="min-width:640px;">
-          <thead><tr><th>Tên</th><th>Email</th><th>Vai trò</th><th>Email</th><th>Bài</th><th></th></tr></thead>
-          <tbody id="usersBody"><tr><td colspan="6" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr></tbody>
+          <thead><tr>
+            <th style="width:36px;"><input type="checkbox" id="chkAllUsers" title="Chọn tất cả" onchange="toggleAllUsers(this)"></th>
+            <th>Tên</th><th>Email</th><th>Vai trò</th><th>Email</th><th>Bài</th><th></th>
+          </tr></thead>
+          <tbody id="usersBody"><tr><td colspan="7" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -65,10 +81,20 @@
     <!-- Đề bài -->
     <div class="card">
       <div class="card-head"><h3>📚 Ngân hàng đề</h3></div>
+      <!-- Bulk bar exercises -->
+      <div id="exBulkBar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:10px;background:var(--primary-soft);border-radius:8px;">
+        <span id="exSelectedCount" style="font-size:13.5px;font-weight:600;color:var(--primary);">0 đề được chọn</span>
+        <button class="btn btn-sm" onclick="selectAllExercises()">☑️ Chọn tất cả</button>
+        <button class="btn btn-sm" onclick="clearSelectionExercises()">✕ Bỏ chọn</button>
+        <button class="btn btn-sm" style="color:#fff;background:var(--danger,#e53e3e);border-color:var(--danger,#e53e3e);" onclick="bulkDeleteExercises()">🗑️ Xoá đã chọn</button>
+      </div>
       <div style="overflow-x:auto;">
         <table class="table" style="min-width:560px;">
-          <thead><tr><th>Tên đề</th><th>Chương trình</th><th>Kỹ năng</th><th></th></tr></thead>
-          <tbody id="exBody"><tr><td colspan="4" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr></tbody>
+          <thead><tr>
+            <th style="width:36px;"><input type="checkbox" id="chkAllEx" title="Chọn tất cả" onchange="toggleAllExercises(this)"></th>
+            <th>Tên đề</th><th>Chương trình</th><th>Kỹ năng</th><th></th>
+          </tr></thead>
+          <tbody id="exBody"><tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -86,6 +112,7 @@
   function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
 
   async function loadUsers(){
+    clearSelectionUsers();
     var res = await api('/api/admin/users');
     var rows = res.data.users || [];
     document.getElementById('stUsers').textContent = rows.length;
@@ -93,13 +120,15 @@
     document.getElementById('stTeachers').textContent = rows.filter(u=>u.role==='teacher').length;
     var body = document.getElementById('usersBody');
     body.innerHTML = rows.map(function(u){
-      var sel = '<select data-id="'+u.id+'" class="roleSel" '+(u.id===(me&&me.id)?'disabled':'')+'>'+
+      var isSelf = u.id===(me&&me.id);
+      var chk = isSelf ? '<td></td>' : '<td><input type="checkbox" class="userChk" value="'+u.id+'" onchange="onUserChkChange()"></td>';
+      var sel = '<select data-id="'+u.id+'" class="roleSel" '+(isSelf?'disabled':'')+'>'+
         ['student','teacher','admin'].map(function(r){ return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+roleLabel[r]+'</option>'; }).join('')+'</select>';
       var verified = u.email_verified ? '<span class="badge badge-done">✓</span>' : '<span class="badge badge-todo">chưa</span>';
-      var del = u.id===(me&&me.id) ? '<span style="color:var(--text-faint);font-size:12px;">(bạn)</span>'
+      var del = isSelf ? '<span style="color:var(--text-faint);font-size:12px;">(bạn)</span>'
         : '<button class="btn btn-sm delUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button>';
-      return '<tr><td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+del+'</td></tr>';
-    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa có người dùng.</td></tr>';
+      return '<tr>'+chk+'<td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+del+'</td></tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">Chưa có người dùng.</td></tr>';
 
     document.querySelectorAll('.roleSel').forEach(function(s){
       s.onchange = async function(){
@@ -116,14 +145,67 @@
     });
   }
 
+  function onUserChkChange(){
+    var all  = document.querySelectorAll('#usersBody .userChk');
+    var chkd = document.querySelectorAll('#usersBody .userChk:checked');
+    var n = chkd.length;
+    document.getElementById('userBulkBar').style.display = n ? 'flex' : 'none';
+    document.getElementById('userSelectedCount').textContent = n + ' người được chọn';
+    var hdr = document.getElementById('chkAllUsers');
+    hdr.indeterminate = n > 0 && n < all.length;
+    hdr.checked = n > 0 && n === all.length;
+  }
+
+  function toggleAllUsers(chk){
+    document.querySelectorAll('#usersBody .userChk').forEach(function(c){ c.checked = chk.checked; });
+    onUserChkChange();
+  }
+
+  function selectAllUsers(){
+    document.querySelectorAll('#usersBody .userChk').forEach(function(c){ c.checked = true; });
+    onUserChkChange();
+  }
+
+  function clearSelectionUsers(){
+    document.querySelectorAll('#usersBody .userChk').forEach(function(c){ c.checked = false; });
+    var hdr = document.getElementById('chkAllUsers');
+    if(hdr){ hdr.checked = false; hdr.indeterminate = false; }
+    var bar = document.getElementById('userBulkBar');
+    if(bar) bar.style.display = 'none';
+  }
+
+  async function bulkDeleteUsers(){
+    var ids = Array.from(document.querySelectorAll('#usersBody .userChk:checked')).map(function(c){ return Number(c.value); });
+    if(!ids.length) return;
+    if(!confirm('Xoá '+ids.length+' tài khoản đã chọn?\nTất cả bài làm của họ cũng bị xoá!')) return;
+    var r = await api('/api/admin/users/bulk-delete', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:ids})});
+    if(r.ok){ alert('Đã xoá '+(r.data.deleted||0)+' tài khoản.'); loadUsers(); }
+    else alert('Lỗi: '+(r.data.error||r.ok));
+  }
+
+  async function bulkRoleUsers(){
+    var ids = Array.from(document.querySelectorAll('#usersBody .userChk:checked')).map(function(c){ return Number(c.value); });
+    if(!ids.length) return;
+    var role = document.getElementById('bulkRoleSel').value;
+    if(!confirm('Đổi role của '+ids.length+' người dùng thành "'+roleLabel[role]+'"?')) return;
+    var r = await api('/api/admin/users/bulk-role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:ids, role:role})});
+    if(r.ok){ alert('Đã cập nhật '+(r.data.updated||0)+' người dùng.'); loadUsers(); }
+    else alert('Lỗi: '+(r.data.error||r.ok));
+  }
+
   async function loadExercises(){
+    clearSelectionExercises();
     var res = await api('/api/exercises');
     var rows = res.data.exercises || [];
     document.getElementById('stEx').textContent = rows.length;
     var body = document.getElementById('exBody');
     body.innerHTML = rows.map(function(e){
-      return '<tr><td>'+esc(e.title)+'</td><td>'+esc(e.program)+'</td><td>'+esc(e.skill)+'</td><td><button class="btn btn-sm delEx" data-id="'+e.id+'" data-name="'+esc(e.title)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button></td></tr>';
-    }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--text-faint);">Chưa có đề.</td></tr>';
+      return '<tr>'
+        +'<td><input type="checkbox" class="exChk" value="'+e.id+'" onchange="onExChkChange()"></td>'
+        +'<td>'+esc(e.title)+'</td><td>'+esc(e.program)+'</td><td>'+esc(e.skill)+'</td>'
+        +'<td><button class="btn btn-sm delEx" data-id="'+e.id+'" data-name="'+esc(e.title)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button></td>'
+        +'</tr>';
+    }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa có đề.</td></tr>';
     document.querySelectorAll('.delEx').forEach(function(b){
       b.onclick = async function(){
         if (!confirm('Xoá đề "'+b.getAttribute('data-name')+'"?')) return;
@@ -131,6 +213,44 @@
         if (r.ok) loadExercises(); else alert(r.data.error||'Lỗi');
       };
     });
+  }
+
+  function onExChkChange(){
+    var all  = document.querySelectorAll('#exBody .exChk');
+    var chkd = document.querySelectorAll('#exBody .exChk:checked');
+    var n = chkd.length;
+    document.getElementById('exBulkBar').style.display = n ? 'flex' : 'none';
+    document.getElementById('exSelectedCount').textContent = n + ' đề được chọn';
+    var hdr = document.getElementById('chkAllEx');
+    hdr.indeterminate = n > 0 && n < all.length;
+    hdr.checked = n > 0 && n === all.length;
+  }
+
+  function toggleAllExercises(chk){
+    document.querySelectorAll('#exBody .exChk').forEach(function(c){ c.checked = chk.checked; });
+    onExChkChange();
+  }
+
+  function selectAllExercises(){
+    document.querySelectorAll('#exBody .exChk').forEach(function(c){ c.checked = true; });
+    onExChkChange();
+  }
+
+  function clearSelectionExercises(){
+    document.querySelectorAll('#exBody .exChk').forEach(function(c){ c.checked = false; });
+    var hdr = document.getElementById('chkAllEx');
+    if(hdr){ hdr.checked = false; hdr.indeterminate = false; }
+    var bar = document.getElementById('exBulkBar');
+    if(bar) bar.style.display = 'none';
+  }
+
+  async function bulkDeleteExercises(){
+    var ids = Array.from(document.querySelectorAll('#exBody .exChk:checked')).map(function(c){ return Number(c.value); });
+    if(!ids.length) return;
+    if(!confirm('Xoá '+ids.length+' đề đã chọn?\nHành động này không thể hoàn tác!')) return;
+    var r = await api('/api/admin/exercises/bulk-delete', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:ids})});
+    if(r.ok){ alert('Đã xoá '+(r.data.deleted||0)+' đề.'); loadExercises(); }
+    else alert('Lỗi: '+(r.data.error||r.ok));
   }
 
   document.getElementById('cleanupBtn').onclick = async function(){

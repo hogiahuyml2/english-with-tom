@@ -205,9 +205,34 @@
     <div id="tabBank" style="display:none;">
       <div class="card">
         <div class="card-head"><h3>📚 Đề bạn đã tạo</h3><button class="btn btn-sm" onclick="loadBank()">🔄 Làm mới</button></div>
+
+        <!-- Toolbar: Search + Filter -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;padding:0 0 14px;">
+          <input id="bankSearch" type="text" placeholder="🔍 Tìm theo tên đề..." oninput="applyBankFilter()" style="flex:1;min-width:160px;padding:7px 11px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;">
+          <select id="bankFilterProgram" onchange="applyBankFilter()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;">
+            <option value="">Tất cả chương trình</option>
+            <option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option>
+          </select>
+          <select id="bankFilterSkill" onchange="applyBankFilter()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;">
+            <option value="">Tất cả kỹ năng</option>
+            <option>Writing</option><option>Reading</option><option>Listening</option><option>Speaking</option>
+          </select>
+        </div>
+
+        <!-- Bulk action bar (hidden until rows selected) -->
+        <div id="bulkBar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface,#f0f4ff);border:1px solid var(--primary-light,#c7d2fe);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
+          <span id="selectedCount" style="font-size:13.5px;font-weight:600;color:var(--primary,#6c63ff);">0 đề được chọn</span>
+          <button class="btn btn-sm" onclick="selectAllBank()">☑️ Chọn tất cả</button>
+          <button class="btn btn-sm" onclick="clearSelectionBank()">✕ Bỏ chọn</button>
+          <button class="btn btn-sm" style="color:#fff;background:var(--danger,#e53e3e);border-color:var(--danger,#e53e3e);" onclick="bulkDeleteBank()">🗑️ Xoá đã chọn</button>
+        </div>
+
         <table class="table">
-          <thead><tr><th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Loại</th><th>Ngày</th><th></th></tr></thead>
-          <tbody id="exBank"><tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
+          <thead><tr>
+            <th style="width:36px;"><input type="checkbox" id="chkAllBank" title="Chọn tất cả" onchange="toggleAllBank(this)"></th>
+            <th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Loại</th><th>Ngày</th><th></th>
+          </tr></thead>
+          <tbody id="exBank"><tr><td colspan="7" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -660,21 +685,93 @@
   function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
 
   /* ===== NGÂN HÀNG ĐỀ ===== */
+  var _bankData = [];
+
   function loadBank(){
     fetch('/api/exercises',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
-      var tbody = document.getElementById('exBank');
-      var exs = d.exercises || [];
-      if (!exs.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa có đề nào.</td></tr>'; return; }
-      tbody.innerHTML = exs.map(function(e){
-        var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
-        var priv  = e.is_private ? '<span class="private-badge">🔒 Riêng</span>' : '';
-        var actions = '<div style="display:flex;gap:6px;">'
-          +'<button class="btn btn-sm" onclick="openEditDrawer('+e.id+')" title="Chỉnh sửa đề">✏️</button>'
-          +'<button class="btn btn-sm" style="color:var(--danger,#e53e3e);border-color:currentColor;" onclick="deleteExercise('+e.id+','+JSON.stringify(escHtml(e.title))+')" title="Xoá đề">🗑️</button>'
-          +'</div>';
-        return '<tr><td>'+escHtml(e.title)+'</td><td>'+e.program+'</td><td>'+e.skill+'</td><td>'+grade+' '+priv+'</td><td>'+fmtDate(e.created_at)+'</td><td>'+actions+'</td></tr>';
-      }).join('');
+      _bankData = d.exercises || [];
+      applyBankFilter();
     }).catch(function(){});
+  }
+
+  function applyBankFilter(){
+    var q     = (document.getElementById('bankSearch').value||'').toLowerCase();
+    var prog  = document.getElementById('bankFilterProgram').value;
+    var skill = document.getElementById('bankFilterSkill').value;
+    var list  = _bankData.filter(function(e){
+      return (!q    || escHtml(e.title).toLowerCase().indexOf(q)>-1 || e.title.toLowerCase().indexOf(q)>-1)
+          && (!prog  || e.program === prog)
+          && (!skill || e.skill   === skill);
+    });
+    renderBankRows(list);
+  }
+
+  function renderBankRows(exs){
+    var tbody = document.getElementById('exBank');
+    clearSelectionBank();
+    if(!exs.length){
+      tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">Chưa có đề nào.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = exs.map(function(e){
+      var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
+      var priv  = e.is_private ? '<span class="private-badge">🔒 Riêng</span>' : '';
+      var actions = '<div style="display:flex;gap:6px;">'
+        +'<button class="btn btn-sm" onclick="openEditDrawer('+e.id+')" title="Chỉnh sửa đề">✏️</button>'
+        +'<button class="btn btn-sm" style="color:var(--danger,#e53e3e);border-color:currentColor;" onclick="deleteExercise('+e.id+','+JSON.stringify(escHtml(e.title))+')" title="Xoá đề">🗑️</button>'
+        +'</div>';
+      return '<tr>'
+        +'<td><input type="checkbox" class="rowChk" value="'+e.id+'" onchange="onBankChkChange()"></td>'
+        +'<td>'+escHtml(e.title)+'</td><td>'+e.program+'</td><td>'+e.skill+'</td>'
+        +'<td>'+grade+' '+priv+'</td><td>'+fmtDate(e.created_at)+'</td><td>'+actions+'</td>'
+        +'</tr>';
+    }).join('');
+  }
+
+  function onBankChkChange(){
+    var all  = document.querySelectorAll('#exBank .rowChk');
+    var chkd = document.querySelectorAll('#exBank .rowChk:checked');
+    var n = chkd.length;
+    var bulkBar = document.getElementById('bulkBar');
+    bulkBar.style.display = n ? 'flex' : 'none';
+    document.getElementById('selectedCount').textContent = n + ' đề được chọn';
+    var hdr = document.getElementById('chkAllBank');
+    hdr.indeterminate = n > 0 && n < all.length;
+    hdr.checked = n > 0 && n === all.length;
+  }
+
+  function toggleAllBank(chk){
+    document.querySelectorAll('#exBank .rowChk').forEach(function(c){ c.checked = chk.checked; });
+    onBankChkChange();
+  }
+
+  function selectAllBank(){
+    document.querySelectorAll('#exBank .rowChk').forEach(function(c){ c.checked = true; });
+    onBankChkChange();
+  }
+
+  function clearSelectionBank(){
+    document.querySelectorAll('#exBank .rowChk').forEach(function(c){ c.checked = false; });
+    var hdr = document.getElementById('chkAllBank');
+    if(hdr){ hdr.checked = false; hdr.indeterminate = false; }
+    var bar = document.getElementById('bulkBar');
+    if(bar) bar.style.display = 'none';
+  }
+
+  async function bulkDeleteBank(){
+    var ids = Array.from(document.querySelectorAll('#exBank .rowChk:checked')).map(function(c){ return Number(c.value); });
+    if(!ids.length) return;
+    if(!confirm('Xoá '+ids.length+' đề đã chọn?\nHành động này không thể hoàn tác!')) return;
+    try{
+      var r = await fetch('/api/exercises/bulk-delete',{
+        method:'POST', credentials:'same-origin',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ids:ids})
+      });
+      var d = await r.json().catch(function(){return{};});
+      if(r.ok){ loadBank(); }
+      else{ alert('Lỗi: '+(d.error||r.status)); }
+    }catch(e){ alert('Lỗi kết nối'); }
   }
 
   /* ===== EDIT DRAWER ===== */

@@ -427,6 +427,20 @@ app.delete('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => 
   res.json({ ok: true });
 });
 
+// Bulk delete exercises (teacher xóa đề của mình; admin xóa bất kỳ)
+app.post('/api/exercises/bulk-delete', requireRole('teacher', 'admin'), (req, res) => {
+  const { ids } = req.body || {};
+  if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
+  const isAdmin = req.user.role === 'admin';
+  const del = db.prepare('DELETE FROM exercises WHERE id=?' + (isAdmin ? '' : ' AND created_by=?'));
+  let count = 0;
+  ids.forEach(id => {
+    const r = isAdmin ? del.run(Number(id)) : del.run(Number(id), req.user.id);
+    count += r.changes;
+  });
+  res.json({ deleted: count });
+});
+
 // ===================== API NỘP BÀI =====================
 
 app.post('/api/submissions', requireAuth, (req, res) => {
@@ -512,6 +526,42 @@ app.delete('/api/admin/users/:id', requireRole('admin'), (req, res) => {
   db.prepare('DELETE FROM sessions WHERE user_id=?').run(id);
   db.prepare('DELETE FROM users WHERE id=?').run(id);
   res.json({ ok: true });
+});
+
+// Bulk delete users (admin)
+app.post('/api/admin/users/bulk-delete', requireRole('admin'), (req, res) => {
+  const { ids } = req.body || {};
+  if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
+  const filtered = ids.map(Number).filter(id => id !== req.user.id);
+  let count = 0;
+  filtered.forEach(id => {
+    if (!db.prepare('SELECT id FROM users WHERE id=?').get(id)) return;
+    db.prepare('DELETE FROM submissions WHERE user_id=?').run(id);
+    db.prepare('DELETE FROM sessions WHERE user_id=?').run(id);
+    db.prepare('DELETE FROM users WHERE id=?').run(id);
+    count++;
+  });
+  res.json({ deleted: count });
+});
+
+// Bulk role change (admin)
+app.post('/api/admin/users/bulk-role', requireRole('admin'), (req, res) => {
+  const { ids, role } = req.body || {};
+  if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
+  if (!['student','teacher','admin'].includes(role)) return res.status(400).json({ error: 'Role không hợp lệ.' });
+  const upd = db.prepare('UPDATE users SET role=? WHERE id=?');
+  let count = 0;
+  ids.map(Number).forEach(id => { count += upd.run(role, id).changes; });
+  res.json({ updated: count });
+});
+
+// Bulk delete exercises (admin)
+app.post('/api/admin/exercises/bulk-delete', requireRole('admin'), (req, res) => {
+  const { ids } = req.body || {};
+  if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
+  let count = 0;
+  ids.map(Number).forEach(id => { count += db.prepare('DELETE FROM exercises WHERE id=?').run(id).changes; });
+  res.json({ deleted: count });
 });
 
 // Dọn nhanh các tài khoản test (email kết thúc bằng ewt-test.com)
