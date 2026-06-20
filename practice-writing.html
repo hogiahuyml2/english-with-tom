@@ -117,8 +117,8 @@
     document.getElementById('crumbTitle').textContent = e.program + ' Writing';
     document.getElementById('promptText').textContent = e.content || '';
     var back = document.getElementById('backLink');
-    back.textContent = '‹ ' + e.program;
-    back.href = (e.program === 'KET' ? 'ket-writing.html' : e.program.toLowerCase() + '.html');
+    back.textContent = '‹ ' + e.program + ' Writing';
+    back.href = (e.program === 'KET' ? 'ket-writing.html' : 'writing-exercises.html?program=' + encodeURIComponent(e.program));
     if (qp('assigned')) back.href = 'assigned.html';
 
     if (e.image_url) {

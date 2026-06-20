@@ -86,13 +86,12 @@
 
         <!-- Upload ảnh -->
         <div class="field">
-          <label>Ảnh đề bài <span style="font-weight:400;color:var(--text-faint);">(tuỳ chọn — cho đề có hình)</span></label>
+          <label>Ảnh đề bài <span style="font-weight:400;color:var(--text-faint);">(tuỳ chọn — chọn file sẽ tự động tải lên)</span></label>
           <div class="upload-row">
             <input type="file" id="imgFile" accept="image/*" style="display:none;">
             <button class="btn btn-sm" type="button" onclick="document.getElementById('imgFile').click();">📎 Chọn ảnh</button>
             <span id="imgName" style="font-size:13px; color:var(--text-muted);">Chưa chọn ảnh</span>
-            <button class="btn btn-sm" id="uploadImgBtn" style="display:none;" type="button">⬆️ Tải lên</button>
-            <span id="uploadStatus" style="font-size:13px; color:var(--success); display:none;">✅ Đã tải lên</span>
+            <span id="uploadStatus" style="font-size:13px; display:none;"></span>
           </div>
           <img id="imgPreview" class="img-preview" alt="Xem trước ảnh">
           <input type="hidden" id="imageUrl" value="">
@@ -205,32 +204,49 @@
     document.getElementById('statPending').textContent   = d.pendingCount ?? '–';
   }).catch(function(){});
 
-  /* ===== UPLOAD ẢNH ===== */
+  /* ===== UPLOAD ẢNH (tự động khi chọn file) ===== */
   var imgFile = document.getElementById('imgFile');
   var imgPreview = document.getElementById('imgPreview');
-  imgFile.addEventListener('change', function(){
+  var uploadStatus = document.getElementById('uploadStatus');
+  var saveExBtn = document.getElementById('saveExBtn');
+
+  imgFile.addEventListener('change', async function(){
     var f = imgFile.files[0];
     if (!f) return;
+
+    /* Hiện preview ngay lập tức từ local */
     document.getElementById('imgName').textContent = f.name;
-    document.getElementById('uploadImgBtn').style.display = 'inline-block';
-    document.getElementById('uploadStatus').style.display = 'none';
     document.getElementById('imageUrl').value = '';
     var reader = new FileReader();
     reader.onload = function(e){ imgPreview.src = e.target.result; imgPreview.style.display = 'block'; };
     reader.readAsDataURL(f);
-  });
-  document.getElementById('uploadImgBtn').addEventListener('click', async function(){
-    var f = imgFile.files[0]; if (!f) return;
+
+    /* Tự động upload — khoá nút Lưu đề trong lúc tải */
+    uploadStatus.style.display = 'inline';
+    uploadStatus.style.color = 'var(--text-muted)';
+    uploadStatus.textContent = '⏳ Đang tải ảnh lên...';
+    saveExBtn.disabled = true;
+
     var fd = new FormData(); fd.append('file', f);
-    this.disabled = true; this.textContent = '⏳ Đang tải...';
-    var r = await fetch('/api/upload',{method:'POST',credentials:'same-origin',body:fd});
-    this.disabled = false; this.textContent = '⬆️ Tải lên';
-    var data = await r.json().catch(function(){return {};});
-    if (r.ok && data.url) {
-      document.getElementById('imageUrl').value = data.url;
-      document.getElementById('uploadStatus').style.display = 'inline';
-      imgPreview.src = data.url;
-    } else { alert(data.error || 'Tải ảnh thất bại.'); }
+    try {
+      var r = await fetch('/api/upload', {method:'POST', credentials:'same-origin', body:fd});
+      var data = await r.json().catch(function(){return {};});
+      if (r.ok && data.url) {
+        document.getElementById('imageUrl').value = data.url;
+        imgPreview.src = data.url;
+        uploadStatus.style.color = 'var(--success)';
+        uploadStatus.textContent = '✅ Ảnh đã tải lên thành công';
+      } else {
+        uploadStatus.style.color = 'var(--danger,#e53e3e)';
+        uploadStatus.textContent = '❌ ' + (data.error || 'Tải ảnh thất bại — thử lại');
+        imgFile.value = '';
+      }
+    } catch(e) {
+      uploadStatus.style.color = 'var(--danger,#e53e3e)';
+      uploadStatus.textContent = '❌ Lỗi kết nối — thử lại';
+      imgFile.value = '';
+    }
+    saveExBtn.disabled = false;
   });
 
   /* ===== TOGGLE LOẠI ĐỀ ===== */
@@ -347,6 +363,9 @@
       image_url: imgUrl || null
     };
     if (!payload.title){ msg('Vui lòng nhập tên đề.', false); return; }
+    if (imgFile.files[0] && !document.getElementById('imageUrl').value){
+      msg('⏳ Ảnh đang tải lên — vui lòng chờ vài giây rồi thử lại.', false); return;
+    }
     if (type==='quiz'){
       var c = collectQuestions();
       if (c.error){ msg(c.error, false); return; }
@@ -363,9 +382,9 @@
       document.getElementById('imageUrl').value='';
       document.getElementById('imgPreview').style.display='none';
       document.getElementById('imgName').textContent='Chưa chọn ảnh';
-      document.getElementById('uploadImgBtn').style.display='none';
       document.getElementById('uploadStatus').style.display='none';
       document.getElementById('isPrivate').checked=false;
+      imgFile.value='';
       document.getElementById('qList').innerHTML='';
       if (type==='quiz') addQuestion();
     } else { msg(data.error || 'Lưu thất bại.', false); }
