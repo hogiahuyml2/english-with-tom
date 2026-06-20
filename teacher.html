@@ -16,6 +16,39 @@
   .assign-email-tag { display:inline-flex; align-items:center; gap:5px; background:#ede9ff; color:#5a3d8a; border-radius:20px; padding:4px 12px; font-size:13px; margin:3px; }
   .assign-email-tag button { background:none; border:none; cursor:pointer; color:#a07cc5; font-size:15px; line-height:1; padding:0; }
   .private-badge { background:#fff3cd; color:#7a5c00; border:1px solid #ffe08a; border-radius:12px; padding:2px 10px; font-size:12px; font-weight:600; }
+
+  /* ── Edit Drawer ── */
+  .edit-overlay { position:fixed; inset:0; background:rgba(0,0,0,.38); z-index:1200; display:none; }
+  .edit-overlay.open { display:block; }
+  .edit-drawer {
+    position:fixed; top:0; right:0; bottom:0; width:min(680px,100vw);
+    background:#fff; box-shadow:-6px 0 40px rgba(0,0,0,.14);
+    z-index:1201; display:flex; flex-direction:column;
+    transform:translateX(100%); transition:transform .26s cubic-bezier(.4,0,.2,1);
+  }
+  .edit-drawer.open { transform:translateX(0); }
+  .edit-drawer-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 22px; border-bottom:1px solid var(--border);
+    background:var(--gradient-soft); flex-shrink:0;
+  }
+  .edit-drawer-head h3 { margin:0; font-size:16px; }
+  .edit-drawer-body { flex:1; overflow-y:auto; padding:20px 22px; }
+  .edit-drawer-footer {
+    padding:14px 22px; border-top:1px solid var(--border);
+    display:flex; gap:10px; flex-shrink:0; background:#fff;
+  }
+  .edit-section-title {
+    font-size:12px; font-weight:700; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:.06em;
+    margin:18px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+  }
+  .edit-img-preview {
+    width:100%; max-height:220px; object-fit:contain; border-radius:10px;
+    border:1px solid var(--border); background:#f5f5f8; display:block; margin-bottom:10px;
+  }
+  .char-count { text-align:right; font-size:11.5px; color:var(--text-faint); margin-top:3px; }
+  .edit-action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
 </style>
 </head>
 <body data-page="" data-guard="teacher">
@@ -181,6 +214,91 @@
 
   </div>
 </section>
+
+<!-- ===== EDIT DRAWER ===== -->
+<div id="editOverlay" class="edit-overlay" onclick="closeEditDrawer()"></div>
+<div id="editDrawer" class="edit-drawer">
+
+  <div class="edit-drawer-head">
+    <h3>✏️ Chỉnh sửa đề</h3>
+    <button class="btn btn-sm" onclick="closeEditDrawer()">✕ Đóng</button>
+  </div>
+
+  <div class="edit-drawer-body">
+    <div id="editMsg" style="display:none;" class="note"></div>
+
+    <!-- Thông tin cơ bản -->
+    <div class="edit-section-title">Thông tin cơ bản</div>
+    <div class="grid grid-2" style="gap:10px; margin-bottom:12px;">
+      <div class="field" style="margin:0;"><label>Chương trình</label>
+        <select id="editProgram" onchange="syncEditPart()">
+          <option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0;"><label>Kỹ năng</label>
+        <select id="editSkill" onchange="syncEditPart()">
+          <option>Writing</option><option>Reading</option><option>Listening</option><option>Speaking</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px;"><label>Part / Task <span style="font-weight:400;color:var(--text-faint);">(chọn để điền tiêu đề mẫu)</span></label>
+      <select id="editPart" onchange="applyEditPartPrefix()">
+        <option value="">-- Không chọn --</option>
+      </select>
+    </div>
+
+    <!-- Tiêu đề -->
+    <div class="edit-section-title">Tiêu đề</div>
+    <div class="field">
+      <input type="text" id="editTitle" placeholder="Tiêu đề đề bài..." style="font-size:15px; font-weight:600;">
+    </div>
+
+    <!-- Nội dung -->
+    <div class="edit-section-title">Nội dung / Yêu cầu đề bài</div>
+    <div class="field">
+      <textarea id="editContent" style="min-height:200px; font-family:inherit; font-size:14px; line-height:1.7;" placeholder="Dán yêu cầu đề bài, đoạn văn, hướng dẫn..."></textarea>
+      <div class="char-count"><span id="editCharCount">0</span> ký tự · <span id="editWordCount">0</span> từ</div>
+    </div>
+
+    <!-- Hình ảnh -->
+    <div class="edit-section-title">Hình ảnh đề bài</div>
+    <div id="editImgCurrentWrap" style="display:none;">
+      <img id="editImgCurrent" class="edit-img-preview" alt="Hình ảnh hiện tại">
+      <div class="edit-action-row">
+        <button class="btn btn-sm" type="button" onclick="document.getElementById('editImgFile').click()">🔄 Thay ảnh mới</button>
+        <button class="btn btn-sm" type="button" style="color:var(--danger,#e53e3e);border-color:var(--danger,#e53e3e);" onclick="removeEditImg()">🗑️ Xoá ảnh</button>
+      </div>
+    </div>
+    <div id="editImgAddWrap">
+      <button class="btn btn-sm" type="button" onclick="document.getElementById('editImgFile').click()">📎 Thêm ảnh</button>
+    </div>
+    <input type="file" id="editImgFile" accept="image/*" style="display:none;">
+    <div id="editImgStatus" style="font-size:13px; margin-top:8px; display:none;"></div>
+    <input type="hidden" id="editImageUrl" value="">
+
+    <!-- Cài đặt -->
+    <div class="edit-section-title">Cài đặt</div>
+    <div class="field" style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+      <input type="checkbox" id="editIsPrivate" style="width:16px;height:16px;cursor:pointer;">
+      <label for="editIsPrivate" style="cursor:pointer; font-weight:600; margin:0;">🔒 Đề riêng (chỉ học sinh được giao mới làm được)</label>
+    </div>
+
+    <!-- Quiz questions (chỉ hiện với đề trắc nghiệm) -->
+    <div id="editQuizSection" style="display:none;">
+      <div class="edit-section-title">Câu hỏi trắc nghiệm</div>
+      <div id="editQList"></div>
+      <button class="btn btn-sm" type="button" id="editAddQBtn" style="margin-top:6px;">➕ Thêm câu hỏi</button>
+    </div>
+
+    <input type="hidden" id="editExId" value="">
+    <input type="hidden" id="editExType" value="writing">
+  </div>
+
+  <div class="edit-drawer-footer">
+    <button class="btn btn-primary" style="flex:1;" onclick="saveEdit()">💾 Lưu thay đổi</button>
+    <button class="btn" onclick="closeEditDrawer()">Huỷ</button>
+  </div>
+</div>
 
 <div id="site-footer"></div>
 <script src="js/main.js?v=9"></script>
@@ -545,16 +663,286 @@
   function loadBank(){
     fetch('/api/exercises',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
       var tbody = document.getElementById('exBank');
-      // Lọc chỉ đề do giáo viên này tạo (server đã trả is_private đúng role)
       var exs = d.exercises || [];
       if (!exs.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa có đề nào.</td></tr>'; return; }
       tbody.innerHTML = exs.map(function(e){
         var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
         var priv  = e.is_private ? '<span class="private-badge">🔒 Riêng</span>' : '';
-        return '<tr><td>'+escHtml(e.title)+'</td><td>'+e.program+'</td><td>'+e.skill+'</td><td>'+grade+' '+priv+'</td><td>'+fmtDate(e.created_at)+'</td><td></td></tr>';
+        var actions = '<div style="display:flex;gap:6px;">'
+          +'<button class="btn btn-sm" onclick="openEditDrawer('+e.id+')" title="Chỉnh sửa đề">✏️</button>'
+          +'<button class="btn btn-sm" style="color:var(--danger,#e53e3e);border-color:currentColor;" onclick="deleteExercise('+e.id+','+JSON.stringify(escHtml(e.title))+')" title="Xoá đề">🗑️</button>'
+          +'</div>';
+        return '<tr><td>'+escHtml(e.title)+'</td><td>'+e.program+'</td><td>'+e.skill+'</td><td>'+grade+' '+priv+'</td><td>'+fmtDate(e.created_at)+'</td><td>'+actions+'</td></tr>';
       }).join('');
     }).catch(function(){});
   }
+
+  /* ===== EDIT DRAWER ===== */
+  var _editEx = null; // cached exercise data
+  var _editImgAction = 'keep'; // 'keep' | 'remove' | 'replace'
+  var _editImgNewUrl = '';
+
+  function openEditDrawer(id){
+    fetch('/api/exercises/'+id,{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      var e = d.exercise || d;
+      _editEx = e;
+      _editImgAction = 'keep';
+      _editImgNewUrl = '';
+
+      // Populate basic fields
+      document.getElementById('editExId').value   = e.id;
+      document.getElementById('editExType').value = e.type || 'writing';
+      document.getElementById('editTitle').value  = e.title || '';
+      document.getElementById('editContent').value= e.content || '';
+      document.getElementById('editIsPrivate').checked = !!e.is_private;
+      document.getElementById('editImageUrl').value = e.image_url || '';
+
+      // Program + skill
+      setSelectVal('editProgram', e.program || 'KET');
+      setSelectVal('editSkill',   e.skill   || 'Writing');
+      syncEditPart();
+
+      // Try to pick the correct part option from title
+      var partMatch = (e.title||'').match(/(Task|Part|Component)\s*(\d+)/i);
+      if(partMatch){
+        var partLabel = partMatch[1]+' '+partMatch[2];
+        // normalise casing to match option values
+        var sel = document.getElementById('editPart');
+        for(var i=0;i<sel.options.length;i++){
+          if(sel.options[i].value.toLowerCase()===partLabel.toLowerCase()){
+            sel.selectedIndex = i; break;
+          }
+        }
+      }
+
+      // Image
+      refreshEditImgUI(e.image_url);
+
+      // Char/word count
+      updateEditCounts();
+
+      // Quiz section (server may return questions already parsed as array)
+      var qs = [];
+      if(Array.isArray(e.questions)) qs = e.questions;
+      else { try{ qs = JSON.parse(e.questions||'[]'); }catch(err){} }
+      var hasQ = qs.length > 0 || (e.type && e.type!=='writing');
+      document.getElementById('editQuizSection').style.display = hasQ ? '' : 'none';
+      if(hasQ) populateEditQuestions(qs, e.answer_key||'');
+
+      // Error message reset
+      var msgEl = document.getElementById('editMsg');
+      msgEl.style.display='none'; msgEl.textContent='';
+
+      // Open drawer
+      document.getElementById('editOverlay').classList.add('open');
+      document.getElementById('editDrawer').classList.add('open');
+    }).catch(function(err){
+      alert('Không thể tải đề: '+err);
+    });
+  }
+
+  function closeEditDrawer(){
+    document.getElementById('editOverlay').classList.remove('open');
+    document.getElementById('editDrawer').classList.remove('open');
+    _editEx = null;
+  }
+
+  function setSelectVal(id, val){
+    var sel = document.getElementById(id);
+    for(var i=0;i<sel.options.length;i++){
+      if(sel.options[i].value===val){ sel.selectedIndex=i; return; }
+    }
+  }
+
+  function refreshEditImgUI(url){
+    var hasImg = !!(url);
+    document.getElementById('editImgCurrentWrap').style.display = hasImg ? '' : 'none';
+    document.getElementById('editImgAddWrap').style.display     = hasImg ? 'none' : '';
+    if(hasImg) document.getElementById('editImgCurrent').src = url;
+    document.getElementById('editImgFile').value = '';
+    document.getElementById('editImgStatus').style.display = 'none';
+  }
+
+  // Auto-upload on file selection
+  document.getElementById('editImgFile').addEventListener('change', async function(){
+    var f = this.files[0]; if(!f) return;
+    // Show local preview immediately
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      document.getElementById('editImgCurrent').src = ev.target.result;
+      document.getElementById('editImgCurrentWrap').style.display = '';
+      document.getElementById('editImgAddWrap').style.display = 'none';
+    };
+    reader.readAsDataURL(f);
+
+    var st = document.getElementById('editImgStatus');
+    st.style.display = 'inline'; st.textContent = '⏳ Đang tải ảnh lên...';
+
+    var fd = new FormData(); fd.append('file', f);
+    try{
+      var r = await fetch('/api/upload',{method:'POST',credentials:'same-origin',body:fd});
+      var data = await r.json().catch(function(){return {};});
+      if(r.ok && data.url){
+        _editImgAction = 'replace';
+        _editImgNewUrl = data.url;
+        document.getElementById('editImageUrl').value = data.url;
+        document.getElementById('editImgCurrent').src = data.url;
+        st.textContent = '✅ Tải lên thành công';
+      } else {
+        st.textContent = '❌ Lỗi: '+(data.error||'Không tải được ảnh');
+      }
+    }catch(e){ st.textContent = '❌ Lỗi kết nối'; }
+  });
+
+  function removeEditImg(){
+    if(!confirm('Xoá ảnh đề bài?')) return;
+    _editImgAction = 'remove';
+    _editImgNewUrl = '';
+    document.getElementById('editImageUrl').value = '';
+    refreshEditImgUI('');
+  }
+
+  function syncEditPart(){
+    var prog = document.getElementById('editProgram').value;
+    var skill= document.getElementById('editSkill').value;
+    var opts = (PART_OPTIONS[prog] && PART_OPTIONS[prog][skill]) || PART_OPTIONS._default;
+    document.getElementById('editPart').innerHTML =
+      '<option value="">-- Không chọn --</option>' +
+      opts.map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('');
+  }
+
+  function applyEditPartPrefix(){
+    var prog  = document.getElementById('editProgram').value;
+    var skill = document.getElementById('editSkill').value;
+    var part  = document.getElementById('editPart').value;
+    if(!part) return;
+    var prefix = prog+' '+skill+' '+part+' — ';
+    var title  = document.getElementById('editTitle');
+    var current = title.value;
+    // Replace existing prefix pattern or prepend
+    var cleaned = current.replace(/^[A-Z]+ \w+ (Part|Task|Component) \d+ — /,'');
+    title.value = prefix + cleaned;
+  }
+
+  // Char/word count for edit textarea
+  document.getElementById('editContent').addEventListener('input', updateEditCounts);
+  function updateEditCounts(){
+    var text = document.getElementById('editContent').value;
+    document.getElementById('editCharCount').textContent = text.length;
+    document.getElementById('editWordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+  }
+
+  // Quiz question editor for edit drawer
+  function populateEditQuestions(questions, answerKey){
+    var list = document.getElementById('editQList');
+    list.innerHTML = '';
+    var keys = (answerKey||'').split(',');
+    questions.forEach(function(q,i){
+      addEditQuestion(q, keys[i]||'');
+    });
+    document.getElementById('editAddQBtn').onclick = function(){ addEditQuestion(null,''); };
+  }
+
+  function addEditQuestion(q, ak){
+    var list = document.getElementById('editQList');
+    var idx  = list.querySelectorAll('.qbuild').length + 1;
+    var div  = document.createElement('div');
+    div.className = 'qbuild';
+    div.style.cssText = 'background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;';
+    var opts = (q && q.options) ? q.options : ['','','',''];
+    var letters = ['A','B','C','D'];
+    div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+      +'<strong style="font-size:13px;">Câu '+idx+'</strong>'
+      +'<button type="button" class="btn btn-sm qdel" style="color:var(--danger,#e53e3e);">✕ Xoá</button>'
+      +'</div>'
+      +'<input type="text" class="qtext" placeholder="Nội dung câu hỏi..." value="'+escHtml((q&&q.text)||'')+'" style="margin-bottom:8px;">'
+      + letters.map(function(L,li){
+          return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">'
+            +'<span style="width:18px;font-weight:700;color:var(--text-faint);">'+L+'</span>'
+            +'<input type="text" class="qopt" data-letter="'+L+'" placeholder="Đáp án '+L+'..." value="'+escHtml((opts[li])||'')+'">'
+            +'<input type="radio" name="eak'+idx+'" value="'+L+'" '+((ak===L)?'checked':'')+' title="Đáp án đúng">'
+            +'</div>';
+        }).join('')
+      +'<div style="font-size:12px;color:var(--text-faint);margin-top:4px;">☝️ Chọn nút tròn = đáp án đúng</div>';
+    div.querySelector('.qdel').onclick = function(){ div.remove(); };
+    list.appendChild(div);
+  }
+
+  function collectEditQuestions(){
+    var questions = [], answers = [];
+    document.querySelectorAll('#editQList .qbuild').forEach(function(div){
+      var text = div.querySelector('.qtext').value.trim();
+      if(!text) return;
+      var opts = [], letters = [];
+      div.querySelectorAll('.qopt').forEach(function(inp){ var v=inp.value.trim(); if(v){ opts.push(v); letters.push(inp.getAttribute('data-letter')); } });
+      var radios = div.querySelectorAll('input[type=radio]');
+      var ak = '';
+      radios.forEach(function(r){ if(r.checked) ak=r.value; });
+      questions.push({text:text, options:opts});
+      answers.push(ak);
+    });
+    return {questions:questions, answer_key:answers.join(',')};
+  }
+
+  async function saveEdit(){
+    var id      = document.getElementById('editExId').value;
+    var title   = document.getElementById('editTitle').value.trim();
+    var content = document.getElementById('editContent').value.trim();
+    var program = document.getElementById('editProgram').value;
+    var skill   = document.getElementById('editSkill').value;
+    var isPrivate = document.getElementById('editIsPrivate').checked;
+    var imageUrl  = document.getElementById('editImageUrl').value;
+
+    var msgEl = document.getElementById('editMsg');
+    function showEditMsg(text,ok){
+      msgEl.style.display='block';
+      msgEl.textContent = text;
+      msgEl.style.borderLeftColor = ok ? 'var(--success,#38a169)' : 'var(--danger,#e53e3e)';
+    }
+
+    if(!title){ showEditMsg('Vui lòng nhập tiêu đề.', false); return; }
+
+    var qa = collectEditQuestions();
+    var body = {
+      title: title,
+      content: content,
+      program: program,
+      skill: skill,
+      is_private: isPrivate,
+      image_url: _editImgAction === 'remove' ? null : (imageUrl || undefined),
+      questions: JSON.stringify(qa.questions),
+      answer_key: qa.answer_key,
+    };
+    if(body.image_url === undefined) delete body.image_url; // server keeps current
+
+    try{
+      var r = await fetch('/api/exercises/'+id,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        credentials:'same-origin',
+        body: JSON.stringify(body)
+      });
+      var data = await r.json().catch(function(){return {};});
+      if(r.ok){
+        showEditMsg('✅ Đã lưu thay đổi!', true);
+        setTimeout(function(){ closeEditDrawer(); loadBank(); }, 900);
+      } else {
+        showEditMsg('❌ Lỗi: '+(data.error||r.status), false);
+      }
+    }catch(e){ showEditMsg('❌ Lỗi kết nối', false); }
+  }
+
+  async function deleteExercise(id, title){
+    if(!confirm('Xoá đề "'+title+'"?\n\nHành động này không thể hoàn tác!')) return;
+    try{
+      var r = await fetch('/api/exercises/'+id,{method:'DELETE',credentials:'same-origin'});
+      if(r.ok){ loadBank(); }
+      else { var d=await r.json().catch(function(){return {};}); alert('Lỗi: '+(d.error||r.status)); }
+    }catch(e){ alert('Lỗi kết nối'); }
+  }
+
+  // Close drawer on Escape
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeEditDrawer(); });
 </script>
 </body>
 </html>

@@ -339,7 +339,7 @@ app.get('/api/exercises', (req, res) => {
 });
 
 app.get('/api/exercises/:id', (req, res) => {
-  const ex = db.prepare('SELECT id,program,skill,title,content,questions,image_url,audio_url,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
+  const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private) {
     if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
@@ -380,6 +380,51 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
   const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,is_private,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
     .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, is_private ? 1 : 0, req.user.id, now());
   res.json({ id: Number(r.lastInsertRowid) });
+});
+
+// Giáo viên/Admin cập nhật đề
+app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
+  const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(req.params.id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
+    return res.status(403).json({ error: 'Bạn không có quyền sửa đề này.' });
+
+  const { program, skill, title, content, image_url, is_private, questions } = req.body || {};
+  if (!title || !title.trim()) return res.status(400).json({ error: 'Tên đề không được để trống.' });
+
+  let qJson = ex.questions, keyJson = ex.answer_key;
+  if (Array.isArray(questions) && questions.length) {
+    keyJson = JSON.stringify(questions.map(q => String(q.answer || '').trim().toUpperCase()));
+    qJson   = JSON.stringify(questions.map(q => ({ q: q.q, options: q.options })));
+  }
+
+  // image_url=null → xoá ảnh; image_url=undefined → giữ nguyên
+  const newImg = image_url !== undefined ? (image_url || null) : ex.image_url;
+
+  db.prepare(`UPDATE exercises
+    SET program=?,skill=?,title=?,content=?,image_url=?,is_private=?,questions=?,answer_key=?
+    WHERE id=?`)
+    .run(
+      program  || ex.program,
+      skill    || ex.skill,
+      title.trim(),
+      content  ?? ex.content,
+      newImg,
+      is_private ? 1 : 0,
+      qJson, keyJson,
+      ex.id
+    );
+  res.json({ ok: true });
+});
+
+// Giáo viên/Admin xoá đề
+app.delete('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
+  const ex = db.prepare('SELECT id,created_by FROM exercises WHERE id=?').get(req.params.id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
+    return res.status(403).json({ error: 'Bạn không có quyền xoá đề này.' });
+  db.prepare('DELETE FROM exercises WHERE id=?').run(ex.id);
+  res.json({ ok: true });
 });
 
 // ===================== API NỘP BÀI =====================
