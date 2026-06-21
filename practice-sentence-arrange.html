@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sắp xếp câu — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=10">
+<style>
+/* ── Topic / Level cards ── */
+.topic-card {
+  background:#fff; border:2px solid var(--border); border-radius:var(--radius);
+  padding:24px 20px; text-align:center; cursor:pointer;
+  transition:border-color .18s, box-shadow .18s, transform .14s;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.topic-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
+.topic-card .t-ico { width:54px; height:54px; border-radius:16px; display:grid; place-items:center; font-size:26px; }
+.topic-card h3 { font-size:16px; margin:0; }
+.topic-card p  { font-size:13px; color:var(--text-muted); margin:0; line-height:1.5; }
+
+.level-btn {
+  border:2px solid var(--border); border-radius:14px; padding:18px 24px;
+  background:#fff; cursor:pointer; text-align:center; transition:all .18s;
+  font-family:var(--font);
+}
+.level-btn:hover { border-color:var(--primary); background:var(--primary-soft); }
+.level-btn.active { border-color:var(--primary); background:var(--primary-soft); }
+.level-btn .lv-badge { display:inline-block; font-size:20px; font-weight:800; color:var(--primary); margin-bottom:6px; }
+.level-btn .lv-name  { font-size:15px; font-weight:600; display:block; margin-bottom:4px; }
+.level-btn .lv-desc  { font-size:12.5px; color:var(--text-muted); }
+
+/* ── Word chips ── */
+.word-chip {
+  display:inline-flex; align-items:center; padding:8px 14px;
+  background:var(--primary-soft); color:var(--primary);
+  border:1.5px solid rgba(123,110,246,.25); border-radius:30px;
+  font-size:14.5px; font-weight:600; cursor:pointer; user-select:none;
+  transition:background .12s, transform .1s, opacity .12s;
+  font-family:var(--font);
+}
+.word-chip:hover { background:#ddd5ff; transform:scale(1.05); }
+.word-chip.correct { background:#d1fae5; color:#065f46; border-color:#6ee7b7; cursor:default; }
+.word-chip.wrong   { background:#fee2e2; color:#991b1b; border-color:#fca5a5; cursor:default; }
+.word-chip.used    { opacity:.3; cursor:not-allowed; pointer-events:none; }
+
+/* ── Answer area ── */
+.answer-area {
+  min-height:56px; border:2px dashed var(--border); border-radius:12px;
+  padding:10px 12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  background:#fafafe; transition:border-color .2s;
+}
+.answer-area.has-content { border-color:var(--primary-2); }
+.answer-area .placeholder { color:var(--text-faint); font-size:14px; }
+
+/* ── Progress bar ── */
+.progress-bar { height:6px; border-radius:99px; background:var(--border); overflow:hidden; margin-bottom:8px; }
+.progress-fill { height:100%; border-radius:99px; background:var(--gradient); transition:width .3s; }
+
+/* ── Result summary ── */
+.result-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:10px; margin-bottom:8px; font-size:14px; }
+.result-row.ok  { background:#d1fae5; color:#065f46; }
+.result-row.bad { background:#fee2e2; color:#991b1b; }
+</style>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb"><a href="practice.html">Luyện tập</a> › Sắp xếp câu</div>
+    <h1>🔀 Sắp xếp từ thành câu</h1>
+    <p>Chọn chủ đề và cấp độ — rồi sắp xếp các từ thành câu hoàn chỉnh đúng ngữ pháp.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:34px; padding-bottom:60px;">
+<div class="container" style="max-width:820px;">
+
+  <!-- ═══ SCREEN 0: CHỌN CHỦ ĐỀ ═══ -->
+  <div id="screenTopic">
+    <div class="section-head" style="margin-bottom:20px;"><h2 style="font-size:20px;">Chọn chủ đề</h2></div>
+    <div class="grid grid-3" id="topicGrid"></div>
+  </div>
+
+  <!-- ═══ SCREEN 1: CHỌN CẤP ĐỘ ═══ -->
+  <div id="screenLevel" style="display:none;">
+    <button class="btn btn-sm" onclick="backToTopics()" style="margin-bottom:20px;">← Đổi chủ đề</button>
+    <div id="levelTopicLabel" style="margin-bottom:20px;"></div>
+    <div class="grid grid-3" style="gap:16px;" id="levelGrid"></div>
+  </div>
+
+  <!-- ═══ SCREEN 2: BÀI TẬP ═══ -->
+  <div id="screenExercise" style="display:none;">
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+      <button class="btn btn-sm" onclick="backToLevel()">← Đổi cấp độ</button>
+      <span id="exMeta" style="font-size:13px; color:var(--text-muted);"></span>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--text-faint); margin-bottom:20px;">
+      <span id="progressLabel">Câu 1/20</span>
+      <span id="scoreLabel">Đúng: 0</span>
+    </div>
+
+    <!-- Answer area -->
+    <div style="margin-bottom:14px;">
+      <div style="font-size:13px; font-weight:600; color:var(--text-faint); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em;">Câu của bạn</div>
+      <div class="answer-area" id="answerArea">
+        <span class="placeholder" id="answerPlaceholder">Bấm các từ bên dưới để xếp vào đây...</span>
+      </div>
+    </div>
+
+    <!-- Word bank -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px; font-weight:600; color:var(--text-faint); margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em;">Từ gợi ý</div>
+      <div id="wordBank" style="display:flex; flex-wrap:wrap; gap:8px; min-height:44px;"></div>
+    </div>
+
+    <!-- Controls -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+      <button class="btn btn-primary" id="btnCheck" onclick="checkAnswer()">✓ Kiểm tra</button>
+      <button class="btn" id="btnReset" onclick="resetChips()">↺ Làm lại</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextSentence()" style="display:none; margin-left:auto;">Câu tiếp theo →</button>
+    </div>
+
+    <!-- Feedback -->
+    <div id="feedback" style="display:none; border-radius:12px; padding:16px 18px; margin-bottom:16px;"></div>
+  </div>
+
+  <!-- ═══ SCREEN 3: KẾT QUẢ ═══ -->
+  <div id="screenResult" style="display:none;">
+    <div class="card" style="text-align:center; padding:36px 24px; margin-bottom:24px;">
+      <div id="resultEmoji" style="font-size:54px; margin-bottom:12px;"></div>
+      <h2 id="resultTitle" style="margin-bottom:8px;"></h2>
+      <p id="resultSub" style="color:var(--text-muted); margin-bottom:24px;"></p>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="replayLevel()">↺ Luyện lại cấp này</button>
+        <button class="btn" onclick="backToTopics()">Chọn chủ đề khác</button>
+      </div>
+    </div>
+    <div id="resultList"></div>
+  </div>
+
+</div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=10"></script>
+<script>
+// ═══════════════════════════════════════════════════════
+//  DỮ LIỆU CÂU BÀI TẬP
+// ═══════════════════════════════════════════════════════
+var DATA = {
+  environment: {
+    name: 'Environment', nameVi: 'Môi trường', icon: '🌍', color: 'ico-teal',
+    sentences: {
+      A2: [
+        'Trees help us to breathe clean air.',
+        'We should recycle glass, paper, and plastic.',
+        'Animals need clean water to survive.',
+        'Do not throw rubbish in the street.',
+        'Riding a bicycle is good for the planet.',
+        'Solar panels use energy from the sun.',
+        'People should use less plastic every day.',
+        'The weather is getting warmer each year.',
+        'We must turn off lights to save energy.',
+        'Forests are home to many wild animals.',
+        'Factories often pollute the air and water.',
+        'Children can help by picking up litter.',
+        'Fish die when rivers become too polluted.',
+        'Walking to school is better for the environment.',
+        'We can save water by fixing leaky taps.',
+        'Electric cars do not produce exhaust fumes.',
+        'Reusable bags are better than plastic ones.',
+        'The sea is full of dangerous plastic waste.',
+        'Burning rubbish creates a lot of harmful smoke.',
+        'Planting trees is one of the best ways to help.',
+        'Many birds are harmed by oil spills at sea.',
+        'We should protect endangered animals from hunters.',
+        'Turning off the tap saves a lot of water.',
+        'Green spaces in cities improve air quality.',
+        'Small daily habits can help protect our planet.'
+      ],
+      B1: [
+        'Climate change is one of the most serious challenges facing the world today.',
+        'Governments need to invest heavily in renewable energy sources.',
+        'People should reduce their use of single-use plastics to protect the oceans.',
+        'The destruction of rainforests is causing many species to become extinct.',
+        'Air pollution in big cities is a major health risk for local residents.',
+        'Rising sea levels are threatening many low-lying coastal communities around the world.',
+        'Public transport is an effective way to reduce carbon emissions in cities.',
+        'Recycling aluminium cans uses far less energy than producing new ones.',
+        'Many scientists believe that global temperatures will continue to rise significantly.',
+        'Sustainable farming methods help to protect soil quality for future generations.',
+        'Water shortages are already affecting millions of people in parts of Africa and Asia.',
+        'Habitat destruction is the leading cause of biodiversity loss across the globe.',
+        'Chemical pesticides are harmful to bees and other vital pollinators.',
+        'Energy-efficient homes can dramatically reduce household electricity consumption.',
+        'Electric vehicles are becoming more popular as battery technology improves.',
+        'Environmental education in schools can inspire young people to live more sustainably.',
+        'Ocean acidification, caused by rising CO2 levels, is damaging coral reefs worldwide.',
+        'Many countries have set ambitious targets to achieve net-zero emissions by 2050.',
+        'Deforestation is releasing vast amounts of carbon dioxide into the atmosphere.',
+        'Reducing food waste is one of the most effective ways to lower your carbon footprint.',
+        'Wind farms generate clean electricity without producing harmful greenhouse gases.',
+        'International cooperation is essential for addressing the global problem of climate change.',
+        'Installing solar panels can significantly reduce a household\'s reliance on fossil fuels.',
+        'Plastic waste in the ocean harms marine life and enters the human food chain.',
+        'Eco-friendly packaging is becoming more popular among businesses and consumers.'
+      ],
+      B2: [
+        'Deforestation is fundamentally undermining the ecological balance of our planet.',
+        'Policymakers must urgently prioritise the transition to clean energy to avert a climate catastrophe.',
+        'Microplastics in marine ecosystems pose an increasingly underestimated threat to global biodiversity.',
+        'Carbon offsetting enables corporations to avoid making meaningful reductions in their emissions.',
+        'Climate change disproportionately affects developing nations, raising profound questions of environmental justice.',
+        'Unprecedented droughts are disrupting agricultural systems in previously temperate regions worldwide.',
+        'Corporate greenwashing misleads consumers and diverts attention from substantive environmental reform.',
+        'The commodification of natural resources has historically driven large-scale environmental degradation.',
+        'A genuine circular economy would require fundamentally restructuring global production and consumption patterns.',
+        'Ocean acidification threatens the long-term viability of coral reef ecosystems worldwide.',
+        'Permafrost thawing in Arctic regions could trigger an irreversible cycle of accelerated warming.',
+        'Restoring degraded ecosystems demands sustained political will and substantial long-term financial investment.',
+        'Fossil fuel lobbying has significantly hampered the development of effective climate legislation.',
+        'Technological innovation alone cannot address the deep structural causes of our environmental crisis.',
+        'Environmental refugees represent a growing challenge that existing international law is ill-equipped to address.',
+        'Biodiversity loss is eroding the resilience of ecosystems at an alarming and unprecedented rate.',
+        'The precautionary principle holds that environmental protection should not be delayed pending full scientific certainty.',
+        'Fossil fuel subsidies continue to distort energy markets and impede the transition to sustainability.',
+        'The social cost of carbon is an indispensable but deeply contested metric in climate policy.',
+        'Multilateral climate agreements represent a fragile but necessary step towards coordinated global action.',
+        'The exploitation of deep-sea resources poses uncharted risks to little-understood marine ecosystems.',
+        'Voluntary corporate sustainability pledges are widely regarded as insufficient substitutes for binding regulation.',
+        'Rewilding degraded landscapes can restore ecological functions and help mitigate the effects of climate change.',
+        'The disproportionate carbon footprint of the wealthiest populations demands urgent attention from policymakers.',
+        'Subsidising sustainable agriculture would simultaneously advance food security and environmental protection goals.'
+      ]
+    }
+  },
+
+  education: {
+    name: 'Education', nameVi: 'Giáo dục', icon: '📚', color: 'ico-blue',
+    sentences: {
+      A2: [
+        'Education is very important for everyone in the world.',
+        'Children should go to school every day to learn.',
+        'Good teachers help students to understand difficult subjects.',
+        'Reading books is one of the best ways to learn.',
+        'Schools should have computers for every student to use.',
+        'Parents play an important role in their children\'s education.',
+        'Learning a foreign language can open many doors in life.',
+        'Libraries are great places to study and find information.',
+        'Students work harder when they feel motivated and supported.',
+        'Sports and music are also important parts of school life.',
+        'Every child has the right to receive a good education.',
+        'University education can lead to better job opportunities.',
+        'Doing homework helps you to practise what you have learned.',
+        'Group projects help students to develop teamwork skills.',
+        'Online learning allows students to study from home.',
+        'Exams can be stressful but they help to measure progress.',
+        'Teachers should give clear and helpful feedback to students.',
+        'It is never too late to start learning something new.',
+        'A good education can change a person\'s life completely.',
+        'Classrooms should be fun and comfortable places to learn.',
+        'Students learn best when they are curious and interested.',
+        'Schools teach children how to read, write, and think.',
+        'Field trips make learning more exciting and memorable.',
+        'A dictionary is a very useful tool for language learners.',
+        'Asking questions in class is a great way to learn.'
+      ],
+      B1: [
+        'Access to quality education remains deeply unequal in many parts of the world.',
+        'Technology is transforming the way students learn both inside and outside the classroom.',
+        'A well-educated population is essential for the economic development of any country.',
+        'Students who read widely tend to develop stronger critical thinking and analytical skills.',
+        'Practical skills should be given more emphasis in school curricula alongside academic knowledge.',
+        'The pressure to achieve high exam grades is causing increasing levels of stress among teenagers.',
+        'Distance learning programmes have made university education accessible to people in remote areas.',
+        'Investing in early childhood education produces significant long-term social and economic benefits.',
+        'Class size has a direct impact on the quality of teaching and individual student attention.',
+        'Bilingual education can help children develop cognitive flexibility and greater cultural awareness.',
+        'Many young people are choosing vocational training as an alternative to traditional university degrees.',
+        'Critical thinking skills are among the most important abilities that schools should cultivate.',
+        'Students from disadvantaged backgrounds are more likely to underperform without adequate additional support.',
+        'Lifelong learning is becoming increasingly important in a rapidly changing and technology-driven economy.',
+        'Standardised testing has been criticised for encouraging teaching to the test rather than deep understanding.',
+        'Educational technology such as interactive whiteboards can enhance classroom engagement significantly.',
+        'The gender gap in education still exists in many countries, particularly at the secondary level.',
+        'Outdoor learning experiences can make lessons more engaging and memorable for young learners.',
+        'Teacher quality is widely recognised as the single most important factor in student achievement.',
+        'Schools play a crucial role in developing social skills alongside academic knowledge.',
+        'Early intervention for children with learning difficulties can significantly improve their long-term outcomes.',
+        'Parental involvement in education is strongly associated with higher levels of student achievement.',
+        'Extracurricular activities help students develop leadership skills and discover new passions outside the classroom.',
+        'The increasing use of artificial intelligence in education raises important questions about assessment integrity.',
+        'Creative subjects such as art and drama develop imagination and emotional intelligence in students.'
+      ],
+      B2: [
+        'The commercialisation of higher education has intensified debates about knowledge and economic productivity.',
+        'Educational inequality perpetuates social stratification by limiting access to skills and credentials needed for upward mobility.',
+        'A standardised curriculum, while ensuring consistency, risks undermining the pedagogical autonomy that effective teaching demands.',
+        'The relentless emphasis on measurable outcomes has come at the expense of creativity, resilience, and emotional intelligence.',
+        'Privatisation of education systems has been shown to exacerbate inequalities rather than improve quality as promised.',
+        'Digital literacy is now as fundamental to education as numeracy and reading were in previous generations.',
+        'The proliferation of misinformation makes developing critical media literacy skills an educational priority of the first order.',
+        'Neuroscientific research is increasingly informing our understanding of how children learn and what environments best support development.',
+        'University rankings have attracted criticism for incentivising research output at the expense of teaching quality.',
+        'The widening gap between the skills employers demand and those education systems produce is a structural challenge worldwide.',
+        'Rote learning, while efficient for memorisation, is largely ineffective for developing deep conceptual understanding.',
+        'The mental health crisis among students reflects the inadequacy of educational institutions in fostering emotional resilience.',
+        'Inclusive education, integrating students with disabilities into mainstream classrooms, requires substantial investment in teacher training.',
+        'The assumption that a university degree is the optimal pathway to success is increasingly being challenged.',
+        'Assessment frameworks prioritising process over product may provide a more accurate picture of genuine intellectual capability.',
+        'The democratisation of knowledge through open-access platforms is disrupting traditional models of educational provision.',
+        'Schools that cultivate a love of learning, rather than merely a drive for grades, produce more adaptable graduates.',
+        'The underrepresentation of women in STEM reflects deep-seated cultural biases that education systems have yet to dismantle.',
+        'Intergenerational transmission of educational disadvantage suggests that systemic reform, not individual intervention, is needed to achieve equity.',
+        'Culturally responsive pedagogy seeks to ensure that education reflects and affirms the diverse backgrounds of all students.',
+        'The disproportionate influence of elite universities on societal outcomes perpetuates privilege rather than enabling genuine meritocracy.',
+        'Over-reliance on technology in education risks eroding the interpersonal dimensions of learning that are essential for social development.',
+        'Childhood play is now recognised as a critical component of cognitive and emotional development, not a distraction from learning.',
+        'The commodification of academic credentials has diminished their value as reliable signals of genuine competence and knowledge.',
+        'Educational systems that fail to adapt to rapid technological change risk producing graduates ill-equipped for the modern workforce.'
+      ]
+    }
+  },
+
+  health: {
+    name: 'Health', nameVi: 'Sức khoẻ', icon: '🏥', color: 'ico-pink',
+    sentences: {
+      A2: [
+        'Eating fresh fruit and vegetables every day is very good for you.',
+        'Regular exercise helps to keep your heart strong and healthy.',
+        'It is important to drink enough water throughout the day.',
+        'Getting enough sleep helps your body to rest and recover.',
+        'Washing your hands often can prevent the spread of illness.',
+        'Too much sugar in your diet can cause serious health problems.',
+        'Going for a walk every day is great for your health.',
+        'Doctors advise us to eat less salt and fatty food.',
+        'Mental health is just as important as physical health.',
+        'Children need plenty of exercise to grow up strong and healthy.',
+        'Smoking is very bad for your lungs and your heart.',
+        'A balanced diet means eating a wide variety of different foods.',
+        'Stress can affect both your mental and your physical wellbeing.',
+        'People who exercise regularly tend to live longer, healthier lives.',
+        'Spending time outside in fresh air can really boost your mood.',
+        'Regular check-ups with your doctor can help catch problems early.',
+        'Eating breakfast gives you energy to concentrate at school or work.',
+        'Drinking too much alcohol is very harmful to your health.',
+        'Good hygiene habits protect you and others from infection and illness.',
+        'Sports and outdoor activities are fun ways to keep fit.',
+        'It is important to rest when you are feeling tired or unwell.',
+        'Cooking at home is usually healthier than eating fast food.',
+        'Fruit smoothies are a delicious and healthy way to start the day.',
+        'Sitting for too long each day is bad for your back and health.',
+        'A healthy lifestyle includes both regular exercise and a good diet.'
+      ],
+      B1: [
+        'Obesity rates are rising globally, largely due to unhealthy diets and sedentary lifestyles.',
+        'Mental health services are severely underfunded in many countries, leaving millions without the support they need.',
+        'A diet rich in fibre, protein, and healthy fats can significantly reduce the risk of chronic disease.',
+        'Governments should invest more in preventative healthcare to reduce the long-term burden on health systems.',
+        'Physical activity has been shown to reduce symptoms of anxiety and depression in people of all ages.',
+        'Access to affordable healthcare is still unavailable to large portions of the global population.',
+        'Spending long hours sitting at a desk can lead to serious cardiovascular and musculoskeletal health problems.',
+        'The rise of social media has been linked to increasing rates of body image issues among teenagers.',
+        'Regular medical screenings can detect diseases such as cancer at an early and more treatable stage.',
+        'Childhood vaccination programmes have successfully eradicated or reduced many previously life-threatening diseases.',
+        'Excessive consumption of processed food is a major contributor to rising rates of type 2 diabetes.',
+        'Healthcare workers face significant levels of stress and burnout due to high workloads and poor conditions.',
+        'Many people are turning to yoga and meditation to manage stress and improve their mental wellbeing.',
+        'Urban environments can negatively impact health through increased exposure to air pollution and chronic noise.',
+        'The global pharmaceutical industry has been criticised for prioritising profit over access to essential medicines.',
+        'Sleep deprivation is increasingly recognised as a serious public health issue with wide-ranging consequences.',
+        'A strong immune system can be supported through regular exercise, good nutrition, and sufficient sleep.',
+        'Binge drinking among young people remains a serious public health concern in many developed countries.',
+        'Telemedicine is making healthcare more accessible for people living in remote or underserved communities.',
+        'The growing evidence linking ultra-processed foods to poor health outcomes is prompting calls for stricter labelling laws.',
+        'Sedentary screen-based leisure is replacing physical activity for many children, with serious health consequences.',
+        'Preventative health education in schools could significantly reduce the incidence of lifestyle-related diseases.',
+        'The rising prevalence of allergies and autoimmune conditions is thought to be linked to modern lifestyle factors.',
+        'Social isolation has been shown to have a significant negative impact on both mental and physical health.',
+        'Chronic stress elevates cortisol levels, which over time can damage the heart and impair immune function.'
+      ],
+      B2: [
+        'The commodification of healthcare means the quality of care a patient receives is increasingly determined by financial means.',
+        'Sedentary lifestyles, exacerbated by digital technology, are contributing to a global epidemic of chronic non-communicable diseases.',
+        'The psychological impact of social media on adolescent self-esteem represents an urgent and underresearched public health challenge.',
+        'Antimicrobial resistance, driven by the overuse of antibiotics, poses one of the gravest long-term threats to global health.',
+        'Healthcare systems structured around reactive treatment rather than proactive prevention are both less effective and substantially more costly.',
+        'The intersection of poverty and ill health creates a self-perpetuating cycle that individual-level interventions cannot adequately break.',
+        'Pharmaceutical companies\' excessive pricing of life-saving medications raises profound ethical questions about intellectual property and human wellbeing.',
+        'The global mental health crisis demands a fundamental rethinking of how societies conceptualise and resource psychological support services.',
+        'Technological advances in genomics and personalised medicine are beginning to transform our understanding of disease and therapeutic intervention.',
+        'Public health campaigns that frame lifestyle choices solely as individual responsibility obscure the structural determinants of health and illness.',
+        'The medicalisation of ordinary human experience, including ageing and grief, reflects a troubling expansion of the biomedical paradigm.',
+        'Health inequality, which correlates closely with socioeconomic status, is a moral indictment of societies that profess a commitment to fairness.',
+        'Burnout among healthcare professionals is a systemic consequence of chronic underfunding and structural inefficiencies, not a personal failing.',
+        'The tension between individual liberty and collective public health obligations has been sharpened by debates over mandatory vaccination.',
+        'Neurodegenerative diseases such as Alzheimer\'s are placing an increasingly unsustainable burden on healthcare systems and informal caregivers.',
+        'Addressing the social determinants of health, including housing and income inequality, is essential for lasting improvements in population wellbeing.',
+        'The global burden of non-communicable diseases disproportionately falls on low-income countries, where health infrastructure is least equipped to respond.',
+        'Integrating mental and physical healthcare, rather than treating them as separate domains, is a necessary step towards holistic health provision.',
+        'The overdiagnosis of minor conditions represents a significant and underappreciated source of unnecessary harm within modern healthcare systems.',
+        'Epigenetic research suggests that adverse childhood experiences can have lasting physiological consequences that extend across generations.',
+        'The commercialisation of fitness culture risks reducing health to an aesthetic aspiration rather than a holistic state of wellbeing.',
+        'Digital health technologies offer transformative potential for self-monitoring, but raise significant concerns about data privacy and algorithmic bias.',
+        'The growing evidence base for the health benefits of green spaces challenges urban planners to rethink the design of cities.',
+        'Food deserts in low-income urban areas entrench nutritional inequality by limiting access to affordable and healthy food options.',
+        'Polypharmacy in elderly patients is a growing concern, as interactions between multiple medications can cause serious adverse effects.'
+      ]
+    }
+  },
+
+  technology: {
+    name: 'Technology', nameVi: 'Công nghệ', icon: '💻', color: 'ico-purple',
+    sentences: {
+      A2: [
+        'Smartphones help us to communicate with people all over the world.',
+        'Children spend too much time on screens and not enough time outside.',
+        'The internet makes it easy to find information on any topic.',
+        'Many people use apps on their phones to manage their daily lives.',
+        'Social media allows us to share photos and news with friends.',
+        'Computers have made many jobs much faster and more efficient.',
+        'Online shopping is a convenient way to buy things without leaving home.',
+        'Technology is changing the way we learn, work, and communicate.',
+        'Most young people today cannot imagine life without their mobile phones.',
+        'Robots are now used in factories to build cars and other products.',
+        'Video calls help families to stay in touch when they live far apart.',
+        'Electric vehicles are becoming a popular alternative to petrol-powered cars.',
+        'Smart devices in the home can help us to save energy and money.',
+        'The internet can be a dangerous place if you are not careful.',
+        'Many schools now use tablets and computers instead of traditional textbooks.',
+        'Digital banking makes it easy to manage your money from anywhere.',
+        'Scientists use powerful computers to analyse huge amounts of data.',
+        'Artificial intelligence is being used in many different fields today.',
+        'Online games can be fun but they should not take up too much time.',
+        'Technology has created many new jobs that did not exist before.',
+        'Streaming services allow us to watch films and TV shows on demand.',
+        'GPS technology makes it easy to find your way around an unfamiliar city.',
+        'Social media can be used to raise awareness about important global issues.',
+        'Password security is very important to protect your personal information online.',
+        'Technology has made it possible to work and study from anywhere in the world.'
+      ],
+      B1: [
+        'Artificial intelligence is rapidly transforming industries ranging from healthcare to finance and transportation.',
+        'Social media platforms have fundamentally changed the way people communicate and consume information.',
+        'Increased screen time among children has been linked to reduced physical activity and poor sleep quality.',
+        'Cybersecurity threats are becoming more sophisticated and pose serious risks to individuals and organisations.',
+        'Automation is expected to displace millions of jobs across many sectors in the coming decades.',
+        'Online misinformation spreads rapidly and can have serious consequences for public health and democracy.',
+        'Remote working technology has given employees greater flexibility but has blurred the boundaries between work and home.',
+        'The digital divide means that many people in developing countries still lack reliable access to the internet.',
+        'Big data analytics allows companies to personalise their products and services to individual consumer preferences.',
+        'Privacy concerns are growing as technology companies collect and store ever-larger amounts of personal data.',
+        'Electric vehicles are gaining popularity due to advances in battery technology and falling production costs.',
+        'Streaming platforms have disrupted traditional media industries and fundamentally changed how we consume entertainment.',
+        'Wearable health devices can monitor vital signs and help users to take better care of themselves.',
+        'The rise of e-commerce has posed significant challenges for traditional high street retailers around the world.',
+        'Renewable energy technology is advancing rapidly, making solar and wind power increasingly cost-competitive with fossil fuels.',
+        'Young people who grow up with technology often develop strong digital literacy skills from an early age.',
+        'Algorithmic decision-making in areas such as lending and recruitment raises serious concerns about fairness and bias.',
+        'Smart city technology can improve efficiency in areas such as traffic management and waste collection.',
+        'The widespread adoption of smartphones has had a profound impact on interpersonal relationships and social behaviour.',
+        '3D printing technology is enabling rapid prototyping and is beginning to transform manufacturing and medicine.',
+        'Cloud computing allows individuals and businesses to store and access data from any location with an internet connection.',
+        'The growing reliance on algorithms for content recommendation raises concerns about the narrowing of information exposure.',
+        'Fintech innovations are disrupting traditional banking by offering faster, cheaper, and more accessible financial services.',
+        'The internet of things is connecting everyday objects to the internet, creating opportunities and new security risks.',
+        'Virtual reality technology is being explored as a training tool in fields ranging from surgery to pilot instruction.'
+      ],
+      B2: [
+        'The pervasive integration of algorithmic systems into public decision-making raises profound questions of accountability and transparency.',
+        'Artificial intelligence, while offering transformative potential, is simultaneously exacerbating existing inequalities in access to economic opportunity.',
+        'The monopolistic dominance of a handful of technology corporations over digital infrastructure threatens market competition and democratic governance.',
+        'Surveillance capitalism, which commodifies personal data without meaningful consent, fundamentally undermines the individual right to privacy.',
+        'The automation of cognitive labour challenges long-held assumptions about the inherent value and dignity of human work.',
+        'Technological solutionism, the belief that complex social problems can be resolved through innovation, obscures the need for political change.',
+        'The rapid proliferation of deepfakes and synthetic media is eroding the epistemic foundations on which democratic discourse depends.',
+        'Digital addiction, characterised by compulsive and uncontrolled technology use, is emerging as a significant mental health challenge.',
+        'The environmental cost of data centres and cryptocurrency mining is undermining the narrative of technology as a green enterprise.',
+        'Platform economies have created new forms of precarious labour that existing employment legislation was not designed to regulate.',
+        'The opaque nature of machine learning algorithms makes it difficult to identify and challenge instances of systemic discrimination.',
+        'Geopolitical competition over technological supremacy, particularly in artificial intelligence and semiconductors, is reshaping international power dynamics.',
+        'Biometric surveillance systems deployed in public spaces represent an unprecedented expansion of state power over citizens\' daily lives.',
+        'The democratisation of content creation has simultaneously empowered marginalised voices and provided new platforms for harmful extremism.',
+        'Social media recommendation algorithms, optimised for engagement rather than accuracy, have contributed to the radicalisation of political discourse.',
+        'The increasing dependence of critical infrastructure on interconnected digital systems creates systemic vulnerabilities that are difficult to manage.',
+        'The concentration of digital expertise in affluent urban populations risks deepening socioeconomic stratification in the knowledge economy.',
+        'Quantum computing\'s disruptive potential extends from pharmaceutical research to cryptography, with profound implications for global security.',
+        'The ethics of autonomous weapons systems demand urgent international deliberation given their potential to lower the threshold for armed conflict.',
+        'Platform monopolies, by controlling the infrastructure through which public discourse flows, wield a form of power that existing regulation struggles to address.',
+        'Algorithmic amplification of emotionally provocative content reflects a fundamental misalignment between commercial incentives and the public interest.',
+        'The gamification of productivity applications exploits psychological reward mechanisms in ways that may undermine users\' genuine autonomy.',
+        'Transhumanist visions of cognitive enhancement challenge established moral and philosophical frameworks concerning human identity and dignity.',
+        'The erosion of net neutrality principles threatens to transform the open internet into a tiered system that disadvantages smaller voices.',
+        'Cybersecurity vulnerabilities in connected medical devices represent an emerging intersection of technological risk and patient safety concerns.'
+      ]
+    }
+  },
+
+  society: {
+    name: 'Society', nameVi: 'Xã hội', icon: '🏘️', color: 'ico-amber',
+    sentences: {
+      A2: [
+        'People should respect each other regardless of age, race, or gender.',
+        'Volunteering in your community is a great way to help others.',
+        'The elderly deserve care and respect from younger generations.',
+        'Everyone should have the right to clean water and enough food.',
+        'Crime rates are lower in areas with good schools and strong communities.',
+        'People from different cultures can learn a lot from each other.',
+        'Homelessness is a serious problem in many cities around the world.',
+        'Children need safe places to play and grow up in.',
+        'Good neighbours make a community a better place to live.',
+        'People with disabilities should have equal access to public buildings.',
+        'Charities do important work to help people in need.',
+        'Kindness and generosity make the world a much better place.',
+        'Every person deserves to be treated with dignity and fairness.',
+        'Strong families are the foundation of a healthy society.',
+        'It is important to look after the elderly and vulnerable in society.',
+        'Community centres provide vital support for local people of all ages.',
+        'Women and men should receive equal pay for doing the same job.',
+        'Cultural diversity enriches society and helps people to broaden their outlook.',
+        'Everyone has a responsibility to contribute to their local community.',
+        'Public libraries offer free access to knowledge and learning for everyone.',
+        'Social inequality means that not everyone has the same opportunities in life.',
+        'A strong sense of community can help people to feel safe and supported.',
+        'Children who grow up in poverty face more challenges in later life.',
+        'Access to public transport is essential for people without their own car.',
+        'A fair and just society treats all its citizens with equal respect and dignity.'
+      ],
+      B1: [
+        'Social inequality continues to widen in many countries despite significant economic growth.',
+        'Immigration enriches host societies by bringing new skills, cultures, and perspectives.',
+        'The ageing population is placing increasing pressure on pension systems and healthcare services.',
+        'Gender equality is essential for building a fair and productive society.',
+        'Community volunteering programmes can help to strengthen social cohesion and reduce isolation.',
+        'Poverty is not simply the result of individual choices but of deep structural inequalities.',
+        'Social media has both strengthened community ties and deepened social divisions in modern societies.',
+        'Universal basic income has been proposed as a solution to automation-driven unemployment.',
+        'Affordable housing is increasingly difficult to access for young people and low-income families.',
+        'The breakdown of traditional family structures is reshaping social norms and community support networks.',
+        'Mass incarceration disproportionately affects marginalised communities and perpetuates cycles of disadvantage.',
+        'Cultural integration requires genuine mutual respect and a willingness to engage across differences.',
+        'The welfare state plays a crucial role in protecting citizens from poverty and insecurity.',
+        'Racial discrimination remains a significant barrier to equality of opportunity in many societies.',
+        'Civic engagement, including voting and community activism, is essential to a healthy democracy.',
+        'Mental illness continues to carry a social stigma that prevents many people from seeking help.',
+        'The gig economy is transforming labour markets but creating new forms of insecurity for workers.',
+        'Social capital, the network of relationships within a community, is essential for collective wellbeing.',
+        'Young people\'s declining trust in political institutions poses a significant challenge to democratic societies.',
+        'The commercialisation of public spaces is gradually eroding opportunities for free communal gathering.',
+        'Intergenerational inequality is growing as property ownership becomes increasingly out of reach for young adults.',
+        'Media representation shapes public attitudes towards marginalised groups in ways that can perpetuate stereotypes.',
+        'Access to legal representation is essential for ensuring equal justice for all members of society.',
+        'Loneliness is increasingly recognised as a public health crisis with serious consequences for wellbeing.',
+        'Child poverty has long-lasting consequences for educational outcomes and physical and mental health.'
+      ],
+      B2: [
+        'The erosion of social trust, driven by rising inequality and political polarisation, poses a fundamental threat to democratic governance.',
+        'The normalisation of precarious employment is dismantling the social contract that underpinned post-war prosperity.',
+        'Structural racism, embedded in institutions and systems, cannot be adequately addressed through individual attitude change alone.',
+        'The commodification of public goods such as housing and healthcare has transformed them from rights into market commodities.',
+        'Social mobility, once the hallmark of meritocratic societies, is declining in many developed nations.',
+        'The proliferation of online echo chambers is deepening ideological polarisation and undermining the conditions for civil discourse.',
+        'Universal basic income challenges deeply ingrained assumptions about the relationship between labour, identity, and social value.',
+        'The privatisation of public space is progressively restricting opportunities for genuine communal life in urban environments.',
+        'Austerity measures have disproportionately burdened the most vulnerable members of society, exacerbating pre-existing inequalities.',
+        'The rise of right-wing populism reflects a profound crisis of political representation in liberal democratic systems.',
+        'Intergenerational wealth transfers are reinforcing socioeconomic stratification in ways that undermine the principle of meritocracy.',
+        'The invisibility of unpaid domestic labour within economic frameworks perpetuates the systematic undervaluation of women\'s contributions.',
+        'Punitive criminal justice systems have consistently failed to address the root causes of social harm and recidivism.',
+        'Cultural homogenisation, driven by globalisation and digital media, is eroding the linguistic and cultural diversity of human civilisation.',
+        'The algorithmic curation of news feeds is fragmenting shared reality and making democratic consensus increasingly difficult to achieve.',
+        'Consumerism, as the organising principle of modern life, is generating a spiritual as well as an ecological crisis.',
+        'The growing dependence on charitable giving to meet basic social needs reflects a failure of political will and public policy.',
+        'Social entrepreneurship represents an attempt to harness market mechanisms for social good, but its capacity for systemic change is limited.',
+        'The securitisation of urban public spaces, through surveillance and policing, has gradually transformed them into zones of control.',
+        'The medicalisation of social problems, such as poverty-related stress, diverts attention from the structural conditions that generate them.',
+        'Nationalism, when mobilised against perceived cultural threats, can rapidly transform from civic pride into exclusionary chauvinism.',
+        'The concentration of media ownership in the hands of a few corporations poses a significant threat to pluralism and journalistic independence.',
+        'Restorative justice practices, which prioritise reconciliation over punishment, offer a more humane and arguably more effective response to crime.',
+        'The digital economy\'s reliance on the extraction of personal data represents a new form of enclosure analogous to the privatisation of the commons.',
+        'Social cohesion is undermined not merely by diversity itself but by the failure of institutions to manage diversity with equity and respect.'
+      ]
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+var state = {
+  topic: null, level: null,
+  sentences: [], current: 0,
+  score: 0, results: [],
+  words: [], picked: [], checked: false
+};
+
+// ═══════════════════════════════════════════════════════
+//  TOPIC SELECTION
+// ═══════════════════════════════════════════════════════
+function renderTopics() {
+  var grid = document.getElementById('topicGrid');
+  grid.innerHTML = Object.keys(DATA).map(function(key) {
+    var t = DATA[key];
+    return '<div class="topic-card" onclick="selectTopic(\''+key+'\')">'
+      +'<div class="t-ico '+t.color+'">'+t.icon+'</div>'
+      +'<h3>'+t.name+'</h3>'
+      +'<p>'+t.nameVi+'</p>'
+      +'</div>';
+  }).join('');
+}
+
+function selectTopic(key) {
+  state.topic = key;
+  show('screenLevel');
+  var t = DATA[key];
+  document.getElementById('levelTopicLabel').innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:14px 18px;border:1px solid var(--border);">'
+    +'<span style="font-size:28px;">'+t.icon+'</span>'
+    +'<div><div style="font-weight:700;font-size:16px;">'+t.name+'</div>'
+    +'<div style="font-size:13px;color:var(--text-muted);">'+t.nameVi+' · Chọn cấp độ bên dưới</div></div></div>';
+
+  var levels = [
+    { key:'A2', label:'A2', name:'Cơ bản', desc:'Câu ngắn, từ vựng thông dụng', color:'#22c55e' },
+    { key:'B1', label:'B1', name:'Trung cấp', desc:'Câu dài hơn, từ vựng học thuật cơ bản', color:'#f59e0b' },
+    { key:'B2', label:'B2 / C1', name:'Nâng cao', desc:'Câu phức tạp, từ vựng học thuật nâng cao', color:'#7B6EF6' },
+  ];
+  document.getElementById('levelGrid').innerHTML = levels.map(function(lv) {
+    return '<div class="level-btn" onclick="selectLevel(\''+lv.key+'\')">'
+      +'<div class="lv-badge" style="color:'+lv.color+'">'+lv.label+'</div>'
+      +'<span class="lv-name">'+lv.name+'</span>'
+      +'<span class="lv-desc">'+lv.desc+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+function backToTopics() { state.topic = null; state.level = null; show('screenTopic'); }
+function backToLevel()   { state.level = null; show('screenLevel'); }
+
+// ═══════════════════════════════════════════════════════
+//  LEVEL SELECTION → START EXERCISE
+// ═══════════════════════════════════════════════════════
+function selectLevel(lv) {
+  state.level = lv;
+  var raw = DATA[state.topic].sentences[lv];
+  // Shuffle sentences
+  state.sentences = raw.slice().sort(function() { return Math.random() - 0.5; });
+  state.current = 0; state.score = 0; state.results = [];
+  show('screenExercise');
+  var t = DATA[state.topic];
+  document.getElementById('exMeta').textContent = t.icon + ' ' + t.name + '  ·  ' + lv;
+  renderSentence();
+}
+
+// ═══════════════════════════════════════════════════════
+//  SENTENCE RENDERING
+// ═══════════════════════════════════════════════════════
+function tokenise(sentence) {
+  // Split into tokens preserving punctuation attached to word
+  return sentence.split(/\s+/).filter(Boolean);
+}
+
+function renderSentence() {
+  var total = state.sentences.length;
+  var idx   = state.current;
+  var sentence = state.sentences[idx];
+  state.words   = tokenise(sentence);
+  state.picked  = [];
+  state.checked = false;
+
+  // Progress
+  var pct = (idx / total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = 'Câu ' + (idx + 1) + '/' + total;
+  document.getElementById('scoreLabel').textContent    = 'Đúng: ' + state.score;
+
+  // Shuffle words for bank
+  var shuffled = state.words.slice().sort(function() { return Math.random() - 0.5; });
+  state.shuffledWords = shuffled;
+
+  renderAnswerArea();
+  renderWordBank();
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btnCheck').style.display = 'inline-flex';
+  document.getElementById('btnReset').style.display = 'inline-flex';
+  document.getElementById('btnNext').style.display  = 'none';
+}
+
+function renderWordBank() {
+  var bank = document.getElementById('wordBank');
+  bank.innerHTML = '';
+  state.shuffledWords.forEach(function(w, si) {
+    if (state.picked.indexOf(si) > -1) return;
+    var btn = document.createElement('button');
+    btn.className = 'word-chip';
+    btn.textContent = w;
+    btn.onclick = function() { pickWord(si); };
+    bank.appendChild(btn);
+  });
+}
+
+function renderAnswerArea() {
+  var area = document.getElementById('answerArea');
+  var ph   = document.getElementById('answerPlaceholder');
+  // Remove old chips
+  area.querySelectorAll('.word-chip').forEach(function(c) { c.remove(); });
+  ph.style.display = state.picked.length ? 'none' : 'inline';
+  area.className = 'answer-area' + (state.picked.length ? ' has-content' : '');
+
+  state.picked.forEach(function(si, pos) {
+    var btn = document.createElement('button');
+    btn.className = 'word-chip';
+    btn.textContent = state.shuffledWords[si];
+    if (!state.checked) {
+      btn.onclick = function() { unpickWord(pos); };
+    }
+    area.appendChild(btn);
+  });
+}
+
+function pickWord(si) {
+  if (state.checked) return;
+  state.picked.push(si);
+  renderAnswerArea();
+  renderWordBank();
+}
+
+function unpickWord(pos) {
+  if (state.checked) return;
+  state.picked.splice(pos, 1);
+  renderAnswerArea();
+  renderWordBank();
+}
+
+function resetChips() {
+  if (state.checked) return;
+  state.picked = [];
+  renderAnswerArea();
+  renderWordBank();
+}
+
+// ═══════════════════════════════════════════════════════
+//  CHECK ANSWER
+// ═══════════════════════════════════════════════════════
+function checkAnswer() {
+  if (!state.picked.length) { alert('Bạn chưa xếp từ nào vào câu!'); return; }
+  state.checked = true;
+
+  var userWords   = state.picked.map(function(si) { return state.shuffledWords[si]; });
+  var correctWords = state.words;
+  var isCorrect   = userWords.join(' ') === correctWords.join(' ');
+
+  if (isCorrect) state.score++;
+  state.results.push({ sentence: state.sentences[state.current], user: userWords.join(' '), ok: isCorrect });
+
+  // Colour the chips in answer area
+  var area = document.getElementById('answerArea');
+  var chips = area.querySelectorAll('.word-chip');
+  chips.forEach(function(chip, i) {
+    chip.classList.add(userWords[i] === correctWords[i] ? 'correct' : 'wrong');
+    chip.onclick = null;
+  });
+  // Grey out remaining bank chips
+  document.getElementById('wordBank').querySelectorAll('.word-chip').forEach(function(c) {
+    c.classList.add('used');
+  });
+
+  document.getElementById('scoreLabel').textContent = 'Đúng: ' + state.score;
+
+  // Feedback
+  var fb = document.getElementById('feedback');
+  fb.style.display = 'block';
+  if (isCorrect) {
+    fb.style.background = '#d1fae5'; fb.style.border = '1.5px solid #6ee7b7';
+    fb.innerHTML = '<div style="font-size:22px;margin-bottom:4px;">🎉</div>'
+      +'<div style="font-weight:700;color:#065f46;font-size:15px;">Chính xác!</div>'
+      +'<div style="color:#065f46;margin-top:4px;font-size:14px;">'+hiliteSentence(correctWords, userWords)+'</div>';
+  } else {
+    fb.style.background = '#fff7ed'; fb.style.border = '1.5px solid #fcd34d';
+    fb.innerHTML = '<div style="font-size:22px;margin-bottom:4px;">🤔</div>'
+      +'<div style="font-weight:700;color:#92400e;font-size:15px;">Chưa đúng — đây là câu đúng:</div>'
+      +'<div style="color:#78350f;margin-top:6px;font-size:14.5px;line-height:1.7;">'
+      +hiliteSentence(correctWords, userWords)+'</div>';
+  }
+
+  document.getElementById('btnCheck').style.display = 'none';
+  document.getElementById('btnReset').style.display = 'none';
+  var btnNext = document.getElementById('btnNext');
+  var isLast  = state.current >= state.sentences.length - 1;
+  btnNext.style.display = 'inline-flex';
+  btnNext.textContent = isLast ? 'Xem kết quả →' : 'Câu tiếp theo →';
+}
+
+function hiliteSentence(correctWords, userWords) {
+  return correctWords.map(function(w, i) {
+    var match = userWords[i] === w;
+    return '<span style="font-weight:700;'+(match ? 'color:#065f46' : 'color:#b91c1c;text-decoration:underline;')+'">'+esc(w)+'</span>';
+  }).join(' ');
+}
+
+function nextSentence() {
+  state.current++;
+  if (state.current >= state.sentences.length) {
+    showResult();
+  } else {
+    renderSentence();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  RESULT
+// ═══════════════════════════════════════════════════════
+function showResult() {
+  show('screenResult');
+  var total = state.sentences.length;
+  var pct   = Math.round((state.score / total) * 100);
+  var emoji, title, sub;
+  if (pct >= 90) { emoji='🏆'; title='Xuất sắc!'; sub='Bạn gần như hoàn hảo ở cấp độ này!'; }
+  else if (pct >= 70) { emoji='🎯'; title='Làm tốt lắm!'; sub='Chỉ cần luyện thêm một chút là hoàn hảo!'; }
+  else if (pct >= 50) { emoji='📈'; title='Cố gắng hơn nữa nhé!'; sub='Luyện thêm để cải thiện cấu trúc câu.'; }
+  else { emoji='💪'; title='Tiếp tục cố gắng!'; sub='Hãy thử lại — bạn sẽ tiến bộ rõ rệt!'; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title + ' — ' + state.score + '/' + total + ' câu đúng (' + pct + '%)';
+  document.getElementById('resultSub').textContent   = sub;
+
+  document.getElementById('resultList').innerHTML =
+    '<div class="card"><div class="card-head"><h3>📋 Chi tiết kết quả</h3></div>'
+    + state.results.map(function(r, i) {
+        return '<div class="result-row '+(r.ok ? 'ok' : 'bad')+'">'
+          +'<span>'+(r.ok ? '✅' : '❌')+' <b>Câu '+(i+1)+':</b> '+esc(r.sentence)+'</span>'
+          +(r.ok ? '' : '<span style="font-size:12px;opacity:.75;">Bạn: '+esc(r.user)+'</span>')
+          +'</div>';
+      }).join('')
+    + '</div>';
+}
+
+function replayLevel() { selectLevel(state.level); }
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+function show(screenId) {
+  ['screenTopic','screenLevel','screenExercise','screenResult'].forEach(function(id) {
+    document.getElementById(id).style.display = (id === screenId) ? 'block' : 'none';
+  });
+}
+function esc(s) {
+  return String(s||'').replace(/[&<>"]/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+renderTopics();
+show('screenTopic');
+</script>
+</body>
+</html>
