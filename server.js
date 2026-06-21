@@ -892,7 +892,7 @@ app.get('/api/teacher/assignments', requireRole('teacher','admin'), (req, res) =
   const rows = db.prepare(`
     SELECT a.id, a.student_email, a.deadline, a.note, a.created_at,
            e.id AS exercise_id, e.title, e.program, e.skill,
-           u.name AS student_name,
+           u.id AS student_id, u.name AS student_name,
            g.name AS group_name,
            sub.id AS sub_id, sub.status, sub.score, sub.max_score, sub.submitted_at
     FROM assignments a
@@ -1095,6 +1095,90 @@ app.get('/api/students', requireRole('teacher','admin'), (req, res) => {
     ? db.prepare("SELECT id,name,email FROM users WHERE role='student' AND (LOWER(name) LIKE ? OR LOWER(email) LIKE ?) ORDER BY name LIMIT 20").all('%'+q+'%', '%'+q+'%')
     : db.prepare("SELECT id,name,email FROM users WHERE role='student' ORDER BY name LIMIT 50").all();
   res.json({ students: rows });
+});
+
+// Giáo viên xem profile chi tiết học sinh
+app.get('/api/teacher/student/:id', requireRole('teacher','admin'), (req, res) => {
+  const userId = Number(req.params.id);
+  const student = db.prepare("SELECT id, name, email, created_at FROM users WHERE id=? AND role='student'").get(userId);
+  if (!student) return res.status(404).json({ error: 'Không tìm thấy học sinh.' });
+
+  const subs = db.prepare(`
+    SELECT s.id, s.submitted_at, s.status, s.score, s.max_score, s.feedback,
+           e.title, e.program, e.skill
+    FROM submissions s
+    JOIN exercises e ON e.id = s.exercise_id
+    WHERE s.user_id = ?
+    ORDER BY s.submitted_at DESC
+  `).all(userId);
+
+  const MAX_SCALE = { IELTS: 9, KET: 5, PET: 5, FCE: 5, APTIS: 50 };
+  const criteriaMap = {};
+  const progMap = {};
+  const timeline = [];
+
+  const submissions = subs.map(s => {
+    const maxScale = MAX_SCALE[s.program] || 10;
+    const pct = (s.score != null && s.max_score) ? Math.round(s.score / s.max_score * 100) : null;
+
+    let criteria = [];
+    let summary = '';
+    try {
+      const fb = typeof s.feedback === 'string' ? JSON.parse(s.feedback) : (s.feedback || {});
+      if (fb && Array.isArray(fb.criteria)) {
+        criteria = fb.criteria.map(c => ({
+          name: c.name, score: c.score, max: c.max,
+          pct: c.max ? Math.round(c.score / c.max * 100) : null
+        }));
+        fb.criteria.forEach(c => {
+          const shortName = c.name.split('(')[0].trim();
+          if (!criteriaMap[shortName]) criteriaMap[shortName] = { total_pct: 0, count: 0 };
+          if (c.max) { criteriaMap[shortName].total_pct += (c.score / c.max * 100); criteriaMap[shortName].count++; }
+        });
+      }
+      if (fb && fb.summary) summary = fb.summary;
+    } catch(e) {}
+
+    if (pct !== null) {
+      if (!progMap[s.program]) progMap[s.program] = { total_pct: 0, count: 0, best_pct: 0, total_raw: 0, max_scale: maxScale };
+      const p = progMap[s.program];
+      p.total_pct += pct; p.total_raw += (s.score || 0); p.count++;
+      if (pct > p.best_pct) p.best_pct = pct;
+    }
+    if (pct !== null && s.submitted_at) {
+      timeline.push({ date: s.submitted_at.slice(0, 10), pct, program: s.program });
+    }
+
+    return { id: s.id, title: s.title, program: s.program, skill: s.skill,
+             submitted_at: s.submitted_at, status: s.status, score: s.score,
+             max_score: s.max_score, pct, summary, criteria };
+  });
+
+  const weak_criteria = Object.entries(criteriaMap)
+    .map(([name, v]) => ({ name, avg_pct: Math.round(v.total_pct / v.count), count: v.count }))
+    .sort((a, b) => a.avg_pct - b.avg_pct)
+    .slice(0, 5);
+
+  const by_program = Object.entries(progMap)
+    .map(([program, v]) => ({
+      program, count: v.count,
+      avg_pct: Math.round(v.total_pct / v.count),
+      avg_raw: Math.round(v.total_raw / v.count * 10) / 10,
+      best_pct: v.best_pct, max_scale: v.max_scale
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  const graded_subs = submissions.filter(s => s.pct !== null);
+  const overall_avg_pct = graded_subs.length
+    ? Math.round(graded_subs.reduce((sum, s) => sum + s.pct, 0) / graded_subs.length) : null;
+
+  res.json({
+    student,
+    submissions,
+    stats: { total: subs.length, graded: submissions.filter(s => s.status==='graded').length,
+             overall_avg_pct, by_program, weak_criteria,
+             timeline: timeline.slice().reverse() }
+  });
 });
 
 // ===================== TĨNH =====================
