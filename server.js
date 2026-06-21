@@ -605,6 +605,121 @@ app.get('/api/me/stats', requireAuth, (req, res) => {
   res.json({ done, graded, avgPercent: avg });
 });
 
+// Tiến độ học tập — streak, weekly trend, by-program, week comparison
+app.get('/api/me/progress', requireAuth, (req, res) => {
+  const userId = req.user.id;
+  const MAX_SCALE = { IELTS: 9, KET: 5, PET: 5, FCE: 5, APTIS: 50 };
+
+  const subs = db.prepare(`
+    SELECT s.feedback, s.submitted_at, s.score, s.max_score, e.program
+    FROM submissions s JOIN exercises e ON e.id = s.exercise_id
+    WHERE s.user_id = ? AND s.status = 'graded'
+    ORDER BY s.submitted_at ASC
+  `).all(userId);
+
+  function toDate(raw) {
+    return new Date(raw.includes('T') ? raw : raw.replace(' ', 'T') + 'Z');
+  }
+
+  function parseScore(sub) {
+    if (sub.feedback) {
+      try {
+        const fb = JSON.parse(sub.feedback);
+        if (fb.overall_score != null) {
+          const raw = parseFloat(fb.overall_score);
+          const maxScale = MAX_SCALE[sub.program] || 9;
+          return { raw, pct: Math.round(raw / maxScale * 100) };
+        }
+      } catch (e) {}
+    }
+    if (sub.max_score > 0) {
+      const pct = Math.round(sub.score / sub.max_score * 100);
+      return { raw: pct, pct };
+    }
+    return null;
+  }
+
+  // Unique days set
+  const daySet = new Set(subs.map(s => toDate(s.submitted_at).toISOString().slice(0, 10)));
+
+  // Streak (consecutive days backward from today)
+  const today = new Date(); today.setUTCHours(0, 0, 0, 0);
+  let streak = 0;
+  const cur = new Date(today);
+  for (let i = 0; i < 365; i++) {
+    if (daySet.has(cur.toISOString().slice(0, 10))) { streak++; cur.setUTCDate(cur.getUTCDate() - 1); }
+    else break;
+  }
+
+  // Last 14 calendar days (dot strip)
+  const calDays = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(today); d.setUTCDate(today.getUTCDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    calDays.push({ date: ds, active: daySet.has(ds) });
+  }
+
+  // Weekly (last 10 Mon-weeks)
+  const weekMap = {};
+  subs.forEach(sub => {
+    const d = toDate(sub.submitted_at);
+    const dow = (d.getUTCDay() + 6) % 7;
+    const mon = new Date(d); mon.setUTCDate(d.getUTCDate() - dow); mon.setUTCHours(0, 0, 0, 0);
+    const key = mon.toISOString().slice(0, 10);
+    if (!weekMap[key]) weekMap[key] = { pcts: [], count: 0 };
+    weekMap[key].count++;
+    const sc = parseScore(sub);
+    if (sc) weekMap[key].pcts.push(sc.pct);
+  });
+  const weekly = Object.keys(weekMap).sort().slice(-10).map(key => {
+    const w = weekMap[key];
+    const avg = w.pcts.length ? Math.round(w.pcts.reduce((a, b) => a + b, 0) / w.pcts.length) : null;
+    const dt = new Date(key);
+    return { week: key, label: ('0' + dt.getUTCDate()).slice(-2) + '/' + ('0' + (dt.getUTCMonth() + 1)).slice(-2), count: w.count, avg_pct: avg };
+  });
+
+  // By program
+  const progMap = {};
+  subs.forEach(sub => {
+    const p = sub.program;
+    if (!progMap[p]) progMap[p] = { raws: [], pcts: [], count: 0, best_raw: null, best_pct: null };
+    progMap[p].count++;
+    const sc = parseScore(sub);
+    if (sc) {
+      progMap[p].raws.push(sc.raw); progMap[p].pcts.push(sc.pct);
+      if (progMap[p].best_raw === null || sc.raw > progMap[p].best_raw) {
+        progMap[p].best_raw = sc.raw; progMap[p].best_pct = sc.pct;
+      }
+    }
+  });
+  const by_program = Object.entries(progMap).map(([program, d]) => ({
+    program, count: d.count, max_scale: MAX_SCALE[program] || 9,
+    avg_raw: d.raws.length ? Math.round(d.raws.reduce((a, b) => a + b, 0) / d.raws.length * 10) / 10 : null,
+    avg_pct: d.pcts.length ? Math.round(d.pcts.reduce((a, b) => a + b, 0) / d.pcts.length) : null,
+    best_raw: d.best_raw, best_pct: d.best_pct
+  }));
+
+  // This week vs last week
+  const dow0 = (today.getUTCDay() + 6) % 7;
+  const thisMon = new Date(today); thisMon.setUTCDate(today.getUTCDate() - dow0);
+  const lastMon = new Date(thisMon); lastMon.setUTCDate(thisMon.getUTCDate() - 7);
+  const nextMon = new Date(thisMon); nextMon.setUTCDate(thisMon.getUTCDate() + 7);
+
+  function wkStats(from, to) {
+    const f = from.toISOString().slice(0, 10), t = to.toISOString().slice(0, 10);
+    const ws = subs.filter(s => { const ds = toDate(s.submitted_at).toISOString().slice(0, 10); return ds >= f && ds < t; });
+    const pcts = ws.map(parseScore).filter(Boolean).map(s => s.pct);
+    return { count: ws.length, avg_pct: pcts.length ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : null };
+  }
+
+  res.json({
+    streak, cal_days: calDays, total_days: daySet.size,
+    weekly, by_program,
+    this_week: wkStats(thisMon, nextMon),
+    last_week: wkStats(lastMon, thisMon)
+  });
+});
+
 // ===================== API ADMIN =====================
 
 // Admin tạo tài khoản giáo viên

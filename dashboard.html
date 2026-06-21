@@ -67,6 +67,131 @@
 .prog-aptis { background:#dcfce7; color:#15803d; }
 .prog-other { background:#f1f5f9; color:#475569; }
 
+/* ── Progress section ── */
+.progress-top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+@media (max-width: 750px) { .progress-top-grid { grid-template-columns: 1fr; } }
+
+/* Streak card — dark luxury */
+.streak-card {
+  background: linear-gradient(145deg, #1e1148 0%, #2d1b69 50%, #1a2a5e 100%);
+  border-radius: 20px; padding: 22px; position: relative;
+  overflow: hidden; color: white; min-height: 180px;
+  box-shadow: 0 0 0 1px rgba(111,88,238,.25), 0 6px 30px rgba(30,17,72,.5), 0 2px 4px rgba(0,0,0,.2);
+}
+.streak-card::before {
+  content:''; position:absolute; top:-50px; right:-30px;
+  width:180px; height:180px;
+  background: radial-gradient(circle, rgba(123,110,246,.55) 0%, transparent 65%);
+  border-radius:50%; pointer-events:none;
+}
+.streak-card::after {
+  content:''; position:absolute; bottom:-40px; left:10px;
+  width:130px; height:130px;
+  background: radial-gradient(circle, rgba(79,139,240,.35) 0%, transparent 65%);
+  border-radius:50%; pointer-events:none;
+}
+/* dot-grid texture */
+.streak-card .sc-texture {
+  position:absolute; inset:0; pointer-events:none;
+  background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size:22px 22px;
+}
+.streak-fire { font-size:30px; display:inline-block; animation:fireWiggle 2.2s ease-in-out infinite; }
+@keyframes fireWiggle { 0%,100%{transform:rotate(-6deg) scale(1)} 50%{transform:rotate(6deg) scale(1.12)} }
+.streak-num {
+  font-size:68px; font-weight:800; line-height:1; color:#fff;
+  text-shadow: 0 0 30px rgba(255,200,100,.4), 0 2px 8px rgba(0,0,0,.3);
+}
+.streak-label { font-size:13px; font-weight:600; opacity:.7; margin-top:2px; }
+.streak-dots-grid {
+  display:grid; grid-template-columns:repeat(7,1fr); gap:5px;
+  margin-top:14px; max-width:152px;
+}
+.streak-dot { width:18px; height:18px; border-radius:5px; background:rgba(255,255,255,.1); }
+.streak-dot.active { background:linear-gradient(135deg,#a78bfa,#60a5fa); box-shadow:0 0 8px rgba(167,139,250,.55); }
+
+/* Week comparison card */
+.week-card {
+  background:#fff; border:1.5px solid var(--border);
+  border-radius:20px; padding:22px; position:relative;
+  box-shadow: 0 4px 24px rgba(123,110,246,.07), 0 1px 4px rgba(0,0,0,.04);
+}
+.week-card-label { font-size:11.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--text-faint); margin-bottom:14px; }
+.week-split { display:flex; gap:0; }
+.week-half { flex:1; padding:0 12px; }
+.week-half:first-child { padding-left:0; border-right:1px solid var(--border); }
+.week-half-tag { font-size:11.5px; font-weight:700; color:var(--text-faint); margin-bottom:5px; }
+.week-half-score { font-size:42px; font-weight:800; line-height:1; color:var(--text); }
+.week-half-unit { font-size:12px; color:var(--text-faint); margin-top:1px; }
+.week-half-count { font-size:12.5px; color:var(--text-muted); margin-top:5px; font-weight:600; }
+.week-delta-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12.5px; font-weight:700; padding:5px 12px;
+  border-radius:20px; margin-top:14px;
+}
+.wdb-up   { background:#dcfce7; color:#15803d; }
+.wdb-down { background:#fee2e2; color:#dc2626; }
+.wdb-same { background:var(--primary-soft,#f0effe); color:var(--primary); }
+
+/* Total days card */
+.days-card {
+  background: linear-gradient(145deg, #e0f9f4 0%, #ccf0e8 100%);
+  border:1.5px solid #a7f3d0; border-radius:20px; padding:22px;
+  position:relative; overflow:hidden;
+  box-shadow: 0 4px 20px rgba(16,185,129,.1), 0 1px 4px rgba(0,0,0,.04);
+}
+.days-card::before {
+  content:''; position:absolute; top:-30px; right:-20px;
+  width:120px; height:120px;
+  background:radial-gradient(circle,rgba(16,185,129,.2) 0%,transparent 65%);
+  border-radius:50%; pointer-events:none;
+}
+.days-card-label { font-size:11.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#0d9488; margin-bottom:8px; }
+.days-num { font-size:68px; font-weight:800; line-height:1; color:#0d9488; }
+.days-sub { font-size:13px; color:#0f766e; margin-top:4px; font-weight:600; }
+
+/* Trend chart card */
+.trend-card {
+  background:#fff; border:1.5px solid var(--border);
+  border-radius:20px; padding:22px 22px 10px;
+  margin-bottom:16px; position:relative; overflow:hidden;
+  box-shadow: 0 4px 24px rgba(123,110,246,.07);
+}
+.trend-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--gradient); border-radius:20px 20px 0 0;
+}
+
+/* Program rings grid */
+.rings-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(148px,1fr));
+  gap:14px;
+}
+.ring-card {
+  background:#fff; border:1.5px solid var(--border); border-radius:18px;
+  padding:20px 14px 16px; text-align:center;
+  transition:box-shadow .2s, transform .2s;
+  box-shadow:0 2px 12px rgba(0,0,0,.04);
+}
+.ring-card:hover { box-shadow:0 8px 28px rgba(123,110,246,.15); transform:translateY(-3px); }
+.ring-wrap { position:relative; display:inline-block; width:92px; height:92px; }
+.ring-wrap svg { display:block; }
+.ring-center {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  text-align:center; pointer-events:none;
+}
+.ring-score { font-size:22px; font-weight:800; line-height:1; }
+.ring-scale { font-size:11px; color:var(--text-faint); }
+.ring-prog-name { font-size:15px; font-weight:800; margin-top:10px; }
+.ring-count { font-size:12px; color:var(--text-faint); margin-top:2px; }
+.ring-best-badge { font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:12px; margin-top:8px; display:inline-block; }
+
 /* ── Empty state ── */
 .empty-state { text-align:center; padding:48px 20px; color:var(--text-muted); }
 .empty-state .empty-ico { font-size:48px; margin-bottom:12px; }
@@ -135,6 +260,75 @@
         <div class="label">Điểm trung bình</div>
         <div class="value" id="statAvg">–</div>
         <div class="delta">tính trên các bài đã chấm</div>
+      </div>
+    </div>
+
+    <!-- ═══ Progress section ═══ -->
+    <div id="progressSection" style="display:none; margin-bottom:22px;">
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <h2 style="font-size:18px; font-weight:800; color:var(--text);">📈 Tiến độ học tập</h2>
+      </div>
+
+      <!-- Row 1: Streak | Week compare | Total days -->
+      <div class="progress-top-grid">
+
+        <!-- Streak -->
+        <div class="streak-card">
+          <div class="sc-texture"></div>
+          <div class="streak-fire">🔥</div>
+          <div class="streak-num" id="streakNum">0</div>
+          <div class="streak-label">ngày học liên tiếp</div>
+          <div class="streak-dots-grid" id="streakDots"></div>
+        </div>
+
+        <!-- Tuần này vs tuần trước -->
+        <div class="week-card">
+          <div class="week-card-label">📅 Tuần này vs Tuần trước</div>
+          <div class="week-split">
+            <div class="week-half">
+              <div class="week-half-tag">Tuần này</div>
+              <div class="week-half-score" id="thisWkScore">–</div>
+              <div class="week-half-unit">% TB</div>
+              <div class="week-half-count" id="thisWkCount">0 bài</div>
+            </div>
+            <div class="week-half" style="padding-right:0;">
+              <div class="week-half-tag">Tuần trước</div>
+              <div class="week-half-score" id="lastWkScore" style="color:var(--text-muted);">–</div>
+              <div class="week-half-unit">% TB</div>
+              <div class="week-half-count" id="lastWkCount">0 bài</div>
+            </div>
+          </div>
+          <div id="weekDelta" style="display:none;"></div>
+        </div>
+
+        <!-- Tổng ngày học -->
+        <div class="days-card">
+          <div class="days-card-label">📆 Tổng ngày học</div>
+          <div class="days-num" id="totalDaysNum">0</div>
+          <div class="days-sub">ngày khác nhau</div>
+        </div>
+      </div>
+
+      <!-- Row 2: Score trend chart -->
+      <div class="trend-card">
+        <div class="card-head" style="margin-bottom:14px;">
+          <h3>📊 Biểu đồ điểm theo tuần</h3>
+          <span style="font-size:12px; color:var(--text-faint);">% so với điểm tối đa</span>
+        </div>
+        <div id="trendChart"></div>
+      </div>
+
+      <!-- Row 3: Program rings -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-head" style="margin-bottom:16px;">
+          <h3>🎯 Trung bình theo kỳ thi</h3>
+        </div>
+        <div class="rings-grid" id="programRings">
+          <div class="skel" style="height:180px; border-radius:18px;"></div>
+          <div class="skel" style="height:180px; border-radius:18px;"></div>
+          <div class="skel" style="height:180px; border-radius:18px;"></div>
+        </div>
       </div>
     </div>
 
@@ -396,6 +590,183 @@ function renderProgStats(subs) {
   }).join('');
 }
 
+/* ── Progress: SVG trend chart ── */
+function buildTrendSVG(weekly) {
+  var pts = weekly.filter(function(w) { return w.avg_pct !== null; });
+  if (pts.length === 0) return '<div style="text-align:center;padding:40px 20px;color:var(--text-faint);font-size:14px;">📭 Chưa có đủ dữ liệu — hãy làm thêm bài nhé!</div>';
+
+  var W = 640, H = 210;
+  var pad = { t:24, r:24, b:48, l:44 };
+  var cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+
+  var dataMax = Math.max.apply(null, pts.map(function(p){ return p.avg_pct; }));
+  var maxY = Math.min(100, Math.ceil(dataMax / 10) * 10 + 15);
+  var minY = 0;
+
+  function yP(v) { return ch - (v - minY) / (maxY - minY) * ch; }
+  function xP(i) { return pts.length > 1 ? i / (pts.length - 1) * cw : cw / 2; }
+
+  var pts2 = pts.map(function(p, i) { return { x: xP(i), y: yP(p.avg_pct), d: p }; });
+
+  // Smooth bezier path
+  function mkPath(ps) {
+    if (ps.length === 1) return 'M' + ps[0].x + ',' + ps[0].y;
+    var d = 'M' + ps[0].x + ',' + ps[0].y;
+    for (var i = 1; i < ps.length; i++) {
+      var c1x = ps[i-1].x + (ps[i].x - ps[i-1].x) / 3;
+      var c2x = ps[i].x   - (ps[i].x - ps[i-1].x) / 3;
+      d += ' C' + c1x + ',' + ps[i-1].y + ' ' + c2x + ',' + ps[i].y + ' ' + ps[i].x + ',' + ps[i].y;
+    }
+    return d;
+  }
+
+  var linePath = mkPath(pts2);
+  var areaPath = linePath + ' L' + pts2[pts2.length-1].x + ',' + ch + ' L' + pts2[0].x + ',' + ch + ' Z';
+
+  var yTicks = [0, 25, 50, 75, 100].filter(function(v){ return v <= maxY; });
+
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;max-height:230px;overflow:visible;" xmlns="http://www.w3.org/2000/svg">';
+
+  // Defs
+  svg += '<defs>';
+  svg += '<linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">';
+  svg += '<stop offset="0%" stop-color="#7B6EF6" stop-opacity=".28"/>';
+  svg += '<stop offset="85%" stop-color="#7B6EF6" stop-opacity=".03"/>';
+  svg += '</linearGradient>';
+  svg += '<filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  svg += '</defs>';
+
+  svg += '<g transform="translate(' + pad.l + ',' + pad.t + ')">';
+
+  // Y grid + labels
+  yTicks.forEach(function(v) {
+    var y = yP(v);
+    svg += '<line x1="0" y1="' + y + '" x2="' + cw + '" y2="' + y + '" stroke="#f0effe" stroke-width="1.2"/>';
+    svg += '<text x="-6" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#b0adc4">' + v + '%</text>';
+  });
+
+  // Area fill
+  svg += '<path d="' + areaPath + '" fill="url(#tg)"/>';
+
+  // Line
+  svg += '<path d="' + linePath + '" fill="none" stroke="#7B6EF6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>';
+
+  // Dots + labels
+  pts2.forEach(function(pt) {
+    // Value label above dot
+    svg += '<text x="' + pt.x + '" y="' + (pt.y - 13) + '" text-anchor="middle" font-size="12" fill="#7B6EF6" font-weight="700">' + pt.d.avg_pct + '%</text>';
+    // Outer ring
+    svg += '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="7.5" fill="white" stroke="#7B6EF6" stroke-width="2.5"/>';
+    // Inner dot
+    svg += '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="3.5" fill="#7B6EF6"/>';
+    // X label: week date
+    svg += '<text x="' + pt.x + '" y="' + (ch + 18) + '" text-anchor="middle" font-size="11.5" fill="#9C99AE">' + esc(pt.d.label) + '</text>';
+    // Count below date
+    svg += '<text x="' + pt.x + '" y="' + (ch + 32) + '" text-anchor="middle" font-size="10" fill="#c4c2d0">(' + pt.d.count + ')</text>';
+  });
+
+  svg += '</g></svg>';
+  return svg;
+}
+
+/* ── Progress: program ring cards ── */
+var PROG_META = {
+  KET:   { color:'#0ea5e9', soft:'#e0f2fe', name:'KET' },
+  PET:   { color:'#8b5cf6', soft:'#f3e8ff', name:'PET' },
+  FCE:   { color:'#f59e0b', soft:'#fef3c7', name:'FCE' },
+  IELTS: { color:'#ec4899', soft:'#fce7f3', name:'IELTS' },
+  APTIS: { color:'#10b981', soft:'#d1fae5', name:'APTIS' }
+};
+function buildRingCard(prog) {
+  var m = PROG_META[prog.program] || { color:'#7B6EF6', soft:'#f0effe', name: prog.program };
+  var avgPct  = prog.avg_pct  || 0;
+  var bestPct = prog.best_pct || 0;
+
+  var r = 35, cx = 46, cy = 46, sz = 92;
+  var circ = 2 * Math.PI * r; // ≈ 219.9
+
+  function arc(pct) { var d = circ * pct / 100; return d + ' ' + (circ - d); }
+
+  // SVG ring: track → best (faint) → avg (solid)
+  var svgRing = '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 ' + sz + ' ' + sz + '" style="transform:rotate(-90deg);">';
+  svgRing += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + m.soft + '" stroke-width="9"/>';
+  if (bestPct > 0) {
+    svgRing += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + m.color + '" stroke-width="9" opacity=".22"';
+    svgRing += ' stroke-dasharray="' + arc(bestPct) + '" stroke-linecap="round"/>';
+  }
+  if (avgPct > 0) {
+    svgRing += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + m.color + '" stroke-width="9"';
+    svgRing += ' stroke-dasharray="' + arc(avgPct) + '" stroke-linecap="round"';
+    svgRing += ' style="filter:drop-shadow(0 0 5px ' + m.color + '88)"/>';
+  }
+  svgRing += '</svg>';
+
+  var scoreLabel = prog.avg_raw !== null ? String(prog.avg_raw) : '–';
+  var scaleLabel = '/ ' + prog.max_scale;
+
+  return '<div class="ring-card">' +
+    '<div class="ring-wrap">' + svgRing +
+      '<div class="ring-center">' +
+        '<div class="ring-score" style="color:' + m.color + ';">' + esc(scoreLabel) + '</div>' +
+        '<div class="ring-scale">' + esc(scaleLabel) + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="ring-prog-name" style="color:' + m.color + ';">' + esc(m.name) + '</div>' +
+    '<div class="ring-count">' + prog.count + ' bài đã chấm</div>' +
+    (prog.best_raw !== null ? '<div class="ring-best-badge" style="background:' + m.soft + ';color:' + m.color + ';">⭐ Tốt nhất: ' + prog.best_raw + '</div>' : '') +
+  '</div>';
+}
+
+/* ── Load progress data ── */
+async function loadProgress() {
+  var data = await fetch('/api/me/progress', { credentials:'same-origin' }).then(function(r){ return r.json(); }).catch(function(){ return null; });
+  if (!data) return;
+
+  document.getElementById('progressSection').style.display = 'block';
+
+  // Streak + dots
+  document.getElementById('streakNum').textContent = data.streak || 0;
+  if (data.cal_days) {
+    document.getElementById('streakDots').innerHTML = data.cal_days.map(function(d) {
+      return '<div class="streak-dot' + (d.active ? ' active' : '') + '" title="' + d.date + '"></div>';
+    }).join('');
+  }
+
+  // Week comparison
+  var tw = data.this_week || {}, lw = data.last_week || {};
+  document.getElementById('thisWkScore').textContent = tw.avg_pct !== null && tw.avg_pct !== undefined ? tw.avg_pct : '–';
+  document.getElementById('thisWkCount').textContent = (tw.count || 0) + ' bài';
+  document.getElementById('lastWkScore').textContent = lw.avg_pct !== null && lw.avg_pct !== undefined ? lw.avg_pct : '–';
+  document.getElementById('lastWkCount').textContent = (lw.count || 0) + ' bài';
+
+  var deltaEl = document.getElementById('weekDelta');
+  if (tw.avg_pct != null && lw.avg_pct != null) {
+    var diff = tw.avg_pct - lw.avg_pct;
+    var cls = diff > 0 ? 'wdb-up' : diff < 0 ? 'wdb-down' : 'wdb-same';
+    var icon = diff > 0 ? '↑' : diff < 0 ? '↓' : '=';
+    var txt = diff !== 0 ? icon + ' ' + (diff > 0 ? '+' : '') + diff + '% so với tuần trước' : '= Bằng tuần trước';
+    deltaEl.className = 'week-delta-badge ' + cls;
+    deltaEl.textContent = txt;
+    deltaEl.style.display = 'inline-flex';
+  } else if (tw.count > 0 && !(lw.count)) {
+    deltaEl.className = 'week-delta-badge wdb-same';
+    deltaEl.textContent = '✨ Tuần đầu tiên có bài!';
+    deltaEl.style.display = 'inline-flex';
+  }
+
+  // Total days
+  document.getElementById('totalDaysNum').textContent = data.total_days || 0;
+
+  // Trend chart
+  document.getElementById('trendChart').innerHTML = buildTrendSVG(data.weekly || []);
+
+  // Program rings
+  var rings = data.by_program || [];
+  document.getElementById('programRings').innerHTML = rings.length
+    ? rings.map(buildRingCard).join('')
+    : '<p style="color:var(--text-faint);font-size:13.5px;">Chưa có dữ liệu theo chương trình.</p>';
+}
+
 /* ── Khởi động ── */
 (async function(){
   var me = await fetch('/api/me',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({user:null}));
@@ -418,7 +789,8 @@ function renderProgStats(subs) {
     };
   }
 
-  // Stats
+  // Stats + progress (parallel)
+  loadProgress();
   var st = await fetch('/api/me/stats',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({done:0,graded:0,avgPercent:null}));
   document.getElementById('statDone').textContent    = st.done ?? '–';
   document.getElementById('statGraded').textContent  = st.graded ?? '–';
