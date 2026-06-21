@@ -41,7 +41,7 @@
       '<div class="footer-grid">' +
         '<div>' +
           '<div class="brand" style="margin-bottom:12px;"><span class="brand-logo">T</span><span>English With Tom</span></div>' +
-          '<p>Nền tảng luyện thi KET, PET, FCE, APTIS và IELTS với chấm bài tự động và AI.</p>' +
+          '<p>Nền tảng luyện thi KET, PET, FCE, APTIS và IELTS với hệ thống chấm điểm tự động.</p>' +
         '</div>' +
         '<div><h4>Chương trình</h4>' +
           '<a href="ket.html">KET</a><a href="pet.html">PET</a><a href="fce.html">FCE</a><a href="aptis.html">APTIS</a><a href="ielts.html">IELTS</a>' +

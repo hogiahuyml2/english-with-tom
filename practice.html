@@ -26,7 +26,7 @@
       <h2 style="font-size:22px;">Chọn dạng luyện tập</h2>
     </div>
     <div class="grid grid-3" style="margin-bottom:40px;">
-      <a class="course-card" href="#viet-cau"><div class="course-ico ico-purple">✍️</div><h3>Viết câu</h3><p>Đặt câu theo từ gợi ý, AI kiểm tra ngữ pháp và gợi ý sửa.</p></a>
+      <a class="course-card" href="#viet-cau"><div class="course-ico ico-purple">✍️</div><h3>Viết câu</h3><p>Đặt câu theo từ gợi ý, hệ thống kiểm tra ngữ pháp và gợi ý sửa.</p></a>
       <a class="course-card" href="#sap-xep"><div class="course-ico ico-blue">🔀</div><h3>Sắp xếp câu</h3><p>Kéo/chọn từ để ghép thành câu đúng trật tự.</p></a>
       <a class="course-card" href="#"><div class="course-ico ico-teal">🧩</div><h3>Điền vào chỗ trống</h3><p>Hoàn thành câu với từ hoặc dạng đúng của động từ.</p></a>
       <a class="course-card" href="#"><div class="course-ico ico-amber">🔗</div><h3>Ghép cặp</h3><p>Nối từ với nghĩa, hình ảnh hoặc từ đồng nghĩa.</p></a>
@@ -39,8 +39,8 @@
       <div class="card-head"><h3>✍️ Viết câu với từ cho sẵn</h3><span class="tag">Demo</span></div>
       <p style="color:var(--text-muted); font-size:14px; margin-bottom:14px;">Đặt một câu tiếng Anh có dùng từ: <strong style="color:var(--primary);">environment</strong></p>
       <div class="field"><textarea id="sentenceInput" placeholder="Nhập câu của bạn..."></textarea></div>
-      <button class="btn btn-primary" id="checkSentence">Kiểm tra bằng AI</button>
-      <div id="sentenceFeedback" style="display:none; margin-top:16px;" class="note"><span>🤖</span><div id="fbText"></div></div>
+      <button class="btn btn-primary" id="checkSentence">Kiểm tra tự động</button>
+      <div id="sentenceFeedback" style="display:none; margin-top:16px;" class="note"><span>📝</span><div id="fbText"></div></div>
     </div>
 
     <!-- Trò chơi: Sắp xếp câu -->
@@ -71,7 +71,7 @@
     var txt = document.getElementById('fbText');
     if (!v) { txt.innerHTML = 'Bạn hãy nhập một câu trước nhé.'; }
     else if (v.toLowerCase().indexOf('environment') === -1) { txt.innerHTML = 'Câu chưa chứa từ <strong>environment</strong>. Thử lại nhé!'; }
-    else { txt.innerHTML = '<strong>Tốt lắm!</strong> Câu của bạn có dùng đúng từ khóa. Khi nối Claude API, AI sẽ chấm ngữ pháp, gợi ý từ hay hơn và cho điểm.'; }
+    else { txt.innerHTML = '<strong>Tốt lắm!</strong> Câu của bạn có dùng đúng từ khóa. Hệ thống sẽ kiểm tra ngữ pháp và gợi ý cải thiện khi tính năng này được kích hoạt.'; }
     box.style.display = 'flex';
   });
 

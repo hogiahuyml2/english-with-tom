@@ -88,7 +88,7 @@
 
         <div class="field"><label>Loại đề</label>
           <select id="exType">
-            <option value="writing">✍️ Writing — AI chấm (đề công khai) hoặc giáo viên chấm (đề riêng)</option>
+            <option value="writing">✍️ Writing — chấm tự động (đề công khai) hoặc giáo viên chấm (đề riêng)</option>
             <option value="quiz">📝 Trắc nghiệm (Reading / Listening) — tự chấm</option>
             <option value="aptis_full">🎯 APTIS Writing Full Test — 4 Components (50 phút)</option>
           </select>
@@ -131,8 +131,8 @@
           <input type="hidden" id="imageUrl" value="">
         </div>
 
-        <div id="writingNote" class="note" style="margin-bottom:12px;"><span>🤖</span>
-          <div>Đề Writing <b>công khai</b>: AI tự động chấm khi học sinh nộp. <b>Đề riêng</b>: giáo viên chấm thủ công.</div>
+        <div id="writingNote" class="note" style="margin-bottom:12px;"><span>⚡</span>
+          <div>Đề Writing <b>công khai</b>: hệ thống tự động chấm khi học sinh nộp bài. <b>Đề riêng</b>: giáo viên trực tiếp chấm và nhận xét.</div>
         </div>
 
         <!-- Đề riêng -->
@@ -939,7 +939,7 @@
       return;
     }
     tbody.innerHTML = exs.map(function(e){
-      var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công/AI</span>';
+      var grade = e.auto_grade ? '<span class="badge badge-done">Tự động</span>' : '<span class="badge badge-grading">Thủ công</span>';
       var priv  = e.is_private ? '<span class="private-badge">🔒 Riêng</span>' : '';
       var actions = '<div style="display:flex;gap:6px;">'
         +'<button class="btn btn-sm" onclick="openEditDrawer('+e.id+')" title="Chỉnh sửa đề">✏️</button>'

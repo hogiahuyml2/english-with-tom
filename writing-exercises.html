@@ -15,7 +15,7 @@
   <div class="container">
     <div class="crumb" id="crumb">Trang chủ</div>
     <h1 id="pageTitle">Writing ✍️</h1>
-    <p id="pageDesc">Luyện viết kèm AI chấm và nhận xét tiếng Việt.</p>
+    <p id="pageDesc">Luyện viết kèm chấm điểm tự động và nhận xét tiếng Việt.</p>
   </div>
 </section>
 
@@ -56,7 +56,7 @@
     '<a href="' + cfg.parent + '" style="color:inherit;">' + cfg.label + '</a> › Writing';
   document.getElementById('pageTitle').textContent = cfg.label + ' Writing ✍️';
   document.getElementById('pageDesc').textContent =
-    'Cambridge ' + cfg.tag + ' — luyện viết theo đúng định dạng, AI chấm kèm nhận xét tiếng Việt.';
+    'Cambridge ' + cfg.tag + ' — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.';
 
   /* ── Tiện ích ── */
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
@@ -72,14 +72,14 @@
     var levelMap = {
       KET:'A2 Key', PET:'B1 Preliminary', FCE:'B2 First', IELTS:'IELTS', APTIS:'APTIS'
     };
-    var lvl = (levelMap[e.program] || e.program) + ' · AI chấm';
+    var lvl = (levelMap[e.program] || e.program) + ' · Chấm tự động';
     return '<div class="test-row"><div><div class="name">' + esc(e.title) + '</div>' +
            '<div class="lvl">' + lvl + '</div></div>' +
            '<a class="btn btn-sm" href="practice-writing.html?id=' + e.id + '">Làm bài</a></div>';
   }
 
   function renderEmpty(){
-    return '<div class="test-row"><div class="name" style="color:var(--text-faint)">Chưa có đề. Giáo viên sẽ cập nhật sớm.</div></div>';
+    return '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
   }
 
   /* ── Tải đề từ API ── */
@@ -114,7 +114,7 @@
                         'Khác':'📄' };
 
       container.innerHTML = sorted.map(function(label, idx){
-        var desc = cfg.parts[label] || 'AI chấm theo chuẩn ' + cfg.tag;
+        var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn ' + cfg.tag;
         var icon = partIcons[label] || '✍️';
         var icoColor = ['ico-amber','ico-pink','ico-blue','ico-teal'][idx % 4];
         return '<div class="skill-card" style="margin-bottom:20px;">' +

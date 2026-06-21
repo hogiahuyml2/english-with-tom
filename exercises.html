@@ -15,7 +15,7 @@
   <div class="container">
     <div class="crumb">Trang chủ › Ngân hàng đề</div>
     <h1>Ngân hàng đề 📚</h1>
-    <p id="introText">Chọn một đề để luyện tập. Đề Writing được AI chấm; đề Reading/Listening chấm tự động.</p>
+    <p id="introText">Chọn một đề để luyện tập. Đề Writing được chấm tự động kèm nhận xét; đề Reading/Listening chấm tức thì ngay khi nộp.</p>
   </div>
 </section>
 
@@ -42,7 +42,7 @@
     })).join('');
 
   function doer(e){
-    if (e.skill === 'Writing') return { href:'practice-writing.html?id='+e.id, label:'Làm bài', ok:true, tag:'AI chấm' };
+    if (e.skill === 'Writing') return { href:'practice-writing.html?id='+e.id, label:'Làm bài', ok:true, tag:'Chấm tự động' };
     if (e.has_questions) return { href:'practice-quiz.html?id='+e.id, label:'Làm bài', ok:true, tag:'Tự chấm' };
     return { href:'#', label:'Đề mẫu', ok:false, tag:'chưa có câu hỏi' };
   }

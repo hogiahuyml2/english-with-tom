@@ -35,7 +35,7 @@
   <div class="container">
     <div class="crumb">Trang chủ › <a href="aptis.html" style="color:var(--primary);">APTIS</a> › Writing</div>
     <h1>APTIS Writing <span class="tag" style="vertical-align:middle;">4 Components</span></h1>
-    <p>Mỗi đề là một bài thi Writing hoàn chỉnh gồm 4 phần — đúng định dạng thi thật. AI chấm điểm và nhận xét chi tiết.</p>
+    <p>Mỗi đề là một bài thi Writing hoàn chỉnh gồm 4 phần — đúng định dạng thi thật. Chấm điểm tự động và nhận xét chi tiết.</p>
   </div>
 </section>
 
@@ -78,7 +78,7 @@
 
     var list = document.getElementById('testList');
     if(!exercises.length){
-      list.innerHTML = '<div class="empty-state"><div class="ico">✍️</div><p>Chưa có đề APTIS Writing nào.<br><span style="font-size:13px;">Giáo viên tạo đề từ khu vực giáo viên.</span></p></div>';
+      list.innerHTML = '<div class="empty-state"><div class="ico">✍️</div><p>Nội dung đang được biên soạn.<br><span style="font-size:13px;">Giáo viên sẽ sớm cập nhật các đề thi — vui lòng quay lại sau.</span></p></div>';
       return;
     }
 
@@ -95,7 +95,7 @@
           +(theme?'<div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Chủ đề: '+escHtml(theme)+'</div>':'')
           +'<div class="test-card-meta">'
           +'<span>⏱ '+mins+' phút</span>'
-          +'<span>🤖 AI chấm</span>'
+          +'<span>⚡ Chấm tự động</span>'
           +(p3n?'<span>💬 '+p3n+' tin nhắn</span>':'')
           +'</div>'
           +'<div class="part-chips">'

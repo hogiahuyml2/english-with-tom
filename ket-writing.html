@@ -15,7 +15,7 @@
   <div class="container">
     <div class="crumb"><a href="ket.html" style="color:inherit;">KET</a> › Writing</div>
     <h1>KET Writing ✍️</h1>
-    <p>Luyện viết theo đúng định dạng A2 Key: Part 1 (email/lời nhắn ~25 từ) và Part 2 (viết truyện ngắn ~35 từ). AI chấm theo chuẩn A2 Key kèm nhận xét tiếng Việt.</p>
+    <p>Luyện viết theo đúng định dạng A2 Key: Part 1 (email/lời nhắn ~25 từ) và Part 2 (viết truyện ngắn ~35 từ). Chấm tự động theo chuẩn A2 Key kèm nhận xét tiếng Việt.</p>
   </div>
 </section>
 
@@ -42,15 +42,15 @@
 <script>
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
   function row(e){
-    return '<div class="test-row"><div><div class="name">'+esc(e.title)+'</div><div class="lvl">A2 Key · AI chấm</div></div>'+
+    return '<div class="test-row"><div><div class="name">'+esc(e.title)+'</div><div class="lvl">A2 Key · Chấm tự động</div></div>'+
       '<a class="btn btn-sm" href="practice-writing.html?id='+e.id+'">Làm bài</a></div>';
   }
   fetch('/api/exercises?program=KET&skill=Writing').then(r=>r.json()).then(function(d){
     var list = d.exercises || [];
     var p1 = list.filter(function(e){ return /Part 1/i.test(e.title); });
     var p2 = list.filter(function(e){ return /Part 2/i.test(e.title); });
-    document.getElementById('part1').innerHTML = p1.length ? p1.map(row).join('') : '<div class="test-row"><div class="name" style="color:var(--text-faint)">Chưa có đề.</div></div>';
-    document.getElementById('part2').innerHTML = p2.length ? p2.map(row).join('') : '<div class="test-row"><div class="name" style="color:var(--text-faint)">Chưa có đề.</div></div>';
+    document.getElementById('part1').innerHTML = p1.length ? p1.map(row).join('') : '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
+    document.getElementById('part2').innerHTML = p2.length ? p2.map(row).join('') : '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
   }).catch(function(){});
 </script>
 </body>

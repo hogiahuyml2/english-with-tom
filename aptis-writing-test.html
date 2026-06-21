@@ -186,7 +186,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
 <!-- Loading overlay -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spin"></div>
-  <p style="font-size:15px;color:var(--text-muted);">AI đang chấm bài... (khoảng 20–30 giây)</p>
+  <p style="font-size:15px;color:var(--text-muted);">Đang chấm bài... (khoảng 20–30 giây)</p>
 </div>
 
 <!-- Test Header -->
@@ -328,7 +328,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
     <div class="r-card primary">
       <div class="r-head">
         <div>
-          <h3 style="font-size:17px;margin-bottom:4px;">📊 Kết quả chấm bằng AI</h3>
+          <h3 style="font-size:17px;margin-bottom:4px;">📊 Kết quả chấm bài</h3>
           <p style="font-size:13px;color:var(--text-muted);" id="r-exam-title"></p>
         </div>
         <div class="r-score">
@@ -695,7 +695,7 @@ function showPendingResult(){
   rp.classList.add('show');
   rp.querySelector('.r-card.primary').innerHTML =
     '<h3 style="font-size:17px;margin-bottom:10px;">✅ Bài đã được nộp!</h3>'+
-    '<p style="color:var(--text-muted);font-size:14px;line-height:1.7;">Bài đang chờ chấm (AI chưa được cấu hình hoặc đề riêng). Giáo viên sẽ phản hồi sớm nhất.<br>Bạn có thể theo dõi tại <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a>.</p>'+
+    '<p style="color:var(--text-muted);font-size:14px;line-height:1.7;">Bài đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.<br>Bạn có thể theo dõi kết quả tại <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a>.</p>'+
     '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">'+
     '<a href="aptis-writing.html" class="btn btn-primary">← Làm đề khác</a>'+
     '<a href="dashboard.html" class="btn">📈 Tiến trình</a>'+

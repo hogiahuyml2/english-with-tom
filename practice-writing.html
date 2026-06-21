@@ -82,7 +82,7 @@
     <div class="practice-bar" style="margin-bottom:14px;">
       <div>
         <div style="font-weight:700; font-size:16px;" id="exTitle">Đang tải đề...</div>
-        <div style="font-size:12.5px; color:var(--text-faint);" id="exSub">AI chấm tự động</div>
+        <div style="font-size:12.5px; color:var(--text-faint);" id="exSub">Chấm điểm tự động</div>
       </div>
       <div class="timer">⏱ <span id="timer">20:00</span></div>
     </div>
@@ -110,20 +110,20 @@
           <span style="font-size:12.5px; color:var(--text-faint);">Số từ: <strong id="wordCount">0</strong></span>
           <span id="aiNote" style="font-size:12px; color:var(--text-faint);"></span>
         </div>
-        <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài &amp; chấm bằng AI</button>
-        <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;" id="submitHint">AI sẽ chấm theo tiêu chí của kỳ thi và đưa nhận xét chi tiết.</p>
+        <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài &amp; chấm tự động</button>
+        <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;" id="submitHint">Hệ thống sẽ chấm theo tiêu chí của kỳ thi và đưa ra nhận xét chi tiết.</p>
       </div>
     </div>
 
     <div class="card" id="loading" style="display:none; text-align:center; margin-top:22px;">
-      <div style="font-size:30px;">🤖</div>
-      <p style="color:var(--text-muted); margin-top:8px;">AI đang đọc và chấm bài của bạn... (khoảng 15–25 giây)</p>
+      <div style="font-size:30px;">⏳</div>
+      <p style="color:var(--text-muted); margin-top:8px;">Đang phân tích và chấm bài của bạn... (khoảng 15–25 giây)</p>
     </div>
 
     <!-- Kết quả chấm -->
     <div class="card" id="result" style="display:none; margin-top:22px; border:2px solid var(--primary);">
       <div class="card-head" style="align-items:center;">
-        <h3>📊 Kết quả chấm bằng AI</h3>
+        <h3>📊 Kết quả chấm bài</h3>
         <div style="text-align:right;"><div style="font-size:12px; color:var(--text-muted);" id="scaleLabel">Điểm tổng</div><div class="band-big" id="overall">–</div></div>
       </div>
       <div id="criteria"></div>
@@ -212,13 +212,13 @@
       document.getElementById('submitHint').textContent = 'Bài sẽ được lưu và gửi đến giáo viên để chấm thủ công.';
       document.getElementById('aiNote').textContent = '';
     } else {
-      document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · AI chấm tự động';
+      document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Chấm điểm tự động';
     }
   }).catch(function(){});
 
   fetch('/api/config').then(r=>r.json()).then(function(c){
     if (!IS_PRIVATE && !c.aiEnabled)
-      document.getElementById('aiNote').textContent = '⚠️ AI chưa được cấu hình — bài sẽ lưu chờ chấm.';
+      document.getElementById('aiNote').textContent = '⚠️ Hệ thống chấm tự động chưa sẵn sàng — bài sẽ lưu chờ chấm.';
   }).catch(function(){});
 
   document.getElementById('submitBtn').addEventListener('click', async function(){
@@ -262,7 +262,7 @@
     if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next=' + encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
     var data = await r.json().catch(function(){ return {}; });
     if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
-    if (data.pending) { alert('Bài đã được lưu và đang chờ chấm (AI chưa được cấu hình).'); location.href='dashboard.html'; return; }
+    if (data.pending) { alert('Bài đã được lưu và đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.'); location.href='dashboard.html'; return; }
 
     var res = data.result;
     document.getElementById('overall').textContent = res.overall_score;

@@ -222,7 +222,7 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private && req.user.role === 'student')
-    return res.status(403).json({ error: 'Đề bài riêng này do giáo viên chấm, không dùng AI.' });
+    return res.status(403).json({ error: 'Đề bài riêng này do giáo viên trực tiếp chấm.' });
 
   if (!aiEnabled()) {
     db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
@@ -236,7 +236,7 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     res.json({ id: Number(r.lastInsertRowid), result });
   } catch (e) {
     console.error('AI grading error', e.message);
-    res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.', detail: String(e.message).slice(0, 400) });
+    res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.', detail: String(e.message).slice(0, 400) });
   }
 });
 
@@ -275,7 +275,7 @@ app.post('/api/grade-aptis-writing', requireAuth, async (req, res) => {
     res.json({ result });
   } catch (e) {
     console.error('APTIS grading error', e.message);
-    res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.', detail: String(e.message).slice(0, 400) });
+    res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.', detail: String(e.message).slice(0, 400) });
   }
 });
 
