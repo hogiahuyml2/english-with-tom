@@ -133,6 +133,46 @@
   .img-remove-btn:hover { background:rgba(0,0,0,.75); }
   #fileInput { display:none; }
 
+  /* ── Lịch sử bài làm ── */
+  .history-toggle {
+    width:100%; margin-top:10px;
+    background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+    border:1.5px solid #86efac; border-radius:10px;
+    padding:10px 16px; font-size:13.5px; font-weight:600;
+    color:#15803d; cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font); transition:background .15s;
+  }
+  .history-toggle:hover { background:linear-gradient(135deg,#dcfce7,#bbf7d0); }
+  #historyPanel {
+    background:#f0fdf4; border:1.5px solid #86efac;
+    border-radius:12px; padding:16px; margin-top:8px; display:none;
+  }
+  .history-empty { text-align:center; color:var(--text-faint); font-size:13.5px; padding:18px 0; }
+  .hist-item {
+    background:#fff; border:1.5px solid #bbf7d0; border-radius:10px;
+    padding:13px 15px; margin-bottom:10px; cursor:pointer;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .hist-item:last-child { margin-bottom:0; }
+  .hist-item:hover { border-color:#4ade80; box-shadow:0 2px 10px rgba(0,0,0,.07); }
+  .hist-item.open { border-color:#22c55e; }
+  .hist-head { display:flex; justify-content:space-between; align-items:center; }
+  .hist-meta { font-size:12.5px; color:var(--text-muted); }
+  .hist-attempt { font-weight:700; font-size:13.5px; color:#15803d; }
+  .hist-score { font-size:20px; font-weight:800; color:#16a34a; }
+  .hist-body { display:none; padding-top:12px; border-top:1px dashed #bbf7d0; margin-top:10px; }
+  .hist-item.open .hist-body { display:block; }
+  .hist-crit { margin-bottom:6px; }
+  .hist-crit-row { display:flex; justify-content:space-between; align-items:center; font-size:12.5px; margin-bottom:3px; }
+  .hist-crit-name { color:var(--text); font-weight:600; }
+  .hist-crit-score { color:#16a34a; font-weight:700; font-size:13px; }
+  .hist-bar-wrap { height:5px; background:#dcfce7; border-radius:4px; overflow:hidden; margin-bottom:8px; }
+  .hist-bar { height:100%; background:#22c55e; border-radius:4px; }
+  .hist-summary { font-size:13px; color:var(--text-muted); line-height:1.65; margin-top:8px; background:#f0fdf4; border-radius:8px; padding:10px 12px; }
+  .hist-badge-improve { display:inline-flex; align-items:center; gap:4px; background:#fef9c3; color:#854d0e; border:1px solid #fde047; border-radius:20px; font-size:11.5px; font-weight:700; padding:2px 9px; margin-left:8px; }
+  .hist-badge-best { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:20px; font-size:11.5px; font-weight:700; padding:2px 9px; margin-left:8px; }
+
   /* ── Print / PDF ── */
   @media print {
     #site-header, #site-footer, .q-block, #exImageWrap,
@@ -266,6 +306,18 @@
             🔄 Đang tạo gợi ý riêng cho đề này...
           </div>
           <div id="hintsContent" style="display:none;"></div>
+        </div>
+
+        <!-- History toggle -->
+        <button class="history-toggle" id="historyBtn" type="button" onclick="toggleHistory()" style="display:none;">
+          <span>📋</span>
+          <span id="historyBtnLabel">Xem lịch sử bài làm</span>
+          <span id="historyBtnArrow" style="margin-left:auto; font-size:11px;">▼</span>
+        </button>
+
+        <!-- History panel -->
+        <div id="historyPanel">
+          <div id="historyContent"><p class="history-empty">Đang tải...</p></div>
         </div>
       </div>
     </div>
@@ -486,6 +538,9 @@ fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(functio
     document.getElementById('examImg').src = e.image_url;
     document.getElementById('exImageWrap').style.display = 'block';
   }
+  // Tải lịch sử bài làm
+  loadHistory();
+
   // Hiện thời gian quy định trong timer mode card
   var mins = officialTimeMinutes(e);
   document.getElementById('officialTimeLabel').textContent = mins;
@@ -587,6 +642,13 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   box.style.display = 'block';
   box.scrollIntoView({behavior:'smooth'});
 
+  // Refresh history để hiện lần nộp vừa rồi
+  historyData = [];
+  historyOpen = false;
+  document.getElementById('historyPanel').style.display = 'none';
+  document.getElementById('historyBtnArrow').textContent = '▼';
+  await loadHistory();
+
   if (res.suggested_writing) {
     document.getElementById('suggestedWriting').textContent = res.suggested_writing;
     document.getElementById('suggestedNotes').textContent = res.suggested_notes || '';
@@ -620,6 +682,123 @@ function renderCriteria(criteria) {
       '<p>'+esc(c.comment)+'</p>'+
     '</div>';
   }).join('');
+}
+
+/* ── Lịch sử bài làm ── */
+var historyOpen   = false;
+var historyData   = [];
+
+async function loadHistory() {
+  try {
+    var r = await fetch('/api/exercises/' + EXERCISE_ID + '/my-submissions', { credentials: 'same-origin' });
+    if (!r.ok) return;
+    var data = await r.json();
+    historyData = data.submissions || [];
+    var btn = document.getElementById('historyBtn');
+    if (historyData.length > 0) {
+      btn.style.display = 'flex';
+      document.getElementById('historyBtnLabel').textContent =
+        'Lịch sử bài làm (' + historyData.length + ' lần)';
+    }
+  } catch(e) {}
+}
+
+function toggleHistory() {
+  historyOpen = !historyOpen;
+  document.getElementById('historyBtnArrow').textContent = historyOpen ? '▲' : '▼';
+  document.getElementById('historyPanel').style.display  = historyOpen ? 'block' : 'none';
+  if (historyOpen) renderHistory();
+}
+
+function renderHistory() {
+  if (!historyData.length) {
+    document.getElementById('historyContent').innerHTML =
+      '<p class="history-empty">Bạn chưa có lần nộp bài nào.</p>';
+    return;
+  }
+
+  // Tìm điểm cao nhất để đánh dấu "Best"
+  var bestScore = -1;
+  historyData.forEach(function(s) {
+    var fb = safeParseJson(s.feedback);
+    var sc = fb ? fb.overall_score : (s.max_score > 0 ? Math.round(s.score / s.max_score * 100) / 10 : null);
+    if (sc !== null && sc > bestScore) bestScore = sc;
+  });
+
+  var html = '';
+  historyData.forEach(function(s, i) {
+    var attemptNo = historyData.length - i; // lần 1 là cũ nhất
+    var fb = safeParseJson(s.feedback);
+    var score = fb ? fb.overall_score
+              : (s.max_score > 0 ? Math.round(s.score / s.max_score * 100) / 10 : null);
+    var scaleLabel = fb ? (fb.scale_label || '') : (s.max_score ? '/ ' + s.max_score + ' câu' : '');
+    var isBest = score !== null && score === bestScore && bestScore > 0;
+    var prevFb = i < historyData.length - 1 ? safeParseJson(historyData[i + 1].feedback) : null;
+    var prevScore = prevFb ? prevFb.overall_score : null;
+    var improved = prevScore !== null && score !== null && score > prevScore;
+
+    var scoreBadge = score !== null
+      ? '<span class="hist-score">' + score + '</span>'
+      : '<span style="font-size:13px;color:var(--text-muted);">Chờ chấm</span>';
+    var bestBadge = isBest ? '<span class="hist-badge-best">⭐ Cao nhất</span>' : '';
+    var improveBadge = improved ? '<span class="hist-badge-improve">▲ Cải thiện</span>' : '';
+
+    // Criteria bars
+    var critHtml = '';
+    if (fb && fb.criteria && fb.criteria.length) {
+      critHtml = '<div class="hist-crit">';
+      fb.criteria.forEach(function(c) {
+        var pct = c.max > 0 ? Math.round(c.score / c.max * 100) : 0;
+        var color = pct >= 80 ? '#22c55e' : pct >= 60 ? '#84cc16' : pct >= 40 ? '#fbbf24' : '#f97316';
+        critHtml += '<div class="hist-crit-row">' +
+          '<span class="hist-crit-name">' + esc(c.name) + '</span>' +
+          '<span class="hist-crit-score">' + c.score + ' / ' + c.max + '</span>' +
+        '</div>' +
+        '<div class="hist-bar-wrap"><div class="hist-bar" style="width:' + pct + '%;background:' + color + ';"></div></div>';
+      });
+      critHtml += '</div>';
+    }
+
+    var summaryHtml = '';
+    if (fb && fb.summary) {
+      summaryHtml = '<div class="hist-summary">📝 ' + esc(fb.summary) + '</div>';
+    }
+
+    html += '<div class="hist-item" id="hist-' + s.id + '" onclick="toggleHistItem(\'hist-' + s.id + '\')">' +
+      '<div class="hist-head">' +
+        '<div>' +
+          '<span class="hist-attempt">Lần ' + attemptNo + '</span>' +
+          bestBadge + improveBadge +
+          '<div class="hist-meta">' + fmtDateTime(s.submitted_at) + ' · ' + esc(scaleLabel) + '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          scoreBadge +
+          '<span style="font-size:12px;color:var(--text-faint);">▶</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="hist-body">' + critHtml + summaryHtml + '</div>' +
+    '</div>';
+  });
+
+  document.getElementById('historyContent').innerHTML = html;
+}
+
+function toggleHistItem(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
+function safeParseJson(str) {
+  if (!str) return null;
+  try { return JSON.parse(str); } catch(e) { return null; }
+}
+
+function fmtDateTime(s) {
+  if (!s) return '';
+  var d = new Date(s.replace(' ', 'T') + 'Z');
+  return d.toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' }) +
+    ' lúc ' + d.toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit' });
 }
 
 /* ── Gợi ý làm bài ── */

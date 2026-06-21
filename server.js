@@ -568,6 +568,17 @@ app.post('/api/submissions', requireAuth, (req, res) => {
   res.json({ id: Number(r.lastInsertRowid), score, max_score: max, status });
 });
 
+// Lịch sử các lần nộp bài của tôi cho 1 đề cụ thể
+app.get('/api/exercises/:id/my-submissions', requireAuth, (req, res) => {
+  const rows = db.prepare(`
+    SELECT s.id, s.score, s.max_score, s.status, s.feedback, s.submitted_at, s.answers
+    FROM submissions s
+    WHERE s.user_id = ? AND s.exercise_id = ?
+    ORDER BY s.id DESC LIMIT 20
+  `).all(req.user.id, req.params.id);
+  res.json({ submissions: rows });
+});
+
 // Lịch sử bài làm của tôi
 app.get('/api/me/submissions', requireAuth, (req, res) => {
   const rows = db.prepare(`
