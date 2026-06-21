@@ -546,6 +546,4 @@ function ensureExercises() {
     }
   });
 }
-ensureExercises();
-
 module.exports = { db, hashPassword, verifyPassword, now };
