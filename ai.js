@@ -135,31 +135,77 @@ ${isPart1
   : 'Bài mẫu phải: (a) đáp ứng đúng yêu cầu cụ thể của đề, (b) dùng đúng format/quy ước của dạng bài, (c) thể hiện less common lexis và cấu trúc đa dạng, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
 }
 
-// Rubric PET — phân biệt Part 1 (notes bắt buộc) và Part 2 (tự do sáng tạo)
+// Rubric PET — bám sát 100% Cambridge B1 Assessment Scales (UCLES 2014)
+// 4 tiêu chí: Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí 0–5)
+// Band 4 = chia sẻ đặc điểm Band 3 và Band 5; Band 2 = chia sẻ đặc điểm Band 1 và Band 3
 function petRubric(title) {
-  if (/part\s*1/i.test(title)) {
-    return `PET (B1 Preliminary) WRITING PART 1 — Email/thư (~100 từ).
+  const isPart1 = /part\s*1/i.test(title);
 
-══ YÊU CẦU ĐẶC THÙ PART 1 ══
-Đề bài LUÔN cung cấp các NOTES (gạch đầu dòng / bullet points) mà học sinh BẮT BUỘC phải đề cập ĐẦY ĐỦ.
-Bước 1: ĐỌC KỸ nội dung đề để xác định CHÍNH XÁC từng note được liệt kê.
-Bước 2: Kiểm tra học sinh có bao quát ĐỦ TẤT CẢ các notes đó không.
-Bước 3: Chỉ cho điểm Content cao nếu ĐẦY ĐỦ notes — thiếu note nào thì trừ Content tương ứng.
+  const partIntro = isPart1
+    ? `PET (B1 Preliminary) WRITING PART 1 — Email/thư (~100 từ).
 
-Chấm theo 4 tiêu chí Cambridge (mỗi tiêu chí max 5):
-• Content: Band 5 = đề cập đủ và rõ ràng TẤT CẢ notes. Band 3 = đề cập hầu hết, thiếu chi tiết nhỏ. Band 1 = thiếu nhiều notes. Band 0 = không liên quan đề.
-• Communicative Achievement: đúng format email/thư, register phù hợp (informal nếu viết cho bạn, semi-formal nếu viết cho người lớn hơn/không quen), có mở/kết bài đúng quy ước.
-• Organisation: cấu trúc rõ ràng, linking words phù hợp, chuyển ý mượt.
-• Language: từ vựng đa dạng B1, cấu trúc ngữ pháp đúng, lỗi không cản trở hiểu nghĩa.
-overall_score = MEAN 4 tiêu chí, làm tròn 0.5, thang 0–5. scale_label = "B1 Preliminary Part 1 (0–5)".
+══ YÊU CẦU ĐẶC THÙ PART 1 — BẮT BUỘC ĐỌC TRƯỚC KHI CHẤM ══
+Đề bài LUÔN cung cấp NOTES (bullet points) mà học sinh BẮT BUỘC phải đề cập ĐẦY ĐỦ.
+Bước 1: Đọc kỹ đề, liệt kê CHÍNH XÁC từng note được yêu cầu.
+Bước 2: Kiểm tra từng note — học sinh có đề cập rõ ràng không.
+Bước 3: Content bị hạ điểm nếu thiếu note hoặc thêm nội dung không liên quan.
+Bước 4: Communicative Achievement — kiểm tra register (informal/semi-formal), format email/thư đúng quy ước (có greeting, sign-off).`
+    : `PET (B1 Preliminary) WRITING PART 2 — Article / story / review (~100 từ).
+Học sinh tự do phát triển bài theo dạng bài được yêu cầu. Xác định đúng dạng bài (article, story, review...) rồi chấm đúng quy ước dạng bài đó.`;
 
-suggested_writing: Viết bài mẫu EMAIL/THƯ TIẾNG ANH ~100 từ.
-BẮT BUỘC: (a) Đọc kỹ đề và xác định TẤT CẢ các notes được liệt kê. (b) Đề cập ĐẦY ĐỦ từng note theo đúng thứ tự, triển khai mỗi note thành 1–2 câu tự nhiên. (c) Dùng đúng format và register. (d) KHÔNG bịa thêm nội dung ngoài phạm vi notes của đề.`;
-  }
+  return `${partIntro}
 
-  return `PET (B1 Preliminary) WRITING PART 2 — Article / câu chuyện / review (~100 từ).
-Chấm theo 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score = MEAN 4 tiêu chí, thang 0–5. scale_label = "B1 Preliminary Part 2 (0–5)".
-suggested_writing: Viết bài mẫu TIẾNG ANH ~100 từ đúng dạng bài yêu cầu (article/story/review), đáp ứng đúng đề bài, đạt điểm cao.`;
+Chấm theo THANG ĐÁNH GIÁ CHÍNH THỨC Cambridge B1 Preliminary — ĐÚNG 4 TIÊU CHÍ (mỗi tiêu chí 0–5):
+Band chẵn (2, 4) chia sẻ đặc điểm của 2 band lẻ liền kề — KHÔNG phải điểm trung bình; là mức thực hiện "ở giữa" 2 band đó.
+
+═══ CONTENT (Nội dung) ═══
+• Band 5: Toàn bộ nội dung liên quan đề. Target reader được thông tin ĐẦY ĐỦ.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5.
+• Band 3: Có thể có thiếu sót/không liên quan NHỎ. Target reader NHÌN CHUNG được thông tin.
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3.
+• Band 1: Có nội dung không liên quan và hiểu sai đề. Target reader chỉ được thông tin TỐI THIỂU.
+• Band 0: Nội dung HOÀN TOÀN không liên quan. Target reader không được thông tin.
+⚠️ KHÔNG trừ điểm Content vì lỗi ngôn ngữ hay tổ chức. 4 tiêu chí hoàn toàn ĐỘC LẬP với nhau.
+${isPart1 ? '⚠️ Part 1 đặc thù: thiếu note nào thì hạ Content tương ứng — thiếu 1 note trong 3 → tối đa Band 4; thiếu 2 notes → tối đa Band 2.' : ''}
+
+═══ COMMUNICATIVE ACHIEVEMENT (Hiệu quả giao tiếp) ═══
+• Band 5: Dùng đúng quy ước dạng bài để GIỮ SỰ CHÚ Ý của target reader và truyền đạt ý STRAIGHTFORWARD.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5.
+• Band 3: Dùng đúng quy ước dạng bài theo cách NHÌN CHUNG PHÙ HỢP để truyền đạt ý straightforward.
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3.
+• Band 1: Tạo ra văn bản truyền đạt ý đơn giản theo cách ĐƠN GIẢN.
+• Band 0: Dưới mức Band 1.
+⚠️ Đánh giá theo quy ước của dạng bài cụ thể:
+  - Email/thư (Part 1): greeting phù hợp, register đúng (informal → bạn bè, semi-formal → người lớn/người không quen), sign-off, câu mở chủ đề.
+  - Article (Part 2): tiêu đề hấp dẫn, câu mở thu hút, nội dung thú vị.
+  - Story: narrative flow, có climax, dùng thì quá khứ đúng.
+  - Review: nêu đối tượng, đánh giá ưu/nhược, khuyến nghị.
+
+═══ ORGANISATION (Tổ chức) ═══
+• Band 5: Văn bản NHÌN CHUNG tổ chức tốt và mạch lạc, dùng ĐA DẠNG linking words và cohesive devices.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5.
+• Band 3: Văn bản mạch lạc, liên kết bằng linking words CƠ BẢN và SỐ LƯỢNG HẠN CHẾ cohesive devices (ví dụ: and, so, because, but, first, then, however...).
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3.
+• Band 1: Văn bản liên kết bằng linking words phổ biến, tần số cao (basic, high-frequency).
+• Band 0: Dưới mức Band 1.
+⚠️ KHÔNG trừ điểm Organisation vì lỗi ngôn ngữ — chỉ đánh giá sự liên kết và cấu trúc bài.
+
+═══ LANGUAGE (Ngôn ngữ) ═══
+• Band 5: Dùng ĐA DẠNG từ vựng hằng ngày phù hợp, đôi khi dùng sai less common lexis. Dùng ĐA DẠNG cấu trúc ngữ pháp đơn giản VÀ MỘT SỐ phức tạp với mức kiểm soát TỐT. Lỗi KHÔNG cản trở giao tiếp.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5.
+• Band 3: Dùng từ vựng hằng ngày NHÌN CHUNG phù hợp, đôi khi LẶP từ nhất định. Dùng ngữ pháp đơn giản với mức kiểm soát TỐT. Lỗi có thể nhận thấy nhưng NGHĨA VẪN XÁC ĐỊNH được.
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3.
+• Band 1: Dùng từ vựng cơ bản NHÌN CHUNG phù hợp. Dùng ngữ pháp đơn giản với MỘT MỨC ĐỘ kiểm soát. Lỗi đôi khi CẢN TRỞ nghĩa.
+• Band 0: Dưới mức Band 1.
+⚠️ KHÔNG trừ điểm Language khi lỗi nhỏ mà nghĩa vẫn rõ. Chỉ hạ điểm khi lỗi THỰC SỰ cản trở hiểu nghĩa.
+
+overall_score = MEAN 4 tiêu chí, làm tròn 0.5 gần nhất, thang 0–5. scale_label = "B1 Preliminary (0–5)".
+criteria gồm ĐÚNG 4 mục: "Content (Nội dung)", "Communicative Achievement (Hiệu quả giao tiếp)", "Organisation (Tổ chức)", "Language (Ngôn ngữ)". Mỗi mục có max=5.
+
+suggested_writing: Viết bài mẫu TIẾNG ANH ~100 từ đúng dạng bài yêu cầu.
+${isPart1
+    ? 'BẮT BUỘC với Part 1: (a) Đọc kỹ đề, xác định TẤT CẢ các notes được liệt kê. (b) Đề cập ĐẦY ĐỦ từng note theo đúng thứ tự, triển khai mỗi note thành 1–2 câu tự nhiên. (c) Dùng đúng format email/thư (greeting + nội dung theo notes + sign-off). (d) Register phù hợp với người nhận trong đề. (e) KHÔNG bịa thêm nội dung ngoài phạm vi notes.'
+    : 'Bài mẫu phải: (a) đúng dạng bài yêu cầu (article/story/review), (b) dùng đúng quy ước format của dạng bài đó, (c) nội dung hấp dẫn và phù hợp đề, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
 }
 
 // Rubric riêng cho từng kỳ thi
