@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APTIS Writing — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=5">
+<style>
+  .test-card {
+    background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; display:flex; align-items:center; justify-content:space-between;
+    gap:16px; transition:.15s; flex-wrap:wrap;
+  }
+  .test-card:hover { box-shadow:var(--shadow-hover); border-color:var(--primary); }
+  .test-card-info { flex:1; min-width:0; }
+  .test-card-title { font-size:15.5px; font-weight:700; margin-bottom:4px; }
+  .test-card-meta { font-size:13px; color:var(--text-muted); display:flex; gap:12px; flex-wrap:wrap; }
+  .test-card-meta span { display:flex; align-items:center; gap:4px; }
+  .part-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .chip { background:var(--primary-soft); color:var(--primary); font-size:12px; font-weight:600;
+    padding:3px 10px; border-radius:20px; }
+  .chip.c2{background:var(--teal-soft);color:#1a7a5e;}
+  .chip.c3{background:var(--amber-soft);color:#8a5a00;}
+  .chip.c4{background:var(--pink-soft);color:#8a1a5e;}
+  .empty-state { text-align:center; padding:60px 20px; color:var(--text-faint); }
+  .empty-state .ico { font-size:48px; margin-bottom:12px; }
+</style>
+</head>
+<body data-page="aptis" data-guard="auth">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › <a href="aptis.html" style="color:var(--primary);">APTIS</a> › Writing</div>
+    <h1>APTIS Writing <span class="tag" style="vertical-align:middle;">4 Components</span></h1>
+    <p>Mỗi đề là một bài thi Writing hoàn chỉnh gồm 4 phần — đúng định dạng thi thật. AI chấm điểm và nhận xét chi tiết.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:28px;">
+  <div class="container">
+
+    <div class="note" style="margin-bottom:22px;">
+      <span>ℹ️</span>
+      <div>
+        <strong>Cấu trúc bài thi APTIS Writing (50 phút):</strong>
+        <div style="margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;">
+          <span>📝 <b>Part 1</b> — Câu trả lời ngắn (3 phút)</span>
+          <span>📄 <b>Part 2</b> — Điền form (7 phút)</span>
+          <span>💬 <b>Part 3</b> — Group chat (10 phút)</span>
+          <span>✉️ <b>Part 4</b> — Viết email (30 phút)</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="testList"><div class="empty-state"><div class="ico">⏳</div><p>Đang tải danh sách đề...</p></div></div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=7"></script>
+<script>
+  function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+  fetch('/api/exercises?program=APTIS&skill=Writing&type=aptis_full', {credentials:'same-origin'}).then(function(r){
+    return r.json();
+  }).then(function(d){
+    var exercises = (d.exercises||[]).filter(function(e){
+      if(!e.content) return false;
+      try{
+        var c = typeof e.content==='object'?e.content:JSON.parse(e.content||'{}');
+        return c._aptis_full === true;
+      }catch(err){ return false; }
+    });
+
+    var list = document.getElementById('testList');
+    if(!exercises.length){
+      list.innerHTML = '<div class="empty-state"><div class="ico">✍️</div><p>Chưa có đề APTIS Writing nào.<br><span style="font-size:13px;">Giáo viên tạo đề từ khu vực giáo viên.</span></p></div>';
+      return;
+    }
+
+    list.innerHTML = '<div style="display:flex;flex-direction:column;gap:14px;">' +
+      exercises.map(function(e){
+        var parsed = {};
+        try{ parsed = typeof e.content==='object'?e.content:JSON.parse(e.content||'{}'); }catch(err){}
+        var theme = parsed.theme || '';
+        var mins  = parsed.total_minutes || 50;
+        var p3n   = (parsed.part3&&parsed.part3.messages&&parsed.part3.messages.length) || 0;
+        return '<div class="test-card">'
+          +'<div class="test-card-info">'
+          +'<div class="test-card-title">'+escHtml(e.title)+'</div>'
+          +(theme?'<div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Chủ đề: '+escHtml(theme)+'</div>':'')
+          +'<div class="test-card-meta">'
+          +'<span>⏱ '+mins+' phút</span>'
+          +'<span>🤖 AI chấm</span>'
+          +(p3n?'<span>💬 '+p3n+' tin nhắn</span>':'')
+          +'</div>'
+          +'<div class="part-chips">'
+          +'<span class="chip">Part 1 — Câu ngắn</span>'
+          +'<span class="chip c2">Part 2 — Form fill</span>'
+          +'<span class="chip c3">Part 3 — Group chat</span>'
+          +'<span class="chip c4">Part 4 — Email</span>'
+          +'</div>'
+          +'</div>'
+          +'<a class="btn btn-primary" href="aptis-writing-test.html?id='+e.id+'">Vào làm bài ▶</a>'
+          +'</div>';
+      }).join('')
+      + '</div>';
+  }).catch(function(){
+    document.getElementById('testList').innerHTML='<div class="empty-state"><div class="ico">⚠️</div><p>Không tải được danh sách đề.</p></div>';
+  });
+</script>
+</body>
+</html>

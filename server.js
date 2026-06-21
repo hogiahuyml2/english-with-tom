@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const { db, hashPassword, verifyPassword, now } = require('./db');
-const { aiEnabled, gradeWriting, provider } = require('./ai');
+const { aiEnabled, gradeWriting, gradeAptisWriting, provider } = require('./ai');
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
@@ -236,6 +236,45 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     res.json({ id: Number(r.lastInsertRowid), result });
   } catch (e) {
     console.error('AI grading error', e.message);
+    res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.', detail: String(e.message).slice(0, 400) });
+  }
+});
+
+// ===================== APTIS WRITING FULL TEST — chấm 4 components =====================
+
+app.post('/api/grade-aptis-writing', requireAuth, async (req, res) => {
+  const { exercise_id, answers } = req.body || {};
+  if (!answers) return res.status(400).json({ error: 'Thiếu dữ liệu bài làm.' });
+
+  const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+
+  let testContent;
+  try {
+    testContent = typeof ex.content === 'object' ? ex.content : JSON.parse(ex.content || '{}');
+  } catch (e) {
+    return res.status(400).json({ error: 'Nội dung đề không hợp lệ.' });
+  }
+  if (!testContent._aptis_full) return res.status(400).json({ error: 'Đề này không phải APTIS Full Test.' });
+
+  // Kiểm tra học sinh có ít nhất bài viết Part 4 Task 2
+  const hasContent = (answers.part4 && answers.part4.task2 && answers.part4.task2.trim().split(/\s+/).length >= 10)
+    || (answers.part2 && answers.part2.trim().split(/\s+/).length >= 5);
+  if (!hasContent) return res.status(400).json({ error: 'Bài viết quá ngắn. Hãy hoàn thành ít nhất Part 2 và Part 4.' });
+
+  if (!aiEnabled()) {
+    db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
+      .run(req.user.id, exercise_id, JSON.stringify(answers), 'pending', now());
+    return res.json({ pending: true });
+  }
+
+  try {
+    const result = await gradeAptisWriting(ex, testContent, answers);
+    db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,feedback,submitted_at) VALUES (?,?,?,?,?,?)')
+      .run(req.user.id, exercise_id, JSON.stringify(answers), 'graded', JSON.stringify(result), now());
+    res.json({ result });
+  } catch (e) {
+    console.error('APTIS grading error', e.message);
     res.status(500).json({ error: 'AI chấm bài thất bại, thử lại sau.', detail: String(e.message).slice(0, 400) });
   }
 });

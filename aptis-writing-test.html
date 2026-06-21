@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APTIS Writing Test — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== APTIS Test — self-contained styles ===== */
+:root {
+  --primary:#7B6EF6; --primary-soft:#ECE9FE;
+  --text:#2E2B45; --text-muted:#6B6880; --text-faint:#9C99AE;
+  --border:#E8E6F2; --surface:#fff;
+  --success:#2E9E7B; --success-soft:#E2F5EE;
+  --danger:#e53e3e;
+  --gradient:linear-gradient(135deg,#6F58EE 0%,#4F8BF0 100%);
+  --font:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── Test Header ── */
+.test-header{
+  background:#fff;border-bottom:4px solid #c0392b;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:58px;flex-shrink:0;position:sticky;top:0;z-index:100;
+}
+.th-left{display:flex;align-items:center;gap:12px;}
+.timer-box{
+  background:#2c3e50;color:#fff;border-radius:8px;
+  display:flex;align-items:center;gap:6px;padding:6px 14px;font-size:15px;font-weight:700;
+  min-width:110px;justify-content:center;cursor:pointer;user-select:none;
+  transition:background .2s;
+}
+.timer-box.hidden-time{background:#5a6a7e;}
+.timer-box .lbl{font-size:10px;font-weight:500;opacity:.7;display:block;text-align:center;}
+.timer-nums{display:flex;gap:4px;align-items:center;}
+.hide-btn{font-size:11px;padding:2px 8px;border:1px solid #aaa;border-radius:6px;background:transparent;color:#555;cursor:pointer;}
+.th-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;}
+.th-brand .logo{width:32px;height:32px;border-radius:9px;background:var(--gradient);display:grid;place-items:center;color:#fff;font-size:16px;}
+.th-right{display:flex;align-items:center;gap:10px;}
+.q-progress{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;}
+.q-grid-btn{
+  display:grid;grid-template-columns:repeat(4,10px);gap:3px;cursor:pointer;padding:5px;
+}
+.q-grid-btn span{
+  width:10px;height:10px;border-radius:2px;background:#ccc;display:block;transition:.15s;
+}
+.q-grid-btn span.done{background:#27ae60;}
+.q-grid-btn span.active{background:var(--primary);}
+
+/* ── Progress bar ── */
+.prog-bar{height:5px;background:#ddd;}
+.prog-fill{height:100%;background:var(--gradient);transition:width .4s ease;}
+
+/* ── Content area ── */
+.test-body{flex:1;display:flex;flex-direction:column;}
+.test-panel{display:none;flex:1;flex-direction:column;padding:28px 20px 20px;}
+.test-panel.active{display:flex;}
+
+.panel-inner{max-width:760px;width:100%;margin:0 auto;flex:1;display:flex;flex-direction:column;gap:18px;}
+
+/* Cards */
+.tc{background:#fff;border-radius:10px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.tc-instructions{font-weight:700;font-size:15px;margin-bottom:4px;}
+.tc-sub{font-size:13.5px;color:var(--text-muted);margin-bottom:0;}
+.tc-word-limit{display:inline-block;margin-top:6px;background:#2c3e50;color:#fff;font-size:12px;padding:3px 10px;border-radius:20px;font-weight:600;}
+
+/* Part 1 — Fill in */
+.p1-intro{background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:4px solid #3498db;margin-bottom:4px;}
+.p1-intro-label{font-size:12px;font-weight:700;color:#3498db;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.p1-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);}
+.p1-row:last-child{border-bottom:none;}
+.p1-q{flex:0 0 auto;width:55%;font-size:14.5px;color:var(--text);}
+.p1-a{flex:1;}
+.p1-a input{
+  width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:7px;
+  font-family:var(--font);font-size:14px;color:var(--text);transition:.15s;
+}
+.p1-a input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);}
+.p1-a input[readonly]{background:#f5f5f5;color:#888;cursor:default;}
+
+/* Part 2 — Form fill */
+.prompt-box{background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;padding:14px 16px;font-size:14px;color:#2c3a5e;font-weight:500;}
+.write-area{width:100%;min-height:140px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-family:var(--font);font-size:14.5px;line-height:1.75;resize:vertical;transition:.15s;}
+.write-area:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);}
+.wc-row{display:flex;justify-content:flex-end;align-items:center;gap:6px;font-size:12.5px;color:var(--text-faint);}
+.wc-row .wc{font-weight:600;color:var(--text-muted);}
+.wc-row .wc.ok{color:var(--success);}
+.wc-row .wc.over{color:var(--danger);}
+
+/* Part 3 — Group chat */
+.chat-msg{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.chat-bubble{background:#f0f4ff;border-radius:0 10px 10px 10px;padding:12px 16px;font-size:14px;line-height:1.6;}
+.chat-bubble strong{color:#2c5282;}
+.chat-item{border:1px solid var(--border);border-radius:10px;padding:16px;background:#fff;}
+.chat-item+.chat-item{margin-top:14px;}
+
+/* Part 4 — Email */
+.email-received{background:#fff9f0;border:1px solid #fde8c0;border-radius:10px;padding:18px 20px;margin-bottom:4px;}
+.email-from-label{font-size:11.5px;font-weight:700;color:#b7791f;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.email-body{font-size:14px;line-height:1.75;color:#4a3800;white-space:pre-line;}
+.task-block{border:1px solid var(--border);border-radius:10px;padding:18px 20px;background:#fff;}
+.task-block+.task-block{margin-top:14px;}
+.task-label{font-size:11.5px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.task-prompt{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.55;}
+.task-time{font-size:12.5px;color:var(--text-muted);margin-bottom:12px;}
+
+/* ── Navigation footer ── */
+.test-footer{
+  background:#fff;border-top:1px solid var(--border);
+  padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;position:sticky;bottom:0;z-index:100;
+}
+.nav-left{display:flex;gap:8px;}
+.nav-right{display:flex;gap:8px;}
+.btn{font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;padding:9px 20px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text);transition:.15s;}
+.btn:hover{background:#f5f5f5;}
+.btn-primary{background:var(--gradient);color:#fff;border-color:transparent;}
+.btn-primary:hover{opacity:.92;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── Loading overlay ── */
+.loading-overlay{
+  display:none;position:fixed;inset:0;background:rgba(255,255,255,.92);
+  z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;
+}
+.loading-overlay.show{display:flex;}
+.spin{width:44px;height:44px;border:4px solid var(--primary-soft);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Result panel ── */
+.result-panel{display:none;max-width:760px;margin:28px auto;padding:0 20px 40px;}
+.result-panel.show{display:block;}
+.r-card{background:#fff;border-radius:12px;padding:22px 24px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-bottom:16px;}
+.r-card.primary{border:2px solid var(--primary);}
+.r-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.r-score{text-align:right;}
+.r-score .big{font-size:40px;font-weight:700;background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.r-score .lbl{font-size:12px;color:var(--text-muted);}
+.crit{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;}
+.crit-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.crit-score{font-weight:700;color:var(--primary);}
+.crit p{font-size:13.5px;color:var(--text-muted);margin:0;line-height:1.6;}
+.note{display:flex;align-items:flex-start;gap:10px;background:var(--primary-soft);border-radius:8px;padding:12px 14px;font-size:14px;}
+.note .icon{font-size:18px;flex-shrink:0;}
+.sugg li{font-size:14px;margin-bottom:7px;line-height:1.6;}
+.suggested-body{white-space:pre-wrap;font-size:14px;line-height:1.85;color:#2E2B45;background:#f8f7ff;padding:18px;border-radius:10px;border:1px solid var(--border);font-family:Georgia,serif;}
+
+/* ── Intro screen ── */
+.intro-screen{display:flex;flex:1;align-items:center;justify-content:center;padding:20px;}
+.intro-box{background:#fff;border-radius:14px;padding:32px 36px;max-width:540px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.1);text-align:center;}
+.intro-box h2{font-size:22px;margin-bottom:8px;}
+.intro-box p{font-size:14.5px;color:var(--text-muted);line-height:1.7;margin-bottom:20px;}
+.intro-times{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:22px;text-align:left;}
+.intro-time-item{background:#f8f7ff;border-radius:8px;padding:12px 14px;}
+.intro-time-item .part-lbl{font-size:11.5px;font-weight:700;color:var(--primary);text-transform:uppercase;margin-bottom:3px;}
+.intro-time-item .part-time{font-size:13.5px;font-weight:600;}
+
+@media(max-width:600px){
+  .p1-row{flex-direction:column;align-items:flex-start;gap:6px;}
+  .p1-q{width:100%;}
+  .th-brand span{display:none;}
+}
+</style>
+</head>
+<body data-guard="auth">
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spin"></div>
+  <p style="font-size:15px;color:var(--text-muted);">AI đang chấm bài... (khoảng 20–30 giây)</p>
+</div>
+
+<!-- Test Header -->
+<header class="test-header" id="testHeader" style="display:none;">
+  <div class="th-left">
+    <div class="timer-box" id="timerBox" onclick="toggleHideTime()">
+      <div>
+        <span class="lbl" id="timerLbl">Thời gian</span>
+        <div class="timer-nums" id="timerNums"><span id="timerMins">50</span>:<span id="timerSecs">00</span></div>
+      </div>
+    </div>
+    <button class="hide-btn" onclick="toggleHideTime()" id="hideBtnLabel">Ẩn giờ</button>
+  </div>
+
+  <div class="th-brand">
+    <div class="logo">✍️</div>
+    <span id="testTitle">APTIS Writing</span>
+  </div>
+
+  <div class="th-right">
+    <span class="q-progress" id="qProgress">Part 1 / 4</span>
+    <div class="q-grid-btn" id="qGrid" onclick="openGridNav()">
+      <span id="g0"></span><span id="g1"></span><span id="g2"></span><span id="g3"></span>
+    </div>
+  </div>
+</header>
+<div class="prog-bar"><div class="prog-fill" id="progFill" style="width:25%;"></div></div>
+
+<!-- Intro screen -->
+<div class="intro-screen" id="introScreen">
+  <div class="intro-box">
+    <div style="font-size:40px;margin-bottom:12px;">✍️</div>
+    <h2 id="introTitle">APTIS Writing Test</h2>
+    <p id="introDesc">Bài thi Writing gồm 4 phần. Tổng thời gian <strong>50 phút</strong>.<br>Đọc kỹ yêu cầu từng phần trước khi bắt đầu.</p>
+    <div class="intro-times" id="introTimes">
+      <div class="intro-time-item"><div class="part-lbl">Part 1</div><div class="part-time">⏱ 3 phút</div></div>
+      <div class="intro-time-item"><div class="part-lbl">Part 2</div><div class="part-time">⏱ 7 phút</div></div>
+      <div class="intro-time-item"><div class="part-lbl">Part 3</div><div class="part-time">⏱ 10 phút</div></div>
+      <div class="intro-time-item"><div class="part-lbl">Part 4</div><div class="part-time">⏱ 30 phút</div></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;font-size:15px;padding:12px;" onclick="startTest()">Bắt đầu làm bài ▶</button>
+    <p style="margin-top:12px;font-size:12.5px;color:var(--text-faint);">
+      <a href="aptis-writing.html" style="color:var(--primary);">‹ Quay lại danh sách đề</a>
+    </p>
+  </div>
+</div>
+
+<!-- Test body -->
+<div class="test-body" id="testBody" style="display:none;">
+
+  <!-- Part 1 — Short answers -->
+  <div class="test-panel" id="panel0">
+    <div class="panel-inner">
+      <div class="tc">
+        <div class="tc-instructions" id="p1-context">Fill in your personal information.</div>
+        <div class="tc-sub">Write short answers to each question.</div>
+        <span class="tc-word-limit" id="p1-time">⏱ Recommended: 3 minutes</span>
+      </div>
+
+      <div class="tc">
+        <div class="p1-intro">
+          <div class="p1-intro-label">Example</div>
+          <div class="p1-row">
+            <div class="p1-q" id="p1-ex-q">How are you?</div>
+            <div class="p1-a"><input type="text" readonly id="p1-ex-a" value="I'm fine, thanks." tabindex="-1"></div>
+          </div>
+        </div>
+
+        <div id="p1-questions">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 2 — Form fill -->
+  <div class="test-panel" id="panel1">
+    <div class="panel-inner">
+      <div class="tc">
+        <div class="tc-instructions" id="p2-context">Fill in the form. Write in sentences.</div>
+        <div class="tc-sub" id="p2-instruction"></div>
+        <span class="tc-word-limit" id="p2-limit">Use 20-30 words. You have 7 minutes.</span>
+      </div>
+
+      <div class="tc">
+        <div class="prompt-box" id="p2-prompt" style="margin-bottom:14px;"></div>
+        <textarea class="write-area" id="p2-answer" style="min-height:160px;" placeholder="Write your answer here..."></textarea>
+        <div class="wc-row" style="margin-top:6px;">Số từ: <span class="wc" id="p2-wc">0</span><span id="p2-wc-range" style="color:var(--text-faint);">&nbsp;/ 20–30</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 3 — Group chat -->
+  <div class="test-panel" id="panel2">
+    <div class="panel-inner">
+      <div class="tc">
+        <div class="tc-instructions" id="p3-context">You are in a group chat.</div>
+        <div class="tc-sub" id="p3-instruction">Respond in full sentences.</div>
+        <span class="tc-word-limit" id="p3-limit">30-40 words per answer. You have 10 minutes.</span>
+      </div>
+
+      <div id="p3-messages">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 4 — Email writing -->
+  <div class="test-panel" id="panel3">
+    <div class="panel-inner">
+      <div class="email-received">
+        <div class="email-from-label" id="p4-from-label">Email received</div>
+        <div class="email-body" id="p4-email-body"></div>
+      </div>
+
+      <div class="task-block">
+        <div class="task-label">Task 1</div>
+        <div class="task-prompt" id="p4-t1-prompt"></div>
+        <div class="task-time" id="p4-t1-time"></div>
+        <textarea class="write-area" id="p4-t1-answer" style="min-height:120px;" placeholder="Write your email here..."></textarea>
+        <div class="wc-row" style="margin-top:6px;">Số từ: <span class="wc" id="p4-t1-wc">0</span><span id="p4-t1-range" style="color:var(--text-faint);"></span></div>
+      </div>
+
+      <div class="task-block">
+        <div class="task-label">Task 2</div>
+        <div class="task-prompt" id="p4-t2-prompt"></div>
+        <div class="task-time" id="p4-t2-time"></div>
+        <textarea class="write-area" id="p4-t2-answer" style="min-height:200px;" placeholder="Write your email here..."></textarea>
+        <div class="wc-row" style="margin-top:6px;">Số từ: <span class="wc" id="p4-t2-wc">0</span><span id="p4-t2-range" style="color:var(--text-faint);"></span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Result panel (outside test body) -->
+<div class="result-panel" id="resultPanel">
+  <div style="max-width:760px;margin:0 auto;padding:0 20px;">
+    <div class="r-card primary">
+      <div class="r-head">
+        <div>
+          <h3 style="font-size:17px;margin-bottom:4px;">📊 Kết quả chấm bằng AI</h3>
+          <p style="font-size:13px;color:var(--text-muted);" id="r-exam-title"></p>
+        </div>
+        <div class="r-score">
+          <div class="lbl" id="r-scale-lbl">Điểm tổng</div>
+          <div class="big" id="r-overall">–</div>
+        </div>
+      </div>
+      <div id="r-criteria"></div>
+      <div class="note" style="margin-top:12px;"><span class="icon">📝</span><div id="r-summary"></div></div>
+      <h4 style="font-size:15px;margin:16px 0 8px;">Gợi ý cải thiện</h4>
+      <ul class="sugg" id="r-suggestions" style="padding-left:18px;"></ul>
+    </div>
+
+    <div class="r-card" id="r-suggested-wrap" style="display:none;border:2px solid #9b59b6;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="font-size:16px;">✍️ Bài viết gợi ý (Part 4)</h3>
+        <span style="background:#f3eeff;color:#9b59b6;font-size:12px;padding:4px 10px;border-radius:20px;font-weight:600;">Tham khảo</span>
+      </div>
+      <div class="suggested-body" id="r-suggested-text"></div>
+      <div class="note" style="margin-top:12px;background:#f3eeff;border-color:#d7bef7;">
+        <span class="icon">💡</span><div id="r-suggested-notes" style="font-size:13.5px;color:#5a3d8a;"></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="aptis-writing.html" class="btn btn-primary">← Làm đề khác</a>
+      <a href="dashboard.html" class="btn">📈 Xem tiến trình</a>
+    </div>
+  </div>
+</div>
+
+<!-- Test Footer (nav) -->
+<footer class="test-footer" id="testFooter" style="display:none;">
+  <div class="nav-left">
+    <button class="btn" id="backBtn" onclick="goBack()" style="display:none;">◀ Quay lại</button>
+  </div>
+  <div style="font-size:13px;color:var(--text-muted);" id="footerHint"></div>
+  <div class="nav-right">
+    <button class="btn btn-primary" id="nextBtn" onclick="goNext()">Tiếp theo ▶</button>
+  </div>
+</footer>
+
+<script src="js/main.js?v=7"></script>
+<script>
+/* ────────────────────────────────────────────
+   APTIS Writing Test — client logic
+─────────────────────────────────────────────*/
+function qp(n){ return new URLSearchParams(location.search).get(n); }
+var EXERCISE_ID = parseInt(qp('id') || '0', 10);
+var testData = null;   // loaded exercise content (parsed JSON)
+var currentPart = 0;   // 0..3
+var timerInterval = null;
+var totalSecs = 50 * 60;
+var timeHidden = false;
+var testStarted = false;
+
+/* ── Word count helper ── */
+function countWords(str){ return str.trim() ? str.trim().split(/\s+/).length : 0; }
+function updateWc(taId, wcId, rangeStr){
+  var ta = document.getElementById(taId);
+  var wc = document.getElementById(wcId);
+  if(!ta||!wc) return;
+  ta.addEventListener('input', function(){
+    var n = countWords(ta.value);
+    wc.textContent = n;
+    var ok = false;
+    if(rangeStr){
+      var m = rangeStr.match(/(\d+)[–\-](\d+)/);
+      if(m) ok = n >= +m[1] && n <= +m[2];
+      else if(rangeStr.match(/~?(\d+)/)){
+        var tgt = +rangeStr.match(/~?(\d+)/)[1];
+        ok = n >= Math.floor(tgt*0.8) && n <= Math.ceil(tgt*1.3);
+      }
+    }
+    wc.className = 'wc' + (ok ? ' ok' : (n > 0 ? '' : ''));
+  });
+}
+
+/* ── Load exercise ── */
+if(!EXERCISE_ID){ document.body.innerHTML='<p style="padding:40px;text-align:center;color:#888;">Không tìm thấy đề. <a href="aptis-writing.html">Quay lại</a></p>'; }
+else {
+  fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(function(r){
+    if(r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
+    return r.json();
+  }).then(function(d){
+    if(!d) return;
+    var e = d.exercise;
+    if(!e){ document.getElementById('introTitle').textContent='Không tìm thấy đề'; return; }
+    var parsed = null;
+    try{ parsed = typeof e.content === 'object' ? e.content : JSON.parse(e.content||'{}'); }catch(err){}
+    if(!parsed || !parsed._aptis_full){
+      document.getElementById('introDesc').textContent='Đề này không phải APTIS Writing Full Test.';
+      return;
+    }
+    testData = parsed;
+    document.title = e.title + ' — EWT';
+    document.getElementById('introTitle').textContent = e.title || 'APTIS Writing Test';
+    document.getElementById('testTitle').textContent = e.title || 'APTIS Writing Test';
+    document.getElementById('r-exam-title').textContent = e.title || 'APTIS Writing';
+    totalSecs = (parsed.total_minutes || 50) * 60;
+
+    /* Intro times */
+    var it = document.getElementById('introTimes');
+    var parts = [parsed.part1, parsed.part2, parsed.part3, parsed.part4];
+    var names = ['Part 1','Part 2','Part 3','Part 4'];
+    var times = [
+      (parsed.part1&&parsed.part1.recommended_time)||'3 phút',
+      (parsed.part2&&parsed.part2.recommended_time)||'7 phút',
+      (parsed.part3&&parsed.part3.recommended_time)||'10 phút',
+      (parsed.part4&&parsed.part4.recommended_time)||'30 phút'
+    ];
+    it.innerHTML = names.map(function(n,i){
+      return '<div class="intro-time-item"><div class="part-lbl">'+n+'</div><div class="part-time">⏱ '+times[i]+'</div></div>';
+    }).join('');
+
+    buildParts(parsed);
+  }).catch(function(err){ console.error(err); });
+}
+
+function buildParts(p){
+  /* ── Part 1 ── */
+  if(p.part1){
+    var p1 = p.part1;
+    if(p1.example_q) document.getElementById('p1-ex-q').textContent = p1.example_q;
+    if(p1.example_a) document.getElementById('p1-ex-a').value = p1.example_a;
+    if(p1.recommended_time) document.getElementById('p1-time').textContent = '⏱ Recommended: ' + p1.recommended_time;
+    var qs = p1.questions || [];
+    document.getElementById('p1-questions').innerHTML = qs.map(function(q, i){
+      return '<div class="p1-row">'
+        +'<div class="p1-q">'+escHtml(q)+'</div>'
+        +'<div class="p1-a"><input type="text" id="p1a-'+i+'" placeholder="Your answer..." autocomplete="off"></div>'
+        +'</div>';
+    }).join('');
+  }
+
+  /* ── Part 2 ── */
+  if(p.part2){
+    var p2 = p.part2;
+    document.getElementById('p2-context').textContent = p2.context || '';
+    document.getElementById('p2-instruction').textContent = p2.instruction || '';
+    var wr = p2.word_range || '20-30';
+    var rt = p2.recommended_time || '7 phút';
+    document.getElementById('p2-limit').textContent = 'Use ' + wr + ' words. You have ' + rt + '.';
+    document.getElementById('p2-prompt').textContent = p2.prompt || '';
+    document.getElementById('p2-wc-range').textContent = ' / ' + wr;
+    updateWc('p2-answer','p2-wc', wr);
+  }
+
+  /* ── Part 3 ── */
+  if(p.part3){
+    var p3 = p.part3;
+    document.getElementById('p3-context').textContent = p3.context || '';
+    document.getElementById('p3-instruction').textContent = p3.instruction || '';
+    var wr3 = p3.word_range || '30-40';
+    document.getElementById('p3-limit').textContent = 'Use ' + wr3 + ' words per answer. ' + (p3.recommended_time ? 'You have ' + p3.recommended_time + '.' : '');
+    var msgs = p3.messages || [];
+    document.getElementById('p3-messages').innerHTML = msgs.map(function(m, i){
+      return '<div class="chat-item">'
+        +'<div class="chat-msg"><div class="chat-bubble"><strong>'+escHtml(m.name)+':</strong> '+escHtml(m.text)+'</div></div>'
+        +'<textarea class="write-area" id="p3a-'+i+'" style="min-height:110px;" placeholder="Your response ('+wr3+' words)..."></textarea>'
+        +'<div class="wc-row" style="margin-top:5px;">Số từ: <span class="wc" id="p3wc-'+i+'">0</span></div>'
+        +'</div>';
+    }).join('');
+    msgs.forEach(function(_, i){ updateWc('p3a-'+i, 'p3wc-'+i, wr3); });
+  }
+
+  /* ── Part 4 ── */
+  if(p.part4){
+    var p4 = p.part4;
+    document.getElementById('p4-from-label').textContent = p4.email_context || 'Email received';
+    document.getElementById('p4-email-body').textContent = p4.email_body || '';
+    var t1 = p4.task1 || {}, t2 = p4.task2 || {};
+    document.getElementById('p4-t1-prompt').textContent = t1.prompt || '';
+    document.getElementById('p4-t1-time').textContent = t1.time ? 'You have ' + t1.time + '.' : '';
+    document.getElementById('p4-t1-range').textContent = t1.word_target ? ' / ~' + t1.word_target : '';
+    updateWc('p4-t1-answer', 'p4-t1-wc', t1.word_target ? String(t1.word_target) : '50');
+
+    document.getElementById('p4-t2-prompt').textContent = t2.prompt || '';
+    document.getElementById('p4-t2-time').textContent = t2.time ? 'You have ' + t2.time + '.' : '';
+    document.getElementById('p4-t2-range').textContent = t2.word_target ? ' / ' + t2.word_target : '';
+    updateWc('p4-t2-answer', 'p4-t2-wc', String(t2.word_target || '120-150'));
+  }
+}
+
+function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+/* ── Start test ── */
+function startTest(){
+  if(!testData){ alert('Đề chưa tải xong, thử lại sau giây lát.'); return; }
+  testStarted = true;
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('testHeader').style.display = 'flex';
+  document.getElementById('testBody').style.display = 'flex';
+  document.getElementById('testFooter').style.display = 'flex';
+  startTimer();
+  goToPart(0);
+}
+
+/* ── Timer ── */
+function startTimer(){
+  timerInterval = setInterval(function(){
+    if(totalSecs <= 0){ clearInterval(timerInterval); submitAll(true); return; }
+    totalSecs--;
+    var m = Math.floor(totalSecs/60);
+    var s = totalSecs % 60;
+    document.getElementById('timerMins').textContent = String(m).padStart(2,'0');
+    document.getElementById('timerSecs').textContent = String(s).padStart(2,'0');
+    if(totalSecs <= 5*60){
+      document.getElementById('timerBox').style.background = '#c0392b';
+    }
+  }, 1000);
+}
+
+function toggleHideTime(){
+  timeHidden = !timeHidden;
+  document.getElementById('timerNums').style.visibility = timeHidden ? 'hidden' : 'visible';
+  document.getElementById('hideBtnLabel').textContent = timeHidden ? 'Hiện giờ' : 'Ẩn giờ';
+  document.getElementById('timerBox').classList.toggle('hidden-time', timeHidden);
+}
+
+/* ── Navigation ── */
+function goToPart(idx){
+  currentPart = idx;
+  for(var i=0;i<4;i++){
+    var p = document.getElementById('panel'+i);
+    if(p) p.classList.toggle('active', i===idx);
+  }
+  updateGrid();
+  document.getElementById('qProgress').textContent = 'Part '+(idx+1)+' / 4';
+  document.getElementById('progFill').style.width = ((idx+1)/4*100)+'%';
+  document.getElementById('backBtn').style.display = idx > 0 ? 'inline-block' : 'none';
+  var nextBtn = document.getElementById('nextBtn');
+  if(idx === 3){
+    nextBtn.textContent = '📤 Nộp bài';
+    nextBtn.style.background = 'linear-gradient(135deg,#27ae60,#2ecc71)';
+    document.getElementById('footerHint').textContent = 'Kiểm tra lại bài trước khi nộp.';
+  } else {
+    nextBtn.textContent = 'Tiếp theo ▶';
+    nextBtn.style.background = '';
+    var hints = ['Trả lời ngắn gọn, đúng câu hỏi.','Viết đủ số từ theo yêu cầu.','Phản hồi mỗi người 30–40 từ.',''];
+    document.getElementById('footerHint').textContent = hints[idx] || '';
+  }
+  window.scrollTo(0,0);
+}
+
+function updateGrid(){
+  for(var i=0;i<4;i++){
+    var g = document.getElementById('g'+i);
+    if(!g) continue;
+    g.className = i===currentPart ? 'active' : (i<currentPart ? 'done' : '');
+  }
+}
+
+function goNext(){
+  if(currentPart < 3) goToPart(currentPart+1);
+  else submitAll(false);
+}
+
+function goBack(){
+  if(currentPart > 0) goToPart(currentPart-1);
+}
+
+function openGridNav(){
+  var parts = ['Part 1 – Personal Info','Part 2 – Form Fill','Part 3 – Group Chat','Part 4 – Email Writing'];
+  var msg = 'Nhảy đến part:\n' + parts.map(function(p,i){ return (i+1)+'. '+p+(i===currentPart?' (đang làm)':''); }).join('\n') +
+    '\n\nNhập số (1-4):';
+  var n = parseInt(prompt(msg));
+  if(n>=1 && n<=4) goToPart(n-1);
+}
+
+/* ── Collect answers ── */
+function collectAnswers(){
+  var ans = { part1:[], part2:'', part3:[], part4:{task1:'', task2:''} };
+
+  /* Part 1 */
+  if(testData && testData.part1 && testData.part1.questions){
+    testData.part1.questions.forEach(function(_, i){
+      var el = document.getElementById('p1a-'+i);
+      ans.part1.push(el ? el.value.trim() : '');
+    });
+  }
+
+  /* Part 2 */
+  ans.part2 = (document.getElementById('p2-answer')||{}).value || '';
+
+  /* Part 3 */
+  if(testData && testData.part3 && testData.part3.messages){
+    testData.part3.messages.forEach(function(_, i){
+      var el = document.getElementById('p3a-'+i);
+      ans.part3.push(el ? el.value.trim() : '');
+    });
+  }
+
+  /* Part 4 */
+  ans.part4.task1 = (document.getElementById('p4-t1-answer')||{}).value || '';
+  ans.part4.task2 = (document.getElementById('p4-t2-answer')||{}).value || '';
+
+  return ans;
+}
+
+/* ── Submit ── */
+async function submitAll(timeUp){
+  if(!testStarted) return;
+  if(!timeUp){
+    var ok = confirm('Nộp bài ngay?\n\nBạn không thể chỉnh sửa sau khi nộp.');
+    if(!ok) return;
+  } else {
+    alert('⏰ Hết giờ! Bài của bạn sẽ được nộp tự động.');
+  }
+
+  clearInterval(timerInterval);
+  document.getElementById('testBody').style.display = 'none';
+  document.getElementById('testFooter').style.display = 'none';
+  document.getElementById('loadingOverlay').classList.add('show');
+
+  var answers = collectAnswers();
+
+  try {
+    var r = await fetch('/api/grade-aptis-writing', {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: answers })
+    });
+    document.getElementById('loadingOverlay').classList.remove('show');
+
+    if(r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return; }
+    var data = await r.json().catch(function(){return{};});
+
+    if(!r.ok){
+      if(data.pending){
+        showPendingResult();
+      } else {
+        alert('Lỗi: '+(data.error||'Nộp bài thất bại.'));
+        document.getElementById('testBody').style.display='flex';
+        document.getElementById('testFooter').style.display='flex';
+        goToPart(currentPart);
+      }
+      return;
+    }
+    if(data.pending){ showPendingResult(); return; }
+    showResult(data.result);
+  } catch(err) {
+    document.getElementById('loadingOverlay').classList.remove('show');
+    alert('Lỗi kết nối. Vui lòng thử lại.');
+    document.getElementById('testBody').style.display='flex';
+    document.getElementById('testFooter').style.display='flex';
+    goToPart(currentPart);
+  }
+}
+
+function showPendingResult(){
+  var rp = document.getElementById('resultPanel');
+  rp.classList.add('show');
+  rp.querySelector('.r-card.primary').innerHTML =
+    '<h3 style="font-size:17px;margin-bottom:10px;">✅ Bài đã được nộp!</h3>'+
+    '<p style="color:var(--text-muted);font-size:14px;line-height:1.7;">Bài đang chờ chấm (AI chưa được cấu hình hoặc đề riêng). Giáo viên sẽ phản hồi sớm nhất.<br>Bạn có thể theo dõi tại <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a>.</p>'+
+    '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">'+
+    '<a href="aptis-writing.html" class="btn btn-primary">← Làm đề khác</a>'+
+    '<a href="dashboard.html" class="btn">📈 Tiến trình</a>'+
+    '</div>';
+}
+
+function showResult(res){
+  if(!res) return;
+  document.getElementById('r-overall').textContent = res.overall_score || '–';
+  document.getElementById('r-scale-lbl').textContent = res.scale_label || 'Điểm tổng';
+  document.getElementById('r-criteria').innerHTML = (res.criteria||[]).map(function(c){
+    return '<div class="crit"><div class="crit-head"><span>'+escHtml(c.name)+'</span><span class="crit-score">'+c.score+'/'+c.max+'</span></div><p>'+escHtml(c.comment)+'</p></div>';
+  }).join('');
+  document.getElementById('r-summary').textContent = res.summary || '';
+  document.getElementById('r-suggestions').innerHTML = (res.suggestions||[]).map(function(s){return '<li>'+escHtml(s)+'</li>';}).join('');
+  if(res.suggested_writing){
+    document.getElementById('r-suggested-text').textContent = res.suggested_writing;
+    document.getElementById('r-suggested-notes').textContent = res.suggested_notes||'';
+    document.getElementById('r-suggested-wrap').style.display='block';
+  }
+  document.getElementById('resultPanel').classList.add('show');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

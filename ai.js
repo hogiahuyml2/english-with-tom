@@ -167,4 +167,131 @@ async function gradeWriting(exercise, essay) {
   throw new Error('Chưa cấu hình AI');
 }
 
-module.exports = { aiEnabled, gradeWriting, provider };
+// ============================================================
+// APTIS WRITING FULL TEST — chấm 4 components cùng lúc
+// ============================================================
+
+function buildAptisSystem() {
+  return `Bạn là giám khảo chấm Writing của British Council, chuyên kỳ thi APTIS General/Advanced.
+Bài thi APTIS Writing gồm 4 components với trọng số và tiêu chí riêng:
+
+COMPONENT 1 — Câu trả lời ngắn (Personal Info, trọng số 10%)
+Học sinh trả lời ngắn gọn các câu hỏi cá nhân (tên, nghề, nơi sống, sở thích...).
+Tiêu chí: Phù hợp/đúng nghĩa với câu hỏi, ngữ pháp đơn giản đúng, trọn vẹn (không bỏ câu).
+Thang: 0–5.
+
+COMPONENT 2 — Điền form (Form Fill, trọng số 20%)
+Học sinh viết đoạn văn 20–30 từ theo prompt cho sẵn (về chủ đề cụ thể).
+Tiêu chí chính: Task Achievement (đúng yêu cầu, đủ thông tin), Vocabulary Range, Grammatical Accuracy, đúng độ dài.
+Thang: 0–5.
+
+COMPONENT 3 — Group Chat (Chat Replies, trọng số 30%)
+Học sinh trả lời 3 tin nhắn trong group chat (30–40 từ/reply).
+Tiêu chí chính: Relevance (phản hồi đúng với từng tin nhắn), Coherence (mạch lạc), Vocabulary, Grammar. Chú ý cả 3 reply.
+Thang: 0–5 cho cả 3 reply cộng lại (đánh giá tổng thể).
+
+COMPONENT 4 — Email Writing (Email Writing, trọng số 40%)
+Task 1: Email ngắn ~50 từ (informal/semi-formal).
+Task 2: Email dài 120–150 từ (semi-formal/formal).
+Tiêu chí: Content & Task Achievement, Vocabulary Range, Grammatical Range & Accuracy, Organisation & Cohesion.
+Thang: 0–5 (tổng hợp cả Task 1 và Task 2).
+
+TỔNG ĐIỂM: overall_score = trung bình có trọng số (C1×10% + C2×20% + C3×30% + C4×40%), thang 0–5, làm tròn 0.5.
+scale_label = "APTIS Writing (0–5)"
+
+Quy tắc phản hồi:
+- criteria: ĐÚNG 4 mục, mỗi mục là 1 component (name song ngữ Vi/En), score (0–5), max=5, comment tiếng Việt cụ thể.
+- summary: 2–3 câu tổng quan bằng tiếng Việt, nêu điểm mạnh và yếu chính.
+- suggestions: 4–5 gợi ý cải thiện cụ thể bằng tiếng Việt (cho từng component yếu).
+- suggested_writing: Bài mẫu TIẾNG ANH cho Component 4 Task 2 (email 120–150 từ, semi-formal/formal, đáp ứng đúng đề bài cụ thể của học sinh, KHÔNG generic).
+- suggested_notes: Giải thích TIẾNG VIỆT 3–5 câu vì sao bài mẫu đạt điểm cao.`;
+}
+
+function buildAptisUser(exercise, testContent, answers) {
+  const p1 = testContent.part1 || {};
+  const p2 = testContent.part2 || {};
+  const p3 = testContent.part3 || {};
+  const p4 = testContent.part4 || {};
+  const qs1 = (p1.questions || []);
+  const msgs3 = (p3.messages || []);
+
+  let txt = `ĐỀ BÀI: ${exercise.title}\nChủ đề: ${testContent.theme || ''}\n\n`;
+
+  txt += `=== COMPONENT 1 — Câu trả lời ngắn ===\n`;
+  txt += `Câu ví dụ: "${p1.example_q || ''}" → "${p1.example_a || ''}"\n`;
+  qs1.forEach((q, i) => {
+    const a = (answers.part1 || [])[i] || '(bỏ trống)';
+    txt += `Câu ${i + 1}: "${q}" → Học sinh trả lời: "${a}"\n`;
+  });
+
+  txt += `\n=== COMPONENT 2 — Điền form ===\n`;
+  txt += `Ngữ cảnh: ${p2.context || ''}\n`;
+  txt += `Prompt: "${p2.prompt || ''}"\nYêu cầu: ${p2.word_range || '20-30'} từ.\n`;
+  txt += `Bài viết học sinh:\n"""\n${answers.part2 || '(bỏ trống)'}\n"""\n`;
+
+  txt += `\n=== COMPONENT 3 — Group Chat ===\n`;
+  txt += `${p3.context || ''}\n`;
+  msgs3.forEach((m, i) => {
+    const a = (answers.part3 || [])[i] || '(bỏ trống)';
+    txt += `[${m.name || 'Person'}]: "${m.text}"\n  → Học sinh: "${a}"\n`;
+  });
+
+  txt += `\n=== COMPONENT 4 — Email Writing ===\n`;
+  txt += `${p4.email_context || ''}\n`;
+  txt += `Email nhận được:\n"""\n${p4.email_body || ''}\n"""\n`;
+  const t1 = p4.task1 || {}, t2 = p4.task2 || {};
+  txt += `Task 1 (${t1.word_target || '~50'} từ): ${t1.prompt || ''}\n`;
+  txt += `Bài viết Task 1:\n"""\n${(answers.part4 || {}).task1 || '(bỏ trống)'}\n"""\n`;
+  txt += `Task 2 (${t2.word_target || '120-150'} từ): ${t2.prompt || ''}\n`;
+  txt += `Bài viết Task 2:\n"""\n${(answers.part4 || {}).task2 || '(bỏ trống)'}\n"""`;
+
+  return txt;
+}
+
+async function gradeAptisWriting(exercise, testContent, answers) {
+  const p = provider();
+
+  const systemPrompt = buildAptisSystem();
+  const userPrompt = buildAptisUser(exercise, testContent, answers);
+
+  if (p === 'gemini') {
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: GEMINI_SCHEMA,
+          maxOutputTokens: 10000,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      })
+    });
+    if (!r.ok) throw new Error('Gemini ' + r.status + ': ' + (await r.text()));
+    const data = await r.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const text = parts.map(pp => pp.text || '').join('');
+    if (!text) throw new Error('Gemini: phản hồi rỗng');
+    return JSON.parse(text);
+  }
+
+  if (p === 'claude') {
+    const client = new Anthropic();
+    const model = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const resp = await client.messages.create({
+      model, max_tokens: 8000, system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+      output_config: { format: { type: 'json_schema', schema: CLAUDE_SCHEMA } }
+    });
+    const block = resp.content.find(b => b.type === 'text');
+    return JSON.parse(block.text);
+  }
+
+  throw new Error('Chưa cấu hình AI');
+}
+
+module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, provider };

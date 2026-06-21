@@ -90,6 +90,7 @@
           <select id="exType">
             <option value="writing">✍️ Writing — AI chấm (đề công khai) hoặc giáo viên chấm (đề riêng)</option>
             <option value="quiz">📝 Trắc nghiệm (Reading / Listening) — tự chấm</option>
+            <option value="aptis_full">🎯 APTIS Writing Full Test — 4 Components (50 phút)</option>
           </select>
         </div>
 
@@ -144,6 +145,113 @@
           <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Câu hỏi trắc nghiệm</label>
           <div id="qList"></div>
           <button class="btn btn-sm" type="button" id="addQ">➕ Thêm câu hỏi</button>
+        </div>
+
+        <!-- ===== APTIS Full Test Builder ===== -->
+        <div id="aptisBuilder" style="display:none;">
+          <div class="note" style="margin-bottom:16px;"><span>🎯</span><div>Điền đủ 4 phần bên dưới. Mỗi phần tương ứng 1 component của bài thi APTIS Writing thật.</div></div>
+
+          <!-- Thông tin chung -->
+          <div style="background:#f8f7ff;border-radius:10px;padding:16px;margin-bottom:14px;border:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Thông tin chung</div>
+            <div class="grid grid-2" style="gap:10px;">
+              <div class="field" style="margin:0;"><label>Chủ đề (Theme)</label><input type="text" id="ap-theme" placeholder="VD: Technology Club, Travel..."></div>
+              <div class="field" style="margin:0;"><label>Tổng thời gian (phút)</label><input type="number" id="ap-mins" value="50" min="10" max="120"></div>
+            </div>
+          </div>
+
+          <!-- Part 1 -->
+          <details open style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:700;font-size:14px;padding:10px 14px;background:var(--primary-soft);border-radius:8px;list-style:none;display:flex;align-items:center;gap:8px;">
+              <span>📝</span> Part 1 — Câu trả lời ngắn (Personal Info)
+            </summary>
+            <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;">
+              <div class="grid grid-2" style="gap:10px;margin-bottom:10px;">
+                <div class="field" style="margin:0;"><label>Câu ví dụ (Example Q)</label><input type="text" id="ap-ex-q" placeholder="VD: How are you?"></div>
+                <div class="field" style="margin:0;"><label>Đáp án ví dụ (Example A)</label><input type="text" id="ap-ex-a" placeholder="VD: I'm fine, thanks."></div>
+              </div>
+              <div class="field" style="margin-bottom:8px;"><label>Thời gian khuyến nghị</label><input type="text" id="ap-p1-time" placeholder="VD: 3 minutes" value="3 minutes"></div>
+              <div class="field"><label>Danh sách câu hỏi <span style="font-weight:400;color:var(--text-faint);">(mỗi câu 1 dòng, thường 5–7 câu)</span></label>
+                <textarea id="ap-p1-questions" style="min-height:130px;font-family:inherit;font-size:13.5px;" placeholder="What is your name?&#10;What do you do?&#10;Where do you live?&#10;What is your favourite device?&#10;What do you use it for?"></textarea>
+              </div>
+            </div>
+          </details>
+
+          <!-- Part 2 -->
+          <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:700;font-size:14px;padding:10px 14px;background:#e2f5f0;border-radius:8px;list-style:none;display:flex;align-items:center;gap:8px;">
+              <span>📄</span> Part 2 — Điền form (20-30 từ)
+            </summary>
+            <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;">
+              <div class="field"><label>Ngữ cảnh (context — dòng đầu in đậm)</label>
+                <input type="text" id="ap-p2-context" placeholder="VD: Now you've become a new member of the technology club. Fill in the form. Write in sentences.">
+              </div>
+              <div class="grid grid-2" style="gap:10px;margin-bottom:10px;">
+                <div class="field" style="margin:0;"><label>Số từ yêu cầu</label><input type="text" id="ap-p2-words" placeholder="VD: 20-30" value="20-30"></div>
+                <div class="field" style="margin:0;"><label>Thời gian</label><input type="text" id="ap-p2-time" placeholder="VD: 7 minutes" value="7 minutes"></div>
+              </div>
+              <div class="field"><label>Nội dung ô form (prompt)</label>
+                <input type="text" id="ap-p2-prompt" placeholder="VD: Please tell us about what you use technology for most often and why:">
+              </div>
+            </div>
+          </details>
+
+          <!-- Part 3 -->
+          <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:700;font-size:14px;padding:10px 14px;background:#fcf1dd;border-radius:8px;list-style:none;display:flex;align-items:center;gap:8px;">
+              <span>💬</span> Part 3 — Group Chat (30-40 từ / reply)
+            </summary>
+            <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;">
+              <div class="field"><label>Mô tả tình huống (context)</label>
+                <input type="text" id="ap-p3-context" placeholder="VD: You are speaking to fellow members of the technology club in a group chat">
+              </div>
+              <div class="field"><label>Hướng dẫn (instruction)</label>
+                <input type="text" id="ap-p3-instruction" placeholder="VD: Respond to them in full sentences (30-40 words per answer). You have 10 minutes in total.">
+              </div>
+              <div class="grid grid-2" style="gap:10px;margin-bottom:12px;">
+                <div class="field" style="margin:0;"><label>Số từ / reply</label><input type="text" id="ap-p3-words" placeholder="30-40" value="30-40"></div>
+                <div class="field" style="margin:0;"><label>Thời gian</label><input type="text" id="ap-p3-time" placeholder="10 minutes" value="10 minutes"></div>
+              </div>
+              <label style="font-size:13.5px;font-weight:600;margin-bottom:8px;display:block;">Tin nhắn trong group chat <span style="font-weight:400;color:var(--text-faint);">(thường 3 tin nhắn)</span></label>
+              <div id="ap-p3-msgs"></div>
+              <button class="btn btn-sm" type="button" onclick="addChatMsg()">➕ Thêm tin nhắn</button>
+            </div>
+          </details>
+
+          <!-- Part 4 -->
+          <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer;font-weight:700;font-size:14px;padding:10px 14px;background:#fbeaf3;border-radius:8px;list-style:none;display:flex;align-items:center;gap:8px;">
+              <span>✉️</span> Part 4 — Viết Email (Task 1 + Task 2)
+            </summary>
+            <div style="border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;">
+              <div class="field"><label>Mô tả email nhận được</label>
+                <input type="text" id="ap-p4-from" placeholder="VD: You received this email from the president of the technology club.">
+              </div>
+              <div class="field"><label>Nội dung email nhận được</label>
+                <textarea id="ap-p4-email" style="min-height:120px;font-family:inherit;font-size:13.5px;" placeholder="Dear Member,&#10;We are writing to inform you that..."></textarea>
+              </div>
+              <div style="background:#f8f7ff;border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid var(--border);">
+                <div style="font-weight:700;font-size:13px;margin-bottom:8px;color:var(--primary);">Task 1 (~50 từ)</div>
+                <div class="field" style="margin-bottom:8px;"><label>Yêu cầu Task 1</label>
+                  <input type="text" id="ap-p4-t1-prompt" placeholder="VD: Write a short email to your friend (about 50 words). Tell your friend your feelings about this and what you plan to do.">
+                </div>
+                <div class="grid grid-2" style="gap:10px;">
+                  <div class="field" style="margin:0;"><label>Thời gian</label><input type="text" id="ap-p4-t1-time" placeholder="10 minutes" value="10 minutes"></div>
+                  <div class="field" style="margin:0;"><label>Số từ mục tiêu</label><input type="text" id="ap-p4-t1-words" placeholder="50" value="50"></div>
+                </div>
+              </div>
+              <div style="background:#f8f7ff;border-radius:8px;padding:12px;border:1px solid var(--border);">
+                <div style="font-weight:700;font-size:13px;margin-bottom:8px;color:var(--primary);">Task 2 (120-150 từ)</div>
+                <div class="field" style="margin-bottom:8px;"><label>Yêu cầu Task 2</label>
+                  <input type="text" id="ap-p4-t2-prompt" placeholder="VD: Write an email to the president of the club (about 120-150 words). Tell them your thoughts about this and what you would like to do.">
+                </div>
+                <div class="grid grid-2" style="gap:10px;">
+                  <div class="field" style="margin:0;"><label>Thời gian</label><input type="text" id="ap-p4-t2-time" placeholder="20 minutes" value="20 minutes"></div>
+                  <div class="field" style="margin:0;"><label>Số từ mục tiêu</label><input type="text" id="ap-p4-t2-words" placeholder="120-150" value="120-150"></div>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
 
         <button class="btn btn-primary btn-block" id="saveExBtn" style="margin-top:14px;">Lưu đề</button>
@@ -396,16 +504,96 @@
   var exType = document.getElementById('exType');
   var exSkill = document.getElementById('exSkill');
   function syncType(){
-    var quiz = exType.value === 'quiz';
-    document.getElementById('quizBuilder').style.display   = quiz ? 'block' : 'none';
-    document.getElementById('writingNote').style.display   = quiz ? 'none'  : 'flex';
+    var t = exType.value;
+    var quiz    = t === 'quiz';
+    var aptis   = t === 'aptis_full';
+    var writing = t === 'writing';
+    document.getElementById('quizBuilder').style.display   = quiz   ? 'block' : 'none';
+    document.getElementById('aptisBuilder').style.display  = aptis  ? 'block' : 'none';
+    document.getElementById('writingNote').style.display   = writing ? 'flex' : 'none';
     document.getElementById('contentLabel').textContent    = quiz ? 'Đoạn văn / nội dung đề (tuỳ chọn)' : 'Yêu cầu đề bài';
+
+    /* Ẩn/hiện các field không cần cho APTIS */
+    var hideForAptis = ['partField','exContent','writingNote'];
+    hideForAptis.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.style.display = aptis ? 'none' : '';
+    });
+    /* Ẩn field ảnh và đề riêng khi APTIS (không dùng) */
+    document.querySelectorAll('.field').forEach(function(f){
+      if(f.querySelector('#imgFile') || f.querySelector('#isPrivate')) f.style.display = aptis ? 'none' : '';
+    });
+
     if (quiz && exSkill.value === 'Writing') exSkill.value = 'Reading';
-    if (!quiz) exSkill.value = 'Writing';
+    if (writing) exSkill.value = 'Writing';
+    if (aptis) { exSkill.value = 'Writing'; document.getElementById('exProgram').value = 'APTIS'; }
     if (quiz && !document.querySelectorAll('.qbuild').length) addQuestion();
+    if (aptis && !document.querySelectorAll('.ap-msg').length) { addChatMsg(); addChatMsg(); addChatMsg(); }
     syncPart();
   }
   exType.onchange = syncType;
+
+  /* ===== APTIS: thêm tin nhắn group chat ===== */
+  function addChatMsg(){
+    var idx = document.querySelectorAll('.ap-msg').length;
+    var div = document.createElement('div');
+    div.className = 'ap-msg';
+    div.style.cssText = 'display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;';
+    div.innerHTML =
+      '<input type="text" placeholder="Tên (VD: Alicia)" style="width:130px;flex-shrink:0;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13.5px;" class="ap-msg-name">'+
+      '<input type="text" placeholder="Nội dung tin nhắn..." style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13.5px;" class="ap-msg-text">'+
+      '<button type="button" class="btn btn-sm" style="flex-shrink:0;color:var(--danger);border-color:var(--danger);" onclick="this.parentElement.remove()">✕</button>';
+    document.getElementById('ap-p3-msgs').appendChild(div);
+  }
+
+  /* ===== APTIS: thu thập dữ liệu 4 parts ===== */
+  function collectAptisContent(){
+    var msgs = [];
+    document.querySelectorAll('.ap-msg').forEach(function(d){
+      var n = d.querySelector('.ap-msg-name').value.trim();
+      var t = d.querySelector('.ap-msg-text').value.trim();
+      if(n && t) msgs.push({name:n, text:t});
+    });
+    var qs = (document.getElementById('ap-p1-questions').value || '').split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    return {
+      _aptis_full: true,
+      theme: document.getElementById('ap-theme').value.trim(),
+      total_minutes: parseInt(document.getElementById('ap-mins').value) || 50,
+      part1: {
+        example_q: document.getElementById('ap-ex-q').value.trim(),
+        example_a: document.getElementById('ap-ex-a').value.trim(),
+        recommended_time: document.getElementById('ap-p1-time').value.trim(),
+        questions: qs
+      },
+      part2: {
+        context: document.getElementById('ap-p2-context').value.trim(),
+        word_range: document.getElementById('ap-p2-words').value.trim(),
+        recommended_time: document.getElementById('ap-p2-time').value.trim(),
+        prompt: document.getElementById('ap-p2-prompt').value.trim()
+      },
+      part3: {
+        context: document.getElementById('ap-p3-context').value.trim(),
+        instruction: document.getElementById('ap-p3-instruction').value.trim(),
+        word_range: document.getElementById('ap-p3-words').value.trim(),
+        recommended_time: document.getElementById('ap-p3-time').value.trim(),
+        messages: msgs
+      },
+      part4: {
+        email_context: document.getElementById('ap-p4-from').value.trim(),
+        email_body: document.getElementById('ap-p4-email').value.trim(),
+        task1: {
+          prompt: document.getElementById('ap-p4-t1-prompt').value.trim(),
+          time: document.getElementById('ap-p4-t1-time').value.trim(),
+          word_target: document.getElementById('ap-p4-t1-words').value.trim()
+        },
+        task2: {
+          prompt: document.getElementById('ap-p4-t2-prompt').value.trim(),
+          time: document.getElementById('ap-p4-t2-time').value.trim(),
+          word_target: document.getElementById('ap-p4-t2-words').value.trim()
+        }
+      }
+    };
+  }
 
   /* ===== PART / TASK SELECTOR ===== */
   var PART_OPTIONS = {
@@ -495,6 +683,41 @@
 
   document.getElementById('saveExBtn').onclick = async function(){
     var type = exType.value;
+
+    /* ── APTIS Full Test ── */
+    if (type === 'aptis_full') {
+      var title = document.getElementById('exTitle').value.trim();
+      if (!title){ msg('Vui lòng nhập tên đề (ô "Tên đề").', false); return; }
+      var aptisContent = collectAptisContent();
+      if (!aptisContent.part1.questions.length){ msg('Part 1: hãy nhập ít nhất 1 câu hỏi.', false); return; }
+      if (!aptisContent.part2.prompt){ msg('Part 2: hãy nhập nội dung ô form (prompt).', false); return; }
+      if (!aptisContent.part3.messages.length){ msg('Part 3: hãy nhập ít nhất 1 tin nhắn group chat.', false); return; }
+      if (!aptisContent.part4.email_body){ msg('Part 4: hãy nhập nội dung email nhận được.', false); return; }
+      var payload = {
+        program: 'APTIS', skill: 'Writing', title: title,
+        content: JSON.stringify(aptisContent),
+        type: 'writing', is_private: 0, image_url: null
+      };
+      var r = await fetch('/api/exercises',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var data = await r.json().catch(function(){return{};});
+      if (r.ok){
+        msg('Đã lưu APTIS Writing Test "'+title+'"! Học sinh có thể làm ngay tại aptis-writing.html.', true);
+        document.getElementById('exTitle').value='';
+        document.getElementById('ap-theme').value='';
+        document.getElementById('ap-p1-questions').value='';
+        document.getElementById('ap-p2-context').value='';
+        document.getElementById('ap-p2-prompt').value='';
+        document.getElementById('ap-p3-context').value='';
+        document.getElementById('ap-p3-instruction').value='';
+        document.getElementById('ap-p3-msgs').innerHTML='';
+        document.getElementById('ap-p4-from').value='';
+        document.getElementById('ap-p4-email').value='';
+        addChatMsg(); addChatMsg(); addChatMsg();
+      } else { msg(data.error || 'Lưu thất bại.', false); }
+      return;
+    }
+
+    /* ── Writing / Quiz thông thường ── */
     var imgUrl = document.getElementById('imageUrl').value;
     var payload = {
       program: document.getElementById('exProgram').value,
