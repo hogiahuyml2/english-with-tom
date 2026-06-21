@@ -6,7 +6,7 @@
 <title>Làm bài Writing — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=8">
+<link rel="stylesheet" href="css/style.css?v=10">
 <style>
   .band-big { font-size:38px; font-weight:700; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
   .crit { border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; }
@@ -151,6 +151,7 @@
 </section>
 
 <div id="site-footer"></div>
+<script src="js/editor.js"></script>
 <script src="js/main.js?v=9"></script>
 <script>
   /* ── Lightbox ── */
@@ -171,10 +172,16 @@
   function qp(n){ return new URLSearchParams(location.search).get(n); }
   var EXERCISE_ID = parseInt(qp('id') || '3', 10);
   var IS_PRIVATE = false;
-  var essay = document.getElementById('essay');
-  var wc = document.getElementById('wordCount');
-  essay.addEventListener('input', function(){
-    wc.textContent = essay.value.trim() ? essay.value.trim().split(/\s+/).length : 0;
+
+  /* ── Rich editor cho bài viết ── */
+  var essayEditor = new RichEditor('essay', {
+    toolbar: 'writer',
+    placeholder: 'Viết bài của bạn ở đây...',
+    minHeight: '300px',
+    onChange: function(ed){
+      var n = ed.wordCount();
+      document.getElementById('wordCount').textContent = n;
+    }
   });
 
   fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(r=>{
@@ -187,7 +194,7 @@
     if (!e) { document.getElementById('exTitle').textContent = 'Không tìm thấy đề'; return; }
     document.getElementById('exTitle').textContent = e.title;
     document.getElementById('crumbTitle').textContent = e.program + ' Writing';
-    document.getElementById('promptText').textContent = e.content || '';
+    document.getElementById('promptText').innerHTML = RichEditor.sanitize(e.content || '');
     var back = document.getElementById('backLink');
     back.textContent = '‹ ' + e.program + ' Writing';
     back.href = (e.program === 'KET' ? 'ket-writing.html' : 'writing-exercises.html?program=' + encodeURIComponent(e.program));
@@ -215,7 +222,7 @@
   }).catch(function(){});
 
   document.getElementById('submitBtn').addEventListener('click', async function(){
-    var text = essay.value.trim();
+    var text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
     if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
     document.getElementById('loading').style.display = 'block';
     document.getElementById('result').style.display = 'none';

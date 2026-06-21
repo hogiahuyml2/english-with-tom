@@ -163,6 +163,22 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
   .p1-q{width:100%;}
   .th-brand span{display:none;}
 }
+/* ── Rich Editor ── */
+.re-wrap{border:1px solid var(--border);border-radius:8px;background:#fff;overflow:hidden;transition:border-color .15s,box-shadow .15s;}
+.re-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);}
+.re-toolbar{display:flex;align-items:center;gap:2px;padding:5px 8px;background:#f5f4fc;border-bottom:1px solid var(--border);flex-wrap:wrap;min-height:36px;}
+.re-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:26px;border:none;background:transparent;border-radius:5px;cursor:pointer;font-family:var(--font);font-size:12.5px;color:var(--text-muted);transition:background .12s,color .12s;flex-shrink:0;line-height:1;padding:0;}
+.re-btn:hover,.re-btn.active{background:var(--primary-soft);color:var(--primary);}
+.re-btn.active{font-weight:700;}
+.re-btn svg{display:block;}
+.re-sep{width:1px;height:18px;background:var(--border);margin:0 3px;flex-shrink:0;align-self:center;}
+.re-ci-text{font-weight:800;font-size:13px;background:linear-gradient(135deg,#6F58EE,#e53e3e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.re-ci-hl{font-weight:800;font-size:13px;background:#ffd43b;-webkit-text-fill-color:#555;padding:0 2px;border-radius:2px;}
+.re-color-wrap{cursor:pointer;position:relative;overflow:hidden;}
+.re-color-inp{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:none;}
+.re-body{padding:10px 13px;font-family:var(--font);font-size:14.5px;line-height:1.8;color:var(--text);outline:none;word-break:break-word;}
+.re-body:empty::before{content:attr(data-placeholder);color:var(--text-faint);pointer-events:none;display:block;}
+.re-body p{margin:0 0 4px;}.re-body ul,.re-body ol{padding-left:22px;margin:5px 0;}.re-body li{margin:3px 0;}
 </style>
 </head>
 <body data-guard="auth">
@@ -355,6 +371,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
   </div>
 </footer>
 
+<script src="js/editor.js"></script>
 <script src="js/main.js?v=7"></script>
 <script>
 /* ────────────────────────────────────────────
@@ -370,13 +387,15 @@ var timeHidden = false;
 var testStarted = false;
 
 /* ── Word count helper ── */
+var _aptisEditors = {};
 function countWords(str){ return str.trim() ? str.trim().split(/\s+/).length : 0; }
 function updateWc(taId, wcId, rangeStr){
   var ta = document.getElementById(taId);
   var wc = document.getElementById(wcId);
   if(!ta||!wc) return;
-  ta.addEventListener('input', function(){
-    var n = countWords(ta.value);
+  function doCount(){
+    var ed = _aptisEditors[taId];
+    var n = ed ? ed.wordCount() : countWords(ta.value);
     wc.textContent = n;
     var ok = false;
     if(rangeStr){
@@ -388,7 +407,9 @@ function updateWc(taId, wcId, rangeStr){
       }
     }
     wc.className = 'wc' + (ok ? ' ok' : (n > 0 ? '' : ''));
-  });
+  }
+  ta.addEventListener('re-input', doCount);
+  ta.addEventListener('input', doCount);
 }
 
 /* ── Load exercise ── */
@@ -458,6 +479,7 @@ function buildParts(p){
     document.getElementById('p2-limit').textContent = 'Use ' + wr + ' words. You have ' + rt + '.';
     document.getElementById('p2-prompt').textContent = p2.prompt || '';
     document.getElementById('p2-wc-range').textContent = ' / ' + wr;
+    _aptisEditors['p2-answer'] = new RichEditor('p2-answer', { toolbar:'writer', placeholder:'Write your answer here...', minHeight:'160px' });
     updateWc('p2-answer','p2-wc', wr);
   }
 
@@ -476,7 +498,10 @@ function buildParts(p){
         +'<div class="wc-row" style="margin-top:5px;">Số từ: <span class="wc" id="p3wc-'+i+'">0</span></div>'
         +'</div>';
     }).join('');
-    msgs.forEach(function(_, i){ updateWc('p3a-'+i, 'p3wc-'+i, wr3); });
+    msgs.forEach(function(_, i){
+      _aptisEditors['p3a-'+i] = new RichEditor('p3a-'+i, { toolbar:'minimal', placeholder:'Your response ('+wr3+' words)...', minHeight:'110px' });
+      updateWc('p3a-'+i, 'p3wc-'+i, wr3);
+    });
   }
 
   /* ── Part 4 ── */
@@ -488,11 +513,13 @@ function buildParts(p){
     document.getElementById('p4-t1-prompt').textContent = t1.prompt || '';
     document.getElementById('p4-t1-time').textContent = t1.time ? 'You have ' + t1.time + '.' : '';
     document.getElementById('p4-t1-range').textContent = t1.word_target ? ' / ~' + t1.word_target : '';
+    _aptisEditors['p4-t1-answer'] = new RichEditor('p4-t1-answer', { toolbar:'writer', placeholder:'Write your email here...', minHeight:'120px' });
     updateWc('p4-t1-answer', 'p4-t1-wc', t1.word_target ? String(t1.word_target) : '50');
 
     document.getElementById('p4-t2-prompt').textContent = t2.prompt || '';
     document.getElementById('p4-t2-time').textContent = t2.time ? 'You have ' + t2.time + '.' : '';
     document.getElementById('p4-t2-range').textContent = t2.word_target ? ' / ' + t2.word_target : '';
+    _aptisEditors['p4-t2-answer'] = new RichEditor('p4-t2-answer', { toolbar:'writer', placeholder:'Write your email here...', minHeight:'200px' });
     updateWc('p4-t2-answer', 'p4-t2-wc', String(t2.word_target || '120-150'));
   }
 }
@@ -596,19 +623,19 @@ function collectAnswers(){
   }
 
   /* Part 2 */
-  ans.part2 = (document.getElementById('p2-answer')||{}).value || '';
+  ans.part2 = _aptisEditors['p2-answer'] ? _aptisEditors['p2-answer'].getText() : ((document.getElementById('p2-answer')||{}).value || '');
 
   /* Part 3 */
   if(testData && testData.part3 && testData.part3.messages){
     testData.part3.messages.forEach(function(_, i){
-      var el = document.getElementById('p3a-'+i);
-      ans.part3.push(el ? el.value.trim() : '');
+      var ed = _aptisEditors['p3a-'+i];
+      ans.part3.push(ed ? ed.getText().trim() : ((document.getElementById('p3a-'+i)||{}).value || '').trim());
     });
   }
 
   /* Part 4 */
-  ans.part4.task1 = (document.getElementById('p4-t1-answer')||{}).value || '';
-  ans.part4.task2 = (document.getElementById('p4-t2-answer')||{}).value || '';
+  ans.part4.task1 = _aptisEditors['p4-t1-answer'] ? _aptisEditors['p4-t1-answer'].getText() : ((document.getElementById('p4-t1-answer')||{}).value || '');
+  ans.part4.task2 = _aptisEditors['p4-t2-answer'] ? _aptisEditors['p4-t2-answer'].getText() : ((document.getElementById('p4-t2-answer')||{}).value || '');
 
   return ans;
 }

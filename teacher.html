@@ -6,7 +6,7 @@
 <title>Khu vực giáo viên — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=9">
+<link rel="stylesheet" href="css/style.css?v=10">
 <style>
   .img-preview { max-width:100%; max-height:180px; border-radius:8px; margin-top:8px; display:none; border:1px solid var(--border); }
   .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
@@ -434,6 +434,7 @@
 </div>
 
 <div id="site-footer"></div>
+<script src="js/editor.js"></script>
 <script src="js/main.js?v=9"></script>
 <script>
   /* ===== TABS ===== */
@@ -723,7 +724,7 @@
       program: document.getElementById('exProgram').value,
       skill:   exSkill.value,
       title:   document.getElementById('exTitle').value.trim(),
-      content: document.getElementById('exContent').value,
+      content: exContentEditor ? exContentEditor.getHTML() : document.getElementById('exContent').value,
       type:    type,
       is_private: document.getElementById('isPrivate').checked ? 1 : 0,
       image_url: imgUrl || null
@@ -744,6 +745,7 @@
       var priv = payload.is_private ? ' 🔒 (đề riêng)' : '';
       msg('Đã lưu đề "'+payload.title+'"'+priv+'!', true);
       document.getElementById('exTitle').value='';
+      if (exContentEditor) exContentEditor.clear();
       document.getElementById('exContent').value='';
       document.getElementById('imageUrl').value='';
       document.getElementById('imgPreview').style.display='none';
@@ -1013,7 +1015,8 @@
       document.getElementById('editExId').value   = e.id;
       document.getElementById('editExType').value = e.type || 'writing';
       document.getElementById('editTitle').value  = e.title || '';
-      document.getElementById('editContent').value= e.content || '';
+      if (editContentEditor) editContentEditor.setHTML(e.content || '');
+      else document.getElementById('editContent').value = e.content || '';
       document.getElementById('editIsPrivate').checked = !!e.is_private;
       document.getElementById('editImageUrl').value = e.image_url || '';
 
@@ -1144,12 +1147,11 @@
     title.value = prefix + cleaned;
   }
 
-  // Char/word count for edit textarea
-  document.getElementById('editContent').addEventListener('input', updateEditCounts);
+  /* Char/word count for edit textarea — updated by editContentEditor.onChange */
   function updateEditCounts(){
-    var text = document.getElementById('editContent').value;
+    var text = editContentEditor ? editContentEditor.getText() : document.getElementById('editContent').value;
     document.getElementById('editCharCount').textContent = text.length;
-    document.getElementById('editWordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+    document.getElementById('editWordCount').textContent = RichEditor.countWords(text);
   }
 
   // Quiz question editor for edit drawer
@@ -1207,7 +1209,7 @@
   async function saveEdit(){
     var id      = document.getElementById('editExId').value;
     var title   = document.getElementById('editTitle').value.trim();
-    var content = document.getElementById('editContent').value.trim();
+    var content = editContentEditor ? editContentEditor.getHTML() : document.getElementById('editContent').value.trim();
     var program = document.getElementById('editProgram').value;
     var skill   = document.getElementById('editSkill').value;
     var isPrivate = document.getElementById('editIsPrivate').checked;
@@ -1263,6 +1265,25 @@
 
   // Close drawer on Escape
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeEditDrawer(); });
+
+  /* ===== RICH EDITOR INIT ===== */
+  var exContentEditor = null;
+  var editContentEditor = null;
+
+  (function initEditors(){
+    exContentEditor = new RichEditor('exContent', {
+      toolbar: 'full',
+      placeholder: 'Dán yêu cầu đề bài hoặc đoạn văn...',
+      minHeight: '120px'
+    });
+    editContentEditor = new RichEditor('editContent', {
+      toolbar: 'full',
+      placeholder: 'Dán yêu cầu đề bài, đoạn văn, hướng dẫn...',
+      minHeight: '200px',
+      onChange: updateEditCounts
+    });
+  })();
+
 </script>
 </body>
 </html>
