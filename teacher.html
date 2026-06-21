@@ -49,6 +49,19 @@
   }
   .char-count { text-align:right; font-size:11.5px; color:var(--text-faint); margin-top:3px; }
   .edit-action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+
+  /* ── IELTS Type Picker ── */
+  .ielts-section { background:#faf8ff; border:1.5px solid var(--primary-2,#c4b8ff); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .ielts-type-group-label { font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:0 0 7px; }
+  .ielts-type-grid { display:flex; flex-wrap:wrap; gap:6px; }
+  .ielts-type-btn {
+    display:inline-flex; align-items:center; gap:5px; padding:5px 11px;
+    border:1.5px solid var(--border); border-radius:20px; background:#fff;
+    cursor:pointer; font-size:12px; font-weight:600; font-family:var(--font);
+    transition:all .15s; color:var(--text); line-height:1.4;
+  }
+  .ielts-type-btn:hover { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+  .ielts-type-btn.active { border-color:var(--primary); background:var(--primary); color:#fff; box-shadow:0 2px 6px rgba(123,110,246,.3); }
 </style>
 </head>
 <body data-page="" data-guard="teacher">
@@ -117,6 +130,56 @@
 
         <div class="field"><label id="contentLabel">Yêu cầu đề bài</label>
           <textarea id="exContent" style="min-height:120px;" placeholder="Dán yêu cầu đề bài hoặc đoạn văn..."></textarea>
+        </div>
+
+        <!-- ===== IELTS Writing Classification (hiện khi IELTS + Writing) ===== -->
+        <div id="ieltsSection" style="display:none;">
+          <div class="ielts-section">
+            <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px;">🎯 Phân loại dạng đề IELTS Writing</div>
+            <div class="ielts-type-group-label" style="margin-top:0;">Task 1 — Academic (biểu đồ, bản đồ, sơ đồ quy trình)</div>
+            <div class="ielts-type-grid" id="typeGrid_t1a" style="margin-bottom:12px;"></div>
+            <div class="ielts-type-group-label">Task 1 — General Training (thư)</div>
+            <div class="ielts-type-grid" id="typeGrid_t1g" style="margin-bottom:12px;"></div>
+            <div class="ielts-type-group-label">Task 2 — Essay (Academic &amp; General Training)</div>
+            <div class="ielts-type-grid" id="typeGrid_t2"></div>
+            <input type="hidden" id="exTaskType" value="">
+          </div>
+          <div class="grid grid-3" style="gap:10px; margin-bottom:12px;">
+            <div class="field" style="margin:0;"><label>🎯 Band target</label>
+              <select id="exBandTarget">
+                <option value="">Không chọn</option>
+                <option value="5.0-6.0">5.0 – 6.0</option>
+                <option value="6.0-7.0">6.0 – 7.0</option>
+                <option value="6.5-7.5">6.5 – 7.5</option>
+                <option value="7.0-8.0">7.0 – 8.0</option>
+                <option value="8.0+">8.0+</option>
+              </select>
+            </div>
+            <div class="field" style="margin:0;"><label>🏷️ Chủ đề</label>
+              <select id="exTopicTag">
+                <option value="">Không chọn</option>
+                <option>Environment</option><option>Education</option><option>Technology</option>
+                <option>Society &amp; Culture</option><option>Health</option>
+                <option>Economics &amp; Work</option><option>Government &amp; Policy</option>
+                <option>Science &amp; Innovation</option><option>Travel &amp; Tourism</option>
+                <option>Media &amp; Communication</option>
+              </select>
+            </div>
+            <div class="field" style="margin:0;"><label>⏱️ Thời gian</label>
+              <select id="exTimeLimit">
+                <option value="">Không chọn</option>
+                <option value="20">20 phút (Task 1)</option>
+                <option value="40">40 phút (Task 2)</option>
+                <option value="60">60 phút (cả 2)</option>
+              </select>
+            </div>
+          </div>
+          <details style="margin-bottom:14px;">
+            <summary style="cursor:pointer;font-size:13.5px;font-weight:600;padding:8px 0;color:var(--text);">📝 Model Answer (đáp án mẫu) — tuỳ chọn, giúp AI chấm chính xác hơn</summary>
+            <div class="field" style="margin-top:8px;">
+              <textarea id="exModelAnswer" style="min-height:110px;font-family:inherit;font-size:13.5px;" placeholder="Nhập bài viết mẫu tham khảo..."></textarea>
+            </div>
+          </details>
         </div>
 
         <!-- Upload ảnh -->
@@ -488,6 +551,56 @@
     <div id="editImgStatus" style="font-size:13px; margin-top:8px; display:none;"></div>
     <input type="hidden" id="editImageUrl" value="">
 
+    <!-- ===== IELTS Classification (Edit Drawer) ===== -->
+    <div id="editIeltsSection" style="display:none;">
+      <div class="edit-section-title">🎯 Phân loại IELTS Writing</div>
+      <div class="ielts-section">
+        <div class="ielts-type-group-label" style="margin-top:0;">Task 1 — Academic</div>
+        <div class="ielts-type-grid" id="editTypeGrid_t1a" style="margin-bottom:12px;"></div>
+        <div class="ielts-type-group-label">Task 1 — General Training</div>
+        <div class="ielts-type-grid" id="editTypeGrid_t1g" style="margin-bottom:12px;"></div>
+        <div class="ielts-type-group-label">Task 2 — Essay</div>
+        <div class="ielts-type-grid" id="editTypeGrid_t2"></div>
+        <input type="hidden" id="editTaskType" value="">
+      </div>
+      <div class="grid grid-3" style="gap:10px; margin-bottom:12px;">
+        <div class="field" style="margin:0;"><label>🎯 Band target</label>
+          <select id="editBandTarget">
+            <option value="">Không chọn</option>
+            <option value="5.0-6.0">5.0 – 6.0</option>
+            <option value="6.0-7.0">6.0 – 7.0</option>
+            <option value="6.5-7.5">6.5 – 7.5</option>
+            <option value="7.0-8.0">7.0 – 8.0</option>
+            <option value="8.0+">8.0+</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;"><label>🏷️ Chủ đề</label>
+          <select id="editTopicTag">
+            <option value="">Không chọn</option>
+            <option>Environment</option><option>Education</option><option>Technology</option>
+            <option>Society &amp; Culture</option><option>Health</option>
+            <option>Economics &amp; Work</option><option>Government &amp; Policy</option>
+            <option>Science &amp; Innovation</option><option>Travel &amp; Tourism</option>
+            <option>Media &amp; Communication</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;"><label>⏱️ Thời gian</label>
+          <select id="editTimeLimit">
+            <option value="">Không chọn</option>
+            <option value="20">20 phút (Task 1)</option>
+            <option value="40">40 phút (Task 2)</option>
+            <option value="60">60 phút (cả 2)</option>
+          </select>
+        </div>
+      </div>
+      <details style="margin-bottom:14px;">
+        <summary style="cursor:pointer;font-size:13.5px;font-weight:600;padding:8px 0;color:var(--text);">📝 Model Answer — tuỳ chọn</summary>
+        <div class="field" style="margin-top:8px;">
+          <textarea id="editModelAnswer" style="min-height:110px;font-family:inherit;font-size:13.5px;" placeholder="Nhập bài viết mẫu tham khảo..."></textarea>
+        </div>
+      </details>
+    </div>
+
     <!-- Cài đặt -->
     <div class="edit-section-title">Cài đặt</div>
     <div class="field" style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
@@ -527,6 +640,71 @@
     if (t==='grade')  loadSubmissions();
     if (t==='bank')   loadBank();
     if (t==='groups') { loadGroups(); loadPrivateExercises(); }
+  }
+
+  /* ══════════════════════════════════════════════════════
+     IELTS TYPE CLASSIFICATION
+  ══════════════════════════════════════════════════════ */
+  var IELTS_TYPE_DATA = {
+    t1_bar:     { task:1, group:'t1a', icon:'📊', label:'Bar chart'              },
+    t1_line:    { task:1, group:'t1a', icon:'📈', label:'Line graph'             },
+    t1_pie:     { task:1, group:'t1a', icon:'🥧', label:'Pie chart'              },
+    t1_table:   { task:1, group:'t1a', icon:'📋', label:'Table'                  },
+    t1_map:     { task:1, group:'t1a', icon:'🗺️', label:'Map'                   },
+    t1_process: { task:1, group:'t1a', icon:'⚙️', label:'Process / Diagram'     },
+    t1_mixed:   { task:1, group:'t1a', icon:'📊', label:'Mixed charts'           },
+    t1_formal:  { task:1, group:'t1g', icon:'✉️',  label:'Formal letter'         },
+    t1_semi:    { task:1, group:'t1g', icon:'📄',  label:'Semi-formal letter'    },
+    t1_informal:{ task:1, group:'t1g', icon:'💌',  label:'Informal letter'       },
+    t2_opinion: { task:2, group:'t2',  icon:'💬', label:'Opinion (Agree/Disagree)' },
+    t2_discuss: { task:2, group:'t2',  icon:'⚖️', label:'Discussion (Both views)'  },
+    t2_causes:  { task:2, group:'t2',  icon:'🔗', label:'Causes & Solutions'        },
+    t2_adv:     { task:2, group:'t2',  icon:'➕', label:'Advantages & Disadvantages'},
+    t2_twopart: { task:2, group:'t2',  icon:'❓', label:'Two-part Questions'        },
+    t2_problem: { task:2, group:'t2',  icon:'🔧', label:'Problem & Solution'        },
+  };
+
+  function renderIeltsTypeGrids(pfx) {
+    var groups = { t1a:[], t1g:[], t2:[] };
+    Object.keys(IELTS_TYPE_DATA).forEach(function(k){
+      var d = IELTS_TYPE_DATA[k]; groups[d.group].push({ key:k, icon:d.icon, label:d.label });
+    });
+    ['t1a','t1g','t2'].forEach(function(g){
+      var el = document.getElementById((pfx?pfx+'T':'t')+'ypeGrid_'+g);
+      if (!el) return;
+      el.innerHTML = groups[g].map(function(t){
+        return '<button type="button" class="ielts-type-btn" data-key="'+t.key+'"'
+          +' onclick="setTaskType(\''+pfx+'\',\''+t.key+'\')">'
+          +t.icon+' '+escHtml(t.label)+'</button>';
+      }).join('');
+    });
+  }
+
+  function setTaskType(pfx, key) {
+    var hiddenEl = document.getElementById(pfx==='edit' ? 'editTaskType' : 'exTaskType');
+    if (hiddenEl) hiddenEl.value = key;
+    var secEl = document.getElementById(pfx==='edit' ? 'editIeltsSection' : 'ieltsSection');
+    if (secEl) secEl.querySelectorAll('.ielts-type-btn').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-key')===key);
+    });
+    var d = IELTS_TYPE_DATA[key];
+    if (d) {
+      var partSel = document.getElementById(pfx==='edit' ? 'editPart' : 'exPart');
+      if (partSel) {
+        var target = 'Task '+d.task;
+        for (var i=0;i<partSel.options.length;i++){
+          if (partSel.options[i].value===target){ partSel.selectedIndex=i; break; }
+        }
+        if (pfx==='edit') applyEditPartPrefix(); else applyPartPrefix();
+      }
+    }
+  }
+
+  function showHideIeltsSection(pfx) {
+    var prog  = document.getElementById(pfx==='edit' ? 'editProgram' : 'exProgram').value;
+    var skill = document.getElementById(pfx==='edit' ? 'editSkill'   : 'exSkill').value;
+    var sec   = document.getElementById(pfx==='edit' ? 'editIeltsSection' : 'ieltsSection');
+    if (sec) sec.style.display = (prog==='IELTS' && skill==='Writing') ? 'block' : 'none';
   }
 
   /* ===== QUẢN LÝ LỚP ===== */
@@ -754,7 +932,7 @@
     if (aptis) { exSkill.value = 'Writing'; document.getElementById('exProgram').value = 'APTIS'; }
     if (quiz && !document.querySelectorAll('.qbuild').length) addQuestion();
     if (aptis && !document.querySelectorAll('.ap-msg').length) { addChatMsg(); addChatMsg(); addChatMsg(); }
-    syncPart();
+    syncPart(); // syncPart already calls showHideIeltsSection('')
   }
   exType.onchange = syncType;
 
@@ -839,6 +1017,7 @@
     pf.style.display = 'block';
     sel.innerHTML = '<option value="">-- Không chọn part --</option>' +
       opts.map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('');
+    showHideIeltsSection('');
   }
 
   function applyPartPrefix(){
@@ -869,6 +1048,8 @@
   }
 
   syncPart();
+  renderIeltsTypeGrids('');   // khởi tạo grid tạo đề
+  renderIeltsTypeGrids('edit'); // khởi tạo grid edit drawer
 
   /* ===== TRÌNH TẠO CÂU HỎI ===== */
   function addQuestion(){
@@ -964,6 +1145,21 @@
     if (!payload.title){ msg('Vui lòng nhập tên đề.', false); return; }
     if (imgFile.files[0] && !document.getElementById('imageUrl').value){
       msg('⏳ Ảnh đang tải lên — vui lòng chờ vài giây rồi thử lại.', false); return;
+    }
+    /* ── IELTS metadata ── */
+    if (payload.program==='IELTS' && payload.skill==='Writing') {
+      var tt = document.getElementById('exTaskType').value;
+      if (tt) payload.task_type = tt;
+      var exMeta = {};
+      var band = document.getElementById('exBandTarget').value;
+      var topic= document.getElementById('exTopicTag').value;
+      var tl   = document.getElementById('exTimeLimit').value;
+      var ma   = document.getElementById('exModelAnswer').value.trim();
+      if (band)  exMeta.band_target = band;
+      if (topic) exMeta.topic_tag = topic;
+      if (tl)    exMeta.time_limit = Number(tl);
+      if (ma)    exMeta.model_answer = ma;
+      if (Object.keys(exMeta).length) payload.metadata = exMeta;
     }
     if (type==='quiz'){
       var c = collectQuestions();
@@ -1277,6 +1473,18 @@
       // Char/word count
       updateEditCounts();
 
+      // IELTS classification
+      var exMeta = {}; try{ exMeta = JSON.parse(e.metadata||'{}'); }catch(err){}
+      document.getElementById('editTaskType').value = e.task_type || '';
+      // highlight active type button
+      document.getElementById('editIeltsSection').querySelectorAll('.ielts-type-btn').forEach(function(btn){
+        btn.classList.toggle('active', btn.getAttribute('data-key')===(e.task_type||''));
+      });
+      setSelectVal('editBandTarget', exMeta.band_target || '');
+      setSelectVal('editTopicTag',   exMeta.topic_tag   || '');
+      setSelectVal('editTimeLimit',  exMeta.time_limit  ? String(exMeta.time_limit) : '');
+      document.getElementById('editModelAnswer').value = exMeta.model_answer || '';
+
       // Quiz section (server may return questions already parsed as array)
       var qs = [];
       if(Array.isArray(e.questions)) qs = e.questions;
@@ -1365,6 +1573,7 @@
     document.getElementById('editPart').innerHTML =
       '<option value="">-- Không chọn --</option>' +
       opts.map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('');
+    showHideIeltsSection('edit');
   }
 
   function applyEditPartPrefix(){
@@ -1470,6 +1679,21 @@
       answer_key: qa.answer_key,
     };
     if(body.image_url === undefined) delete body.image_url; // server keeps current
+
+    /* ── IELTS metadata ── */
+    if (program==='IELTS' && skill==='Writing') {
+      body.task_type = document.getElementById('editTaskType').value || null;
+      var editMeta = {};
+      var eBand  = document.getElementById('editBandTarget').value;
+      var eTopic = document.getElementById('editTopicTag').value;
+      var eTl    = document.getElementById('editTimeLimit').value;
+      var eMa    = document.getElementById('editModelAnswer').value.trim();
+      if (eBand)  editMeta.band_target = eBand;
+      if (eTopic) editMeta.topic_tag   = eTopic;
+      if (eTl)    editMeta.time_limit  = Number(eTl);
+      if (eMa)    editMeta.model_answer = eMa;
+      body.metadata = Object.keys(editMeta).length ? editMeta : null;
+    }
 
     try{
       var r = await fetch('/api/exercises/'+id,{

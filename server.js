@@ -368,8 +368,8 @@ app.get('/api/exercises', requireAuth, (req, res) => {
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
   /* Trả thêm content khi lọc aptis_full để client parse JSON metadata */
   const cols = type === 'aptis_full'
-    ? 'id,program,skill,title,content,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions'
-    : 'id,program,skill,title,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions';
+    ? 'id,program,skill,title,content,task_type,metadata,image_url,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions'
+    : 'id,program,skill,title,task_type,metadata,image_url,auto_grade,is_private,created_at,SUBSTR(content,1,200) AS excerpt,(questions IS NOT NULL) AS has_questions';
   let sql = 'SELECT ' + cols + ' FROM exercises';
   const cond = [], params = [];
   if (program) { cond.push('program=?'); params.push(program); }
@@ -388,7 +388,7 @@ app.get('/api/exercises', requireAuth, (req, res) => {
 });
 
 app.get('/api/exercises/:id', requireAuth, (req, res) => {
-  const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
+  const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private) {
     if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
@@ -412,7 +412,7 @@ app.post('/api/upload', requireRole('teacher', 'admin'), (req, res) => {
 
 // Giáo viên/Admin tạo đề mới (Writing = AI chấm; Quiz = trắc nghiệm tự chấm)
 app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
-  const { program, skill, title, content, type, questions, answer_key, image_url, audio_url, is_private } = req.body || {};
+  const { program, skill, title, content, type, questions, answer_key, image_url, audio_url, is_private, task_type, metadata } = req.body || {};
   if (!program || !skill || !title) return res.status(400).json({ error: 'Thiếu chương trình, kỹ năng hoặc tên đề.' });
 
   let key = null, qJson = null, auto = 0;
@@ -422,12 +422,12 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
     qJson = JSON.stringify(questions.map(q => ({ q: q.q, options: q.options })));
     auto = 1;
   } else if (answer_key && String(answer_key).trim()) {
-    // tương thích cũ: nhập đáp án bằng chuỗi phân cách dấu phẩy
     key = JSON.stringify(String(answer_key).split(',').map(s => s.trim().toUpperCase()).filter(Boolean));
     auto = 1;
   }
-  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,is_private,created_by,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
-    .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, is_private ? 1 : 0, req.user.id, now());
+  const metaJson = metadata ? JSON.stringify(metadata) : null;
+  const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,is_private,created_by,created_at,task_type,metadata) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, is_private ? 1 : 0, req.user.id, now(), task_type || null, metaJson);
   res.json({ id: Number(r.lastInsertRowid) });
 });
 
@@ -438,7 +438,7 @@ app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
   if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
     return res.status(403).json({ error: 'Bạn không có quyền sửa đề này.' });
 
-  const { program, skill, title, content, image_url, is_private, questions } = req.body || {};
+  const { program, skill, title, content, image_url, is_private, questions, task_type, metadata } = req.body || {};
   if (!title || !title.trim()) return res.status(400).json({ error: 'Tên đề không được để trống.' });
 
   let qJson = ex.questions, keyJson = ex.answer_key;
@@ -447,11 +447,12 @@ app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
     qJson   = JSON.stringify(questions.map(q => ({ q: q.q, options: q.options })));
   }
 
-  // image_url=null → xoá ảnh; image_url=undefined → giữ nguyên
-  const newImg = image_url !== undefined ? (image_url || null) : ex.image_url;
+  const newImg     = image_url  !== undefined ? (image_url  || null) : ex.image_url;
+  const newType    = task_type  !== undefined ? (task_type  || null) : ex.task_type;
+  const newMeta    = metadata   !== undefined ? (metadata ? JSON.stringify(metadata) : null) : ex.metadata;
 
   db.prepare(`UPDATE exercises
-    SET program=?,skill=?,title=?,content=?,image_url=?,is_private=?,questions=?,answer_key=?
+    SET program=?,skill=?,title=?,content=?,image_url=?,is_private=?,questions=?,answer_key=?,task_type=?,metadata=?
     WHERE id=?`)
     .run(
       program  || ex.program,
@@ -461,6 +462,7 @@ app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
       newImg,
       is_private ? 1 : 0,
       qJson, keyJson,
+      newType, newMeta,
       ex.id
     );
   res.json({ ok: true });

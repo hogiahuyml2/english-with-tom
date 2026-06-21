@@ -6,7 +6,47 @@
 <title>Writing — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=10">
+<style>
+/* ── Preview card grid (IELTS) ── */
+.ex-card-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:18px; margin-bottom:4px;
+}
+.ex-preview-card {
+  background:#fff; border:2px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; cursor:pointer; transition:border-color .18s, box-shadow .18s, transform .14s;
+  display:flex; flex-direction:column;
+}
+.ex-preview-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
+.ex-thumb {
+  position:relative; height:155px; background:var(--surface);
+  overflow:hidden; flex-shrink:0;
+}
+.ex-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.ex-thumb-placeholder {
+  width:100%; height:100%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:5px;
+}
+.task-badge {
+  position:absolute; top:10px; left:10px;
+  font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px;
+  text-transform:uppercase; letter-spacing:.05em; pointer-events:none;
+}
+.task-badge.t1 { background:#dbeafe; color:#1d4ed8; }
+.task-badge.t2 { background:#fde8d8; color:#9a3412; }
+.ex-card-body { padding:14px 16px 16px; display:flex; flex-direction:column; flex:1; gap:0; }
+.ex-card-chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.chip {
+  display:inline-block; font-size:11px; font-weight:700; padding:2px 9px;
+  border-radius:20px; white-space:nowrap;
+}
+.chip-type  { background:var(--primary-soft); color:var(--primary); }
+.chip-band  { background:#fef9c3; color:#854d0e; }
+.chip-topic { background:#dcfce7; color:#15803d; }
+.ex-card-title { font-size:13.5px; font-weight:700; color:var(--text); margin:0 0 7px; line-height:1.45; }
+.ex-card-excerpt { font-size:12.5px; color:var(--text-muted); line-height:1.6; margin:0 0 14px; flex:1; }
+</style>
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
@@ -31,103 +71,205 @@
 <script src="js/main.js?v=10"></script>
 <script>
 (function(){
-  /* ── Cấu hình theo từng chương trình ── */
-  var PROGRAMS = {
-    KET:   { label:'KET', tag:'A2 Key', parent:'ket.html',
-              parts:{ 'Part 1':'Email/Lời nhắn ngắn (≥25 từ)', 'Part 2':'Viết truyện ngắn từ tranh (≥35 từ)' } },
-    PET:   { label:'PET', tag:'B1 Preliminary', parent:'pet.html',
-              parts:{ 'Part 1':'Email hoặc lời nhắn (≥100 từ)', 'Part 2':'Article, câu chuyện hoặc review (≥100 từ)' } },
-    FCE:   { label:'FCE', tag:'B2 First', parent:'fce.html',
-              parts:{ 'Part 1':'Essay nghị luận (140–190 từ)', 'Part 2':'Article / Review / Story (140–190 từ)' } },
-    IELTS: { label:'IELTS', tag:'Band 0–9', parent:'ielts.html',
-              parts:{ 'Task 1':'Mô tả biểu đồ / thư (≥150 từ)', 'Task 2':'Essay nghị luận (≥250 từ)' } },
-    APTIS: { label:'APTIS', tag:'British Council', parent:'aptis.html',
-              parts:{ 'Component 1':'Câu trả lời ngắn', 'Component 2':'Trả lời email', 'Component 3':'Bài viết dài', 'Component 4':'Essay' } },
-  };
 
-  /* ── Đọc ?program= từ URL ── */
-  var params  = new URLSearchParams(location.search);
-  var program = (params.get('program') || 'KET').toUpperCase();
-  var cfg     = PROGRAMS[program] || PROGRAMS.KET;
+/* ══════════════════════════════════════════════════════════════
+   Dữ liệu loại đề IELTS — chia sẻ với teacher.html
+══════════════════════════════════════════════════════════════ */
+var IELTS_TYPES = {
+  // Task 1 — Academic
+  t1_bar:     { task:1, icon:'📊', label:'Bar chart'             },
+  t1_line:    { task:1, icon:'📈', label:'Line graph'            },
+  t1_pie:     { task:1, icon:'🥧', label:'Pie chart'             },
+  t1_table:   { task:1, icon:'📋', label:'Table'                 },
+  t1_map:     { task:1, icon:'🗺️', label:'Map'                  },
+  t1_process: { task:1, icon:'⚙️', label:'Process / Diagram'    },
+  t1_mixed:   { task:1, icon:'📊', label:'Mixed charts'          },
+  // Task 1 — General Training
+  t1_formal:   { task:1, icon:'✉️',  label:'Formal letter'       },
+  t1_semi:     { task:1, icon:'📄',  label:'Semi-formal letter'  },
+  t1_informal: { task:1, icon:'💌',  label:'Informal letter'     },
+  // Task 2
+  t2_opinion:  { task:2, icon:'💬', label:'Opinion (Agree/Disagree)'    },
+  t2_discuss:  { task:2, icon:'⚖️', label:'Discussion (Both views)'     },
+  t2_causes:   { task:2, icon:'🔗', label:'Causes & Solutions'          },
+  t2_adv:      { task:2, icon:'➕', label:'Advantages & Disadvantages'  },
+  t2_twopart:  { task:2, icon:'❓', label:'Two-part Questions'          },
+  t2_problem:  { task:2, icon:'🔧', label:'Problem & Solution'          },
+};
 
-  /* ── Cập nhật header ── */
-  document.title = cfg.label + ' Writing — English With Tom';
-  document.getElementById('crumb').innerHTML =
-    '<a href="' + cfg.parent + '" style="color:inherit;">' + cfg.label + '</a> › Writing';
-  document.getElementById('pageTitle').textContent = cfg.label + ' Writing ✍️';
-  document.getElementById('pageDesc').textContent =
-    'Cambridge ' + cfg.tag + ' — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.';
+/* Màu placeholder cho từng nhóm */
+var TYPE_THUMB_BG = {
+  t1_bar:'#dbeafe', t1_line:'#dbeafe', t1_pie:'#dbeafe', t1_table:'#dbeafe',
+  t1_map:'#dcfce7', t1_process:'#f3f0ff', t1_mixed:'#dbeafe',
+  t1_formal:'#f0fdf4', t1_semi:'#f0fdf4', t1_informal:'#fce7f3',
+  t2_opinion:'#fef3c7', t2_discuss:'#fef3c7', t2_causes:'#fff7ed',
+  t2_adv:'#fff7ed', t2_twopart:'#fde8d8', t2_problem:'#fde8d8',
+};
 
-  /* ── Tiện ích ── */
-  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+/* ══════════════════════════════════════════════════════════════
+   Cấu hình chương trình
+══════════════════════════════════════════════════════════════ */
+var PROGRAMS = {
+  KET:   { label:'KET',   tag:'A2 Key',         parent:'ket.html',
+            parts:{ 'Part 1':'Email/Lời nhắn ngắn (≥25 từ)', 'Part 2':'Viết truyện ngắn từ tranh (≥35 từ)' } },
+  PET:   { label:'PET',   tag:'B1 Preliminary', parent:'pet.html',
+            parts:{ 'Part 1':'Email hoặc lời nhắn (≥100 từ)', 'Part 2':'Article, câu chuyện hoặc review (≥100 từ)' } },
+  FCE:   { label:'FCE',   tag:'B2 First',        parent:'fce.html',
+            parts:{ 'Part 1':'Essay nghị luận (140–190 từ)', 'Part 2':'Article / Review / Story (140–190 từ)' } },
+  IELTS: { label:'IELTS', tag:'Band 0–9',        parent:'ielts.html',
+            parts:{ 'Task 1':'Mô tả biểu đồ / bản đồ / quy trình / thư (≥150 từ)',
+                    'Task 2':'Essay nghị luận (≥250 từ)' } },
+  APTIS: { label:'APTIS', tag:'British Council', parent:'aptis.html',
+            parts:{ 'Component 1':'Câu trả lời ngắn', 'Component 2':'Trả lời email',
+                    'Component 3':'Bài viết dài', 'Component 4':'Essay' } },
+};
 
-  function getPartKey(title){
-    var m = title.match(/(Task|Part|Component)\s*(\d+)/i);
-    if (!m) return { label:'Khác', order:999 };
-    var type = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
-    return { label: type + ' ' + m[2], order: parseInt(m[2],10) };
+/* ══════════════════════════════════════════════════════════════
+   Tiện ích
+══════════════════════════════════════════════════════════════ */
+function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+function getPartKey(title){
+  var m = title.match(/(Task|Part|Component)\s*(\d+)/i);
+  if (!m) return { label:'Khác', order:999 };
+  var t = m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();
+  return { label:t+' '+m[2], order:parseInt(m[2],10) };
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Render row — dùng cho KET / PET / FCE / APTIS
+══════════════════════════════════════════════════════════════ */
+function renderRow(e){
+  var lvlMap = { KET:'A2 Key', PET:'B1 Preliminary', FCE:'B2 First', IELTS:'IELTS', APTIS:'APTIS' };
+  var lvl = (lvlMap[e.program]||e.program)+' · Chấm tự động';
+  return '<div class="test-row"><div><div class="name">'+esc(e.title)+'</div>'+
+         '<div class="lvl">'+lvl+'</div></div>'+
+         '<a class="btn btn-sm" href="practice-writing.html?id='+e.id+'">Làm bài</a></div>';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Render preview card — IELTS
+══════════════════════════════════════════════════════════════ */
+function renderCard(e){
+  var meta = {}; try{ meta = JSON.parse(e.metadata||'{}'); }catch(err){}
+  var ti = e.task_type ? (IELTS_TYPES[e.task_type]||null) : null;
+  var taskNum = ti ? ti.task : null;
+  var typeIcon = ti ? ti.icon : '';
+  var typeLbl  = ti ? ti.label : '';
+  var taskCls  = taskNum===1 ? 't1' : 't2';
+  var taskBadge = taskNum ? '<span class="task-badge '+taskCls+'">'+(taskNum===1?'Task 1':'Task 2')+'</span>' : '';
+
+  /* Thumbnail */
+  var thumbHtml;
+  if (e.image_url) {
+    thumbHtml = '<img src="'+esc(e.image_url)+'" alt="" loading="lazy">';
+  } else {
+    var bg = TYPE_THUMB_BG[e.task_type] || 'var(--primary-soft)';
+    thumbHtml = '<div class="ex-thumb-placeholder" style="background:'+bg+'">'+
+      '<span style="font-size:40px;">'+( typeIcon || '✍️' )+'</span>'+
+      (typeLbl ? '<span style="font-size:11px;font-weight:700;color:#555;letter-spacing:.06em;text-transform:uppercase;">'+esc(typeLbl)+'</span>' : '')+
+    '</div>';
   }
 
-  function row(e){
-    var levelMap = {
-      KET:'A2 Key', PET:'B1 Preliminary', FCE:'B2 First', IELTS:'IELTS', APTIS:'APTIS'
-    };
-    var lvl = (levelMap[e.program] || e.program) + ' · Chấm tự động';
-    return '<div class="test-row"><div><div class="name">' + esc(e.title) + '</div>' +
-           '<div class="lvl">' + lvl + '</div></div>' +
-           '<a class="btn btn-sm" href="practice-writing.html?id=' + e.id + '">Làm bài</a></div>';
-  }
+  /* Chips */
+  var chips = '';
+  if (typeLbl) chips += '<span class="chip chip-type">'+esc(typeIcon+' '+typeLbl)+'</span>';
+  if (meta.band_target) chips += '<span class="chip chip-band">🎯 Band '+esc(meta.band_target)+'</span>';
+  if (meta.topic_tag)   chips += '<span class="chip chip-topic">'+esc(meta.topic_tag)+'</span>';
 
-  function renderEmpty(){
-    return '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
-  }
+  /* Excerpt — strip HTML tags */
+  var excerpt = (e.excerpt||'').replace(/<[^>]+>/g,'').replace(/&[a-zA-Z]+;/g,' ').replace(/\s+/g,' ').trim();
+  if (excerpt.length > 110) excerpt = excerpt.substring(0,110)+'…';
 
-  /* ── Tải đề từ API ── */
-  fetch('/api/exercises?program=' + encodeURIComponent(program) + '&skill=Writing', {credentials:'same-origin'})
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var list = (data.exercises || []).filter(function(e){ return !e.is_private; });
-      var container = document.getElementById('partContainer');
+  return '<div class="ex-preview-card" onclick="location.href=\'practice-writing.html?id='+e.id+'\'">'+
+    '<div class="ex-thumb">'+thumbHtml+taskBadge+'</div>'+
+    '<div class="ex-card-body">'+
+      (chips ? '<div class="ex-card-chips">'+chips+'</div>' : '')+
+      '<div class="ex-card-title">'+esc(e.title)+'</div>'+
+      (excerpt ? '<p class="ex-card-excerpt">'+esc(excerpt)+'</p>' : '')+
+      '<a class="btn btn-primary btn-sm" href="practice-writing.html?id='+e.id+'" onclick="event.stopPropagation()">Làm bài →</a>'+
+    '</div>'+
+  '</div>';
+}
 
-      if (!list.length){
-        container.innerHTML =
-          '<div class="skill-card">' + renderEmpty() + '</div>';
-        return;
-      }
+/* ══════════════════════════════════════════════════════════════
+   Khởi tạo header
+══════════════════════════════════════════════════════════════ */
+var urlParams = new URLSearchParams(location.search);
+var program   = (urlParams.get('program')||'KET').toUpperCase();
+var cfg       = PROGRAMS[program] || PROGRAMS.KET;
 
-      /* Nhóm theo Part / Task / Component */
-      var groups = {};
-      list.forEach(function(e){
-        var pk = getPartKey(e.title);
-        if (!groups[pk.label]) groups[pk.label] = { order: pk.order, items: [] };
-        groups[pk.label].items.push(e);
-      });
+document.title = cfg.label+' Writing — English With Tom';
+document.getElementById('crumb').innerHTML =
+  '<a href="'+cfg.parent+'" style="color:inherit;">'+cfg.label+'</a> › Writing';
+document.getElementById('pageTitle').textContent = cfg.label+' Writing ✍️';
+document.getElementById('pageDesc').textContent =
+  'Cambridge '+cfg.tag+' — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.';
 
-      /* Sắp xếp nhóm theo số thứ tự */
-      var sorted = Object.keys(groups).sort(function(a,b){
-        return groups[a].order - groups[b].order;
-      });
+/* ══════════════════════════════════════════════════════════════
+   Fetch & render
+══════════════════════════════════════════════════════════════ */
+var partIcons = {
+  'Part 1':'📧','Part 2':'📖','Part 3':'📝',
+  'Task 1':'📊','Task 2':'✍️',
+  'Component 1':'1️⃣','Component 2':'2️⃣','Component 3':'3️⃣','Component 4':'4️⃣',
+  'Khác':'📄'
+};
+var icoColors = ['ico-amber','ico-pink','ico-blue','ico-teal'];
 
-      var partIcons = { 'Part 1':'📧', 'Part 2':'📖', 'Part 3':'📝',
-                        'Task 1':'📊', 'Task 2':'✍️',
-                        'Component 1':'1️⃣','Component 2':'2️⃣','Component 3':'3️⃣','Component 4':'4️⃣',
-                        'Khác':'📄' };
+fetch('/api/exercises?program='+encodeURIComponent(program)+'&skill=Writing',{credentials:'same-origin'})
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var list = (data.exercises||[]).filter(function(e){ return !e.is_private; });
+    var container = document.getElementById('partContainer');
 
-      container.innerHTML = sorted.map(function(label, idx){
-        var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn ' + cfg.tag;
-        var icon = partIcons[label] || '✍️';
-        var icoColor = ['ico-amber','ico-pink','ico-blue','ico-teal'][idx % 4];
-        return '<div class="skill-card" style="margin-bottom:20px;">' +
-          '<h3><span class="course-ico ' + icoColor + '" style="width:40px;height:40px;font-size:19px;margin:0;">' + icon + '</span> Writing ' + esc(label) + '</h3>' +
-          '<p>' + esc(desc) + '</p>' +
-          groups[label].items.map(row).join('') +
-          '</div>';
-      }).join('');
-    })
-    .catch(function(){
-      document.getElementById('partContainer').innerHTML =
-        '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--danger)">Không thể tải đề — vui lòng thử lại.</div></div></div>';
+    if (!list.length){
+      container.innerHTML = '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div></div>';
+      return;
+    }
+
+    /* Nhóm theo Part / Task */
+    var groups = {};
+    list.forEach(function(e){
+      var pk = getPartKey(e.title);
+      if (!groups[pk.label]) groups[pk.label] = { order:pk.order, items:[] };
+      groups[pk.label].items.push(e);
     });
+    var sorted = Object.keys(groups).sort(function(a,b){ return groups[a].order - groups[b].order; });
+
+    if (program === 'IELTS') {
+      /* ─── IELTS: preview cards ─── */
+      container.innerHTML = sorted.map(function(label, idx){
+        var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn IELTS Band 0–9';
+        var icon = partIcons[label] || '✍️';
+        var icoC = icoColors[idx%4];
+        return '<div class="card" style="margin-bottom:28px;">'+
+          '<div class="card-head">'+
+            '<h3><span class="course-ico '+icoC+'" style="width:36px;height:36px;font-size:17px;margin:0;">'+icon+'</span> Writing '+esc(label)+'</h3>'+
+          '</div>'+
+          '<p style="font-size:13.5px;color:var(--text-muted);margin:0 0 18px;">'+esc(desc)+'</p>'+
+          '<div class="ex-card-grid">'+groups[label].items.map(renderCard).join('')+'</div>'+
+        '</div>';
+      }).join('');
+    } else {
+      /* ─── KET / PET / FCE / APTIS: danh sách rows ─── */
+      container.innerHTML = sorted.map(function(label, idx){
+        var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn '+cfg.tag;
+        var icon = partIcons[label] || '✍️';
+        var icoC = icoColors[idx%4];
+        return '<div class="skill-card" style="margin-bottom:20px;">'+
+          '<h3><span class="course-ico '+icoC+'" style="width:40px;height:40px;font-size:19px;margin:0;">'+icon+'</span> Writing '+esc(label)+'</h3>'+
+          '<p>'+esc(desc)+'</p>'+
+          groups[label].items.map(renderRow).join('')+
+        '</div>';
+      }).join('');
+    }
+  })
+  .catch(function(){
+    document.getElementById('partContainer').innerHTML =
+      '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--danger)">Không thể tải đề — vui lòng thử lại.</div></div></div>';
+  });
+
 })();
 </script>
 </body>

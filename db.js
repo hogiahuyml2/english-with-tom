@@ -65,6 +65,8 @@ if (!exCols.includes('questions'))  db.exec('ALTER TABLE exercises ADD COLUMN qu
 if (!exCols.includes('image_url'))  db.exec('ALTER TABLE exercises ADD COLUMN image_url TEXT');
 if (!exCols.includes('audio_url'))  db.exec('ALTER TABLE exercises ADD COLUMN audio_url TEXT');
 if (!exCols.includes('is_private')) db.exec('ALTER TABLE exercises ADD COLUMN is_private INTEGER NOT NULL DEFAULT 0');
+if (!exCols.includes('task_type'))  db.exec('ALTER TABLE exercises ADD COLUMN task_type TEXT');
+if (!exCols.includes('metadata'))   db.exec('ALTER TABLE exercises ADD COLUMN metadata TEXT');
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS assignments (
