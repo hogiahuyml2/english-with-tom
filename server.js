@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const { db, hashPassword, verifyPassword, now } = require('./db');
-const { aiEnabled, gradeWriting, gradeAptisWriting, provider } = require('./ai');
+const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider } = require('./ai');
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
@@ -241,6 +241,48 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     console.error('AI grading error', e.message);
     res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.', detail: String(e.message).slice(0, 400) });
   }
+});
+
+// ===================== WRITING HINTS — gợi ý làm bài theo đề =====================
+
+app.post('/api/writing-hints', requireAuth, async (req, res) => {
+  const { exercise_id } = req.body || {};
+  const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
+  try {
+    const hints = await getWritingHints(ex);
+    res.json({ hints });
+  } catch (e) {
+    console.error('Writing hints error', e.message);
+    res.status(500).json({ error: 'Không thể tạo gợi ý lúc này, thử lại sau.' });
+  }
+});
+
+// ===================== NHẮN GIÁO VIÊN VỀ BÀI CHẤM =====================
+
+app.post('/api/student-message', requireAuth, async (req, res) => {
+  const { exercise_id, submission_id, message } = req.body || {};
+  if (!message || !message.trim()) return res.status(400).json({ error: 'Nội dung không được để trống.' });
+  const ex = db.prepare('SELECT e.*, u.email AS teacher_email, u.name AS teacher_name FROM exercises e LEFT JOIN users u ON u.id=e.user_id WHERE e.id=?').get(exercise_id);
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  if (!ex.teacher_email) return res.status(400).json({ error: 'Không tìm thấy email giáo viên.' });
+  if (!emailEnabled()) return res.status(503).json({ error: 'Hệ thống email chưa được cấu hình.' });
+
+  const student = req.user;
+  const result = await sendBrevoEmail(
+    ex.teacher_email,
+    `[English With Tom] Học sinh ${student.name} hỏi về bài chấm — ${ex.title}`,
+    `<div style="font-family:sans-serif;max-width:560px;">
+      <p>Học sinh <b>${student.name}</b> (<a href="mailto:${student.email}">${student.email}</a>) có câu hỏi về bài chấm của đề: <b>${ex.title}</b>${submission_id ? ` (bài nộp #${submission_id})` : ''}.</p>
+      <div style="background:#f5f5f8;padding:14px 18px;border-radius:8px;margin:14px 0;border-left:4px solid #7B6EF6;">
+        <p style="margin:0;white-space:pre-wrap;font-size:15px;">${message.trim().replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+      </div>
+      <p style="color:#888;font-size:13px;">Bạn có thể trả lời trực tiếp qua email trên hoặc qua <a href="https://englishwithtom.com/teacher.html">Teacher Panel</a>.</p>
+    </div>`
+  );
+  return result.ok ? res.json({ ok: true })
+    : res.status(500).json({ error: 'Gửi tin nhắn thất bại. Thử lại sau.' });
 });
 
 // ===================== APTIS WRITING FULL TEST — chấm 4 components =====================

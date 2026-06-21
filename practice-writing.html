@@ -8,28 +8,80 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=10">
 <style>
-  .band-big { font-size:38px; font-weight:700; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
-  .crit { border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; }
-  .crit-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-  .crit-band { font-weight:700; color:var(--primary); }
-  .crit p { font-size:13.5px; color:var(--text-muted); margin:0; line-height:1.6; }
-  .sugg li { font-size:14px; color:var(--text); margin-bottom:7px; line-height:1.6; }
+  /* ── Kết quả chấm ── */
+  .band-big { font-size:42px; font-weight:800; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
+  .crit { border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; background:#fff; }
+  .crit-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .crit-name { font-weight:700; font-size:14px; color:var(--text); }
+  .crit-band { font-size:18px; font-weight:800; }
+  .crit-bar-wrap { height:7px; background:#f0effe; border-radius:4px; margin-bottom:8px; overflow:hidden; }
+  .crit-bar { height:100%; border-radius:4px; transition:width .6s cubic-bezier(.4,0,.2,1); }
+  .crit p { font-size:13.5px; color:var(--text-muted); margin:0; line-height:1.65; }
+
+  /* ── Suggested writing ── */
   .prompt-text { white-space:pre-line; }
   .suggested-body { white-space:pre-wrap; font-size:14.5px; line-height:1.9; color:#2E2B45; background:var(--bg-soft,#f8f7ff); padding:18px; border-radius:10px; margin-bottom:14px; border:1px solid var(--border); font-family:Georgia,serif; }
+  .sugg li { font-size:14px; color:var(--text); margin-bottom:7px; line-height:1.6; }
+
+  /* ── Buttons after result ── */
+  .result-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; padding-top:14px; border-top:1px solid var(--border); }
+
+  /* ── Hints panel ── */
+  .hints-toggle {
+    width:100%; margin-top:12px;
+    background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
+    border:1.5px solid #bae6fd; border-radius:10px;
+    padding:10px 16px; font-size:13.5px; font-weight:600;
+    color:#0369a1; cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font);
+  }
+  .hints-toggle:hover { background:linear-gradient(135deg,#e0f2fe,#bae6fd); }
+  #hintsPanel {
+    background:#f0f9ff; border:1.5px solid #bae6fd;
+    border-radius:12px; padding:18px; margin-top:8px; display:none;
+  }
+  .hint-section { margin-bottom:16px; }
+  .hint-section:last-child { margin-bottom:0; }
+  .hint-section-title { font-size:13px; font-weight:700; color:#0369a1; margin-bottom:8px; }
+  .hint-chips { list-style:none; padding:0; margin:0; display:flex; flex-wrap:wrap; gap:6px; }
+  .hint-chip { background:#fff; border:1px solid #bae6fd; border-radius:6px; padding:3px 10px; font-size:12.5px; color:#0c4a6e; }
+  .hint-lines { list-style:none; padding:0; margin:0; }
+  .hint-lines li { font-size:13px; color:#0c4a6e; padding:4px 0; border-bottom:1px dashed #c7e9fb; line-height:1.55; }
+  .hint-lines li:last-child { border:none; }
+
+  /* ── Message modal ── */
+  #messageModal {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.52); z-index:2000;
+    align-items:center; justify-content:center;
+  }
+  #messageModal.open { display:flex; }
+  .modal-box {
+    background:#fff; border-radius:20px; padding:28px 26px;
+    max-width:440px; width:92%;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    animation:modalIn .22s ease;
+  }
+  @keyframes modalIn { from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1} }
+  .modal-box h3 { margin:0 0 6px; font-size:17px; }
+  .modal-box p { font-size:13px; color:var(--text-muted); margin-bottom:12px; }
+  .modal-box textarea {
+    width:100%; min-height:110px; resize:vertical;
+    padding:10px 12px; border:1.5px solid var(--border);
+    border-radius:10px; font-family:var(--font); font-size:14px;
+    box-sizing:border-box;
+  }
+  .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
 
   /* ── Hình ảnh đề bài ── */
   #exImageWrap { display:none; margin-bottom:16px; }
   .exam-img-box {
     position:relative; background:#f5f5f8; border:1px solid var(--border);
     border-radius:12px; overflow:hidden; cursor:zoom-in;
-    display:flex; align-items:center; justify-content:center;
-    min-height:180px;
+    display:flex; align-items:center; justify-content:center; min-height:180px;
   }
-  .exam-img-box img {
-    display:block; width:100%; max-height:520px;
-    object-fit:contain; border-radius:12px;
-    transition:transform .15s;
-  }
+  .exam-img-box img { display:block; width:100%; max-height:520px; object-fit:contain; border-radius:12px; transition:transform .15s; }
   .exam-img-box:hover img { transform:scale(1.01); }
   .zoom-hint {
     position:absolute; bottom:10px; right:12px;
@@ -39,27 +91,26 @@
   }
 
   /* ── Lightbox ── */
-  #imgLightbox {
-    display:none; position:fixed; inset:0; z-index:10000;
-    background:rgba(0,0,0,.88); align-items:center; justify-content:center;
-    cursor:zoom-out; animation:lbIn .18s ease;
-  }
+  #imgLightbox { display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,.88); align-items:center; justify-content:center; cursor:zoom-out; animation:lbIn .18s ease; }
   #imgLightbox.open { display:flex; }
-  @keyframes lbIn { from{opacity:0;} to{opacity:1;} }
-  #imgLightbox img {
-    max-width:96vw; max-height:92vh; object-fit:contain;
-    border-radius:10px; box-shadow:0 12px 60px rgba(0,0,0,.6);
-    cursor:default;
-  }
-  #lbClose {
-    position:absolute; top:14px; right:18px;
-    color:#fff; font-size:32px; line-height:1; cursor:pointer;
-    opacity:.8; transition:opacity .12s;
-  }
+  @keyframes lbIn { from{opacity:0} to{opacity:1} }
+  #imgLightbox img { max-width:96vw; max-height:92vh; object-fit:contain; border-radius:10px; box-shadow:0 12px 60px rgba(0,0,0,.6); cursor:default; }
+  #lbClose { position:absolute; top:14px; right:18px; color:#fff; font-size:32px; line-height:1; cursor:pointer; opacity:.8; transition:opacity .12s; }
   #lbClose:hover { opacity:1; }
-  #lbHint {
-    position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
-    color:rgba(255,255,255,.6); font-size:13px; pointer-events:none;
+  #lbHint { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.6); font-size:13px; pointer-events:none; }
+
+  /* ── Print / PDF ── */
+  @media print {
+    #site-header, #site-footer, .q-block, #exImageWrap,
+    #loading, .result-actions, #messageModal, .hints-toggle,
+    #hintsPanel, #submitBtn, #submitHint, #aiNote,
+    .crumb, .practice-bar { display:none !important; }
+    .two-col { display:block !important; }
+    .passage { display:none !important; }
+    #printEssaySection { display:block !important; }
+    body { background:#fff !important; }
+    .card { box-shadow:none !important; border:1px solid #ddd !important; }
+    .page-break { page-break-before:always; }
   }
 </style>
 </head>
@@ -71,6 +122,19 @@
   <span id="lbClose" onclick="closeLightbox()">✕</span>
   <img id="lbImg" src="" alt="Phóng to hình đề bài">
   <span id="lbHint">Nhấn Esc hoặc bấm bên ngoài để đóng</span>
+</div>
+
+<!-- Message modal -->
+<div id="messageModal">
+  <div class="modal-box">
+    <h3>💬 Nhắn giáo viên về bài chấm</h3>
+    <p>Bạn có câu hỏi về điểm số? Hãy nhắn trực tiếp — giáo viên sẽ phản hồi qua email.</p>
+    <textarea id="msgText" placeholder="Ví dụ: Em muốn hỏi tại sao điểm Organisation của em bị trừ..."></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeMessageModal()">Huỷ</button>
+      <button class="btn btn-primary" id="msgSendBtn" onclick="sendTeacherMessage()">Gửi tin nhắn</button>
+    </div>
+  </div>
 </div>
 
 <section class="section" style="padding-top:12px; padding-bottom:28px;">
@@ -87,7 +151,7 @@
       <div class="timer">⏱ <span id="timer">20:00</span></div>
     </div>
 
-    <!-- Hình ảnh đề bài — full-width, trên cả hai cột -->
+    <!-- Hình ảnh đề bài -->
     <div id="exImageWrap">
       <div class="exam-img-box" onclick="openLightbox()">
         <img id="examImg" src="" alt="Hình ảnh đề bài">
@@ -112,9 +176,25 @@
         </div>
         <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài &amp; chấm tự động</button>
         <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;" id="submitHint">Hệ thống sẽ chấm theo tiêu chí của kỳ thi và đưa ra nhận xét chi tiết.</p>
+
+        <!-- Hints toggle -->
+        <button class="hints-toggle" id="hintsBtn" type="button" onclick="toggleHints()">
+          <span>💡</span>
+          <span>Xem gợi ý làm bài</span>
+          <span id="hintsBtnArrow" style="margin-left:auto; font-size:11px;">▼</span>
+        </button>
+
+        <!-- Hints panel -->
+        <div id="hintsPanel">
+          <div id="hintsLoading" style="text-align:center; padding:16px; color:var(--text-muted);">
+            🔄 Đang tạo gợi ý riêng cho đề này...
+          </div>
+          <div id="hintsContent" style="display:none;"></div>
+        </div>
       </div>
     </div>
 
+    <!-- Loading -->
     <div class="card" id="loading" style="display:none; text-align:center; margin-top:22px;">
       <div style="font-size:30px;">⏳</div>
       <p style="color:var(--text-muted); margin-top:8px;">Đang phân tích và chấm bài của bạn... (khoảng 15–25 giây)</p>
@@ -122,24 +202,48 @@
 
     <!-- Kết quả chấm -->
     <div class="card" id="result" style="display:none; margin-top:22px; border:2px solid var(--primary);">
-      <div class="card-head" style="align-items:center;">
-        <h3>📊 Kết quả chấm bài</h3>
-        <div style="text-align:right;"><div style="font-size:12px; color:var(--text-muted);" id="scaleLabel">Điểm tổng</div><div class="band-big" id="overall">–</div></div>
+      <div class="card-head" style="align-items:flex-start;">
+        <div>
+          <h3 style="margin-bottom:4px;">📊 Kết quả chấm bài</h3>
+          <div style="font-size:12.5px; color:var(--text-muted);" id="scaleLabel">Điểm tổng</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="band-big" id="overall">–</div>
+        </div>
       </div>
+
+      <!-- Tiêu chí -->
       <div id="criteria"></div>
-      <div class="note" style="margin-top:6px;"><span>📝</span><div id="summary"></div></div>
+
+      <!-- Nhận xét tổng quan -->
+      <div class="note" style="margin-top:8px;"><span>📝</span><div id="summary"></div></div>
+
+      <!-- Gợi ý cải thiện -->
       <h4 style="font-size:15px; margin:18px 0 8px;">Gợi ý cải thiện</h4>
       <ul class="sugg" id="suggestions" style="padding-left:18px;"></ul>
-      <p style="font-size:12.5px; color:var(--text-faint); margin-top:14px;">Bài đã được lưu vào <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a> của bạn.</p>
+
+      <!-- Action buttons -->
+      <div class="result-actions">
+        <button class="btn" onclick="printResults()" style="display:flex;align-items:center;gap:6px;">
+          📄 Tải PDF
+        </button>
+        <button class="btn" id="msgTeacherBtn" onclick="openMessageModal()" style="display:none;align-items:center;gap:6px;">
+          💬 Hỏi giáo viên về điểm
+        </button>
+      </div>
+
+      <p style="font-size:12.5px; color:var(--text-faint); margin-top:10px;">
+        Bài đã được lưu vào <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a> của bạn.
+      </p>
     </div>
 
     <!-- Bài viết gợi ý -->
     <div class="card" id="suggestedSection" style="display:none; margin-top:18px; border:2px solid #9b59b6;">
       <div class="card-head" style="align-items:center;">
-        <h3>✍️ Bài viết gợi ý</h3>
+        <h3>✍️ Bài viết mẫu</h3>
         <span class="badge" style="background:#f3eeff; color:#9b59b6; font-size:12px; padding:4px 10px; border-radius:20px;">Tham khảo</span>
       </div>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Đây là bài viết mẫu được tạo theo đúng yêu cầu đề bài và tiêu chí chấm của kỳ thi. Dùng để học hỏi cách diễn đạt, cấu trúc và từ vựng.</p>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Bài viết mẫu được tạo theo đúng yêu cầu đề bài và tiêu chí chấm của kỳ thi. Dùng để học cách diễn đạt, cấu trúc và từ vựng.</p>
       <div class="suggested-body" id="suggestedWriting"></div>
       <div class="note" style="margin-top:0; background:#f3eeff; border-color:#d7bef7;">
         <span>💡</span>
@@ -154,131 +258,344 @@
 <script src="js/editor.js"></script>
 <script src="js/main.js?v=10"></script>
 <script>
-  /* ── Lightbox ── */
-  function openLightbox() {
-    var src = document.getElementById('examImg').src;
-    document.getElementById('lbImg').src = src;
-    document.getElementById('imgLightbox').classList.add('open');
-    document.body.style.overflow = 'hidden';
+/* ── Utilities ── */
+function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+function qp(n){ return new URLSearchParams(location.search).get(n); }
+
+var EXERCISE_ID = parseInt(qp('id') || '3', 10);
+var IS_PRIVATE = false;
+var G_submissionId = null;
+
+/* ── Lightbox ── */
+function openLightbox() {
+  document.getElementById('lbImg').src = document.getElementById('examImg').src;
+  document.getElementById('imgLightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e && e.target === document.getElementById('lbImg')) return;
+  document.getElementById('imgLightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeLightbox(); closeMessageModal(); } });
+
+/* ── Rich editor ── */
+var essayEditor = new RichEditor('essay', {
+  toolbar: 'writer',
+  placeholder: 'Viết bài của bạn ở đây...',
+  minHeight: '300px',
+  onChange: function(ed){
+    document.getElementById('wordCount').textContent = ed.wordCount();
   }
-  function closeLightbox(e) {
-    if (e && e.target === document.getElementById('lbImg')) return;
-    document.getElementById('imgLightbox').classList.remove('open');
-    document.body.style.overflow = '';
+});
+
+/* ── Load đề bài ── */
+fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(function(r){
+  if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
+  if (r.status===403){ document.getElementById('exTitle').textContent='Bạn chưa được giao đề này.'; return null; }
+  return r.json();
+}).then(function(d){
+  if (!d) return;
+  var e = d.exercise;
+  if (!e) { document.getElementById('exTitle').textContent = 'Không tìm thấy đề'; return; }
+  document.getElementById('exTitle').textContent = e.title;
+  document.getElementById('crumbTitle').textContent = e.program + ' Writing';
+  document.getElementById('promptText').innerHTML = RichEditor.sanitize(e.content || '');
+  var back = document.getElementById('backLink');
+  back.textContent = '‹ ' + e.program + ' Writing';
+  back.href = (e.program === 'KET' ? 'ket-writing.html' : 'writing-exercises.html?program=' + encodeURIComponent(e.program));
+  if (qp('assigned')) back.href = 'assigned.html';
+  if (e.image_url) {
+    document.getElementById('examImg').src = e.image_url;
+    document.getElementById('exImageWrap').style.display = 'block';
   }
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLightbox(); });
+  if (e.is_private) {
+    IS_PRIVATE = true;
+    document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Đề riêng — giáo viên chấm';
+    document.getElementById('submitBtn').textContent = '📤 Nộp bài cho giáo viên';
+    document.getElementById('submitHint').textContent = 'Bài sẽ được lưu và gửi đến giáo viên để chấm thủ công.';
+    document.getElementById('aiNote').textContent = '';
+    document.getElementById('hintsBtn').style.display = 'none';
+  } else {
+    document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Chấm điểm tự động';
+  }
+}).catch(function(){});
 
-  /* ── Đề bài ── */
-  function qp(n){ return new URLSearchParams(location.search).get(n); }
-  var EXERCISE_ID = parseInt(qp('id') || '3', 10);
-  var IS_PRIVATE = false;
+fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
+  if (!IS_PRIVATE && !c.aiEnabled)
+    document.getElementById('aiNote').textContent = '⚠️ Hệ thống chấm tự động chưa sẵn sàng — bài sẽ lưu chờ chấm.';
+}).catch(function(){});
 
-  /* ── Rich editor cho bài viết ── */
-  var essayEditor = new RichEditor('essay', {
-    toolbar: 'writer',
-    placeholder: 'Viết bài của bạn ở đây...',
-    minHeight: '300px',
-    onChange: function(ed){
-      var n = ed.wordCount();
-      document.getElementById('wordCount').textContent = n;
-    }
-  });
+/* ── Nộp bài ── */
+document.getElementById('submitBtn').addEventListener('click', async function(){
+  var text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
+  if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('suggestedSection').style.display = 'none';
+  this.disabled = true;
 
-  fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(r=>{
-    if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
-    if (r.status===403){ document.getElementById('exTitle').textContent='Bạn chưa được giao đề này.'; return null; }
-    return r.json();
-  }).then(function(d){
-    if (!d) return;
-    var e = d.exercise;
-    if (!e) { document.getElementById('exTitle').textContent = 'Không tìm thấy đề'; return; }
-    document.getElementById('exTitle').textContent = e.title;
-    document.getElementById('crumbTitle').textContent = e.program + ' Writing';
-    document.getElementById('promptText').innerHTML = RichEditor.sanitize(e.content || '');
-    var back = document.getElementById('backLink');
-    back.textContent = '‹ ' + e.program + ' Writing';
-    back.href = (e.program === 'KET' ? 'ket-writing.html' : 'writing-exercises.html?program=' + encodeURIComponent(e.program));
-    if (qp('assigned')) back.href = 'assigned.html';
-
-    if (e.image_url) {
-      document.getElementById('examImg').src = e.image_url;
-      document.getElementById('exImageWrap').style.display = 'block';
-    }
-
-    if (e.is_private) {
-      IS_PRIVATE = true;
-      document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Đề riêng — giáo viên chấm';
-      document.getElementById('submitBtn').textContent = '📤 Nộp bài cho giáo viên';
-      document.getElementById('submitHint').textContent = 'Bài sẽ được lưu và gửi đến giáo viên để chấm thủ công.';
-      document.getElementById('aiNote').textContent = '';
-    } else {
-      document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Chấm điểm tự động';
-    }
-  }).catch(function(){});
-
-  fetch('/api/config').then(r=>r.json()).then(function(c){
-    if (!IS_PRIVATE && !c.aiEnabled)
-      document.getElementById('aiNote').textContent = '⚠️ Hệ thống chấm tự động chưa sẵn sàng — bài sẽ lưu chờ chấm.';
-  }).catch(function(){});
-
-  document.getElementById('submitBtn').addEventListener('click', async function(){
-    var text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
-    if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('result').style.display = 'none';
-    document.getElementById('suggestedSection').style.display = 'none';
-    this.disabled = true;
-
-    if (IS_PRIVATE) {
-      var r = await fetch('/api/submissions', {
-        method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: { essay: text } })
-      });
-      this.disabled = false;
-      document.getElementById('loading').style.display = 'none';
-      if (r.status===401){ alert('Bạn cần đăng nhập.'); location.href='login.html?next='+encodeURIComponent(location.href); return; }
-      if (r.ok){
-        document.getElementById('result').style.display = 'block';
-        document.getElementById('result').style.borderColor = 'var(--success)';
-        document.getElementById('result').innerHTML =
-          '<div class="card-head"><h3>✅ Đã nộp bài thành công!</h3></div>' +
-          '<p style="color:var(--text-muted);margin-top:8px;">Giáo viên sẽ chấm và phản hồi sớm nhất có thể. Bạn có thể theo dõi kết quả tại <a href="assigned.html" style="color:var(--primary);">Bài tập được giao</a>.</p>';
-        document.getElementById('result').scrollIntoView({behavior:'smooth'});
-        this.style.display = 'none';
-      } else {
-        var err = await r.json().catch(function(){return {};});
-        alert(err.error || 'Nộp bài thất bại.');
-      }
-      return;
-    }
-
-    var r = await fetch('/api/grade-writing', {
+  if (IS_PRIVATE) {
+    var r0 = await fetch('/api/submissions', {
       method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ exercise_id: EXERCISE_ID, essay: text })
+      body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: { essay: text } })
     });
     this.disabled = false;
     document.getElementById('loading').style.display = 'none';
-
-    if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next=' + encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
-    var data = await r.json().catch(function(){ return {}; });
-    if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
-    if (data.pending) { alert('Bài đã được lưu và đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.'); location.href='dashboard.html'; return; }
-
-    var res = data.result;
-    document.getElementById('overall').textContent = res.overall_score;
-    document.getElementById('scaleLabel').textContent = res.scale_label || 'Điểm tổng';
-    document.getElementById('criteria').innerHTML = (res.criteria||[]).map(function(c){
-      return '<div class="crit"><div class="crit-head"><span>'+c.name+'</span><span class="crit-band">'+c.score+'/'+c.max+'</span></div><p>'+c.comment+'</p></div>';
-    }).join('');
-    document.getElementById('summary').textContent = res.summary;
-    document.getElementById('suggestions').innerHTML = (res.suggestions||[]).map(function(s){ return '<li>'+s+'</li>'; }).join('');
-    var box = document.getElementById('result'); box.style.display='block'; box.scrollIntoView({behavior:'smooth'});
-    if (res.suggested_writing) {
-      document.getElementById('suggestedWriting').textContent = res.suggested_writing;
-      document.getElementById('suggestedNotes').textContent = res.suggested_notes || '';
-      document.getElementById('suggestedSection').style.display = 'block';
+    if (r0.status===401){ alert('Bạn cần đăng nhập.'); location.href='login.html?next='+encodeURIComponent(location.href); return; }
+    if (r0.ok){
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('result').style.borderColor = 'var(--success)';
+      document.getElementById('result').innerHTML =
+        '<div class="card-head"><h3>✅ Đã nộp bài thành công!</h3></div>' +
+        '<p style="color:var(--text-muted);margin-top:8px;">Giáo viên sẽ chấm và phản hồi sớm nhất có thể. Bạn có thể theo dõi kết quả tại <a href="assigned.html" style="color:var(--primary);">Bài tập được giao</a>.</p>';
+      document.getElementById('result').scrollIntoView({behavior:'smooth'});
+      this.style.display = 'none';
+    } else {
+      var err0 = await r0.json().catch(function(){return {};});
+      alert(err0.error || 'Nộp bài thất bại.');
     }
+    return;
+  }
+
+  var r = await fetch('/api/grade-writing', {
+    method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ exercise_id: EXERCISE_ID, essay: text })
   });
+  this.disabled = false;
+  document.getElementById('loading').style.display = 'none';
+
+  if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next='+encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
+  var data = await r.json().catch(function(){ return {}; });
+  if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
+  if (data.pending) { alert('Bài đã được lưu và đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.'); location.href='dashboard.html'; return; }
+
+  var res = data.result;
+  G_submissionId = data.id || null;
+
+  document.getElementById('overall').textContent = res.overall_score;
+  document.getElementById('scaleLabel').textContent = res.scale_label || 'Điểm tổng';
+  document.getElementById('criteria').innerHTML = renderCriteria(res.criteria);
+  document.getElementById('summary').textContent = res.summary;
+  document.getElementById('suggestions').innerHTML = (res.suggestions||[]).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('');
+  document.getElementById('msgTeacherBtn').style.display = 'inline-flex';
+
+  var box = document.getElementById('result');
+  box.style.display = 'block';
+  box.scrollIntoView({behavior:'smooth'});
+
+  if (res.suggested_writing) {
+    document.getElementById('suggestedWriting').textContent = res.suggested_writing;
+    document.getElementById('suggestedNotes').textContent = res.suggested_notes || '';
+    document.getElementById('suggestedSection').style.display = 'block';
+  }
+});
+
+/* ── Render tiêu chí với thanh màu ── */
+function bandColor(score, max) {
+  var pct = max > 0 ? score / max : 0;
+  if (pct >= 0.9) return '#6366f1';   // 5/5 — xuất sắc
+  if (pct >= 0.75) return '#22c55e';  // 4/5 — tốt
+  if (pct >= 0.55) return '#84cc16';  // 3/5 — đạt
+  if (pct >= 0.3)  return '#fbbf24';  // 2/5 — trung bình
+  if (pct >  0)    return '#f97316';  // 1/5 — yếu
+  return '#ef4444';                   // 0   — kém
+}
+
+function renderCriteria(criteria) {
+  return (criteria||[]).map(function(c){
+    var pct = c.max > 0 ? Math.round(c.score / c.max * 100) : 0;
+    var color = bandColor(c.score, c.max);
+    return '<div class="crit">'+
+      '<div class="crit-head">'+
+        '<span class="crit-name">'+esc(c.name)+'</span>'+
+        '<span class="crit-band" style="color:'+color+';">'+c.score+' / '+c.max+'</span>'+
+      '</div>'+
+      '<div class="crit-bar-wrap">'+
+        '<div class="crit-bar" style="width:'+pct+'%;background:'+color+';"></div>'+
+      '</div>'+
+      '<p>'+esc(c.comment)+'</p>'+
+    '</div>';
+  }).join('');
+}
+
+/* ── Gợi ý làm bài ── */
+var hintsLoaded = false;
+var hintsOpen   = false;
+
+function toggleHints() {
+  hintsOpen = !hintsOpen;
+  document.getElementById('hintsBtnArrow').textContent = hintsOpen ? '▲' : '▼';
+  document.getElementById('hintsPanel').style.display  = hintsOpen ? 'block' : 'none';
+  if (hintsOpen && !hintsLoaded) loadHints();
+}
+
+async function loadHints() {
+  try {
+    var r = await fetch('/api/writing-hints', {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ exercise_id: EXERCISE_ID })
+    });
+    var data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Server error');
+    renderHints(data.hints);
+    hintsLoaded = true;
+  } catch(e) {
+    document.getElementById('hintsLoading').innerHTML =
+      '<span style="color:var(--danger);">❌ Không tải được gợi ý lúc này. Thử lại sau.</span>';
+  }
+}
+
+function renderHints(h) {
+  var html = '';
+
+  if (h.task_type) {
+    html += '<div style="margin-bottom:14px;">'+
+      '<span style="background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:700;padding:3px 14px;border-radius:20px;">'+esc(h.task_type)+'</span>'+
+    '</div>';
+  }
+
+  if (h.outline) {
+    html += '<div class="hint-section">'+
+      '<div class="hint-section-title">📋 Dàn bài gợi ý</div>'+
+      '<div style="font-size:13px;color:#0c4a6e;white-space:pre-line;line-height:1.75;">'+esc(h.outline)+'</div>'+
+    '</div>';
+  }
+
+  if (h.key_vocabulary && h.key_vocabulary.length) {
+    html += '<div class="hint-section"><div class="hint-section-title">📖 Từ vựng hữu ích</div><ul class="hint-chips">';
+    h.key_vocabulary.forEach(function(v){ html += '<li class="hint-chip">'+esc(v)+'</li>'; });
+    html += '</ul></div>';
+  }
+
+  if (h.useful_phrases && h.useful_phrases.length) {
+    html += '<div class="hint-section"><div class="hint-section-title">💬 Cụm từ nối hữu ích</div><ul class="hint-chips">';
+    h.useful_phrases.forEach(function(p){ html += '<li class="hint-chip"><i>'+esc(p)+'</i></li>'; });
+    html += '</ul></div>';
+  }
+
+  if (h.criteria_tips && h.criteria_tips.length) {
+    html += '<div class="hint-section"><div class="hint-section-title">🎯 Mẹo đạt điểm cao từng tiêu chí</div><ul class="hint-lines">';
+    h.criteria_tips.forEach(function(t){ html += '<li>'+esc(t)+'</li>'; });
+    html += '</ul></div>';
+  }
+
+  if (h.dos_and_donts && h.dos_and_donts.length) {
+    html += '<div class="hint-section"><div class="hint-section-title">⚠️ Lưu ý quan trọng</div><ul class="hint-lines">';
+    h.dos_and_donts.forEach(function(d){ html += '<li>'+esc(d)+'</li>'; });
+    html += '</ul></div>';
+  }
+
+  if (h.time_guide) {
+    html += '<div class="hint-section">'+
+      '<div class="hint-section-title">⏱ Phân bổ thời gian</div>'+
+      '<div style="font-size:13px;color:#0c4a6e;">'+esc(h.time_guide)+'</div>'+
+    '</div>';
+  }
+
+  document.getElementById('hintsContent').innerHTML = html;
+  document.getElementById('hintsContent').style.display = 'block';
+  document.getElementById('hintsLoading').style.display = 'none';
+}
+
+/* ── PDF / In ── */
+function printResults() {
+  var essay    = essayEditor ? essayEditor.getText() : document.getElementById('essay').value;
+  var title    = document.getElementById('exTitle').textContent;
+  var overall  = document.getElementById('overall').textContent;
+  var scale    = document.getElementById('scaleLabel').textContent;
+  var summary  = document.getElementById('summary').textContent;
+  var sugg     = Array.from(document.querySelectorAll('#suggestions li')).map(function(li){ return '• '+li.textContent; }).join('\n');
+  var sample   = document.getElementById('suggestedWriting').textContent || '';
+  var sNotes   = document.getElementById('suggestedNotes').textContent || '';
+
+  var critHtml = (document.getElementById('criteria').querySelectorAll('.crit'));
+  var critText = '';
+  critHtml.forEach(function(el) {
+    var name  = el.querySelector('.crit-name')  ? el.querySelector('.crit-name').textContent  : '';
+    var band  = el.querySelector('.crit-band')  ? el.querySelector('.crit-band').textContent  : '';
+    var comment = el.querySelector('p') ? el.querySelector('p').textContent : '';
+    critText += '<div style="border:1px solid #ddd;border-radius:8px;padding:12px;margin-bottom:8px;">'+
+      '<div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:6px;">'+
+        '<span>'+name+'</span><span style="color:#6F58EE;">'+band+'</span>'+
+      '</div>'+
+      '<p style="margin:0;font-size:13px;color:#555;">'+comment+'</p></div>';
+  });
+
+  var w = window.open('', '_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8">'+
+    '<title>Kết quả — '+title+'</title>'+
+    '<style>'+
+    'body{font-family:Georgia,serif;max-width:700px;margin:0 auto;padding:32px;color:#222;}'+
+    'h1{font-size:20px;border-bottom:2px solid #6F58EE;padding-bottom:8px;margin-bottom:4px;}'+
+    'h2{font-size:15px;color:#6F58EE;margin:22px 0 8px;border-left:4px solid #6F58EE;padding-left:10px;}'+
+    '.score{font-size:36px;font-weight:800;color:#6F58EE;margin:0;}'+
+    '.meta{font-size:13px;color:#888;margin-bottom:18px;}'+
+    '.essay-box{background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:16px;white-space:pre-wrap;line-height:1.85;font-family:Georgia,serif;font-size:14px;}'+
+    '.sample-box{background:#f3eeff;border:1px solid #d7bef7;border-radius:8px;padding:16px;white-space:pre-wrap;line-height:1.9;font-family:Georgia,serif;font-size:14px;}'+
+    '.notes{color:#5a3d8a;font-size:13px;font-style:italic;margin-top:10px;}'+
+    '.page-break{page-break-before:always;margin-top:28px;}'+
+    '@media print{.no-print{display:none}}'+
+    '</style></head><body>'+
+    '<h1>Bài Writing — '+title+'</h1>'+
+    '<p class="meta">Ngày làm: '+new Date().toLocaleDateString('vi-VN')+'</p>'+
+
+    '<h2>Bài làm của học sinh</h2>'+
+    '<div class="essay-box">'+essay.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>'+
+
+    '<div class="page-break"></div>'+
+    '<h2 style="margin-top:0;">Kết quả chấm bài</h2>'+
+    '<p class="score">'+overall+'</p><p class="meta">'+scale+'</p>'+
+
+    critText+
+
+    '<h2>Nhận xét tổng quan</h2>'+
+    '<p style="font-size:14px;line-height:1.7;">'+summary.replace(/</g,'&lt;')+'</p>'+
+
+    '<h2>Gợi ý cải thiện</h2>'+
+    '<p style="font-size:14px;line-height:1.8;white-space:pre-line;">'+sugg.replace(/</g,'&lt;')+'</p>'+
+
+    (sample ? '<div class="page-break"></div><h2 style="margin-top:0;">Bài viết mẫu (tham khảo)</h2>'+
+      '<div class="sample-box">'+sample.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>'+
+      (sNotes ? '<p class="notes">'+sNotes.replace(/</g,'&lt;')+'</p>' : '') : '')+
+
+    '<br><p style="font-size:11px;color:#aaa;text-align:center;margin-top:24px;">English With Tom</p>'+
+    '<script>window.onload=function(){window.print();}<\/script>'+
+    '</body></html>');
+  w.document.close();
+}
+
+/* ── Nhắn giáo viên ── */
+function openMessageModal()  { document.getElementById('messageModal').classList.add('open'); }
+function closeMessageModal() {
+  document.getElementById('messageModal').classList.remove('open');
+  document.getElementById('msgText').value = '';
+}
+
+async function sendTeacherMessage() {
+  var msg = document.getElementById('msgText').value.trim();
+  if (!msg) { alert('Vui lòng nhập nội dung tin nhắn.'); return; }
+  var btn = document.getElementById('msgSendBtn');
+  btn.disabled = true; btn.textContent = 'Đang gửi...';
+  try {
+    var r = await fetch('/api/student-message', {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ exercise_id: EXERCISE_ID, submission_id: G_submissionId, message: msg })
+    });
+    var data = await r.json();
+    if (r.ok) {
+      closeMessageModal();
+      alert('✅ Đã gửi tin nhắn đến giáo viên. Giáo viên sẽ phản hồi sớm qua email!');
+    } else {
+      alert(data.error || 'Gửi tin nhắn thất bại. Thử lại sau.');
+    }
+  } catch(e) {
+    alert('Gửi tin nhắn thất bại. Vui lòng thử lại.');
+  }
+  btn.disabled = false; btn.textContent = 'Gửi tin nhắn';
+}
 </script>
 </body>
 </html>

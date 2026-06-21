@@ -43,16 +43,62 @@ criteria gồm ĐÚNG 4 mục với name như trên (giữ song ngữ).
 suggested_writing: Viết bài mẫu TRUYỆN NGẮN TIẾNG ANH (35–55 từ) bắt đầu bằng câu cho sẵn trong đề, liên tục mạch lạc, đạt điểm cao.`;
 }
 
+// Rubric FCE — bám sát Assessment Scale chính thức Cambridge B2 First
+function fceRubric(title) {
+  const isPart1 = /part\s*1/i.test(title);
+  const taskHint = isPart1
+    ? 'FCE Part 1 — BẮT BUỘC là ESSAY nghị luận (140–190 từ). Học sinh không được chọn dạng bài.'
+    : 'FCE Part 2 — Học sinh chọn một dạng bài (article, review, story, letter, report...). Xác định đúng dạng bài từ đề rồi chấm đúng quy ước dạng bài đó.';
+
+  return `${taskHint}
+
+Chấm theo THANG ĐÁNH GIÁ CHÍNH THỨC Cambridge B2 First với 4 tiêu chí, MỖI tiêu chí 0–5.
+Band chẵn (2, 4) chia sẻ đặc điểm của 2 band lẻ liền kề — KHÔNG phải điểm trung bình; đó là mức thực hiện "ở giữa" 2 band đó.
+
+═══ CONTENT (Nội dung) ═══
+• Band 5: Toàn bộ nội dung liên quan nhiệm vụ. Người đọc được thông tin ĐẦY ĐỦ.
+• Band 3: Có thể có một số điểm không liên quan hoặc bỏ sót NHỎ. Người đọc NHÌN CHUNG được thông tin.
+• Band 1: Có thể có nội dung không liên quan và hiểu sai nhiệm vụ. Người đọc chỉ được thông tin TỐI THIỂU.
+• Band 0: Nội dung HOÀN TOÀN không liên quan. Người đọc không được thông tin.
+⚠️ KHÔNG trừ điểm Content vì lý do Language hay Organisation. CHỈ trừ khi thực sự thiếu/sai yêu cầu nội dung đề.
+
+═══ COMMUNICATIVE ACHIEVEMENT (Hiệu quả giao tiếp) ═══
+• Band 5: Dùng đúng quy ước dạng bài MỘT CÁCH HIỆU QUẢ để thu hút người đọc và truyền đạt ý đơn giản LẪN phức tạp phù hợp.
+• Band 3: Dùng đúng quy ước dạng bài để thu hút và truyền đạt ý ĐƠN GIẢN.
+• Band 1: Dùng quy ước dạng bài theo cách NHÌN CHUNG PHÙ HỢP để truyền đạt ý đơn giản.
+• Band 0: Dưới mức Band 1.
+⚠️ Đánh giá đúng quy ước của dạng bài cụ thể: essay → thesis+argument structure; article → engaging opener+title; review → evaluation+recommendation; letter → register phù hợp+opening/closing.
+
+═══ ORGANISATION (Tổ chức) ═══
+• Band 5: Văn bản được tổ chức TỐT VÀ MẠCH LẠC, dùng ĐA DẠNG cohesive devices và mô hình tổ chức có hiệu quả.
+• Band 3: Văn bản NHÌN CHUNG tổ chức tốt và mạch lạc, dùng đa dạng linking words và cohesive devices.
+• Band 1: Văn bản kết nối và mạch lạc, dùng linking words CƠ BẢN và SỐ LƯỢNG HẠN CHẾ cohesive devices.
+• Band 0: Dưới mức Band 1.
+⚠️ Bài có cấu trúc đoạn rõ ràng + linking words đa dạng xứng đáng ít nhất Band 3. KHÔNG trừ điểm vì "thiếu phức tạp" nếu bài mạch lạc.
+
+═══ LANGUAGE (Ngôn ngữ) ═══
+• Band 5: Dùng đa dạng từ vựng kể cả LESS COMMON LEXIS phù hợp. Dùng đa dạng cấu trúc ngữ pháp đơn giản VÀ phức tạp với sự kiểm soát VÀ LINH HOẠT. CÓ THỂ có lỗi nhỏ nhưng KHÔNG cản trở giao tiếp.
+• Band 3: Dùng đa dạng từ vựng hàng ngày phù hợp, đôi khi dùng không đúng less common lexis. Dùng đa dạng cấu trúc đơn giản và MỘT SỐ phức tạp với degree of control tốt. LỖI KHÔNG cản trở giao tiếp.
+• Band 1: Dùng từ vựng hàng ngày nhìn chung phù hợp, đôi khi LẶP LẠI một số từ. Dùng ngữ pháp đơn giản với degree of control tốt. Lỗi RÕ RÀNG nhưng VẪN XÁC ĐỊNH được nghĩa.
+• Band 0: Dưới mức Band 1.
+⚠️ KHÔNG trừ điểm Language chỉ vì "có thể dùng từ phức tạp hơn" — nếu từ đang dùng đúng và phù hợp thì giữ điểm. CHỈ hạ điểm khi lỗi thực sự cản trở hiểu nghĩa HOẶC từ vựng/ngữ pháp quá đơn điệu.
+
+overall_score = MEAN của 4 tiêu chí (Content + Comm.Ach. + Organisation + Language) / 4, làm tròn đến 0.5 gần nhất, thang 0–5.
+scale_label = "B2 First (0–5)"
+
+suggested_writing: Viết bài mẫu TIẾNG ANH 140–190 từ, đúng dạng bài của ĐỀ NÀY (essay/article/review/letter...).
+Bài mẫu phải: (a) đáp ứng đúng yêu cầu cụ thể của đề, (b) dùng đúng format/quy ước của dạng bài, (c) thể hiện less common lexis và cấu trúc đa dạng, (d) đạt Band 4–5 trên cả 4 tiêu chí.`;
+}
+
 // Rubric riêng cho từng kỳ thi
 function rubricFor(exercise) {
   const program = exercise.program;
   if (program === 'KET') return ketRubric(exercise.title || '');
+  if (program === 'FCE') return fceRubric(exercise.title || '');
   if (program === 'IELTS') return `Chấm theo thang BAND IELTS từ 0 đến 9 (bước 0.5). Dùng 4 tiêu chí (mỗi tiêu chí max 9): Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. overall_score là band tổng (trung bình 4 tiêu chí, làm tròn 0.5). scale_label = "IELTS Band (0–9)".
 suggested_writing: Xác định đây là Task 1 hay Task 2 dựa trên tên đề. Task 1: viết bài mẫu TIẾNG ANH 150–180 từ mô tả biểu đồ/số liệu trong đề (nếu là bar chart/line graph thì dựa vào dữ liệu mô tả trong nội dung đề). Task 2: viết bài luận TIẾNG ANH 250–280 từ đạt Band 7–8.`;
   if (program === 'PET') return `Chấm theo chuẩn Cambridge B1 Preliminary (PET). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B1 Preliminary (0–5)".
 suggested_writing: Viết bài mẫu TIẾNG ANH 80–120 từ đáp ứng đầy đủ yêu cầu đề PET, đạt điểm gần tối đa.`;
-  if (program === 'FCE') return `Chấm theo chuẩn Cambridge B2 First (FCE). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B2 First (0–5)".
-suggested_writing: Viết bài mẫu TIẾNG ANH 140–190 từ (đúng dạng bài yêu cầu: essay, article, review, letter...) đạt điểm cao.`;
   if (program === 'APTIS') return `Chấm theo chuẩn APTIS General/Advanced của British Council. Dùng các tiêu chí phù hợp (Content/Task Achievement, Vocabulary, Grammar, Organisation). overall_score trên thang 0–5. scale_label = "APTIS (0–5)".
 suggested_writing: Viết bài mẫu TIẾNG ANH đúng độ dài yêu cầu của component APTIS, đạt điểm cao theo rubric APTIS.`;
   return `Chấm theo thang điểm phù hợp với kỳ thi ${program}. Dùng các tiêu chí hợp lý (Content, Organisation, Language). overall_score trên thang 0–5. scale_label mô tả ngắn thang điểm.
@@ -294,4 +340,94 @@ async function gradeAptisWriting(exercise, testContent, answers) {
   throw new Error('Chưa cấu hình AI');
 }
 
-module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, provider };
+// ============================================================
+// WRITING HINTS — gợi ý làm bài theo đề cụ thể
+// ============================================================
+
+const HINTS_CLAUDE_SCHEMA = {
+  type: 'object',
+  properties: {
+    task_type:      { type: 'string' },
+    outline:        { type: 'string' },
+    key_vocabulary: { type: 'array', items: { type: 'string' } },
+    useful_phrases: { type: 'array', items: { type: 'string' } },
+    criteria_tips:  { type: 'array', items: { type: 'string' } },
+    dos_and_donts:  { type: 'array', items: { type: 'string' } },
+    time_guide:     { type: 'string' }
+  },
+  required: ['task_type','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
+  additionalProperties: false
+};
+
+const HINTS_GEMINI_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    task_type:      { type: 'STRING' },
+    outline:        { type: 'STRING' },
+    key_vocabulary: { type: 'ARRAY', items: { type: 'STRING' } },
+    useful_phrases: { type: 'ARRAY', items: { type: 'STRING' } },
+    criteria_tips:  { type: 'ARRAY', items: { type: 'STRING' } },
+    dos_and_donts:  { type: 'ARRAY', items: { type: 'STRING' } },
+    time_guide:     { type: 'STRING' }
+  },
+  required: ['task_type','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
+};
+
+function buildHintsSystem(exercise) {
+  return `Bạn là giáo viên luyện thi ${exercise.program} giàu kinh nghiệm. Hãy tạo GỢI Ý LÀM BÀI cụ thể và hữu ích cho đề bài này để học sinh biết cách triển khai và đạt điểm cao.
+
+task_type: Loại bài viết theo yêu cầu của đề (ví dụ: "FCE Essay", "FCE Article", "IELTS Task 2 — Opinion Essay", "KET Part 1 — Email"...).
+outline: Dàn bài chi tiết gợi ý bằng TIẾNG VIỆT — từng đoạn/phần với số câu và nội dung cần viết. Ví dụ: "Mở bài (2–3 câu): Giới thiệu chủ đề + nêu quan điểm cá nhân\nThân bài 1 (4–5 câu): Luận điểm 1 + giải thích + ví dụ cụ thể\n..."
+key_vocabulary: 8–10 từ/cụm từ tiếng Anh hữu ích CHO CHỦ ĐỀ CỤ THỂ của đề này. Mỗi item có dạng "từ (nghĩa tiếng Việt)". Ví dụ: "significant impact (tác động đáng kể)".
+useful_phrases: 6–8 cụm câu/connectors tiếng Anh hữu ích CHO DẠNG BÀI này. Ví dụ: "In my opinion, ...", "Furthermore, ...", "This clearly suggests that...".
+criteria_tips: Đúng 4 gợi ý tiếng Việt — mỗi gợi ý tương ứng một tiêu chí chấm (Content, Communicative Achievement, Organisation, Language). Mỗi gợi ý bắt đầu bằng "[Tên tiêu chí]: ...".
+dos_and_donts: 5–6 lưu ý tiếng Việt — mix DOs (bắt đầu bằng ✅) và DON'Ts (bắt đầu bằng ❌).
+time_guide: Gợi ý phân bổ thời gian tiếng Việt, ví dụ: "Đọc đề & lên ý tưởng: 3 phút → Lập dàn ý: 5 phút → Viết: 25 phút → Kiểm tra lại: 2 phút"`;
+}
+
+async function getWritingHints(exercise) {
+  const p = provider();
+  const sysPrompt  = buildHintsSystem(exercise);
+  const userPrompt = `KỲ THI: ${exercise.program} — Kỹ năng: ${exercise.skill}\nĐỀ BÀI: ${exercise.title}\n\n${exercise.content || ''}`;
+
+  if (p === 'gemini') {
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: sysPrompt }] },
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: HINTS_GEMINI_SCHEMA,
+          maxOutputTokens: 3000,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      })
+    });
+    if (!r.ok) throw new Error('Gemini ' + r.status + ': ' + (await r.text()));
+    const data = await r.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const text = parts.map(pp => pp.text || '').join('');
+    if (!text) throw new Error('Gemini: phản hồi rỗng');
+    return JSON.parse(text);
+  }
+
+  if (p === 'claude') {
+    const client = new Anthropic();
+    const model = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const resp = await client.messages.create({
+      model, max_tokens: 3000, system: sysPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+      output_config: { format: { type: 'json_schema', schema: HINTS_CLAUDE_SCHEMA } }
+    });
+    const block = resp.content.find(b => b.type === 'text');
+    return JSON.parse(block.text);
+  }
+
+  throw new Error('Chưa cấu hình AI');
+}
+
+module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider };
