@@ -25,7 +25,7 @@
   var header = '' +
     '<header class="site-header"><div class="container nav">' +
       '<a class="brand" href="index.html">' +
-        '<span class="brand-logo">T</span>' +
+        '<img class="brand-logo" src="images/logo-icon.png" alt="EWT" onerror="this.outerHTML=\'<span class=&quot;brand-logo&quot;>T</span>\'">' +
         '<span>English With Tom<small>Luyện tập các kỹ năng ngôn ngữ</small></span>' +
       '</a>' +
       '<nav class="nav-links" id="navLinks">' + links + '</nav>' +
@@ -40,7 +40,7 @@
     '<footer class="site-footer"><div class="container">' +
       '<div class="footer-grid">' +
         '<div>' +
-          '<div class="brand" style="margin-bottom:12px;"><span class="brand-logo">T</span><span>English With Tom</span></div>' +
+          '<img class="footer-seal" src="images/logo-seal.png" alt="English With Tom" onerror="this.outerHTML=\'<div class=&quot;brand&quot; style=&quot;margin-bottom:12px;&quot;><span class=&quot;brand-logo&quot;>T</span><span>English With Tom</span></div>\'">' +
           '<p>Nền tảng luyện thi KET, PET, FCE, APTIS và IELTS với hệ thống chấm điểm tự động.</p>' +
         '</div>' +
         '<div><h4>Chương trình</h4>' +
