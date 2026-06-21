@@ -216,8 +216,67 @@ function rubricFor(exercise) {
   if (program === 'PET') return petRubric(exercise.title || '');
   if (program === 'IELTS') return `Chấm theo thang BAND IELTS từ 0 đến 9 (bước 0.5). Dùng 4 tiêu chí (mỗi tiêu chí max 9): Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. overall_score là band tổng (trung bình 4 tiêu chí, làm tròn 0.5). scale_label = "IELTS Band (0–9)".
 suggested_writing: Xác định đây là Task 1 hay Task 2 dựa trên tên đề. Task 1: viết bài mẫu TIẾNG ANH 150–180 từ mô tả biểu đồ/số liệu trong đề (dựa vào dữ liệu thực trong nội dung đề và hình ảnh nếu có). Task 2: viết bài luận TIẾNG ANH 250–280 từ đạt Band 7–8.`;
-  if (program === 'APTIS') return `Chấm theo chuẩn APTIS General/Advanced của British Council. Dùng các tiêu chí phù hợp (Content/Task Achievement, Vocabulary, Grammar, Organisation). overall_score trên thang 0–5. scale_label = "APTIS (0–5)".
-suggested_writing: Viết bài mẫu TIẾNG ANH đúng độ dài yêu cầu của component APTIS, đạt điểm cao theo rubric APTIS.`;
+  if (program === 'APTIS') {
+    const t = (exercise.title || '').toLowerCase();
+    // Part 1 — Word-level (scale 0–3, chỉ 1 tiêu chí)
+    if (/component\s*1|part\s*1/i.test(exercise.title)) {
+      return `APTIS Writing PART 1 — Word-level Writing (5 tin nhắn ngắn, chỉ từ đơn lẻ).
+Thang điểm: 0–3. Tiêu chí DUY NHẤT: Task Fulfilment & Communicative Competence.
+⚠️ Spelling, capitalisation, grammar KHÔNG được tính ở Part 1. Chỉ đánh giá xem câu trả lời có INTELLIGIBLE và ĐÚNG YÊU CẦU không.
+• 3 (above A1): TẤT CẢ 5 câu intelligible, task hoàn toàn đạt.
+• 2 (A1.2): 3–4 câu intelligible; 1–2 câu lỗi cản trở hiểu.
+• 1 (A1.1): 1–2 câu intelligible; 2–3 câu lỗi cản trở hiểu.
+• 0 (A0): Không có câu nào intelligible.
+overall_score = điểm 0–3 này. scale_label = "APTIS Part 1 (0–3)".
+criteria gồm 1 mục: name="Task Fulfilment & Communicative Competence", max=3.
+suggested_writing: Viết 5 câu trả lời mẫu TIẾNG ANH — mỗi câu là 1 từ/cụm từ ngắn, đúng và intelligible với từng câu hỏi trong đề, đạt điểm 3.`;
+    }
+    // Part 2 — Short Text (scale 0–5)
+    if (/component\s*2|part\s*2/i.test(exercise.title)) {
+      return `APTIS Writing PART 2 — Short Text Writing (20–30 từ, form filling).
+Thang điểm: 0–5. Tiêu chí: Task Fulfilment/Topic Relevance + Grammatical Range & Accuracy + Punctuation + Vocabulary Range & Accuracy + Cohesion.
+• 5 (B1+): Vượt trội so với A2 — likely above A2 level.
+• 4 (A2.2): On topic. Simple grammar, errors do NOT impede. Mostly accurate punctuation/spelling. Vocab sufficient. Some simple connectors used.
+• 3 (A2.1): On topic. Simple grammar, errors impede PARTS. Noticeable mistakes. Vocab mostly sufficient, inappropriate choices. Sentences listed, NO connectors.
+• 2 (A1.2): Not fully on topic. Grammar limited to words/phrases; errors impede. Little punctuation; common spelling mistakes. Vocab insufficient. No cohesion.
+• 1 (A1.1): Few words/phrases only. Errors make meaning unintelligible.
+• 0 (A0): No meaningful language or completely off-topic.
+overall_score = điểm 0–5 này. scale_label = "APTIS Part 2 (0–5)".
+criteria gồm 5 mục: Task Fulfilment, Grammar, Punctuation, Vocabulary, Cohesion (mỗi mục đánh giá riêng, tổng thành band).
+suggested_writing: Viết đoạn văn mẫu TIẾNG ANH 20–30 từ đúng yêu cầu đề, on topic, dùng simple connectors, đạt điểm 4–5.`;
+    }
+    // Part 3 — Group Chat (scale 0–5)
+    if (/component\s*3|part\s*3/i.test(exercise.title)) {
+      return `APTIS Writing PART 3 — Group Chat Replies (30–40 từ/reply, 3 replies).
+Thang điểm: 0–5. Tiêu chí: Task Fulfilment/Topic Relevance + Punctuation + Grammatical Range & Accuracy + Vocabulary Range & Accuracy + Cohesion.
+⚠️ Band phụ thuộc vào SỐ REPLIES on-topic: Band 4 = cả 3; Band 3 = 2/3; Band 2 = ít nhất 2; Band 1 = chỉ 1.
+• 5 (B2+): Above B1 level — vượt trội so với các mô tả dưới.
+• 4 (B1.2): CẢ 3 on topic. Simple grammar; errors with complex. Mostly accurate spelling/punctuation. Vocab sufficient. Simple cohesive devices.
+• 3 (B1.1): 2/3 on topic. [Cùng đặc điểm ngôn ngữ như Band 4.]
+• 2 (A2.2): Ít nhất 2/3 on topic. Simple grammar — errors sometimes impede. Noticeable mistakes. Vocab insufficient; inappropriate choices impede. Lists of sentences — not organised.
+• 1 (A2.1): 1/3 on topic. [Cùng đặc điểm ngôn ngữ như Band 2.]
+• 0: Below A2. No meaningful language.
+overall_score = điểm 0–5 này. scale_label = "APTIS Part 3 (0–5)".
+criteria gồm 3 mục: Reply 1, Reply 2, Reply 3 — mỗi mục đánh giá on-topic + quality, cho điểm 0–5, tổng hợp thành band tổng thể.
+suggested_writing: Viết 3 replies mẫu TIẾNG ANH (30–40 từ mỗi reply), on topic, mạch lạc, đạt Band 4–5.`;
+    }
+    // Part 4 — Formal & Informal Email (scale 0–6)
+    return `APTIS Writing PART 4 — Formal & Informal Email Writing.
+Task 1: Email ngắn 40–50 từ — informal register (viết cho bạn bè/người thân gần gũi).
+Task 2: Email dài 120–150 từ — formal register (viết cho công ty/người lạ).
+Thang điểm: 0–6. Tiêu chí: Task Fulfilment & Register + Grammatical Range & Accuracy + Vocabulary Range & Accuracy + Punctuation + Fluency & Cohesion.
+⚠️ REGISTER là tiêu chí TRỌNG YẾU: Task 1 PHẢI casual/informal; Task 2 PHẢI formal. Thiếu register → hạ điểm nặng.
+• 6 (C2): Likely above C1 level.
+• 5 (C1): On topic + HAI registers RÕ RÀNG KHÁC NHAU. Complex grammar range; minor errors. Vocab range; some awkward usage. Range of cohesive devices clearly indicating links.
+• 4 (B2.2): On topic + register phù hợp NHẤT QUÁN Ở CẢ 2 emails. Some complex grammar; errors do NOT lead to misunderstanding. Minor punctuation/spelling. Sufficient vocab. LIMITED cohesive devices.
+• 3 (B2.1): Partially on topic + register phù hợp NHẤT QUÁN Ở 1/2 email. [Cùng đặc điểm ngôn ngữ như Band 4.]
+• 2 (B1.2): Partially on topic + register KHÔNG PHÙ HỢP Ở CẢ 2. Simple grammar; errors with complex. Mostly accurate punctuation/spelling. Limited vocab — errors impede in PARTS. Only simple cohesive devices.
+• 1 (B1.1): Not on topic + KHÔNG CÓ nhận thức về register. Simple grammar; errors with complex. Mostly accurate punctuation. Limited vocab — impede in MOST text. Only simple cohesive devices.
+• 0 (A1/A2): Below B1 or no meaningful language.
+overall_score = điểm 0–6 này (thang 0–6). scale_label = "APTIS Part 4 (0–6)".
+criteria gồm 2 mục: "Task 1 — Informal Email (0–6)" và "Task 2 — Formal Email (0–6)", kết hợp thành band tổng hợp.
+suggested_writing: Viết email mẫu TIẾNG ANH cho Task 2 (120–150 từ, FORMAL register, đáp ứng đúng yêu cầu đề, đạt Band 4–5).`;
+  }
   return `Chấm theo thang điểm phù hợp với kỳ thi ${program}. Dùng các tiêu chí hợp lý (Content, Organisation, Language). overall_score trên thang 0–5. scale_label mô tả ngắn thang điểm.
 suggested_writing: Viết bài mẫu TIẾNG ANH đáp ứng đúng yêu cầu đề và đạt điểm cao.`;
 }
@@ -366,42 +425,83 @@ async function gradeWriting(exercise, essay) {
 
 // ============================================================
 // APTIS WRITING FULL TEST — chấm 4 components cùng lúc
+// Bám sát 100% APTIS ESOL General Candidate Guide (British Council 2023)
 // ============================================================
 
 function buildAptisSystem() {
-  return `Bạn là giám khảo chấm Writing của British Council, chuyên kỳ thi APTIS General/Advanced.
-Bài thi APTIS Writing gồm 4 components với trọng số và tiêu chí riêng:
+  return `Bạn là giám khảo chấm Writing của British Council, chuyên kỳ thi APTIS ESOL General.
+Bài thi APTIS Writing gồm 4 Parts (components), MỖI PART có thang điểm RIÊNG và tiêu chí RIÊNG.
+Chấm từng component theo đúng thang và tiêu chí bên dưới, sau đó mới tính điểm toàn bài.
 
-COMPONENT 1 — Câu trả lời ngắn (Personal Info, trọng số 10%)
-Học sinh trả lời ngắn gọn các câu hỏi cá nhân (tên, nghề, nơi sống, sở thích...).
-Tiêu chí: Phù hợp/đúng nghĩa với câu hỏi, ngữ pháp đơn giản đúng, trọn vẹn (không bỏ câu).
-Thang: 0–5.
+════════════════════════════════════════════════
+PART 1 — Word-level Writing (chỉ từ đơn lẻ, 5 tin nhắn)
+Thang điểm: 0–3
+Tiêu chí DUY NHẤT: Task Fulfilment & Communicative Competence
+⚠️ QUAN TRỌNG: Spelling, capitalisation, grammar KHÔNG được tính ở Part 1 — chỉ đánh giá xem câu trả lời có INTELLIGIBLE (hiểu được) và ĐÚNG YÊU CẦU không.
+• 3 (above A1): TẤT CẢ 5 câu trả lời đều intelligible. Học sinh hoàn thành task hoàn toàn.
+• 2 (A1.2): 3–4 câu intelligible. 1–2 câu bị lỗi cản trở hiểu nghĩa.
+• 1 (A1.1): 1–2 câu intelligible. 2–3 câu bị lỗi cản trở hiểu nghĩa.
+• 0 (A0): Không có câu nào intelligible.
 
-COMPONENT 2 — Điền form (Form Fill, trọng số 20%)
-Học sinh viết đoạn văn 20–30 từ theo prompt cho sẵn (về chủ đề cụ thể).
-Tiêu chí chính: Task Achievement (đúng yêu cầu, đủ thông tin), Vocabulary Range, Grammatical Accuracy, đúng độ dài.
-Thang: 0–5.
+════════════════════════════════════════════════
+PART 2 — Short Text Writing (20–30 từ, form filling)
+Thang điểm: 0–5
+Tiêu chí: Task Fulfilment/Topic Relevance + Grammatical Range & Accuracy + Punctuation + Vocabulary Range & Accuracy + Cohesion
+• 5 (B1+): Likely above A2 level — vượt trội so với các mô tả dưới.
+• 4 (A2.2): On topic. Simple grammar structures — errors do NOT impede understanding. Mostly accurate punctuation/spelling. Vocab sufficient. Some simple connectors/cohesive devices used.
+• 3 (A2.1): On topic. Simple grammar — errors impede understanding in PARTS. Noticeable punctuation/spelling mistakes. Vocab mostly sufficient but inappropriate choices noticeable. List of sentences with NO connectors.
+• 2 (A1.2): Not fully on topic. Grammar limited to words/phrases; errors impede understanding. Little/no accurate punctuation; common spelling mistakes. Vocab limited to basic words — insufficient for task. No cohesion.
+• 1 (A1.1): Response limited to a few words/phrases. Grammar and vocab errors so serious meaning is unintelligible.
+• 0 (A0): No meaningful language OR completely off-topic (memorised script/guessing).
 
-COMPONENT 3 — Group Chat (Chat Replies, trọng số 30%)
-Học sinh trả lời 3 tin nhắn trong group chat (30–40 từ/reply).
-Tiêu chí chính: Relevance (phản hồi đúng với từng tin nhắn), Coherence (mạch lạc), Vocabulary, Grammar. Chú ý cả 3 reply.
-Thang: 0–5 cho cả 3 reply cộng lại (đánh giá tổng thể).
+════════════════════════════════════════════════
+PART 3 — Three Written Parts (30–40 từ/reply, social media-type)
+Thang điểm: 0–5
+Tiêu chí: Task Fulfilment/Topic Relevance + Punctuation + Grammatical Range & Accuracy + Vocabulary Range & Accuracy + Cohesion
+Đánh giá DỰA TRÊN SỐ CÂU TRẢ LỜI ON-TOPIC trong tổng 3 replies:
+• 5 (B2+): Likely above B1 level — vượt trội so với các mô tả dưới.
+• 4 (B1.2): CẢ 3 replies on topic. Control of simple grammar; errors occur with complex structures. Punctuation/spelling mostly accurate; errors do NOT impede. Vocab sufficient. Simple cohesive devices linking sentences.
+• 3 (B1.1): 2/3 replies on topic. [Cùng đặc điểm ngôn ngữ như Band 4.]
+• 2 (A2.2): Ít nhất 2/3 replies on topic. Simple grammar — errors common, sometimes impede. Noticeable spelling/punctuation. Vocab insufficient; inappropriate choices sometimes impede. Responses are LISTS of sentences, not organised as cohesive texts.
+• 1 (A2.1): 1/3 reply on topic. [Cùng đặc điểm ngôn ngữ như Band 2.]
+• 0: Below A2. No meaningful language. Off-topic.
 
-COMPONENT 4 — Email Writing (Email Writing, trọng số 40%)
-Task 1: Email ngắn ~50 từ (informal/semi-formal).
-Task 2: Email dài 120–150 từ (semi-formal/formal).
-Tiêu chí: Content & Task Achievement, Vocabulary Range, Grammatical Range & Accuracy, Organisation & Cohesion.
-Thang: 0–5 (tổng hợp cả Task 1 và Task 2).
+════════════════════════════════════════════════
+PART 4 — Formal & Informal Email Writing
+Task 1: Email ngắn 40–50 từ (informal — viết cho bạn/người thân gần gũi)
+Task 2: Email dài 120–150 từ (formal — viết cho công ty/người lạ)
+Thang điểm: 0–6
+Tiêu chí: Task Fulfilment & Register + Grammatical Range & Accuracy + Vocabulary Range & Accuracy + Punctuation + Fluency & Cohesion
+⚠️ REGISTER là tiêu chí trọng yếu: Task 1 PHẢI informal (thân mật), Task 2 PHẢI formal (trang trọng).
+• 6 (C2): Likely above C1 level.
+• 5 (C1): On topic + HAI REGISTERS RÕ RÀNG KHÁC NHAU (clearly different). Range of COMPLEX grammar used accurately; minor errors. Range of vocab; some awkward usage. Range of cohesive devices clearly indicating links.
+• 4 (B2.2): On topic + REGISTER PHÙ HỢP NHẤT QUÁN Ở CẢ 2 emails. Some complex grammar accurately; errors do NOT lead to misunderstanding. Minor punctuation/spelling errors. Sufficient vocab range. LIMITED number of cohesive devices.
+• 3 (B2.1): Partially on topic + REGISTER PHÙ HỢP NHẤT QUÁN Ở 1/2 email. [Cùng đặc điểm ngôn ngữ như Band 4.]
+• 2 (B1.2): Partially on topic + REGISTER KHÔNG PHÙ HỢP Ở CẢ 2 emails. Simple grammar control; errors with complex structures. Mostly accurate punctuation/spelling; errors do NOT impede. Limited vocab — errors impede in PARTS. Only simple cohesive devices.
+• 1 (B1.1): Not on topic + KHÔNG CÓ BẰNG CHỨNG nhận thức về register. Simple grammar; errors with complex. Mostly accurate punctuation. Limited vocab — errors impede in MOST text. Only simple cohesive devices.
+• 0 (A1/A2): Below B1. No meaningful language. Off-topic.
 
-TỔNG ĐIỂM: overall_score = trung bình có trọng số (C1×10% + C2×20% + C3×30% + C4×40%), thang 0–5, làm tròn 0.5.
+════════════════════════════════════════════════
+TÍNH ĐIỂM TOÀN BÀI:
+Chuẩn hóa về thang 0–5:
+  C1_norm = (C1_score / 3) × 5
+  C2_norm = C2_score  (đã 0–5)
+  C3_norm = C3_score  (đã 0–5)
+  C4_norm = (C4_score / 6) × 5
+overall_score = (C1_norm×10% + C2_norm×20% + C3_norm×30% + C4_norm×40%), thang 0–5, làm tròn 0.5.
 scale_label = "APTIS Writing (0–5)"
 
-Quy tắc phản hồi:
-- criteria: ĐÚNG 4 mục, mỗi mục là 1 component (name song ngữ Vi/En), score (0–5), max=5, comment tiếng Việt cụ thể.
-- summary: 2–3 câu tổng quan bằng tiếng Việt, nêu điểm mạnh và yếu chính.
-- suggestions: 4–5 gợi ý cải thiện cụ thể bằng tiếng Việt (cho từng component yếu).
-- suggested_writing: Bài mẫu TIẾNG ANH cho Component 4 Task 2 (email 120–150 từ, semi-formal/formal, đáp ứng đúng đề bài cụ thể của học sinh, KHÔNG generic).
-- suggested_notes: Giải thích TIẾNG VIỆT 3–5 câu vì sao bài mẫu đạt điểm cao.`;
+Quy tắc JSON output:
+- criteria: ĐÚNG 4 mục, mỗi mục là 1 component:
+  • name: "Part 1 — Word-level Writing (0–3)" | score: [0–3] | max: 3
+  • name: "Part 2 — Short Text Writing (0–5)" | score: [0–5] | max: 5
+  • name: "Part 3 — Group Chat Replies (0–5)" | score: [0–5] | max: 5
+  • name: "Part 4 — Formal & Informal Email (0–6)" | score: [0–6] | max: 6
+  Mỗi comment: giải thích TIẾNG VIỆT cụ thể vì sao cho điểm đó, dẫn ví dụ từ bài làm.
+- summary: 2–3 câu tổng quan tiếng Việt — điểm mạnh và yếu chính từng component.
+- suggestions: 4–5 gợi ý cải thiện tiếng Việt, ưu tiên component điểm thấp nhất.
+- suggested_writing: Bài mẫu TIẾNG ANH cho Part 4 Task 2 (120–150 từ, formal register, đáp ứng đúng đề bài cụ thể, KHÔNG generic). BẮT BUỘC dùng đúng formal register.
+- suggested_notes: Giải thích TIẾNG VIỆT 3–5 câu vì sao bài mẫu đạt điểm cao theo rubric Part 4.`;
 }
 
 function buildAptisUser(exercise, testContent, answers) {
