@@ -464,7 +464,13 @@ Quy tắc chung:
 - summary: 2–3 câu tổng quan bằng tiếng Việt.
 - suggestions: 3–5 gợi ý cải thiện cụ thể bằng tiếng Việt.
 - suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu. Bám sát yêu cầu đề (notes nếu có, số liệu hình nếu có), KHÔNG viết generic.
-- suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao — nêu cụ thể bài mẫu đã đề cập những notes/điểm nào của đề.`;
+- suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao — nêu cụ thể bài mẫu đã đề cập những notes/điểm nào của đề.
+${hasStudentImage ? '- annotations: [] (bài nộp bằng ảnh — không thể highlight trực tiếp).' : `- annotations: Xác định 4–8 LỖI QUAN TRỌNG NHẤT trong bài. Mỗi lỗi gồm:
+  • text: COPY NGUYÊN VĂN đúng từng ký tự (kể cả lỗi chính tả) đoạn sai từ bài học sinh, 1–7 từ, ĐỦ NGẮN để khoanh đúng chỗ sai.
+  • type: "grammar" | "vocabulary" | "cohesion" | "spelling"
+  • correction: cách viết đúng (tiếng Anh)
+  • explanation: lý do ngắn (tiếng Việt, ≤ 12 từ)
+  ⚠️ Trường text phải khớp CHÍNH XÁC ký tự trong bài — không được paraphrase hay sửa lỗi trong text, chỉ ghi lại nguyên văn.`}`;
 }
 
 function buildUserText(exercise, essay) {
@@ -474,11 +480,23 @@ function buildUserText(exercise, essay) {
 }
 
 // ===== Claude (Anthropic SDK) =====
+const ANNOTATION_ITEM_SCHEMA = {
+  type: 'object',
+  properties: {
+    text:        { type: 'string' },
+    type:        { type: 'string' },
+    correction:  { type: 'string' },
+    explanation: { type: 'string' }
+  },
+  required: ['text', 'type', 'correction', 'explanation'],
+  additionalProperties: false
+};
+
 const CLAUDE_SCHEMA = {
   type: 'object',
   properties: {
-    overall_score: { type: 'number' },
-    scale_label: { type: 'string' },
+    overall_score:    { type: 'number' },
+    scale_label:      { type: 'string' },
     criteria: {
       type: 'array',
       items: {
@@ -487,12 +505,13 @@ const CLAUDE_SCHEMA = {
         required: ['name', 'score', 'max', 'comment'], additionalProperties: false
       }
     },
-    summary: { type: 'string' },
-    suggestions: { type: 'array', items: { type: 'string' } },
-    suggested_writing: { type: 'string' },
-    suggested_notes: { type: 'string' }
+    summary:          { type: 'string' },
+    suggestions:      { type: 'array', items: { type: 'string' } },
+    suggested_writing:{ type: 'string' },
+    suggested_notes:  { type: 'string' },
+    annotations:      { type: 'array', items: ANNOTATION_ITEM_SCHEMA }
   },
-  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes'],
+  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations'],
   additionalProperties: false
 };
 
@@ -521,8 +540,8 @@ async function gradeWithClaude(exercise, essay, imageData, studentImage) {
 const GEMINI_SCHEMA = {
   type: 'OBJECT',
   properties: {
-    overall_score: { type: 'NUMBER' },
-    scale_label: { type: 'STRING' },
+    overall_score:    { type: 'NUMBER' },
+    scale_label:      { type: 'STRING' },
     criteria: {
       type: 'ARRAY',
       items: {
@@ -531,12 +550,25 @@ const GEMINI_SCHEMA = {
         required: ['name', 'score', 'max', 'comment']
       }
     },
-    summary: { type: 'STRING' },
-    suggestions: { type: 'ARRAY', items: { type: 'STRING' } },
-    suggested_writing: { type: 'STRING' },
-    suggested_notes: { type: 'STRING' }
+    summary:          { type: 'STRING' },
+    suggestions:      { type: 'ARRAY', items: { type: 'STRING' } },
+    suggested_writing:{ type: 'STRING' },
+    suggested_notes:  { type: 'STRING' },
+    annotations: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          text:        { type: 'STRING' },
+          type:        { type: 'STRING' },
+          correction:  { type: 'STRING' },
+          explanation: { type: 'STRING' }
+        },
+        required: ['text', 'type', 'correction', 'explanation']
+      }
+    }
   },
-  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes']
+  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
 };
 
 async function gradeWithGemini(exercise, essay, imageData, studentImage) {

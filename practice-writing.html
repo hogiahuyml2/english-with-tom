@@ -173,6 +173,50 @@
   .hist-badge-improve { display:inline-flex; align-items:center; gap:4px; background:#fef9c3; color:#854d0e; border:1px solid #fde047; border-radius:20px; font-size:11.5px; font-weight:700; padding:2px 9px; margin-left:8px; }
   .hist-badge-best { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:20px; font-size:11.5px; font-weight:700; padding:2px 9px; margin-left:8px; }
 
+  /* ── Annotation highlight marks ── */
+  .ann-essay-body {
+    white-space: pre-wrap; font-size: 15px; line-height: 2.1;
+    color: #2E2B45; background: #fafafa; padding: 20px;
+    border-radius: 12px; border: 1px solid var(--border);
+    font-family: Georgia, serif;
+  }
+  mark.ann-g { background:#dbeafe; color:#1d4ed8; border-bottom:2.5px solid #3b82f6; padding:1px 3px; border-radius:3px; cursor:pointer; font-style:normal; }
+  mark.ann-v { background:#fee2e2; color:#dc2626; border-bottom:2.5px solid #ef4444; padding:1px 3px; border-radius:3px; cursor:pointer; font-style:normal; }
+  mark.ann-c { background:#fef3c7; color:#b45309; border-bottom:2.5px solid #f59e0b; padding:1px 3px; border-radius:3px; cursor:pointer; font-style:normal; }
+  mark.ann-s { background:#f3e8ff; color:#7c3aed; border-bottom:2.5px solid #8b5cf6; padding:1px 3px; border-radius:3px; cursor:pointer; font-style:normal; }
+
+  /* ── Annotation legend ── */
+  .ann-legend { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .ann-leg-item { display:flex; align-items:center; gap:5px; font-size:12.5px; font-weight:600; }
+  .ann-leg-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+
+  /* ── Annotation error list ── */
+  .ann-list { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+  .ann-item {
+    display:flex; gap:12px; align-items:flex-start;
+    background:#fff; border:1.5px solid var(--border); border-radius:10px;
+    padding:11px 14px; font-size:13px;
+  }
+  .ann-item-dot { width:10px; height:10px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+  .ann-wrong { font-weight:700; text-decoration:line-through; color:var(--text-muted); }
+  .ann-arrow { color:var(--text-faint); margin:0 4px; }
+  .ann-fix   { font-weight:700; color:#15803d; }
+  .ann-explain { font-size:12.5px; color:var(--text-muted); margin-top:3px; }
+
+  /* ── Floating tooltip ── */
+  #annTooltip {
+    position: fixed; z-index: 9999; display: none;
+    background: #1e1b4b; color: #fff;
+    border-radius: 12px; padding: 12px 15px;
+    font-size: 13px; max-width: 270px; min-width: 180px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.3);
+    pointer-events: none; line-height: 1.5;
+  }
+  #annTooltip .tip-type  { font-size:10.5px; font-weight:700; opacity:.65; text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+  #annTooltip .tip-wrong { font-size:13px; text-decoration:line-through; opacity:.7; }
+  #annTooltip .tip-fix   { font-size:14px; font-weight:700; color:#86efac; margin:2px 0; }
+  #annTooltip .tip-exp   { font-size:12px; opacity:.8; margin-top:4px; border-top:1px solid rgba(255,255,255,.15); padding-top:5px; }
+
   /* ── Print / PDF ── */
   @media print {
     #site-header, #site-footer, .q-block, #exImageWrap,
@@ -190,6 +234,14 @@
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
+
+<!-- Annotation tooltip -->
+<div id="annTooltip">
+  <div class="tip-type" id="tipType"></div>
+  <div class="tip-wrong" id="tipWrong"></div>
+  <div class="tip-fix" id="tipFix"></div>
+  <div class="tip-exp" id="tipExp"></div>
+</div>
 
 <!-- Lightbox -->
 <div id="imgLightbox" onclick="closeLightbox(event)">
@@ -365,6 +417,24 @@
       </p>
     </div>
 
+    <!-- Bài viết đã chấm — highlight lỗi -->
+    <div class="card" id="annotationSection" style="display:none; margin-top:18px; border:2px solid #e5e7eb;">
+      <div class="card-head" style="align-items:flex-start; margin-bottom:14px;">
+        <div>
+          <h3 style="margin-bottom:6px;">🔍 Phân tích lỗi trong bài của bạn</h3>
+          <div class="ann-legend">
+            <span class="ann-leg-item"><span class="ann-leg-dot" style="background:#3b82f6;"></span>Ngữ pháp</span>
+            <span class="ann-leg-item"><span class="ann-leg-dot" style="background:#ef4444;"></span>Từ vựng</span>
+            <span class="ann-leg-item"><span class="ann-leg-dot" style="background:#f59e0b;"></span>Liên kết</span>
+            <span class="ann-leg-item"><span class="ann-leg-dot" style="background:#8b5cf6;"></span>Chính tả</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Di chuột (hoặc bấm) vào phần được tô màu để xem giải thích và cách sửa.</p>
+      <div class="ann-essay-body" id="annEssayBody"></div>
+      <div class="ann-list" id="annList"></div>
+    </div>
+
     <!-- Bài viết gợi ý -->
     <div class="card" id="suggestedSection" style="display:none; margin-top:18px; border:2px solid #9b59b6;">
       <div class="card-head" style="align-items:center;">
@@ -394,10 +464,11 @@ var EXERCISE_ID = parseInt(qp('id') || '3', 10);
 var IS_PRIVATE = false;
 var G_submissionId = null;
 var G_currentExercise = null;
-var G_studentImageData = null; // { base64, mimeType } khi học sinh nộp ảnh
+var G_studentImageData = null;
 var G_timerInterval  = null;
 var G_activeTab      = 'text';
-var G_timerMode      = null; // 'timed' | 'unlimited' | null
+var G_timerMode      = null;
+var G_submittedEssay = ''; // lưu bài gõ trực tiếp để highlight sau khi chấm
 
 /* ── Thời gian quy định theo từng kỳ thi ── */
 function officialTimeMinutes(ex) {
@@ -494,6 +565,126 @@ function removeImage() {
   document.getElementById('fileInput').value = '';
 }
 
+/* ── Annotation engine ── */
+var ANN_TYPE = {
+  grammar:    { cls: 'ann-g', label: 'Ngữ pháp',  dot: '#3b82f6' },
+  vocabulary: { cls: 'ann-v', label: 'Từ vựng',   dot: '#ef4444' },
+  cohesion:   { cls: 'ann-c', label: 'Liên kết',  dot: '#f59e0b' },
+  spelling:   { cls: 'ann-s', label: 'Chính tả',  dot: '#8b5cf6' }
+};
+function annMeta(type) {
+  return ANN_TYPE[type] || { cls: 'ann-g', label: type, dot: '#6366f1' };
+}
+
+function applyAnnotations(essayText, annotations) {
+  if (!annotations || !annotations.length) return esc(essayText);
+
+  // Tìm vị trí từng lỗi trong bài
+  var spans = [];
+  annotations.forEach(function(ann) {
+    if (!ann.text) return;
+    var idx = essayText.indexOf(ann.text);
+    if (idx === -1) return; // không tìm thấy → bỏ qua
+    spans.push({ start: idx, end: idx + ann.text.length, ann: ann });
+  });
+
+  // Sắp xếp theo vị trí, loại bỏ overlap (giữ cái xuất hiện trước)
+  spans.sort(function(a, b) { return a.start - b.start; });
+  var filtered = [], lastEnd = 0;
+  spans.forEach(function(sp) {
+    if (sp.start >= lastEnd) { filtered.push(sp); lastEnd = sp.end; }
+  });
+
+  // Dựng HTML với <mark> spans
+  var html = '', pos = 0;
+  filtered.forEach(function(sp) {
+    if (sp.start > pos) html += esc(essayText.slice(pos, sp.start));
+    var m = annMeta(sp.ann.type);
+    html += '<mark class="' + m.cls + '" ' +
+      'data-type="' + esc(sp.ann.type) + '" ' +
+      'data-wrong="' + esc(sp.ann.text) + '" ' +
+      'data-fix="' + esc(sp.ann.correction) + '" ' +
+      'data-exp="' + esc(sp.ann.explanation) + '">' +
+      esc(sp.ann.text) + '</mark>';
+    pos = sp.end;
+  });
+  if (pos < essayText.length) html += esc(essayText.slice(pos));
+  return html;
+}
+
+function renderAnnotations(essayText, annotations) {
+  var section = document.getElementById('annotationSection');
+  // Ẩn section nếu bài nộp ảnh hoặc không có essay text
+  if (!essayText || !essayText.trim()) { section.style.display = 'none'; return; }
+
+  var anns = (annotations || []).filter(function(a) { return a && a.text; });
+
+  // Render essay với highlights
+  document.getElementById('annEssayBody').innerHTML = applyAnnotations(essayText, anns);
+
+  // Render danh sách lỗi bên dưới
+  if (anns.length) {
+    document.getElementById('annList').innerHTML = anns.map(function(ann, i) {
+      var m = annMeta(ann.type);
+      return '<div class="ann-item">' +
+        '<div class="ann-item-dot" style="background:' + m.dot + ';margin-top:5px;"></div>' +
+        '<div>' +
+          '<span style="font-size:11px;font-weight:700;color:' + m.dot + ';text-transform:uppercase;letter-spacing:.04em;">' + esc(m.label) + '</span>' +
+          '<div style="margin-top:3px;">' +
+            '<span class="ann-wrong">' + esc(ann.text) + '</span>' +
+            '<span class="ann-arrow">→</span>' +
+            '<span class="ann-fix">' + esc(ann.correction) + '</span>' +
+          '</div>' +
+          '<div class="ann-explain">' + esc(ann.explanation) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } else {
+    document.getElementById('annList').innerHTML =
+      '<p style="font-size:13.5px;color:var(--text-muted);margin-top:10px;text-align:center;">✅ Không phát hiện lỗi nổi bật — bài viết rất tốt!</p>';
+  }
+
+  section.style.display = 'block';
+}
+
+/* ── Tooltip cho highlight marks ── */
+(function() {
+  var tip = null;
+  function getTip() { return tip || (tip = document.getElementById('annTooltip')); }
+  function showTip(el, e) {
+    var t = getTip(); if (!t) return;
+    document.getElementById('tipType').textContent  = annMeta(el.dataset.type).label;
+    document.getElementById('tipWrong').textContent = el.dataset.wrong || '';
+    document.getElementById('tipFix').textContent   = el.dataset.fix   || '';
+    document.getElementById('tipExp').textContent   = el.dataset.exp   || '';
+    t.style.display = 'block';
+    positionTip(e);
+  }
+  function positionTip(e) {
+    var t = getTip(); if (!t) return;
+    var x = e.clientX + 14, y = e.clientY + 14;
+    if (x + 280 > window.innerWidth)  x = e.clientX - 280 - 8;
+    if (y + 120 > window.innerHeight) y = e.clientY - 120 - 8;
+    t.style.left = x + 'px'; t.style.top = y + 'px';
+  }
+  document.addEventListener('mouseover', function(e) {
+    var el = e.target.closest('mark[data-fix]'); if (el) showTip(el, e);
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (getTip() && getTip().style.display !== 'none') positionTip(e);
+  });
+  document.addEventListener('mouseout', function(e) {
+    if (!e.target.closest('mark[data-fix]')) { var t = getTip(); if (t) t.style.display = 'none'; }
+  });
+  // Mobile: tap to show/hide
+  document.addEventListener('click', function(e) {
+    var el = e.target.closest('mark[data-fix]');
+    var t = getTip(); if (!t) return;
+    if (el) { showTip(el, e); }
+    else     { t.style.display = 'none'; }
+  });
+})();
+
 /* ── Lightbox ── */
 function openLightbox() {
   document.getElementById('lbImg').src = document.getElementById('examImg').src;
@@ -573,6 +764,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
     text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
     if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
   }
+  G_submittedEssay = text; // lưu lại để highlight sau khi chấm
 
   // Dừng đếm ngược khi nộp bài
   if (G_timerInterval) { clearInterval(G_timerInterval); G_timerInterval = null; }
@@ -641,6 +833,12 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   var box = document.getElementById('result');
   box.style.display = 'block';
   box.scrollIntoView({behavior:'smooth'});
+
+  // Render annotation highlights (chỉ cho bài gõ trực tiếp)
+  document.getElementById('annotationSection').style.display = 'none';
+  if (G_activeTab !== 'image') {
+    renderAnnotations(G_submittedEssay, res.annotations || []);
+  }
 
   // Refresh history để hiện lần nộp vừa rồi
   historyData = [];
