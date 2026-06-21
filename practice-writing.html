@@ -217,6 +217,24 @@
   #annTooltip .tip-fix   { font-size:14px; font-weight:700; color:#86efac; margin:2px 0; }
   #annTooltip .tip-exp   { font-size:12px; opacity:.8; margin-top:4px; border-top:1px solid rgba(255,255,255,.15); padding-top:5px; }
 
+  /* ── Responsive — phone ── */
+  @media (max-width: 640px) {
+    .band-big { font-size:30px; }
+    .crit { padding:12px; }
+    .two-col { display:block !important; }
+    .result-actions { gap:8px; }
+    .result-actions .btn { flex: 1 1 calc(50% - 4px); text-align:center; justify-content:center; }
+    #timerModeCard { padding:16px; }
+    .mode-btn-group { flex-direction:column; }
+    .mode-btn-group .btn { text-align:left; }
+    .modal-box { padding:20px 16px; border-radius:14px; }
+    .hist-head { flex-wrap:wrap; gap:4px; }
+    .ann-essay-body { font-size:14px; padding:14px; }
+    #annotationSection .card-head { flex-direction:column; align-items:flex-start; }
+    .practice-bar { padding:10px 12px; gap:8px; }
+    .sub-tabs .sub-tab { font-size:12.5px; padding:8px 8px; }
+  }
+
   /* ── Print / PDF ── */
   @media print {
     #site-header, #site-footer, .q-block, #exImageWrap,

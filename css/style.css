@@ -40,8 +40,15 @@ body {
   min-height: 100vh;
 }
 
+/* Chặn scroll ngang trên mọi thiết bị */
+html { overflow-x: hidden; }
+
 a { color: inherit; text-decoration: none; }
-img { max-width: 100%; }
+img, video, iframe { max-width: 100%; height: auto; }
+
+/* Văn bản không tràn ra ngoài khung */
+h1, h2, h3, h4 { word-break: break-word; overflow-wrap: break-word; }
+p { overflow-wrap: break-word; }
 
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 .site-header .container { max-width: 1240px; }
@@ -335,14 +342,137 @@ img.brand-logo {
 .note { background:var(--blue-soft); border:1px solid #cfe0fa; border-radius:var(--radius-sm); padding:13px 16px; font-size:13.5px; color:#3d5a8c; display:flex; gap:10px; }
 
 /* ===== Responsive ===== */
+
+/* ── 860px: tablet ── */
 @media (max-width: 860px) {
-  .grid-3, .stat-grid, .skill-grid, .two-col { grid-template-columns: 1fr; }
+  .grid-3, .skill-grid, .two-col { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
-  .nav-links { display:none; position:absolute; top:66px; left:0; right:0; background:#fff; flex-direction:column; padding:10px 20px; border-bottom:1px solid var(--border); }
-  .nav-links.open { display:flex; }
-  .nav-links a { padding:11px; }
-  .menu-toggle { display:block; }
+
+  /* Nav dropdown */
+  .nav-links {
+    display: none;
+    position: absolute; top: 74px; left: 0; right: 0;
+    background: rgba(255,255,255,.97);
+    backdrop-filter: blur(12px);
+    flex-direction: column;
+    padding: 8px 14px 14px;
+    border-bottom: 1px solid var(--border);
+    z-index: 98;
+    box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 11px 12px; border-radius: 9px; font-size: 14px; }
+  .menu-toggle { display: block; }
+
+  /* Hero */
   .hero h1 { font-size: 30px; }
+}
+
+/* ── 640px: phone ── */
+@media (max-width: 640px) {
+  .container { padding: 0 14px; }
+
+  /* Header — compact */
+  .nav { height: 60px; gap: 6px; }
+  .nav-links { top: 60px; }
+  .brand { font-size: 14.5px; gap: 7px; }
+  .brand small { display: none; }                 /* bỏ subtitle trên mobile */
+  img.brand-logo { width: 34px; height: 34px; }
+  .brand-logo:not(img) { width: 32px; height: 32px; font-size: 16px; border-radius: 8px; }
+  .nav-actions { gap: 5px; }
+  .nav-actions .btn-sm { padding: 6px 9px; font-size: 12px; }
+
+  /* Hero */
+  .hero { padding: 32px 0 26px; }
+  .hero h1 { font-size: 22px; letter-spacing: 0; }
+  .hero p { font-size: 14.5px; margin-bottom: 20px; }
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .hero-actions a.btn, .hero-actions button.btn {
+    display: block; width: 100%; text-align: center;
+  }
+  .hero-badge { font-size: 12px; padding: 5px 12px; margin-bottom: 14px; }
+
+  /* Sections */
+  .section { padding: 32px 0; }
+  .section-head h2 { font-size: 22px; }
+  .section-head p { font-size: 14px; }
+  .page-hero { padding: 24px 0 18px; }
+  .page-hero h1 { font-size: 22px; }
+  .page-hero p { font-size: 14px; }
+  .page-hero .crumb { font-size: 12px; }
+
+  /* Cards */
+  .card { padding: 16px; margin-bottom: 16px; }
+  .card-head { flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .card-head h3 { font-size: 16px; }
+  .auth-card { padding: 22px 16px; }
+
+  /* Dashboard */
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+  .stat-card { padding: 16px 12px; }
+  .stat-card .value { font-size: 28px; }
+  .stat-card .label { font-size: 12.5px; }
+  .stat-card .delta { font-size: 12px; }
+  .profile-row { flex-wrap: wrap; gap: 10px; }
+  .profile-row > a.btn, .profile-row > button.btn {
+    margin-left: 0 !important; flex: 0 0 100%; text-align: center;
+  }
+  .avatar { width: 48px; height: 48px; font-size: 17px; }
+  .profile-row h2 { font-size: 18px; }
+
+  /* Task list */
+  .task { flex-wrap: wrap; gap: 8px; }
+  .task-left { flex: 1 1 100%; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+  .footer-seal { width: 80px; height: 80px; }
+  .site-footer { padding: 28px 0 20px; }
+
+  /* Tables — allow horizontal scroll within card */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table { min-width: 520px; }
+
+  /* Test/exercise rows — wrap name & button */
+  .test-row { flex-wrap: wrap; gap: 8px; padding: 10px 0; }
+  .test-row .name { font-size: 13.5px; }
+
+  /* Skill cards */
+  .skill-card { padding: 16px; }
+  .skill-card h3 { font-size: 16px; }
+
+  /* Course cards */
+  .course-card { padding: 18px; }
+  .grid-auto { grid-template-columns: repeat(2, 1fr); }
+
+  /* Practice bar */
+  .practice-bar { flex-wrap: wrap; gap: 10px; padding: 12px 14px; }
+}
+
+/* ── 400px: rất nhỏ (iPhone SE, fold) ── */
+@media (max-width: 400px) {
+  .hero h1 { font-size: 19px; }
+  .stat-grid { grid-template-columns: 1fr; }
+  /* Ẩn nút Đăng nhập, chỉ giữ Đăng ký + hamburger */
+  .nav-actions > a:not(.btn-primary):not(.menu-toggle) { display: none; }
+}
+
+/* ── Hero <br> ẩn trên mobile — text tự xuống dòng tự nhiên ── */
+@media (max-width: 640px) {
+  .hero h1 br { display: none; }
+  .hero h1 .grad { display: inline; }
+}
+
+/* ── CTA section — giảm padding trên mobile ── */
+@media (max-width: 640px) {
+  .galaxy-card[style*="padding"] { padding: 28px 20px !important; }
+  .galaxy-card h2 { font-size: 20px !important; }
 }
 
 /* =====================================================================
