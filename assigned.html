@@ -6,7 +6,7 @@
 <title>Bài tập được giao — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=9">
+<link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body data-page="assigned" data-guard="student">
 <div id="site-header"></div>
@@ -64,12 +64,14 @@
     if (!d) return;
     var list = d.assignments || [];
 
-    var todo    = list.filter(function(a){ return !a.submitted; });
-    var pending = list.filter(function(a){ return a.submitted===1 || a.submitted>0; });
-    // we'll further split pending vs graded after loading sub data
+    // Phân loại: chưa nộp / đã nộp chờ chấm / đã có điểm
+    var todo    = list.filter(function(a){ return !a.submission_id; });
+    var pending = list.filter(function(a){ return a.submission_id && a.submission_status !== 'graded'; });
+    var graded  = list.filter(function(a){ return a.submission_id && a.submission_status === 'graded'; });
+
     document.getElementById('cntTodo').textContent    = todo.length;
     document.getElementById('cntPending').textContent = pending.length;
-    document.getElementById('cntDone').textContent    = '–';
+    document.getElementById('cntDone').textContent    = graded.length;
 
     if (!list.length){
       document.getElementById('assignedContent').innerHTML =
@@ -85,7 +87,13 @@
 
     var html = '';
 
-    /* ── Chưa nộp ── */
+    function groupBadge(a) {
+      return a.group_name
+        ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600;">🏫 '+esc(a.group_name)+'</span> '
+        : '';
+    }
+
+    /* ── Cần làm ── */
     if (todo.length){
       html += '<div class="card" style="margin-bottom:20px;"><div class="card-head"><h3>📋 Cần làm</h3></div>';
       todo.forEach(function(a){
@@ -101,7 +109,7 @@
           '<div class="task"><div class="task-left">' +
           '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>' +
           '<div class="task-info"><h4>'+esc(a.title)+'</h4>' +
-          '<div class="meta">'+esc(a.program)+' · '+esc(a.skill)+' · Giao bởi '+esc(a.teacher_name)+' · '+fmtDate(a.assigned_at)+'</div>' +
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Giao bởi '+esc(a.teacher_name)+' · '+fmtDate(a.assigned_at)+'</div>' +
           noteHtml+'</div></div>' +
           '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
           deadlineHtml+
@@ -110,17 +118,47 @@
       html += '</div>';
     }
 
-    /* ── Đã nộp ── */
+    /* ── Đã nộp, chờ chấm ── */
     if (pending.length){
-      html += '<div class="card"><div class="card-head"><h3>✅ Đã nộp</h3></div>';
+      html += '<div class="card" style="margin-bottom:20px;"><div class="card-head"><h3>⏳ Đã nộp — Đang chấm</h3></div>';
       pending.forEach(function(a){
         var ico = skillColor(a.skill);
         html +=
           '<div class="task"><div class="task-left">' +
           '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>' +
           '<div class="task-info"><h4>'+esc(a.title)+'</h4>' +
-          '<div class="meta">'+esc(a.program)+' · '+esc(a.skill)+' · Đã nộp, chờ giáo viên chấm</div></div></div>' +
-          '<span class="badge badge-grading">Đang chấm</span></div>';
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Đã nộp '+fmtDate(a.submitted_at)+'</div></div></div>' +
+          '<span style="background:var(--info-soft);color:var(--info);border-radius:12px;padding:4px 12px;font-size:13px;font-weight:600;">Đang chấm</span></div>';
+      });
+      html += '</div>';
+    }
+
+    /* ── Đã có điểm ── */
+    if (graded.length){
+      html += '<div class="card"><div class="card-head"><h3>✅ Đã có điểm</h3></div>';
+      graded.forEach(function(a){
+        var ico = skillColor(a.skill);
+        var score = (a.submission_score !== null && a.submission_score !== undefined)
+          ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||10)+'</span>'
+          : '<span style="color:var(--text-faint);">Đã chấm</span>';
+        var fb = '';
+        if (a.submission_feedback) {
+          try {
+            var fbData = JSON.parse(a.submission_feedback);
+            var fbText = typeof fbData === 'string' ? fbData : (fbData.overall || fbData.feedback || JSON.stringify(fbData));
+            fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;color:var(--text);">'+esc(fbText)+'</div>';
+          } catch(e) {
+            fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;">'+esc(a.submission_feedback)+'</div>';
+          }
+        }
+        html +=
+          '<div class="task" style="flex-direction:column;align-items:stretch;gap:0;">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">' +
+          '<div class="task-left" style="margin:0;">' +
+          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>' +
+          '<div class="task-info"><h4>'+esc(a.title)+'</h4>' +
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div></div></div>' +
+          score+'</div>'+fb+'</div>';
       });
       html += '</div>';
     }

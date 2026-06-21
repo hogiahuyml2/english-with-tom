@@ -129,8 +129,11 @@ app.post('/api/register', async (req, res) => {
     .run(name, mail, hashPassword(password), 'student', needVerify ? 0 : 1, token, now());
 
   if (needVerify) await sendVerificationEmail({ name, email: mail }, baseUrl(req) + '/api/verify-email?token=' + token);
-  startSession(res, Number(r.lastInsertRowid));
-  res.json({ user: { id: Number(r.lastInsertRowid), name, email: mail, role: 'student' }, needVerify });
+  const newId = Number(r.lastInsertRowid);
+  // Nếu email này đã được mời vào lớp trước khi đăng ký, tự động liên kết
+  db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
+  startSession(res, newId);
+  res.json({ user: { id: newId, name, email: mail, role: 'student' }, needVerify });
 });
 
 // Đăng nhập — học sinh và giáo viên đều dùng
@@ -631,37 +634,50 @@ app.delete('/api/admin/exercises/:id', requireRole('admin'), (req, res) => {
 
 // Giáo viên giao đề cho học sinh theo email
 app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) => {
-  const { exercise_id, student_emails, deadline, note } = req.body || {};
-  if (!exercise_id || !Array.isArray(student_emails) || !student_emails.length)
-    return res.status(400).json({ error: 'Thiếu thông tin đề hoặc danh sách học sinh.' });
+  const { exercise_id, student_emails, group_id, deadline, note } = req.body || {};
+  if (!exercise_id) return res.status(400).json({ error: 'Thiếu thông tin đề.' });
   const ex = db.prepare('SELECT id,title,is_private FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
 
-  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at) VALUES (?,?,?,?,?,?)');
+  // Xây dựng danh sách email cần giao
+  let emails = [];
+  let groupName = null;
+  if (group_id) {
+    const grp = db.prepare('SELECT id,name FROM groups WHERE id=? AND teacher_id=?').get(group_id, req.user.id);
+    if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+    groupName = grp.name;
+    const members = db.prepare('SELECT u.email FROM group_members gm JOIN users u ON u.id=gm.user_id WHERE gm.group_id=? AND gm.user_id IS NOT NULL').all(group_id);
+    emails = members.map(m => m.email);
+  } else if (Array.isArray(student_emails) && student_emails.length) {
+    emails = student_emails.map(e => e.trim().toLowerCase()).filter(Boolean);
+  } else {
+    return res.status(400).json({ error: 'Thiếu danh sách học sinh hoặc lớp.' });
+  }
+
+  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id) VALUES (?,?,?,?,?,?,?)');
   let count = 0;
-  for (const raw of student_emails) {
-    const email = raw.trim().toLowerCase();
-    if (!email) continue;
+  for (const email of emails) {
     const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
-    if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now()); count++; }
+    if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null); count++; }
     if (emailEnabled()) {
       const u = db.prepare('SELECT name FROM users WHERE email=?').get(email);
       const dline = deadline ? `<p>⏰ Hạn nộp: <b>${deadline}</b></p>` : '';
       const noteHtml = note ? `<p>📌 Ghi chú: ${note}</p>` : '';
+      const classHtml = groupName ? `<p>🏫 Lớp: <b>${groupName}</b></p>` : '';
       const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
       await sendBrevoEmail({ email, name: u ? u.name : email },
         'Bạn có bài tập mới — English With Tom',
         `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
           <h2 style="color:#6F58EE">📝 Thầy/Cô vừa giao bài cho bạn!</h2>
           <p>Bài tập: <b>${ex.title}</b></p>
-          ${dline}${noteHtml}
+          ${classHtml}${dline}${noteHtml}
           <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem bài tập ngay</a></p>
           <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này để xem bài được giao.</p>
         </div>`
       ).catch(() => {});
     }
   }
-  res.json({ ok: true, assigned: count });
+  res.json({ ok: true, assigned: count, group_name: groupName });
 });
 
 // Học sinh xem bài tập được giao cho mình
@@ -670,10 +686,15 @@ app.get('/api/my-assignments', requireAuth, (req, res) => {
     SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
            e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
            u.name AS teacher_name,
-           (SELECT COUNT(*) FROM submissions s WHERE s.exercise_id=e.id AND s.user_id=?) AS submitted
+           g.name AS group_name,
+           sub.id AS submission_id, sub.status AS submission_status,
+           sub.score AS submission_score, sub.max_score AS submission_max,
+           sub.feedback AS submission_feedback, sub.submitted_at
     FROM assignments a
     JOIN exercises e ON e.id = a.exercise_id
     JOIN users u ON u.id = a.assigned_by
+    LEFT JOIN groups g ON g.id = a.group_id
+    LEFT JOIN submissions sub ON sub.exercise_id = e.id AND sub.user_id = ?
     WHERE a.student_email = ?
     ORDER BY a.id DESC
   `).all(req.user.id, req.user.email);
@@ -686,10 +707,12 @@ app.get('/api/teacher/assignments', requireRole('teacher','admin'), (req, res) =
     SELECT a.id, a.student_email, a.deadline, a.note, a.created_at,
            e.id AS exercise_id, e.title, e.program, e.skill,
            u.name AS student_name,
+           g.name AS group_name,
            sub.id AS sub_id, sub.status, sub.score, sub.max_score, sub.submitted_at
     FROM assignments a
     JOIN exercises e ON e.id = a.exercise_id
     LEFT JOIN users u ON u.email = a.student_email
+    LEFT JOIN groups g ON g.id = a.group_id
     LEFT JOIN submissions sub ON sub.exercise_id = a.exercise_id AND sub.user_id = u.id
     WHERE a.assigned_by = ?
     ORDER BY a.id DESC
@@ -712,12 +735,34 @@ app.get('/api/teacher/submission/:id', requireRole('teacher','admin'), (req, res
 });
 
 // Giáo viên chấm thủ công bài nộp
-app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), (req, res) => {
+app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const { score, max_score, feedback } = req.body || {};
-  const sub = db.prepare('SELECT id FROM submissions WHERE id=?').get(Number(req.params.id));
+  const subId = Number(req.params.id);
+  const sub = db.prepare(`
+    SELECT s.*, u.name AS student_name, u.email AS student_email, e.title AS exercise_title
+    FROM submissions s JOIN users u ON u.id=s.user_id JOIN exercises e ON e.id=s.exercise_id
+    WHERE s.id=?
+  `).get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
   db.prepare('UPDATE submissions SET score=?, max_score=?, status=?, feedback=? WHERE id=?')
-    .run(score ?? null, max_score ?? 10, 'graded', feedback || null, Number(req.params.id));
+    .run(score ?? null, max_score ?? 10, 'graded', feedback || null, subId);
+  // Gửi email thông báo kết quả cho học sinh
+  if (emailEnabled()) {
+    const scoreText = (score !== undefined && score !== null) ? `${score}/${max_score ?? 10}` : 'Đã chấm';
+    const fbHtml = feedback ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${feedback}</p>` : '';
+    const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
+    sendBrevoEmail(
+      { email: sub.student_email, name: sub.student_name },
+      `Bài của bạn đã được chấm — ${sub.exercise_title}`,
+      `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
+        <h2 style="color:#6F58EE">✅ Bài của bạn đã được chấm!</h2>
+        <p>Bài tập: <b>${sub.exercise_title}</b></p>
+        <p>Điểm số: <b style="font-size:20px;color:#6F58EE">${scoreText}</b></p>
+        ${fbHtml}
+        <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem kết quả chi tiết</a></p>
+      </div>`
+    ).catch(() => {});
+  }
   res.json({ ok: true });
 });
 
@@ -752,6 +797,118 @@ app.get('/api/admin/backup-db', requireRole('admin'), (req, res) => {
   res.download(dbPath, 'ewt-backup-' + stamp + '.db', (err) => {
     if (err) res.status(500).json({ error: 'Không thể tải file backup.' });
   });
+});
+
+// ===================== QUẢN LÝ LỚP (GROUPS) =====================
+
+// Danh sách lớp của giáo viên (kèm số học sinh)
+app.get('/api/groups', requireRole('teacher','admin'), (req, res) => {
+  const rows = db.prepare(`
+    SELECT g.id, g.name, g.created_at,
+      COUNT(CASE WHEN gm.user_id IS NOT NULL THEN 1 END) AS member_count,
+      COUNT(CASE WHEN gm.user_id IS NULL THEN 1 END) AS pending_count
+    FROM groups g
+    LEFT JOIN group_members gm ON gm.group_id = g.id
+    WHERE g.teacher_id = ?
+    GROUP BY g.id ORDER BY g.id DESC
+  `).all(req.user.id);
+  res.json({ groups: rows });
+});
+
+// Tạo lớp mới
+app.post('/api/groups', requireRole('teacher','admin'), (req, res) => {
+  const { name } = req.body || {};
+  if (!name || !name.trim()) return res.status(400).json({ error: 'Tên lớp không được để trống.' });
+  const r = db.prepare('INSERT INTO groups (name,teacher_id,created_at) VALUES (?,?,?)').run(name.trim(), req.user.id, now());
+  res.json({ ok: true, id: Number(r.lastInsertRowid), name: name.trim() });
+});
+
+// Đổi tên lớp
+app.put('/api/groups/:id', requireRole('teacher','admin'), (req, res) => {
+  const { name } = req.body || {};
+  if (!name || !name.trim()) return res.status(400).json({ error: 'Tên lớp không được để trống.' });
+  const r = db.prepare('UPDATE groups SET name=? WHERE id=? AND teacher_id=?').run(name.trim(), Number(req.params.id), req.user.id);
+  if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  res.json({ ok: true });
+});
+
+// Xoá lớp (cascade xoá members nhờ ON DELETE CASCADE)
+app.delete('/api/groups/:id', requireRole('teacher','admin'), (req, res) => {
+  const r = db.prepare('DELETE FROM groups WHERE id=? AND teacher_id=?').run(Number(req.params.id), req.user.id);
+  if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  res.json({ ok: true });
+});
+
+// Danh sách thành viên của lớp
+app.get('/api/groups/:id/members', requireRole('teacher','admin'), (req, res) => {
+  const grp = db.prepare('SELECT id,name FROM groups WHERE id=? AND teacher_id=?').get(Number(req.params.id), req.user.id);
+  if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  const members = db.prepare(`
+    SELECT gm.id, gm.user_id, gm.invited_email, gm.added_at,
+           u.name, u.email
+    FROM group_members gm
+    LEFT JOIN users u ON u.id = gm.user_id
+    WHERE gm.group_id = ?
+    ORDER BY gm.id ASC
+  `).all(Number(req.params.id));
+  res.json({ group: grp, members });
+});
+
+// Thêm thành viên vào lớp (theo email)
+app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, res) => {
+  const groupId = Number(req.params.id);
+  const grp = db.prepare('SELECT id,name FROM groups WHERE id=? AND teacher_id=?').get(groupId, req.user.id);
+  if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  const { email } = req.body || {};
+  if (!email || !email.trim()) return res.status(400).json({ error: 'Vui lòng nhập email.' });
+  const mail = email.trim().toLowerCase();
+  const user = db.prepare('SELECT id,name FROM users WHERE email=?').get(mail);
+  if (user) {
+    // Đã có tài khoản → thêm ngay
+    try {
+      db.prepare('INSERT INTO group_members (group_id,user_id,added_at) VALUES (?,?,?)').run(groupId, user.id, now());
+    } catch (e) {
+      return res.status(409).json({ error: 'Học sinh này đã có trong lớp.' });
+    }
+    res.json({ ok: true, status: 'added', name: user.name, email: mail });
+  } else {
+    // Chưa có tài khoản → lưu lời mời, gửi email
+    const existing = db.prepare('SELECT id FROM group_members WHERE group_id=? AND invited_email=?').get(groupId, mail);
+    if (existing) return res.status(409).json({ error: 'Email này đã được mời vào lớp.' });
+    db.prepare('INSERT INTO group_members (group_id,invited_email,added_at) VALUES (?,?,?)').run(groupId, mail, now());
+    if (emailEnabled()) {
+      const link = (process.env.PUBLIC_URL || '') + '/login.html';
+      sendBrevoEmail({ email: mail, name: mail },
+        `Bạn được mời tham gia lớp ${grp.name} — English With Tom`,
+        `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
+          <h2 style="color:#6F58EE">Lời mời tham gia lớp học</h2>
+          <p>Giáo viên đã mời bạn tham gia lớp <b>${grp.name}</b> trên <b>English With Tom</b>.</p>
+          <p>Hãy đăng ký tài khoản với đúng địa chỉ email này để tự động vào lớp:</p>
+          <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Đăng ký / Đăng nhập</a></p>
+        </div>`
+      ).catch(() => {});
+    }
+    res.json({ ok: true, status: 'invited', email: mail });
+  }
+});
+
+// Xoá thành viên khỏi lớp
+app.delete('/api/groups/:id/members/:memberId', requireRole('teacher','admin'), (req, res) => {
+  const groupId = Number(req.params.id);
+  const grp = db.prepare('SELECT id FROM groups WHERE id=? AND teacher_id=?').get(groupId, req.user.id);
+  if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  const r = db.prepare('DELETE FROM group_members WHERE id=? AND group_id=?').run(Number(req.params.memberId), groupId);
+  if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy thành viên.' });
+  res.json({ ok: true });
+});
+
+// Danh sách học sinh đã đăng ký (để teacher tìm kiếm khi thêm vào lớp)
+app.get('/api/students', requireRole('teacher','admin'), (req, res) => {
+  const q = (req.query.q || '').trim().toLowerCase();
+  const rows = q
+    ? db.prepare("SELECT id,name,email FROM users WHERE role='student' AND (LOWER(name) LIKE ? OR LOWER(email) LIKE ?) ORDER BY name LIMIT 20").all('%'+q+'%', '%'+q+'%')
+    : db.prepare("SELECT id,name,email FROM users WHERE role='student' ORDER BY name LIMIT 50").all();
+  res.json({ students: rows });
 });
 
 // ===================== TĨNH =====================

@@ -74,6 +74,7 @@
     <!-- ===== TABS ===== -->
     <div style="display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;">
       <button class="btn" id="tabCreateBtn" onclick="showTab('create')" style="font-weight:700;">➕ Tạo đề mới</button>
+      <button class="btn" id="tabGroupsBtn" onclick="showTab('groups')">🏫 Lớp học</button>
       <button class="btn" id="tabAssignBtn" onclick="showTab('assign')">📤 Giao bài riêng</button>
       <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
       <button class="btn" id="tabBankBtn"   onclick="showTab('bank')">📚 Ngân hàng đề</button>
@@ -259,6 +260,84 @@
     </div>
 
     <!-- ===== TAB: GIAO BÀI RIÊNG ===== -->
+    <!-- ===== TAB: LỚP HỌC ===== -->
+    <div id="tabGroups" style="display:none;">
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;">
+
+        <!-- Cột trái: danh sách lớp -->
+        <div class="card" style="padding:0;">
+          <div class="card-head" style="justify-content:space-between;">
+            <h3>🏫 Danh sách lớp</h3>
+            <button class="btn btn-sm btn-primary" onclick="openCreateGroup()">+ Tạo lớp</button>
+          </div>
+          <div id="groupList" style="padding:12px;"><p style="color:var(--text-faint);text-align:center;padding:20px 0;">Đang tải...</p></div>
+        </div>
+
+        <!-- Cột phải: chi tiết lớp -->
+        <div id="groupDetail" style="display:none;">
+
+          <!-- Header lớp -->
+          <div class="card" style="margin-bottom:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+              <div>
+                <h3 id="groupDetailName" style="margin:0;font-size:20px;"></h3>
+                <p id="groupDetailCount" style="color:var(--text-faint);font-size:13px;margin:4px 0 0;"></p>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-sm" onclick="renameCurrentGroup()">✏️ Đổi tên</button>
+                <button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="deleteCurrentGroup()">🗑️ Xoá lớp</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thêm thành viên -->
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head"><h3>➕ Thêm học sinh vào lớp</h3></div>
+            <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+              <div class="field" style="margin:0;flex:1;min-width:200px;">
+                <label>Email học sinh</label>
+                <input type="email" id="addMemberEmail" placeholder="email@example.com">
+              </div>
+              <button class="btn btn-primary" style="height:42px;" onclick="addMemberToGroup()">Thêm</button>
+            </div>
+            <p id="addMemberMsg" style="font-size:13px;margin-top:8px;display:none;"></p>
+          </div>
+
+          <!-- Danh sách thành viên -->
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head">
+              <h3>👥 Thành viên</h3>
+              <button class="btn btn-sm" onclick="loadGroupDetail(_currentGroupId)">🔄</button>
+            </div>
+            <div id="memberList"><p style="color:var(--text-faint);padding:14px 0;">Đang tải...</p></div>
+          </div>
+
+          <!-- Giao bài cho cả lớp -->
+          <div class="card">
+            <div class="card-head"><h3>📤 Giao bài cho lớp này</h3></div>
+            <div id="groupAssignMsg" class="note" style="display:none;"></div>
+            <div class="field">
+              <label>Chọn đề (đề riêng 🔒)</label>
+              <select id="groupAssignExId"><option value="">-- Đang tải đề --</option></select>
+            </div>
+            <div class="grid grid-2" style="gap:12px;">
+              <div class="field" style="margin:0;"><label>Hạn nộp (tuỳ chọn)</label><input type="date" id="groupAssignDeadline"></div>
+              <div class="field" style="margin:0;"><label>Ghi chú</label><input type="text" id="groupAssignNote" placeholder="VD: Làm trước buổi học thứ Tư"></div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="assignToGroup()">📤 Giao bài &amp; thông báo cả lớp</button>
+          </div>
+        </div>
+
+        <!-- Placeholder khi chưa chọn lớp -->
+        <div id="groupPlaceholder" style="display:flex;align-items:center;justify-content:center;min-height:300px;">
+          <div style="text-align:center;color:var(--text-faint);">
+            <div style="font-size:48px;margin-bottom:12px;">🏫</div>
+            <p>Chọn một lớp bên trái để xem chi tiết</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="tabAssign" style="display:none;">
       <div class="card">
         <div class="card-head"><h3>📤 Giao bài riêng cho học sinh</h3></div>
@@ -438,7 +517,7 @@
 <script src="js/main.js?v=10"></script>
 <script>
   /* ===== TABS ===== */
-  var TABS = ['create','assign','grade','bank'];
+  var TABS = ['create','groups','assign','grade','bank'];
   function showTab(t) {
     TABS.forEach(function(id){
       document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).style.display = (id===t)?'block':'none';
@@ -447,6 +526,151 @@
     if (t==='assign') { loadPrivateExercises(); loadAssignments(); }
     if (t==='grade')  loadSubmissions();
     if (t==='bank')   loadBank();
+    if (t==='groups') { loadGroups(); loadPrivateExercises(); }
+  }
+
+  /* ===== QUẢN LÝ LỚP ===== */
+  var _currentGroupId = null;
+  var _currentGroupName = '';
+
+  function loadGroups() {
+    fetch('/api/groups',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      var list = document.getElementById('groupList');
+      if (!d.groups || !d.groups.length) {
+        list.innerHTML = '<p style="color:var(--text-faint);text-align:center;padding:20px 0;">Chưa có lớp nào. Bấm "+ Tạo lớp" để bắt đầu.</p>';
+        return;
+      }
+      list.innerHTML = d.groups.map(function(g){
+        var total = (g.member_count||0) + (g.pending_count||0);
+        var pending = g.pending_count > 0 ? ' <span style="font-size:11px;color:var(--text-faint);">('+g.pending_count+' chờ đăng ký)</span>' : '';
+        return '<div class="group-row" id="grow-'+g.id+'" onclick="loadGroupDetail('+g.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:10px;cursor:pointer;margin-bottom:4px;transition:background .15s;">'
+          +'<div><div style="font-weight:600;font-size:14px;">'+escHtml(g.name)+'</div>'
+          +'<div style="font-size:12px;color:var(--text-faint);">'+total+' học sinh'+pending+'</div></div>'
+          +'<span style="font-size:18px;color:var(--text-faint);">›</span></div>';
+      }).join('');
+    });
+  }
+
+  function loadGroupDetail(groupId) {
+    _currentGroupId = groupId;
+    document.getElementById('groupPlaceholder').style.display = 'none';
+    document.getElementById('groupDetail').style.display = 'block';
+    // Highlight row
+    document.querySelectorAll('.group-row').forEach(function(el){
+      el.style.background = el.id==='grow-'+groupId ? 'var(--primary-soft)' : '';
+    });
+    document.getElementById('memberList').innerHTML = '<p style="color:var(--text-faint);padding:14px 0;">Đang tải...</p>';
+    fetch('/api/groups/'+groupId+'/members',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      _currentGroupName = d.group ? d.group.name : '';
+      document.getElementById('groupDetailName').textContent = _currentGroupName;
+      document.getElementById('groupDetailCount').textContent = (d.members||[]).length + ' thành viên';
+      var ml = document.getElementById('memberList');
+      if (!d.members || !d.members.length) {
+        ml.innerHTML = '<p style="color:var(--text-faint);padding:14px 0;">Lớp chưa có thành viên. Thêm học sinh bên trên.</p>';
+        return;
+      }
+      ml.innerHTML = '<table class="table"><thead><tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th></th></tr></thead><tbody>'
+        + d.members.map(function(m){
+          var name = m.name ? escHtml(m.name) : '<em style="color:var(--text-faint);">Chưa đăng ký</em>';
+          var email = m.email || m.invited_email || '';
+          var badge = m.user_id ? '' : '<span style="background:#fff3cd;color:#7a5c00;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:600;">Chờ đăng ký</span>';
+          return '<tr><td>'+name+'</td><td style="font-size:13px;">'+escHtml(email)+'</td><td>'+badge+'</td>'
+            +'<td><button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="removeMember('+m.id+')">Xoá</button></td></tr>';
+        }).join('')
+        + '</tbody></table>';
+    });
+  }
+
+  function openCreateGroup() {
+    var name = prompt('Tên lớp mới (VD: KET1, IELTS A, APTIS 1:1...):');
+    if (!name || !name.trim()) return;
+    fetch('/api/groups',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name.trim()})})
+      .then(r=>r.json()).then(function(d){
+        if (d.ok) { loadGroups(); loadGroupDetail(d.id); }
+        else alert('Lỗi: '+(d.error||'Không thể tạo lớp'));
+      });
+  }
+
+  function renameCurrentGroup() {
+    if (!_currentGroupId) return;
+    var name = prompt('Tên mới cho lớp:', _currentGroupName);
+    if (!name || !name.trim() || name.trim()===_currentGroupName) return;
+    fetch('/api/groups/'+_currentGroupId,{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name.trim()})})
+      .then(r=>r.json()).then(function(d){
+        if (d.ok) { loadGroups(); loadGroupDetail(_currentGroupId); }
+        else alert('Lỗi: '+(d.error||'Không thể đổi tên'));
+      });
+  }
+
+  function deleteCurrentGroup() {
+    if (!_currentGroupId) return;
+    if (!confirm('Xoá lớp "'+_currentGroupName+'"?\nThành viên và lịch sử giao bài sẽ vẫn được giữ lại.')) return;
+    fetch('/api/groups/'+_currentGroupId,{method:'DELETE',credentials:'same-origin'}).then(r=>r.json()).then(function(d){
+      if (d.ok) {
+        _currentGroupId = null; _currentGroupName = '';
+        document.getElementById('groupDetail').style.display = 'none';
+        document.getElementById('groupPlaceholder').style.display = 'flex';
+        loadGroups();
+      } else alert('Lỗi: '+(d.error||'Không thể xoá lớp'));
+    });
+  }
+
+  function addMemberToGroup() {
+    if (!_currentGroupId) return;
+    var email = document.getElementById('addMemberEmail').value.trim();
+    if (!email) return;
+    var msg = document.getElementById('addMemberMsg');
+    msg.style.display = 'none';
+    fetch('/api/groups/'+_currentGroupId+'/members',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})})
+      .then(r=>r.json()).then(function(d){
+        msg.style.display = 'block';
+        if (d.ok) {
+          document.getElementById('addMemberEmail').value = '';
+          msg.style.color = 'var(--success)';
+          msg.textContent = d.status==='invited'
+            ? '✉️ Đã gửi lời mời đến '+d.email+' (chưa có tài khoản)'
+            : '✅ Đã thêm '+d.name+' vào lớp';
+          loadGroupDetail(_currentGroupId);
+          loadGroups();
+        } else {
+          msg.style.color = 'var(--danger,#e53e3e)';
+          msg.textContent = '⚠️ '+(d.error||'Không thể thêm');
+        }
+      });
+  }
+
+  function removeMember(memberId) {
+    if (!_currentGroupId) return;
+    if (!confirm('Xoá thành viên này khỏi lớp?')) return;
+    fetch('/api/groups/'+_currentGroupId+'/members/'+memberId,{method:'DELETE',credentials:'same-origin'})
+      .then(r=>r.json()).then(function(d){
+        if (d.ok) { loadGroupDetail(_currentGroupId); loadGroups(); }
+        else alert('Lỗi: '+(d.error||'Không thể xoá'));
+      });
+  }
+
+  function assignToGroup() {
+    if (!_currentGroupId) return;
+    var exId = document.getElementById('groupAssignExId').value;
+    if (!exId) { alert('Vui lòng chọn đề bài.'); return; }
+    var deadline = document.getElementById('groupAssignDeadline').value;
+    var note = document.getElementById('groupAssignNote').value.trim();
+    var msgEl = document.getElementById('groupAssignMsg');
+    msgEl.style.display = 'none';
+    fetch('/api/assignments',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({exercise_id:+exId, group_id:_currentGroupId, deadline:deadline||null, note:note||null})})
+      .then(r=>r.json()).then(function(d){
+        msgEl.style.display = 'flex';
+        if (d.ok) {
+          msgEl.className = 'note'; msgEl.style.color = 'var(--success)';
+          msgEl.innerHTML = '<span>✅</span><div>Đã giao bài cho <b>'+d.assigned+'</b> học sinh trong lớp <b>'+escHtml(_currentGroupName)+'</b>. Email thông báo đã được gửi.</div>';
+          document.getElementById('groupAssignDeadline').value = '';
+          document.getElementById('groupAssignNote').value = '';
+        } else {
+          msgEl.className = 'note'; msgEl.style.color = 'var(--danger,#e53e3e)';
+          msgEl.innerHTML = '<span>⚠️</span><div>'+(d.error||'Giao bài thất bại')+'</div>';
+        }
+      });
   }
 
   /* ===== STATS ===== */
@@ -773,14 +997,14 @@
 
   function loadPrivateExercises(){
     fetch('/api/exercises?private_only=1',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
-      var sel = document.getElementById('assignExId');
-      if (!d.exercises || !d.exercises.length){
-        sel.innerHTML = '<option value="">-- Chưa có đề riêng nào (hãy tạo đề và tick 🔒) --</option>';
-        return;
-      }
-      sel.innerHTML = d.exercises.map(function(e){
-        return '<option value="'+e.id+'">'+e.title+' ('+e.program+' · '+e.skill+')</option>';
-      }).join('');
+      var opts = !d.exercises || !d.exercises.length
+        ? '<option value="">-- Chưa có đề riêng nào (hãy tạo đề và tick 🔒) --</option>'
+        : d.exercises.map(function(e){
+            return '<option value="'+e.id+'">'+e.title+' ('+e.program+' · '+e.skill+')</option>';
+          }).join('');
+      document.getElementById('assignExId').innerHTML = opts;
+      var gs = document.getElementById('groupAssignExId');
+      if (gs) gs.innerHTML = opts;
     }).catch(function(){});
   }
 
@@ -864,8 +1088,9 @@
       if (!subs.length){ list.innerHTML='<p style="color:var(--text-faint);text-align:center;padding:20px;">Chưa có học sinh nào nộp bài.</p>'; return; }
       list.innerHTML = subs.map(function(a){
         var graded = a.status === 'graded';
+        var groupBadge = a.group_name ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:6px;">🏫 '+escHtml(a.group_name)+'</span>' : '';
         return '<div class="card" style="margin-bottom:14px;">' +
-          '<div class="card-head"><div><h4 style="margin:0;">'+(a.student_name||a.student_email)+'</h4><div style="font-size:13px;color:var(--text-muted);">'+a.title+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>' +
+          '<div class="card-head"><div><h4 style="margin:0;">'+(a.student_name||a.student_email)+groupBadge+'</h4><div style="font-size:13px;color:var(--text-muted);">'+escHtml(a.title)+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>' +
           (graded ? '<span class="badge badge-done">Đã chấm: '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'–')+'</span>' : '<span class="badge badge-grading">Chờ chấm</span>') +
           '</div>' +
           '<button class="btn btn-sm" onclick="loadAndGrade('+a.sub_id+',this)">📖 Xem bài &amp; chấm</button>' +

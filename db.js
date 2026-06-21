@@ -76,7 +76,24 @@ CREATE TABLE IF NOT EXISTS assignments (
   note TEXT,
   created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS groups (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  teacher_id INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS group_members (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+  user_id INTEGER,
+  invited_email TEXT,
+  added_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(group_id, user_id)
+);
 `);
+
+const assignCols = db.prepare('PRAGMA table_info(assignments)').all().map(c => c.name);
+if (!assignCols.includes('group_id')) db.exec('ALTER TABLE assignments ADD COLUMN group_id INTEGER');
 
 // ===== Băm & kiểm tra mật khẩu =====
 function hashPassword(pw) {
