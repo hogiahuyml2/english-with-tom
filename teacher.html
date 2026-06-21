@@ -602,7 +602,7 @@
     PET:   { Writing: ['Part 1','Part 2'] },
     FCE:   { Writing: ['Part 1','Part 2'] },
     IELTS: { Writing: ['Task 1','Task 2'] },
-    APTIS: { Writing: ['Component 1','Component 2','Component 3','Component 4'] },
+    APTIS: { Writing: ['Component 1 — Câu trả lời ngắn','Component 2 — Điền form','Component 3 — Group chat','Component 4 — Viết email','🎯 Full Test (4 Components)'] },
     _default: ['Part 1','Part 2','Part 3','Part 4','Part 5'],
   };
 
@@ -623,7 +623,15 @@
     var part  = document.getElementById('exPart').value;
     var titleEl = document.getElementById('exTitle');
     if (!part) return;
-    var prefix = prog + ' ' + skill + ' ' + part + ' — ';
+    /* Nếu chọn Full Test → chuyển sang loại APTIS Full Test tự động */
+    if (part.indexOf('Full Test') !== -1) {
+      exType.value = 'aptis_full';
+      syncType();
+      return;
+    }
+    /* Lấy phần tên ngắn (trước dấu " — ") để làm tiền tố tiêu đề */
+    var partShort = part.replace(/ — .*/, '').replace(/^🎯 /, '');
+    var prefix = prog + ' ' + skill + ' ' + partShort + ' — ';
     var cur = titleEl.value;
     /* Nếu tiêu đề trống hoặc đang là tiêu đề mẫu cũ → ghi đè */
     if (!cur.trim() || /^[A-Z]+ [A-Za-z]+ (Part|Task|Component) \d+ — /.test(cur)) {
@@ -1139,10 +1147,11 @@
     var skill = document.getElementById('editSkill').value;
     var part  = document.getElementById('editPart').value;
     if(!part) return;
-    var prefix = prog+' '+skill+' '+part+' — ';
+    if(part.indexOf('Full Test') !== -1) return; /* Full Test không dùng ở edit drawer */
+    var partShort = part.replace(/ — .*/, '').replace(/^🎯 /, '');
+    var prefix = prog+' '+skill+' '+partShort+' — ';
     var title  = document.getElementById('editTitle');
     var current = title.value;
-    // Replace existing prefix pattern or prepend
     var cleaned = current.replace(/^[A-Z]+ \w+ (Part|Task|Component) \d+ — /,'');
     title.value = prefix + cleaned;
   }

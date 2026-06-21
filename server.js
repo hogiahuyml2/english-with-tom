@@ -361,12 +361,19 @@ app.get('/api/auth/google/callback', async (req, res) => {
 // ===================== API ĐỀ BÀI =====================
 
 app.get('/api/exercises', requireAuth, (req, res) => {
-  const { program, skill, private_only } = req.query;
+  const { program, skill, private_only, type } = req.query;
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
-  let sql = 'SELECT id,program,skill,title,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions FROM exercises';
+  /* Trả thêm content khi lọc aptis_full để client parse JSON metadata */
+  const cols = type === 'aptis_full'
+    ? 'id,program,skill,title,content,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions'
+    : 'id,program,skill,title,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions';
+  let sql = 'SELECT ' + cols + ' FROM exercises';
   const cond = [], params = [];
   if (program) { cond.push('program=?'); params.push(program); }
   if (skill)   { cond.push('skill=?');   params.push(skill); }
+  if (type === 'aptis_full') {
+    cond.push("content LIKE '%\"_aptis_full\":true%'");
+  }
   if (private_only === '1' && isTeacher) {
     cond.push('is_private=1'); cond.push('created_by=?'); params.push(req.user.id);
   } else if (!isTeacher) {
