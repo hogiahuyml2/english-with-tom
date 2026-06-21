@@ -579,13 +579,19 @@ app.get('/api/exercises/:id/my-submissions', requireAuth, (req, res) => {
   res.json({ submissions: rows });
 });
 
-// Lịch sử bài làm của tôi
+// Lịch sử bài làm của tôi (kèm exercise_id để link "Làm lại")
 app.get('/api/me/submissions', requireAuth, (req, res) => {
+  const { program, skill, limit } = req.query;
+  let cond = ['s.user_id = ?'], params = [req.user.id];
+  if (program) { cond.push('e.program = ?'); params.push(program); }
+  if (skill)   { cond.push('e.skill = ?');   params.push(skill); }
+  const lim = Math.min(parseInt(limit) || 100, 200);
   const rows = db.prepare(`
-    SELECT s.id, s.score, s.max_score, s.status, s.feedback, s.submitted_at,
+    SELECT s.id, s.exercise_id, s.score, s.max_score, s.status, s.feedback, s.submitted_at,
            e.title, e.program, e.skill
     FROM submissions s JOIN exercises e ON e.id = s.exercise_id
-    WHERE s.user_id = ? ORDER BY s.id DESC`).all(req.user.id);
+    WHERE ${cond.join(' AND ')} ORDER BY s.id DESC LIMIT ?
+  `).all(...params, lim);
   res.json({ submissions: rows });
 });
 

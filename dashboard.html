@@ -3,35 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tiến trình học — English With Tom</title>
+<title>Hồ sơ học sinh — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=3">
+<style>
+/* ── Bộ lọc ── */
+.filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+.filter-chip {
+  padding:6px 14px; border-radius:20px; border:1.5px solid var(--border);
+  background:#fff; font-size:13px; font-weight:600; cursor:pointer;
+  color:var(--text-muted); transition:all .15s; font-family:var(--font);
+}
+.filter-chip:hover { border-color:var(--primary); color:var(--primary); }
+.filter-chip.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+.filter-sep { width:1px; background:var(--border); margin:0 4px; align-self:stretch; }
+
+/* ── Submission card ── */
+.sub-card {
+  background:#fff; border:1.5px solid var(--border); border-radius:14px;
+  margin-bottom:12px; overflow:hidden; transition:box-shadow .15s;
+}
+.sub-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.08); }
+.sub-card-head {
+  display:flex; align-items:center; gap:14px; padding:14px 16px;
+  cursor:pointer; user-select:none;
+}
+.sub-prog-badge {
+  min-width:46px; height:46px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:800; flex-shrink:0;
+}
+.sub-info { flex:1; min-width:0; }
+.sub-title { font-weight:700; font-size:14px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sub-meta { font-size:12px; color:var(--text-faint); margin-top:2px; }
+.sub-score-wrap { text-align:right; flex-shrink:0; }
+.sub-score { font-size:22px; font-weight:800; line-height:1; }
+.sub-scale { font-size:11px; color:var(--text-faint); margin-top:2px; }
+.sub-chevron { font-size:11px; color:var(--text-faint); margin-left:6px; transition:transform .2s; }
+.sub-card.open .sub-chevron { transform:rotate(180deg); }
+
+/* ── Nội dung mở rộng ── */
+.sub-body {
+  display:none; padding:0 16px 16px; border-top:1px solid var(--border);
+}
+.sub-card.open .sub-body { display:block; }
+.sub-crit { margin-top:14px; display:flex; flex-direction:column; gap:9px; }
+.crit-row-dash { display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:3px; }
+.crit-name-dash { font-weight:600; color:var(--text); }
+.crit-score-dash { font-weight:700; font-size:13.5px; }
+.crit-bar-dash-wrap { height:6px; background:#f0effe; border-radius:4px; overflow:hidden; }
+.crit-bar-dash { height:100%; border-radius:4px; transition:width .5s; }
+.sub-summary { margin-top:12px; font-size:13.5px; color:var(--text-muted); line-height:1.7; background:var(--bg-soft,#f8f7ff); border-radius:9px; padding:12px 14px; }
+.sub-sugg { margin-top:10px; padding-left:16px; }
+.sub-sugg li { font-size:13px; color:var(--text); line-height:1.6; margin-bottom:5px; }
+.sub-actions { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+
+/* ── Prog badge màu ── */
+.prog-ket   { background:#e0f2fe; color:#0369a1; }
+.prog-pet   { background:#f3e8ff; color:#7e22ce; }
+.prog-fce   { background:#fef9c3; color:#854d0e; }
+.prog-ielts { background:#fce7f3; color:#9d174d; }
+.prog-aptis { background:#dcfce7; color:#15803d; }
+.prog-other { background:#f1f5f9; color:#475569; }
+
+/* ── Empty state ── */
+.empty-state { text-align:center; padding:48px 20px; color:var(--text-muted); }
+.empty-state .empty-ico { font-size:48px; margin-bottom:12px; }
+.empty-state p { font-size:14px; line-height:1.7; }
+
+/* ── Skeleton loader ── */
+.skel { background:linear-gradient(90deg,#f0effe 25%,#e8e4fc 50%,#f0effe 75%); background-size:200% 100%; animation:skel .9s infinite; border-radius:8px; }
+@keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ── Stat mini theo chương trình ── */
+.prog-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; margin-bottom:22px; }
+.prog-stat-card {
+  background:#fff; border:1.5px solid var(--border); border-radius:12px;
+  padding:13px 14px; cursor:pointer; transition:border-color .15s,box-shadow .15s;
+}
+.prog-stat-card:hover { border-color:var(--primary); box-shadow:0 2px 10px rgba(0,0,0,.07); }
+.prog-stat-card.active { border-color:var(--primary); background:var(--primary-soft,#f0effe); }
+.prog-stat-name { font-size:13px; font-weight:700; color:var(--text); }
+.prog-stat-count { font-size:12px; color:var(--text-faint); margin-top:2px; }
+.prog-stat-best { font-size:18px; font-weight:800; color:var(--primary); line-height:1; margin-top:4px; }
+</style>
 </head>
 <body data-page="dashboard" data-guard="auth">
 <div id="site-header"></div>
 
 <section class="page-hero">
   <div class="container">
-    <div class="crumb">Trang chủ › Tiến trình học</div>
-    <h1>Tiến trình học của bạn</h1>
-    <p>Theo dõi số bài đã làm, số bài đã được chấm và điểm trung bình trên tất cả chương trình.</p>
+    <div class="crumb">Trang chủ › Hồ sơ học sinh</div>
+    <h1>Hồ sơ học sinh</h1>
+    <p>Xem tiến trình học, điểm số và toàn bộ lịch sử bài làm của bạn.</p>
   </div>
 </section>
 
-<section class="section" style="padding-top:34px;">
+<section class="section" style="padding-top:28px; padding-bottom:48px;">
   <div class="container">
 
+    <!-- Profile row -->
     <div class="profile-row">
       <div class="avatar" id="pfAvatar">?</div>
       <div>
         <h2 id="pfName">Đang tải...</h2>
         <div class="sub" id="pfRole"></div>
       </div>
+      <a href="account.html" class="btn" style="margin-left:auto;">⚙️ Cài đặt tài khoản</a>
     </div>
 
+    <!-- Verify banner -->
     <div id="verifyBanner" style="display:none;"></div>
 
+    <!-- Stat cards -->
     <div class="stat-grid">
       <div class="stat-card">
         <span class="stat-ico">📝</span>
@@ -53,72 +138,46 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-head"><h3>Tiến độ theo kỹ năng</h3><span class="tag">IELTS</span></div>
-      <div style="display:flex; flex-direction:column; gap:18px;">
-        <div>
-          <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:7px;"><span>🎧 Listening</span><strong>7.0</strong></div>
-          <div class="progress"><span style="width:78%"></span></div>
-        </div>
-        <div>
-          <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:7px;"><span>📖 Reading</span><strong>6.5</strong></div>
-          <div class="progress"><span style="width:72%"></span></div>
-        </div>
-        <div>
-          <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:7px;"><span>✍️ Writing</span><strong>6.0</strong></div>
-          <div class="progress"><span style="width:66%"></span></div>
-        </div>
-        <div>
-          <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:7px;"><span>🗣️ Speaking</span><strong>6.0</strong></div>
-          <div class="progress"><span style="width:66%"></span></div>
-        </div>
+    <!-- Tổng quan theo chương trình -->
+    <div class="card" style="margin-bottom:22px;">
+      <div class="card-head" style="margin-bottom:14px;">
+        <h3>📊 Tổng quan theo chương trình</h3>
+      </div>
+      <div class="prog-stats" id="progStats">
+        <div class="skel" style="height:80px;"></div>
+        <div class="skel" style="height:80px;"></div>
+        <div class="skel" style="height:80px;"></div>
       </div>
     </div>
 
+    <!-- Bài đã làm -->
     <div class="card">
-      <div class="card-head"><h3>Bài tập giáo viên giao</h3><a class="btn btn-sm" href="assigned.html">Xem tất cả</a></div>
-
-      <div class="task">
-        <div class="task-left">
-          <div class="task-ico ico-blue">📖</div>
-          <div class="task-info"><h4>IELTS Reading — Test 3</h4><div class="meta">Giao bởi thầy Tom · Hạn nộp 20/06/2026</div></div>
-        </div>
-        <span class="badge badge-todo">Chưa làm</span>
+      <div class="card-head" style="margin-bottom:16px;">
+        <h3>📋 Bài đã làm</h3>
+        <span id="subCountLabel" style="font-size:13px; color:var(--text-faint);"></span>
       </div>
 
-      <div class="task">
-        <div class="task-left">
-          <div class="task-ico ico-amber">✍️</div>
-          <div class="task-info"><h4>IELTS Writing Task 2 — Chủ đề môi trường</h4><div class="meta">Đã nộp 16/06/2026 · đang chờ chấm</div></div>
-        </div>
-        <span class="badge badge-grading">Đang chấm</span>
+      <!-- Bộ lọc theo chương trình -->
+      <div class="filter-bar" id="progFilter">
+        <button class="filter-chip active" onclick="setFilter('prog','')">Tất cả</button>
+        <button class="filter-chip" onclick="setFilter('prog','KET')">KET</button>
+        <button class="filter-chip" onclick="setFilter('prog','PET')">PET</button>
+        <button class="filter-chip" onclick="setFilter('prog','FCE')">FCE</button>
+        <button class="filter-chip" onclick="setFilter('prog','IELTS')">IELTS</button>
+        <button class="filter-chip" onclick="setFilter('prog','APTIS')">APTIS</button>
+        <div class="filter-sep"></div>
+        <button class="filter-chip active" onclick="setFilter('skill','')">Tất cả kỹ năng</button>
+        <button class="filter-chip" onclick="setFilter('skill','Writing')">✍️ Writing</button>
+        <button class="filter-chip" onclick="setFilter('skill','Reading')">📖 Reading</button>
+        <button class="filter-chip" onclick="setFilter('skill','Listening')">🎧 Listening</button>
       </div>
 
-      <div class="task">
-        <div class="task-left">
-          <div class="task-ico ico-teal">🎧</div>
-          <div class="task-info"><h4>IELTS Listening — Test 2</h4><div class="meta">Đã chấm 14/06/2026 · 7.0 điểm</div></div>
-        </div>
-        <span class="badge badge-done">Hoàn thành</span>
+      <!-- Danh sách bài làm -->
+      <div id="subList">
+        <div class="skel" style="height:68px; margin-bottom:10px;"></div>
+        <div class="skel" style="height:68px; margin-bottom:10px;"></div>
+        <div class="skel" style="height:68px;"></div>
       </div>
-
-      <div class="task">
-        <div class="task-left">
-          <div class="task-ico ico-purple">📖</div>
-          <div class="task-info"><h4>PET Reading — Part 4</h4><div class="meta">Đã chấm 12/06/2026 · 8/10 câu đúng</div></div>
-        </div>
-        <span class="badge badge-done">Hoàn thành</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h3>Lịch sử bài làm gần đây</h3></div>
-      <table class="table">
-        <thead><tr><th>Bài</th><th>Chương trình</th><th>Ngày làm</th><th>Kết quả</th><th>Trạng thái</th></tr></thead>
-        <tbody id="historyBody">
-          <tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Đang tải...</td></tr>
-        </tbody>
-      </table>
     </div>
 
   </div>
@@ -127,55 +186,264 @@
 <div id="site-footer"></div>
 <script src="js/main.js?v=10"></script>
 <script>
-  var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
-  function fmtDate(iso){ try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); } catch(e){ return ''; } }
+var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
+var G_allSubs = [];
+var G_filterProg  = '';
+var G_filterSkill = '';
 
-  (async function(){
-    var me = await fetch('/api/me',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({user:null}));
-    if (!me.user) return; // main.js sẽ chuyển sang trang đăng nhập
-    var u = me.user;
-    document.getElementById('pfName').textContent = u.name;
-    document.getElementById('pfRole').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
-    document.getElementById('pfAvatar').textContent = (u.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
 
-    if (!u.email_verified) {
-      var vb = document.getElementById('verifyBanner');
-      vb.className = 'note';
-      vb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;background:var(--warning-soft);border-color:transparent;color:var(--warning)';
-      vb.innerHTML = '<span style="display:flex;gap:10px;align-items:center">✉️ <span>Email của bạn chưa được xác thực. Vui lòng kiểm tra hộp thư (cả mục Spam).</span></span>' +
-        '<button class="btn btn-sm" id="resendBtn" style="white-space:nowrap">Gửi lại email</button>';
-      var rb = document.getElementById('resendBtn');
-      rb.onclick = async function(){
-        rb.textContent = 'Đang gửi...';
-        var r = await fetch('/api/me/resend-verification',{method:'POST',credentials:'same-origin'});
-        rb.textContent = r.ok ? 'Đã gửi ✓' : 'Lỗi, thử lại';
-      };
-    }
+function fmtDate(s) {
+  if (!s) return '';
+  try {
+    var d = new Date(s.replace(' ','T')+'Z');
+    return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+  } catch(e){ return ''; }
+}
 
-    var st = await fetch('/api/me/stats',{credentials:'same-origin'}).then(r=>r.json());
-    document.getElementById('statDone').textContent = st.done;
-    document.getElementById('statGraded').textContent = st.graded;
-    document.getElementById('statGradedNote').textContent = (st.done - st.graded) + ' bài đang chờ chấm';
-    document.getElementById('statAvg').textContent = st.avgPercent==null ? '–' : st.avgPercent + '%';
+function fmtDateTime(s) {
+  if (!s) return '';
+  try {
+    var d = new Date(s.replace(' ','T')+'Z');
+    return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()
+      + ' lúc ' + ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+  } catch(e){ return ''; }
+}
 
-    var sub = await fetch('/api/me/submissions',{credentials:'same-origin'}).then(r=>r.json());
-    var body = document.getElementById('historyBody');
-    if (!sub.submissions.length) {
-      body.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-faint);">Chưa có bài làm nào. Hãy vào một chương trình và làm bài đầu tiên nhé!</td></tr>';
-      return;
-    }
-    body.innerHTML = sub.submissions.map(function(s){
-      var result = '—';
-      if (s.status==='graded') {
-        if (s.feedback) { try { var f = JSON.parse(s.feedback); result = '' + (f.overall_score != null ? f.overall_score : f.overall_band); } catch(e) { result = '✓'; } }
-        else if (s.max_score) { result = s.score + '/' + s.max_score; }
+function progBadgeClass(prog) {
+  var map = { KET:'prog-ket', PET:'prog-pet', FCE:'prog-fce', IELTS:'prog-ielts', APTIS:'prog-aptis' };
+  return map[prog] || 'prog-other';
+}
+
+function bandColor(pct) {
+  if (pct >= 0.85) return '#6366f1';
+  if (pct >= 0.70) return '#22c55e';
+  if (pct >= 0.55) return '#84cc16';
+  if (pct >= 0.35) return '#fbbf24';
+  if (pct >  0)    return '#f97316';
+  return '#ef4444';
+}
+
+function safeJson(str) {
+  if (!str) return null;
+  try { return JSON.parse(str); } catch(e) { return null; }
+}
+
+function getScore(sub) {
+  var fb = safeJson(sub.feedback);
+  if (fb && fb.overall_score != null) return { val: fb.overall_score, label: fb.scale_label || '', pct: null };
+  if (sub.max_score > 0) return { val: sub.score + '/' + sub.max_score, label: '', pct: sub.score / sub.max_score };
+  return null;
+}
+
+function skillIcon(skill) {
+  var m = { Writing:'✍️', Reading:'📖', Listening:'🎧', Speaking:'🗣️' };
+  return (m[skill] || '📝') + ' ' + (skill || '');
+}
+
+function exerciseLink(sub) {
+  if (!sub.exercise_id) return null;
+  var skill = (sub.skill || '').toLowerCase();
+  if (skill === 'writing') return 'practice-writing.html?id=' + sub.exercise_id;
+  if (skill === 'reading' || skill === 'listening') return 'practice-quiz.html?id=' + sub.exercise_id;
+  return null;
+}
+
+/* ── Lọc và render danh sách ── */
+function setFilter(type, val) {
+  if (type === 'prog')  G_filterProg  = val;
+  if (type === 'skill') G_filterSkill = val;
+
+  // Cập nhật chip active
+  var barId = type === 'prog' ? 'progFilter' : 'progFilter';
+  document.querySelectorAll('#progFilter .filter-chip').forEach(function(chip) {
+    var txt = chip.textContent.trim().replace(/[✍️📖🎧]\s*/,'');
+    if (type === 'prog') {
+      if (chip.getAttribute('onclick').includes("'prog'")) {
+        chip.classList.toggle('active', chip.getAttribute('onclick').includes("'"+val+"'") || (val==='' && chip.getAttribute('onclick').includes("'prog','')")));
       }
-      var badge = s.status==='graded'
-        ? '<span class="badge badge-done">Đã chấm</span>'
-        : '<span class="badge badge-grading">Chờ chấm</span>';
-      return '<tr><td>'+s.title+'</td><td>'+s.program+'</td><td>'+fmtDate(s.submitted_at)+'</td><td>'+result+'</td><td>'+badge+'</td></tr>';
-    }).join('');
-  })();
+    } else {
+      if (chip.getAttribute('onclick').includes("'skill'")) {
+        chip.classList.toggle('active', chip.getAttribute('onclick').includes("'"+val+"'") || (val==='' && chip.getAttribute('onclick').includes("'skill','')")));
+      }
+    }
+  });
+  renderSubList();
+}
+
+function renderSubList() {
+  var filtered = G_allSubs.filter(function(s) {
+    if (G_filterProg  && s.program !== G_filterProg)  return false;
+    if (G_filterSkill && s.skill   !== G_filterSkill) return false;
+    return true;
+  });
+
+  document.getElementById('subCountLabel').textContent = filtered.length + ' bài';
+
+  if (!filtered.length) {
+    document.getElementById('subList').innerHTML =
+      '<div class="empty-state"><div class="empty-ico">📭</div>' +
+      '<p>Không có bài nào phù hợp với bộ lọc đã chọn.<br>Hãy thử chọn bộ lọc khác hoặc làm thêm bài mới!</p>' +
+      '<a class="btn btn-primary" href="exercises.html" style="margin-top:14px;">Tìm bài để làm</a></div>';
+    return;
+  }
+
+  var html = filtered.map(function(s, idx) {
+    var sc = getScore(s);
+    var fb = safeJson(s.feedback);
+    var scoreHtml = '';
+    var scoreColor = 'var(--primary)';
+    if (sc) {
+      if (sc.pct !== null) scoreColor = bandColor(sc.pct);
+      scoreHtml = '<div class="sub-score" style="color:' + scoreColor + ';">' + esc(String(sc.val)) + '</div>' +
+        (sc.label ? '<div class="sub-scale">' + esc(sc.label) + '</div>' : '');
+    } else if (s.status === 'pending') {
+      scoreHtml = '<span class="badge badge-grading" style="font-size:11px;">Chờ chấm</span>';
+    }
+
+    var badgeHtml = s.status === 'graded'
+      ? '<span class="badge badge-done" style="font-size:11px;">Đã chấm</span>'
+      : '<span class="badge badge-grading" style="font-size:11px;">Chờ chấm</span>';
+
+    // Criteria bars
+    var critHtml = '';
+    if (fb && fb.criteria && fb.criteria.length) {
+      critHtml = '<div class="sub-crit">';
+      fb.criteria.forEach(function(c) {
+        var pct = c.max > 0 ? c.score / c.max : 0;
+        var color = bandColor(pct);
+        critHtml += '<div>' +
+          '<div class="crit-row-dash">' +
+            '<span class="crit-name-dash">' + esc(c.name) + '</span>' +
+            '<span class="crit-score-dash" style="color:' + color + ';">' + c.score + ' / ' + c.max + '</span>' +
+          '</div>' +
+          '<div class="crit-bar-dash-wrap"><div class="crit-bar-dash" style="width:' + Math.round(pct*100) + '%;background:' + color + ';"></div></div>' +
+          (c.comment ? '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;line-height:1.5;">'+esc(c.comment)+'</div>' : '') +
+        '</div>';
+      });
+      critHtml += '</div>';
+    }
+
+    var summaryHtml = fb && fb.summary
+      ? '<div class="sub-summary">📝 ' + esc(fb.summary) + '</div>' : '';
+
+    var suggHtml = '';
+    if (fb && fb.suggestions && fb.suggestions.length) {
+      suggHtml = '<div style="margin-top:12px;"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 Gợi ý cải thiện</div>' +
+        '<ul class="sub-sugg">' + fb.suggestions.map(function(sg){ return '<li>'+esc(sg)+'</li>'; }).join('') + '</ul></div>';
+    }
+
+    var link = exerciseLink(s);
+    var actionsHtml = '<div class="sub-actions">';
+    if (link) actionsHtml += '<a class="btn btn-primary btn-sm" href="' + esc(link) + '">✏️ Làm lại</a>';
+    actionsHtml += '</div>';
+
+    var cardId = 'sc-' + s.id;
+    return '<div class="sub-card" id="' + cardId + '">' +
+      '<div class="sub-card-head" onclick="toggleSubCard(\''+cardId+'\')">' +
+        '<div class="sub-prog-badge ' + progBadgeClass(s.program) + '">' + esc(s.program) + '</div>' +
+        '<div class="sub-info">' +
+          '<div class="sub-title">' + esc(s.title) + '</div>' +
+          '<div class="sub-meta">' + skillIcon(s.skill) + ' · ' + fmtDateTime(s.submitted_at) + ' · ' + badgeHtml + '</div>' +
+        '</div>' +
+        '<div class="sub-score-wrap">' + scoreHtml + '</div>' +
+        '<span class="sub-chevron">▼</span>' +
+      '</div>' +
+      '<div class="sub-body">' +
+        critHtml + summaryHtml + suggHtml + actionsHtml +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('subList').innerHTML = html;
+}
+
+function toggleSubCard(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ── Tổng quan theo chương trình ── */
+function renderProgStats(subs) {
+  var progs = ['KET','PET','FCE','IELTS','APTIS'];
+  var stats = {};
+  progs.forEach(function(p){ stats[p] = { count:0, best:null }; });
+
+  subs.forEach(function(s) {
+    if (!stats[s.program]) stats[s.program] = { count:0, best:null };
+    stats[s.program].count++;
+    var sc = getScore(s);
+    if (sc && sc.val !== null && typeof sc.val === 'number') {
+      if (stats[s.program].best === null || sc.val > stats[s.program].best) {
+        stats[s.program].best = sc.val;
+      }
+    }
+  });
+
+  var activeProgs = progs.filter(function(p){ return stats[p] && stats[p].count > 0; });
+  if (!activeProgs.length) {
+    document.getElementById('progStats').innerHTML =
+      '<p style="color:var(--text-faint);font-size:13.5px;">Chưa có bài làm nào.</p>';
+    return;
+  }
+
+  document.getElementById('progStats').innerHTML = activeProgs.map(function(p) {
+    var s = stats[p];
+    return '<div class="prog-stat-card" onclick="setFilter(\'prog\',\''+p+'\')">' +
+      '<div class="prog-stat-name">' + p + '</div>' +
+      '<div class="prog-stat-count">' + s.count + ' bài đã làm</div>' +
+      (s.best !== null ? '<div class="prog-stat-best">'+s.best+'</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+/* ── Khởi động ── */
+(async function(){
+  var me = await fetch('/api/me',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({user:null}));
+  if (!me.user) return;
+  var u = me.user;
+  document.getElementById('pfName').textContent = u.name;
+  document.getElementById('pfRole').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
+  document.getElementById('pfAvatar').textContent = (u.name||'?').trim().split(/\s+/).pop().charAt(0).toUpperCase();
+
+  if (!u.email_verified) {
+    var vb = document.getElementById('verifyBanner');
+    vb.className = 'note';
+    vb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;background:var(--warning-soft);border-color:transparent;color:var(--warning)';
+    vb.innerHTML = '<span style="display:flex;gap:10px;align-items:center">✉️ <span>Email của bạn chưa được xác thực. Vui lòng kiểm tra hộp thư (cả mục Spam).</span></span>' +
+      '<button class="btn btn-sm" id="resendBtn" style="white-space:nowrap">Gửi lại email</button>';
+    document.getElementById('resendBtn').onclick = async function(){
+      this.textContent = 'Đang gửi...';
+      var r = await fetch('/api/me/resend-verification',{method:'POST',credentials:'same-origin'});
+      this.textContent = r.ok ? 'Đã gửi ✓' : 'Lỗi, thử lại';
+    };
+  }
+
+  // Stats
+  var st = await fetch('/api/me/stats',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({done:0,graded:0,avgPercent:null}));
+  document.getElementById('statDone').textContent    = st.done ?? '–';
+  document.getElementById('statGraded').textContent  = st.graded ?? '–';
+  document.getElementById('statDoneNote').textContent = st.done > 0 ? 'tổng cộng tất cả chương trình' : 'chưa có bài nào';
+  document.getElementById('statGradedNote').textContent = ((st.done||0) - (st.graded||0)) + ' bài đang chờ chấm';
+  document.getElementById('statAvg').textContent = st.avgPercent == null ? '–' : st.avgPercent + '%';
+
+  // Submissions
+  var res = await fetch('/api/me/submissions',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({submissions:[]}));
+  G_allSubs = res.submissions || [];
+  renderProgStats(G_allSubs);
+
+  if (!G_allSubs.length) {
+    document.getElementById('subList').innerHTML =
+      '<div class="empty-state"><div class="empty-ico">✨</div>' +
+      '<p>Bạn chưa có bài làm nào.<br>Hãy chọn một đề và bắt đầu luyện tập ngay!</p>' +
+      '<a class="btn btn-primary" href="exercises.html" style="margin-top:14px;">Khám phá ngân hàng đề</a></div>';
+    document.getElementById('subCountLabel').textContent = '0 bài';
+    document.getElementById('progStats').innerHTML =
+      '<p style="color:var(--text-faint);font-size:13.5px;">Chưa có bài làm nào.</p>';
+    return;
+  }
+
+  renderSubList();
+})();
 </script>
 </body>
 </html>
