@@ -47,7 +47,13 @@ suggested_writing: Viết bài mẫu TRUYỆN NGẮN TIẾNG ANH (35–55 từ) 
 function fceRubric(title) {
   const isPart1 = /part\s*1/i.test(title);
   const taskHint = isPart1
-    ? 'FCE Part 1 — BẮT BUỘC là ESSAY nghị luận (140–190 từ). Học sinh không được chọn dạng bài.'
+    ? `FCE Part 1 — ESSAY nghị luận BẮT BUỘC (140–190 từ).
+
+══ YÊU CẦU ĐẶC THÙ FCE PART 1 ══
+Đề bài FCE Part 1 luôn có cấu trúc: câu hỏi/tình huống + HAI NOTES cho sẵn (bullet points) mà học sinh BẮT BUỘC phải thảo luận. Ngoài ra, học sinh phải tự thêm MỘT ĐIỂM thứ ba của riêng mình.
+Bước 1: ĐỌC KỸ đề để xác định CHÍNH XÁC 2 notes được liệt kê.
+Bước 2: Kiểm tra học sinh có (a) thảo luận ĐỦ CẢ 2 notes, (b) thêm 1 điểm riêng không.
+Bước 3: Content bị hạ điểm nếu thiếu bất kỳ note bắt buộc nào.`
     : 'FCE Part 2 — Học sinh chọn một dạng bài (article, review, story, letter, report...). Xác định đúng dạng bài từ đề rồi chấm đúng quy ước dạng bài đó.';
 
   return `${taskHint}
@@ -86,8 +92,37 @@ Band chẵn (2, 4) chia sẻ đặc điểm của 2 band lẻ liền kề — KH
 overall_score = MEAN của 4 tiêu chí (Content + Comm.Ach. + Organisation + Language) / 4, làm tròn đến 0.5 gần nhất, thang 0–5.
 scale_label = "B2 First (0–5)"
 
-suggested_writing: Viết bài mẫu TIẾNG ANH 140–190 từ, đúng dạng bài của ĐỀ NÀY (essay/article/review/letter...).
-Bài mẫu phải: (a) đáp ứng đúng yêu cầu cụ thể của đề, (b) dùng đúng format/quy ước của dạng bài, (c) thể hiện less common lexis và cấu trúc đa dạng, (d) đạt Band 4–5 trên cả 4 tiêu chí.`;
+suggested_writing: Viết bài mẫu TIẾNG ANH 140–190 từ, đúng dạng bài của ĐỀ NÀY.
+${isPart1
+  ? 'BẮT BUỘC với Part 1: (a) Đọc kỹ đề, xác định chính xác 2 notes cho sẵn. (b) Thảo luận ĐẦY ĐỦ cả 2 notes đó trong bài mẫu, mỗi note thành 1 đoạn thân bài riêng. (c) Thêm 1 điểm thứ ba của riêng mình (clearly labelled). (d) Dùng đúng format essay, có introduction và conclusion. KHÔNG bịa notes ngoài những gì đề yêu cầu.'
+  : 'Bài mẫu phải: (a) đáp ứng đúng yêu cầu cụ thể của đề, (b) dùng đúng format/quy ước của dạng bài, (c) thể hiện less common lexis và cấu trúc đa dạng, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
+}
+
+// Rubric PET — phân biệt Part 1 (notes bắt buộc) và Part 2 (tự do sáng tạo)
+function petRubric(title) {
+  if (/part\s*1/i.test(title)) {
+    return `PET (B1 Preliminary) WRITING PART 1 — Email/thư (~100 từ).
+
+══ YÊU CẦU ĐẶC THÙ PART 1 ══
+Đề bài LUÔN cung cấp các NOTES (gạch đầu dòng / bullet points) mà học sinh BẮT BUỘC phải đề cập ĐẦY ĐỦ.
+Bước 1: ĐỌC KỸ nội dung đề để xác định CHÍNH XÁC từng note được liệt kê.
+Bước 2: Kiểm tra học sinh có bao quát ĐỦ TẤT CẢ các notes đó không.
+Bước 3: Chỉ cho điểm Content cao nếu ĐẦY ĐỦ notes — thiếu note nào thì trừ Content tương ứng.
+
+Chấm theo 4 tiêu chí Cambridge (mỗi tiêu chí max 5):
+• Content: Band 5 = đề cập đủ và rõ ràng TẤT CẢ notes. Band 3 = đề cập hầu hết, thiếu chi tiết nhỏ. Band 1 = thiếu nhiều notes. Band 0 = không liên quan đề.
+• Communicative Achievement: đúng format email/thư, register phù hợp (informal nếu viết cho bạn, semi-formal nếu viết cho người lớn hơn/không quen), có mở/kết bài đúng quy ước.
+• Organisation: cấu trúc rõ ràng, linking words phù hợp, chuyển ý mượt.
+• Language: từ vựng đa dạng B1, cấu trúc ngữ pháp đúng, lỗi không cản trở hiểu nghĩa.
+overall_score = MEAN 4 tiêu chí, làm tròn 0.5, thang 0–5. scale_label = "B1 Preliminary Part 1 (0–5)".
+
+suggested_writing: Viết bài mẫu EMAIL/THƯ TIẾNG ANH ~100 từ.
+BẮT BUỘC: (a) Đọc kỹ đề và xác định TẤT CẢ các notes được liệt kê. (b) Đề cập ĐẦY ĐỦ từng note theo đúng thứ tự, triển khai mỗi note thành 1–2 câu tự nhiên. (c) Dùng đúng format và register. (d) KHÔNG bịa thêm nội dung ngoài phạm vi notes của đề.`;
+  }
+
+  return `PET (B1 Preliminary) WRITING PART 2 — Article / câu chuyện / review (~100 từ).
+Chấm theo 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score = MEAN 4 tiêu chí, thang 0–5. scale_label = "B1 Preliminary Part 2 (0–5)".
+suggested_writing: Viết bài mẫu TIẾNG ANH ~100 từ đúng dạng bài yêu cầu (article/story/review), đáp ứng đúng đề bài, đạt điểm cao.`;
 }
 
 // Rubric riêng cho từng kỳ thi
@@ -95,14 +130,13 @@ function rubricFor(exercise) {
   const program = exercise.program;
   if (program === 'KET') return ketRubric(exercise.title || '');
   if (program === 'FCE') return fceRubric(exercise.title || '');
+  if (program === 'PET') return petRubric(exercise.title || '');
   if (program === 'IELTS') return `Chấm theo thang BAND IELTS từ 0 đến 9 (bước 0.5). Dùng 4 tiêu chí (mỗi tiêu chí max 9): Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. overall_score là band tổng (trung bình 4 tiêu chí, làm tròn 0.5). scale_label = "IELTS Band (0–9)".
-suggested_writing: Xác định đây là Task 1 hay Task 2 dựa trên tên đề. Task 1: viết bài mẫu TIẾNG ANH 150–180 từ mô tả biểu đồ/số liệu trong đề (nếu là bar chart/line graph thì dựa vào dữ liệu mô tả trong nội dung đề). Task 2: viết bài luận TIẾNG ANH 250–280 từ đạt Band 7–8.`;
-  if (program === 'PET') return `Chấm theo chuẩn Cambridge B1 Preliminary (PET). Dùng 4 tiêu chí Content, Communicative Achievement, Organisation, Language (mỗi tiêu chí max 5). overall_score là điểm trung bình 4 tiêu chí, thang 0–5. scale_label = "B1 Preliminary (0–5)".
-suggested_writing: Viết bài mẫu TIẾNG ANH 80–120 từ đáp ứng đầy đủ yêu cầu đề PET, đạt điểm gần tối đa.`;
+suggested_writing: Xác định đây là Task 1 hay Task 2 dựa trên tên đề. Task 1: viết bài mẫu TIẾNG ANH 150–180 từ mô tả biểu đồ/số liệu trong đề (dựa vào dữ liệu thực trong nội dung đề và hình ảnh nếu có). Task 2: viết bài luận TIẾNG ANH 250–280 từ đạt Band 7–8.`;
   if (program === 'APTIS') return `Chấm theo chuẩn APTIS General/Advanced của British Council. Dùng các tiêu chí phù hợp (Content/Task Achievement, Vocabulary, Grammar, Organisation). overall_score trên thang 0–5. scale_label = "APTIS (0–5)".
 suggested_writing: Viết bài mẫu TIẾNG ANH đúng độ dài yêu cầu của component APTIS, đạt điểm cao theo rubric APTIS.`;
   return `Chấm theo thang điểm phù hợp với kỳ thi ${program}. Dùng các tiêu chí hợp lý (Content, Organisation, Language). overall_score trên thang 0–5. scale_label mô tả ngắn thang điểm.
-suggested_writing: Viết bài mẫu TIẾNG ANH đạt yêu cầu đề bài và điểm cao.`;
+suggested_writing: Viết bài mẫu TIẾNG ANH đáp ứng đúng yêu cầu đề và đạt điểm cao.`;
 }
 
 // Fetch image from URL → base64 (dùng chung cho cả grading và hints)
@@ -125,13 +159,20 @@ function buildSystem(exercise) {
   return `Bạn là giám khảo chấm Writing giàu kinh nghiệm cho các kỳ thi tiếng Anh quốc tế.
 ${rubricFor(exercise)}
 ${hasImage ? '\nĐề bài này có kèm HÌNH ẢNH. Hãy phân tích kỹ nội dung hình (biểu đồ, bản đồ, tranh, sơ đồ...) cùng với phần text để chấm bài chính xác — đặc biệt khi đánh giá Content.' : ''}
+
+BƯỚC BẮT BUỘC TRƯỚC KHI CHẤM:
+1. Đọc toàn bộ đề bài (text + hình nếu có).
+2. Xác định xem đề có NOTES/BULLET POINTS bắt buộc không (thường xuất hiện ở PET Part 1, FCE Part 1). Nếu có, liệt kê ra trong đầu từng note một.
+3. Khi chấm Content: kiểm tra từng note xem học sinh có đề cập không — thiếu note nào thì phải phản ánh trong điểm và comment.
+4. Khi viết suggested_writing: nếu đề có notes bắt buộc, bài mẫu PHẢI đề cập ĐẦY ĐỦ TỪNG NOTE — không được bỏ sót hay tự sáng tạo nội dung ngoài phạm vi notes.
+
 Quy tắc chung:
 - Mọi nhận xét (comment, summary, suggestions, suggested_notes) viết bằng TIẾNG VIỆT, cụ thể, mang tính xây dựng, kèm ví dụ ngắn.
 - criteria: danh sách tiêu chí, mỗi tiêu chí gồm name (song ngữ), score, max, comment.
 - summary: 2–3 câu tổng quan bằng tiếng Việt.
 - suggestions: 3–5 gợi ý cải thiện cụ thể bằng tiếng Việt.
-- suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu (xem hướng dẫn rubric ở trên). Bài mẫu phải đáp ứng đề bài cụ thể của học sinh (kể cả dữ liệu/nội dung trong hình nếu có), KHÔNG được viết generic.
-- suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao: nêu từng tiêu chí và cách bài mẫu đáp ứng.`;
+- suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu. Bám sát yêu cầu đề (notes nếu có, số liệu hình nếu có), KHÔNG viết generic.
+- suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao — nêu cụ thể bài mẫu đã đề cập những notes/điểm nào của đề.`;
 }
 
 function buildUserText(exercise, essay) {
@@ -403,16 +444,25 @@ const HINTS_GEMINI_SCHEMA = {
 function buildHintsSystem(exercise) {
   const hasImage = !!exercise.image_url;
   return `Bạn là giáo viên luyện thi ${exercise.program} giàu kinh nghiệm. Hãy tạo GỢI Ý LÀM BÀI cụ thể và chính xác nhất cho đề bài này.
-${hasImage ? 'Đề bài có kèm HÌNH ẢNH — hãy đọc kỹ hình (biểu đồ, bản đồ, tranh minh họa, dữ liệu...) và đưa ra gợi ý DỰA TRÊN NỘI DUNG THỰC TẾ CỦA HÌNH, không nói chung chung.' : ''}
-QUAN TRỌNG: Mọi gợi ý phải XUẤT PHÁT TỪ ĐỀ BÀI CỤ THỂ này — nội dung text, hình ảnh, yêu cầu đặc thù. Không gợi ý chung chung có thể áp dụng cho bất kỳ đề nào.
+${hasImage ? 'Đề bài có kèm HÌNH ẢNH — đọc kỹ hình (biểu đồ, bản đồ, tranh, dữ liệu...) và đưa ra gợi ý DỰA TRÊN NỘI DUNG THỰC TẾ CỦA HÌNH.' : ''}
 
-task_type: Loại bài viết theo đề (ví dụ: "FCE Part 1 — Essay", "IELTS Task 1 — Bar Chart", "KET Part 1 — Email", "PET Part 2 — Article"...).
-outline: Dàn bài CHI TIẾT bằng TIẾNG VIỆT — từng đoạn/phần, số câu gợi ý, và NỘI DUNG CỤ THỂ cần viết dựa trên đề này. Nếu có số liệu/dữ liệu trong hình, gợi ý điểm nào cần đề cập, so sánh gì. Ví dụ: "Mở bài (2 câu): Paraphrase đề → Nêu đặc điểm nổi bật nhất của biểu đồ (năm 2000 có mức cao nhất)\nThân bài 1 (4–5 câu): Mô tả nhóm A và B — số liệu cụ thể, xu hướng tăng/giảm\n..."
-key_vocabulary: 8–10 từ/cụm từ tiếng Anh hữu ích CỤ THỂ CHO CHỦ ĐỀ/NỘI DUNG của đề này. Dạng "từ/cụm (nghĩa tiếng Việt)". Nếu đề về môi trường thì từ về môi trường, đề về biểu đồ thì từ mô tả xu hướng...
-useful_phrases: 6–8 câu/cụm phù hợp DẠNG BÀI này. Ví dụ với IELTS Task 1: "The chart illustrates...", "There was a significant increase in...", "In contrast, ...".
-criteria_tips: Đúng 4 gợi ý tiếng Việt — mỗi gợi ý ứng với 1 tiêu chí chấm của kỳ thi này (Content, Communicative Achievement, Organisation, Language — hoặc tiêu chí tương đương). Bắt đầu mỗi gợi ý bằng "[Tên tiêu chí]: ..." và giải thích CỤ THỂ cần làm gì trong ĐỀ NÀY.
-dos_and_donts: 5–6 lưu ý tiếng Việt — mix ✅ DOs và ❌ DON'Ts CỤ THỂ cho đề bài và dạng bài này.
-time_guide: Gợi ý phân bổ thời gian tiếng Việt phù hợp với kỳ thi và dạng bài. Ví dụ: "Đọc đề & phân tích hình: 3 phút → Lập dàn ý: 4 phút → Viết: 25 phút → Soát lỗi: 3 phút"`;
+═══ QUY TRÌNH BẮT BUỘC TRƯỚC KHI TẠO GỢI Ý ═══
+1. Đọc toàn bộ đề bài (text + hình nếu có).
+2. Xác định: đề có NOTES/BULLET POINTS bắt buộc không?
+   • Nếu CÓ (PET Part 1, FCE Part 1): liệt kê ra từng note — outline PHẢI xây dựng quanh từng note đó, không được tự thêm/bỏ.
+   • Nếu KHÔNG: dàn bài theo cấu trúc phù hợp dạng bài.
+3. Mọi gợi ý phải xuất phát TỪ ĐỀ NÀY — không gợi ý chung chung áp dụng được cho mọi đề.
+
+task_type: Loại bài viết theo đề (ví dụ: "FCE Part 1 — Essay (2 notes bắt buộc)", "IELTS Task 1 — Bar Chart", "KET Part 1 — Email", "PET Part 1 — Email (3 notes bắt buộc)"...).
+outline: Dàn bài CHI TIẾT bằng TIẾNG VIỆT.
+  • Nếu đề có NOTES: mỗi note = 1 mục trong dàn bài, ghi rõ "Note 1: [tên note] — viết 3–4 câu về...". KHÔNG thêm điểm ngoài notes (trừ FCE Part 1 cần thêm 1 điểm riêng).
+  • Nếu đề có SỐ LIỆU/BIỂU ĐỒ: gợi ý cụ thể điểm nào cần đề cập, số liệu nào nổi bật, xu hướng gì cần so sánh.
+  • Nêu số câu gợi ý cho mỗi phần.
+key_vocabulary: 8–10 từ/cụm tiếng Anh CỤ THỂ CHO CHỦ ĐỀ/NỘI DUNG của đề này. Dạng "từ/cụm (nghĩa tiếng Việt)".
+useful_phrases: 6–8 câu/cụm phù hợp DẠNG BÀI này. Nếu có notes bắt buộc thì ưu tiên cụm giúp triển khai các notes đó.
+criteria_tips: Đúng 4 gợi ý tiếng Việt — mỗi gợi ý ứng với 1 tiêu chí chấm. Bắt đầu "[Tên tiêu chí]: ..." và giải thích CỤ THỂ cần làm gì trong ĐỀ NÀY. Với Content: nhắc học sinh phải bao gồm đủ các notes bắt buộc (nếu có).
+dos_and_donts: 5–6 lưu ý tiếng Việt — mix ✅ DOs và ❌ DON'Ts. Nếu đề có notes bắt buộc thì PHẢI có: "❌ Không bỏ sót bất kỳ note nào của đề — thiếu note sẽ bị trừ điểm Content nặng".
+time_guide: Gợi ý phân bổ thời gian tiếng Việt phù hợp với kỳ thi và dạng bài.`;
 }
 
 async function getWritingHints(exercise) {
