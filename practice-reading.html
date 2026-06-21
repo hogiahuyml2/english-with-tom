@@ -3,125 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Làm bài: IELTS Reading — English With Tom</title>
+<title>Sắp ra mắt — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
 
-<section class="section" style="padding-top:24px;">
-  <div class="container">
-
-    <div class="crumb" style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
-      <a href="assigned.html" style="color:var(--primary);">‹ Bài tập được giao</a> › IELTS Reading — Test 3
-    </div>
-
-    <div class="practice-bar">
-      <div>
-        <div style="font-weight:700; font-size:16px;">IELTS Reading — Test 3</div>
-        <div style="font-size:12.5px; color:var(--text-faint);">Passage 1 · Câu 1–6 · Giao bởi thầy Tom</div>
-      </div>
-      <div class="timer">⏱ <span id="timer">20:00</span></div>
-    </div>
-
-    <div class="two-col">
-      <!-- Đoạn văn -->
-      <div class="passage">
-        <h3>The History of Tea</h3>
-        <p>Tea is one of the most widely consumed beverages in the world, second only to water. Its origins can be traced back to ancient China, where, according to legend, it was discovered by the Emperor Shen Nong in 2737 BC when leaves from a wild tree blew into his pot of boiling water.</p>
-        <p>For centuries, tea remained a drink enjoyed primarily in Asia. It was during the Tang Dynasty (618–907 AD) that tea drinking became a refined cultural practice, with poets and scholars praising its calming qualities. The first known book about tea, written by Lu Yu, described in detail how to cultivate, prepare and serve it.</p>
-        <p>Tea did not arrive in Europe until the early seventeenth century, brought by Dutch and Portuguese traders. In Britain, it quickly became fashionable among the wealthy, and by the eighteenth century it had spread to all levels of society, helped by falling prices and the growth of trade with India and Ceylon.</p>
-        <p>Today, tea is grown in more than forty countries, with the largest producers being China and India. It continues to play an important role in social rituals around the world, from the Japanese tea ceremony to the British afternoon tea.</p>
-      </div>
-
-      <!-- Câu hỏi -->
-      <div class="q-block">
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Chọn đáp án đúng (A, B hoặc C) dựa trên đoạn văn.</p>
-
-        <div class="q-item">
-          <div class="q-text">1. Theo truyền thuyết, ai đã khám phá ra trà?</div>
-          <label class="opt"><input type="radio" name="q1"> A. Lu Yu</label>
-          <label class="opt"><input type="radio" name="q1"> B. Emperor Shen Nong</label>
-          <label class="opt"><input type="radio" name="q1"> C. Dutch traders</label>
-        </div>
-
-        <div class="q-item">
-          <div class="q-text">2. Cuốn sách đầu tiên về trà do ai viết?</div>
-          <label class="opt"><input type="radio" name="q2"> A. Shen Nong</label>
-          <label class="opt"><input type="radio" name="q2"> B. Một nhà thơ thời Đường</label>
-          <label class="opt"><input type="radio" name="q2"> C. Lu Yu</label>
-        </div>
-
-        <div class="q-item">
-          <div class="q-text">3. Trà đến châu Âu vào thời gian nào?</div>
-          <label class="opt"><input type="radio" name="q3"> A. Đầu thế kỷ 17</label>
-          <label class="opt"><input type="radio" name="q3"> B. Thời nhà Đường</label>
-          <label class="opt"><input type="radio" name="q3"> C. Thế kỷ 19</label>
-        </div>
-
-        <div class="q-item">
-          <div class="q-text">4. Hiện nay nước nào sản xuất trà nhiều nhất?</div>
-          <label class="opt"><input type="radio" name="q4"> A. Anh và Bồ Đào Nha</label>
-          <label class="opt"><input type="radio" name="q4"> B. Trung Quốc và Ấn Độ</label>
-          <label class="opt"><input type="radio" name="q4"> C. Nhật Bản và Ceylon</label>
-        </div>
-
-        <button class="btn btn-primary btn-block" id="submitBtn" style="margin-top:16px;">Nộp bài</button>
-        <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;">Bài sẽ được lưu và gửi cho giáo viên qua email.</p>
-      </div>
-    </div>
-
-    <!-- Kết quả demo -->
-    <div class="card" id="result" style="display:none; margin-top:22px; border:2px solid var(--success);">
-      <div class="card-head"><h3>✅ Đã nộp bài thành công</h3><span class="badge badge-done">Đã chấm tự động</span></div>
-      <div class="stat-grid" style="margin-bottom:0;">
-        <div class="stat-card"><div class="label">Số câu đúng</div><div class="value" id="resScore">–</div></div>
-        <div class="stat-card accent"><div class="label">Tỷ lệ đúng</div><div class="value" id="resPercent">–</div></div>
-        <div class="stat-card"><div class="label">Trạng thái</div><div class="value" style="font-size:18px; color:var(--success); padding-top:8px;">Đã lưu vào hệ thống ✓</div></div>
-      </div>
-      <div class="note" style="margin-top:18px;"><span>📋</span><div>Bài đã được lưu vào tài khoản của bạn — xem lại ở trang <a href="dashboard.html" style="color:var(--primary);">Tiến trình</a>.</div></div>
-    </div>
-
+<section class="section" style="padding-top:60px; padding-bottom:80px;">
+  <div class="container" style="max-width:560px; text-align:center;">
+    <div style="font-size:56px; margin-bottom:18px;">🚧</div>
+    <h2 style="font-size:24px; font-weight:700; margin-bottom:10px;">Đang cập nhật nội dung</h2>
+    <p style="color:var(--text-muted); font-size:15px; line-height:1.75; margin-bottom:28px;">
+      Giáo viên sẽ cập nhật đề trong thời gian tới.<br>
+      Vui lòng quay lại sau để luyện tập nhé!
+    </p>
+    <a class="btn btn-primary" href="javascript:history.back()">← Quay lại</a>
   </div>
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=7"></script>
-<script>
-  var EXERCISE_ID = 1; // IELTS Reading — Test 3 (đề mẫu trong database)
-  var letters = ['A','B','C'];
-
-  document.getElementById('submitBtn').addEventListener('click', async function(){
-    var answers = ['q1','q2','q3','q4'].map(function(name){
-      var inputs = document.querySelectorAll('input[name="'+name+'"]');
-      var ans = '';
-      inputs.forEach(function(inp, idx){ if (inp.checked) ans = letters[idx]; });
-      return ans;
-    });
-
-    var r = await fetch('/api/submissions', {
-      method:'POST', credentials:'same-origin',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: answers })
-    });
-
-    if (r.status === 401) {
-      alert('Bạn cần đăng nhập để nộp bài.');
-      location.href = 'login.html?next=practice-reading.html';
-      return;
-    }
-    var data = await r.json().catch(function(){ return {}; });
-    if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
-
-    document.getElementById('resScore').textContent = data.score + '/' + data.max_score;
-    var pct = data.max_score ? Math.round(data.score / data.max_score * 100) : 0;
-    document.getElementById('resPercent').textContent = pct + '%';
-    var res = document.getElementById('result');
-    res.style.display = 'block';
-    res.scrollIntoView({ behavior:'smooth' });
-  });
-</script>
+<script src="js/main.js?v=9"></script>
 </body>
 </html>

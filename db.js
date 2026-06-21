@@ -104,23 +104,23 @@ function seed() {
   const tom = insUser.run('Thầy Tom', 'tom@ewt.vn', hashPassword('Tom@1234'), 'teacher', now());
   const teacherId = Number(tom.lastInsertRowid);
 
-  const insEx = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,auto_grade,created_by,created_at) VALUES (?,?,?,?,?,?,?,?)');
-  insEx.run('IELTS','Reading','IELTS Reading — Test 3 (The History of Tea)',
-    'Đọc đoạn văn về lịch sử trà và chọn đáp án đúng cho 4 câu hỏi.',
-    JSON.stringify(['B','C','A','B']),1,teacherId,now());
-  insEx.run('IELTS','Listening','IELTS Listening — Test 2',
-    'Nghe và chọn đáp án đúng.',
-    JSON.stringify(['A','C','B','A','B']),1,teacherId,now());
-  insEx.run('IELTS','Writing','IELTS Writing Task 2 — Chủ đề Môi trường',
-    'Viết bài luận tối thiểu 250 từ về chủ đề bảo vệ môi trường.',
-    null,0,teacherId,now());
-  insEx.run('PET','Reading','PET Reading — Part 4',
-    'Đọc và chọn đáp án đúng.',
-    JSON.stringify(['B','A','C','B','A']),1,teacherId,now());
-
-  console.log('✓ Đã tạo dữ liệu ban đầu (admin@ewt.vn / tom@ewt.vn + 4 đề mẫu)');
+  console.log('✓ Đã tạo tài khoản ban đầu (admin@ewt.vn / tom@ewt.vn)');
 }
 seed();
+
+// ===== Xoá đề mẫu cũ (migration một lần) =====
+;(function removeDemoExercises() {
+  const demoTitles = [
+    'IELTS Reading — Test 3 (The History of Tea)',
+    'IELTS Listening — Test 2',
+    'IELTS Writing Task 2 — Chủ đề Môi trường',
+    'PET Reading — Part 4',
+  ];
+  const del = db.prepare('DELETE FROM exercises WHERE title=?');
+  let removed = 0;
+  demoTitles.forEach(function(t){ removed += del.run(t).changes; });
+  if (removed > 0) console.log('✓ Đã xoá ' + removed + ' đề mẫu cũ khỏi database.');
+})();
 
 // ===== Đề thật bổ sung (idempotent) =====
 
