@@ -208,14 +208,163 @@ ${isPart1
     : 'Bài mẫu phải: (a) đúng dạng bài yêu cầu (article/story/review), (b) dùng đúng quy ước format của dạng bài đó, (c) nội dung hấp dẫn và phù hợp đề, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
 }
 
+// Rubric IELTS — bám sát 100% IELTS Writing Band Descriptors (Updated May 2023, IELTS.org)
+// Task 1 dùng "Task Achievement"; Task 2 dùng "Task Response" — hai tiêu chí KHÁC NHAU
+// Thang 0–9 (half-bands 0.5 bước); Task 2 có trọng số GẤP ĐÔI Task 1 trong điểm toàn bài
+function ieltsRubric(title) {
+  const isTask1 = /task\s*1/i.test(title);
+
+  if (isTask1) {
+    return `IELTS WRITING TASK 1 — Academic: Mô tả biểu đồ/số liệu/sơ đồ (tối thiểu 150 từ).
+General Training: Viết thư (tối thiểu 150 từ).
+
+BẮT BUỘC trước khi chấm:
+1. Xác định Task 1 là Academic (biểu đồ/số liệu/diagram) hay General Training (thư).
+2. Đọc kỹ đề và hình ảnh (nếu có) — ghi nhận TẤT CẢ xu hướng, số liệu nổi bật, điểm so sánh.
+3. Academic: kiểm tra có overview (tổng quan xu hướng chính) không — đây là yêu cầu bắt buộc từ Band 7+.
+4. General Training: kiểm tra có đủ bullet points, rõ mục đích thư, đúng tone không.
+5. Kiểm tra độ dài: dưới 150 từ → phạt Task Achievement nặng. Dưới 20 từ → Band 1.
+
+Chấm ĐÚNG 4 TIÊU CHÍ, mỗi tiêu chí thang 0–9 (half-bands được phép: 0.5, 1.5, 2.5... 8.5):
+
+═══ TASK ACHIEVEMENT (Hoàn thành nhiệm vụ) ═══
+⚠️ Task 1 dùng "TASK ACHIEVEMENT" — KHÔNG phải "Task Response" (Task Response chỉ dùng cho Task 2).
+• Band 9: Toàn bộ yêu cầu được đáp ứng đầy đủ và phù hợp.
+• Band 8: Bao quát tất cả yêu cầu một cách phù hợp, liên quan và đủ. (Academic) Key features được chọn khéo léo, trình bày rõ ràng, minh họa tốt. (GT) Tất cả bullet points trình bày rõ, minh họa phù hợp. Có thể có thiếu sót rất nhỏ.
+• Band 7: Bao quát yêu cầu. Nội dung liên quan và chính xác — có thể vài thiếu sót nhỏ. Format phù hợp. (Academic) Có overview rõ ràng, dữ liệu được phân loại, xu hướng/điểm khác biệt chính được xác định. (GT) Tất cả bullet points được bao quát và nêu bật rõ ràng, mục đích thư rõ, tone nhất quán và phù hợp, sai sót rất nhỏ.
+• Band 6: Tập trung vào yêu cầu task, format phù hợp. (Academic) Key features được bao quát và nêu bật đầy đủ, có overview, thông tin được chọn và hỗ trợ bằng số liệu. (GT) Tất cả bullet points được bao quát và nêu bật đầy đủ, mục đích nhìn chung rõ, có thể có chút không nhất quán tone. Có thể có thông tin không liên quan/không chính xác. Có thể thiếu một số chi tiết.
+• Band 5: Nhìn chung đáp ứng yêu cầu task, format có thể không phù hợp ở một số chỗ. (Academic) Key features không được bao quát đầy đủ, chủ yếu là kể lại cơ học, có thể thiếu số liệu. (GT) Tất cả bullet points có mặt nhưng 1+ có thể chưa đầy đủ, mục đích đôi khi không rõ, tone đôi khi không phù hợp. Xu hướng tập trung vào chi tiết (không nhìn bức tranh tổng thể). Nội dung không liên quan/không chính xác ở khu vực quan trọng làm giảm task achievement. Chi tiết minh họa hạn chế.
+• Band 4: Chỉ là một cố gắng để đề cập task. (Academic) Rất ít key features được chọn. (GT) Không phải tất cả bullet points được trình bày, mục đích thư không được giải thích rõ và có thể bị nhầm lẫn, tone có thể không phù hợp. Format có thể không phù hợp. Key features/bullet points có thể không liên quan, lặp lại, không chính xác hoặc không phù hợp.
+• Band 3: Response không đáp ứng yêu cầu task (có thể do hiểu sai dữ liệu/sơ đồ/tình huống). Key features/bullet points phần lớn không liên quan. Thông tin hạn chế và có thể lặp lại. Nội dung hầu như không liên quan đến task.
+• Band 2: Không đề cập được các yêu cầu task. Rất ít thông điệp liên quan, hoặc toàn bộ response lạc đề.
+• Band 1: Không đạt yêu cầu tối thiểu. Responses 20 từ trở xuống → Band 1.
+• Band 0: Không tham dự, dùng ngôn ngữ khác tiếng Anh, hoặc toàn bộ được ghi nhớ thuộc lòng.
+
+═══ COHERENCE & COHESION (Mạch lạc & Liên kết) ═══
+• Band 9: Thông tin và ý tưởng được sắp xếp theo thứ tự hợp lý. Cohesion được sử dụng sao cho rất hiếm khi thu hút sự chú ý. Paragraphing được quản lý khéo léo. Bất kỳ thiếu sót nào trong coherence hoặc cohesion đều ở mức tối thiểu.
+• Band 8: Thông tin và ý tưởng được sắp xếp hợp lý, cohesion được quản lý tốt. Paragraphing được sử dụng đủ và phù hợp. Thiếu sót không thường xuyên trong coherence hoặc cohesion.
+• Band 7: Thông tin và ý tưởng được tổ chức hợp lý, có sự tiến triển rõ ràng xuyên suốt. Có thể vài thiếu sót nhỏ. Đa dạng cohesive devices bao gồm reference và substitution, được dùng linh hoạt nhưng có một số không chính xác hoặc over/under use. Paragraphing được sử dụng đủ và phù hợp.
+• Band 6: Thông tin và ý tưởng nhìn chung được sắp xếp mạch lạc, có overall progression rõ ràng. Cohesive devices được dùng với một số hiệu quả nhưng cohesion trong/giữa các câu có thể bị lỗi hoặc cơ học do misuse/overuse/omission. Reference và substitution có thể thiếu tính linh hoạt hoặc rõ ràng, gây ra sự lặp lại hoặc lỗi.
+• Band 5: Tổ chức có nhưng không hoàn toàn hợp lý, có thể thiếu overall progression. Tuy nhiên vẫn có coherence cơ bản. Mối quan hệ giữa các ý có thể theo dõi được nhưng các câu không liên kết trôi chảy. Có thể limited/overuse cohesive devices với một số không chính xác. Có thể lặp lại do sử dụng reference/substitution không đầy đủ/không chính xác.
+• Band 4: Thông tin và ý tưởng có nhưng không sắp xếp mạch lạc, không có sự tiến triển rõ ràng. Mối quan hệ giữa các ý không rõ ràng và/hoặc đánh dấu không đủ. Có một số sử dụng cohesive devices cơ bản, có thể không chính xác hoặc lặp lại. Sử dụng không chính xác hoặc thiếu substitution hoặc referencing.
+• Band 3: Không có tổ chức hợp lý rõ ràng. Có thể lệ thuộc quá mức vào input material hoặc memorised language. Sử dụng sequencers hoặc cohesive devices tối thiểu. Khó xác định referencing.
+• Band 2: Rất ít bằng chứng về kiểm soát các đặc điểm tổ chức.
+• Band 1: Không giao tiếp được bất kỳ thông điệp nào.
+
+═══ LEXICAL RESOURCE (Vốn từ vựng) ═══
+• Band 9: Đầy đủ tính linh hoạt và sử dụng chính xác trong phạm vi task. Từ vựng đa dạng được sử dụng chính xác và phù hợp với kiểm soát lexical features rất tự nhiên và sophisticated. Lỗi chính tả/word formation cực kỳ hiếm và tác động tối thiểu đến giao tiếp.
+• Band 8: Wide resource được dùng trôi chảy và linh hoạt để truyền đạt ý chính xác trong phạm vi task. Có kỹ năng sử dụng uncommon và/hoặc idiomatic items khi phù hợp, mặc dù có thể có inaccuracies không thường xuyên trong word choice và collocation. Lỗi chính tả và/hoặc word formation có thể xảy ra nhưng tác động tối thiểu.
+• Band 7: Resource đủ để cho phép một mức độ linh hoạt và chính xác. Có khả năng sử dụng less common và/hoặc idiomatic items. Ý thức về style và collocation, mặc dù có inappropriacies. Chỉ một vài lỗi chính tả và/hoặc word formation và không làm giảm overall clarity.
+• Band 6: Resource nhìn chung đầy đủ và phù hợp cho task. Ý nghĩa nhìn chung rõ dù range hơi hạn chế hoặc thiếu chính xác trong word choice. Ví dụ complex structures không có cùng level of accuracy như trong simple structures. Risk-taker sẽ có range từ vựng rộng hơn nhưng inaccuracy/inappropriacy cao hơn. Một số lỗi chính tả và/hoặc word formation nhưng không cản trở giao tiếp.
+• Band 5: Resource hạn chế nhưng minimally adequate cho task. Simple vocabulary có thể dùng chính xác nhưng range không cho phép nhiều biến thể trong diễn đạt. Có thể có frequent lapses trong appropriacy của word choice, và thiếu linh hoạt rõ ràng trong frequent simplifications và/hoặc repetitions. Lỗi chính tả và/hoặc word formation có thể noticeable và có thể gây khó khăn cho reader.
+• Band 4: Resource hạn chế và không đủ hoặc không liên quan đến task. Vocabulary cơ bản và có thể dùng lặp lại. Có thể sử dụng lexical chunks không phù hợp (memorised phrases, formulaic language và/hoặc language từ input material). Word choice không phù hợp và/hoặc lỗi trong word formation và/hoặc chính tả có thể cản trở ý nghĩa.
+• Band 3: Resource không đủ (có thể do response quá ngắn). Possible over-dependence on input material hoặc memorised language.
+• Band 2: Kiểm soát word choice và/hoặc chính tả rất hạn chế, lỗi chiếm ưu thế, có thể cản trở ý nghĩa nghiêm trọng.
+• Band 1: Resource cực kỳ hạn chế với rất ít recognisable strings, ngoài memorised phrases. Không có kiểm soát word formation và/hoặc chính tả rõ ràng.
+
+═══ GRAMMATICAL RANGE & ACCURACY (Phạm vi & Độ chính xác ngữ pháp) ═══
+• Band 9: Wide range of structures trong phạm vi task được dùng với full flexibility và control. Punctuation và grammar được dùng phù hợp xuyên suốt. Lỗi cực kỳ hiếm và tác động tối thiểu.
+• Band 8: Wide range of structures được dùng linh hoạt và chính xác. Đa số câu error-free, punctuation được quản lý tốt. Lỗi không thường xuyên, không hệ thống và inappropriacies xảy ra nhưng tác động tối thiểu.
+• Band 7: Variety of complex structures được dùng với một mức độ linh hoạt và chính xác. Grammar và punctuation nhìn chung được kiểm soát tốt, error-free sentences frequent. Một vài lỗi có thể tồn tại nhưng không cản trở giao tiếp.
+• Band 6: Mix của simple và complex sentence forms nhưng tính linh hoạt hạn chế. Ví dụ complex structures không có cùng level of accuracy như simple structures. Lỗi grammar và punctuation xảy ra nhưng hiếm khi cản trở giao tiếp.
+• Band 5: Range of structures hạn chế và hơi lặp lại. Complex sentences mặc dù được cố gắng nhưng có xu hướng có lỗi, accuracy cao nhất ở simple sentences. Lỗi grammatical có thể frequent và gây khó khăn cho reader. Punctuation có thể có lỗi.
+• Band 4: Phạm vi cấu trúc rất hạn chế. Subordinate clauses hiếm và simple sentences chiếm ưu thế. Một số structures được tạo ra chính xác nhưng lỗi grammatical frequent và có thể cản trở ý nghĩa. Punctuation thường có lỗi hoặc không đủ.
+• Band 3: Sentence forms được cố gắng nhưng lỗi trong grammar và punctuation chiếm ưu thế (ngoại trừ memorised phrases hoặc từ input material). Điều này ngăn hầu hết ý nghĩa đi qua.
+• Band 2: Ít hoặc không có bằng chứng về sentence forms (ngoại trừ memorised phrases). Độ dài có thể không đủ để cung cấp bằng chứng về kiểm soát sentence forms.
+• Band 1: Không có ngôn ngữ có thể đánh giá được.
+
+overall_score = MEAN 4 tiêu chí (Task Achievement + C&C + LR + GRA) / 4, làm tròn về 0.5 gần nhất, thang 0–9.
+scale_label = "IELTS Task 1 Band (0–9)"
+criteria gồm ĐÚNG 4 mục: "Task Achievement (Hoàn thành nhiệm vụ)", "Coherence & Cohesion (Mạch lạc & Liên kết)", "Lexical Resource (Vốn từ vựng)", "Grammatical Range & Accuracy (Ngữ pháp)". Mỗi mục max=9.
+
+HƯỚNG DẪN CHẤM ĐỂ ĐẠT ĐỘ CHÍNH XÁC CAO:
+• Mỗi tiêu chí được chấm ĐỘC LẬP — không để tiêu chí này ảnh hưởng tiêu chí kia.
+• Half-bands (ví dụ: 6.5, 7.5) được sử dụng khi bài "nằm giữa" hai band.
+• "A script must fully fit the positive features of the descriptor at a particular level" — nếu bài không đáp ứng hoàn toàn Band 7 thì cho Band 6 hoặc 6.5.
+• Chữ in đậm trong PDF là NEGATIVE features — nếu có negative feature của Band X thì không thể đạt Band X+1.
+
+suggested_writing: Viết bài mẫu Task 1 TIẾNG ANH 150–180 từ.
+BẮT BUỘC: (a) Phân tích KỸ đề và hình ảnh (nếu có) — ghi nhận TẤT CẢ xu hướng, số liệu, điểm so sánh. (b) Có overview (1–2 câu mô tả xu hướng tổng quát nhất — KHÔNG phải số liệu cụ thể) — đặt ở đoạn 2 (sau intro) hoặc ở cuối. (c) Đoạn thân bài: nhóm và so sánh dữ liệu THEO ĐẶC ĐIỂM/XU HƯỚNG — không liệt kê cơ học từng số. (d) Academic: dùng passive voice và hedging language phù hợp. (e) GT: viết đúng format thư (Dear..., Yours sincerely/faithfully). (f) Đạt Band 7–8.`;
+  }
+
+  // Task 2
+  return `IELTS WRITING TASK 2 — Academic & General Training: Viết bài luận (tối thiểu 250 từ).
+Task 2 có TRỌNG SỐ GẤP ĐÔI Task 1 trong điểm Writing tổng (Task 1 × 1/3 + Task 2 × 2/3).
+
+BẮT BUỘC trước khi chấm:
+1. Đọc kỹ đề bài — xác định DẠNG CÂU HỎI: Opinion Essay / Discussion Essay / Problem-Solution / Two-part Question / Advantages-Disadvantages.
+2. Kiểm tra học sinh có TRẢ LỜI ĐÚNG yêu cầu câu hỏi không (có position rõ ràng không?).
+3. Kiểm tra độ dài: dưới 250 từ → phạt Task Response. Dưới 20 từ → Band 1.
+4. Kiểm tra có đủ BODY PARAGRAPHS với main ideas được develop và support không.
+
+Chấm ĐÚNG 4 TIÊU CHÍ, mỗi tiêu chí thang 0–9 (half-bands được phép: 0.5, 1.5... 8.5):
+
+═══ TASK RESPONSE (Đáp ứng yêu cầu đề) ═══
+⚠️ Task 2 dùng "TASK RESPONSE" — KHÔNG phải "Task Achievement" (Task Achievement chỉ dùng cho Task 1).
+• Band 9: Prompt được đề cập và khám phá sâu sắc. Vị trí rõ ràng và được phát triển đầy đủ, trả lời trực tiếp câu hỏi. Ý tưởng liên quan, được extend đầy đủ và hỗ trợ tốt. Thiếu sót trong nội dung hoặc hỗ trợ cực kỳ hiếm.
+• Band 8: Prompt được đề cập phù hợp và đủ. Vị trí rõ ràng và được phát triển tốt. Ý tưởng liên quan, được extend tốt và hỗ trợ tốt. Có thể có thiếu sót không thường xuyên trong nội dung.
+• Band 7: Main parts của prompt được đề cập phù hợp. Vị trí rõ ràng và được phát triển. Main ideas được extend và hỗ trợ nhưng có thể có xu hướng over-generalise hoặc thiếu focus và precision trong supporting ideas/material.
+• Band 6: Main parts được đề cập (mặc dù một số có thể được bao quát đầy đủ hơn những phần khác). Format phù hợp. Vị trí trực tiếp liên quan đến prompt mặc dù kết luận có thể không rõ ràng, không justified hoặc lặp lại. Main ideas liên quan nhưng một số phát triển chưa đủ hoặc thiếu rõ ràng, một số supporting arguments và evidence có thể ít liên quan hoặc không đủ.
+• Band 5: Main parts không được đề cập đầy đủ. Format có thể không phù hợp ở một số chỗ. Người viết diễn đạt vị trí nhưng phát triển không phải lúc nào cũng rõ ràng. Một số main ideas được đưa ra nhưng hạn chế và không được phát triển đủ và/hoặc có thể có chi tiết không liên quan. Có thể có lặp lại.
+• Band 4: Prompt chỉ được đề cập một cách tối thiểu, hoặc câu trả lời tiếp tuyến — có thể do hiểu sai prompt. Format có thể không phù hợp. Vị trí có thể phân biệt được nhưng reader phải đọc kỹ để tìm. Main ideas khó xác định và những ideas có thể xác định được có thể thiếu liên quan, rõ ràng và/hoặc hỗ trợ. Phần lớn response có thể lặp lại.
+• Band 3: Không có phần nào của prompt được đề cập đầy đủ, hoặc prompt bị hiểu sai. Không có vị trí liên quan nào có thể xác định được. Rất ít ý tưởng, và những ý đó có thể không liên quan hoặc phát triển không đủ. Nội dung hầu như không liên quan đến prompt.
+• Band 2: Không có vị trí nào có thể xác định. Có thể thoáng thấy một hoặc hai ý tưởng không có phát triển. Responses 20 từ trở xuống → Band 1.
+• Band 1: Writing không giao tiếp được bất kỳ thông điệp nào và có vẻ là của người hầu như không biết viết.
+• Band 0: Không tham dự, dùng ngôn ngữ khác tiếng Anh, hoặc toàn bộ được ghi nhớ thuộc lòng.
+
+═══ COHERENCE & COHESION (Mạch lạc & Liên kết) ═══
+• Band 9: Cohesion được sử dụng sao cho rất hiếm khi thu hút sự chú ý. Paragraphing được quản lý khéo léo. Thiếu sót trong coherence hoặc cohesion ở mức tối thiểu.
+• Band 8: Thông tin và ý tưởng được sắp xếp hợp lý theo thứ tự, cohesion được quản lý tốt. Paragraphing được quản lý khéo léo. Thiếu sót không thường xuyên.
+• Band 7: Thông tin và ý tưởng được tổ chức hợp lý, có sự tiến triển rõ ràng xuyên suốt response (có vài thiếu sót nhỏ). Đa dạng cohesive devices bao gồm reference và substitution, dùng linh hoạt nhưng có một số inaccuracies hoặc some over/under use. Paragraphing nhìn chung được dùng hiệu quả để hỗ trợ overall coherence, trình tự ý tưởng trong paragraph nhìn chung hợp lý.
+• Band 6: Thông tin nhìn chung được sắp xếp mạch lạc, overall progression rõ ràng. Cohesive devices dùng với hiệu quả nhất định nhưng cohesion trong/giữa câu có thể bị lỗi hoặc cơ học. Reference và substitution có thể thiếu linh hoạt. Paragraphing có thể không phải lúc nào cũng hợp lý và/hoặc central topic có thể không phải lúc nào cũng rõ.
+• Band 5: Tổ chức có nhưng không hoàn toàn hợp lý, có thể thiếu overall progression, nhưng vẫn có cảm giác coherence. Mối quan hệ giữa các ý có thể theo dõi được nhưng các câu không liên kết trôi chảy. Có thể limited/overuse cohesive devices với một số inaccuracy. Paragraphing có thể không đủ hoặc thiếu.
+• Band 4: Thông tin và ý tưởng có nhưng không sắp xếp mạch lạc, không có sự tiến triển rõ ràng. Mối quan hệ giữa các ý không rõ ràng. Có một số cohesive devices cơ bản. Inaccurate use hoặc thiếu substitution/referencing.
+• Band 3: Không có tổ chức hợp lý rõ ràng. Không có paragraphing và/hoặc không có central topic rõ trong paragraphs. Sử dụng sequencers hoặc cohesive devices tối thiểu.
+• Band 2: Any attempts at paragraphing are unhelpful. Rất ít relevant message, hoặc toàn bộ response lạc đề. Rất ít bằng chứng về kiểm soát organisational features.
+
+═══ LEXICAL RESOURCE (Vốn từ vựng) ═══
+• Band 9: Full flexibility và precise use widely evident. Wide range of vocabulary chính xác và phù hợp với very natural and sophisticated control. Minor errors cực kỳ hiếm.
+• Band 8: Wide resource được dùng trôi chảy và linh hoạt để truyền đạt ý chính xác. Kỹ năng sử dụng uncommon và/hoặc idiomatic items khi phù hợp, mặc dù có thể có inaccuracies không thường xuyên trong word choice và collocation. Lỗi chính tả và/hoặc word formation có thể xảy ra nhưng tác động tối thiểu.
+• Band 7: Resource đủ để cho phép flexibility và precision. Có khả năng sử dụng less common và/hoặc idiomatic items. Ý thức về style và collocation, mặc dù có inappropriacies. Chỉ một vài lỗi chính tả/word formation và không làm giảm overall clarity.
+• Band 6: Resource nhìn chung đầy đủ và phù hợp cho task. Ý nghĩa nhìn chung rõ dù range hơi hạn chế hoặc thiếu precision trong word choice. Complex structures không có cùng level of accuracy như simple structures. Risk-takers: range từ vựng rộng hơn nhưng inaccuracy/inappropriacy cao hơn. Một số lỗi chính tả/word formation nhưng không cản trở giao tiếp.
+• Band 5: Resource hạn chế nhưng minimally adequate. Simple vocabulary có thể dùng chính xác nhưng range không cho phép nhiều biến thể. Frequent lapses trong appropriacy of word choice. Lỗi chính tả/word formation có thể noticeable và có thể gây khó khăn cho reader.
+• Band 4: Resource hạn chế và không đủ hoặc không liên quan đến task. Vocabulary cơ bản và có thể lặp lại. Sử dụng lexical chunks không phù hợp. Word choice không phù hợp và/hoặc lỗi có thể cản trở ý nghĩa.
+• Band 3: Resource không đủ. Possible over-dependence trên input material hoặc memorised language.
+• Band 2: Kiểm soát word choice và/hoặc chính tả rất hạn chế, lỗi chiếm ưu thế, có thể cản trở ý nghĩa nghiêm trọng.
+• Band 1: Resource cực kỳ hạn chế. Không có kiểm soát word formation và/hoặc chính tả rõ ràng.
+
+═══ GRAMMATICAL RANGE & ACCURACY (Phạm vi & Độ chính xác ngữ pháp) ═══
+• Band 9: Wide range of structures được dùng với full flexibility và control. Punctuation và grammar được dùng phù hợp xuyên suốt. Lỗi cực kỳ hiếm.
+• Band 8: Wide range of structures linh hoạt và chính xác. Đa số câu error-free, punctuation được quản lý tốt. Lỗi không thường xuyên, không hệ thống và tác động tối thiểu.
+• Band 7: Variety of complex structures với flexibility và accuracy. Grammar và punctuation nhìn chung được kiểm soát tốt, error-free sentences frequent. Một vài lỗi có thể tồn tại nhưng không cản trở giao tiếp.
+• Band 6: Mix của simple và complex sentence forms nhưng flexibility hạn chế. Complex structures không có cùng accuracy như simple. Lỗi grammar và punctuation xảy ra nhưng hiếm khi cản trở giao tiếp.
+• Band 5: Range of structures hạn chế và hơi lặp lại. Complex sentences có xu hướng có lỗi, accuracy cao nhất ở simple sentences. Lỗi grammatical có thể frequent và gây khó khăn cho reader. Punctuation có thể có lỗi.
+• Band 4: Phạm vi cấu trúc rất hạn chế. Subordinate clauses hiếm và simple sentences chiếm ưu thế. Lỗi grammatical frequent và có thể cản trở ý nghĩa. Punctuation thường có lỗi hoặc không đủ.
+• Band 3: Sentence forms được cố gắng nhưng lỗi grammar và punctuation chiếm ưu thế. Ngăn hầu hết ý nghĩa.
+• Band 2: Ít hoặc không có bằng chứng về sentence forms. Độ dài không đủ. Không có kiểm soát word formation/chính tả.
+• Band 1: Không có ngôn ngữ có thể đánh giá được.
+
+overall_score = MEAN 4 tiêu chí (Task Response + C&C + LR + GRA) / 4, làm tròn về 0.5 gần nhất, thang 0–9.
+scale_label = "IELTS Task 2 Band (0–9)"
+criteria gồm ĐÚNG 4 mục: "Task Response (Đáp ứng yêu cầu đề)", "Coherence & Cohesion (Mạch lạc & Liên kết)", "Lexical Resource (Vốn từ vựng)", "Grammatical Range & Accuracy (Ngữ pháp)". Mỗi mục max=9.
+
+HƯỚNG DẪN CHẤM ĐỂ ĐẠT ĐỘ CHÍNH XÁC CAO:
+• Mỗi tiêu chí được chấm ĐỘC LẬP — không để tiêu chí này ảnh hưởng tiêu chí kia.
+• Half-bands (ví dụ 6.5, 7.5) được dùng khi bài nằm giữa hai band — ví dụ: đáp ứng band 7 nhưng không hoàn toàn đạt band 8 → 7.5.
+• "A script must FULLY FIT the positive features of the descriptor at a particular level" — tất cả negative features (in đậm trong PDF) của một band sẽ giới hạn điểm tối đa ở band đó.
+• Task 2 có trọng số 2/3 trong IELTS Writing tổng. Điểm toàn bài IELTS Writing (nếu cần tính) = (T1_band × 1/3 + T2_band × 2/3), làm tròn về 0.5 gần nhất.
+
+suggested_writing: Viết bài luận mẫu Task 2 TIẾNG ANH 250–280 từ, đạt Band 7–8.
+BẮT BUỘC: (a) Xác định dạng câu hỏi và trả lời ĐÚNG yêu cầu (opinion → rõ ràng agree/disagree; discussion → discuss both views + own opinion; problem-solution → nêu vấn đề + giải pháp cụ thể). (b) Introduction: paraphrase đề + thesis statement. (c) Body: 2 đoạn, mỗi đoạn có topic sentence rõ ràng + examples/evidence cụ thể + linking ideas. (d) Conclusion: tổng kết + restate position. (e) Không viết OFF-TOPIC, không lặp lại ý không cần thiết. (f) Dùng đa dạng cấu trúc ngữ pháp và từ vựng học thuật.`;
+}
+
 // Rubric riêng cho từng kỳ thi
 function rubricFor(exercise) {
   const program = exercise.program;
   if (program === 'KET') return ketRubric(exercise.title || '');
   if (program === 'FCE') return fceRubric(exercise.title || '');
   if (program === 'PET') return petRubric(exercise.title || '');
-  if (program === 'IELTS') return `Chấm theo thang BAND IELTS từ 0 đến 9 (bước 0.5). Dùng 4 tiêu chí (mỗi tiêu chí max 9): Task Response, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy. overall_score là band tổng (trung bình 4 tiêu chí, làm tròn 0.5). scale_label = "IELTS Band (0–9)".
-suggested_writing: Xác định đây là Task 1 hay Task 2 dựa trên tên đề. Task 1: viết bài mẫu TIẾNG ANH 150–180 từ mô tả biểu đồ/số liệu trong đề (dựa vào dữ liệu thực trong nội dung đề và hình ảnh nếu có). Task 2: viết bài luận TIẾNG ANH 250–280 từ đạt Band 7–8.`;
+  if (program === 'IELTS') return ieltsRubric(exercise.title || '');
   if (program === 'APTIS') {
     const t = (exercise.title || '').toLowerCase();
     // Part 1 — Word-level (scale 0–3, chỉ 1 tiêu chí)
