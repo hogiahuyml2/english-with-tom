@@ -445,11 +445,12 @@ async function fetchImageBase64(url) {
   }
 }
 
-function buildSystem(exercise) {
+function buildSystem(exercise, hasStudentImage) {
   const hasImage = !!exercise.image_url;
   return `Bạn là giám khảo chấm Writing giàu kinh nghiệm cho các kỳ thi tiếng Anh quốc tế.
 ${rubricFor(exercise)}
-${hasImage ? '\nĐề bài này có kèm HÌNH ẢNH. Hãy phân tích kỹ nội dung hình (biểu đồ, bản đồ, tranh, sơ đồ...) cùng với phần text để chấm bài chính xác — đặc biệt khi đánh giá Content.' : ''}
+${hasImage ? '\nĐề bài này có kèm HÌNH ẢNH ĐỀ BÀI (hình thứ nhất). Hãy phân tích kỹ nội dung hình (biểu đồ, bản đồ, tranh, sơ đồ...) cùng với phần text để chấm bài chính xác — đặc biệt khi đánh giá Content.' : ''}
+${hasStudentImage ? '\n⚠️ HỌC SINH NỘP BÀI BẰNG ẢNH (hình cuối cùng). Đây là ảnh chụp bài viết tay hoặc scan của học sinh. Hãy:\n1. ĐỌC KỸ toàn bộ nội dung chữ viết trong hình ảnh đó.\n2. Tự transcribe (ghi lại) bài viết của học sinh trước khi chấm.\n3. Nếu một số từ khó đọc, cố gắng đoán dựa trên ngữ cảnh — đừng bỏ qua.\n4. Chấm bài dựa trên nội dung đã đọc được từ hình ảnh.' : ''}
 
 BƯỚC BẮT BUỘC TRƯỚC KHI CHẤM:
 1. Đọc toàn bộ đề bài (text + hình nếu có).
@@ -495,16 +496,20 @@ const CLAUDE_SCHEMA = {
   additionalProperties: false
 };
 
-async function gradeWithClaude(exercise, essay, imageData) {
+async function gradeWithClaude(exercise, essay, imageData, studentImage) {
   const client = new Anthropic();
   const model  = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
   const contentParts = [];
   if (imageData) {
     contentParts.push({ type: 'image', source: { type: 'base64', media_type: imageData.mimeType, data: imageData.base64 } });
   }
-  contentParts.push({ type: 'text', text: buildUserText(exercise, essay) });
+  if (studentImage) {
+    contentParts.push({ type: 'text', text: '--- HÌNH ẢNH BÀI LÀM CỦA HỌC SINH (đọc chữ viết từ hình này để chấm) ---' });
+    contentParts.push({ type: 'image', source: { type: 'base64', media_type: studentImage.mimeType, data: studentImage.base64 } });
+  }
+  contentParts.push({ type: 'text', text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay) });
   const resp = await client.messages.create({
-    model, max_tokens: 5000, system: buildSystem(exercise),
+    model, max_tokens: 5000, system: buildSystem(exercise, !!studentImage),
     messages: [{ role: 'user', content: contentParts }],
     output_config: { format: { type: 'json_schema', schema: CLAUDE_SCHEMA } }
   });
@@ -534,19 +539,23 @@ const GEMINI_SCHEMA = {
   required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes']
 };
 
-async function gradeWithGemini(exercise, essay, imageData) {
+async function gradeWithGemini(exercise, essay, imageData, studentImage) {
   const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
   const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   const parts = [];
   if (imageData) {
     parts.push({ inline_data: { mime_type: imageData.mimeType, data: imageData.base64 } });
   }
-  parts.push({ text: buildUserText(exercise, essay) });
+  if (studentImage) {
+    parts.push({ text: '--- HÌNH ẢNH BÀI LÀM CỦA HỌC SINH (đọc chữ viết từ hình này để chấm) ---' });
+    parts.push({ inline_data: { mime_type: studentImage.mimeType, data: studentImage.base64 } });
+  }
+  parts.push({ text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay) });
   const r = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
     body: JSON.stringify({
-      system_instruction: { parts: [{ text: buildSystem(exercise) }] },
+      system_instruction: { parts: [{ text: buildSystem(exercise, !!studentImage) }] },
       contents: [{ role: 'user', parts }],
       generationConfig: {
         responseMimeType: 'application/json',
@@ -564,11 +573,11 @@ async function gradeWithGemini(exercise, essay, imageData) {
   return JSON.parse(text);
 }
 
-async function gradeWriting(exercise, essay) {
+async function gradeWriting(exercise, essay, studentImage) {
   const p         = provider();
   const imageData = await fetchImageBase64(exercise.image_url);
-  if (p === 'gemini') return gradeWithGemini(exercise, essay, imageData);
-  if (p === 'claude') return gradeWithClaude(exercise, essay, imageData);
+  if (p === 'gemini') return gradeWithGemini(exercise, essay, imageData, studentImage || null);
+  if (p === 'claude') return gradeWithClaude(exercise, essay, imageData, studentImage || null);
   throw new Error('Chưa cấu hình AI');
 }
 

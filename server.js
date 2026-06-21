@@ -219,23 +219,33 @@ app.get('/api/config', (req, res) => {
 
 // AI chấm bài Writing (Claude)
 app.post('/api/grade-writing', requireAuth, async (req, res) => {
-  const { exercise_id, essay } = req.body || {};
-  if (!essay || essay.trim().split(/\s+/).length < 20)
+  const { exercise_id, essay, student_image } = req.body || {};
+  const isImageMode = !!student_image;
+
+  // Kiểm tra đầu vào: nếu nộp ảnh thì bỏ qua word-count; nếu gõ text thì kiểm tra độ dài
+  if (!isImageMode && (!essay || essay.trim().split(/\s+/).length < 20))
     return res.status(400).json({ error: 'Bài viết quá ngắn (tối thiểu khoảng 20 từ).' });
+  if (isImageMode && (!student_image.base64 || !student_image.mimeType))
+    return res.status(400).json({ error: 'Dữ liệu ảnh không hợp lệ.' });
+
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private && req.user.role === 'student')
     return res.status(403).json({ error: 'Đề bài riêng này do giáo viên trực tiếp chấm.' });
 
+  const savedAnswers = isImageMode
+    ? { submission_type: 'image', image_mime: student_image.mimeType }
+    : { essay };
+
   if (!aiEnabled()) {
     db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
-      .run(req.user.id, exercise_id, JSON.stringify({ essay }), 'pending', now());
+      .run(req.user.id, exercise_id, JSON.stringify(savedAnswers), 'pending', now());
     return res.json({ pending: true });
   }
   try {
-    const result = await gradeWriting(ex, essay);
+    const result = await gradeWriting(ex, essay || '', isImageMode ? student_image : null);
     const r = db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,feedback,submitted_at) VALUES (?,?,?,?,?,?)')
-      .run(req.user.id, exercise_id, JSON.stringify({ essay }), 'graded', JSON.stringify(result), now());
+      .run(req.user.id, exercise_id, JSON.stringify(savedAnswers), 'graded', JSON.stringify(result), now());
     res.json({ id: Number(r.lastInsertRowid), result });
   } catch (e) {
     console.error('AI grading error', e.message);

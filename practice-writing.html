@@ -99,6 +99,40 @@
   #lbClose:hover { opacity:1; }
   #lbHint { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.6); font-size:13px; pointer-events:none; }
 
+  /* ── Timer mode selector ── */
+  #timerModeCard {
+    background:linear-gradient(135deg,#f8f7ff,#ede9ff);
+    border:2px solid var(--primary); border-radius:14px;
+    padding:20px 22px; margin-bottom:16px;
+  }
+  #timerModeCard h4 { margin:0 0 5px; font-size:15px; color:var(--primary); }
+  #timerModeCard .mode-hint { font-size:13px; color:var(--text-muted); margin:0 0 14px; }
+  .mode-btn-group { display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* ── Submission tabs ── */
+  .sub-tabs { display:flex; border-radius:10px; overflow:hidden; border:1.5px solid var(--border); margin-bottom:14px; }
+  .sub-tab { flex:1; padding:9px 12px; font-size:13.5px; font-weight:600; text-align:center; cursor:pointer; border:none; background:#f8f7ff; color:var(--text-muted); font-family:var(--font); transition:background .15s,color .15s; border-right:1.5px solid var(--border); }
+  .sub-tab:last-child { border-right:none; }
+  .sub-tab.active { background:var(--primary); color:#fff; }
+
+  /* ── Image upload zone ── */
+  #imagePanel { display:none; }
+  .img-drop-zone {
+    border:2.5px dashed var(--border); border-radius:12px;
+    padding:34px 20px; text-align:center; cursor:pointer;
+    transition:border-color .15s,background .15s;
+    background:#fafafa; margin-bottom:12px; position:relative;
+  }
+  .img-drop-zone.drag-over { border-color:var(--primary); background:#f0effe; }
+  .img-drop-zone .drop-icon { font-size:34px; margin-bottom:6px; }
+  .img-drop-zone p { font-size:13.5px; color:var(--text-muted); margin:4px 0 0; }
+  .img-drop-zone small { font-size:12px; color:var(--text-faint); }
+  .img-preview-wrap { display:none; margin-bottom:12px; position:relative; }
+  .img-preview-wrap img { width:100%; border-radius:10px; border:1px solid var(--border); max-height:400px; object-fit:contain; }
+  .img-remove-btn { position:absolute; top:8px; right:8px; background:rgba(0,0,0,.55); color:#fff; border:none; border-radius:20px; padding:4px 10px; font-size:12px; cursor:pointer; font-family:var(--font); }
+  .img-remove-btn:hover { background:rgba(0,0,0,.75); }
+  #fileInput { display:none; }
+
   /* ── Print / PDF ── */
   @media print {
     #site-header, #site-footer, .q-block, #exImageWrap,
@@ -159,7 +193,17 @@
       </div>
     </div>
 
-    <div class="two-col">
+    <!-- Chọn chế độ thời gian -->
+    <div id="timerModeCard">
+      <h4>⏱ Chọn chế độ làm bài</h4>
+      <p class="mode-hint" id="modeHintText">Bạn muốn luyện tập như thế nào?</p>
+      <div class="mode-btn-group">
+        <button class="btn btn-primary" id="timedBtn" onclick="startTimerMode(true)">⏱ Thi thật (<span id="officialTimeLabel">20</span> phút)</button>
+        <button class="btn" onclick="startTimerMode(false)">🕐 Không giới hạn thời gian</button>
+      </div>
+    </div>
+
+    <div class="two-col" id="writingArea" style="opacity:0.4; pointer-events:none; transition:opacity .3s;">
       <!-- Đề bài -->
       <div class="passage">
         <h3 style="margin-bottom:10px;">📋 Đề bài</h3>
@@ -168,12 +212,44 @@
 
       <!-- Vùng viết -->
       <div class="q-block">
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Bài viết của bạn (tiếng Anh):</p>
-        <div class="field"><textarea id="essay" style="min-height:300px;" placeholder="Viết bài của bạn ở đây..."></textarea></div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <span style="font-size:12.5px; color:var(--text-faint);">Số từ: <strong id="wordCount">0</strong></span>
-          <span id="aiNote" style="font-size:12px; color:var(--text-faint);"></span>
+        <!-- Tabs: gõ bài / tải ảnh -->
+        <div class="sub-tabs">
+          <button class="sub-tab active" id="tabText" onclick="switchTab('text')">✏️ Viết trực tiếp</button>
+          <button class="sub-tab" id="tabImage" onclick="switchTab('image')">📷 Chụp / Tải ảnh bài làm</button>
         </div>
+
+        <!-- Panel: viết trực tiếp -->
+        <div id="textPanel">
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Bài viết của bạn (tiếng Anh):</p>
+          <div class="field"><textarea id="essay" style="min-height:300px;" placeholder="Viết bài của bạn ở đây..."></textarea></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span style="font-size:12.5px; color:var(--text-faint);">Số từ: <strong id="wordCount">0</strong></span>
+            <span id="aiNote" style="font-size:12px; color:var(--text-faint);"></span>
+          </div>
+        </div>
+
+        <!-- Panel: tải ảnh -->
+        <div id="imagePanel">
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Chụp ảnh hoặc tải ảnh bài làm của bạn:</p>
+          <!-- Preview -->
+          <div class="img-preview-wrap" id="imgPreviewWrap">
+            <img id="imgPreview" src="" alt="Ảnh bài làm">
+            <button class="img-remove-btn" onclick="removeImage()">✕ Xoá ảnh</button>
+          </div>
+          <!-- Drop zone -->
+          <div class="img-drop-zone" id="imgDropZone"
+               onclick="document.getElementById('fileInput').click()"
+               ondragover="event.preventDefault();this.classList.add('drag-over')"
+               ondragleave="this.classList.remove('drag-over')"
+               ondrop="handleDrop(event)">
+            <div class="drop-icon">📷</div>
+            <p><strong>Bấm để chọn ảnh</strong> hoặc kéo thả vào đây</p>
+            <small>Hỗ trợ: JPG, PNG, WebP, HEIC · Tối đa 10MB</small>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+          <p style="font-size:12px; color:var(--text-faint); margin-top:6px; text-align:center;">💡 Trên điện thoại: bấm vào ô trên rồi chọn "Chụp ảnh" để chụp trực tiếp bài viết tay của bạn.</p>
+        </div>
+
         <button class="btn btn-primary btn-block" id="submitBtn">Nộp bài &amp; chấm tự động</button>
         <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:10px;" id="submitHint">Hệ thống sẽ chấm theo tiêu chí của kỳ thi và đưa ra nhận xét chi tiết.</p>
 
@@ -265,6 +341,106 @@ function qp(n){ return new URLSearchParams(location.search).get(n); }
 var EXERCISE_ID = parseInt(qp('id') || '3', 10);
 var IS_PRIVATE = false;
 var G_submissionId = null;
+var G_currentExercise = null;
+var G_studentImageData = null; // { base64, mimeType } khi học sinh nộp ảnh
+var G_timerInterval  = null;
+var G_activeTab      = 'text';
+var G_timerMode      = null; // 'timed' | 'unlimited' | null
+
+/* ── Thời gian quy định theo từng kỳ thi ── */
+function officialTimeMinutes(ex) {
+  var prog  = (ex.program || '').toUpperCase();
+  var title = (ex.title   || '').toLowerCase();
+  if (prog === 'KET')   { return /part\s*1/i.test(title) ? 8  : 12; }
+  if (prog === 'PET')   { return /part\s*1/i.test(title) ? 15 : 30; }
+  if (prog === 'FCE')   { return 40; }
+  if (prog === 'IELTS') { return /task\s*1/i.test(title) ? 20 : 40; }
+  if (prog === 'APTIS') {
+    if (/component\s*1|part\s*1/i.test(title)) return 3;
+    if (/component\s*2|part\s*2/i.test(title)) return 7;
+    if (/component\s*3|part\s*3/i.test(title)) return 10;
+    return 30;
+  }
+  return 20;
+}
+
+/* ── Bắt đầu làm bài sau khi chọn chế độ ── */
+function startTimerMode(timed) {
+  G_timerMode = timed ? 'timed' : 'unlimited';
+  document.getElementById('timerModeCard').style.display = 'none';
+  var wa = document.getElementById('writingArea');
+  wa.style.opacity = '1';
+  wa.style.pointerEvents = 'auto';
+
+  if (timed && G_currentExercise) {
+    var mins = officialTimeMinutes(G_currentExercise);
+    var secs = mins * 60;
+    updateTimerDisplay(secs);
+    G_timerInterval = setInterval(function() {
+      secs--;
+      updateTimerDisplay(secs);
+      if (secs <= 0) {
+        clearInterval(G_timerInterval);
+        alert('⏱ Hết giờ! Bài đã được tự động dừng. Hãy nộp bài ngay.');
+      }
+    }, 1000);
+  } else {
+    document.getElementById('timer').textContent = '∞';
+  }
+}
+
+function updateTimerDisplay(secs) {
+  var m = Math.max(0, Math.floor(secs / 60));
+  var s = Math.max(0, secs % 60);
+  document.getElementById('timer').textContent =
+    (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  if (secs <= 60) document.getElementById('timer').style.color = '#ef4444';
+}
+
+/* ── Chuyển tab Text / Image ── */
+function switchTab(tab) {
+  G_activeTab = tab;
+  document.getElementById('tabText').classList.toggle('active',  tab === 'text');
+  document.getElementById('tabImage').classList.toggle('active', tab === 'image');
+  document.getElementById('textPanel').style.display  = (tab === 'text')  ? '' : 'none';
+  document.getElementById('imagePanel').style.display = (tab === 'image') ? '' : 'none';
+  document.getElementById('submitBtn').textContent =
+    tab === 'image' ? 'Nộp ảnh & chấm tự động' : 'Nộp bài & chấm tự động';
+}
+
+/* ── Xử lý ảnh học sinh ── */
+function handleFileSelect(e) {
+  var file = e.target.files && e.target.files[0];
+  if (file) processImageFile(file);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('imgDropZone').classList.remove('drag-over');
+  var file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (file && /^image\//.test(file.type)) processImageFile(file);
+}
+function processImageFile(file) {
+  if (file.size > 10 * 1024 * 1024) { alert('Ảnh quá lớn (tối đa 10MB).'); return; }
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var dataUrl  = ev.target.result; // data:image/jpeg;base64,...
+    var parts    = dataUrl.split(',');
+    var mimeType = parts[0].replace('data:','').replace(';base64','');
+    var base64   = parts[1];
+    G_studentImageData = { base64: base64, mimeType: mimeType };
+    document.getElementById('imgPreview').src = dataUrl;
+    document.getElementById('imgPreviewWrap').style.display = 'block';
+    document.getElementById('imgDropZone').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function removeImage() {
+  G_studentImageData = null;
+  document.getElementById('imgPreview').src = '';
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('imgDropZone').style.display = '';
+  document.getElementById('fileInput').value = '';
+}
 
 /* ── Lightbox ── */
 function openLightbox() {
@@ -298,6 +474,7 @@ fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(functio
   if (!d) return;
   var e = d.exercise;
   if (!e) { document.getElementById('exTitle').textContent = 'Không tìm thấy đề'; return; }
+  G_currentExercise = e;
   document.getElementById('exTitle').textContent = e.title;
   document.getElementById('crumbTitle').textContent = e.program + ' Writing';
   document.getElementById('promptText').innerHTML = RichEditor.sanitize(e.content || '');
@@ -309,6 +486,11 @@ fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(functio
     document.getElementById('examImg').src = e.image_url;
     document.getElementById('exImageWrap').style.display = 'block';
   }
+  // Hiện thời gian quy định trong timer mode card
+  var mins = officialTimeMinutes(e);
+  document.getElementById('officialTimeLabel').textContent = mins;
+  document.getElementById('modeHintText').textContent =
+    'Bài ' + e.program + ' — ' + e.title + ' (quy định ' + mins + ' phút). Bạn muốn luyện tập theo chế độ nào?';
   if (e.is_private) {
     IS_PRIVATE = true;
     document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Đề riêng — giáo viên chấm';
@@ -328,17 +510,30 @@ fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
 
 /* ── Nộp bài ── */
 document.getElementById('submitBtn').addEventListener('click', async function(){
-  var text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
-  if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
+  // Kiểm tra đầu vào theo tab đang active
+  var text = '';
+  if (G_activeTab === 'image') {
+    if (!G_studentImageData) { alert('Vui lòng chọn hoặc chụp ảnh bài làm trước khi nộp.'); return; }
+  } else {
+    text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
+    if (!text || text.split(/\s+/).length < 15) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
+  }
+
+  // Dừng đếm ngược khi nộp bài
+  if (G_timerInterval) { clearInterval(G_timerInterval); G_timerInterval = null; }
+
   document.getElementById('loading').style.display = 'block';
   document.getElementById('result').style.display = 'none';
   document.getElementById('suggestedSection').style.display = 'none';
   this.disabled = true;
 
   if (IS_PRIVATE) {
+    var answers = G_activeTab === 'image'
+      ? { student_image: { base64: G_studentImageData.base64, mimeType: G_studentImageData.mimeType }, submission_type: 'image' }
+      : { essay: text };
     var r0 = await fetch('/api/submissions', {
       method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: { essay: text } })
+      body: JSON.stringify({ exercise_id: EXERCISE_ID, answers: answers })
     });
     this.disabled = false;
     document.getElementById('loading').style.display = 'none';
@@ -358,9 +553,17 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
     return;
   }
 
+  var payload = { exercise_id: EXERCISE_ID };
+  if (G_activeTab === 'image') {
+    payload.student_image = G_studentImageData;
+    payload.essay = '';
+  } else {
+    payload.essay = text;
+  }
+
   var r = await fetch('/api/grade-writing', {
     method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ exercise_id: EXERCISE_ID, essay: text })
+    body: JSON.stringify(payload)
   });
   this.disabled = false;
   document.getElementById('loading').style.display = 'none';
