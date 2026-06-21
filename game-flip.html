@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lật thẻ nhớ 🃏 — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=10">
+<style>
+body { background:linear-gradient(150deg,#eef2ff 0%,#e0e7ff 40%,#f5f3ff 100%) fixed; }
+
+/* Topic picker */
+.topic-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px; }
+.topic-btn {
+  border:2.5px solid var(--border); border-radius:16px; padding:20px 14px;
+  text-align:center; cursor:pointer; background:#fff;
+  transition:all .18s; font-family:var(--font);
+}
+.topic-btn:hover { border-color:#818cf8; transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.1); }
+.topic-btn .t-icon { font-size:36px; display:block; margin-bottom:8px; }
+.topic-btn .t-name { font-size:14px; font-weight:700; color:var(--text); display:block; }
+.topic-btn .t-vi   { font-size:12px; color:var(--text-muted); }
+
+/* Flip card grid */
+.flip-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  max-width:500px;
+  margin:0 auto;
+}
+@media(max-width:480px) { .flip-grid { grid-template-columns:repeat(4,1fr); gap:7px; } }
+
+/* Card flip */
+.flip-card {
+  aspect-ratio:1;
+  perspective:700px;
+  cursor:pointer;
+}
+.flip-card-inner {
+  width:100%; height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .35s ease;
+  border-radius:14px;
+}
+.flip-card.flipped .flip-card-inner  { transform:rotateY(180deg); }
+.flip-card.matched .flip-card-inner  { transform:rotateY(180deg); }
+
+.flip-face {
+  position:absolute; inset:0; border-radius:14px;
+  backface-visibility:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.flip-back {
+  background:linear-gradient(135deg,#818cf8,#a855f7);
+  font-size:28px;
+  border:2.5px solid rgba(255,255,255,.3);
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+.flip-front {
+  transform:rotateY(180deg);
+  border:2.5px solid #c7d2fe;
+  background:#fff;
+  box-shadow:0 3px 10px rgba(0,0,0,.1);
+  flex-direction:column;
+  gap:2px;
+}
+.flip-card.matched .flip-front {
+  border-color:#22c55e;
+  background:#f0fdf4;
+  box-shadow:0 0 0 3px rgba(34,197,94,.25);
+}
+
+.emoji-face { font-size:34px; line-height:1; }
+.word-face  { font-size:14px; font-weight:800; letter-spacing:.04em; color:var(--text); }
+
+/* Stats bar */
+.stats-bar {
+  display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  margin-bottom:16px;
+}
+.stat-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  background:#fff; border:1.5px solid #c7d2fe; border-radius:20px;
+  padding:5px 14px; font-size:14px; font-weight:700; color:#4338ca;
+}
+
+/* Result overlay */
+.result-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.55); display:flex; align-items:center;
+  justify-content:center; z-index:1000; display:none;
+}
+.result-overlay.show { display:flex; }
+.result-card {
+  background:#fff; border-radius:28px; padding:40px 36px; text-align:center;
+  max-width:360px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,.3);
+  animation:popIn .35s ease;
+}
+@keyframes popIn { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
+.result-stars { font-size:44px; margin-bottom:12px; }
+.result-big   { font-size:28px; font-weight:800; margin-bottom:6px; }
+.confetti { position:fixed; pointer-events:none; top:0; left:0; width:100%; height:100%; z-index:999; }
+
+/* Pair count selector */
+.pair-sel { display:flex; gap:10px; justify-content:center; margin-bottom:20px; flex-wrap:wrap; }
+.pair-btn {
+  border:2px solid var(--border); border-radius:20px; padding:6px 18px;
+  font-size:13px; font-weight:700; cursor:pointer; background:#fff;
+  font-family:var(--font); color:var(--text); transition:all .15s;
+}
+.pair-btn.active { background:linear-gradient(135deg,#818cf8,#a855f7); color:#fff; border-color:transparent; }
+</style>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+
+<section class="page-hero" style="padding:28px 0 24px;">
+  <div class="container">
+    <div class="crumb"><a href="practice.html">Luyện tập</a> › Games for Kids › Lật thẻ nhớ</div>
+    <h1 style="font-size:26px;">🃏 Lật thẻ nhớ</h1>
+    <p style="font-size:14px;">Lật hai thẻ — nếu ảnh và từ khớp nhau, cặp đó biến mất và bạn được điểm!</p>
+  </div>
+</section>
+
+<section class="section" style="padding:20px 0 60px;">
+<div class="container" style="max-width:580px;">
+
+  <!-- ─── TOPIC PICKER ─── -->
+  <div id="screenTopic">
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center;">Chọn chủ đề 📚</div>
+    <div class="topic-grid" id="topicGrid"></div>
+    <div style="margin-top:24px;">
+      <div style="font-size:14px;font-weight:600;text-align:center;margin-bottom:10px;color:var(--text-muted);">Số cặp thẻ</div>
+      <div class="pair-sel" id="pairSel">
+        <button class="pair-btn" onclick="setPairs(6)">6 cặp</button>
+        <button class="pair-btn active" onclick="setPairs(8)">8 cặp</button>
+        <button class="pair-btn" onclick="setPairs(10)">10 cặp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── GAME SCREEN ─── -->
+  <div id="screenGame" style="display:none;">
+    <div class="stats-bar">
+      <span class="stat-chip">✅ <span id="matchedVal">0</span> / <span id="totalVal">8</span> cặp</span>
+      <span class="stat-chip">🔄 <span id="movesVal">0</span> lượt</span>
+      <span class="stat-chip" id="timerChip" style="color:#7c3aed;">⏱ <span id="timerVal">--</span></span>
+    </div>
+
+    <div class="flip-grid" id="flipGrid"></div>
+
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:22px;">
+      <button class="btn" onclick="goTopic()">🏠 Đổi chủ đề</button>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- Result overlay -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-card">
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-big" id="resultScore"></div>
+    <div id="resultMsg" style="font-size:15px;color:var(--text-muted);margin-bottom:6px;"></div>
+    <div id="resultTime" style="font-size:13px;color:var(--text-muted);margin-bottom:24px;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="replay()">↺ Chơi lại</button>
+      <button class="btn" onclick="goTopic()">Đổi chủ đề</button>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=10"></script>
+<script>
+/* ══════════════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════════════ */
+var TOPICS = [
+  { id:'animals', name:'Animals', nameVi:'Động vật', icon:'🐾', bg:'#bbf7d0', accent:'#15803d',
+    words:[{w:'CAT',e:'🐱'},{w:'DOG',e:'🐶'},{w:'COW',e:'🐮'},{w:'PIG',e:'🐷'},
+           {w:'FROG',e:'🐸'},{w:'LION',e:'🦁'},{w:'BEAR',e:'🐻'},{w:'FOX',e:'🦊'},
+           {w:'BEE',e:'🐝'},{w:'BIRD',e:'🐦'},{w:'FISH',e:'🐟'},{w:'DUCK',e:'🦆'}] },
+  { id:'food', name:'Food', nameVi:'Thức ăn', icon:'🍎', bg:'#fecaca', accent:'#dc2626',
+    words:[{w:'CAKE',e:'🎂'},{w:'MILK',e:'🥛'},{w:'EGG',e:'🥚'},{w:'BREAD',e:'🍞'},
+           {w:'APPLE',e:'🍎'},{w:'GRAPE',e:'🍇'},{w:'PIZZA',e:'🍕'},{w:'CORN',e:'🌽'},
+           {w:'SOUP',e:'🍲'},{w:'BANANA',e:'🍌'},{w:'LEMON',e:'🍋'},{w:'CANDY',e:'🍬'}] },
+  { id:'colors', name:'Colors', nameVi:'Màu sắc', icon:'🎨', bg:'#e9d5ff', accent:'#7c3aed',
+    words:[{w:'RED',e:'🔴',c:'#ef4444'},{w:'BLUE',e:'🔵',c:'#3b82f6'},
+           {w:'GREEN',e:'🟢',c:'#22c55e'},{w:'YELLOW',e:'🟡',c:'#fbbf24'},
+           {w:'PINK',e:'🩷',c:'#f472b6'},{w:'BLACK',e:'⚫',c:'#1f2937'},
+           {w:'ORANGE',e:'🟠',c:'#f97316'},{w:'BROWN',e:'🟤',c:'#92400e'},
+           {w:'PURPLE',e:'🟣',c:'#7c3aed'},{w:'GREY',e:'🩶',c:'#6b7280'}] },
+  { id:'body', name:'Body Parts', nameVi:'Cơ thể', icon:'👁️', bg:'#fed7aa', accent:'#ea580c',
+    words:[{w:'EYE',e:'👁️'},{w:'EAR',e:'👂'},{w:'NOSE',e:'👃'},{w:'HAND',e:'✋'},
+           {w:'FOOT',e:'🦶'},{w:'LEG',e:'🦵'},{w:'ARM',e:'💪'},{w:'HEAD',e:'🗣️'},
+           {w:'MOUTH',e:'👄'},{w:'TEETH',e:'🦷'},{w:'HAIR',e:'💇'},{w:'FACE',e:'😊'}] },
+  { id:'clothes', name:'Clothes', nameVi:'Quần áo', icon:'👕', bg:'#bae6fd', accent:'#0284c7',
+    words:[{w:'HAT',e:'🎩'},{w:'CAP',e:'🧢'},{w:'SOCK',e:'🧦'},{w:'SHOE',e:'👟'},
+           {w:'COAT',e:'🧥'},{w:'DRESS',e:'👗'},{w:'SHIRT',e:'👕'},{w:'JEANS',e:'👖'},
+           {w:'SCARF',e:'🧣'},{w:'GLOVE',e:'🧤'},{w:'BOOT',e:'👢'},{w:'BELT',e:'🎗️'}] },
+  { id:'school', name:'School', nameVi:'Học tập', icon:'📚', bg:'#fef9c3', accent:'#ca8a04',
+    words:[{w:'PEN',e:'🖊️'},{w:'BOOK',e:'📚'},{w:'RULER',e:'📏'},{w:'BELL',e:'🔔'},
+           {w:'PENCIL',e:'✏️'},{w:'CRAYON',e:'🖍️'},{w:'CLOCK',e:'🕐'},
+           {w:'GLOBE',e:'🌍'},{w:'PAPER',e:'📄'},{w:'BAG',e:'🎒'},
+           {w:'DESK',e:'🪑'},{w:'CHALK',e:'🖊️'}] },
+];
+
+/* ══════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════ */
+var G = {
+  topic: null,
+  pairCount: 8,
+  cards: [],        // card objects
+  flipped: [],      // indices of currently flipped (but not matched) cards
+  matched: 0,
+  moves: 0,
+  busy: false,
+  startTime: 0,
+  timerInt: null,
+};
+
+/* Card: { id (pair ID), type:'emoji'|'word', content, matched:false } */
+
+function setPairs(n) {
+  G.pairCount = n;
+  document.querySelectorAll('.pair-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
+function init() {
+  var grid = document.getElementById('topicGrid');
+  grid.innerHTML = TOPICS.map(function(t){
+    return '<div class="topic-btn" onclick="startGame(\''+t.id+'\')">'+
+      '<span class="t-icon">'+t.icon+'</span>'+
+      '<span class="t-name">'+t.name+'</span>'+
+      '<span class="t-vi">'+t.nameVi+'</span></div>';
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   START
+══════════════════════════════════════════════════════ */
+function startGame(topicId) {
+  G.topic   = TOPICS.find(function(t){ return t.id===topicId; });
+  var n     = Math.min(G.pairCount, G.topic.words.length);
+  var pairs = shuffle(G.topic.words.slice()).slice(0, n);
+
+  G.cards = [];
+  pairs.forEach(function(item, id) {
+    G.cards.push({ id:id, type:'emoji', content:item.e, color:item.c||null, word:item.w, matched:false });
+    G.cards.push({ id:id, type:'word',  content:item.w, color:item.c||null, word:item.w, matched:false });
+  });
+  G.cards = shuffle(G.cards);
+  G.flipped = [];
+  G.matched = 0;
+  G.moves   = 0;
+  G.busy    = false;
+  G.startTime = Date.now();
+
+  document.getElementById('screenTopic').style.display = 'none';
+  document.getElementById('screenGame').style.display  = 'block';
+  document.getElementById('totalVal').textContent      = n;
+
+  // Set grid columns based on pair count
+  var cols = n <= 6 ? 3 : 4;
+  document.getElementById('flipGrid').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
+
+  renderGrid();
+  startTimer();
+}
+
+/* ══════════════════════════════════════════════════════
+   RENDER
+══════════════════════════════════════════════════════ */
+function renderGrid() {
+  var isFlipped = function(idx){ return G.flipped.indexOf(idx) !== -1; };
+  document.getElementById('flipGrid').innerHTML = G.cards.map(function(c,idx){
+    var fClass   = (c.matched || isFlipped(idx)) ? ' flipped' : '';
+    var mClass   = c.matched ? ' matched' : '';
+    var inner    = '';
+    if (c.type==='emoji') {
+      var bg = c.color || G.topic.bg;
+      inner = '<div class="emoji-face" style="font-size:34px;">'+c.content+'</div>';
+    } else {
+      inner = '<div class="word-face">'+c.content+'</div>';
+    }
+    return '<div class="flip-card'+fClass+mClass+'" id="card-'+idx+'" onclick="flipCard('+idx+')">'+
+      '<div class="flip-card-inner">'+
+        '<div class="flip-face flip-back">🌟</div>'+
+        '<div class="flip-face flip-front">'+inner+'</div>'+
+      '</div></div>';
+  }).join('');
+
+  document.getElementById('matchedVal').textContent = G.matched;
+  document.getElementById('movesVal').textContent   = G.moves;
+}
+
+/* ══════════════════════════════════════════════════════
+   FLIP LOGIC
+══════════════════════════════════════════════════════ */
+function flipCard(idx) {
+  if (G.busy) return;
+  var c = G.cards[idx];
+  if (c.matched) return;
+  if (G.flipped.indexOf(idx) !== -1) return;
+  if (G.flipped.length >= 2) return;
+
+  G.flipped.push(idx);
+  // Animate flip
+  var el = document.getElementById('card-'+idx);
+  if (el) el.classList.add('flipped');
+
+  if (G.flipped.length === 2) {
+    G.moves++;
+    document.getElementById('movesVal').textContent = G.moves;
+    G.busy = true;
+    setTimeout(checkFlip, 700);
+  }
+}
+
+function checkFlip() {
+  var i0 = G.flipped[0], i1 = G.flipped[1];
+  var c0 = G.cards[i0],   c1 = G.cards[i1];
+
+  if (c0.id === c1.id) {
+    // Match!
+    c0.matched = true;
+    c1.matched = true;
+    G.matched++;
+    G.flipped = [];
+    G.busy = false;
+    // Apply matched class
+    var el0 = document.getElementById('card-'+i0);
+    var el1 = document.getElementById('card-'+i1);
+    if (el0) el0.classList.add('matched');
+    if (el1) el1.classList.add('matched');
+    document.getElementById('matchedVal').textContent = G.matched;
+
+    if (G.matched === G.pairCount || G.matched === Math.floor(G.cards.length/2)) {
+      clearInterval(G.timerInt);
+      setTimeout(showResult, 400);
+    }
+  } else {
+    // No match — flip back
+    var el0b = document.getElementById('card-'+i0);
+    var el1b = document.getElementById('card-'+i1);
+    if (el0b) el0b.classList.remove('flipped');
+    if (el1b) el1b.classList.remove('flipped');
+    G.flipped = [];
+    G.busy = false;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════════════════ */
+function startTimer() {
+  clearInterval(G.timerInt);
+  G.timerInt = setInterval(function(){
+    var elapsed = Math.floor((Date.now() - G.startTime) / 1000);
+    var m = Math.floor(elapsed/60), s = elapsed%60;
+    document.getElementById('timerVal').textContent = m+':'+(s<10?'0':'')+s;
+  }, 1000);
+  document.getElementById('timerVal').textContent = '0:00';
+}
+
+/* ══════════════════════════════════════════════════════
+   RESULT
+══════════════════════════════════════════════════════ */
+function showResult() {
+  var total   = Math.floor(G.cards.length / 2);
+  var elapsed = Math.floor((Date.now() - G.startTime) / 1000);
+  var m = Math.floor(elapsed/60), s = elapsed%60;
+  var timeStr = m > 0 ? m+'p '+(s<10?'0':'')+s+'s' : s+'s';
+
+  var movesPerPair = G.moves / total;
+  var stars, msg;
+  if (movesPerPair <= 1.5) { stars='⭐⭐⭐'; msg='Trí nhớ siêu đẳng! Bạn quá giỏi! 🧠🎉'; }
+  else if (movesPerPair <= 2.5) { stars='⭐⭐'; msg='Tốt lắm! Luyện thêm để nhanh hơn! 💪'; }
+  else { stars='⭐'; msg='Tiếp tục cố gắng — bạn sẽ làm được! 🌟'; }
+
+  document.getElementById('resultStars').textContent = stars;
+  document.getElementById('resultScore').textContent = G.matched+' / '+total+' cặp';
+  document.getElementById('resultMsg').textContent   = msg;
+  document.getElementById('resultTime').textContent  = '⏱ '+timeStr+' · 🔄 '+G.moves+' lượt';
+  document.getElementById('resultOverlay').classList.add('show');
+  if (movesPerPair <= 2.5) launchConfetti();
+}
+
+function replay() {
+  document.getElementById('resultOverlay').classList.remove('show');
+  startGame(G.topic.id);
+}
+function goTopic() {
+  clearInterval(G.timerInt);
+  document.getElementById('resultOverlay').classList.remove('show');
+  document.getElementById('screenGame').style.display  = 'none';
+  document.getElementById('screenTopic').style.display = 'block';
+}
+
+/* ══════════════════════════════════════════════════════
+   CONFETTI + UTILS
+══════════════════════════════════════════════════════ */
+function launchConfetti() {
+  var canvas = document.createElement('canvas');
+  canvas.className = 'confetti';
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  var pieces = Array.from({length:80}, function(){
+    return { x:Math.random()*canvas.width, y:-10, w:Math.random()*10+6, h:Math.random()*10+6,
+      color:['#818cf8','#f59e0b','#22c55e','#f472b6','#38bdf8','#a855f7'][Math.floor(Math.random()*6)],
+      r:Math.random()*360, sp:Math.random()*4+2, sw:Math.random()*3-1.5 };
+  });
+  var frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(function(p){
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      p.y+=p.sp; p.x+=p.sw; p.r+=3;
+    });
+    frame++;
+    if (frame < 90) requestAnimationFrame(draw); else canvas.remove();
+  }
+  draw();
+}
+
+function shuffle(arr) { return arr.sort(function(){ return Math.random()-.5; }); }
+
+init();
+</script>
+</body>
+</html>
