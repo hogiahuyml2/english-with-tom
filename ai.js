@@ -17,30 +17,67 @@ function aiEnabled() {
   return false;
 }
 
-// Rubric KET (Cambridge A2 Key) — chính thức, khác nhau theo Part
+// Rubric KET — bám sát 100% Cambridge A2 Key for Schools Teacher Guide (UCLES 2020)
+// Cả Part 1 (email) lẫn Part 2 (story) đều dùng CÙNG 3 tiêu chí: Content, Organisation, Language
+// KET KHÔNG có tiêu chí "Communicative Achievement" (chỉ FCE/PET mới có)
 function ketRubric(title) {
-  if (/part\s*1/i.test(title)) {
-    return `Đây là KET (A2 Key) WRITING PART 1 (email/lời nhắn ngắn, ~25 từ, đề yêu cầu 3 ý nội dung).
-Chấm theo THANG ĐIỂM CHUNG (General Mark Scheme) của Cambridge — MỘT điểm duy nhất từ 0 đến 5, dựa trên mức độ truyền đạt 3 ý nội dung:
-- 5: Bài làm rất tốt. Người đọc không cần cố gắng để hiểu. TẤT CẢ các ý của thông điệp được truyền đạt đầy đủ.
-- 4: Bài tốt. Người đọc chỉ cần cố gắng tối thiểu. Tất cả các ý được truyền đạt.
-- 3: Đạt yêu cầu. Người đọc cần cố gắng đôi chút. Tất cả các ý được truyền đạt, HOẶC thiếu một ý nhưng các ý còn lại được truyền đạt rõ ràng.
-- 2: Chưa đạt. Người đọc phải cố gắng đáng kể. Thiếu ý hoặc xử lý không thành công, thông điệp chỉ truyền đạt một phần.
-- 1: Kém. Người đọc phải rất cố gắng. Truyền đạt được rất ít thông điệp.
-- 0: Nội dung hoàn toàn lạc đề, hoặc quá ít ngôn ngữ để đánh giá.
-overall_score = điểm 0–5 này. scale_label = "A2 Key Part 1 (0–5)".
-criteria gồm DUY NHẤT MỘT mục: name = "Mức độ truyền đạt thông điệp", max = 5, score = điểm trên, comment giải thích còn thiếu/đạt ý nào.
-suggested_writing: Viết bài mẫu EMAIL/LỜI NHẮN ngắn TIẾNG ANH (25–35 từ) truyền đạt đầy đủ 3 ý yêu cầu của đề, đạt điểm 5.`;
-  }
-  return `Đây là KET (A2 Key) WRITING PART 2 (viết truyện ngắn, ~35 từ, bắt đầu bằng câu cho sẵn).
-Chấm theo THANG ĐÁNH GIÁ (Assessment Scale) của Cambridge A2 với 4 tiêu chí, MỖI tiêu chí 0–5:
-- "Content (Nội dung)": 5 = mọi nội dung liên quan đề; 3 = vài chỗ lạc/thiếu nhỏ; 1 = nhiều chỗ lạc; 0 = hoàn toàn lạc đề.
-- "Communicative Achievement (Hiệu quả giao tiếp)": dùng đúng quy ước của dạng bài viết truyện, truyền đạt các ý đơn giản một cách phù hợp.
-- "Organisation (Tổ chức)": văn bản mạch lạc, liên kết, dùng từ nối cơ bản (and, but, then, because...).
-- "Language (Ngôn ngữ)": dùng từ vựng hằng ngày; cấu trúc ngữ pháp đơn giản; lỗi có thể thấy nhưng vẫn hiểu được nghĩa.
-overall_score = điểm TRUNG BÌNH của 4 tiêu chí, làm tròn về 0.5 gần nhất, thang 0–5. scale_label = "A2 Key Part 2 (0–5)".
-criteria gồm ĐÚNG 4 mục với name như trên (giữ song ngữ).
-suggested_writing: Viết bài mẫu TRUYỆN NGẮN TIẾNG ANH (35–55 từ) bắt đầu bằng câu cho sẵn trong đề, liên tục mạch lạc, đạt điểm cao.`;
+  const isPart1 = /part\s*1/i.test(title);
+
+  const partIntro = isPart1
+    ? `KET (A2 Key) WRITING PART 1 — Email/lời nhắn ngắn (tối thiểu 25 từ).
+Đề bài yêu cầu học sinh đề cập ĐỦ 3 Ý cụ thể (bullet points).
+
+BẮT BUỘC trước khi chấm:
+1. Đọc kỹ đề, xác định CHÍNH XÁC 3 ý (bullet points) được yêu cầu.
+2. Kiểm tra từng ý — học sinh có đề cập không, có rõ ràng không.
+3. Content bị hạ điểm nếu thiếu ý hoặc thêm nội dung không liên quan.
+4. Organisation: kiểm tra có greeting (Hi/Dear...) và sign-off (Bye/Best wishes...) không — đây là yếu tố tổ chức đặc thù của email.`
+    : `KET (A2 Key) WRITING PART 2 — Viết truyện ngắn (tối thiểu 35 từ) dựa theo 3 tranh cho sẵn.
+
+BẮT BUỘC trước khi chấm:
+1. Đọc kỹ mô tả tranh trong đề (và hình ảnh nếu có).
+2. Kiểm tra học sinh có đề cập ĐỦ CẢ 3 tình huống/bức tranh không — thiếu tranh nào thì hạ Content.
+3. Bài phải là CÂU CHUYỆN CÓ TÌNH TIẾT, không phải mô tả rời rạc.
+4. Thường bắt đầu bằng câu mở đầu cho sẵn (nếu đề cung cấp) — kiểm tra học sinh có dùng không.`;
+
+  return `${partIntro}
+
+Chấm theo THANG ĐÁNH GIÁ CHÍNH THỨC Cambridge A2 Key for Schools — ĐÚNG 3 TIÊU CHÍ (mỗi tiêu chí 0–5):
+
+═══ CONTENT (Nội dung) ═══
+• Band 5: Toàn bộ nội dung liên quan đề. Target reader được thông tin ĐẦY ĐỦ.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5 — hầu hết ý có mặt, 1 ý chưa hoàn toàn rõ ràng.
+• Band 3: Có thể có thiếu sót/không liên quan NHỎ. Target reader NHÌN CHUNG được thông tin.
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3 — thiếu nhiều, thông tin chỉ một phần.
+• Band 1: Có nội dung không liên quan và hiểu sai đề. Target reader chỉ được thông tin TỐI THIỂU.
+• Band 0: Nội dung HOÀN TOÀN không liên quan. Target reader không được thông tin.
+⚠️ KHÔNG trừ điểm Content vì lỗi ngôn ngữ hay tổ chức. Ba tiêu chí hoàn toàn ĐỘC LẬP với nhau.
+Ví dụ thực tế từ Cambridge: học sinh viết đủ 2/3 ý rõ ràng, ý thứ 3 bị lỗi ngôn ngữ che khuất → Content 4 (không phải 3).
+
+═══ ORGANISATION (Tổ chức) ═══
+• Band 5: Văn bản mạch lạc, liên kết chặt. Dùng linking words cơ bản VÀ một số cohesive devices: đại từ (we/they/them tránh lặp), trình tự thời gian (Last Saturday... First... then... When... Then...), mệnh đề quan hệ.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5.
+• Band 3: Văn bản liên kết bằng linking words phổ biến (and, so, because, but, first of all, then...).
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3.
+• Band 1: Văn bản gần như không liên kết; đôi khi có dấu câu hoặc 'and' đơn lẻ.
+• Band 0: Dưới mức Band 1.
+⚠️ KHÔNG trừ điểm Organisation vì lỗi ngôn ngữ — chỉ đánh giá sự liên kết và tổ chức ý.
+
+═══ LANGUAGE (Ngôn ngữ) ═══
+• Band 5: Từ vựng hằng ngày phù hợp ngữ cảnh (đôi khi dùng lặp). Ngữ pháp đơn giản với mức kiểm soát TỐT. Lỗi có thể nhận thấy nhưng NGHĨA VẪN HIỂU ĐƯỢC.
+• Band 4: Chia sẻ đặc điểm Band 3 và Band 5.
+• Band 3: Từ vựng cơ bản dùng tương đối phù hợp. Ngữ pháp đơn giản với MỘT MỨC ĐỘ kiểm soát nhất định. Lỗi đôi khi CẢN TRỞ nghĩa.
+• Band 2: Chia sẻ đặc điểm Band 1 và Band 3.
+• Band 1: Chỉ có từ vựng/cụm từ rời rạc. Cấu trúc ngữ pháp đơn giản với kiểm soát rất hạn chế.
+• Band 0: Dưới mức Band 1.
+⚠️ Cấp độ A2: KHÔNG kỳ vọng ngôn ngữ hoàn hảo. Lỗi chính tả/ngữ pháp nhỏ mà nghĩa VẪN HIỂU được thì KHÔNG làm hạ Band Language xuống dưới 5. Chỉ hạ điểm Language khi lỗi THỰC SỰ cản trở hiểu nghĩa.
+
+overall_score = MEAN 3 tiêu chí, làm tròn về 0.5 gần nhất, thang 0–5. scale_label = "A2 Key (0–5)".
+criteria gồm ĐÚNG 3 mục: "Content (Nội dung)", "Organisation (Tổ chức)", "Language (Ngôn ngữ)". Mỗi mục có max=5.
+
+${isPart1
+    ? 'suggested_writing: Viết EMAIL TIẾNG ANH 25–40 từ: có greeting phù hợp, đề cập ĐỦ CẢ 3 ý yêu cầu (mỗi ý 1–2 câu ngắn tự nhiên), có sign-off. Dùng từ vựng A2 tự nhiên, đúng format email thân mật. Bám sát ĐÚNG nội dung 3 ý của đề — không thêm thông tin ngoài phạm vi.'
+    : 'suggested_writing: Viết CÂU CHUYỆN TIẾNG ANH 35–55 từ: bắt đầu bằng câu mở đầu cho sẵn (nếu có), đề cập ĐỦ CẢ 3 tranh/tình huống theo đúng thứ tự, dùng linking words tự nhiên (Last Saturday... First... then... When... Suddenly...), dùng thì quá khứ đơn là chủ yếu, kết thúc tự nhiên.'}`;
 }
 
 // Rubric FCE — bám sát Assessment Scale chính thức Cambridge B2 First
