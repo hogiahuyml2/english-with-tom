@@ -22,13 +22,13 @@
 <section class="section" style="padding-top:34px;">
   <div class="container">
 
-    <div class="skill-card" style="margin-bottom:20px;">
+    <div class="skill-card" id="section1" style="margin-bottom:20px;">
       <h3><span class="course-ico ico-amber" style="width:40px;height:40px;font-size:19px;margin:0;">📧</span> Writing Part 1 — Email / Lời nhắn</h3>
       <p>Viết một email hoặc lời nhắn ngắn (tối thiểu 25 từ), trả lời đủ 3 ý đề cho.</p>
       <div id="part1"><div class="test-row"><div class="name" style="color:var(--text-faint)">Đang tải...</div></div></div>
     </div>
 
-    <div class="skill-card">
+    <div class="skill-card" id="section2">
       <h3><span class="course-ico ico-pink" style="width:40px;height:40px;font-size:19px;margin:0;">📖</span> Writing Part 2 — Viết truyện ngắn</h3>
       <p>Viết một câu chuyện ngắn (tối thiểu 35 từ) từ các tranh cho sẵn.</p>
       <div id="part2"><div class="test-row"><div class="name" style="color:var(--text-faint)">Đang tải...</div></div></div>
@@ -40,6 +40,18 @@
 <div id="site-footer"></div>
 <script src="js/main.js?v=10"></script>
 <script>
+  /* Lọc theo ?part=1 hoặc ?part=2 */
+  var partParam = new URLSearchParams(location.search).get('part');
+  if (partParam === '1') {
+    document.getElementById('section2').style.display = 'none';
+    document.querySelector('h1').textContent = 'KET Writing Part 1 ✍️';
+    document.querySelector('.page-hero p').textContent = 'Viết một email hoặc lời nhắn ngắn (tối thiểu 25 từ), trả lời đủ 3 ý đề cho.';
+  } else if (partParam === '2') {
+    document.getElementById('section1').style.display = 'none';
+    document.querySelector('h1').textContent = 'KET Writing Part 2 ✍️';
+    document.querySelector('.page-hero p').textContent = 'Viết một câu chuyện ngắn (tối thiểu 35 từ) từ các tranh cho sẵn.';
+  }
+
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
   function row(e){
     return '<div class="test-row"><div><div class="name">'+esc(e.title)+'</div><div class="lvl">A2 Key · Chấm tự động</div></div>'+

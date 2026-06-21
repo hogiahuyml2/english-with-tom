@@ -198,13 +198,26 @@ function renderCard(e){
 var urlParams = new URLSearchParams(location.search);
 var program   = (urlParams.get('program')||'KET').toUpperCase();
 var cfg       = PROGRAMS[program] || PROGRAMS.KET;
+var partFilter = urlParams.get('part') || '';   // e.g. "Part 1", "Task 2", "Component 3"
 
-document.title = cfg.label+' Writing — English With Tom';
+/* ── Tiêu đề động theo part ── */
+var partLabel = partFilter ? ' — ' + partFilter : '';
+document.title = cfg.label+' Writing'+partLabel+' — English With Tom';
+
+var crumbPart = partFilter ? ' › <span style="color:var(--text)">'+partFilter+'</span>' : '';
 document.getElementById('crumb').innerHTML =
-  '<a href="'+cfg.parent+'" style="color:inherit;">'+cfg.label+'</a> › Writing';
-document.getElementById('pageTitle').textContent = cfg.label+' Writing ✍️';
-document.getElementById('pageDesc').textContent =
-  'Cambridge '+cfg.tag+' — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.';
+  '<a href="'+cfg.parent+'" style="color:inherit;">'+cfg.label+'</a> › '+
+  (partFilter ? '<a href="writing-exercises.html?program='+program+'" style="color:inherit;">Writing</a>' : 'Writing')+
+  crumbPart;
+
+document.getElementById('pageTitle').textContent =
+  cfg.label+' Writing'+(partFilter ? ' — '+partFilter : '')+' ✍️';
+
+var partDesc = partFilter && cfg.parts[partFilter] ? cfg.parts[partFilter] : null;
+document.getElementById('pageDesc').textContent = partDesc ||
+  (cfg.label==='IELTS'
+    ? 'IELTS Band 0–9 — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.'
+    : 'Cambridge '+cfg.tag+' — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.');
 
 /* ══════════════════════════════════════════════════════════════
    Fetch & render
@@ -236,6 +249,14 @@ fetch('/api/exercises?program='+encodeURIComponent(program)+'&skill=Writing',{cr
       groups[pk.label].items.push(e);
     });
     var sorted = Object.keys(groups).sort(function(a,b){ return groups[a].order - groups[b].order; });
+
+    /* Lọc chỉ hiện đúng part được chọn từ URL */
+    if (partFilter) sorted = sorted.filter(function(label){ return label === partFilter; });
+
+    if (partFilter && !sorted.length) {
+      container.innerHTML = '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div></div>';
+      return;
+    }
 
     if (program === 'IELTS') {
       /* ─── IELTS: preview cards ─── */
