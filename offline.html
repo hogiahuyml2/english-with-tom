@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Không có mạng — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<style>
+  :root { --bg:#f5f4ff; --surface:#fff; --primary:#6F58EE; --text:#1a1740; --text-muted:#6b6890; }
+  @media (prefers-color-scheme:dark) {
+    :root { --bg:#0f0d1c; --surface:#1a1829; --primary:#a897f8; --text:#e8e5f8; --text-muted:#9890c0; }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .card { background:var(--surface); border-radius:20px; padding:48px 36px; text-align:center; max-width:420px; width:100%; box-shadow:0 8px 40px rgba(111,88,238,.12); }
+  .icon { font-size:64px; margin-bottom:20px; display:block; }
+  h1 { font-size:22px; font-weight:700; margin-bottom:10px; }
+  p { color:var(--text-muted); font-size:15px; line-height:1.6; margin-bottom:28px; }
+  .btn { display:inline-block; background:var(--primary); color:#fff; border:none; border-radius:10px; padding:12px 28px; font-size:15px; font-weight:600; cursor:pointer; text-decoration:none; }
+  .btn:active { opacity:.85; }
+  .tips { margin-top:28px; text-align:left; background:rgba(111,88,238,.06); border-radius:12px; padding:16px 18px; }
+  .tips h3 { font-size:13px; font-weight:600; color:var(--primary); margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+  .tips li { font-size:13px; color:var(--text-muted); line-height:1.7; padding-left:4px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="icon">📶</span>
+  <h1>Không có kết nối mạng</h1>
+  <p>Kiểm tra lại Wi-Fi hoặc 4G của bạn, rồi thử lại. Các trang đã xem trước đó vẫn có thể truy cập được khi offline.</p>
+  <button class="btn" onclick="location.reload()">Thử lại</button>
+  <div class="tips">
+    <h3>Trong khi chờ...</h3>
+    <ul>
+      <li>📚 Ôn lại từ vựng đã học</li>
+      <li>✍️ Luyện viết bài ra giấy</li>
+      <li>🎧 Nghe podcast tiếng Anh offline</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

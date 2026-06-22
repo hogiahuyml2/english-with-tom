@@ -176,3 +176,49 @@
     }, 1000);
   }
 })();
+
+/* ===== PWA: Service Worker + Install Prompt ===== */
+(function () {
+  // Đăng ký service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  }
+
+  // Bắt sự kiện beforeinstallprompt để hiện nút cài app
+  var deferredInstall = null;
+  var installDismissed = localStorage.getItem('ewt-pwa-dismissed');
+  var dismissedRecently = installDismissed && (Date.now() - Number(installDismissed) < 7 * 24 * 60 * 60 * 1000);
+
+  if (!dismissedRecently) {
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferredInstall = e;
+      showInstallBanner();
+    });
+  }
+
+  function showInstallBanner() {
+    if (document.getElementById('pwaInstallBanner')) return;
+    var banner = document.createElement('div');
+    banner.id = 'pwaInstallBanner';
+    banner.innerHTML =
+      '<span style="flex:1">📱 <strong>Cài English With Tom</strong> lên màn hình chính — dùng offline!</span>' +
+      '<button id="pwaInstallBtn" style="background:#fff;color:#6F58EE;border:none;border-radius:8px;padding:7px 16px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:13px;">Cài ngay</button>' +
+      '<button id="pwaInstallClose" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;line-height:1;padding:0 0 0 8px;">×</button>';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#6F58EE,#9b59b6);color:#fff;display:flex;align-items:center;gap:12px;padding:14px 16px;z-index:9999;font-size:14px;box-shadow:0 -4px 20px rgba(111,88,238,.3);';
+    document.body.appendChild(banner);
+
+    document.getElementById('pwaInstallBtn').onclick = function () {
+      if (!deferredInstall) return;
+      deferredInstall.prompt();
+      deferredInstall.userChoice.then(function () {
+        deferredInstall = null;
+        banner.remove();
+      });
+    };
+    document.getElementById('pwaInstallClose').onclick = function () {
+      banner.remove();
+      localStorage.setItem('ewt-pwa-dismissed', Date.now());
+    };
+  }
+})();
