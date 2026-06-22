@@ -267,6 +267,15 @@ function wSetFilter(key, val) {
   wRenderPills();
   wRenderIelts();
 }
+window.wSetFilter = wSetFilter;
+
+function wClearFilters() {
+  _wF.q=''; _wF.task=''; _wF.sub='';
+  document.getElementById('wSearch').value='';
+  wRenderPills();
+  wRenderIelts();
+}
+window.wClearFilters = wClearFilters;
 
 function wRenderPills() {
   // Task pills
@@ -276,17 +285,21 @@ function wRenderPills() {
      '<button class="fpill'+(_wF.task==='2'?' active':'')+'" onclick="wSetFilter(\'task\',\'2\')">✍️ Task 2</button>'
     ].join('');
 
-  // Subtype pills — show T1 subs when task=1 or all, T2 subs when task=2 or all
-  var showSubs = (_wF.task==='1') ? T1_SUBS : (_wF.task==='2') ? T2_SUBS : T1_SUBS.concat(T2_SUBS);
+  // Subtype pills — only show subtypes relevant to selected task
+  var showSubs = (_wF.task==='1') ? T1_SUBS : (_wF.task==='2') ? T2_SUBS : [];
   var subRow = document.getElementById('wSubRow');
 
-  document.getElementById('wSubPills').innerHTML = showSubs.map(function(key) {
-    var ti = IELTS_TYPES[key];
-    if (!ti) return '';
-    var isT2 = key.startsWith('t2_');
-    var prefix = (_wF.task===''&&isT2) ? '<span style="opacity:.4;font-size:10px;margin-right:2px;">T2</span>' : '';
-    return '<button class="fpill'+(_wF.sub===key?' active':'')+'" onclick="wSetFilter(\'sub\',\''+key+'\')">'+prefix+ti.icon+' '+ti.label+'</button>';
-  }).join('');
+  if (showSubs.length === 0) {
+    // "Tất cả": hide subtype row entirely
+    subRow.style.display = 'none';
+  } else {
+    subRow.style.display = '';
+    document.getElementById('wSubPills').innerHTML = showSubs.map(function(key) {
+      var ti = IELTS_TYPES[key];
+      if (!ti) return '';
+      return '<button class="fpill'+(_wF.sub===key?' active':'')+'" onclick="wSetFilter(\'sub\',\''+key+'\')">'+ti.icon+' '+ti.label+'</button>';
+    }).join('');
+  }
 }
 
 function wRenderIelts() {
@@ -336,13 +349,6 @@ function wRenderIelts() {
       '<div class="ex-card-grid">'+groups[label].items.map(renderCard).join('')+'</div>'+
     '</div>';
   }).join('');
-}
-
-function wClearFilters() {
-  _wF.q=''; _wF.task=''; _wF.sub='';
-  document.getElementById('wSearch').value='';
-  wRenderPills();
-  wRenderIelts();
 }
 
 fetch('/api/exercises?program='+encodeURIComponent(program)+'&skill=Writing',{credentials:'same-origin'})
