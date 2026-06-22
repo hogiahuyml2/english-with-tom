@@ -6,7 +6,7 @@
 <title>Writing — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=10">
+<link rel="stylesheet" href="css/style.css?v=11">
 <style>
 /* ── Preview card grid (IELTS) ── */
 .ex-card-grid {
@@ -60,9 +60,31 @@
 </section>
 
 <section class="section" style="padding-top:34px;">
-  <div class="container" id="partContainer">
-    <div class="skill-card">
-      <div class="test-row"><div class="name" style="color:var(--text-faint)">Đang tải...</div></div>
+  <div class="container">
+
+    <!-- Filter bar — chỉ hiện cho IELTS -->
+    <div class="fbar" id="ieltsFbar" style="display:none; margin-bottom:20px;">
+      <div class="fbar-row">
+        <div class="fbar-search-wrap">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg>
+          <input class="fbar-search" id="wSearch" type="text" placeholder="Tìm theo tên bài...">
+        </div>
+        <span class="fbar-count" id="wCount"></span>
+      </div>
+      <div class="fbar-row">
+        <span class="fbar-label">Task</span>
+        <div class="fbar-pills" id="wTaskPills"></div>
+      </div>
+      <div class="fbar-row" id="wSubRow">
+        <span class="fbar-label">Loại</span>
+        <div class="fbar-pills" id="wSubPills"></div>
+      </div>
+    </div>
+
+    <div id="partContainer">
+      <div class="skill-card">
+        <div class="test-row"><div class="name" style="color:var(--text-faint)">Đang tải...</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -89,7 +111,7 @@ var IELTS_TYPES = {
   t1_semi:     { task:1, icon:'📄',  label:'Semi-formal letter'  },
   t1_informal: { task:1, icon:'💌',  label:'Informal letter'     },
   // Task 2
-  t2_opinion:  { task:2, icon:'💬', label:'Opinion (Agree/Disagree)'    },
+  t2_opinion:  { task:2, icon:'💬', label:'Opinion Essay'               },
   t2_discuss:  { task:2, icon:'⚖️', label:'Discussion (Both views)'     },
   t2_causes:   { task:2, icon:'🔗', label:'Causes & Solutions'          },
   t2_adv:      { task:2, icon:'➕', label:'Advantages & Disadvantages'  },
@@ -220,7 +242,7 @@ document.getElementById('pageDesc').textContent = partDesc ||
     : 'Cambridge '+cfg.tag+' — luyện viết theo đúng định dạng, chấm tự động kèm nhận xét tiếng Việt.');
 
 /* ══════════════════════════════════════════════════════════════
-   Fetch & render
+   Fetch & render (+ IELTS filter)
 ══════════════════════════════════════════════════════════════ */
 var partIcons = {
   'Part 1':'📧','Part 2':'📖','Part 3':'📝',
@@ -229,6 +251,99 @@ var partIcons = {
   'Khác':'📄'
 };
 var icoColors = ['ico-amber','ico-pink','ico-blue','ico-teal'];
+
+/* ── IELTS filter state ── */
+var _allEx = [];
+var _wF = { q:'', task:'', sub:'' };
+var _wSearchTimer;
+
+/* Subtype definitions split by task for filter display */
+var T1_SUBS = ['t1_bar','t1_line','t1_pie','t1_table','t1_map','t1_process','t1_mixed','t1_formal','t1_semi','t1_informal'];
+var T2_SUBS = ['t2_opinion','t2_discuss','t2_causes','t2_adv','t2_twopart','t2_problem'];
+
+function wSetFilter(key, val) {
+  _wF[key] = (_wF[key]===val) ? '' : val;
+  if (key==='task') _wF.sub = ''; // clear subtype when task changes
+  wRenderPills();
+  wRenderIelts();
+}
+
+function wRenderPills() {
+  // Task pills
+  document.getElementById('wTaskPills').innerHTML =
+    ['<button class="fpill'+(_wF.task===''?' active':'')+'" onclick="wSetFilter(\'task\',\'\')">Tất cả</button>',
+     '<button class="fpill'+(_wF.task==='1'?' active':'')+'" onclick="wSetFilter(\'task\',\'1\')">📊 Task 1</button>',
+     '<button class="fpill'+(_wF.task==='2'?' active':'')+'" onclick="wSetFilter(\'task\',\'2\')">✍️ Task 2</button>'
+    ].join('');
+
+  // Subtype pills — show T1 subs when task=1 or all, T2 subs when task=2 or all
+  var showSubs = (_wF.task==='1') ? T1_SUBS : (_wF.task==='2') ? T2_SUBS : T1_SUBS.concat(T2_SUBS);
+  var subRow = document.getElementById('wSubRow');
+
+  document.getElementById('wSubPills').innerHTML = showSubs.map(function(key) {
+    var ti = IELTS_TYPES[key];
+    if (!ti) return '';
+    var isT2 = key.startsWith('t2_');
+    var prefix = (_wF.task===''&&isT2) ? '<span style="opacity:.4;font-size:10px;margin-right:2px;">T2</span>' : '';
+    return '<button class="fpill'+(_wF.sub===key?' active':'')+'" onclick="wSetFilter(\'sub\',\''+key+'\')">'+prefix+ti.icon+' '+ti.label+'</button>';
+  }).join('');
+}
+
+function wRenderIelts() {
+  var q = _wF.q.toLowerCase();
+  var filtered = _allEx.filter(function(e) {
+    if (q && !(e.title||'').toLowerCase().includes(q)) return false;
+    if (_wF.task) {
+      var ti = IELTS_TYPES[e.task_type];
+      if (!ti || String(ti.task) !== _wF.task) return false;
+    }
+    if (_wF.sub && e.task_type !== _wF.sub) return false;
+    return true;
+  });
+
+  document.getElementById('wCount').innerHTML = '<strong>'+filtered.length+'</strong> / '+_allEx.length+' bài';
+
+  var container = document.getElementById('partContainer');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="card" style="text-align:center;padding:36px 20px;">'+
+      '<div style="font-size:32px;margin-bottom:8px;">🔍</div>'+
+      '<p style="color:var(--text-faint);">Không tìm thấy bài phù hợp.</p>'+
+      '<button class="btn btn-sm" style="margin-top:10px;" onclick="wClearFilters()">Xóa bộ lọc</button>'+
+      '</div>';
+    return;
+  }
+
+  /* Group by Task 1 / Task 2 */
+  var groups = {};
+  filtered.forEach(function(e){
+    var pk = getPartKey(e.title);
+    if (!groups[pk.label]) groups[pk.label] = { order:pk.order, items:[] };
+    groups[pk.label].items.push(e);
+  });
+  var sorted = Object.keys(groups).sort(function(a,b){ return groups[a].order - groups[b].order; });
+  if (partFilter) sorted = sorted.filter(function(l){ return l===partFilter; });
+
+  container.innerHTML = sorted.map(function(label, idx){
+    var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn IELTS Band 0–9';
+    var icon = partIcons[label] || '✍️';
+    var icoC = icoColors[idx%4];
+    return '<div class="card" style="margin-bottom:28px;">'+
+      '<div class="card-head">'+
+        '<h3><span class="course-ico '+icoC+'" style="width:36px;height:36px;font-size:17px;margin:0;">'+icon+'</span> Writing '+esc(label)+'</h3>'+
+        '<span class="tag">'+groups[label].items.length+' bài</span>'+
+      '</div>'+
+      '<p style="font-size:13.5px;color:var(--text-muted);margin:0 0 18px;">'+esc(desc)+'</p>'+
+      '<div class="ex-card-grid">'+groups[label].items.map(renderCard).join('')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function wClearFilters() {
+  _wF.q=''; _wF.task=''; _wF.sub='';
+  document.getElementById('wSearch').value='';
+  wRenderPills();
+  wRenderIelts();
+}
 
 fetch('/api/exercises?program='+encodeURIComponent(program)+'&skill=Writing',{credentials:'same-origin'})
   .then(function(r){ return r.json(); })
@@ -241,39 +356,37 @@ fetch('/api/exercises?program='+encodeURIComponent(program)+'&skill=Writing',{cr
       return;
     }
 
-    /* Nhóm theo Part / Task */
-    var groups = {};
-    list.forEach(function(e){
-      var pk = getPartKey(e.title);
-      if (!groups[pk.label]) groups[pk.label] = { order:pk.order, items:[] };
-      groups[pk.label].items.push(e);
-    });
-    var sorted = Object.keys(groups).sort(function(a,b){ return groups[a].order - groups[b].order; });
-
-    /* Lọc chỉ hiện đúng part được chọn từ URL */
-    if (partFilter) sorted = sorted.filter(function(label){ return label === partFilter; });
-
-    if (partFilter && !sorted.length) {
-      container.innerHTML = '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div></div>';
-      return;
-    }
-
     if (program === 'IELTS') {
-      /* ─── IELTS: preview cards ─── */
-      container.innerHTML = sorted.map(function(label, idx){
-        var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn IELTS Band 0–9';
-        var icon = partIcons[label] || '✍️';
-        var icoC = icoColors[idx%4];
-        return '<div class="card" style="margin-bottom:28px;">'+
-          '<div class="card-head">'+
-            '<h3><span class="course-ico '+icoC+'" style="width:36px;height:36px;font-size:17px;margin:0;">'+icon+'</span> Writing '+esc(label)+'</h3>'+
-          '</div>'+
-          '<p style="font-size:13.5px;color:var(--text-muted);margin:0 0 18px;">'+esc(desc)+'</p>'+
-          '<div class="ex-card-grid">'+groups[label].items.map(renderCard).join('')+'</div>'+
-        '</div>';
-      }).join('');
+      /* ─── IELTS: show filter bar + filterable card grid ─── */
+      _allEx = list;
+      var fbar = document.getElementById('ieltsFbar');
+      fbar.style.display = '';
+
+      // Wire search
+      var searchEl = document.getElementById('wSearch');
+      searchEl.addEventListener('input', function(){
+        clearTimeout(_wSearchTimer);
+        _wSearchTimer = setTimeout(function(){ _wF.q = searchEl.value.trim(); wRenderIelts(); }, 220);
+      });
+
+      wRenderPills();
+      wRenderIelts();
     } else {
       /* ─── KET / PET / FCE / APTIS: danh sách rows ─── */
+      var groups = {};
+      list.forEach(function(e){
+        var pk = getPartKey(e.title);
+        if (!groups[pk.label]) groups[pk.label] = { order:pk.order, items:[] };
+        groups[pk.label].items.push(e);
+      });
+      var sorted = Object.keys(groups).sort(function(a,b){ return groups[a].order - groups[b].order; });
+      if (partFilter) sorted = sorted.filter(function(label){ return label === partFilter; });
+
+      if (partFilter && !sorted.length) {
+        container.innerHTML = '<div class="skill-card"><div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div></div>';
+        return;
+      }
+
       container.innerHTML = sorted.map(function(label, idx){
         var desc = cfg.parts[label] || 'Chấm tự động theo chuẩn '+cfg.tag;
         var icon = partIcons[label] || '✍️';
