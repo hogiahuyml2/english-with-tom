@@ -464,6 +464,16 @@ Quy tắc chung:
 - summary: 2–3 câu tổng quan bằng tiếng Việt.
 - suggestions: 3–5 gợi ý cải thiện cụ thể bằng tiếng Việt.
 - suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu. Bám sát yêu cầu đề (notes nếu có, số liệu hình nếu có), KHÔNG viết generic.
+  ⭐ **KHI VIẾT BÀI MẪU (suggested_writing)**: LUÔN tham khảo từ các kho bài mẫu uy tín sau để đảm bảo bài mẫu đạt chuẩn band cao và đáng tin cậy:
+    • Youpass (youpass.io) — kho bài band 8-9 phân loại theo topics
+    • IDP IELTS Official — official.ielts.org
+    • IELTS Nguyễn Huyền — kho bài phân tích chi tiết criterion
+    • IELTS 1984 — model essays Band 7-8 với giải thích
+    • The IELTS Workshop — bài mẫu chuẩn Cambridge
+    • DOL English — trang web IELTS uy tín
+    • IELTS Fighter — bài mẫu band cao
+    • Cambridge và British Council official resources
+  🎯 Khi viết bài mẫu: tham khảo STRUCTURE, từ vựng Academic, ngữ pháp phức tạp từ các bài trên, rồi viết bài riêng (không copy-paste). Bài mẫu phải thể hiện đặc điểm Band 7-8: lexical range cao, complex structures, smooth cohesion, sophisticated argument.
 - suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao — nêu cụ thể bài mẫu đã đề cập những notes/điểm nào của đề.
 ${hasStudentImage ? '- annotations: [] (bài nộp bằng ảnh — không thể highlight trực tiếp).' : `- annotations: Xác định 4–8 LỖI QUAN TRỌNG NHẤT trong bài. Mỗi lỗi gồm:
   • text: COPY NGUYÊN VĂN đúng từng ký tự (kể cả lỗi chính tả) đoạn sai từ bài học sinh, 1–7 từ, ĐỦ NGẮN để khoanh đúng chỗ sai.
