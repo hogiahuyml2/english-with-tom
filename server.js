@@ -477,23 +477,43 @@ app.get('/api/auth/google', (req, res) => {
 
 app.get('/api/auth/google/callback', async (req, res) => {
   const fail = (m) => res.redirect('/login.html?error=' + encodeURIComponent(m));
-  const { code, state } = req.query;
-  if (!code || !state || state !== parseCookies(req).ewt_oauth) return fail('Xác thực Google thất bại, thử lại nhé.');
+  const { code, state, error: oauthError } = req.query;
+
+  // Google trả về lỗi (user từ chối, tài khoản bị chặn...)
+  if (oauthError) {
+    console.error('[Google OAuth] Google error:', oauthError);
+    return fail('Google từ chối xác thực: ' + oauthError);
+  }
+
+  const cookieState = parseCookies(req).ewt_oauth;
+  if (!code || !state) return fail('Thiếu code hoặc state từ Google.');
+  if (!cookieState) return fail('Phiên xác thực hết hạn, vui lòng thử lại.');
+  if (state !== cookieState) return fail('Xác thực Google thất bại (state mismatch), vui lòng thử lại.');
+
   try {
+    const callbackUrl = baseUrl(req) + '/api/auth/google/callback';
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         code, client_id: process.env.GOOGLE_CLIENT_ID, client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: baseUrl(req) + '/api/auth/google/callback', grant_type: 'authorization_code'
+        redirect_uri: callbackUrl, grant_type: 'authorization_code'
       })
     });
     const tok = await tokenRes.json();
-    if (!tok.access_token) throw new Error('no token');
+    if (!tok.access_token) {
+      console.error('[Google OAuth] Token exchange failed:', JSON.stringify(tok));
+      return fail('Không lấy được token Google. Lỗi: ' + (tok.error_description || tok.error || 'unknown'));
+    }
+
     const info = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: 'Bearer ' + tok.access_token }
     }).then(r => r.json());
+
     const email = (info.email || '').toLowerCase();
-    if (!email) throw new Error('no email');
+    if (!email) {
+      console.error('[Google OAuth] No email in userinfo:', JSON.stringify(info));
+      return fail('Không lấy được email từ tài khoản Google.');
+    }
 
     let u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
     if (!u) {
@@ -501,12 +521,13 @@ app.get('/api/auth/google/callback', async (req, res) => {
         .run(info.name || email, email, 'google-oauth', 'student', now());
       u = { id: Number(r2.lastInsertRowid) };
     } else if (!u.email_verified) {
-      db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id); // Google đã xác thực email
+      db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id);
     }
     startSession(res, u.id, req);
     res.redirect('/dashboard.html');
   } catch (e) {
-    fail('Đăng nhập Google thất bại, thử lại nhé.');
+    console.error('[Google OAuth] Exception:', e);
+    fail('Đăng nhập Google thất bại: ' + e.message);
   }
 });
 
