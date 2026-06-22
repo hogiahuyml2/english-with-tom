@@ -74,8 +74,6 @@ body { background:linear-gradient(150deg,#eef2ff 0%,#e0e7ff 40%,#f5f3ff 100%) fi
 }
 
 .emoji-face { font-size:34px; line-height:1; }
-.img-face { width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:10px; background:#f5f5f5; }
-.img-face img { width:90%; height:90%; object-fit:contain; }
 .word-face  { font-size:14px; font-weight:800; letter-spacing:.04em; color:var(--text); }
 
 /* Stats bar */
@@ -183,68 +181,68 @@ body { background:linear-gradient(150deg,#eef2ff 0%,#e0e7ff 40%,#f5f3ff 100%) fi
 ══════════════════════════════════════════════════════ */
 var TOPICS = [
   { id:'animals', name:'Animals', nameVi:'Động vật', icon:'🐾', bg:'#bbf7d0', accent:'#15803d',
-    words:[{w:'CAT',img:'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'},{w:'DOG',img:'https://upload.wikimedia.org/wikipedia/commons/2/26/YellowLabradorLooking_new.jpg'},{w:'COW',img:'https://upload.wikimedia.org/wikipedia/commons/0/0c/Cow_female_black_white.jpg'},{w:'PIG',img:'https://upload.wikimedia.org/wikipedia/commons/3/31/Sus_scrofa_scrofa.jpg'},
-           {w:'FROG',img:'https://upload.wikimedia.org/wikipedia/commons/1/1d/Rana_temporaria_2.jpg'},{w:'LION',img:'https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg'},{w:'BEAR',img:'https://upload.wikimedia.org/wikipedia/commons/e/ef/Brown_bear_in_the_Carpathian_Mountains.jpg'},{w:'FOX',img:'https://upload.wikimedia.org/wikipedia/commons/c/c4/Canis_vulpes_ssp_fulvus_101.jpg'},
-           {w:'BEE',img:'https://upload.wikimedia.org/wikipedia/commons/4/4d/Apis_mellifera_-_Varroa_destructor.jpg'},{w:'BIRD',img:'https://upload.wikimedia.org/wikipedia/commons/9/9b/Ashy_headed_green_pigeon.jpg'},{w:'FISH',img:'https://upload.wikimedia.org/wikipedia/commons/2/23/Goldfish3.jpg'},{w:'DUCK',img:'https://upload.wikimedia.org/wikipedia/commons/e/e1/Mallard_2.27.07.jpg'}] },
+    words:[{w:'CAT',e:'🐱'},{w:'DOG',e:'🐶'},{w:'COW',e:'🐮'},{w:'PIG',e:'🐷'},
+           {w:'FROG',e:'🐸'},{w:'LION',e:'🦁'},{w:'BEAR',e:'🐻'},{w:'FOX',e:'🦊'},
+           {w:'BEE',e:'🐝'},{w:'BIRD',e:'🐦'},{w:'FISH',e:'🐟'},{w:'DUCK',e:'🦆'}] },
   { id:'food', name:'Food', nameVi:'Thức ăn', icon:'🍎', bg:'#fecaca', accent:'#dc2626',
-    words:[{w:'CAKE',img:'https://upload.wikimedia.org/wikipedia/commons/c/c9/Chocolate_cake_made_in_a_pressure_cooker.jpg'},{w:'MILK',img:'https://upload.wikimedia.org/wikipedia/commons/d/d9/Glass_of_milk.jpg'},{w:'EGG',img:'https://upload.wikimedia.org/wikipedia/commons/a/a7/Egg_white_and_yolk.jpg'},{w:'BREAD',img:'https://upload.wikimedia.org/wikipedia/commons/1/1d/Bread_-_NCI_Visuals_Online.jpg'},
-           {w:'APPLE',img:'https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg'},{w:'GRAPE',img:'https://upload.wikimedia.org/wikipedia/commons/b/bb/GrapeQQQ.jpg'},{w:'PIZZA',img:'https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg'},{w:'CORN',img:'https://upload.wikimedia.org/wikipedia/commons/1/13/Corn_on_the_cob.jpg'},
-           {w:'SOUP',img:'https://upload.wikimedia.org/wikipedia/commons/9/95/Vegetable_soup.jpg'},{w:'BANANA',img:'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Chocolate-Chip-Cookies-Recipe.jpg'},{w:'LEMON',img:'https://upload.wikimedia.org/wikipedia/commons/e/e4/Lemon.jpg'},{w:'CANDY',img:'https://upload.wikimedia.org/wikipedia/commons/a/aa/Candy_corn.jpg'}] },
+    words:[{w:'CAKE',e:'🎂'},{w:'MILK',e:'🥛'},{w:'EGG',e:'🥚'},{w:'BREAD',e:'🍞'},
+           {w:'APPLE',e:'🍎'},{w:'GRAPE',e:'🍇'},{w:'PIZZA',e:'🍕'},{w:'CORN',e:'🌽'},
+           {w:'SOUP',e:'🍲'},{w:'BANANA',e:'🍌'},{w:'LEMON',e:'🍋'},{w:'CANDY',e:'🍬'}] },
   { id:'colors', name:'Colors', nameVi:'Màu sắc', icon:'🎨', bg:'#e9d5ff', accent:'#7c3aed',
-    words:[{w:'RED',img:'https://upload.wikimedia.org/wikipedia/commons/4/4c/Tomato_je.jpg',c:'#ef4444'},{w:'BLUE',img:'https://upload.wikimedia.org/wikipedia/commons/3/3c/Ocean_Sunset_2007-1.jpg',c:'#3b82f6'},
-           {w:'GREEN',img:'https://upload.wikimedia.org/wikipedia/commons/6/64/Leaf_CC0.jpg',c:'#22c55e'},{w:'YELLOW',img:'https://upload.wikimedia.org/wikipedia/commons/f/f0/Sunflower_from_Silesia2.jpg',c:'#fbbf24'},
-           {w:'PINK',img:'https://upload.wikimedia.org/wikipedia/commons/b/b6/Pink_Magnolia.jpg',c:'#f472b6'},{w:'BLACK',img:'https://upload.wikimedia.org/wikipedia/commons/4/47/New_black.jpg',c:'#1f2937'},
-           {w:'ORANGE',img:'https://upload.wikimedia.org/wikipedia/commons/e/ee/Orange_-_whole_and_split.jpg',c:'#f97316'},{w:'BROWN',img:'https://upload.wikimedia.org/wikipedia/commons/9/98/Brown_bear_DM.jpg',c:'#92400e'},
-           {w:'PURPLE',img:'https://upload.wikimedia.org/wikipedia/commons/8/81/Purple_Crocus.jpg',c:'#7c3aed'},{w:'GREY',img:'https://upload.wikimedia.org/wikipedia/commons/5/5f/Elephant_sample.jpg',c:'#6b7280'}] },
+    words:[{w:'RED',e:'🔴',c:'#ef4444'},{w:'BLUE',e:'🔵',c:'#3b82f6'},
+           {w:'GREEN',e:'🟢',c:'#22c55e'},{w:'YELLOW',e:'🟡',c:'#fbbf24'},
+           {w:'PINK',e:'🩷',c:'#f472b6'},{w:'BLACK',e:'⚫',c:'#1f2937'},
+           {w:'ORANGE',e:'🟠',c:'#f97316'},{w:'BROWN',e:'🟤',c:'#92400e'},
+           {w:'PURPLE',e:'🟣',c:'#7c3aed'},{w:'GREY',e:'🩶',c:'#6b7280'}] },
   { id:'body', name:'Body Parts', nameVi:'Cơ thể', icon:'👁️', bg:'#fed7aa', accent:'#ea580c',
-    words:[{w:'EYE',img:'https://upload.wikimedia.org/wikipedia/commons/9/99/Camponotus_flavomarginatus_ant.jpg'},{w:'EAR',img:'https://upload.wikimedia.org/wikipedia/commons/0/0f/Camponotus_flavomarginatus_ant.jpg'},{w:'NOSE',img:'https://upload.wikimedia.org/wikipedia/commons/1/1a/24701-nature-natural-beauty.jpg'},{w:'HAND',img:'https://upload.wikimedia.org/wikipedia/commons/e/e7/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'FOOT',img:'https://upload.wikimedia.org/wikipedia/commons/1/14/Gfp-human-foot.jpg'},{w:'LEG',img:'https://upload.wikimedia.org/wikipedia/commons/5/59/Camponotus_flavomarginatus_ant.jpg'},{w:'ARM',img:'https://upload.wikimedia.org/wikipedia/commons/e/ed/Camponotus_flavomarginatus_ant.jpg'},{w:'HEAD',img:'https://upload.wikimedia.org/wikipedia/commons/c/c0/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'MOUTH',img:'https://upload.wikimedia.org/wikipedia/commons/2/2f/Camponotus_flavomarginatus_ant.jpg'},{w:'TEETH',img:'https://upload.wikimedia.org/wikipedia/commons/3/3d/Camponotus_flavomarginatus_ant.jpg'},{w:'HAIR',img:'https://upload.wikimedia.org/wikipedia/commons/7/7c/Camponotus_flavomarginatus_ant.jpg'},{w:'FACE',img:'https://upload.wikimedia.org/wikipedia/commons/f/f9/Camponotus_flavomarginatus_ant.jpg'}] },
+    words:[{w:'EYE',e:'👁️'},{w:'EAR',e:'👂'},{w:'NOSE',e:'👃'},{w:'HAND',e:'✋'},
+           {w:'FOOT',e:'🦶'},{w:'LEG',e:'🦵'},{w:'ARM',e:'💪'},{w:'HEAD',e:'🗣️'},
+           {w:'MOUTH',e:'👄'},{w:'TEETH',e:'🦷'},{w:'HAIR',e:'💇'},{w:'FACE',e:'😊'}] },
   { id:'clothes', name:'Clothes', nameVi:'Quần áo', icon:'👕', bg:'#bae6fd', accent:'#0284c7',
-    words:[{w:'HAT',img:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Camponotus_flavomarginatus_ant.jpg'},{w:'CAP',img:'https://upload.wikimedia.org/wikipedia/commons/e/ed/Camponotus_flavomarginatus_ant.jpg'},{w:'SOCK',img:'https://upload.wikimedia.org/wikipedia/commons/9/97/Camponotus_flavomarginatus_ant.jpg'},{w:'SHOE',img:'https://upload.wikimedia.org/wikipedia/commons/b/bc/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'COAT',img:'https://upload.wikimedia.org/wikipedia/commons/0/00/Camponotus_flavomarginatus_ant.jpg'},{w:'DRESS',img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/Camponotus_flavomarginatus_ant.jpg'},{w:'SHIRT',img:'https://upload.wikimedia.org/wikipedia/commons/f/f2/Camponotus_flavomarginatus_ant.jpg'},{w:'JEANS',img:'https://upload.wikimedia.org/wikipedia/commons/c/c1/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'SCARF',img:'https://upload.wikimedia.org/wikipedia/commons/7/7a/Camponotus_flavomarginatus_ant.jpg'},{w:'GLOVE',img:'https://upload.wikimedia.org/wikipedia/commons/d/d4/Camponotus_flavomarginatus_ant.jpg'},{w:'BOOT',img:'https://upload.wikimedia.org/wikipedia/commons/8/8e/Camponotus_flavomarginatus_ant.jpg'},{w:'BELT',img:'https://upload.wikimedia.org/wikipedia/commons/4/40/Camponotus_flavomarginatus_ant.jpg'}] },
+    words:[{w:'HAT',e:'🎩'},{w:'CAP',e:'🧢'},{w:'SOCK',e:'🧦'},{w:'SHOE',e:'👟'},
+           {w:'COAT',e:'🧥'},{w:'DRESS',e:'👗'},{w:'SHIRT',e:'👕'},{w:'JEANS',e:'👖'},
+           {w:'SCARF',e:'🧣'},{w:'GLOVE',e:'🧤'},{w:'BOOT',e:'👢'},{w:'BELT',e:'🎗️'}] },
   { id:'school', name:'School', nameVi:'Học tập', icon:'📚', bg:'#fef9c3', accent:'#ca8a04',
-    words:[{w:'PEN',img:'https://upload.wikimedia.org/wikipedia/commons/3/3f/Camponotus_flavomarginatus_ant.jpg'},{w:'BOOK',img:'https://upload.wikimedia.org/wikipedia/commons/5/5d/Open_book_nae.svg.png'},{w:'RULER',img:'https://upload.wikimedia.org/wikipedia/commons/4/4c/Camponotus_flavomarginatus_ant.jpg'},{w:'BELL',img:'https://upload.wikimedia.org/wikipedia/commons/1/1f/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'PENCIL',img:'https://upload.wikimedia.org/wikipedia/commons/9/9b/Camponotus_flavomarginatus_ant.jpg'},{w:'CRAYON',img:'https://upload.wikimedia.org/wikipedia/commons/3/39/Camponotus_flavomarginatus_ant.jpg'},{w:'CLOCK',img:'https://upload.wikimedia.org/wikipedia/commons/1/1e/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'GLOBE',img:'https://upload.wikimedia.org/wikipedia/commons/b/b9/Above_Gotham.jpg'},{w:'PAPER',img:'https://upload.wikimedia.org/wikipedia/commons/a/ab/Camponotus_flavomarginatus_ant.jpg'},{w:'BAG',img:'https://upload.wikimedia.org/wikipedia/commons/2/24/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'DESK',img:'https://upload.wikimedia.org/wikipedia/commons/8/8d/Camponotus_flavomarginatus_ant.jpg'},{w:'CHALK',img:'https://upload.wikimedia.org/wikipedia/commons/5/50/Camponotus_flavomarginatus_ant.jpg'}] },
-  { id:'fruits', name:'Fruits', nameVi:'Trái cây', icon:'🍎', bg:'#fae8ff', accent:'#be185d',
-    words:[{w:'APPLE',img:'https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg'},{w:'ORANGE',img:'https://upload.wikimedia.org/wikipedia/commons/e/ee/Orange_-_whole_and_split.jpg'},
-           {w:'LEMON',img:'https://upload.wikimedia.org/wikipedia/commons/e/e4/Lemon.jpg'},{w:'CHERRY',img:'https://upload.wikimedia.org/wikipedia/commons/9/90/Hapus_Mango.jpg'},
-           {w:'GRAPE',img:'https://upload.wikimedia.org/wikipedia/commons/b/bb/GrapeQQQ.jpg'},{w:'PEACH',img:'https://upload.wikimedia.org/wikipedia/commons/1/15/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'MELON',img:'https://upload.wikimedia.org/wikipedia/commons/5/5d/Cantaloupe_melon_sliced.jpg'},{w:'PLUM',img:'https://upload.wikimedia.org/wikipedia/commons/e/e6/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'DATE',img:'https://upload.wikimedia.org/wikipedia/commons/5/50/Camponotus_flavomarginatus_ant.jpg'},{w:'KIWI',img:'https://upload.wikimedia.org/wikipedia/commons/4/4f/Kiwi_fruit_cut.jpg'}] },
-  { id:'vegetables', name:'Vegetables', nameVi:'Rau quả', icon:'🥕', bg:'#dcfce7', accent:'#15803d',
-    words:[{w:'CARROT',img:'https://upload.wikimedia.org/wikipedia/commons/a/a9/Camponotus_flavomarginatus_ant.jpg'},{w:'TOMATO',img:'https://upload.wikimedia.org/wikipedia/commons/4/4c/Tomato_je.jpg'},
-           {w:'BROCCOLI',img:'https://upload.wikimedia.org/wikipedia/commons/b/b2/Camponotus_flavomarginatus_ant.jpg'},{w:'CORN',img:'https://upload.wikimedia.org/wikipedia/commons/1/13/Corn_on_the_cob.jpg'},
-           {w:'LETTUCE',img:'https://upload.wikimedia.org/wikipedia/commons/6/6a/Lettuce.jpg'},{w:'ONION',img:'https://upload.wikimedia.org/wikipedia/commons/f/f9/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'PEPPER',img:'https://upload.wikimedia.org/wikipedia/commons/1/13/Camponotus_flavomarginatus_ant.jpg'},{w:'PUMPKIN',img:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'CUCUMBER',img:'https://upload.wikimedia.org/wikipedia/commons/9/99/Camponotus_flavomarginatus_ant.jpg'},{w:'SPINACH',img:'https://upload.wikimedia.org/wikipedia/commons/c/c6/Spinach_-_NCI_Visuals_Online.jpg'}] },
-  { id:'transport', name:'Transport', nameVi:'Phương tiện', icon:'🚗', bg:'#e0f2fe', accent:'#0284c7',
-    words:[{w:'CAR',img:'https://upload.wikimedia.org/wikipedia/commons/f/f0/Camponotus_flavomarginatus_ant.jpg'},{w:'TRAIN',img:'https://upload.wikimedia.org/wikipedia/commons/5/5b/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'PLANE',img:'https://upload.wikimedia.org/wikipedia/commons/c/c1/Camponotus_flavomarginatus_ant.jpg'},{w:'BOAT',img:'https://upload.wikimedia.org/wikipedia/commons/2/2c/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'BUS',img:'https://upload.wikimedia.org/wikipedia/commons/7/7e/Camponotus_flavomarginatus_ant.jpg'},{w:'BIKE',img:'https://upload.wikimedia.org/wikipedia/commons/3/3d/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'TRUCK',img:'https://upload.wikimedia.org/wikipedia/commons/1/16/Camponotus_flavomarginatus_ant.jpg'},{w:'SHIP',img:'https://upload.wikimedia.org/wikipedia/commons/9/92/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'ROCKET',img:'https://upload.wikimedia.org/wikipedia/commons/e/e4/Camponotus_flavomarginatus_ant.jpg'},{w:'TAXI',img:'https://upload.wikimedia.org/wikipedia/commons/8/8b/Camponotus_flavomarginatus_ant.jpg'}] },
-  { id:'shapes', name:'Shapes', nameVi:'Hình dạng', icon:'⭕', bg:'#fef3c7', accent:'#d97706',
-    words:[{w:'CIRCLE',img:'https://upload.wikimedia.org/wikipedia/commons/4/48/Camponotus_flavomarginatus_ant.jpg'},{w:'SQUARE',img:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'TRIANGLE',img:'https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg'},{w:'RECTANGLE',img:'https://upload.wikimedia.org/wikipedia/commons/f/f5/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'DIAMOND',img:'https://upload.wikimedia.org/wikipedia/commons/8/87/Camponotus_flavomarginatus_ant.jpg'},{w:'STAR',img:'https://upload.wikimedia.org/wikipedia/commons/1/1a/24701-nature-natural-beauty.jpg'},
-           {w:'HEART',img:'https://upload.wikimedia.org/wikipedia/commons/3/33/Camponotus_flavomarginatus_ant.jpg'},{w:'OVAL',img:'https://upload.wikimedia.org/wikipedia/commons/b/bc/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'PENTAGON',img:'https://upload.wikimedia.org/wikipedia/commons/6/6b/Camponotus_flavomarginatus_ant.jpg'},{w:'HEXAGON',img:'https://upload.wikimedia.org/wikipedia/commons/e/e9/Camponotus_flavomarginatus_ant.jpg'}] },
-  { id:'toys', name:'Toys', nameVi:'Đồ chơi', icon:'🧩', bg:'#f3f0ff', accent:'#6d28d9',
-    words:[{w:'BALL',img:'https://upload.wikimedia.org/wikipedia/commons/2/20/Camponotus_flavomarginatus_ant.jpg'},{w:'DOLL',img:'https://upload.wikimedia.org/wikipedia/commons/a/a2/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'KITE',img:'https://upload.wikimedia.org/wikipedia/commons/f/f7/Camponotus_flavomarginatus_ant.jpg'},{w:'DRUM',img:'https://upload.wikimedia.org/wikipedia/commons/8/8c/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'ROBOT',img:'https://upload.wikimedia.org/wikipedia/commons/7/73/Camponotus_flavomarginatus_ant.jpg'},{w:'PUZZLE',img:'https://upload.wikimedia.org/wikipedia/commons/4/4d/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'TRAIN',img:'https://upload.wikimedia.org/wikipedia/commons/5/5b/Camponotus_flavomarginatus_ant.jpg'},{w:'CAR',img:'https://upload.wikimedia.org/wikipedia/commons/f/f0/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'TEDDY',img:'https://upload.wikimedia.org/wikipedia/commons/e/ef/Brown_bear_in_the_Carpathian_Mountains.jpg'},{w:'BLOCKS',img:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Camponotus_flavomarginatus_ant.jpg'}] },
-  { id:'numbers', name:'Numbers', nameVi:'Con số', icon:'🔢', bg:'#e0e7ff', accent:'#4f46e5',
-    words:[{w:'ONE',img:'https://upload.wikimedia.org/wikipedia/commons/a/a0/Camponotus_flavomarginatus_ant.jpg'},{w:'TWO',img:'https://upload.wikimedia.org/wikipedia/commons/b/b8/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'THREE',img:'https://upload.wikimedia.org/wikipedia/commons/c/c9/Camponotus_flavomarginatus_ant.jpg'},{w:'FOUR',img:'https://upload.wikimedia.org/wikipedia/commons/d/da/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'FIVE',img:'https://upload.wikimedia.org/wikipedia/commons/e/eb/Camponotus_flavomarginatus_ant.jpg'},{w:'SIX',img:'https://upload.wikimedia.org/wikipedia/commons/f/fc/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'SEVEN',img:'https://upload.wikimedia.org/wikipedia/commons/1/11/Camponotus_flavomarginatus_ant.jpg'},{w:'EIGHT',img:'https://upload.wikimedia.org/wikipedia/commons/2/22/Camponotus_flavomarginatus_ant.jpg'},
-           {w:'NINE',img:'https://upload.wikimedia.org/wikipedia/commons/3/33/Camponotus_flavomarginatus_ant.jpg'},{w:'ZERO',img:'https://upload.wikimedia.org/wikipedia/commons/4/44/Camponotus_flavomarginatus_ant.jpg'}] },
+    words:[{w:'PEN',e:'🖊️'},{w:'BOOK',e:'📚'},{w:'RULER',e:'📏'},{w:'BELL',e:'🔔'},
+           {w:'PENCIL',e:'✏️'},{w:'CRAYON',e:'🖍️'},{w:'CLOCK',e:'🕐'},
+           {w:'GLOBE',e:'🌍'},{w:'PAPER',e:'📄'},{w:'BAG',e:'🎒'},
+           {w:'DESK',e:'🪑'},{w:'CHALK',e:'🖊️'}] },
+  { id:'fruits', name:'Fruits', nameVi:'Trái cây', icon:'◐', bg:'#fae8ff', accent:'#be185d',
+    words:[{w:'APPLE',e:'◉',c:'#ef4444'},{w:'ORANGE',e:'◐',c:'#f97316'},
+           {w:'LEMON',e:'◑',c:'#eab308'},{w:'CHERRY',e:'◆',c:'#dc2626'},
+           {w:'GRAPE',e:'●',c:'#7c3aed'},{w:'PEACH',e:'◌',c:'#f472b6'},
+           {w:'MELON',e:'⊙',c:'#22c55e'},{w:'PLUM',e:'◇',c:'#a855f7'},
+           {w:'DATE',e:'■',c:'#8b4513'},{w:'KIWI',e:'◍',c:'#65a30d'}] },
+  { id:'vegetables', name:'Vegetables', nameVi:'Rau quả', icon:'▢', bg:'#dcfce7', accent:'#15803d',
+    words:[{w:'CARROT',e:'▲',c:'#f97316'},{w:'TOMATO',e:'◆',c:'#ef4444'},
+           {w:'BROCCOLI',e:'◉',c:'#15803d'},{w:'CORN',e:'▭',c:'#eab308'},
+           {w:'LETTUCE',e:'◌',c:'#22c55e'},{w:'ONION',e:'◯',c:'#f5f5dc'},
+           {w:'PEPPER',e:'■',c:'#dc2626'},{w:'PUMPKIN',e:'●',c:'#f97316'},
+           {w:'CUCUMBER',e:'▬',c:'#22c55e'},{w:'SPINACH',e:'◍',c:'#15803d'}] },
+  { id:'transport', name:'Transport', nameVi:'Phương tiện', icon:'⤳', bg:'#e0f2fe', accent:'#0284c7',
+    words:[{w:'CAR',e:'▶',c:'#ef4444'},{w:'TRAIN',e:'═',c:'#6366f1'},
+           {w:'PLANE',e:'▲',c:'#3b82f6'},{w:'BOAT',e:'≈',c:'#0ea5e9'},
+           {w:'BUS',e:'█',c:'#f59e0b'},{w:'BIKE',e:'◎',c:'#22c55e'},
+           {w:'TRUCK',e:'◆',c:'#6b7280'},{w:'SHIP',e:'≋',c:'#06b6d4'},
+           {w:'ROCKET',e:'↑',c:'#f97316'},{w:'TAXI',e:'⊓',c:'#fbbf24'}] },
+  { id:'shapes', name:'Shapes', nameVi:'Hình dạng', icon:'◈', bg:'#fef3c7', accent:'#d97706',
+    words:[{w:'CIRCLE',e:'◆',c:'#3b82f6'},{w:'SQUARE',e:'■',c:'#ef4444'},
+           {w:'TRIANGLE',e:'▲',c:'#22c55e'},{w:'RECTANGLE',e:'▬',c:'#f59e0b'},
+           {w:'DIAMOND',e:'◇',c:'#8b5cf6'},{w:'STAR',e:'★',c:'#fbbf24'},
+           {w:'HEART',e:'♥',c:'#f472b6'},{w:'OVAL',e:'⬭',c:'#a855f7'},
+           {w:'PENTAGON',e:'⬟',c:'#14b8a6'},{w:'HEXAGON',e:'⬡',c:'#6366f1'}] },
+  { id:'toys', name:'Toys', nameVi:'Đồ chơi', icon:'◈', bg:'#f3f0ff', accent:'#6d28d9',
+    words:[{w:'BALL',e:'●',c:'#ef4444'},{w:'DOLL',e:'◌',c:'#ec4899'},
+           {w:'KITE',e:'◆',c:'#8b5cf6'},{w:'DRUM',e:'◯',c:'#dc2626'},
+           {w:'ROBOT',e:'█',c:'#3b82f6'},{w:'PUZZLE',e:'■',c:'#f59e0b'},
+           {w:'TRAIN',e:'═',c:'#22c55e'},{w:'CAR',e:'▶',c:'#f97316'},
+           {w:'TEDDY',e:'◉',c:'#92400e'},{w:'BLOCKS',e:'▢',c:'#0ea5e9'}] },
+  { id:'numbers', name:'Numbers', nameVi:'Con số', icon:'①', bg:'#e0e7ff', accent:'#4f46e5',
+    words:[{w:'ONE',e:'①',c:'#3b82f6'},{w:'TWO',e:'②',c:'#8b5cf6'},
+           {w:'THREE',e:'③',c:'#ec4899'},{w:'FOUR',e:'④',c:'#ef4444'},
+           {w:'FIVE',e:'⑤',c:'#f97316'},{w:'SIX',e:'⑥',c:'#eab308'},
+           {w:'SEVEN',e:'⑦',c:'#22c55e'},{w:'EIGHT',e:'⑧',c:'#14b8a6'},
+           {w:'NINE',e:'⑨',c:'#06b6d4'},{w:'ZERO',e:'⑩',c:'#6b7280'}] },
 ];
 
 /* ══════════════════════════════════════════════════════
@@ -293,7 +291,7 @@ function startGame(topicId) {
 
   G.cards = [];
   pairs.forEach(function(item, id) {
-    G.cards.push({ id:id, type:'image', imgUrl:item.img, color:item.c||null, word:item.w, matched:false });
+    G.cards.push({ id:id, type:'emoji', content:item.e, color:item.c||null, word:item.w, matched:false });
     G.cards.push({ id:id, type:'word',  content:item.w, color:item.c||null, word:item.w, matched:false });
   });
   G.cards = shuffle(G.cards);
@@ -324,8 +322,9 @@ function renderGrid() {
     var fClass   = (c.matched || isFlipped(idx)) ? ' flipped' : '';
     var mClass   = c.matched ? ' matched' : '';
     var inner    = '';
-    if (c.type==='image') {
-      inner = '<div class="img-face"><img src="'+c.imgUrl+'" alt="'+c.word+'" onerror="this.style.display=\'none\'"></div>';
+    if (c.type==='emoji') {
+      var bg = c.color || G.topic.bg;
+      inner = '<div class="emoji-face" style="font-size:34px;">'+c.content+'</div>';
     } else {
       inner = '<div class="word-face">'+c.content+'</div>';
     }
