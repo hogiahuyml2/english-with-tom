@@ -813,3 +813,108 @@ img.brand-logo {
 .re-wc-bar .wc    { font-weight: 600; color: var(--text-muted); }
 .re-wc-bar .wc.ok   { color: var(--success); }
 .re-wc-bar .wc.over { color: var(--danger, #e53e3e); }
+
+/* ===================== DARK MODE ===================== */
+[data-theme="dark"] {
+  --bg:           #0f0d1c;
+  --surface:      #1a1829;
+  --primary:      #a897f8;
+  --primary-2:    #80b4f8;
+  --primary-soft: #27234a;
+  --blue-soft:    #1a2540;
+  --teal-soft:    #112820;
+  --amber-soft:   #2a1f08;
+  --pink-soft:    #2a1025;
+  --text:         #e8e5f8;
+  --text-muted:   #9890c0;
+  --text-faint:   #5c5880;
+  --border:       #2a2745;
+  --success:      #4ade9e;
+  --success-soft: #0d2e20;
+  --warning:      #f0b429;
+  --warning-soft: #2a1d06;
+  --info:         #7ba8f0;
+  --info-soft:    #0f1e3a;
+  --shadow:       0 4px 20px rgba(0,0,0,.4);
+  --shadow-hover: 0 8px 28px rgba(0,0,0,.5);
+  --gradient-soft: linear-gradient(135deg, #1e1840 0%, #162040 100%);
+}
+
+/* Body background */
+[data-theme="dark"] body {
+  background: linear-gradient(150deg, #0c0b18 0%, #0e1525 40%, #130c1e 100%) fixed;
+}
+
+/* Header */
+[data-theme="dark"] .site-header {
+  background: rgba(15, 13, 28, 0.88);
+}
+
+/* Footer */
+[data-theme="dark"] .site-footer {
+  background: #14121f;
+}
+
+/* Hardcoded #fff elements */
+[data-theme="dark"] .fbar,
+[data-theme="dark"] .fbar-search-wrap,
+[data-theme="dark"] .fbar-pills,
+[data-theme="dark"] .hero-badge,
+[data-theme="dark"] .practice-bar,
+[data-theme="dark"] .passage,
+[data-theme="dark"] .q-block,
+[data-theme="dark"] .auth-card { background: var(--surface); }
+
+/* Forms */
+[data-theme="dark"] .field input,
+[data-theme="dark"] .field select,
+[data-theme="dark"] .field textarea {
+  background: #12101e;
+  color: var(--text);
+  border-color: var(--border);
+}
+[data-theme="dark"] .field input::placeholder,
+[data-theme="dark"] .field textarea::placeholder { color: var(--text-faint); }
+
+/* Nav pills / links */
+[data-theme="dark"] .nav-links a:hover,
+[data-theme="dark"] .nav-links a.active { background: var(--primary-soft); }
+
+/* Flip game cards */
+[data-theme="dark"] .flip-front { background: #1e1b30; border-color: var(--border); }
+[data-theme="dark"] .flip-back  { border-color: rgba(255,255,255,.08); }
+[data-theme="dark"] .flip-card.matched .flip-front { background: #0d2e20; }
+
+/* Tables */
+[data-theme="dark"] .table th { color: var(--text-faint); border-color: var(--border); }
+[data-theme="dark"] .table td { border-color: var(--border); }
+
+/* Role pick */
+[data-theme="dark"] .role-pick label { background: #1a1829; }
+
+/* fpill (filter pills) */
+[data-theme="dark"] .fpill { background: var(--surface); color: var(--text-muted); border-color: var(--border); }
+[data-theme="dark"] .fpill.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+
+/* Reading passage */
+[data-theme="dark"] .passage { color: var(--text-muted); }
+
+/* Stat chips (game) */
+[data-theme="dark"] .stat-chip { background: var(--surface); border-color: var(--border); }
+
+/* Dark mode toggle button */
+.dark-toggle {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer; font-size: 17px;
+  display: inline-grid; place-items: center;
+  transition: border-color .2s, background .2s;
+  flex-shrink: 0;
+}
+.dark-toggle:hover { border-color: var(--primary); background: var(--primary-soft); }
+
+/* Smooth transition toàn trang */
+*, *::before, *::after {
+  transition: background-color .25s ease, border-color .25s ease, color .15s ease;
+}

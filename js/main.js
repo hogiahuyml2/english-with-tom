@@ -1,4 +1,14 @@
 /* English With Tom — header/footer dùng chung + tương tác nhẹ */
+
+/* ===== DARK MODE — áp dụng trước khi render để tránh flash ===== */
+(function () {
+  var saved = localStorage.getItem('ewt-theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+
 (function () {
   var page = document.body.getAttribute('data-page') || '';
 
@@ -30,6 +40,7 @@
       '</a>' +
       '<nav class="nav-links" id="navLinks">' + links + '</nav>' +
       '<div class="nav-actions" id="navActions">' +
+        '<button class="dark-toggle" id="darkToggle" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode"></button>' +
         '<a class="btn btn-sm" href="login.html">Đăng nhập</a>' +
         '<a class="btn btn-primary btn-sm" href="login.html#register">Đăng ký</a>' +
         '<button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>' +
@@ -81,6 +92,33 @@
     document.getElementById('navLinks').classList.toggle('open');
   });
 
+  /* ===== Dark mode toggle ===== */
+  function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+  function updateDarkBtn() {
+    var btn = document.getElementById('darkToggle');
+    if (btn) btn.textContent = isDark() ? '☀️' : '🌙';
+  }
+  updateDarkBtn();
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'darkToggle') {
+      var dark = !isDark();
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      localStorage.setItem('ewt-theme', dark ? 'dark' : 'light');
+      updateDarkBtn();
+      // Cập nhật nút thứ 2 nếu có (khi đã đăng nhập)
+      var btn2 = document.getElementById('darkToggle2');
+      if (btn2) btn2.textContent = dark ? '☀️' : '🌙';
+    }
+    if (e.target && e.target.id === 'darkToggle2') {
+      var dark2 = !isDark();
+      document.documentElement.setAttribute('data-theme', dark2 ? 'dark' : 'light');
+      localStorage.setItem('ewt-theme', dark2 ? 'dark' : 'light');
+      document.getElementById('darkToggle2').textContent = dark2 ? '☀️' : '🌙';
+      var btn1 = document.getElementById('darkToggle');
+      if (btn1) btn1.textContent = dark2 ? '☀️' : '🌙';
+    }
+  });
+
   /* ===== Trạng thái đăng nhập + chặn quyền ===== */
   var roleLabel = { student: 'Học sinh', teacher: 'Giáo viên', admin: 'Quản trị' };
   fetch('/api/me', { credentials: 'same-origin' })
@@ -103,6 +141,7 @@
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;">' + initials + '</span>' +
             '<span>' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
           '</a>' +
+          '<button class="dark-toggle" id="darkToggle2" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode">' + (isDark() ? '☀️' : '🌙') + '</button>' +
           '<button class="btn btn-sm" id="logoutBtn">Đăng xuất</button>' +
           '<button class="menu-toggle" id="menuToggle2" aria-label="Menu">☰</button>';
         var lo = document.getElementById('logoutBtn');
