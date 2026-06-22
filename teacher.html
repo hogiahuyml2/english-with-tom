@@ -6,7 +6,7 @@
 <title>Khu vực giáo viên — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=10">
+<link rel="stylesheet" href="css/style.css?v=11">
 <style>
   .img-preview { max-width:100%; max-height:180px; border-radius:8px; margin-top:8px; display:none; border:1px solid var(--border); }
   .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
@@ -608,6 +608,28 @@
 
     <!-- ===== TAB: BÀI NỘP & CHẤM ===== -->
     <div id="tabGrade" style="display:none;">
+      <!-- Grade Filter Bar -->
+      <div class="fbar" id="gradeFilterBar" style="display:none;margin-bottom:16px;">
+        <div class="fbar-row">
+          <div class="fbar-search-wrap">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg>
+            <input class="fbar-search" id="gradeSearch" type="text" placeholder="Tìm học sinh hoặc tên đề...">
+          </div>
+          <span class="fbar-count" id="gradeCount"></span>
+        </div>
+        <div class="fbar-row">
+          <span class="fbar-label">Kỳ thi</span>
+          <div class="fbar-pills" id="gradeProgPills"></div>
+        </div>
+        <div class="fbar-row">
+          <span class="fbar-label">Kỹ năng</span>
+          <div class="fbar-pills" id="gradeSkillPills"></div>
+          <div class="fbar-divider"></div>
+          <span class="fbar-label" style="min-width:auto;">Trạng thái</span>
+          <div class="fbar-pills" id="gradeStatusPills"></div>
+        </div>
+      </div>
+
       <div class="card" id="gradePanel">
         <div class="card-head"><h3>📥 Bài nộp từ bài giao riêng</h3><button class="btn btn-sm" onclick="loadSubmissions()">🔄 Làm mới</button></div>
         <div id="submissionList"><p style="color:var(--text-faint);text-align:center;padding:20px;">Đang tải...</p></div>
@@ -1629,25 +1651,102 @@
   }
 
   /* ===== BÀI NỘP & CHẤM ===== */
+  var _subsAll = [];
+  var _subF = { q:'', program:'', skill:'', status:'' };
+  var _subSearchTimer;
+  var GRADE_PROGRAMS = ['KET','PET','FCE','IELTS','APTIS'];
+  var GRADE_SKILLS   = ['Writing','Reading','Listening','Speaking'];
+
+  function gSetFilter(key, val){
+    _subF[key] = (_subF[key]===val) ? '' : val;
+    gRenderPills();
+    gRenderList();
+  }
+
+  function gRenderPills(){
+    document.getElementById('gradeProgPills').innerHTML =
+      ['<button class="fpill'+(_subF.program===''?' active':'')+'" onclick="gSetFilter(\'program\',\'\')">Tất cả</button>']
+      .concat(GRADE_PROGRAMS.map(function(p){
+        return '<button class="fpill'+(_subF.program===p?' active':'')+'" onclick="gSetFilter(\'program\',\''+p+'\')">'+p+'</button>';
+      })).join('');
+    document.getElementById('gradeSkillPills').innerHTML =
+      GRADE_SKILLS.map(function(s){
+        var ic={Writing:'✍️',Reading:'📖',Listening:'🎧',Speaking:'🗣️'}[s]||'';
+        return '<button class="fpill'+(_subF.skill===s?' active':'')+'" onclick="gSetFilter(\'skill\',\''+s+'\')">'+ic+' '+s+'</button>';
+      }).join('');
+    document.getElementById('gradeStatusPills').innerHTML = [
+      ['pending','⏳ Chờ chấm'],['graded','✅ Đã chấm']
+    ].map(function(p){
+      return '<button class="fpill'+(_subF.status===p[0]?' active':'')+'" onclick="gSetFilter(\'status\',\''+p[0]+'\')">'+p[1]+'</button>';
+    }).join('');
+  }
+
+  function gRenderList(){
+    var q = _subF.q.toLowerCase();
+    var filtered = _subsAll.filter(function(a){
+      if (q && !(a.student_name||a.student_email||'').toLowerCase().includes(q) && !(a.title||'').toLowerCase().includes(q)) return false;
+      if (_subF.program && a.program !== _subF.program) return false;
+      if (_subF.skill   && a.skill   !== _subF.skill)   return false;
+      if (_subF.status === 'graded'  && a.status !== 'graded')  return false;
+      if (_subF.status === 'pending' && a.status === 'graded')  return false;
+      return true;
+    });
+
+    document.getElementById('gradeCount').innerHTML = '<strong>'+filtered.length+'</strong> / '+_subsAll.length+' bài nộp';
+
+    var list = document.getElementById('submissionList');
+    if (!filtered.length){
+      list.innerHTML = '<div style="text-align:center;padding:30px 20px;color:var(--text-faint);">'+
+        '<div style="font-size:30px;margin-bottom:8px;">🔍</div>'+
+        '<p>Không có bài nộp phù hợp.</p>'+
+        '<button class="btn btn-sm" style="margin-top:10px;" onclick="gClearFilters()">Xóa bộ lọc</button>'+
+        '</div>';
+      return;
+    }
+    list.innerHTML = filtered.map(function(a){
+      var graded = a.status === 'graded';
+      var groupBadge = a.group_name ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:6px;">🏫 '+escHtml(a.group_name)+'</span>' : '';
+      var progTag = a.program ? '<span style="background:var(--blue-soft);color:#0369a1;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:4px;">'+a.program+'</span>' : '';
+      var nameHtml = a.student_id
+        ? '<button class="sp-link-btn" onclick="openStudentProfile('+a.student_id+','+JSON.stringify(a.student_name||a.student_email)+')">'+escHtml(a.student_name||a.student_email)+'</button>'
+        : escHtml(a.student_name||a.student_email);
+      return '<div class="card" style="margin-bottom:14px;">'+
+        '<div class="card-head"><div><h4 style="margin:0;">'+nameHtml+groupBadge+progTag+'</h4><div style="font-size:13px;color:var(--text-muted);">'+escHtml(a.title)+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>'+
+        (graded ? '<span class="badge badge-done">Đã chấm: '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'–')+'</span>' : '<span class="badge badge-grading">Chờ chấm</span>')+
+        '</div>'+
+        '<button class="btn btn-sm" onclick="loadAndGrade('+a.sub_id+',this)">📖 Xem bài &amp; chấm</button>'+
+        '<div id="gradeBox'+a.sub_id+'" style="display:none;margin-top:12px;"></div>'+
+        '</div>';
+    }).join('');
+  }
+
+  function gClearFilters(){
+    _subF.q=''; _subF.program=''; _subF.skill=''; _subF.status='';
+    document.getElementById('gradeSearch').value='';
+    gRenderPills(); gRenderList();
+  }
+
   function loadSubmissions(){
     fetch('/api/teacher/assignments',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
-      var list = document.getElementById('submissionList');
-      var subs = (d.assignments||[]).filter(function(a){ return a.sub_id; });
-      if (!subs.length){ list.innerHTML='<p style="color:var(--text-faint);text-align:center;padding:20px;">Chưa có học sinh nào nộp bài.</p>'; return; }
-      list.innerHTML = subs.map(function(a){
-        var graded = a.status === 'graded';
-        var groupBadge = a.group_name ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:6px;">🏫 '+escHtml(a.group_name)+'</span>' : '';
-        var nameHtml = a.student_id
-          ? '<button class="sp-link-btn" onclick="openStudentProfile('+a.student_id+','+JSON.stringify(a.student_name||a.student_email)+')">'+escHtml(a.student_name||a.student_email)+'</button>'
-          : escHtml(a.student_name||a.student_email);
-        return '<div class="card" style="margin-bottom:14px;">' +
-          '<div class="card-head"><div><h4 style="margin:0;">'+nameHtml+groupBadge+'</h4><div style="font-size:13px;color:var(--text-muted);">'+escHtml(a.title)+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>' +
-          (graded ? '<span class="badge badge-done">Đã chấm: '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'–')+'</span>' : '<span class="badge badge-grading">Chờ chấm</span>') +
-          '</div>' +
-          '<button class="btn btn-sm" onclick="loadAndGrade('+a.sub_id+',this)">📖 Xem bài &amp; chấm</button>' +
-          '<div id="gradeBox'+a.sub_id+'" style="display:none;margin-top:12px;"></div>' +
-          '</div>';
-      }).join('');
+      _subsAll = (d.assignments||[]).filter(function(a){ return a.sub_id; });
+      var filterBar = document.getElementById('gradeFilterBar');
+      if (_subsAll.length) {
+        filterBar.style.display = '';
+
+        // Wire search once
+        var el = document.getElementById('gradeSearch');
+        if (el && !el._wired) {
+          el._wired = true;
+          el.addEventListener('input', function(){
+            clearTimeout(_subSearchTimer);
+            _subSearchTimer = setTimeout(function(){ _subF.q = el.value.trim(); gRenderList(); }, 220);
+          });
+        }
+        gRenderPills();
+      } else {
+        filterBar.style.display = 'none';
+      }
+      gRenderList();
     }).catch(function(){});
   }
 

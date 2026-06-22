@@ -6,7 +6,7 @@
 <title>Ngân hàng đề — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
@@ -21,49 +21,171 @@
 
 <section class="section" style="padding-top:34px;">
   <div class="container">
-    <div id="filterBar" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;"></div>
-    <div id="list"><p style="color:var(--text-faint);">Đang tải đề...</p></div>
+
+    <!-- Filter Bar -->
+    <div class="fbar">
+      <!-- Row 1: Search + Count -->
+      <div class="fbar-row">
+        <div class="fbar-search-wrap">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg>
+          <input class="fbar-search" id="exSearch" type="text" placeholder="Tìm theo tên đề...">
+        </div>
+        <span class="fbar-count" id="exCount"></span>
+      </div>
+      <!-- Row 2: Program -->
+      <div class="fbar-row">
+        <span class="fbar-label">Kỳ thi</span>
+        <div class="fbar-pills" id="progPills"></div>
+      </div>
+      <!-- Row 3: Skill -->
+      <div class="fbar-row">
+        <span class="fbar-label">Kỹ năng</span>
+        <div class="fbar-pills" id="skillPills"></div>
+        <div class="fbar-divider"></div>
+        <div class="fbar-pills" id="typePills"></div>
+      </div>
+    </div>
+
+    <div id="list"><p style="color:var(--text-faint);text-align:center;padding:40px;">Đang tải đề...</p></div>
   </div>
 </section>
 
 <div id="site-footer"></div>
 <script src="js/main.js?v=10"></script>
 <script>
-  function qp(n){ return new URLSearchParams(location.search).get(n); }
-  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
-  var PROGRAMS = ['KET','PET','FCE','IELTS','APTIS'];
-  var current = qp('program') || '';
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
 
-  // Thanh lọc theo chương trình
-  document.getElementById('filterBar').innerHTML =
-    ['<a class="btn btn-sm '+(current?'':'btn-primary')+'" href="exercises.html">Tất cả</a>']
-    .concat(PROGRAMS.map(function(p){
-      return '<a class="btn btn-sm '+(current===p?'btn-primary':'')+'" href="exercises.html?program='+p+'">'+p+'</a>';
-    })).join('');
+  var PROGRAMS = ['KET','PET','FCE','IELTS','APTIS'];
+  var SKILLS   = ['Writing','Reading','Listening','Speaking'];
+  var SKILL_ICONS = {Writing:'✍️',Reading:'📖',Listening:'🎧',Speaking:'🗣️'};
+  var ALL_DATA  = [];
+
+  var F = { q:'', program:'', skill:'', type:'' }; // active filters
 
   function doer(e){
-    if (e.skill === 'Writing') return { href:'practice-writing.html?id='+e.id, label:'Làm bài', ok:true, tag:'Chấm tự động' };
-    if (e.has_questions) return { href:'practice-quiz.html?id='+e.id, label:'Làm bài', ok:true, tag:'Tự chấm' };
-    return { href:'#', label:'Đề mẫu', ok:false, tag:'chưa có câu hỏi' };
+    if (e.skill==='Writing') return { href:'practice-writing.html?id='+e.id, label:'Làm bài', ok:true, tag:'Chấm tự động' };
+    if (e.has_questions)     return { href:'practice-quiz.html?id='+e.id,    label:'Làm bài', ok:true, tag:'Tự chấm' };
+    return { href:'#', label:'Đề mẫu', ok:false, tag:'Chưa có câu hỏi' };
   }
 
-  fetch('/api/exercises' + (current?('?program='+encodeURIComponent(current)):'')).then(r=>r.json()).then(function(d){
-    var list = d.exercises || [];
-    if (!list.length) { document.getElementById('list').innerHTML = '<div class="card" style="text-align:center; color:var(--text-faint);">Chưa có đề nào. Giáo viên có thể thêm đề ở <a href="teacher.html" style="color:var(--primary);">Khu vực giáo viên</a>.</div>'; return; }
-    // nhóm theo chương trình
+  function setFilter(key, val){
+    F[key] = (F[key]===val) ? '' : val; // toggle
+    renderPills();
+    renderList();
+  }
+
+  function renderPills(){
+    // Program pills
+    document.getElementById('progPills').innerHTML =
+      ['<button class="fpill'+(F.program===''?' active':'')+'" onclick="setFilter(\'program\',\'\')">Tất cả</button>']
+      .concat(PROGRAMS.map(function(p){
+        return '<button class="fpill'+(F.program===p?' active':'')+'" onclick="setFilter(\'program\',\''+p+'\')">'+p+'</button>';
+      })).join('');
+
+    // Skill pills
+    document.getElementById('skillPills').innerHTML =
+      SKILLS.map(function(s){
+        return '<button class="fpill'+(F.skill===s?' active':'')+'" onclick="setFilter(\'skill\',\''+s+'\')">'+SKILL_ICONS[s]+' '+s+'</button>';
+      }).join('');
+
+    // Type pills
+    document.getElementById('typePills').innerHTML =
+      ['<button class="fpill'+(F.type==='auto'?' active':'')+'" onclick="setFilter(\'type\',\'auto\')">⚡ Tự động</button>',
+       '<button class="fpill'+(F.type==='manual'?' active':'')+'" onclick="setFilter(\'type\',\'manual\')">👨‍🏫 Thủ công</button>'].join('');
+  }
+
+  function applyFilters(list){
+    var q = F.q.toLowerCase();
+    return list.filter(function(e){
+      if (q && !(e.title||'').toLowerCase().includes(q)) return false;
+      if (F.program && e.program!==F.program) return false;
+      if (F.skill   && e.skill!==F.skill)     return false;
+      if (F.type==='auto'   && e.skill!=='Writing' && !e.has_questions) return false;
+      if (F.type==='manual' && (e.skill==='Writing'||e.has_questions))  return false;
+      return true;
+    });
+  }
+
+  function renderList(){
+    var filtered = applyFilters(ALL_DATA);
+    var countEl = document.getElementById('exCount');
+    countEl.innerHTML = '<strong>'+filtered.length+'</strong> / '+ALL_DATA.length+' đề';
+
+    if (!filtered.length){
+      document.getElementById('list').innerHTML =
+        '<div class="card" style="text-align:center;padding:40px 20px;color:var(--text-faint);">'+
+        '<div style="font-size:36px;margin-bottom:10px;">🔍</div>'+
+        '<p>Không tìm thấy đề nào phù hợp.</p>'+
+        '<button class="btn btn-sm" style="margin-top:12px;" onclick="clearAllFilters()">Xóa bộ lọc</button>'+
+        '</div>';
+      return;
+    }
+
+    // Group by program
     var groups = {};
-    list.forEach(function(e){ (groups[e.program] = groups[e.program] || []).push(e); });
+    filtered.forEach(function(e){ (groups[e.program]=groups[e.program]||[]).push(e); });
     var order = PROGRAMS.filter(function(p){ return groups[p]; });
+
     document.getElementById('list').innerHTML = order.map(function(p){
       var rows = groups[p].map(function(e){
         var dd = doer(e);
-        var btn = dd.ok ? '<a class="btn btn-sm btn-primary" href="'+dd.href+'">'+dd.label+'</a>'
-                        : '<span style="font-size:12px;color:var(--text-faint);">('+dd.tag+')</span>';
-        return '<div class="test-row"><div><div class="name">'+esc(e.title)+'</div><div class="lvl">'+e.skill+' · '+dd.tag+'</div></div>'+btn+'</div>';
+        var typeTag = dd.ok
+          ? '<span style="font-size:11px;font-weight:600;padding:1px 8px;border-radius:8px;background:'+(e.skill==='Writing'?'var(--amber-soft)':'var(--teal-soft)')+';color:var(--text-muted);">'+dd.tag+'</span>'
+          : '<span style="font-size:11px;color:var(--text-faint);">('+dd.tag+')</span>';
+        var btn = dd.ok
+          ? '<a class="btn btn-sm btn-primary" href="'+dd.href+'">Làm bài →</a>'
+          : '<span style="font-size:12px;color:var(--text-faint);">—</span>';
+        return '<div class="test-row">'+
+          '<div>'+
+            '<div class="name">'+esc(e.title)+'</div>'+
+            '<div class="lvl" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:3px;">'+
+              '<span>'+(SKILL_ICONS[e.skill]||'📝')+' '+e.skill+'</span>'+
+              typeTag+
+            '</div>'+
+          '</div>'+
+          btn+
+          '</div>';
       }).join('');
-      return '<div class="card"><div class="card-head"><h3>'+p+'</h3><span class="tag">'+groups[p].length+' đề</span></div>'+rows+'</div>';
+
+      var progColor = {KET:'#0ea5e9',PET:'#8b5cf6',FCE:'#f59e0b',IELTS:'#ec4899',APTIS:'#10b981'}[p]||'var(--primary)';
+      return '<div class="card" style="margin-bottom:16px;">'+
+        '<div class="card-head">'+
+          '<h3 style="display:flex;align-items:center;gap:8px;">'+
+            '<span style="width:10px;height:10px;border-radius:50%;background:'+progColor+';display:inline-block;"></span>'+p+
+          '</h3>'+
+          '<span class="tag">'+groups[p].length+' đề</span>'+
+        '</div>'+
+        rows+'</div>';
     }).join('');
-  }).catch(function(){ document.getElementById('list').innerHTML = '<p style="color:var(--text-faint);">Không tải được danh sách đề.</p>'; });
+  }
+
+  function clearAllFilters(){
+    F.q=''; F.program=''; F.skill=''; F.type='';
+    document.getElementById('exSearch').value='';
+    renderPills();
+    renderList();
+  }
+
+  // Debounced search
+  var searchTimer;
+  document.getElementById('exSearch').addEventListener('input', function(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function(){
+      F.q = document.getElementById('exSearch').value.trim();
+      renderList();
+    }, 220);
+  });
+
+  // Init pills
+  renderPills();
+
+  // Load data
+  fetch('/api/exercises', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(d){
+    ALL_DATA = d.exercises || [];
+    renderList();
+  }).catch(function(){
+    document.getElementById('list').innerHTML = '<p style="color:var(--text-faint);text-align:center;">Không tải được danh sách đề.</p>';
+  });
 </script>
 </body>
 </html>

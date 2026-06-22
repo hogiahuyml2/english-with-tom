@@ -409,6 +409,130 @@ img.brand-logo {
   .fc-link { width: 40px; height: 40px; font-size: 16px; }
 }
 
+/* ===== Filter Bar (dùng chung toàn site) ===== */
+.fbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 12px rgba(123,110,246,.06);
+}
+.fbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.fbar-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-faint);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 58px;
+}
+.fbar-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+  max-width: 340px;
+}
+.fbar-search-wrap svg {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.fbar-search {
+  width: 100%;
+  padding: 7px 12px 7px 33px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-family: var(--font);
+  background: var(--bg-soft, #f8f7ff);
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+}
+.fbar-search:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(123,110,246,.12);
+  background: #fff;
+}
+.fbar-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.fpill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+.fpill.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(123,110,246,.28);
+}
+.fpill.active:hover { background: #6a50ea; }
+.fpill-clear {
+  border-color: transparent;
+  color: var(--text-faint);
+  background: var(--bg-soft, #f3f3f8);
+  padding: 5px 10px;
+}
+.fpill-clear:hover {
+  border-color: var(--danger, #e53e3e);
+  color: var(--danger, #e53e3e);
+  background: #fff0f0;
+}
+.fbar-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+.fbar-count {
+  font-size: 12px;
+  color: var(--text-faint);
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.fbar-count strong { color: var(--primary); font-weight: 700; }
+
+@media (max-width: 640px) {
+  .fbar { padding: 12px 14px; gap: 10px; }
+  .fbar-row { gap: 8px; }
+  .fbar-search-wrap { max-width: 100%; }
+  .fbar-label { min-width: 48px; }
+  .fpill { padding: 4px 10px; font-size: 12px; }
+}
+
 /* ===== Practice page ===== */
 .practice-bar { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
 .timer { display:flex; align-items:center; gap:8px; font-weight:700; color:var(--primary); }

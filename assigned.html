@@ -6,7 +6,7 @@
 <title>Bài tập được giao — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=10">
+<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body data-page="assigned" data-guard="student">
 <div id="site-header"></div>
@@ -33,6 +33,28 @@
       <div class="stat-card"><div class="label">Đã có điểm</div><div class="value" style="color:var(--success)" id="cntDone">–</div></div>
     </div>
 
+    <!-- Filter Bar -->
+    <div class="fbar" id="assignedFilter" style="display:none;">
+      <div class="fbar-row">
+        <div class="fbar-search-wrap">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg>
+          <input class="fbar-search" id="asSearch" type="text" placeholder="Tìm theo tên bài tập...">
+        </div>
+        <span class="fbar-count" id="asCount"></span>
+      </div>
+      <div class="fbar-row">
+        <span class="fbar-label">Kỳ thi</span>
+        <div class="fbar-pills" id="asProgPills"></div>
+      </div>
+      <div class="fbar-row">
+        <span class="fbar-label">Kỹ năng</span>
+        <div class="fbar-pills" id="asSkillPills"></div>
+        <div class="fbar-divider"></div>
+        <span class="fbar-label" style="min-width:auto;">Trạng thái</span>
+        <div class="fbar-pills" id="asStatusPills"></div>
+      </div>
+    </div>
+
     <div id="assignedContent">
       <p style="text-align:center;color:var(--text-faint);padding:40px 0;">⏳ Đang tải bài tập...</p>
     </div>
@@ -57,45 +79,84 @@
     return {Reading:'ico-blue',Listening:'ico-teal',Writing:'ico-amber',Speaking:'ico-pink'}[skill] || 'ico-blue';
   }
 
-  fetch('/api/my-assignments',{credentials:'same-origin'}).then(r=>{
-    if (r.status===401){ location.href='login.html?next=assigned.html'; return null; }
-    return r.json();
-  }).then(function(d){
-    if (!d) return;
-    var list = d.assignments || [];
+  var AS_ALL = [];
+  var AS_F = { q:'', program:'', skill:'', status:'' };
+  var PROGRAMS = ['KET','PET','FCE','IELTS','APTIS'];
+  var SKILLS = ['Writing','Reading','Listening','Speaking'];
+  var SKILL_ICONS = {Writing:'✍️',Reading:'📖',Listening:'🎧',Speaking:'🗣️'};
 
-    // Phân loại: chưa nộp / đã nộp chờ chấm / đã có điểm
-    var todo    = list.filter(function(a){ return !a.submission_id; });
-    var pending = list.filter(function(a){ return a.submission_id && a.submission_status !== 'graded'; });
-    var graded  = list.filter(function(a){ return a.submission_id && a.submission_status === 'graded'; });
+  function statusOf(a){
+    if (!a.submission_id) return 'todo';
+    if (a.submission_status==='graded') return 'graded';
+    return 'pending';
+  }
 
-    document.getElementById('cntTodo').textContent    = todo.length;
-    document.getElementById('cntPending').textContent = pending.length;
-    document.getElementById('cntDone').textContent    = graded.length;
+  function asSetFilter(key, val){
+    AS_F[key] = (AS_F[key]===val) ? '' : val;
+    asRenderPills();
+    asRenderList();
+  }
 
-    if (!list.length){
+  function asRenderPills(){
+    document.getElementById('asProgPills').innerHTML =
+      ['<button class="fpill'+(AS_F.program===''?' active':'')+'" onclick="asSetFilter(\'program\',\'\')">Tất cả</button>']
+      .concat(PROGRAMS.map(function(p){
+        return '<button class="fpill'+(AS_F.program===p?' active':'')+'" onclick="asSetFilter(\'program\',\''+p+'\')">'+p+'</button>';
+      })).join('');
+
+    document.getElementById('asSkillPills').innerHTML =
+      SKILLS.map(function(s){
+        return '<button class="fpill'+(AS_F.skill===s?' active':'')+'" onclick="asSetFilter(\'skill\',\''+s+'\')">'+SKILL_ICONS[s]+' '+s+'</button>';
+      }).join('');
+
+    document.getElementById('asStatusPills').innerHTML = [
+      ['todo','📋 Cần làm'],['pending','⏳ Đang chấm'],['graded','✅ Đã có điểm']
+    ].map(function(pair){
+      return '<button class="fpill'+(AS_F.status===pair[0]?' active':'')+'" onclick="asSetFilter(\'status\',\''+pair[0]+'\')">'+pair[1]+'</button>';
+    }).join('');
+  }
+
+  function groupBadge(a){
+    return a.group_name
+      ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600;">🏫 '+esc(a.group_name)+'</span> '
+      : '';
+  }
+
+  function asRenderList(){
+    var q = AS_F.q.toLowerCase();
+    var filtered = AS_ALL.filter(function(a){
+      if (q && !(a.title||'').toLowerCase().includes(q)) return false;
+      if (AS_F.program && a.program!==AS_F.program) return false;
+      if (AS_F.skill && a.skill!==AS_F.skill) return false;
+      if (AS_F.status && statusOf(a)!==AS_F.status) return false;
+      return true;
+    });
+
+    var total = AS_ALL.length;
+    document.getElementById('asCount').innerHTML = '<strong>'+filtered.length+'</strong> / '+total+' bài tập';
+
+    // Recount stat cards based on filtered
+    var todo    = filtered.filter(function(a){ return statusOf(a)==='todo'; });
+    var pending = filtered.filter(function(a){ return statusOf(a)==='pending'; });
+    var graded  = filtered.filter(function(a){ return statusOf(a)==='graded'; });
+    document.getElementById('cntTodo').textContent    = AS_ALL.filter(function(a){ return statusOf(a)==='todo'; }).length;
+    document.getElementById('cntPending').textContent = AS_ALL.filter(function(a){ return statusOf(a)==='pending'; }).length;
+    document.getElementById('cntDone').textContent    = AS_ALL.filter(function(a){ return statusOf(a)==='graded'; }).length;
+
+    if (!filtered.length){
       document.getElementById('assignedContent').innerHTML =
-        '<div class="card" style="text-align:center;padding:40px 20px;">' +
-        '<div style="font-size:40px;margin-bottom:12px;">📭</div>' +
-        '<p style="color:var(--text-muted);">Bạn chưa được giao bài tập nào.</p>' +
+        '<div class="card" style="text-align:center;padding:40px 20px;">'+
+        '<div style="font-size:36px;margin-bottom:10px;">🔍</div>'+
+        '<p style="color:var(--text-faint);">Không tìm thấy bài tập phù hợp.</p>'+
+        '<button class="btn btn-sm" style="margin-top:12px;" onclick="asClearFilters()">Xóa bộ lọc</button>'+
         '</div>';
-      document.getElementById('cntTodo').textContent='0';
-      document.getElementById('cntPending').textContent='0';
-      document.getElementById('cntDone').textContent='0';
       return;
     }
 
     var html = '';
 
-    function groupBadge(a) {
-      return a.group_name
-        ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600;">🏫 '+esc(a.group_name)+'</span> '
-        : '';
-    }
-
-    /* ── Cần làm ── */
     if (todo.length){
-      html += '<div class="card" style="margin-bottom:20px;"><div class="card-head"><h3>📋 Cần làm</h3></div>';
+      html += '<div class="card" style="margin-bottom:20px;"><div class="card-head"><h3>📋 Cần làm <span class="tag">'+todo.length+'</span></h3></div>';
       todo.forEach(function(a){
         var ico = skillColor(a.skill);
         var deadlineHtml = a.deadline
@@ -105,65 +166,115 @@
         var practiceUrl = (a.skill==='Writing')
           ? 'practice-writing.html?id='+a.exercise_id+'&assigned=1'
           : 'practice-quiz.html?id='+a.exercise_id+'&assigned=1';
-        html +=
-          '<div class="task"><div class="task-left">' +
-          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>' +
-          '<div class="task-info"><h4>'+esc(a.title)+'</h4>' +
-          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Giao bởi '+esc(a.teacher_name)+' · '+fmtDate(a.assigned_at)+'</div>' +
-          noteHtml+'</div></div>' +
-          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+        html += '<div class="task"><div class="task-left">'+
+          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
+          '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Giao bởi '+esc(a.teacher_name)+' · '+fmtDate(a.assigned_at)+'</div>'+
+          noteHtml+'</div></div>'+
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">'+
           deadlineHtml+
           '<a class="btn btn-primary btn-sm" href="'+practiceUrl+'">Làm bài</a></div></div>';
       });
       html += '</div>';
     }
 
-    /* ── Đã nộp, chờ chấm ── */
     if (pending.length){
-      html += '<div class="card" style="margin-bottom:20px;"><div class="card-head"><h3>⏳ Đã nộp — Đang chấm</h3></div>';
+      html += '<div class="card" style="margin-bottom:20px;"><div class="card-head"><h3>⏳ Đang chấm <span class="tag">'+pending.length+'</span></h3></div>';
       pending.forEach(function(a){
         var ico = skillColor(a.skill);
-        html +=
-          '<div class="task"><div class="task-left">' +
-          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>' +
-          '<div class="task-info"><h4>'+esc(a.title)+'</h4>' +
-          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Đã nộp '+fmtDate(a.submitted_at)+'</div></div></div>' +
+        html += '<div class="task"><div class="task-left">'+
+          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
+          '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Đã nộp '+fmtDate(a.submitted_at)+'</div></div></div>'+
           '<span style="background:var(--info-soft);color:var(--info);border-radius:12px;padding:4px 12px;font-size:13px;font-weight:600;">Đang chấm</span></div>';
       });
       html += '</div>';
     }
 
-    /* ── Đã có điểm ── */
     if (graded.length){
-      html += '<div class="card"><div class="card-head"><h3>✅ Đã có điểm</h3></div>';
+      html += '<div class="card"><div class="card-head"><h3>✅ Đã có điểm <span class="tag">'+graded.length+'</span></h3></div>';
       graded.forEach(function(a){
         var ico = skillColor(a.skill);
-        var score = (a.submission_score !== null && a.submission_score !== undefined)
+        var score = (a.submission_score!==null && a.submission_score!==undefined)
           ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||10)+'</span>'
           : '<span style="color:var(--text-faint);">Đã chấm</span>';
         var fb = '';
-        if (a.submission_feedback) {
+        if (a.submission_feedback){
           try {
             var fbData = JSON.parse(a.submission_feedback);
-            var fbText = typeof fbData === 'string' ? fbData : (fbData.overall || fbData.feedback || JSON.stringify(fbData));
+            var fbText = typeof fbData==='string' ? fbData : (fbData.overall||fbData.feedback||JSON.stringify(fbData));
             fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;color:var(--text);">'+esc(fbText)+'</div>';
-          } catch(e) {
+          } catch(e){
             fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;">'+esc(a.submission_feedback)+'</div>';
           }
         }
-        html +=
-          '<div class="task" style="flex-direction:column;align-items:stretch;gap:0;">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">' +
-          '<div class="task-left" style="margin:0;">' +
-          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>' +
-          '<div class="task-info"><h4>'+esc(a.title)+'</h4>' +
-          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div></div></div>' +
+        html += '<div class="task" style="flex-direction:column;align-items:stretch;gap:0;">'+
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">'+
+          '<div class="task-left" style="margin:0;">'+
+          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
+          '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div></div></div>'+
           score+'</div>'+fb+'</div>';
       });
       html += '</div>';
     }
 
-    document.getElementById('assignedContent').innerHTML = html || '<p style="color:var(--text-faint);text-align:center;padding:30px;">Không có bài tập.</p>';
+    document.getElementById('assignedContent').innerHTML = html;
+  }
+
+  function asClearFilters(){
+    AS_F.q=''; AS_F.program=''; AS_F.skill=''; AS_F.status='';
+    document.getElementById('asSearch').value='';
+    asRenderPills(); asRenderList();
+  }
+
+  var asSearchTimer;
+  // Wire search
+  document.addEventListener('DOMContentLoaded', function(){
+    var searchEl = document.getElementById('asSearch');
+    if (searchEl) searchEl.addEventListener('input', function(){
+      clearTimeout(asSearchTimer);
+      asSearchTimer = setTimeout(function(){
+        AS_F.q = document.getElementById('asSearch').value.trim();
+        asRenderList();
+      }, 220);
+    });
+  });
+
+  fetch('/api/my-assignments',{credentials:'same-origin'}).then(function(r){
+    if (r.status===401){ location.href='login.html?next=assigned.html'; return null; }
+    return r.json();
+  }).then(function(d){
+    if (!d) return;
+    AS_ALL = d.assignments || [];
+
+    if (!AS_ALL.length){
+      document.getElementById('assignedContent').innerHTML =
+        '<div class="card" style="text-align:center;padding:40px 20px;">'+
+        '<div style="font-size:40px;margin-bottom:12px;">📭</div>'+
+        '<p style="color:var(--text-muted);">Bạn chưa được giao bài tập nào.</p>'+
+        '</div>';
+      document.getElementById('cntTodo').textContent='0';
+      document.getElementById('cntPending').textContent='0';
+      document.getElementById('cntDone').textContent='0';
+      return;
+    }
+
+    // Show filter bar
+    document.getElementById('assignedFilter').style.display = '';
+
+    // Wire search input now that DOM is ready
+    var searchEl = document.getElementById('asSearch');
+    if (searchEl) searchEl.addEventListener('input', function(){
+      clearTimeout(asSearchTimer);
+      asSearchTimer = setTimeout(function(){
+        AS_F.q = this.value.trim();
+        asRenderList();
+      }.bind(this), 220);
+    });
+
+    asRenderPills();
+    asRenderList();
   }).catch(function(){
     document.getElementById('assignedContent').innerHTML='<p style="color:var(--danger);text-align:center;padding:30px;">Không tải được dữ liệu.</p>';
   });
