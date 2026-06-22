@@ -136,6 +136,82 @@
   }
   .sp-link-btn:hover { text-decoration-color:var(--primary); }
 
+  /* ── Students Tab ── */
+  .stu-summary-bar {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;
+  }
+  .stu-sum-card {
+    border-radius:12px; padding:14px 16px; text-align:center; border:1px solid var(--border);
+  }
+  .stu-sum-card.all  { background:linear-gradient(135deg,#f0edff,#e8f4fd); }
+  .stu-sum-card.inn  { background:linear-gradient(135deg,#e8fdf0,#d1fae5); }
+  .stu-sum-card.out  { background:linear-gradient(135deg,#fff8e1,#fef3c7); }
+  .stu-sum-val { font-size:28px; font-weight:800; line-height:1; }
+  .stu-sum-val.all { color:var(--primary); }
+  .stu-sum-val.inn { color:#10b981; }
+  .stu-sum-val.out { color:#f59e0b; }
+  .stu-sum-lbl { font-size:11.5px; color:var(--text-faint); margin-top:4px; }
+
+  .stu-toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .stu-toolbar input, .stu-toolbar select {
+    padding:7px 12px; border:1px solid var(--border); border-radius:8px;
+    font-size:13.5px; font-family:var(--font); background:#fff; color:var(--text);
+  }
+  .stu-toolbar input { flex:1; min-width:160px; }
+
+  .stu-table-wrap { overflow-x:auto; }
+  .stu-table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .stu-table thead th {
+    text-align:left; padding:9px 12px; font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--text-faint);
+    border-bottom:2px solid var(--border); white-space:nowrap;
+    cursor:pointer; user-select:none;
+  }
+  .stu-table thead th:hover { color:var(--primary); }
+  .stu-table thead th.sort-asc::after  { content:' ↑'; }
+  .stu-table thead th.sort-desc::after { content:' ↓'; }
+  .stu-table tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+  .stu-table tbody tr:hover { background:var(--bg-soft,#f8f7ff); }
+  .stu-table td { padding:10px 12px; vertical-align:middle; }
+  .stu-avatar-sm {
+    width:34px; height:34px; border-radius:50%; background:var(--gradient);
+    color:#fff; font-size:13px; font-weight:700;
+    display:inline-flex; align-items:center; justify-content:center;
+    flex-shrink:0; vertical-align:middle; margin-right:8px;
+  }
+  .stu-name-cell { display:flex; align-items:center; min-width:0; }
+  .stu-name-info { min-width:0; }
+  .stu-name-txt { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stu-email-txt { font-size:11.5px; color:var(--text-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stu-prog-tags { display:flex; gap:3px; flex-wrap:wrap; }
+  .stu-prog-tag {
+    font-size:10.5px; font-weight:600; border-radius:8px;
+    padding:1px 7px; white-space:nowrap;
+  }
+  .stu-group-tags { display:flex; gap:3px; flex-wrap:wrap; }
+  .stu-group-tag {
+    font-size:10.5px; font-weight:600; border-radius:8px; padding:1px 7px;
+    background:var(--primary-soft); color:var(--primary); white-space:nowrap;
+  }
+  .stu-score-pill {
+    display:inline-block; border-radius:20px; padding:2px 10px;
+    font-size:12px; font-weight:700;
+  }
+  .stu-score-good  { background:#d1fae5; color:#065f46; }
+  .stu-score-mid   { background:#fef3c7; color:#78350f; }
+  .stu-score-low   { background:#fee2e2; color:#7f1d1d; }
+  .stu-score-none  { background:#f3f4f6; color:#9ca3af; }
+  .stu-empty { text-align:center; padding:40px 20px; color:var(--text-faint); }
+
+  @media (max-width:640px) {
+    .stu-summary-bar { grid-template-columns:1fr; gap:8px; }
+    .stu-table { font-size:12.5px; }
+    .stu-table td:nth-child(3),
+    .stu-table td:nth-child(5),
+    .stu-table th:nth-child(3),
+    .stu-table th:nth-child(5) { display:none; }
+  }
+
   /* ── IELTS Type Picker ── */
   .ielts-section { background:#faf8ff; border:1.5px solid var(--primary-2,#c4b8ff); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
   .ielts-type-group-label { font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); margin:0 0 7px; }
@@ -176,7 +252,8 @@
       <button class="btn" id="tabGroupsBtn" onclick="showTab('groups')">🏫 Lớp học</button>
       <button class="btn" id="tabAssignBtn" onclick="showTab('assign')">📤 Giao bài riêng</button>
       <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
-      <button class="btn" id="tabBankBtn"   onclick="showTab('bank')">📚 Ngân hàng đề</button>
+      <button class="btn" id="tabBankBtn"     onclick="showTab('bank')">📚 Ngân hàng đề</button>
+      <button class="btn" id="tabStudentsBtn" onclick="showTab('students')">👩‍🎓 Học sinh của tôi</button>
     </div>
 
     <!-- ===== TAB: TẠO ĐỀ ===== -->
@@ -573,6 +650,58 @@
       </div>
     </div>
 
+    <!-- ===== TAB: HỌC SINH CỦA TÔI ===== -->
+    <div id="tabStudents" style="display:none;">
+      <div class="card">
+        <div class="card-head">
+          <h3>👩‍🎓 Học sinh đã làm đề của tôi</h3>
+          <button class="btn btn-sm" onclick="loadMyStudents()">🔄 Làm mới</button>
+        </div>
+
+        <!-- Summary bar -->
+        <div class="stu-summary-bar" id="stuSummaryBar">
+          <div class="stu-sum-card all"><div class="stu-sum-val all" id="stuTotal">—</div><div class="stu-sum-lbl">Tổng học sinh</div></div>
+          <div class="stu-sum-card inn"><div class="stu-sum-val inn" id="stuInGroup">—</div><div class="stu-sum-lbl">Thuộc lớp của tôi</div></div>
+          <div class="stu-sum-card out"><div class="stu-sum-val out" id="stuOutGroup">—</div><div class="stu-sum-lbl">Ngoài lớp (tự học)</div></div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="stu-toolbar">
+          <input type="text" id="stuSearch" placeholder="🔍 Tìm theo tên hoặc email..." oninput="applyStudentFilter()">
+          <select id="stuFilterProg" onchange="applyStudentFilter()">
+            <option value="">Tất cả chương trình</option>
+            <option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option><option>APTIS</option>
+          </select>
+          <select id="stuFilterGroup" onchange="applyStudentFilter()">
+            <option value="">Tất cả học sinh</option>
+            <option value="out">🔓 Ngoài lớp (tự học)</option>
+            <option value="in">🏫 Trong lớp của tôi</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="stu-table-wrap">
+          <table class="stu-table">
+            <thead>
+              <tr>
+                <th onclick="sortStudents('name')">Học sinh</th>
+                <th onclick="sortStudents('sub_count')">Bài nộp</th>
+                <th onclick="sortStudents('avg_pct')">Điểm TB</th>
+                <th>Chương trình</th>
+                <th onclick="sortStudents('last_active')">Lần cuối</th>
+                <th>Lớp</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="stuTableBody">
+              <tr><td colspan="7" class="stu-empty">Đang tải...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="stuCountLabel" style="font-size:12px;color:var(--text-faint);margin-top:10px;text-align:right;"></p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -735,16 +864,131 @@
 <script src="js/main.js?v=10"></script>
 <script>
   /* ===== TABS ===== */
-  var TABS = ['create','groups','assign','grade','bank'];
+  var TABS = ['create','groups','assign','grade','bank','students'];
   function showTab(t) {
     TABS.forEach(function(id){
       document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).style.display = (id===t)?'block':'none';
       document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)+'Btn').style.fontWeight = (id===t)?'700':'400';
     });
-    if (t==='assign') { loadPrivateExercises(); loadAssignments(); }
-    if (t==='grade')  loadSubmissions();
-    if (t==='bank')   loadBank();
-    if (t==='groups') { loadGroups(); loadPrivateExercises(); }
+    if (t==='assign')   { loadPrivateExercises(); loadAssignments(); }
+    if (t==='grade')    loadSubmissions();
+    if (t==='bank')     loadBank();
+    if (t==='groups')   { loadGroups(); loadPrivateExercises(); }
+    if (t==='students') loadMyStudents();
+  }
+
+  /* ===== QUẢN LÝ HỌC SINH ===== */
+  var _stuData = [];
+  var _stuSortKey = 'last_active';
+  var _stuSortDir = -1;
+  var SP_PROG_COLOR_STU = { KET:'#0ea5e9', PET:'#8b5cf6', FCE:'#f59e0b', IELTS:'#ec4899', APTIS:'#10b981' };
+
+  function loadMyStudents() {
+    document.getElementById('stuTableBody').innerHTML = '<tr><td colspan="7" class="stu-empty">Đang tải dữ liệu...</td></tr>';
+    fetch('/api/teacher/my-students', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(d) {
+      _stuData = d.students || [];
+      document.getElementById('stuTotal').textContent    = d.total    || 0;
+      document.getElementById('stuInGroup').textContent  = d.in_group || 0;
+      document.getElementById('stuOutGroup').textContent = d.out_group|| 0;
+      applyStudentFilter();
+    }).catch(function() {
+      document.getElementById('stuTableBody').innerHTML = '<tr><td colspan="7" class="stu-empty" style="color:var(--danger);">Lỗi khi tải dữ liệu.</td></tr>';
+    });
+  }
+
+  function applyStudentFilter() {
+    var q           = (document.getElementById('stuSearch').value || '').toLowerCase();
+    var filterProg  = document.getElementById('stuFilterProg').value;
+    var filterGroup = document.getElementById('stuFilterGroup').value;
+
+    var list = _stuData.filter(function(s) {
+      var matchQ = !q || (s.name||'').toLowerCase().includes(q) || (s.email||'').toLowerCase().includes(q);
+      var matchP = !filterProg || (s.programs||[]).some(function(p){ return p.program === filterProg; });
+      var matchG = !filterGroup
+        || (filterGroup === 'in'  &&  s.in_group)
+        || (filterGroup === 'out' && !s.in_group);
+      return matchQ && matchP && matchG;
+    });
+
+    list = list.slice().sort(function(a, b) {
+      var av = a[_stuSortKey], bv = b[_stuSortKey];
+      if (av == null) av = _stuSortDir < 0 ? -Infinity : Infinity;
+      if (bv == null) bv = _stuSortDir < 0 ? -Infinity : Infinity;
+      return _stuSortDir * (av < bv ? -1 : av > bv ? 1 : 0);
+    });
+
+    renderStudentTable(list);
+    var lbl = document.getElementById('stuCountLabel');
+    lbl.textContent = list.length < _stuData.length
+      ? 'Hiển thị ' + list.length + ' / ' + _stuData.length + ' học sinh'
+      : 'Tổng cộng ' + list.length + ' học sinh';
+
+    document.querySelectorAll('.stu-table thead th').forEach(function(th){ th.classList.remove('sort-asc','sort-desc'); });
+    var colKeys = ['name','sub_count','avg_pct','','last_active','',''];
+    var idx = colKeys.indexOf(_stuSortKey);
+    if (idx >= 0) {
+      var ths = document.querySelectorAll('.stu-table thead th');
+      if (ths[idx]) ths[idx].classList.add(_stuSortDir < 0 ? 'sort-desc' : 'sort-asc');
+    }
+  }
+
+  function sortStudents(key) {
+    if (_stuSortKey === key) { _stuSortDir *= -1; }
+    else { _stuSortKey = key; _stuSortDir = key === 'name' ? 1 : -1; }
+    applyStudentFilter();
+  }
+
+  function renderStudentTable(list) {
+    var tbody = document.getElementById('stuTableBody');
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="stu-empty">Không tìm thấy học sinh nào phù hợp.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(function(s) {
+      var initials = (s.name || s.email || '?').charAt(0).toUpperCase();
+      var nameBtn = s.id
+        ? '<button class="sp-link-btn" onclick="openStudentProfile('+s.id+','+JSON.stringify(s.name||s.email)+')">'+escHtml(s.name||'—')+'</button>'
+        : escHtml(s.name||'—');
+      var nameCell = '<div class="stu-name-cell">'
+        + '<div class="stu-avatar-sm">'+initials+'</div>'
+        + '<div class="stu-name-info">'
+        + '<div class="stu-name-txt">'+nameBtn+'</div>'
+        + '<div class="stu-email-txt">'+escHtml(s.email||'')+'</div>'
+        + '</div></div>';
+
+      var scoreHtml;
+      if (s.avg_pct != null) {
+        var cls = s.avg_pct >= 80 ? 'stu-score-good' : s.avg_pct >= 60 ? 'stu-score-mid' : 'stu-score-low';
+        scoreHtml = '<span class="stu-score-pill '+cls+'">'+Math.round(s.avg_pct)+'%</span>';
+      } else {
+        scoreHtml = '<span class="stu-score-pill stu-score-none">Chưa chấm</span>';
+      }
+
+      var progTags = (s.programs||[]).slice(0,3).map(function(p){
+        var c = SP_PROG_COLOR_STU[p.program] || '#888';
+        return '<span class="stu-prog-tag" style="background:'+c+'22;color:'+c+';">'+p.program
+          + '<span style="opacity:.65;font-weight:400;"> ×'+p.count+'</span></span>';
+      }).join('');
+
+      var groupCell = (s.group_names||[]).length
+        ? '<div class="stu-group-tags">'+s.group_names.map(function(g){
+            return '<span class="stu-group-tag">🏫 '+escHtml(g)+'</span>';
+          }).join('')+'</div>'
+        : '<span style="font-size:11.5px;color:var(--text-faint);">Tự học</span>';
+
+      var gradedNote = s.graded_count > 0
+        ? '<br><span style="font-size:11px;color:var(--text-faint);">'+s.graded_count+' đã chấm</span>' : '';
+
+      return '<tr>'
+        + '<td>'+nameCell+'</td>'
+        + '<td style="text-align:center;"><strong>'+s.sub_count+'</strong>'+gradedNote+'</td>'
+        + '<td>'+scoreHtml+'</td>'
+        + '<td><div class="stu-prog-tags">'+progTags+'</div></td>'
+        + '<td style="font-size:12px;color:var(--text-faint);">'+fmtDate(s.last_active)+'</td>'
+        + '<td>'+groupCell+'</td>'
+        + '<td><button class="btn btn-sm" style="white-space:nowrap;" onclick="openStudentProfile('+s.id+','+JSON.stringify(s.name||s.email)+')">🔍 Hồ sơ</button></td>'
+        + '</tr>';
+    }).join('');
   }
 
   /* ══════════════════════════════════════════════════════

@@ -1097,6 +1097,79 @@ app.get('/api/students', requireRole('teacher','admin'), (req, res) => {
   res.json({ students: rows });
 });
 
+// Giáo viên xem tất cả học sinh đã làm đề của mình
+app.get('/api/teacher/my-students', requireRole('teacher','admin'), (req, res) => {
+  const tid = req.user.id;
+  const q = (req.query.q || '').trim().toLowerCase();
+  const filterProg = req.query.program || '';
+  const filterGroup = req.query.group || ''; // 'in' | 'out' | ''
+
+  // All students who have submitted to this teacher's exercises
+  const students = db.prepare(`
+    SELECT u.id, u.name, u.email, u.created_at,
+           COUNT(s.id) AS sub_count,
+           COUNT(CASE WHEN s.status='graded' THEN 1 END) AS graded_count,
+           ROUND(AVG(CASE WHEN s.score IS NOT NULL AND s.max_score > 0
+                 THEN CAST(s.score AS REAL) * 100.0 / s.max_score END)) AS avg_pct,
+           MAX(s.submitted_at) AS last_active,
+           MAX(CASE WHEN gm.user_id IS NOT NULL THEN 1 ELSE 0 END) AS in_group
+    FROM submissions s
+    JOIN exercises e ON e.id = s.exercise_id
+    JOIN users u ON u.id = s.user_id
+    LEFT JOIN group_members gm ON gm.user_id = u.id
+          AND gm.group_id IN (SELECT id FROM groups WHERE teacher_id = ?)
+    WHERE e.created_by = ?
+    GROUP BY u.id
+    ORDER BY last_active DESC
+  `).all(tid, tid);
+
+  // Per-student group names
+  const groupRows = db.prepare(`
+    SELECT gm.user_id, g.name
+    FROM group_members gm
+    JOIN groups g ON g.id = gm.group_id
+    WHERE g.teacher_id = ? AND gm.user_id IS NOT NULL
+  `).all(tid);
+  const groupMap = {};
+  groupRows.forEach(r => {
+    if (!groupMap[r.user_id]) groupMap[r.user_id] = [];
+    groupMap[r.user_id].push(r.name);
+  });
+
+  // Per-student programs practiced
+  const progRows = db.prepare(`
+    SELECT s.user_id, e.program, COUNT(*) AS cnt
+    FROM submissions s
+    JOIN exercises e ON e.id = s.exercise_id
+    WHERE e.created_by = ?
+    GROUP BY s.user_id, e.program
+  `).all(tid);
+  const progMap = {};
+  progRows.forEach(r => {
+    if (!progMap[r.user_id]) progMap[r.user_id] = [];
+    progMap[r.user_id].push({ program: r.program, count: r.cnt });
+  });
+
+  let result = students.map(s => ({
+    ...s,
+    group_names: groupMap[s.id] || [],
+    programs: (progMap[s.id] || []).sort((a,b) => b.count - a.count)
+  }));
+
+  if (q) result = result.filter(s =>
+    (s.name||'').toLowerCase().includes(q) || (s.email||'').toLowerCase().includes(q));
+  if (filterProg) result = result.filter(s => s.programs.some(p => p.program === filterProg));
+  if (filterGroup === 'in')  result = result.filter(s => s.in_group);
+  if (filterGroup === 'out') result = result.filter(s => !s.in_group);
+
+  res.json({
+    students: result,
+    total: result.length,
+    in_group: result.filter(s => s.in_group).length,
+    out_group: result.filter(s => !s.in_group).length
+  });
+});
+
 // Giáo viên xem profile chi tiết học sinh
 app.get('/api/teacher/student/:id', requireRole('teacher','admin'), (req, res) => {
   const userId = Number(req.params.id);
