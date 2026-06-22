@@ -53,7 +53,22 @@
           '<a href="teacher.html">Quản lý đề</a><a href="teacher.html">Giao bài tập</a><a href="teacher.html">Chấm bài</a>' +
         '</div>' +
       '</div>' +
-      '<div class="footer-bottom">© 2026 English With Tom · Bản demo giao diện</div>' +
+      '<div class="footer-contact">' +
+        '<div class="fc-inner">' +
+          '<div class="fc-founder">' +
+            '<img src="images/founder.jpg" alt="Gia Huy" class="fc-avatar">' +
+            '<p class="fc-name">Gia Huy</p>' +
+          '</div>' +
+          '<div class="fc-links">' +
+            '<a href="https://zalo.me/giahuy02" target="_blank" class="fc-link fc-zalo" title="Zalo">💬</a>' +
+            '<a href="https://www.facebook.com/giahuy.tom02/" target="_blank" class="fc-link fc-fb" title="Facebook (Gia Huy)">f</a>' +
+            '<a href="https://www.facebook.com/EnglishwTom" target="_blank" class="fc-link fc-fb" title="Facebook (English With Tom)">f</a>' +
+            '<a href="https://www.instagram.com/hg_huyy/" target="_blank" class="fc-link fc-ig" title="Instagram (Personal)">📷</a>' +
+            '<a href="https://www.instagram.com/eng.with.tom/" target="_blank" class="fc-link fc-ig" title="Instagram (Page)">📷</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="footer-bottom">© 2026 English With Tom</div>' +
     '</div></footer>';
 
   var h = document.getElementById('site-header');
