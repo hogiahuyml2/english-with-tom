@@ -217,6 +217,71 @@ app.get('/api/config', (req, res) => {
   res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled(), aiEnabled: aiEnabled(), aiProvider: provider() });
 });
 
+// AI kiểm tra câu viết của học sinh (Sentence Practice)
+app.post('/api/sentence-check', requireAuth, async (req, res) => {
+  const { prompt_vi, student_answer, level } = req.body || {};
+  if (!prompt_vi || !student_answer || !student_answer.trim())
+    return res.status(400).json({ error: 'Thiếu dữ liệu.' });
+
+  const levelLabel = { easy: 'A2 – câu đơn giản', medium: 'B1/B2 – câu ghép có liên từ', advanced: 'C1 – câu phức, câu ghép phức' }[level] || level;
+
+  const schema = {
+    type: 'OBJECT',
+    properties: {
+      acceptable: { type: 'BOOLEAN' },
+      score:      { type: 'INTEGER' },
+      feedback_vi:{ type: 'STRING' },
+      errors:     { type: 'ARRAY', items: { type: 'STRING' } },
+      suggestions:{ type: 'ARRAY', items: {
+        type: 'OBJECT',
+        properties: { text: { type: 'STRING' }, note: { type: 'STRING' } },
+        required: ['text', 'note']
+      }}
+    },
+    required: ['acceptable', 'score', 'feedback_vi', 'errors', 'suggestions']
+  };
+
+  const systemInstruction = `Bạn là giáo viên tiếng Anh đang chấm câu dịch của học sinh Việt Nam.
+Cấp độ bài: ${levelLabel}
+
+QUY TẮC QUAN TRỌNG:
+• Chấp nhận MỌI cách dịch truyền đạt đúng ý nghĩa — KHÔNG yêu cầu dịch từng từ
+• Đánh giá: (1) ý nghĩa có đúng không, (2) ngữ pháp, (3) từ vựng phù hợp cấp độ
+• feedback_vi: nhận xét ngắn 1-2 câu, xây dựng, bằng tiếng Việt
+• errors: danh sách lỗi cụ thể (rỗng nếu không có lỗi)
+• suggestions: 2-3 cách diễn đạt tham khảo (từ tự nhiên đến formal), mỗi cái kèm ghi chú ngắn
+• score: 0-100 (90-100 = xuất sắc, 70-89 = tốt, 50-69 = cần cải thiện, <50 = sai nghĩa/sai ngữ pháp nặng)`;
+
+  const userText = `Câu tiếng Việt: ${prompt_vi}\nCâu tiếng Anh của học sinh: ${student_answer.trim()}`;
+
+  try {
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemInstruction }] },
+        contents: [{ role: 'user', parts: [{ text: userText }] }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: schema,
+          maxOutputTokens: 1200,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      })
+    });
+    if (!r.ok) throw new Error('Gemini ' + r.status);
+    const data = await r.json();
+    const text = (data?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+    if (!text) throw new Error('Gemini: empty response');
+    res.json(JSON.parse(text));
+  } catch (err) {
+    console.error('sentence-check:', err.message);
+    res.status(500).json({ error: 'Không thể chấm bài lúc này, vui lòng thử lại.' });
+  }
+});
+
 // AI chấm bài Writing (Claude)
 app.post('/api/grade-writing', requireAuth, async (req, res) => {
   const { exercise_id, essay, student_image } = req.body || {};

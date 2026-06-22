@@ -6,7 +6,7 @@
 <title>Luyện tập — English With Tom</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=10">
+<link rel="stylesheet" href="css/style.css?v=11">
 <style>
   .practice-type-card {
     background:#fff; border:2px solid var(--border); border-radius:var(--radius);
@@ -71,11 +71,12 @@
       </div>
       <div class="grid grid-3" style="margin-bottom:40px;">
 
-        <div class="practice-type-card" onclick="showSection('viet-cau')">
+        <a class="practice-type-card" href="sentence-practice.html" style="border-color:#8b5cf6;background:linear-gradient(135deg,#faf5ff,#fff);">
           <div class="p-ico ico-purple">✍️</div>
-          <h3>Viết câu</h3>
-          <p>Đặt câu theo từ gợi ý, hệ thống kiểm tra ngữ pháp và gợi ý sửa.</p>
-        </div>
+          <h3>Luyện viết câu</h3>
+          <p>Dịch câu Việt → Anh theo 10 chủ đề, 3 cấp độ A2/B1-B2/C1. AI chấm tự động, gợi ý đa dạng.</p>
+          <span style="font-size:11px;font-weight:700;background:#ede9fe;color:#7c3aed;border-radius:8px;padding:2px 8px;">10 chủ đề · 300 câu</span>
+        </a>
 
         <a class="practice-type-card" href="practice-sentence-arrange.html">
           <div class="p-ico ico-blue">🔀</div>
@@ -114,63 +115,17 @@
       </div>
     </div>
 
-    <!-- ── Nút quay lại (ẩn ban đầu) ── -->
-    <div id="backBar" style="display:none; margin-bottom:20px;">
-      <button class="btn" onclick="backToGrid()">← Quay lại danh sách</button>
-    </div>
-
-    <!-- ── Viết câu ── -->
-    <div class="card" id="viet-cau" style="display:none;">
-      <div class="card-head"><h3>✍️ Viết câu với từ cho sẵn</h3><span class="tag">Demo</span></div>
-      <p style="color:var(--text-muted); font-size:14px; margin-bottom:14px;">
-        Đặt một câu tiếng Anh có dùng từ: <strong style="color:var(--primary);">environment</strong>
-      </p>
-      <div class="field"><textarea id="sentenceInput" placeholder="Nhập câu của bạn..."></textarea></div>
-      <button class="btn btn-primary" id="checkSentence">Kiểm tra tự động</button>
-      <div id="sentenceFeedback" style="display:none; margin-top:16px;" class="note">
-        <span>📝</span><div id="fbText"></div>
-      </div>
-    </div>
 
   </div>
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=10"></script>
+<script src="js/main.js?v=11"></script>
 <script>
-  function showSection(id) {
-    document.getElementById('typeGrid').style.display = 'none';
-    document.getElementById('backBar').style.display  = 'block';
-    document.getElementById(id).style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function backToGrid() {
-    document.getElementById('typeGrid').style.display = 'block';
-    document.getElementById('backBar').style.display  = 'none';
-    ['viet-cau'].forEach(function(id) {
-      document.getElementById(id).style.display = 'none';
-    });
-  }
-
   function comingSoon(el) {
     el.style.transform = 'scale(.97)';
     setTimeout(function() { el.style.transform = ''; }, 180);
   }
-
-  /* ── Viết câu ── */
-  document.getElementById('checkSentence').addEventListener('click', function() {
-    var v = document.getElementById('sentenceInput').value.trim();
-    var box = document.getElementById('sentenceFeedback');
-    var txt = document.getElementById('fbText');
-    if (!v) { txt.innerHTML = 'Bạn hãy nhập một câu trước nhé.'; }
-    else if (v.toLowerCase().indexOf('environment') === -1) {
-      txt.innerHTML = 'Câu chưa chứa từ <strong>environment</strong>. Thử lại nhé!';
-    } else {
-      txt.innerHTML = '<strong>Tốt lắm!</strong> Câu của bạn có dùng đúng từ khoá. Hệ thống sẽ kiểm tra ngữ pháp khi tính năng được kích hoạt đầy đủ.';
-    }
-    box.style.display = 'flex';
-  });
 </script>
 </body>
 </html>

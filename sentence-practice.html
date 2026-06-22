@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện viết câu — English With Tom</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=11">
+<style>
+/* ===== Topic Grid ===== */
+.sp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+.sp-topic { background:var(--surface); border:2px solid var(--border); border-radius:14px; padding:20px 16px; cursor:pointer; transition:.18s; text-align:center; }
+.sp-topic:hover { border-color:var(--primary); transform:translateY(-2px); box-shadow:0 6px 20px rgba(108,99,255,.13); }
+.sp-topic-icon { font-size:32px; margin-bottom:8px; }
+.sp-topic-name { font-size:14px; font-weight:600; color:var(--text); line-height:1.4; }
+.sp-topic-sub  { font-size:12px; color:var(--text-muted); margin-top:3px; }
+
+/* ===== Level Cards ===== */
+.sp-levels { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-top:8px; }
+.sp-lvl-card { border-radius:14px; padding:22px 18px; cursor:pointer; border:2px solid transparent; transition:.18s; }
+.sp-lvl-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.1); }
+.sp-lvl-easy   { background:#ecfdf5; border-color:#10b981; }
+.sp-lvl-medium { background:#eff6ff; border-color:#3b82f6; }
+.sp-lvl-hard   { background:#fdf4ff; border-color:#a855f7; }
+.sp-lvl-card h3 { font-size:16px; margin:0 0 4px; }
+.sp-lvl-easy   h3 { color:#065f46; }
+.sp-lvl-medium h3 { color:#1e40af; }
+.sp-lvl-hard   h3 { color:#6b21a8; }
+.sp-lvl-card p { font-size:13px; color:var(--text-muted); margin:0; line-height:1.5; }
+.sp-lvl-badge  { display:inline-block; font-size:11px; font-weight:700; border-radius:8px; padding:2px 8px; margin-bottom:8px; }
+.sp-lvl-easy   .sp-lvl-badge { background:#d1fae5; color:#065f46; }
+.sp-lvl-medium .sp-lvl-badge { background:#dbeafe; color:#1e40af; }
+.sp-lvl-hard   .sp-lvl-badge { background:#f3e8ff; color:#6b21a8; }
+
+/* ===== Practice area ===== */
+.sp-progress-bar { height:6px; background:var(--border); border-radius:3px; margin:12px 0 20px; overflow:hidden; }
+.sp-progress-fill { height:100%; background:var(--gradient); border-radius:3px; transition:.4s; }
+.sp-prompt-vi { background:var(--primary-soft); border-left:4px solid var(--primary); border-radius:0 10px 10px 0; padding:14px 16px; font-size:16px; font-weight:600; color:var(--text); line-height:1.6; margin-bottom:16px; }
+.sp-textarea { width:100%; min-height:90px; padding:12px; border:2px solid var(--border); border-radius:10px; font-size:15px; font-family:inherit; resize:vertical; outline:none; transition:.18s; box-sizing:border-box; }
+.sp-textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(108,99,255,.1); }
+.sp-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+/* ===== Result ===== */
+.sp-result { margin-top:18px; border-radius:12px; padding:16px; }
+.sp-result.good  { background:#ecfdf5; border:1px solid #6ee7b7; }
+.sp-result.ok    { background:#fffbeb; border:1px solid #fbbf24; }
+.sp-result.poor  { background:#fef2f2; border:1px solid #fca5a5; }
+.sp-score-badge  { display:inline-flex; align-items:center; gap:6px; font-size:22px; font-weight:700; margin-bottom:8px; }
+.sp-feedback-text { font-size:14px; color:var(--text); line-height:1.6; margin:0 0 10px; }
+.sp-errors { margin:0 0 12px; padding:0; list-style:none; }
+.sp-errors li { font-size:13px; color:#b91c1c; background:#fee2e2; border-radius:8px; padding:4px 10px; margin-bottom:4px; }
+.sp-errors li::before { content:'⚠ '; }
+.sp-suggestions { border-top:1px solid rgba(0,0,0,.08); padding-top:12px; margin-top:4px; }
+.sp-suggestions h4 { font-size:13px; color:var(--text-muted); font-weight:600; margin:0 0 8px; }
+.sp-sug-item { background:#fff; border:1px solid var(--border); border-radius:8px; padding:8px 12px; margin-bottom:6px; }
+.sp-sug-text { font-size:14px; font-weight:600; color:var(--text); }
+.sp-sug-note { font-size:12px; color:var(--text-muted); margin-top:2px; }
+
+/* ===== Nav ===== */
+.sp-back-btn { display:inline-flex; align-items:center; gap:6px; color:var(--primary); background:none; border:none; font-size:14px; font-weight:600; cursor:pointer; padding:0; margin-bottom:16px; }
+.sp-step-info { font-size:13px; color:var(--text-muted); margin-bottom:4px; }
+
+/* ===== Summary ===== */
+.sp-summary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0; }
+.sp-sum-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
+.sp-sum-val  { font-size:28px; font-weight:700; }
+.sp-sum-lbl  { font-size:12px; color:var(--text-muted); }
+
+.sp-tip { background:#fefce8; border:1px solid #fde047; border-radius:8px; padding:8px 12px; font-size:13px; color:#713f12; margin-bottom:12px; display:none; }
+</style>
+</head>
+<body data-page="practice" data-guard="auth">
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumb">Trang chủ › Luyện tập › Luyện viết câu</div>
+    <h1>✍️ Luyện viết câu</h1>
+    <p>Dịch câu tiếng Việt sang tiếng Anh. Hệ thống AI sẽ kiểm tra ngữ pháp, từ vựng và ngữ cảnh — không yêu cầu dịch từng từ.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:30px;">
+  <div class="container" style="max-width:800px;">
+
+    <!-- Phase 1: Topic selection -->
+    <div id="phaseTopics">
+      <p class="sp-step-info">Bước 1 / 3 — Chọn chủ đề</p>
+      <div class="sp-grid" id="topicGrid"></div>
+    </div>
+
+    <!-- Phase 2: Level selection -->
+    <div id="phaseLevel" style="display:none;">
+      <button class="sp-back-btn" onclick="goPhase('topics')">← Quay lại chủ đề</button>
+      <p class="sp-step-info">Bước 2 / 3 — Chọn cấp độ</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <span id="selTopicIcon" style="font-size:28px;"></span>
+        <div>
+          <div style="font-weight:700;font-size:16px;" id="selTopicName"></div>
+          <div style="font-size:13px;color:var(--text-muted);" id="selTopicSub"></div>
+        </div>
+      </div>
+      <div class="sp-levels">
+        <div class="sp-lvl-card sp-lvl-easy"   onclick="startPractice('easy')">
+          <div class="sp-lvl-badge">Dễ</div>
+          <h3>🟢 A2 — Câu đơn giản</h3>
+          <p>Simple sentences. Thì hiện tại, quá khứ, từ vựng cơ bản.</p>
+        </div>
+        <div class="sp-lvl-card sp-lvl-medium" onclick="startPractice('medium')">
+          <div class="sp-lvl-badge">Trung bình</div>
+          <h3>🔵 B1/B2 — Câu ghép</h3>
+          <p>Compound sentences với liên từ although, however, since, if, not only… but also…</p>
+        </div>
+        <div class="sp-lvl-card sp-lvl-hard"   onclick="startPractice('advanced')">
+          <div class="sp-lvl-badge">Nâng cao</div>
+          <h3>🟣 C1 — Câu phức hợp</h3>
+          <p>Complex & compound-complex sentences. Cấu trúc đa tầng, từ vựng academic.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Practice -->
+    <div id="phasePractice" style="display:none;">
+      <button class="sp-back-btn" onclick="goPhase('level')">← Đổi cấp độ</button>
+      <p class="sp-step-info" id="practiceStepInfo"></p>
+
+      <div class="sp-progress-bar"><div class="sp-progress-fill" id="progressFill"></div></div>
+
+      <div class="card">
+        <div id="practiceBody">
+          <!-- injected by JS -->
+        </div>
+      </div>
+
+      <!-- Nav buttons -->
+      <div style="display:flex;justify-content:space-between;margin-top:14px;">
+        <button class="btn btn-sm" id="btnPrev" onclick="navSentence(-1)">← Trước</button>
+        <button class="btn btn-sm" id="btnNext" onclick="navSentence(1)" style="display:none;">Tiếp theo →</button>
+        <button class="btn btn-primary btn-sm" id="btnFinish" onclick="showSummary()" style="display:none;">Xem kết quả →</button>
+      </div>
+    </div>
+
+    <!-- Phase 4: Summary -->
+    <div id="phaseSummary" style="display:none;">
+      <div class="card" style="text-align:center;padding:30px 20px;">
+        <div style="font-size:48px;margin-bottom:10px;" id="summaryEmoji">🎉</div>
+        <h2 id="summaryTitle">Hoàn thành!</h2>
+        <p id="summaryMsg" style="color:var(--text-muted);"></p>
+        <div class="sp-summary-grid">
+          <div class="sp-sum-card"><div class="sp-sum-val" id="sumTotal">–</div><div class="sp-sum-lbl">Tổng câu</div></div>
+          <div class="sp-sum-card"><div class="sp-sum-val" style="color:var(--success);" id="sumGood">–</div><div class="sp-sum-lbl">Đạt (&ge;70)</div></div>
+          <div class="sp-sum-card"><div class="sp-sum-val" style="color:var(--primary);" id="sumAvg">–</div><div class="sp-sum-lbl">Điểm TB</div></div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-sm" onclick="startPractice(curLevel)">🔄 Làm lại</button>
+          <button class="btn btn-sm" onclick="goPhase('level')">↩ Đổi cấp độ</button>
+          <button class="btn btn-primary btn-sm" onclick="goPhase('topics')">📚 Chủ đề khác</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=11"></script>
+<script>
+/* ======================================================
+   SENTENCE DATA — 10 topics × 3 levels × 10 sentences
+   ====================================================== */
+var TOPICS = [
+  {
+    id:'family', icon:'🏠', name:'Gia đình & Cuộc sống', sub:'Family & Daily Life',
+    easy:[
+      {vi:'Mẹ tôi thức dậy lúc 6 giờ sáng mỗi ngày.'},
+      {vi:'Gia đình tôi có bốn người: bố, mẹ, anh trai và tôi.'},
+      {vi:'Bố tôi làm bác sĩ tại một bệnh viện lớn.'},
+      {vi:'Em gái tôi rất thích vẽ tranh và tô màu.'},
+      {vi:'Chúng tôi thường ăn tối cùng nhau lúc 7 giờ tối.'},
+      {vi:'Nhà tôi ở gần công viên và trường học.'},
+      {vi:'Ông nội tôi đã 70 tuổi nhưng vẫn còn rất khỏe mạnh.'},
+      {vi:'Tôi giúp mẹ rửa bát và dọn dẹp sau bữa ăn.'},
+      {vi:'Mỗi Chủ nhật, cả gia đình chúng tôi đi chơi ngoài trời.'},
+      {vi:'Mẹ tôi nấu ăn rất ngon, đặc biệt là món phở.'}
+    ],
+    medium:[
+      {vi:'Mặc dù bố tôi rất bận rộn, ông ấy vẫn luôn dành thời gian đọc sách cho tôi nghe trước khi đi ngủ.'},
+      {vi:'Kể từ khi dọn đến thành phố lớn, tôi không còn gặp ông bà thường xuyên như trước.'},
+      {vi:'Nếu cuối tuần này trời đẹp, cả gia đình tôi sẽ đi cắm trại ngoài trời.'},
+      {vi:'Tôi không chỉ yêu gia đình mình mà còn rất trân trọng từng khoảnh khắc được ở bên họ.'},
+      {vi:'Bà ngoại đã dạy tôi cách nấu ăn, vì vậy mỗi khi vào bếp tôi lại nhớ đến bà.'},
+      {vi:'Dù chúng tôi sống ở những thành phố khác nhau, anh em vẫn thường xuyên gọi video cho nhau.'},
+      {vi:'Sau khi em trai tôi sinh ra, cuộc sống của cả gia đình đã thay đổi hoàn toàn.'},
+      {vi:'Bố tôi không thích xem phim, nhưng ông ấy luôn đồng ý đi rạp khi tôi nhờ.'},
+      {vi:'Trong gia đình tôi, mọi người đều có trách nhiệm với công việc nhà.'},
+      {vi:'Tôi nhớ hồi nhỏ, cả nhà thường ngồi quanh bàn và kể chuyện cho nhau nghe mỗi tối.'}
+    ],
+    advanced:[
+      {vi:'Mặc dù nhịp sống hiện đại ngày càng nhanh hơn, tôi vẫn tin rằng thói quen cùng nhau ăn tối là sợi dây vô hình giúp các thành viên trong gia đình gắn kết với nhau.'},
+      {vi:'Sự hy sinh thầm lặng của những người mẹ trong việc nuôi dưỡng con cái, điều thường bị xem nhẹ trong xã hội hiện đại, chính là nền tảng vô hình nhưng vững chắc nhất của mỗi gia đình.'},
+      {vi:'Kể từ khi chứng kiến bố tôi kiên cường vượt qua căn bệnh hiểm nghèo, tôi đã hiểu rằng sức mạnh gia đình không đến từ sự hoàn hảo mà từ khả năng đứng vững bên nhau trong khó khăn.'},
+      {vi:'Sự khác biệt thế hệ giữa cha mẹ và con cái, nếu được nhìn nhận với tinh thần cởi mở và đồng cảm, có thể trở thành cầu nối văn hóa thay vì là rào cản trong giao tiếp gia đình.'},
+      {vi:'Tôi không thể phủ nhận rằng những kỳ vọng từ phía gia đình đôi khi tạo ra áp lực không nhỏ; tuy nhiên, chính những kỳ vọng ấy cũng đã thúc đẩy tôi không ngừng cố gắng và hoàn thiện bản thân.'},
+      {vi:'Ngôi nhà tuổi thơ tôi — nơi mà tiếng cười và tiếng khóc đều thuộc về nhau — là không gian thiêng liêng mà tôi luôn mang theo trong ký ức, dù cuộc đời có đưa tôi đến bất kỳ đâu.'},
+      {vi:'Trong khi một số người cho rằng sự độc lập là thước đo của trưởng thành, tôi lại tin rằng khả năng duy trì mối quan hệ gia đình gắn bó mới là dấu hiệu của người thực sự trưởng thành về mặt cảm xúc.'},
+      {vi:'Những giá trị mà ông bà tôi truyền lại — sự chăm chỉ, lòng trung thực và tinh thần biết ơn — không chỉ là di sản văn hóa mà còn là kim chỉ nam định hướng cho mọi quyết định trong cuộc sống của tôi.'},
+      {vi:'Dù thế giới ngày càng kết nối qua màn hình, không có gì thay thế được giá trị của một buổi chiều ngồi bên nhau, không điện thoại, chỉ có trò chuyện và sự hiện diện thực sự.'},
+      {vi:'Gia đình không phải là nơi không có xung đột, mà là nơi chúng ta học được cách tha thứ, lắng nghe và yêu thương nhau dù trong những thời điểm khó khăn nhất.'}
+    ]
+  },
+  {
+    id:'school', icon:'🎓', name:'Học tập & Trường học', sub:'Education & School',
+    easy:[
+      {vi:'Trường tôi có ba mươi lớp học và một sân vận động lớn.'},
+      {vi:'Tôi thích học môn Tiếng Anh và Văn học nhất.'},
+      {vi:'Giáo viên của tôi rất vui tính và kiên nhẫn với học sinh.'},
+      {vi:'Tôi học bài mỗi tối trước khi đi ngủ khoảng một tiếng.'},
+      {vi:'Thư viện trường tôi có rất nhiều sách và máy tính.'},
+      {vi:'Kỳ thi học kỳ của tôi bắt đầu vào tuần tới.'},
+      {vi:'Bạn thân nhất của tôi ngồi cạnh tôi trong lớp học.'},
+      {vi:'Chúng tôi có giờ nghỉ giải lao mười lăm phút lúc 10 giờ sáng.'},
+      {vi:'Tôi đi học bằng xe đạp vì nhà gần trường.'},
+      {vi:'Lớp học của tôi có ba mươi lăm học sinh từ nhiều nơi khác nhau.'}
+    ],
+    medium:[
+      {vi:'Mặc dù môn Toán rất khó, tôi vẫn cố gắng luyện tập mỗi ngày để cải thiện điểm số của mình.'},
+      {vi:'Kể từ khi thầy giáo mới bắt đầu dạy, không khí lớp học trở nên sôi động và thú vị hơn nhiều.'},
+      {vi:'Tôi không chỉ học để đạt điểm cao mà còn để trang bị cho mình kiến thức thực sự có ích trong tương lai.'},
+      {vi:'Nếu tôi ôn thi nghiêm túc hơn, kết quả kỳ thi vừa rồi chắc đã tốt hơn nhiều.'},
+      {vi:'Cô giáo tôi luôn khuyến khích chúng tôi đặt câu hỏi thay vì chỉ ngồi nghe một cách thụ động.'},
+      {vi:'Việc học nhóm giúp tôi hiểu bài sâu hơn vì tôi có thể trao đổi và giải thích lại cho bạn bè.'},
+      {vi:'Tôi thường đến thư viện sau giờ học để đọc thêm tài liệu và làm bài tập về nhà.'},
+      {vi:'Dù áp lực thi cử rất lớn, tôi đã học cách cân bằng giữa việc học và thời gian nghỉ ngơi.'},
+      {vi:'Bài thuyết trình tuần trước đã giúp tôi phát triển kỹ năng nói trước đám đông đáng kể.'},
+      {vi:'Thầy dạy Lịch sử không chỉ truyền đạt kiến thức mà còn khơi dậy trong tôi niềm đam mê tìm hiểu quá khứ.'}
+    ],
+    advanced:[
+      {vi:'Nền giáo dục hiện đại, nếu được thiết kế tốt, không chỉ trang bị kiến thức mà còn phải nuôi dưỡng tư duy phản biện và khả năng thích ứng trong một thế giới không ngừng thay đổi.'},
+      {vi:'Tôi tin rằng áp lực thi cử thái quá không chỉ tổn hại đến sức khỏe tâm lý của học sinh mà còn bóp méo mục tiêu thực sự của giáo dục, vốn là khơi dậy niềm đam mê học hỏi suốt đời.'},
+      {vi:'Sự khác biệt giữa một giáo viên giỏi và một giáo viên xuất sắc không nằm ở khối lượng kiến thức họ truyền đạt, mà ở khả năng truyền cảm hứng cho học sinh tự đặt câu hỏi về thế giới xung quanh.'},
+      {vi:'Việc học ngoại ngữ không chỉ là nắm vững ngữ pháp và từ vựng mà còn là mở ra một cách nhìn hoàn toàn khác về thế giới — điều mà tôi nhận ra sau nhiều năm học Tiếng Anh.'},
+      {vi:'Dù công nghệ số đã cách mạng hóa cách chúng ta tiếp cận thông tin, khả năng tư duy sâu và học có chủ đích vẫn là những kỹ năng mà không thuật toán nào có thể thay thế.'},
+      {vi:'Hệ thống giáo dục chỉ đánh giá học sinh qua điểm số mà bỏ qua sự phát triển toàn diện về cảm xúc và sáng tạo đang tạo ra những thế hệ thành công về học thuật nhưng thiếu hụt về mặt con người.'},
+      {vi:'Khi nhìn lại hành trình học tập của mình, tôi nhận ra rằng những thất bại và sai lầm đã dạy tôi nhiều hơn bất kỳ bài giảng nào, vì chúng buộc tôi phải thực sự suy nghĩ và điều chỉnh.'},
+      {vi:'Trong một thế giới mà thông tin tràn ngập, kỹ năng quan trọng nhất mà nhà trường cần dạy không phải là ghi nhớ thông tin mà là biết cách đánh giá, lọc và áp dụng thông tin một cách có phê phán.'},
+      {vi:'Sự đồng cảm và kỹ năng giao tiếp liên văn hóa, những điều hiếm khi xuất hiện trong chương trình học chính thức, chính là những năng lực quyết định thành công thực sự trong thế giới ngày nay.'},
+      {vi:'Nếu hệ thống giáo dục có thể tích hợp tư duy sáng tạo vào từng môn học thay vì coi nó là môn học độc lập, học sinh sẽ không chỉ học giỏi hơn mà còn yêu thích việc học hơn.'}
+    ]
+  },
+  {
+    id:'travel', icon:'🌍', name:'Du lịch & Khám phá', sub:'Travel & Exploration',
+    easy:[
+      {vi:'Tôi đã đến Hà Nội lần đầu tiên vào năm ngoái.'},
+      {vi:'Biển Đà Nẵng rất đẹp và nước biển rất trong xanh.'},
+      {vi:'Tôi thích đi du lịch bằng máy bay hơn tàu hỏa.'},
+      {vi:'Khách sạn chúng tôi ở có hồ bơi rất lớn và sạch sẽ.'},
+      {vi:'Chúng tôi đã chụp rất nhiều ảnh ở phố cổ Hội An.'},
+      {vi:'Tôi mua vài món quà lưu niệm cho bạn bè và gia đình.'},
+      {vi:'Thức ăn ở Huế rất ngon và đặc biệt so với nơi khác.'},
+      {vi:'Chuyến bay của chúng tôi bị trễ gần hai tiếng đồng hồ.'},
+      {vi:'Tôi đã gặp nhiều người thú vị trong chuyến đi lần này.'},
+      {vi:'Hồ Hoàn Kiếm nằm ngay trung tâm thành phố Hà Nội.'}
+    ],
+    medium:[
+      {vi:'Mặc dù đây là lần đầu đi nước ngoài, tôi đã cảm thấy tự tin hơn tôi nghĩ nhờ vào vốn Tiếng Anh của mình.'},
+      {vi:'Kể từ khi đến Singapore, tôi đã thay đổi cách nhìn về sự sạch sẽ và ý thức công cộng.'},
+      {vi:'Nếu có đủ tiền và thời gian, tôi sẽ đi một mình vòng quanh Đông Nam Á để trải nghiệm các nền văn hóa khác nhau.'},
+      {vi:'Chuyến đi đến vịnh Hạ Long không chỉ cho tôi thấy vẻ đẹp thiên nhiên tuyệt vời mà còn khiến tôi nhận ra mình yêu quê hương biết bao.'},
+      {vi:'Du lịch bụi tuy nhiều bất tiện nhưng lại cho tôi cơ hội tiếp xúc trực tiếp với người dân địa phương và khám phá những góc khuất chân thực của vùng đất.'},
+      {vi:'Người hướng dẫn viên không chỉ dẫn đường mà còn kể những câu chuyện lịch sử làm cho chuyến tham quan trở nên sống động hơn nhiều.'},
+      {vi:'Vé máy bay đi Nhật Bản đắt hơn tôi nghĩ, vì vậy tôi phải tiết kiệm trong nhiều tháng trước khi thực hiện chuyến đi.'},
+      {vi:'Dù chỉ ở Đà Lạt ba ngày, tôi đã kịp yêu thành phố sương mù này với những con đường hoa và những quán cà phê ấm cúng.'},
+      {vi:'Khi đặt chỗ ở trực tuyến, bạn nên đọc kỹ đánh giá của khách hàng trước để tránh những bất ngờ không mong muốn.'},
+      {vi:'Sau mỗi chuyến đi, tôi thường viết nhật ký để ghi lại những kỷ niệm và cảm xúc mà hình ảnh không thể nói hết.'}
+    ],
+    advanced:[
+      {vi:'Du lịch có trách nhiệm — tức là trân trọng văn hóa bản địa, giảm thiểu tác động môi trường và hỗ trợ cộng đồng địa phương — không chỉ là xu hướng mà ngày càng trở thành nghĩa vụ đạo đức của mỗi du khách.'},
+      {vi:'Trong khi du lịch đại trà mang lại nguồn thu lớn cho kinh tế địa phương, nó cũng tạo ra những áp lực không nhỏ lên hệ sinh thái và bản sắc văn hóa của những điểm đến vốn mang tính đặc thù.'},
+      {vi:'Mỗi chuyến đi không chỉ là hành trình địa lý mà còn là hành trình nội tâm — khi thoát ra khỏi môi trường quen thuộc, ta mới nhận ra những giới hạn và tiềm năng của bản thân mà cuộc sống thường nhật che khuất.'},
+      {vi:'Hiện tượng du lịch quá tải ở những địa danh nổi tiếng đặt ra câu hỏi căn bản rằng liệu quyền tiếp cận di sản văn hóa có được phép vô giới hạn khi chính sự tiếp cận đó đang phá hủy thứ người ta đến để chiêm ngưỡng.'},
+      {vi:'Sự dễ dàng di chuyển toàn cầu ngày nay đã thu hẹp thế giới về mặt vật lý nhưng lại tạo ra nguy cơ đồng nhất hóa văn hóa, khi những thương hiệu quốc tế thay thế dần những trải nghiệm địa phương độc đáo.'},
+      {vi:'Tôi đã học được nhiều hơn trong hai tuần du lịch một mình so với nhiều tháng ngồi trong lớp học — không phải vì kiến thức địa lý, mà vì sự linh hoạt và khả năng đọc hiểu con người mà môi trường đó buộc tôi phải phát triển.'},
+      {vi:'Việc lựa chọn giữa "du lịch để sống" và "sống để du lịch" phản ánh một triết lý sống sâu sắc hơn nhiều — liệu ta đang trốn chạy cuộc sống hay đang tích cực kiến tạo những trải nghiệm định hình con người mình.'},
+      {vi:'Những di sản văn hóa thế giới, nếu không được bảo tồn một cách nghiêm túc và sáng tạo, sẽ chỉ còn là những tấm ảnh trong sách lịch sử mà các thế hệ tương lai nhìn ngắm với sự tiếc nuối về một thế giới chưa kịp chứng kiến.'},
+      {vi:'Nghịch lý của du lịch hiện đại nằm ở chỗ chúng ta đi xa để tìm kiếm những trải nghiệm xác thực, nhưng chính sự có mặt của chúng ta với máy ảnh và hashtag đã vô tình biến những nơi đó thành phiên bản được dàn dựng cho mắt du khách.'},
+      {vi:'Ranh giới giữa khám phá và xâm phạm trong du lịch ngày càng mờ nhạt; do đó, mỗi chúng ta cần tự hỏi liệu sự hiếu kỳ của mình có đang được thực hành một cách tôn trọng hay vô tình trở thành tiêu thụ văn hóa thiếu đạo đức.'}
+    ]
+  },
+  {
+    id:'food', icon:'🍜', name:'Ẩm thực & Sở thích', sub:'Food & Hobbies',
+    easy:[
+      {vi:'Tôi thích ăn phở hơn cơm trắng vào buổi sáng.'},
+      {vi:'Mỗi sáng tôi uống một cốc cà phê sữa đá trước khi đi làm.'},
+      {vi:'Tôi không ăn được đồ cay vì hay bị đau bụng.'},
+      {vi:'Bún bò Huế là món ăn yêu thích nhất của tôi.'},
+      {vi:'Cuối tuần tôi thường nấu ăn ở nhà thay vì ăn ngoài.'},
+      {vi:'Nhà hàng đó phục vụ rất nhiều món hải sản tươi ngon.'},
+      {vi:'Tôi biết cách làm bánh kem từ khi mười hai tuổi.'},
+      {vi:'Trái cây nhiệt đới của Việt Nam rất ngon và rất rẻ.'},
+      {vi:'Tôi đang học cách làm sushi tại nhà từ video trên YouTube.'},
+      {vi:'Quán cà phê đó có view rất đẹp nhìn ra hồ và rừng cây.'}
+    ],
+    medium:[
+      {vi:'Dù không biết nấu ăn khi còn nhỏ, tôi đã dần học được nhiều công thức từ mẹ và hiện tại tự nấu được hầu hết các bữa ăn.'},
+      {vi:'Ẩm thực Việt Nam nổi tiếng thế giới không chỉ vì hương vị đậm đà mà còn vì sự cân bằng tinh tế giữa các nguyên liệu tươi ngon và gia vị đặc trưng.'},
+      {vi:'Nếu bạn muốn trải nghiệm ẩm thực địa phương đích thực, hãy tránh nhà hàng du lịch và tìm đến những quán nhỏ nơi người dân địa phương thường ăn.'},
+      {vi:'Tôi không chỉ yêu thích việc ăn ngon mà còn đam mê tìm hiểu nguồn gốc và câu chuyện đằng sau mỗi món ăn truyền thống.'},
+      {vi:'Kể từ khi bắt đầu ăn chay, tôi đã khám phá ra vô số công thức nấu ăn sáng tạo mà trước đây chưa bao giờ nghĩ đến.'},
+      {vi:'Mặc dù tôi từng nghĩ rằng nấu ăn rất mất thời gian, thực ra đó là hoạt động giải stress tuyệt vời sau một ngày làm việc mệt mỏi.'},
+      {vi:'Chợ Bến Thành không chỉ là nơi mua sắm mà còn là điểm đến ẩm thực lý tưởng với đủ loại đặc sản miền Nam.'},
+      {vi:'Sở thích đọc sách của tôi đã thay đổi hoàn toàn kể từ khi tôi bắt đầu đọc tiểu thuyết tiếng Anh thay vì sách dịch.'},
+      {vi:'Tôi thích vẽ tranh vào cuối tuần vì nó cho phép tôi thể hiện cảm xúc theo cách mà ngôn từ không thể diễn đạt.'},
+      {vi:'Dù đã thử nhiều thể loại nhạc khác nhau, jazz vẫn là thể loại mà tôi cảm thấy có sự kết nối sâu sắc nhất.'}
+    ],
+    advanced:[
+      {vi:'Ẩm thực không chỉ là nhu cầu sinh lý mà còn là biểu hiện văn hóa, lịch sử và bản sắc dân tộc — điều giải thích tại sao việc bảo tồn các công thức nấu ăn truyền thống lại có ý nghĩa sâu xa hơn chỉ đơn giản là giữ gìn hương vị.'},
+      {vi:'Trong thời đại toàn cầu hóa, ẩm thực đường phố Việt Nam đang đứng trước nghịch lý: ngày càng được thế giới biết đến nhưng đồng thời đối mặt với nguy cơ thương mại hóa khiến nó mất đi tính chân thực vốn có.'},
+      {vi:'Sở thích, nếu được theo đuổi có chủ đích, có thể phát triển thành phương tiện tự hiểu bản thân — bởi vì những gì ta làm khi không có áp lực bên ngoài chính là biểu hiện trung thực nhất của con người ta.'},
+      {vi:'Nghịch lý của ẩm thực fusion hiện đại là nó đồng thời tôn vinh và xóa nhòa ranh giới văn hóa — tạo ra trải nghiệm hương vị mới mẻ nhưng đôi khi đánh mất chiều sâu bối cảnh mà mỗi món ăn nguyên bản mang theo.'},
+      {vi:'Việc nấu ăn, khi được thực hành một cách chú tâm, không chỉ là kỹ năng sinh tồn mà còn là nghệ thuật chuyển hóa nguyên liệu thô thành những khoảnh khắc kết nối con người với nhau.'},
+      {vi:'Tôi nhận ra rằng sở thích của một người không chỉ phản ánh tính cách mà còn cho thấy những giá trị họ ưu tiên — người chọn đọc sách hay thiền định đang đưa ra tuyên bố ngầm về cách họ muốn sử dụng thời gian và sự chú ý của mình.'},
+      {vi:'Sự bùng nổ của văn hóa "foodie" trong thời đại mạng xã hội đặt ra câu hỏi thú vị rằng liệu việc ăn ngon và chia sẻ ảnh món ăn có thực sự là tình yêu ẩm thực hay chỉ là hình thức thể hiện danh tính xã hội qua tiêu thụ.'},
+      {vi:'Ẩm thực truyền thống, được bảo tồn và truyền lại từ thế hệ này sang thế hệ khác, mang trong mình lịch sử của những di dân, những cuộc chiến và những giao thương — một cuốn sách lịch sử được viết bằng gia vị và kỹ thuật chế biến.'},
+      {vi:'Sở thích của tôi đối với nhiếp ảnh đường phố đã dạy tôi một bài học sâu sắc về sự hiện diện: để chụp được những khoảnh khắc thật sự, bạn phải học cách kiên nhẫn và mở lòng với những điều bất ngờ.'},
+      {vi:'Nghệ thuật và ẩm thực, dù thuộc hai lĩnh vực khác nhau, đều chia sẻ một đặc điểm cốt lõi: chúng đều là ngôn ngữ phi lời qua đó con người truyền đạt những điều không thể nói thành lời về bản sắc, trí nhớ và cảm xúc.'}
+    ]
+  },
+  {
+    id:'work', icon:'💼', name:'Công việc & Nghề nghiệp', sub:'Work & Career',
+    easy:[
+      {vi:'Tôi muốn trở thành bác sĩ hoặc kỹ sư trong tương lai.'},
+      {vi:'Bố tôi làm kỹ sư cho một công ty xây dựng lớn.'},
+      {vi:'Công việc đó trả lương cao nhưng đòi hỏi nhiều kinh nghiệm.'},
+      {vi:'Tôi vừa nộp đơn xin việc ở một công ty nước ngoài.'},
+      {vi:'Cô ấy đã làm việc tại công ty đó được năm năm liên tiếp.'},
+      {vi:'Anh ấy bắt đầu đi làm lúc tám giờ sáng mỗi ngày.'},
+      {vi:'Nghề giáo viên rất cao quý nhưng cũng rất vất vả và ít lương.'},
+      {vi:'Tôi đang học thêm Tiếng Anh để có cơ hội việc làm tốt hơn.'},
+      {vi:'Công ty đó có hơn năm trăm nhân viên ở nhiều quốc gia.'},
+      {vi:'Bạn tôi vừa tìm được việc làm mới ở thành phố Hồ Chí Minh.'}
+    ],
+    medium:[
+      {vi:'Mặc dù mức lương không cao bằng công ty cũ, môi trường làm việc tốt hơn đã khiến tôi quyết định chuyển việc.'},
+      {vi:'Nếu muốn thăng tiến trong sự nghiệp, bạn không chỉ cần năng lực chuyên môn mà còn cần xây dựng mối quan hệ tốt với đồng nghiệp và cấp trên.'},
+      {vi:'Kể từ khi làm việc từ xa, tôi nhận ra rằng sự cân bằng giữa công việc và cuộc sống cá nhân phụ thuộc rất nhiều vào kỷ luật tự giác.'},
+      {vi:'Phỏng vấn xin việc không chỉ là cơ hội để nhà tuyển dụng đánh giá bạn mà còn là cơ hội để bạn đánh giá xem công ty đó có phù hợp với mình hay không.'},
+      {vi:'Tôi không chỉ muốn kiếm tiền từ công việc mà còn muốn cảm thấy rằng công việc đó tạo ra giá trị thực sự cho xã hội.'},
+      {vi:'Sau khi tốt nghiệp đại học, tôi đã mất gần sáu tháng để tìm được công việc phù hợp với chuyên ngành và sở thích của mình.'},
+      {vi:'Những kỹ năng mềm như giao tiếp hiệu quả, làm việc nhóm và quản lý thời gian ngày càng được các nhà tuyển dụng coi trọng hơn bằng cấp.'},
+      {vi:'Cô ấy đã chuyển từ nghề kế toán sang thiết kế đồ họa sau khi nhận ra rằng niềm đam mê mới là con đường dẫn đến sự thỏa mãn thực sự trong công việc.'},
+      {vi:'Dù khởi nghiệp đầy rủi ro, ngày càng có nhiều bạn trẻ lựa chọn tự kinh doanh thay vì làm việc trong các tập đoàn lớn.'},
+      {vi:'Tôi nghĩ rằng việc không ngừng học hỏi và cập nhật kiến thức là điều kiện tiên quyết để tồn tại trong thị trường lao động ngày càng cạnh tranh.'}
+    ],
+    advanced:[
+      {vi:'Trong bối cảnh trí tuệ nhân tạo ngày càng tự động hóa nhiều công việc, câu hỏi không phải là nghề nào sẽ biến mất mà là con người cần phát triển những năng lực nào để duy trì sự liên quan trong nền kinh tế tương lai.'},
+      {vi:'Nghịch lý của sự thành công nghề nghiệp hiện đại là nhiều người đạt được những mục tiêu họ từng khao khát nhưng lại cảm thấy rỗng tuếch, bởi vì họ chưa bao giờ tự hỏi thành công có ý nghĩa gì đối với bản thân mình.'},
+      {vi:'Ranh giới giữa đam mê nghề nghiệp và sự kiệt sức rất mỏng manh — và thực tế là những người có trách nhiệm và nhiệt huyết nhất thường là những người dễ vượt qua ranh giới đó nhất.'},
+      {vi:'Văn hóa tôn vinh sự bận rộn và hy sinh sức khỏe cho sự nghiệp đang tạo ra một thế hệ người đi làm kiệt sức trong khi nghĩ rằng mình đang phấn đấu cho tương lai.'},
+      {vi:'Khi đánh giá một cơ hội nghề nghiệp, tôi cho rằng điều quan trọng nhất không phải là mức lương hay danh tiếng công ty, mà là liệu công việc đó có cho phép bạn phát triển và đóng góp ý nghĩa hay không.'},
+      {vi:'Sự chuyển dịch sang nền kinh tế gig, dù mang lại sự linh hoạt cho người lao động, cũng đặt ra những thách thức sâu sắc về an sinh xã hội và quyền lợi người lao động mà các khung pháp lý hiện tại chưa đủ sức giải quyết.'},
+      {vi:'Tôi tin rằng sự đa dạng thực sự trong môi trường làm việc — không chỉ về giới tính hay dân tộc mà còn về tư duy và trải nghiệm sống — là điều kiện không thể thiếu để tổ chức có thể đổi mới và thích ứng trong dài hạn.'},
+      {vi:'Khái niệm "công việc mơ ước" đang dần được thay thế bởi "cuộc sống mơ ước", phản ánh sự thay đổi trong quan điểm của nhiều người về mối quan hệ giữa nghề nghiệp và hạnh phúc.'},
+      {vi:'Nếu chúng ta nhìn nhận giáo dục nghề nghiệp một cách tiến bộ, thì việc dạy học sinh về tài chính cá nhân, kỹ năng đàm phán và tư duy kinh doanh quan trọng không kém gì kiến thức chuyên ngành.'},
+      {vi:'Sự phân biệt truyền thống giữa "công việc" và "cuộc sống" đang dần sụp đổ trong thế giới kết nối liên tục, và thách thức thực sự là tìm ra cách sống một cuộc sống trọn vẹn trong đó công việc là một phần, không phải là tất cả.'}
+    ]
+  },
+  {
+    id:'environment', icon:'🌿', name:'Môi trường & Thiên nhiên', sub:'Environment & Nature',
+    easy:[
+      {vi:'Chúng ta cần bảo vệ các loài động vật hoang dã đang bị đe dọa.'},
+      {vi:'Rừng nhiệt đới có rất nhiều loại cây và động vật quý hiếm.'},
+      {vi:'Tôi luôn mang túi vải khi đi chợ để không dùng túi nhựa.'},
+      {vi:'Nhiệt độ trái đất đang tăng lên mỗi năm do biến đổi khí hậu.'},
+      {vi:'Chúng tôi trồng cây xanh trong vườn để giảm nhiệt và tạo bóng mát.'},
+      {vi:'Không khí ở các thành phố lớn đang bị ô nhiễm ngày càng nặng.'},
+      {vi:'Tôi tắt đèn và điều hòa khi ra khỏi phòng để tiết kiệm điện.'},
+      {vi:'Mưa axit gây ra nhiều thiệt hại cho cây cối, đất đai và động vật.'},
+      {vi:'Sông Mekong rất quan trọng đối với hàng triệu người dân ở Đông Nam Á.'},
+      {vi:'Chúng tôi phân loại rác tại nhà để tái chế và bảo vệ môi trường.'}
+    ],
+    medium:[
+      {vi:'Nếu chúng ta không hành động ngay để giảm lượng khí thải carbon, các thế hệ tương lai sẽ phải gánh chịu hậu quả của sự chậm trễ đó.'},
+      {vi:'Mặc dù năng lượng tái tạo ngày càng rẻ hơn, nhiều quốc gia vẫn còn phụ thuộc quá nhiều vào than đá và dầu mỏ vì lợi ích kinh tế ngắn hạn.'},
+      {vi:'Hiện tượng san hô chết hàng loạt không chỉ là thảm họa sinh thái mà còn là hồi chuông cảnh báo về sức khỏe của toàn bộ hệ sinh thái đại dương.'},
+      {vi:'Kể từ khi tôi bắt đầu phân loại rác tại nhà, tôi đã ý thức hơn nhiều về lượng rác thải mà một người có thể tạo ra mỗi ngày.'},
+      {vi:'Đô thị hóa nhanh chóng đã mang lại tiện ích nhưng cũng xóa đi nhiều khoảng xanh quan trọng mà thành phố cần để điều hòa khí hậu và cải thiện chất lượng không khí.'},
+      {vi:'Tôi tin rằng giáo dục môi trường cần được đưa vào chương trình học từ rất sớm để trẻ em hình thành thói quen sống xanh từ khi còn nhỏ.'},
+      {vi:'Nông nghiệp hữu cơ, dù tốn kém hơn, đang ngày càng được người tiêu dùng ủng hộ vì họ nhận ra rằng sức khỏe con người và sức khỏe đất đai có mối liên hệ mật thiết.'},
+      {vi:'Những cơn lũ lụt ngày càng thường xuyên và dữ dội hơn ở đồng bằng sông Cửu Long là bằng chứng rõ ràng nhất về tác động của biến đổi khí hậu đến Việt Nam.'},
+      {vi:'Thay vì mua sắm đồ mới liên tục, xu hướng tái sử dụng và mua đồ cũ đang dần thay đổi cách nhiều người trẻ tiếp cận tiêu dùng.'},
+      {vi:'Dù mỗi cá nhân chỉ có thể thay đổi được một phần nhỏ, khi hàng triệu người cùng thực hiện những thay đổi nhỏ đó, tác động tích lũy lại có thể rất đáng kể.'}
+    ],
+    advanced:[
+      {vi:'Cuộc khủng hoảng khí hậu không chỉ là vấn đề môi trường hay kỹ thuật mà còn là vấn đề chính trị và đạo đức, bởi vì những quốc gia chịu thiệt hại nặng nề nhất thường chính là những quốc gia đã đóng góp ít nhất vào sự nóng lên toàn cầu.'},
+      {vi:'Nghịch lý của chủ nghĩa tiêu dùng xanh là nhiều sản phẩm được tiếp thị như "thân thiện với môi trường" vẫn đòi hỏi năng lượng để sản xuất và thải bỏ — đặt ra câu hỏi liệu chúng ta có thể "tiêu dùng" để thoát khỏi cuộc khủng hoảng tiêu dùng hay không.'},
+      {vi:'Khái niệm "chính nghĩa khí hậu" phản ánh sự thừa nhận ngày càng tăng rằng bảo vệ môi trường và giải quyết bất bình đẳng xã hội không phải là hai mục tiêu riêng biệt mà là hai mặt của cùng một thách thức cấp bách.'},
+      {vi:'Thiên nhiên không phải là tài nguyên để khai thác mà là hệ thống hỗ trợ sự sống mà con người phụ thuộc vào một cách sâu sắc hơn nhiều so với những gì nền kinh tế hiện đại thừa nhận.'},
+      {vi:'Các cam kết không phát thải carbon ròng của nhiều chính phủ, dù mang tính biểu tượng tích cực, vẫn bị chỉ trích vì thiếu cơ chế thực thi rõ ràng và thường được dùng để hoãn những thay đổi cấu trúc cần thiết ngay bây giờ.'},
+      {vi:'Sự im lặng của thế giới tự nhiên — tiếng chim không còn nghe thấy ở những nơi từng sôi động, những dòng sông đã không còn cá — là bản cáo trạng thầm lặng nhưng đanh thép về cái giá của tăng trưởng kinh tế không giới hạn.'},
+      {vi:'Khi thế giới tranh luận về công nghệ thu giữ carbon hay năng lượng hạt nhân như những giải pháp kỹ thuật, chúng ta vô tình bỏ qua thực tế rằng không có công nghệ nào thay thế được sự thay đổi cơ bản trong hệ thống sản xuất và tiêu dùng.'},
+      {vi:'Khái niệm "quyền thiên nhiên" — tức là việc trao tư cách pháp lý cho sông, rừng hay hệ sinh thái — tuy còn gây tranh cãi, nhưng đang mở ra cách tiếp cận pháp lý sáng tạo để bảo vệ môi trường khỏi sự tàn phá của các lợi ích kinh tế.'},
+      {vi:'Tôi tin rằng kết nối với thiên nhiên — không chỉ là bảo vệ nó từ xa mà là thực sự sống trong nó và học từ nó — là bước đầu tiên không thể thiếu để hình thành ý thức môi trường thực sự.'},
+      {vi:'Nếu chúng ta nhìn nhận trái đất như một thực thể sống có giới hạn cần được tôn trọng, thay vì như một kho tài nguyên vô tận để khai thác, thì chúng ta sẽ thiết kế nền kinh tế và hệ thống chính trị của mình một cách căn bản khác.'}
+    ]
+  },
+  {
+    id:'tech', icon:'📱', name:'Công nghệ & Mạng xã hội', sub:'Technology & Social Media',
+    easy:[
+      {vi:'Tôi dùng điện thoại để nhắn tin, gọi điện và xem video.'},
+      {vi:'Mạng xã hội giúp tôi kết nối với bạn bè và gia đình ở xa.'},
+      {vi:'Máy tính của tôi bị hỏng nên tôi phải mang đi sửa ngay hôm nay.'},
+      {vi:'Ứng dụng này rất dễ sử dụng và hoàn toàn miễn phí.'},
+      {vi:'Tôi đã học cách lập trình từ các video hướng dẫn trên mạng.'},
+      {vi:'Điện thoại thông minh đã thay đổi hoàn toàn cuộc sống hàng ngày của chúng ta.'},
+      {vi:'Internet giúp tôi tìm kiếm thông tin rất nhanh và tiện lợi.'},
+      {vi:'Tôi mua sắm trực tuyến thường xuyên hơn kể từ đại dịch.'},
+      {vi:'Robot đang được sử dụng ngày càng nhiều trong các nhà máy hiện đại.'},
+      {vi:'Trẻ em ngày nay biết dùng máy tính bảng từ khi còn rất nhỏ.'}
+    ],
+    medium:[
+      {vi:'Mặc dù mạng xã hội giúp kết nối mọi người, nó cũng tạo ra áp lực vô hình khiến nhiều người cảm thấy không thỏa mãn với cuộc sống thực của mình.'},
+      {vi:'Kể từ khi trí tuệ nhân tạo bắt đầu tạo ra nội dung, ranh giới giữa thật và giả trong thế giới kỹ thuật số ngày càng trở nên khó phân biệt hơn.'},
+      {vi:'Nếu không có sự kiểm soát về thời gian sử dụng màn hình, trẻ em có thể phát triển thói quen nghiện điện thoại ảnh hưởng đến sức khỏe và khả năng tập trung.'},
+      {vi:'Tôi không phủ nhận rằng công nghệ đã làm cho cuộc sống tiện lợi hơn nhiều, nhưng tôi cũng lo ngại rằng chúng ta đang dần mất đi khả năng chịu đựng sự buồn chán và những khoảnh khắc không kết nối.'},
+      {vi:'Thương mại điện tử đã thay đổi hoàn toàn thói quen mua sắm, nhưng cũng đặt ra câu hỏi về quyền lợi người lao động trong các chuỗi giao hàng.'},
+      {vi:'Dù công việc từ xa mang lại sự linh hoạt về địa lý, nó cũng tạo ra thách thức mới về văn hóa công ty và ranh giới giữa giờ làm việc và thời gian cá nhân.'},
+      {vi:'Học trực tuyến có thể mở ra cơ hội giáo dục cho những người không thể tiếp cận trường học truyền thống, nhưng đòi hỏi người học phải có mức độ tự kỷ luật cao hơn nhiều.'},
+      {vi:'Các thuật toán gợi ý nội dung, dù giúp ta tìm thấy những điều mình thích, cũng vô tình tạo ra "bong bóng thông tin" khiến ta xa rời thực tế đa chiều.'},
+      {vi:'Kể từ khi cài đặt ứng dụng giới hạn thời gian dùng mạng xã hội, tôi nhận ra rằng phần lớn thời gian lướt mạng là để lấp đầy sự trống rỗng chứ không phải vì có nhu cầu thực sự.'},
+      {vi:'Sự bùng nổ của podcast và sách nói cho thấy rằng người ta vẫn khao khát nội dung sâu sắc và dài hơi, ngay cả trong thời đại mà mọi thứ đều hướng đến sự ngắn gọn và tức thì.'}
+    ],
+    advanced:[
+      {vi:'Trí tuệ nhân tạo không chỉ đặt ra câu hỏi về tương lai của việc làm mà còn thách thức những quan niệm cơ bản của chúng ta về bản chất của sáng tạo, quyền tác giả và tính người.'},
+      {vi:'Nghịch lý của cách mạng kỹ thuật số là nó hứa hẹn dân chủ hóa thông tin nhưng thực tế lại tập trung quyền lực vào tay một số ít công ty công nghệ khổng lồ có khả năng định hình thực tế mà hàng tỷ người trải nghiệm mỗi ngày.'},
+      {vi:'Sự phụ thuộc ngày càng tăng vào thuật toán trong mọi quyết định đặt ra những câu hỏi đạo đức nghiêm trọng về tính minh bạch, trách nhiệm giải trình và khả năng mã hóa sự định kiến của con người vào hệ thống máy móc.'},
+      {vi:'Dữ liệu cá nhân trong thế kỷ 21 đóng vai trò tương tự như dầu mỏ trong thế kỷ 20 — một nguồn tài nguyên có giá trị bất thường mà hầu hết mọi người không ý thức được rằng mình đang trao đi mỗi khi nhấp chuột hay vuốt màn hình.'},
+      {vi:'Khoảng cách kỹ thuật số không chỉ là vấn đề ai có hay không có kết nối internet, mà còn là vấn đề ai có kỹ năng để sử dụng công cụ số một cách có phê phán và sáng tạo thay vì bị nó sử dụng.'},
+      {vi:'Mạng xã hội, được thiết kế để khai thác những lỗ hổng tâm lý của con người như nhu cầu được công nhận và nỗi sợ bỏ lỡ, đã trở thành một thực nghiệm xã hội chưa có tiền lệ với hậu quả còn đang được làm rõ dần.'},
+      {vi:'Tôi tin rằng khả năng chú ý có chủ đích và tập trung sâu vào một vấn đề, đang bị xói mòn bởi văn hóa thông báo liên tục, sẽ trở thành một trong những kỹ năng có giá trị nhất và hiếm gặp nhất trong tương lai.'},
+      {vi:'Sự phát triển của thực tế ảo đặt ra câu hỏi triết học sâu sắc về ý nghĩa của sự hiện diện và kết nối — liệu ký ức được tạo ra trong môi trường ảo có giá trị cảm xúc thực sự hay chỉ là bản mô phỏng của trải nghiệm sống.'},
+      {vi:'Quản trị trí tuệ nhân tạo đang là một trong những thách thức chính sách phức tạp nhất, bởi vì tốc độ phát triển công nghệ luôn đi trước khả năng của xã hội trong việc hiểu, quy định và điều chỉnh nó một cách có đạo đức.'},
+      {vi:'Thế hệ đầu tiên lớn lên hoàn toàn trong thế giới số sẽ phải đối mặt với những thách thức về danh tính và quyền riêng tư mà không có thế hệ nào trước từng phải trải qua — và cách họ giải quyết sẽ định hình bản chất của xã hội loài người trong thế kỷ tới.'}
+    ]
+  },
+  {
+    id:'health', icon:'🏃', name:'Sức khỏe & Thể thao', sub:'Health & Sports',
+    easy:[
+      {vi:'Tôi tập thể dục ba mươi phút mỗi sáng trước khi đi làm.'},
+      {vi:'Bác sĩ khuyên tôi cần ngủ đủ tám tiếng mỗi đêm.'},
+      {vi:'Đội bóng đá của trường tôi đã thắng trận chung kết hôm qua.'},
+      {vi:'Tôi uống nhiều nước trong ngày để giữ cơ thể luôn đủ nước.'},
+      {vi:'Anh ấy bị cảm cúm và phải nghỉ học mấy ngày liên tiếp.'},
+      {vi:'Bơi lội là môn thể thao tôi yêu thích và luyện tập đều đặn nhất.'},
+      {vi:'Cô ấy chạy bộ năm km mỗi ngày trong công viên gần nhà.'},
+      {vi:'Tôi cần đến gặp bác sĩ vì đau răng đã mấy ngày không khỏi.'},
+      {vi:'Ăn nhiều rau xanh và trái cây tươi rất tốt cho sức khỏe lâu dài.'},
+      {vi:'Tôi học yoga để giảm căng thẳng và cải thiện sự linh hoạt của cơ thể.'}
+    ],
+    medium:[
+      {vi:'Mặc dù tôi không có nhiều thời gian, tôi cố gắng tập thể dục ít nhất ba lần mỗi tuần vì biết rằng sức khỏe thể chất ảnh hưởng trực tiếp đến hiệu suất làm việc và tinh thần.'},
+      {vi:'Kể từ khi thay đổi chế độ ăn uống và bắt đầu tập luyện đều đặn, tôi không chỉ giảm được cân nặng mà còn cảm thấy tràn đầy năng lượng và ngủ ngon hơn.'},
+      {vi:'Nếu trẻ em được khuyến khích chơi thể thao từ nhỏ, chúng không chỉ phát triển thể chất tốt hơn mà còn học được tính đồng đội và khả năng chịu đựng thất bại.'},
+      {vi:'Áp lực về ngoại hình do mạng xã hội tạo ra đang ảnh hưởng nghiêm trọng đến sức khỏe tâm lý của nhiều bạn trẻ, đặc biệt khi họ so sánh mình với những hình ảnh đã qua chỉnh sửa.'},
+      {vi:'Dù rất hấp dẫn khi theo đuổi các chế độ ăn kiêng thời thượng, các chuyên gia dinh dưỡng đồng ý rằng một lối sống cân bằng và bền vững luôn hiệu quả hơn các giải pháp ngắn hạn.'},
+      {vi:'Thể thao điện tử đang ngày càng được công nhận là một môn thể thao thực thụ, đòi hỏi sự phản ứng nhanh, tư duy chiến lược và rèn luyện kỷ luật không kém gì các môn thể thao truyền thống.'},
+      {vi:'Sức khỏe tâm thần không kém quan trọng hơn sức khỏe thể chất, nhưng đáng tiếc là nó vẫn thường bị xem nhẹ và bị kỳ thị trong nhiều xã hội, kể cả ở Việt Nam.'},
+      {vi:'Sau khi chấn thương gối, bác sĩ đã khuyên tôi tập vật lý trị liệu thay vì phẫu thuật ngay, và quyết định đó đã giúp tôi hồi phục nhanh hơn tôi nghĩ.'},
+      {vi:'Việc đi bộ thay vì đi xe máy cho những quãng đường ngắn không chỉ tốt cho sức khỏe mà còn góp phần giảm ô nhiễm không khí trong thành phố.'},
+      {vi:'Tôi tin rằng thiền định và các bài tập chánh niệm nên được dạy trong trường học như một công cụ để học sinh quản lý căng thẳng và phát triển sự tự nhận thức.'}
+    ],
+    advanced:[
+      {vi:'Sức khỏe tâm thần và thể chất không phải là hai lĩnh vực riêng biệt mà là một hệ thống tương tác sâu sắc mà y học hiện đại đang dần thừa nhận nhưng hệ thống chăm sóc sức khỏe chưa thực sự phản ánh trong cách phân bổ nguồn lực.'},
+      {vi:'Văn hóa "thể hình hoàn hảo" được quảng bá trên mạng xã hội không chỉ tạo ra áp lực về ngoại hình mà còn thúc đẩy mối quan hệ không lành mạnh với thực phẩm và tập luyện, trong đó thẩm mỹ thay thế sức khỏe như mục tiêu chính.'},
+      {vi:'Dịch bệnh đã phơi bày những bất bình đẳng sâu sắc trong hệ thống chăm sóc sức khỏe toàn cầu, khi mà khả năng tiếp cận vaccine, điều trị và thông tin y tế phụ thuộc quá nhiều vào quốc tịch và thu nhập.'},
+      {vi:'Thể thao đỉnh cao ngày nay đang đứng ở ranh giới của những câu hỏi đạo đức hóc búa — liệu việc sử dụng công nghệ nâng cao hiệu suất có làm suy yếu ý nghĩa của kỷ lục và chiến thắng hay không.'},
+      {vi:'Cuộc khủng hoảng sức khỏe tâm thần trong thế hệ trẻ, được thúc đẩy bởi áp lực học thuật và sự bất ổn kinh tế, đang đòi hỏi sự tái tư duy căn bản về cách xã hội định nghĩa thành công và ý nghĩa của cuộc sống.'},
+      {vi:'Khái niệm "sức khỏe" đang mở rộng vượt ra ngoài sự vắng mặt của bệnh tật để bao gồm trạng thái thịnh vượng toàn diện về thể chất, tâm lý, xã hội và môi trường — một cách nhìn đòi hỏi sự tái cấu trúc cách chúng ta tiếp cận chăm sóc y tế.'},
+      {vi:'Nghịch lý của nền y học hiện đại là chúng ta đang sống lâu hơn bao giờ hết nhưng ngày càng nhiều người sống thêm những năm tháng đó trong tình trạng bệnh mãn tính và mất ý nghĩa — đặt ra câu hỏi liệu chúng ta đang kéo dài cuộc sống hay kéo dài sự chịu đựng.'},
+      {vi:'Sự thương mại hóa của ngành công nghiệp sức khỏe, từ thực phẩm chức năng đến các liệu trình detox đắt tiền, đang khai thác nỗi lo âu của người tiêu dùng trong khi thường cung cấp ít bằng chứng khoa học để chứng minh hiệu quả.'},
+      {vi:'Tôi tin rằng chính sách y tế công hiệu quả nhất không phải là tập trung vào điều trị mà là đầu tư vào phòng ngừa — tạo ra môi trường mà trong đó lựa chọn lành mạnh trở thành lựa chọn dễ dàng nhất.'},
+      {vi:'Khi ranh giới giữa nâng cao năng lực con người bằng công nghệ và can thiệp y tế ngày càng mờ nhạt, xã hội cần những khung đạo đức mới để điều hướng những lựa chọn mà chưa thế hệ nào trước phải đối mặt.'}
+    ]
+  },
+  {
+    id:'culture', icon:'🎭', name:'Văn hóa & Xã hội', sub:'Culture & Society',
+    easy:[
+      {vi:'Tết Nguyên Đán là lễ hội truyền thống quan trọng nhất ở Việt Nam.'},
+      {vi:'Áo dài là trang phục truyền thống đặc trưng của người Việt Nam.'},
+      {vi:'Chúng tôi thường đi xem phim vào tối thứ Sáu cuối tuần.'},
+      {vi:'Lễ hội này có nhiều điệu múa truyền thống đẹp mắt và đặc sắc.'},
+      {vi:'Tôi thích đọc sách và nghe nhạc hơn là ngồi xem tivi suốt ngày.'},
+      {vi:'Âm nhạc giúp tôi thư giãn và tìm lại cảm hứng sau một ngày mệt mỏi.'},
+      {vi:'Bảo tàng đó trưng bày nhiều hiện vật lịch sử quý giá từ hàng trăm năm trước.'},
+      {vi:'Người Việt Nam thường tổ chức đám cưới vào cuối tuần hoặc vào ngày đẹp.'},
+      {vi:'Hát quan họ Bắc Ninh là di sản văn hóa phi vật thể được UNESCO công nhận.'},
+      {vi:'Tôi thích xem phim tài liệu về các nền văn hóa và con người ở khắp thế giới.'}
+    ],
+    medium:[
+      {vi:'Mặc dù toàn cầu hóa mang lại nhiều lợi ích, nó cũng đe dọa xóa đi những nét văn hóa địa phương độc đáo mà nếu mất đi sẽ không thể lấy lại được.'},
+      {vi:'Kể từ khi K-pop lan rộng toàn cầu, nhiều quốc gia Đông Nam Á đã nhận ra tiềm năng của quyền lực mềm văn hóa trong ngoại giao và thu hút đầu tư.'},
+      {vi:'Nếu chúng ta không trân trọng và bảo tồn các loại hình nghệ thuật truyền thống như cải lương hay múa rối nước, những di sản vô giá này sẽ chỉ còn trong sách lịch sử.'},
+      {vi:'Nghệ thuật đường phố, từng bị coi là phá hoại tài sản công cộng, ngày nay được nhiều thành phố công nhận là hình thức biểu đạt văn hóa hợp lệ và tài trợ để làm đẹp không gian đô thị.'},
+      {vi:'Tôi không nghĩ rằng văn hóa phải được bảo tồn như hiện vật trong bảo tàng; thay vào đó, nó cần được trao cho người trẻ để họ tái diễn giải và làm cho nó liên quan đến thời đại của họ.'},
+      {vi:'Sự khác biệt văn hóa, nếu được nhìn nhận với tinh thần tò mò thay vì nghi ngờ, có thể là nguồn phong phú cho sự sáng tạo và đổi mới trong mọi lĩnh vực từ nghệ thuật đến kinh doanh.'},
+      {vi:'Thế hệ trẻ ngày nay đang tạo ra các xu hướng văn hóa theo cách mà không thế hệ nào trước làm được, bằng cách tận dụng mạng xã hội để kết nối và khuếch đại tiếng nói của mình trên toàn cầu.'},
+      {vi:'Phim ảnh và âm nhạc không chỉ là giải trí mà còn là gương phản chiếu xã hội, ghi lại những lo âu và khát vọng của thời đại theo cách mà lịch sử chính thức thường bỏ qua.'},
+      {vi:'Sự trỗi dậy của phong trào bảo vệ quyền con người đã buộc nhiều tổ chức văn hóa phải đối mặt với di sản phức tạp của các tác phẩm mà giá trị nghệ thuật không thể tách rời khỏi vấn đề đạo đức.'},
+      {vi:'Tôi tin rằng văn học — đặc biệt là văn học dịch từ các nền văn hóa khác — là cách hiệu quả nhất để phát triển sự đồng cảm, vì nó cho phép ta sống trong ý thức của người khác một cách sâu sắc và chân thực.'}
+    ],
+    advanced:[
+      {vi:'Văn hóa không phải là tập hợp tĩnh của các phong tục mà là một hệ thống sống động luôn đàm phán với hiện tại — và chính sự căng thẳng giữa bảo tồn và thích ứng là điều tạo ra sức sống cho bất kỳ nền văn hóa nào.'},
+      {vi:'Hiện tượng "văn hóa hủy" đặt ra câu hỏi hóc búa về ranh giới giữa trách nhiệm giải trình cần thiết và sự trừng phạt tập thể không phân biệt — liệu chúng ta có thể đòi hỏi trách nhiệm mà không từ bỏ tính phức tạp và khả năng chuộc lỗi.'},
+      {vi:'Trong bối cảnh toàn cầu hóa văn hóa, câu hỏi "ai có quyền kể câu chuyện nào" không đơn thuần là vấn đề bản sắc mà còn là câu hỏi sâu sắc về quyền lực, tính xác thực và khả năng tưởng tượng sáng tạo vượt qua ranh giới kinh nghiệm cá nhân.'},
+      {vi:'Các phương tiện truyền thông đại chúng, khi định hình câu chuyện về một nền văn hóa hay một nhóm xã hội, đang thực thi quyền lực quyết định ai được xem là "bình thường" và ai được xem là "ngoại lệ" cần được giải thích.'},
+      {vi:'Nghệ thuật thực sự làm nhiều hơn là phản chiếu xã hội — nó đặt câu hỏi, phá vỡ các giả định ẩn và mở ra những khả năng tồn tại mới; đó là lý do tại sao các chế độ toàn trị luôn kiểm soát nghệ thuật trước tiên.'},
+      {vi:'Sự đa dạng văn hóa không phải là đích đến mà là điểm khởi đầu — điều quan trọng là xây dựng các không gian cho phép sự đa dạng ấy thực sự tương tác, xung đột và tổng hợp thay vì chỉ tồn tại song song mà không chạm nhau.'},
+      {vi:'Ngôn ngữ không chỉ là công cụ giao tiếp mà còn là kiến trúc tư duy — và khi một ngôn ngữ biến mất, không chỉ một cách nói chuyện mà còn một cách nhìn thế giới và một bộ khái niệm cũng biến mất theo.'},
+      {vi:'Di sản văn hóa thực sự không nằm trong các tòa nhà hay hiện vật mà nằm trong những thực hành sống — cách người ta cư xử với nhau, cách họ giải quyết xung đột, cách họ ăn mừng và cách họ thương tiếc.'},
+      {vi:'Sự phát triển của một xã hội không thể chỉ đo bằng GDP hay tốc độ đô thị hóa, mà phải được đánh giá bằng chất lượng của không gian công cộng, sự phong phú của đời sống văn hóa và mức độ mà mọi người đều cảm thấy có chỗ đứng và tiếng nói trong câu chuyện chung.'},
+      {vi:'Khủng hoảng bản sắc mà nhiều người trẻ hiện đại đang trải qua — không hoàn toàn thuộc về một nền văn hóa truyền thống nào nhưng cũng không tìm thấy sự thuộc về trong nền văn hóa toàn cầu — có thể là cơ hội độc đáo để tạo ra những bản sắc lai ghép và sáng tạo hơn.'}
+    ]
+  },
+  {
+    id:'opinion', icon:'💭', name:'Ý kiến & Tranh luận', sub:'Opinions & Discussion',
+    easy:[
+      {vi:'Theo tôi, học tiếng Anh là kỹ năng rất quan trọng trong thế giới ngày nay.'},
+      {vi:'Tôi nghĩ rằng trẻ em nên chơi ngoài trời nhiều hơn thay vì dán mắt vào màn hình.'},
+      {vi:'Theo ý kiến của tôi, đọc sách mang lại nhiều lợi ích hơn xem tivi.'},
+      {vi:'Tôi tin rằng mỗi người nên biết tự nấu ăn cho bản thân.'},
+      {vi:'Theo tôi, xe đạp là phương tiện giao thông thân thiện với môi trường nhất trong thành phố.'},
+      {vi:'Tôi nghĩ rằng sức khỏe quan trọng hơn tiền bạc trong cuộc sống lâu dài.'},
+      {vi:'Theo tôi, việc học không bao giờ là quá muộn dù bạn ở bất kỳ độ tuổi nào.'},
+      {vi:'Tôi tin rằng âm nhạc có thể thay đổi tâm trạng và cảm xúc của người nghe.'},
+      {vi:'Tôi cho rằng bạn bè tốt quan trọng hơn là có thật nhiều bạn bè.'},
+      {vi:'Theo tôi, sự trung thực là đức tính quan trọng nhất trong mọi mối quan hệ.'}
+    ],
+    medium:[
+      {vi:'Mặc dù nhiều người cho rằng mạng xã hội là nguyên nhân chính của sự cô đơn trong giới trẻ, tôi nghĩ đây là cách nhìn đơn giản hóa một hiện tượng có nhiều nguyên nhân phức tạp hơn.'},
+      {vi:'Theo tôi, chính phủ nên đầu tư nhiều hơn vào giáo dục công lập thay vì để giáo dục trở thành hàng hóa chỉ dành cho những người có điều kiện tài chính.'},
+      {vi:'Tôi không đồng ý với quan điểm rằng thành công được đo bằng của cải vật chất; theo tôi, thành công là khi bạn sống đúng với giá trị của mình và tạo ra ý nghĩa cho những người xung quanh.'},
+      {vi:'Nếu có thể thay đổi một điều trong hệ thống giáo dục Việt Nam, tôi sẽ giảm áp lực thi cử và tạo không gian cho học sinh khám phá đam mê của họ.'},
+      {vi:'Tôi tin rằng công nghệ sẽ không bao giờ hoàn toàn thay thế được sự tương tác con người, đặc biệt là trong các lĩnh vực đòi hỏi sự đồng cảm, sáng tạo và phán xét đạo đức tinh tế.'},
+      {vi:'Dù tốc độ thay đổi xã hội ngày nay rất nhanh, tôi vẫn lạc quan rằng con người có khả năng thích ứng và tìm ra cách sống ý nghĩa trong bất kỳ bối cảnh nào, miễn là họ có sự kết nối thực sự với những người xung quanh.'},
+      {vi:'Theo quan điểm của tôi, bình đẳng giới không chỉ mang lại lợi ích cho phụ nữ mà còn giải phóng đàn ông khỏi những kỳ vọng xã hội cứng nhắc và tạo ra xã hội lành mạnh hơn cho tất cả mọi người.'},
+      {vi:'Tôi cho rằng việc dạy trẻ em tư duy phản biện từ nhỏ quan trọng hơn việc dạy chúng những câu trả lời đúng, bởi vì thế giới tương lai đòi hỏi khả năng đặt câu hỏi đúng hơn là ghi nhớ thông tin.'},
+      {vi:'Mặc dù tôi tôn trọng quyền tự do cá nhân, tôi vẫn tin rằng trong một số tình huống, lợi ích cộng đồng cần được đặt lên trên quyền lợi cá nhân, đặc biệt khi quyết định của một người ảnh hưởng trực tiếp đến người khác.'},
+      {vi:'Thay vì tranh luận về việc tôn giáo có vai trò trong đời sống công cộng hay không, câu hỏi quan trọng hơn là làm thế nào để đảm bảo rằng mọi người, bất kể niềm tin, đều được đối xử bình đẳng và tôn trọng.'}
+    ],
+    advanced:[
+      {vi:'Ranh giới giữa quan điểm cá nhân và sự thật khách quan đang ngày càng bị làm mờ trong thời đại thông tin — và điều nguy hiểm không phải là việc người ta có ý kiến khác nhau mà là việc ngày càng nhiều người từ chối công nhận sự tồn tại của những sự thật không phụ thuộc vào quan điểm.'},
+      {vi:'Tôi tin rằng khả năng giữ vững lập trường trước áp lực xã hội trong khi vẫn duy trì sự cởi mở thực sự với lập luận phản bác là một trong những kỹ năng trí tuệ và đạo đức khó đạt nhất nhưng quan trọng nhất trong thế giới hiện đại.'},
+      {vi:'Sự tự do ngôn luận không phải là giá trị tuyệt đối mà là nguyên tắc phức tạp cần được cân bằng với trách nhiệm đối với những tổn hại mà ngôn từ có thể gây ra — và việc xác định ranh giới đó đòi hỏi sự thảo luận liên tục chứ không phải công thức cứng nhắc.'},
+      {vi:'Khi tranh luận về chính sách công, chúng ta thường nhầm lẫn giữa bất đồng về giá trị và bất đồng về thực tế — và việc phân biệt hai loại bất đồng này là điều kiện tiên quyết cho bất kỳ cuộc đối thoại có ý nghĩa nào.'},
+      {vi:'Niềm tin vào sự tiến bộ của nhân loại không có nghĩa là ngây thơ trước những thất bại lịch sử, mà là thái độ dựa trên bằng chứng rằng con người có khả năng học hỏi và tạo ra những hệ thống tốt hơn, dù chậm chạp và không đều đặn.'},
+      {vi:'Thách thức của tranh luận dân chủ hiện đại không phải là thiếu thông tin mà là thừa thông tin và thiếu kỹ năng đánh giá thông tin — dẫn đến nghịch lý rằng sự tiếp cận thông tin chưa bao giờ dễ dàng hơn nhưng sự đồng thuận về thực tế lại chưa bao giờ khó đạt hơn.'},
+      {vi:'Tôi tin rằng sự đồng cảm không phải là đức tính thụ động mà là một hành động tích cực đòi hỏi nỗ lực thực sự để hiểu quan điểm của người khác, đặc biệt khi quan điểm đó thách thức sâu sắc những giả định cơ bản của chúng ta về thế giới.'},
+      {vi:'Khả năng thực sự thay đổi quan điểm của mình khi đối mặt với bằng chứng và lập luận tốt hơn là điều hiếm gặp nhưng vô cùng có giá trị cho chất lượng của diễn ngôn công cộng trong bối cảnh mà mọi ý kiến đều tìm kiếm sự xác nhận thay vì sự phản bác.'},
+      {vi:'Sự khác biệt giữa "tự do để nói" và "tự do được lắng nghe và tham gia" phản ánh bất bình đẳng quyền lực sâu sắc — và một xã hội thực sự tự do không chỉ bảo vệ quyền phát ngôn mà còn tích cực tạo ra điều kiện để các tiếng nói đa dạng có thể thực sự được nghe.'},
+      {vi:'Tôi kết lại với niềm tin rằng những cuộc trò chuyện khó khăn về sự bất bình đẳng, định kiến và giá trị xung đột không phải là mối đe dọa cho sự gắn kết xã hội mà chính là nền tảng của nó, bởi vì chỉ khi chúng ta có thể nói thật với nhau mới có thể xây dựng niềm tin thực sự.'}
+    ]
+  }
+];
+
+/* ===== State ===== */
+var curTopic = null, curLevel = '', curIdx = 0, scores = [];
+var checking = false;
+
+/* ===== Phase navigation ===== */
+function goPhase(phase) {
+  document.getElementById('phaseTopics').style.display   = phase==='topics'   ? '' : 'none';
+  document.getElementById('phaseLevel').style.display    = phase==='level'    ? '' : 'none';
+  document.getElementById('phasePractice').style.display = phase==='practice' ? '' : 'none';
+  document.getElementById('phaseSummary').style.display  = phase==='summary'  ? '' : 'none';
+}
+
+/* ===== Build topic grid ===== */
+function buildTopicGrid() {
+  document.getElementById('topicGrid').innerHTML = TOPICS.map(function(t) {
+    return '<div class="sp-topic" onclick="selectTopic(\''+t.id+'\')">' +
+      '<div class="sp-topic-icon">'+t.icon+'</div>' +
+      '<div class="sp-topic-name">'+t.name+'</div>' +
+      '<div class="sp-topic-sub">'+t.sub+'</div>' +
+      '</div>';
+  }).join('');
+}
+
+function selectTopic(id) {
+  curTopic = TOPICS.find(function(t){ return t.id===id; });
+  document.getElementById('selTopicIcon').textContent = curTopic.icon;
+  document.getElementById('selTopicName').textContent = curTopic.name;
+  document.getElementById('selTopicSub').textContent  = curTopic.sub;
+  goPhase('level');
+}
+
+/* ===== Start practice ===== */
+function startPractice(level) {
+  curLevel = level;
+  curIdx   = 0;
+  scores   = new Array(10).fill(null);
+  goPhase('practice');
+  renderSentence();
+}
+
+function renderSentence() {
+  var sentences = curTopic[curLevel];
+  var s = sentences[curIdx];
+  var total = sentences.length;
+
+  // Progress
+  var done = scores.filter(function(x){ return x!==null; }).length;
+  document.getElementById('progressFill').style.width = (done/total*100)+'%';
+  document.getElementById('practiceStepInfo').textContent =
+    'Bước 3 / 3 — '+curTopic.icon+' '+curTopic.name+' · '+levelLabel(curLevel)+' · Câu '+(curIdx+1)+'/'+total;
+
+  // Prev/Next
+  document.getElementById('btnPrev').disabled = (curIdx===0);
+  var allDone = scores.every(function(x){ return x!==null; });
+  document.getElementById('btnNext').style.display   = (curIdx < total-1) ? '' : 'none';
+  document.getElementById('btnFinish').style.display = allDone ? '' : 'none';
+
+  var prevScore = scores[curIdx];
+  var prevAnswer = prevScore!==null ? (prevScore._answer||'') : '';
+
+  document.getElementById('practiceBody').innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">'+
+      '<span style="font-size:13px;color:var(--text-muted);">📝 Dịch câu sau sang tiếng Anh</span>'+
+      (prevScore!==null ? '<span class="sp-score-badge" style="font-size:15px;">'+scoreEmoji(prevScore.score)+' '+prevScore.score+'/100</span>' : '')+
+    '</div>'+
+    '<div class="sp-prompt-vi">'+esc(s.vi)+'</div>'+
+    '<div id="sp-tip" class="sp-tip">💡 Đây là câu '+levelHint(curLevel)+'. Tập trung vào cấu trúc câu, không cần dịch từng chữ.</div>'+
+    '<textarea class="sp-textarea" id="spInput" rows="3" placeholder="Viết câu tiếng Anh của bạn ở đây...">'+esc(prevAnswer)+'</textarea>'+
+    '<div class="sp-actions">'+
+      '<button class="btn btn-primary" id="checkBtn" onclick="checkSentence()">✓ Kiểm tra</button>'+
+      '<button class="btn btn-sm" onclick="toggleTip()">💡 Gợi ý</button>'+
+    '</div>'+
+    (prevScore!==null ? buildResult(prevScore) : '')+
+    '</div>';
+
+  document.getElementById('spInput').focus();
+}
+
+function levelLabel(l) {
+  return {easy:'🟢 A2 Dễ', medium:'🔵 B1/B2 Trung bình', advanced:'🟣 C1 Nâng cao'}[l]||l;
+}
+function levelHint(l) {
+  return {easy:'đơn giản — dùng thì hiện tại hoặc quá khứ đơn', medium:'ghép — dùng liên từ (although, since, however…)', advanced:'phức hợp — cấu trúc đa tầng, từ vựng academic'}[l]||'';
+}
+function scoreEmoji(n) { return n>=90?'🌟':n>=70?'✅':n>=50?'🔶':'❌'; }
+function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+function toggleTip() {
+  var t = document.getElementById('sp-tip');
+  if (t) t.style.display = t.style.display==='none'||!t.style.display ? 'block' : 'none';
+}
+
+/* ===== Check sentence via API ===== */
+function checkSentence() {
+  if (checking) return;
+  var answer = (document.getElementById('spInput').value||'').trim();
+  if (!answer) { alert('Vui lòng nhập câu trả lời của bạn!'); return; }
+
+  checking = true;
+  var btn = document.getElementById('checkBtn');
+  btn.textContent = '⏳ Đang chấm...'; btn.disabled = true;
+
+  var s = curTopic[curLevel][curIdx];
+
+  fetch('/api/sentence-check', {
+    method: 'POST', credentials: 'same-origin',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ prompt_vi: s.vi, student_answer: answer, level: curLevel })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    d._answer = answer;
+    scores[curIdx] = d;
+    checking = false;
+
+    // Update progress + show result
+    var done = scores.filter(function(x){ return x!==null; }).length;
+    var total = curTopic[curLevel].length;
+    document.getElementById('progressFill').style.width = (done/total*100)+'%';
+
+    // Re-render result inline
+    btn.textContent = '✓ Kiểm tra lại'; btn.disabled = false;
+    var existingResult = document.getElementById('spResult');
+    if (existingResult) existingResult.remove();
+    var div = document.createElement('div');
+    div.id = 'spResult';
+    div.innerHTML = buildResult(d);
+    document.getElementById('practiceBody').appendChild(div);
+
+    // Show finish button if all done
+    var allDone = scores.every(function(x){ return x!==null; });
+    document.getElementById('btnFinish').style.display = allDone ? '' : 'none';
+    if (curIdx < total-1) document.getElementById('btnNext').style.display = '';
+  })
+  .catch(function(e) {
+    checking = false;
+    btn.textContent = '✓ Kiểm tra'; btn.disabled = false;
+    alert('Không thể kết nối. Vui lòng thử lại!');
+  });
+}
+
+function buildResult(d) {
+  var cls = d.score>=70 ? 'good' : d.score>=50 ? 'ok' : 'poor';
+  var errHtml = (d.errors&&d.errors.length) ? '<ul class="sp-errors">'+d.errors.map(function(e){return '<li>'+esc(e)+'</li>';}).join('')+'</ul>' : '';
+  var sugHtml = (d.suggestions&&d.suggestions.length)
+    ? '<div class="sp-suggestions"><h4>📚 Cách diễn đạt tham khảo:</h4>'+
+        d.suggestions.map(function(sg){
+          return '<div class="sp-sug-item"><div class="sp-sug-text">'+esc(sg.text)+'</div><div class="sp-sug-note">'+esc(sg.note)+'</div></div>';
+        }).join('')+
+      '</div>'
+    : '';
+  return '<div class="sp-result '+cls+'" id="spResult">'+
+    '<div class="sp-score-badge">'+scoreEmoji(d.score)+' '+d.score+'/100 — '+(d.acceptable?'Đạt ✓':'Cần cải thiện')+'</div>'+
+    '<p class="sp-feedback-text">'+esc(d.feedback_vi)+'</p>'+
+    errHtml+sugHtml+
+  '</div>';
+}
+
+/* ===== Navigation ===== */
+function navSentence(dir) {
+  curIdx = Math.max(0, Math.min(curTopic[curLevel].length-1, curIdx+dir));
+  renderSentence();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== Summary ===== */
+function showSummary() {
+  var validScores = scores.filter(function(x){ return x!==null; });
+  var avg = validScores.length ? Math.round(validScores.reduce(function(a,b){return a+b.score;},0)/validScores.length) : 0;
+  var good = validScores.filter(function(x){return x.score>=70;}).length;
+
+  document.getElementById('sumTotal').textContent = validScores.length;
+  document.getElementById('sumGood').textContent  = good;
+  document.getElementById('sumAvg').textContent   = avg+'/100';
+
+  var emoji = avg>=90?'🏆':avg>=70?'🎉':avg>=50?'💪':'📖';
+  var msg   = avg>=90?'Xuất sắc! Bạn làm rất tốt rồi!' : avg>=70?'Tốt lắm! Hãy tiếp tục luyện tập nhé.' : avg>=50?'Cố lên! Luyện tập thêm sẽ tiến bộ nhanh thôi.' : 'Đừng nản! Xem lại gợi ý và thử lại nhé.';
+  document.getElementById('summaryEmoji').textContent = emoji;
+  document.getElementById('summaryTitle').textContent = 'Kết quả luyện tập!';
+  document.getElementById('summaryMsg').textContent   = msg;
+  goPhase('summary');
+}
+
+/* ===== Init ===== */
+buildTopicGrid();
+goPhase('topics');
+</script>
+</body>
+</html>
