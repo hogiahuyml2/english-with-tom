@@ -967,7 +967,7 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
     const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
     if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null); count++; }
     const u = db.prepare('SELECT id,name FROM users WHERE email=?').get(email);
-    const assignLink = (process.env.PUBLIC_URL || '') + '/assigned.html';
+    const assignLink = baseUrl(req) + '/assigned.html';
     if (emailEnabled()) {
       const dline = deadline ? `<p>⏰ Hạn nộp: <b>${deadline}</b></p>` : '';
       const noteHtml = note ? `<p>📌 Ghi chú: ${note}</p>` : '';
@@ -1055,7 +1055,7 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
   db.prepare('UPDATE submissions SET score=?, max_score=?, status=?, feedback=? WHERE id=?')
     .run(score ?? null, max_score ?? 10, 'graded', feedback || null, subId);
-  const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
+  const link = baseUrl(req) + '/assigned.html';
   // Gửi email thông báo kết quả cho học sinh
   if (emailEnabled()) {
     const scoreText = (score !== undefined && score !== null) ? `${score}/${max_score ?? 10}` : 'Đã chấm';
@@ -1188,7 +1188,7 @@ app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, 
     if (existing) return res.status(409).json({ error: 'Email này đã được mời vào lớp.' });
     db.prepare('INSERT INTO group_members (group_id,invited_email,added_at) VALUES (?,?,?)').run(groupId, mail, now());
     if (emailEnabled()) {
-      const link = (process.env.PUBLIC_URL || '') + '/login.html';
+      const link = baseUrl(req) + '/login.html';
       sendBrevoEmail({ email: mail, name: mail },
         `Bạn được mời tham gia lớp ${grp.name} — English With Tom`,
         `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
