@@ -62,6 +62,11 @@ function baseUrl(req) {
   return process.env.PUBLIC_URL || (proto + '://' + req.get('host'));
 }
 
+// Detect HTTPS — cần để set Secure flag trên cookie
+function isHttps(req) {
+  return (req.headers['x-forwarded-proto'] || req.protocol) === 'https';
+}
+
 // ===== Gửi email qua Brevo (HTTP API, không cần thư viện) =====
 function emailEnabled() { return !!process.env.BREVO_API_KEY && !!process.env.FROM_EMAIL; }
 
@@ -130,11 +135,12 @@ function requireRole(...roles) {
     next();
   };
 }
-function startSession(res, userId) {
+function startSession(res, userId, req) {
   const token = crypto.randomBytes(24).toString('hex');
   db.prepare('INSERT INTO sessions (token,user_id,created_at) VALUES (?,?,?)').run(token, userId, now());
+  const secure = req && isHttps(req) ? '; Secure' : '';
   res.setHeader('Set-Cookie',
-    `ewt_session=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax`);
+    `ewt_session=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax${secure}`);
 }
 
 // ===================== API XÁC THỰC =====================
@@ -157,7 +163,7 @@ app.post('/api/register', async (req, res) => {
   const newId = Number(r.lastInsertRowid);
   // Nếu email này đã được mời vào lớp trước khi đăng ký, tự động liên kết
   db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
-  startSession(res, newId);
+  startSession(res, newId, req);
   res.json({ user: { id: newId, name, email: mail, role: 'student' }, needVerify });
 });
 
@@ -167,7 +173,7 @@ app.post('/api/login', (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE email=?').get((email || '').toLowerCase());
   if (!u || !verifyPassword(password || '', u.pass))
     return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng.' });
-  startSession(res, u.id);
+  startSession(res, u.id, req);
   res.json({ user: { id: u.id, name: u.name, email: u.email, role: u.role } });
 });
 
@@ -457,7 +463,8 @@ app.get('/api/auth/google', (req, res) => {
   if (!process.env.GOOGLE_CLIENT_ID)
     return res.redirect('/login.html?error=' + encodeURIComponent('Đăng nhập Google chưa được cấu hình.'));
   const state = crypto.randomBytes(16).toString('hex');
-  res.setHeader('Set-Cookie', `ewt_oauth=${state}; HttpOnly; Path=/; Max-Age=600; SameSite=Lax`);
+  const secureFlag = isHttps(req) ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `ewt_oauth=${state}; HttpOnly; Path=/; Max-Age=600; SameSite=Lax${secureFlag}`);
   const params = new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID,
     redirect_uri: baseUrl(req) + '/api/auth/google/callback',
@@ -496,7 +503,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
     } else if (!u.email_verified) {
       db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id); // Google đã xác thực email
     }
-    startSession(res, u.id);
+    startSession(res, u.id, req);
     res.redirect('/dashboard.html');
   } catch (e) {
     fail('Đăng nhập Google thất bại, thử lại nhé.');
