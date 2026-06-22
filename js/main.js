@@ -60,7 +60,7 @@
             '<p class="fc-name">Gia Huy</p>' +
           '</div>' +
           '<div class="fc-links">' +
-            '<a href="tel:+84906123456" class="fc-link fc-zalo" title="Zalo">💬</a>' +
+            '<a href="tel:+84937204068" class="fc-link fc-zalo" title="Zalo">💬</a>' +
             '<a href="https://www.facebook.com/giahuy.tom02/" target="_blank" class="fc-link fc-fb" title="Facebook (Gia Huy)">f</a>' +
             '<a href="https://www.facebook.com/EnglishwTom" target="_blank" class="fc-link fc-fb" title="Facebook (English With Tom)">f</a>' +
             '<a href="https://www.instagram.com/hg_huyy/" target="_blank" class="fc-link fc-ig" title="Instagram (Personal)">@</a>' +
