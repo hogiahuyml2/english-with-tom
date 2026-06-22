@@ -208,13 +208,18 @@
             fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;">'+esc(a.submission_feedback)+'</div>';
           }
         }
+        var annBtn = a.submission_id
+          ? '<button onclick="toggleAnnotations('+a.submission_id+',this)" style="background:none;border:1px solid #c7d2fe;border-radius:8px;padding:4px 12px;font-size:12px;color:#6366f1;cursor:pointer;margin-top:6px;">🖍 Xem ghi chú của giáo viên</button>'
+          : '';
         html += '<div class="task" style="flex-direction:column;align-items:stretch;gap:0;">'+
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">'+
           '<div class="task-left" style="margin:0;">'+
           '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
           '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
           '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div></div></div>'+
-          score+'</div>'+fb+'</div>';
+          score+'</div>'+fb+
+          (a.submission_id ? '<div id="annPanel-'+a.submission_id+'" style="display:none;margin-top:10px;"></div>' : '')+
+          annBtn+'</div>';
       });
       html += '</div>';
     }
@@ -278,6 +283,48 @@
   }).catch(function(){
     document.getElementById('assignedContent').innerHTML='<p style="color:var(--danger);text-align:center;padding:30px;">Không tải được dữ liệu.</p>';
   });
+
+  /* ===== ANNOTATIONS (Student view) ===== */
+  function escAnn(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+  async function toggleAnnotations(subId, btn) {
+    var panel = document.getElementById('annPanel-'+subId);
+    if (!panel) return;
+    if (panel.style.display !== 'none') {
+      panel.style.display = 'none';
+      btn.textContent = '🖍 Xem ghi chú của giáo viên';
+      return;
+    }
+    btn.textContent = '⏳ Đang tải...';
+    var d = await fetch('/api/submissions/'+subId+'/annotations',{credentials:'same-origin'}).then(function(r){return r.json();}).catch(function(){return{};});
+    btn.textContent = '🖍 Ẩn ghi chú';
+    var anns = d.annotations || [];
+    if (!anns.length) {
+      panel.innerHTML = '<p style="font-size:13px;color:var(--text-muted);padding:8px 0;">Giáo viên chưa có ghi chú annotation cho bài này.</p>';
+      panel.style.display = 'block';
+      return;
+    }
+    var items = anns.map(function(a){
+      return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;">'+
+        '<span style="width:10px;height:10px;border-radius:50%;background:'+a.color+';flex-shrink:0;margin-top:3px;display:inline-block;"></span>'+
+        '<div><mark style="background:'+a.color+'88;border-radius:3px;padding:1px 4px;">'+escAnn(a.selected_text.slice(0,60))+(a.selected_text.length>60?'…':'')+'</mark>'+
+        (a.note ? '<div style="color:var(--text-muted);margin-top:3px;">💬 '+escAnn(a.note)+'</div>' : '')+
+        '<div style="color:var(--text-faint);font-size:11px;margin-top:2px;">— '+escAnn(a.teacher_name||'Giáo viên')+'</div>'+
+        '</div></div>';
+    }).join('');
+    panel.innerHTML = '<div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--primary);">🖍 Ghi chú của giáo viên ('+anns.length+')</div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;">'+items+'</div>';
+    panel.style.display = 'block';
+  }
+
+  /* ===== PUSH NOTIFICATION ===== */
+  document.addEventListener('DOMContentLoaded', function(){
+    // Hiện banner gợi ý bật thông báo sau 2 giây
+    setTimeout(function(){
+      if (window.PushHelper) window.PushHelper.initPushBanner();
+    }, 2000);
+  });
 </script>
+<script src="js/push.js"></script>
 </body>
 </html>

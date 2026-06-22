@@ -97,6 +97,29 @@ CREATE TABLE IF NOT EXISTS group_members (
 const assignCols = db.prepare('PRAGMA table_info(assignments)').all().map(c => c.name);
 if (!assignCols.includes('group_id')) db.exec('ALTER TABLE assignments ADD COLUMN group_id INTEGER');
 
+// ===== Bảng Annotation & Push Subscription =====
+db.exec(`
+CREATE TABLE IF NOT EXISTS annotations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  submission_id INTEGER NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+  teacher_id INTEGER NOT NULL,
+  start_offset INTEGER NOT NULL,
+  end_offset INTEGER NOT NULL,
+  selected_text TEXT NOT NULL,
+  note TEXT,
+  color TEXT NOT NULL DEFAULT '#fbbf24',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  endpoint TEXT NOT NULL UNIQUE,
+  p256dh TEXT NOT NULL,
+  auth TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+`);
+
 // ===== Băm & kiểm tra mật khẩu =====
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16).toString('hex');

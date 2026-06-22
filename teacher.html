@@ -10,7 +10,23 @@
 <style>
   .img-preview { max-width:100%; max-height:180px; border-radius:8px; margin-top:8px; display:none; border:1px solid var(--border); }
   .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .sub-essay { background:var(--bg-soft,#f8f7ff); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:14px; white-space:pre-wrap; line-height:1.7; max-height:260px; overflow-y:auto; }
+  .sub-essay { background:var(--bg-soft,#f8f7ff); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:14px; white-space:pre-wrap; line-height:1.9; max-height:400px; overflow-y:auto; cursor:text; user-select:text; position:relative; }
+  .annotation-highlight { border-radius:3px; cursor:pointer; position:relative; }
+  .annotation-highlight:hover::after { content:attr(data-note); position:absolute; left:0; top:100%; margin-top:4px; background:#1e1b4b; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; white-space:pre-wrap; max-width:260px; z-index:100; pointer-events:none; box-shadow:0 4px 12px rgba(0,0,0,.2); }
+  .annotation-toolbar { display:none; position:fixed; background:#1e1b4b; border-radius:10px; padding:8px 12px; gap:8px; align-items:center; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+  .annotation-toolbar.show { display:flex; }
+  .ann-color-btn { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,.4); cursor:pointer; flex-shrink:0; }
+  .ann-color-btn:hover { border-color:#fff; }
+  .ann-color-btn.active { border-color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.3); }
+  .ann-note-input { background:rgba(255,255,255,.15); border:none; border-radius:6px; color:#fff; font-size:13px; padding:4px 8px; width:160px; outline:none; }
+  .ann-note-input::placeholder { color:rgba(255,255,255,.5); }
+  .ann-save-btn { background:#6F58EE; color:#fff; border:none; border-radius:6px; padding:5px 12px; font-size:13px; font-weight:600; cursor:pointer; }
+  .ann-save-btn:hover { background:#5a45d4; }
+  .ann-cancel-btn { background:transparent; border:none; color:rgba(255,255,255,.7); font-size:18px; cursor:pointer; line-height:1; }
+  .ann-list { margin-top:12px; display:flex; flex-direction:column; gap:6px; }
+  .ann-item { display:flex; align-items:flex-start; gap:8px; background:#fff; border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13px; }
+  .ann-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+  .ann-del-btn { background:none; border:none; color:var(--danger,#dc2626); cursor:pointer; font-size:15px; margin-left:auto; line-height:1; }
   .grade-row { display:flex; gap:10px; align-items:flex-end; margin-top:10px; flex-wrap:wrap; }
   .grade-row .field { margin:0; flex:1; min-width:80px; }
   .assign-email-tag { display:inline-flex; align-items:center; gap:5px; background:#ede9ff; color:#5a3d8a; border-radius:20px; padding:4px 12px; font-size:13px; margin:3px; }
@@ -1750,9 +1766,141 @@
     }).catch(function(){});
   }
 
+  /* ===== ANNOTATION ENGINE ===== */
+  var _annToolbar = null;
+  var _pendingSelection = null;
+  var _annColors = ['#fbbf24','#86efac','#93c5fd','#f9a8d4','#c4b5fd'];
+
+  function buildAnnotationToolbar() {
+    if (_annToolbar) return;
+    var tb = document.createElement('div');
+    tb.className = 'annotation-toolbar';
+    tb.id = 'annToolbar';
+    var colorDots = _annColors.map(function(c, i) {
+      return '<span class="ann-color-btn'+(i===0?' active':'')+'" data-color="'+c+'" style="background:'+c+';" onclick="annSelectColor(this)"></span>';
+    }).join('');
+    tb.innerHTML =
+      colorDots +
+      '<input class="ann-note-input" id="annNoteInput" placeholder="Ghi chú (tuỳ chọn)..." maxlength="200">' +
+      '<button class="ann-save-btn" onclick="annSave()">Highlight</button>' +
+      '<button class="ann-cancel-btn" onclick="annCancel()">✕</button>';
+    document.body.appendChild(tb);
+    _annToolbar = tb;
+  }
+
+  function annSelectColor(el) {
+    document.querySelectorAll('.ann-color-btn').forEach(function(b){ b.classList.remove('active'); });
+    el.classList.add('active');
+  }
+
+  function showAnnToolbar(x, y) {
+    buildAnnotationToolbar();
+    var tb = document.getElementById('annToolbar');
+    tb.classList.add('show');
+    var tw = tb.offsetWidth || 420, th = tb.offsetHeight || 50;
+    var left = Math.min(x, window.innerWidth - tw - 12);
+    var top  = y - th - 10;
+    if (top < 8) top = y + 20;
+    tb.style.left = left + 'px';
+    tb.style.top  = top  + 'px';
+    setTimeout(function(){ document.getElementById('annNoteInput').focus(); }, 50);
+  }
+
+  function hideAnnToolbar() {
+    if (_annToolbar) _annToolbar.classList.remove('show');
+    _pendingSelection = null;
+  }
+
+  function annCancel() { hideAnnToolbar(); window.getSelection && window.getSelection().removeAllRanges(); }
+
+  async function annSave() {
+    if (!_pendingSelection) return;
+    var color = document.querySelector('.ann-color-btn.active');
+    var note  = document.getElementById('annNoteInput').value.trim();
+    var payload = {
+      start_offset: _pendingSelection.start,
+      end_offset:   _pendingSelection.end,
+      selected_text: _pendingSelection.text,
+      note: note || null,
+      color: color ? color.dataset.color : '#fbbf24'
+    };
+    var subId = _pendingSelection.subId;
+    hideAnnToolbar();
+    window.getSelection && window.getSelection().removeAllRanges();
+    document.getElementById('annNoteInput').value = '';
+    var r = await fetch('/api/submissions/'+subId+'/annotations', {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    if (r.ok) renderAnnotations(subId);
+  }
+
+  async function annDelete(annId, subId) {
+    await fetch('/api/annotations/'+annId, { method:'DELETE', credentials:'same-origin' });
+    renderAnnotations(subId);
+  }
+
+  /* Tính offset ký tự trong plain-text của essay */
+  function getSelectionOffsets(container) {
+    var sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+    var range = sel.getRangeAt(0);
+    // Chỉ cho phép select trong container
+    if (!container.contains(range.commonAncestorContainer)) return null;
+    var text = container.textContent;
+    var preRange = document.createRange();
+    preRange.selectNodeContents(container);
+    preRange.setEnd(range.startContainer, range.startOffset);
+    var start = preRange.toString().length;
+    var selected = range.toString();
+    if (!selected.trim()) return null;
+    return { start: start, end: start + selected.length, text: selected };
+  }
+
+  /* Vẽ lại bài essay có highlights */
+  function renderEssayWithAnnotations(container, essayText, annotations) {
+    if (!annotations || annotations.length === 0) {
+      container.textContent = essayText;
+      return;
+    }
+    // Sắp xếp annotations theo start_offset, xử lý overlap bằng cách lấy thứ tự
+    var sorted = annotations.slice().sort(function(a,b){ return a.start_offset - b.start_offset; });
+    var html = '';
+    var cursor = 0;
+    sorted.forEach(function(ann) {
+      var s = Math.max(ann.start_offset, cursor);
+      var e = Math.min(ann.end_offset, essayText.length);
+      if (s >= e) return;
+      // Text trước highlight
+      if (s > cursor) html += escHtml(essayText.slice(cursor, s));
+      var noteAttr = ann.note ? ' data-note="'+escHtml(ann.note)+'"' : '';
+      html += '<mark class="annotation-highlight" style="background:'+ann.color+'88;border-bottom:2px solid '+ann.color+';"'+noteAttr+' title="'+(ann.note ? escHtml(ann.note) : 'Click để xoá')+'" onclick="if(confirm(\'Xoá annotation này?\'))annDelete('+ann.id+','+ann.submission_id+')">'+escHtml(essayText.slice(s, e))+'</mark>';
+      cursor = e;
+    });
+    if (cursor < essayText.length) html += escHtml(essayText.slice(cursor));
+    container.innerHTML = html;
+  }
+
+  async function renderAnnotations(subId) {
+    var essayEl = document.getElementById('essay-'+subId);
+    var annList = document.getElementById('annList-'+subId);
+    if (!essayEl) return;
+    var essayText = essayEl.dataset.raw || '';
+    var d = await fetch('/api/submissions/'+subId+'/annotations', { credentials:'same-origin' }).then(function(r){ return r.json(); }).catch(function(){ return {}; });
+    var anns = d.annotations || [];
+    renderEssayWithAnnotations(essayEl, essayText, anns);
+    if (annList) {
+      if (anns.length === 0) { annList.innerHTML = '<p style="font-size:13px;color:var(--text-muted);margin:0;">Chưa có annotation nào. Bôi đen text để thêm.</p>'; return; }
+      annList.innerHTML = '<div class="ann-list">'+anns.map(function(a){
+        return '<div class="ann-item"><span class="ann-dot" style="background:'+a.color+';"></span><div><b style="font-size:12px;">'+escHtml(a.selected_text.slice(0,40))+(a.selected_text.length>40?'…':'')+'</b>'+(a.note?'<br><span style="color:var(--text-muted);">'+escHtml(a.note)+'</span>':'')+'</div><button class="ann-del-btn" onclick="annDelete('+a.id+','+subId+')" title="Xoá">✕</button></div>';
+      }).join('')+'</div>';
+    }
+  }
+
+  /* ===== LOAD & GRADE ===== */
   async function loadAndGrade(subId, btn){
     var box = document.getElementById('gradeBox'+subId);
-    if (box.style.display !== 'none'){ box.style.display='none'; btn.textContent='📖 Xem bài & chấm'; return; }
+    if (box.style.display !== 'none'){ box.style.display='none'; btn.textContent='📖 Xem bài & chấm'; hideAnnToolbar(); return; }
     btn.textContent = '⏳ Đang tải...';
     var d = await fetch('/api/teacher/submission/'+subId,{credentials:'same-origin'}).then(r=>r.json()).catch(function(){return {};});
     btn.textContent = '📖 Xem bài & chấm';
@@ -1766,16 +1914,33 @@
     try { var fb = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback; feedbackVal = fb && fb.summary ? fb.summary : (sub.feedback || ''); } catch(e){ feedbackVal = sub.feedback || ''; }
 
     box.innerHTML =
-      '<p style="font-size:13px;font-weight:600;margin-bottom:6px;">Bài làm của học sinh:</p>' +
-      '<div class="sub-essay">'+escHtml(essayText)+'</div>' +
+      '<p style="font-size:13px;font-weight:700;margin-bottom:4px;">📝 Bài làm của học sinh <span style="font-size:11px;font-weight:400;color:var(--text-muted);">(bôi đen để highlight & ghi chú)</span></p>' +
+      '<div class="sub-essay" id="essay-'+subId+'" data-raw="'+escHtml(essayText)+'"></div>' +
+      '<details style="margin-top:8px;"><summary style="font-size:13px;font-weight:600;cursor:pointer;color:var(--primary);">🖍 Annotations (<span id="annCount-'+subId+'">...</span>)</summary><div id="annList-'+subId+'" style="padding:8px 0;"></div></details>' +
       '<div class="grade-row">' +
         '<div class="field"><label>Điểm</label><input type="number" id="sc'+subId+'" min="0" max="100" value="'+(sub.score!=null?sub.score:'')+'" placeholder="VD: 8"></div>' +
         '<div class="field"><label>Điểm tối đa</label><input type="number" id="mx'+subId+'" min="1" max="100" value="'+(sub.max_score||10)+'" placeholder="10"></div>' +
         '<div class="field" style="flex:3;"><label>Nhận xét cho học sinh</label><input type="text" id="fb'+subId+'" value="'+escHtml(String(feedbackVal))+'" placeholder="Nhận xét..."></div>' +
-        '<button class="btn btn-primary" onclick="saveGrade('+subId+')">💾 Lưu</button>' +
+        '<button class="btn btn-primary" onclick="saveGrade('+subId+')">💾 Lưu điểm</button>' +
       '</div>' +
       '<p id="gradeMsg'+subId+'" style="display:none;font-size:13px;margin-top:8px;"></p>';
     box.style.display = 'block';
+
+    // Load annotations & bind selection event
+    await renderAnnotations(subId);
+    var countEl = document.getElementById('annCount-'+subId);
+    if (countEl) {
+      var annD = await fetch('/api/submissions/'+subId+'/annotations',{credentials:'same-origin'}).then(r=>r.json()).catch(function(){return{};});
+      countEl.textContent = (annD.annotations||[]).length;
+    }
+
+    var essayEl = document.getElementById('essay-'+subId);
+    essayEl.addEventListener('mouseup', function(e) {
+      var offsets = getSelectionOffsets(essayEl);
+      if (!offsets) { hideAnnToolbar(); return; }
+      _pendingSelection = Object.assign(offsets, { subId: subId });
+      showAnnToolbar(e.clientX, e.clientY);
+    });
   }
 
   async function saveGrade(subId){
@@ -1784,11 +1949,21 @@
     var feedback = document.getElementById('fb'+subId).value.trim();
     var r = await fetch('/api/teacher/grade/'+subId,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({score,max_score:max,feedback})});
     var p = document.getElementById('gradeMsg'+subId);
-    if (r.ok){ p.style.color='var(--success)'; p.textContent='✅ Đã lưu điểm thành công!'; }
+    if (r.ok){ p.style.color='var(--success)'; p.textContent='✅ Đã lưu điểm & gửi thông báo cho học sinh!'; }
     else      { p.style.color='var(--danger)';  p.textContent='Lưu thất bại.'; }
     p.style.display='block';
     loadSubmissions();
   }
+
+  // Đóng toolbar khi click ra ngoài
+  document.addEventListener('mousedown', function(e) {
+    if (_annToolbar && !_annToolbar.contains(e.target)) {
+      var essayEls = document.querySelectorAll('.sub-essay');
+      var insideEssay = false;
+      essayEls.forEach(function(el){ if (el.contains(e.target)) insideEssay = true; });
+      if (!insideEssay) hideAnnToolbar();
+    }
+  });
 
   function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
 

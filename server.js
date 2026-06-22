@@ -4,8 +4,33 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const webpush = require('web-push');
 const { db, hashPassword, verifyPassword, now } = require('./db');
 const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider } = require('./ai');
+
+// ===== Web Push VAPID =====
+// Tạo keys bằng: node -e "const wp=require('web-push');const k=wp.generateVAPIDKeys();console.log(k);"
+// Rồi set VAPID_PUBLIC và VAPID_PRIVATE trong Railway environment variables
+const VAPID_PUBLIC  = process.env.VAPID_PUBLIC  || '';
+const VAPID_PRIVATE = process.env.VAPID_PRIVATE || '';
+if (VAPID_PUBLIC && VAPID_PRIVATE) {
+  webpush.setVapidDetails('mailto:' + (process.env.FROM_EMAIL || 'admin@english-with-tom.com'), VAPID_PUBLIC, VAPID_PRIVATE);
+}
+
+async function sendPushToUser(userId, title, body, url) {
+  if (!VAPID_PUBLIC || !VAPID_PRIVATE) return;
+  const subs = db.prepare('SELECT * FROM push_subscriptions WHERE user_id=?').all(userId);
+  const payload = JSON.stringify({ title, body, url: url || '/' });
+  for (const s of subs) {
+    try {
+      await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload);
+    } catch (e) {
+      if (e.statusCode === 410 || e.statusCode === 404) {
+        db.prepare('DELETE FROM push_subscriptions WHERE id=?').run(s.id);
+      }
+    }
+  }
+}
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
@@ -910,23 +935,25 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
   for (const email of emails) {
     const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
     if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null); count++; }
+    const u = db.prepare('SELECT id,name FROM users WHERE email=?').get(email);
+    const assignLink = (process.env.PUBLIC_URL || '') + '/assigned.html';
     if (emailEnabled()) {
-      const u = db.prepare('SELECT name FROM users WHERE email=?').get(email);
       const dline = deadline ? `<p>⏰ Hạn nộp: <b>${deadline}</b></p>` : '';
       const noteHtml = note ? `<p>📌 Ghi chú: ${note}</p>` : '';
       const classHtml = groupName ? `<p>🏫 Lớp: <b>${groupName}</b></p>` : '';
-      const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
       await sendBrevoEmail({ email, name: u ? u.name : email },
         'Bạn có bài tập mới — English With Tom',
         `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
           <h2 style="color:#6F58EE">📝 Thầy/Cô vừa giao bài cho bạn!</h2>
           <p>Bài tập: <b>${ex.title}</b></p>
           ${classHtml}${dline}${noteHtml}
-          <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem bài tập ngay</a></p>
+          <p style="margin:22px 0"><a href="${assignLink}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem bài tập ngay</a></p>
           <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này để xem bài được giao.</p>
         </div>`
       ).catch(() => {});
     }
+    // Gửi push notification cho học sinh (nếu đã có tài khoản)
+    if (u) sendPushToUser(u.id, '📝 Bạn có bài tập mới!', ex.title, assignLink).catch(() => {});
   }
   res.json({ ok: true, assigned: count, group_name: groupName });
 });
@@ -997,11 +1024,11 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
   db.prepare('UPDATE submissions SET score=?, max_score=?, status=?, feedback=? WHERE id=?')
     .run(score ?? null, max_score ?? 10, 'graded', feedback || null, subId);
+  const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
   // Gửi email thông báo kết quả cho học sinh
   if (emailEnabled()) {
     const scoreText = (score !== undefined && score !== null) ? `${score}/${max_score ?? 10}` : 'Đã chấm';
     const fbHtml = feedback ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${feedback}</p>` : '';
-    const link = (process.env.PUBLIC_URL || '') + '/assigned.html';
     sendBrevoEmail(
       { email: sub.student_email, name: sub.student_name },
       `Bài của bạn đã được chấm — ${sub.exercise_title}`,
@@ -1014,6 +1041,8 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
       </div>`
     ).catch(() => {});
   }
+  // Gửi push notification cho học sinh
+  sendPushToUser(sub.user_id, '✅ Bài của bạn đã được chấm!', sub.exercise_title, link).catch(() => {});
   res.json({ ok: true });
 });
 
@@ -1317,6 +1346,71 @@ app.get('/api/teacher/student/:id', requireRole('teacher','admin'), (req, res) =
              overall_avg_pct, by_program, weak_criteria,
              timeline: timeline.slice().reverse() }
   });
+});
+
+// ===================== ANNOTATIONS =====================
+
+// Lấy tất cả annotation của 1 submission
+app.get('/api/submissions/:id/annotations', requireAuth, (req, res) => {
+  const subId = Number(req.params.id);
+  const sub = db.prepare('SELECT user_id FROM submissions WHERE id=?').get(subId);
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
+  // Học sinh chỉ xem annotation bài của mình; giáo viên/admin xem tất cả
+  if (req.user.role === 'student' && sub.user_id !== req.user.id)
+    return res.status(403).json({ error: 'Không có quyền.' });
+  const rows = db.prepare('SELECT a.*, u.name AS teacher_name FROM annotations a JOIN users u ON u.id=a.teacher_id WHERE a.submission_id=? ORDER BY a.start_offset').all(subId);
+  res.json({ annotations: rows });
+});
+
+// Giáo viên thêm annotation mới
+app.post('/api/submissions/:id/annotations', requireRole('teacher','admin'), (req, res) => {
+  const subId = Number(req.params.id);
+  const { start_offset, end_offset, selected_text, note, color } = req.body || {};
+  if (start_offset == null || end_offset == null || !selected_text)
+    return res.status(400).json({ error: 'Thiếu thông tin annotation.' });
+  const r = db.prepare(
+    'INSERT INTO annotations (submission_id,teacher_id,start_offset,end_offset,selected_text,note,color,created_at) VALUES (?,?,?,?,?,?,?,?)'
+  ).run(subId, req.user.id, start_offset, end_offset, selected_text, note||null, color||'#fbbf24', now());
+  res.json({ annotation: { id: r.lastInsertRowid, submission_id: subId, start_offset, end_offset, selected_text, note, color: color||'#fbbf24' } });
+});
+
+// Giáo viên xoá annotation
+app.delete('/api/annotations/:id', requireRole('teacher','admin'), (req, res) => {
+  db.prepare('DELETE FROM annotations WHERE id=? AND teacher_id=?').run(Number(req.params.id), req.user.id);
+  res.json({ ok: true });
+});
+
+// Giáo viên cập nhật note của annotation
+app.patch('/api/annotations/:id', requireRole('teacher','admin'), (req, res) => {
+  const { note, color } = req.body || {};
+  db.prepare('UPDATE annotations SET note=?, color=? WHERE id=? AND teacher_id=?')
+    .run(note||null, color||'#fbbf24', Number(req.params.id), req.user.id);
+  res.json({ ok: true });
+});
+
+// ===================== PUSH NOTIFICATIONS =====================
+
+// Trả về VAPID public key để client đăng ký
+app.get('/api/push/vapid-public-key', (req, res) => {
+  res.json({ key: VAPID_PUBLIC });
+});
+
+// Học sinh đăng ký nhận push notification
+app.post('/api/push/subscribe', requireAuth, (req, res) => {
+  const { endpoint, keys } = req.body || {};
+  if (!endpoint || !keys?.p256dh || !keys?.auth)
+    return res.status(400).json({ error: 'Thiếu thông tin subscription.' });
+  db.prepare(
+    'INSERT INTO push_subscriptions (user_id,endpoint,p256dh,auth,created_at) VALUES (?,?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET user_id=excluded.user_id, p256dh=excluded.p256dh, auth=excluded.auth'
+  ).run(req.user.id, endpoint, keys.p256dh, keys.auth, now());
+  res.json({ ok: true });
+});
+
+// Học sinh huỷ đăng ký push notification
+app.post('/api/push/unsubscribe', requireAuth, (req, res) => {
+  const { endpoint } = req.body || {};
+  if (endpoint) db.prepare('DELETE FROM push_subscriptions WHERE user_id=? AND endpoint=?').run(req.user.id, endpoint);
+  res.json({ ok: true });
 });
 
 // ===================== TĨNH =====================
