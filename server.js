@@ -243,6 +243,9 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
   res.json({ ok: true });
 });
 
+// Health check — dùng để keep-alive, tránh Railway cold start
+app.get('/api/ping', (req, res) => res.json({ ok: true, t: Date.now() }));
+
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
   res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled(), aiEnabled: aiEnabled(), aiProvider: provider() });
@@ -1452,4 +1455,13 @@ app.listen(port, () => {
     console.warn('⚠️  DATA_DIR chưa set — database nằm trong thư mục app, SẼ MẤT khi Railway redeploy! Hãy tạo Volume trong Railway và set DATA_DIR=/data');
   else
     console.log('✅ DATA_DIR =', DATA_DIR, '— dữ liệu an toàn qua các lần deploy');
+
+  // Self-ping mỗi 4 phút để Railway không cho app ngủ (cold start làm trang quay vòng 15-30s)
+  if (process.env.PUBLIC_URL) {
+    const pingUrl = process.env.PUBLIC_URL + '/api/ping';
+    setInterval(() => {
+      fetch(pingUrl).catch(() => {});
+    }, 4 * 60 * 1000);
+    console.log('🔔 Keep-alive ping mỗi 4 phút →', pingUrl);
+  }
 });

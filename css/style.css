@@ -914,7 +914,9 @@ img.brand-logo {
 }
 .dark-toggle:hover { border-color: var(--primary); background: var(--primary-soft); }
 
-/* Smooth transition toàn trang */
-*, *::before, *::after {
-  transition: background-color .25s ease, border-color .25s ease, color .15s ease;
+/* Smooth transition CHỈ khi đang chuyển theme — class do JS thêm/xoá */
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color .25s ease, border-color .25s ease, color .15s ease !important;
 }

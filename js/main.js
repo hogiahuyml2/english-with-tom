@@ -95,27 +95,26 @@
   /* ===== Dark mode toggle ===== */
   function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
   function updateDarkBtn() {
-    var btn = document.getElementById('darkToggle');
-    if (btn) btn.textContent = isDark() ? '☀️' : '🌙';
+    var b1 = document.getElementById('darkToggle');
+    var b2 = document.getElementById('darkToggle2');
+    var icon = isDark() ? '☀️' : '🌙';
+    if (b1) b1.textContent = icon;
+    if (b2) b2.textContent = icon;
+  }
+  function applyTheme(dark) {
+    // Thêm class transition CHỈ trong lúc chuyển theme, xoá sau 300ms
+    document.documentElement.classList.add('theme-transitioning');
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('ewt-theme', dark ? 'dark' : 'light');
+    updateDarkBtn();
+    setTimeout(function () {
+      document.documentElement.classList.remove('theme-transitioning');
+    }, 300);
   }
   updateDarkBtn();
   document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'darkToggle') {
-      var dark = !isDark();
-      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-      localStorage.setItem('ewt-theme', dark ? 'dark' : 'light');
-      updateDarkBtn();
-      // Cập nhật nút thứ 2 nếu có (khi đã đăng nhập)
-      var btn2 = document.getElementById('darkToggle2');
-      if (btn2) btn2.textContent = dark ? '☀️' : '🌙';
-    }
-    if (e.target && e.target.id === 'darkToggle2') {
-      var dark2 = !isDark();
-      document.documentElement.setAttribute('data-theme', dark2 ? 'dark' : 'light');
-      localStorage.setItem('ewt-theme', dark2 ? 'dark' : 'light');
-      document.getElementById('darkToggle2').textContent = dark2 ? '☀️' : '🌙';
-      var btn1 = document.getElementById('darkToggle');
-      if (btn1) btn1.textContent = dark2 ? '☀️' : '🌙';
+    if (e.target && (e.target.id === 'darkToggle' || e.target.id === 'darkToggle2')) {
+      applyTheme(!isDark());
     }
   });
 
