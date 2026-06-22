@@ -78,7 +78,16 @@
   var LETTERS = ['A','B','C','D','E'];
   var QS = [];
 
-  fetch('/api/exercises/'+EXERCISE_ID).then(r=>r.json()).then(function(d){
+  var _quizCtrl = new AbortController();
+  var _quizTimeout = setTimeout(function(){ _quizCtrl.abort(); }, 12000);
+  fetch('/api/exercises/'+EXERCISE_ID, {credentials:'same-origin', signal: _quizCtrl.signal})
+  .then(function(r){
+    clearTimeout(_quizTimeout);
+    if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
+    if (!r.ok){ document.getElementById('exTitle').textContent='Lỗi tải đề ('+r.status+'), thử tải lại.'; return null; }
+    return r.json();
+  }).then(function(d){
+    if (!d) return;
     var e = d.exercise;
     if (!e) { document.getElementById('exTitle').textContent='Không tìm thấy đề'; return; }
     document.getElementById('exTitle').textContent = e.title;
@@ -113,7 +122,13 @@
       }).join('');
       return '<div class="q-item"><div class="q-text">'+(i+1)+'. '+esc(q.q)+'</div>'+opts+'</div>';
     }).join('');
-  }).catch(function(){});
+  }).catch(function(err){
+    clearTimeout(_quizTimeout);
+    var msg = (err && err.name==='AbortError')
+      ? 'Tải đề quá lâu — thử tải lại trang (F5).'
+      : 'Mất kết nối — kiểm tra mạng rồi thử lại.';
+    document.getElementById('exTitle').textContent = msg;
+  });
 
   document.getElementById('submitBtn').addEventListener('click', async function(){
     var answers = QS.map(function(_, i){

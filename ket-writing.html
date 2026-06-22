@@ -60,13 +60,22 @@
     return '<div class="test-row"><div><div class="name">'+esc(e.title)+'</div><div class="lvl">A2 Key · Chấm tự động</div></div>'+
       '<a class="btn btn-sm" href="practice-writing.html?id='+e.id+'">Làm bài</a></div>';
   }
-  fetch('/api/exercises?program=KET&skill=Writing').then(r=>r.json()).then(function(d){
+  var _ctrl = new AbortController();
+  setTimeout(function(){ _ctrl.abort(); }, 12000);
+  fetch('/api/exercises?program=KET&skill=Writing', {credentials:'same-origin', signal:_ctrl.signal})
+  .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+  .then(function(d){
     var list = d.exercises || [];
     var p1 = list.filter(function(e){ return /Part 1/i.test(e.title); });
     var p2 = list.filter(function(e){ return /Part 2/i.test(e.title); });
-    document.getElementById('part1').innerHTML = p1.length ? p1.map(row).join('') : '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
-    document.getElementById('part2').innerHTML = p2.length ? p2.map(row).join('') : '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
-  }).catch(function(){});
+    var empty = '<div class="test-row"><div class="name" style="color:var(--text-faint)">Nội dung đang được biên soạn — giáo viên sẽ cập nhật sớm.</div></div>';
+    document.getElementById('part1').innerHTML = p1.length ? p1.map(row).join('') : empty;
+    document.getElementById('part2').innerHTML = p2.length ? p2.map(row).join('') : empty;
+  }).catch(function(){
+    var err = '<div class="test-row"><div class="name" style="color:var(--danger,#dc2626)">Không tải được danh sách đề — thử tải lại trang (F5).</div></div>';
+    document.getElementById('part1').innerHTML = err;
+    document.getElementById('part2').innerHTML = '';
+  });
 </script>
 </body>
 </html>

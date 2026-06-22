@@ -730,14 +730,28 @@ var essayEditor = new RichEditor('essay', {
 });
 
 /* ── Load đề bài ── */
-fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(function(r){
-  if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
-  if (r.status===403){ document.getElementById('exTitle').textContent='Bạn chưa được giao đề này.'; return null; }
-  return r.json();
-}).then(function(d){
-  if (!d) return;
-  var e = d.exercise;
-  if (!e) { document.getElementById('exTitle').textContent = 'Không tìm thấy đề'; return; }
+function showLoadError(msg) {
+  document.getElementById('exTitle').textContent = msg || 'Không tải được đề';
+  document.getElementById('exSub').textContent = 'Vui lòng tải lại trang (F5)';
+  document.getElementById('timerModeCard').style.display = 'none';
+}
+
+(function loadExercise() {
+  var ctrl = new AbortController();
+  var timeout = setTimeout(function(){ ctrl.abort(); }, 12000);
+  fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin', signal: ctrl.signal})
+  .then(function(r){
+    clearTimeout(timeout);
+    if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
+    if (r.status===403){ showLoadError('Bạn chưa được giao đề này.'); return null; }
+    if (r.status===404){ showLoadError('Không tìm thấy đề (ID ' + EXERCISE_ID + ')'); return null; }
+    if (!r.ok){ showLoadError('Lỗi server (' + r.status + '), thử tải lại trang.'); return null; }
+    return r.json();
+  })
+  .then(function(d){
+    if (!d) return;
+    var e = d.exercise;
+    if (!e) { showLoadError('Không tìm thấy đề'); return; }
   G_currentExercise = e;
   document.getElementById('exTitle').textContent = e.title;
   document.getElementById('crumbTitle').textContent = e.program + ' Writing';
@@ -768,7 +782,16 @@ fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(functio
   } else {
     document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · Chấm điểm tự động';
   }
-}).catch(function(){});
+  })
+  .catch(function(err){
+    clearTimeout(timeout);
+    if (err && err.name === 'AbortError') {
+      showLoadError('Tải đề quá lâu — máy chủ có thể đang khởi động. Tải lại trang sau 10 giây.');
+    } else {
+      showLoadError('Mất kết nối — kiểm tra mạng rồi tải lại trang (F5).');
+    }
+  });
+})();
 
 fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
   if (!IS_PRIVATE && !c.aiEnabled)
@@ -1126,10 +1149,7 @@ function printResults() {
 
   var w = window.open('', '_blank');
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8">'+
-    '<title>Kết quả — '+title+'</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#6F58EE">
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">'+
+    '<title>Kết quả — '+title+'</title>'+
     '<style>'+
     'body{font-family:Georgia,serif;max-width:700px;margin:0 auto;padding:32px;color:#222;}'+
     'h1{font-size:20px;border-bottom:2px solid #6F58EE;padding-bottom:8px;margin-bottom:4px;}'+

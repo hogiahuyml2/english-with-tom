@@ -68,9 +68,11 @@
 <script>
   function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
 
-  fetch('/api/exercises?program=APTIS&skill=Writing&type=aptis_full', {credentials:'same-origin'}).then(function(r){
-    return r.json();
-  }).then(function(d){
+  var _aptisCtrl = new AbortController();
+  setTimeout(function(){ _aptisCtrl.abort(); }, 12000);
+  fetch('/api/exercises?program=APTIS&skill=Writing&type=aptis_full', {credentials:'same-origin', signal:_aptisCtrl.signal})
+  .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+  .then(function(d){
     var exercises = (d.exercises||[]).filter(function(e){
       if(!e.content) return false;
       try{
