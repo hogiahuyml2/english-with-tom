@@ -531,14 +531,17 @@ suggested_writing: Viết bài mẫu TIẾNG ANH đáp ứng đúng yêu cầu �
 async function fetchImageBase64(url) {
   if (!url) return null;
   try {
-    const r = await fetch(url);
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000); // 8s timeout — tránh treo khi CDN chậm
+    const r = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(timer);
     if (!r.ok) return null;
     const buf  = await r.arrayBuffer();
     const mime = (r.headers.get('content-type') || 'image/jpeg').split(';')[0].trim();
     return { base64: Buffer.from(buf).toString('base64'), mimeType: mime };
   } catch (e) {
     console.warn('fetchImageBase64 failed:', e.message);
-    return null;
+    return null; // fail gracefully — chấm bài không cần ảnh vẫn chạy được
   }
 }
 
@@ -800,9 +803,11 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
 
   // Rate limiter đảm bảo không vượt 10 RPM của Gemini Free tier
   // Fallback: nếu lần 1 fail thì retry với token nhỏ hơn
+  // 8192 tokens đủ cho: criteria+summary+suggestions+suggested_writing+error_list+annotations
+  // 5000 trước đây quá thấp → JSON bị cắt → parse fail mọi lần
   const attempts = [
-    { maxOutputTokens: 5000, thinkingBudget: 0 },
-    { maxOutputTokens: 4000, thinkingBudget: 0 }
+    { maxOutputTokens: 8192, thinkingBudget: 0 },
+    { maxOutputTokens: 6000, thinkingBudget: 0 }
   ];
   let lastErr;
   for (let i = 0; i < attempts.length; i++) {
@@ -811,7 +816,7 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
       return await rateLimitedGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
         ...baseBody,
         generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-      }, 45000));
+      }, 65000));
     } catch (e) {
       lastErr = e;
       if (i < attempts.length - 1) console.warn('[AI] grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
