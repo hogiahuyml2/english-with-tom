@@ -744,10 +744,11 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
     generationConfig: { responseMimeType: 'application/json', responseSchema: GEMINI_SCHEMA }
   };
 
-  // Lần 1: có thinking (chính xác hơn); Lần 2: không thinking (nhanh hơn, dùng làm fallback)
+  // Không dùng thinkingBudget — tương thích Gemini Free tier, tránh delay 30-90s
+  // Gemini 2.5 Flash vẫn chất lượng cao mà không cần extended thinking
   const attempts = [
-    { maxOutputTokens: 10000, thinkingBudget: 8000 },
-    { maxOutputTokens: 8000,  thinkingBudget: 0    }
+    { maxOutputTokens: 8000, thinkingBudget: 0 },  // primary: nhanh, ổn định
+    { maxOutputTokens: 6000, thinkingBudget: 0 }   // fallback: token nhỏ hơn
   ];
   let lastErr;
   for (let i = 0; i < attempts.length; i++) {
@@ -756,7 +757,7 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
       return await callGemini(url, process.env.GEMINI_API_KEY, {
         ...baseBody,
         generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-      }, 90000);
+      }, 75000);
     } catch (e) {
       lastErr = e;
       if (i < attempts.length - 1) console.warn('[AI] grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
@@ -1072,10 +1073,10 @@ async function getWritingHints(exercise) {
       contents: [{ role: 'user', parts }],
       generationConfig: { responseMimeType: 'application/json', responseSchema: HINTS_GEMINI_SCHEMA }
     };
-    // Lần 1: có thinking; Lần 2: không thinking (fallback nhanh hơn)
+    // Không dùng thinkingBudget — tương thích Gemini Free tier
     const attempts = [
-      { maxOutputTokens: 5000, thinkingBudget: 8000 },
-      { maxOutputTokens: 4000, thinkingBudget: 0    }
+      { maxOutputTokens: 4000, thinkingBudget: 0 },
+      { maxOutputTokens: 3000, thinkingBudget: 0 }
     ];
     let lastErr;
     for (let i = 0; i < attempts.length; i++) {
@@ -1084,7 +1085,7 @@ async function getWritingHints(exercise) {
         return await callGemini(url, process.env.GEMINI_API_KEY, {
           ...baseBody,
           generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-        }, 80000);
+        }, 60000);
       } catch (e) {
         lastErr = e;
         if (i < attempts.length - 1) console.warn('[AI] hints attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
