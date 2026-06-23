@@ -2,6 +2,43 @@
 // Trả về kết quả chấm + bài viết gợi ý (suggested_writing) theo tiêu chí từng kỳ thi
 const Anthropic = require('@anthropic-ai/sdk');
 
+// ── Rate limiter: chống vượt 10 RPM của Gemini Free ─────────────────────────
+// Đảm bảo tối thiểu 7.5s giữa các lần gọi Gemini (≈ 8 req/phút, buffer dưới 10 RPM)
+// Promise chain đảm bảo các request được xử lý lần lượt, không bao giờ burst
+let _geminiChain    = Promise.resolve();
+let _geminiLastCall = 0;
+const GEMINI_MIN_GAP_MS = 7500;
+
+function queueGeminiCall(fn) {
+  _geminiChain = _geminiChain
+    .catch(() => {}) // không để lỗi của request trước làm dừng chain
+    .then(async () => {
+      const wait = Math.max(0, _geminiLastCall + GEMINI_MIN_GAP_MS - Date.now());
+      if (wait > 0) {
+        console.log('[AI] rate limiter: chờ ' + wait + 'ms trước khi gọi Gemini');
+        await new Promise(r => setTimeout(r, wait));
+      }
+      _geminiLastCall = Date.now();
+      return fn();
+    });
+  return _geminiChain;
+}
+
+// ── Hints cache: tránh gọi AI nhiều lần cho cùng 1 đề ───────────────────────
+// Nhiều học sinh xem gợi ý cùng đề → chỉ 1 API call, cache 3 tiếng
+const _hintsCache   = new Map(); // key: exercise.id → { hints, ts }
+const HINTS_CACHE_MS = 3 * 60 * 60 * 1000; // 3 giờ
+
+function getCachedHints(id) {
+  const e = _hintsCache.get(String(id));
+  if (!e) return null;
+  if (Date.now() - e.ts > HINTS_CACHE_MS) { _hintsCache.delete(String(id)); return null; }
+  return e.hints;
+}
+function setCachedHints(id, hints) {
+  _hintsCache.set(String(id), { hints, ts: Date.now() });
+}
+
 // ── Helper: gọi Gemini với timeout + parse JSON + retry 429 ─────────────────
 async function callGemini(url, apiKey, requestBody, timeoutMs) {
   // Khi gặp 429 (rate limit), tự động chờ rồi thử lại tối đa 3 lần
@@ -761,20 +798,20 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
     generationConfig: { responseMimeType: 'application/json', responseSchema: GEMINI_SCHEMA }
   };
 
-  // Không dùng thinkingBudget — tương thích Gemini Free tier, tránh delay 30-90s
-  // Gemini 2.5 Flash vẫn chất lượng cao mà không cần extended thinking
+  // Rate limiter đảm bảo không vượt 10 RPM của Gemini Free tier
+  // Fallback: nếu lần 1 fail thì retry với token nhỏ hơn
   const attempts = [
-    { maxOutputTokens: 8000, thinkingBudget: 0 },  // primary: nhanh, ổn định
-    { maxOutputTokens: 6000, thinkingBudget: 0 }   // fallback: token nhỏ hơn
+    { maxOutputTokens: 5000, thinkingBudget: 0 },
+    { maxOutputTokens: 4000, thinkingBudget: 0 }
   ];
   let lastErr;
   for (let i = 0; i < attempts.length; i++) {
     const cfg = attempts[i];
     try {
-      return await callGemini(url, process.env.GEMINI_API_KEY, {
+      return await queueGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
         ...baseBody,
         generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-      }, 75000);
+      }, 75000));
     } catch (e) {
       lastErr = e;
       if (i < attempts.length - 1) console.warn('[AI] grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
@@ -929,19 +966,18 @@ async function gradeAptisWriting(exercise, testContent, answers) {
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
       generationConfig: { responseMimeType: 'application/json', responseSchema: GEMINI_SCHEMA }
     };
-    // Retry: lần 1 không thinking (APTIS đã phức tạp, không cần), lần 2 fallback token nhỏ hơn
     const attempts = [
-      { maxOutputTokens: 10000, thinkingBudget: 0 },
-      { maxOutputTokens: 7000,  thinkingBudget: 0 }
+      { maxOutputTokens: 7000, thinkingBudget: 0 },
+      { maxOutputTokens: 5000, thinkingBudget: 0 }
     ];
     let lastErr;
     for (let i = 0; i < attempts.length; i++) {
       const cfg = attempts[i];
       try {
-        return await callGemini(url, process.env.GEMINI_API_KEY, {
+        return await queueGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
           ...baseBody,
           generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-        }, 90000);
+        }, 90000));
       } catch (e) {
         lastErr = e;
         if (i < attempts.length - 1) console.warn('[AI] APTIS grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
@@ -982,7 +1018,7 @@ const HINTS_CLAUDE_SCHEMA = {
     dos_and_donts:  { type: 'array', items: { type: 'string' } },
     time_guide:     { type: 'string' }
   },
-  required: ['task_type','image_content','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
+  required: ['task_type','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
   additionalProperties: false
 };
 
@@ -998,7 +1034,7 @@ const HINTS_GEMINI_SCHEMA = {
     dos_and_donts:  { type: 'ARRAY', items: { type: 'STRING' } },
     time_guide:     { type: 'STRING' }
   },
-  required: ['task_type','image_content','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
+  required: ['task_type','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
 };
 
 function buildHintsSystem(exercise) {
@@ -1074,6 +1110,13 @@ time_guide: Gợi ý phân bổ thời gian phù hợp kỳ thi + dạng bài n�
 }
 
 async function getWritingHints(exercise) {
+  // Cache hit: cùng đề bài thì trả ngay, không gọi API
+  const cached = getCachedHints(exercise.id);
+  if (cached) {
+    console.log('[AI] hints cache hit — exercise', exercise.id, '(tiết kiệm 1 API call)');
+    return cached;
+  }
+
   const p         = provider();
   const sysPrompt = buildHintsSystem(exercise);
   const userText  = `KỲ THI: ${exercise.program} — Kỹ năng: ${exercise.skill}\nĐỀ BÀI: ${exercise.title}\n\n${exercise.content || ''}`;
@@ -1090,7 +1133,6 @@ async function getWritingHints(exercise) {
       contents: [{ role: 'user', parts }],
       generationConfig: { responseMimeType: 'application/json', responseSchema: HINTS_GEMINI_SCHEMA }
     };
-    // Không dùng thinkingBudget — tương thích Gemini Free tier
     const attempts = [
       { maxOutputTokens: 4000, thinkingBudget: 0 },
       { maxOutputTokens: 3000, thinkingBudget: 0 }
@@ -1099,10 +1141,12 @@ async function getWritingHints(exercise) {
     for (let i = 0; i < attempts.length; i++) {
       const cfg = attempts[i];
       try {
-        return await callGemini(url, process.env.GEMINI_API_KEY, {
+        const hints = await queueGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
           ...baseBody,
           generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-        }, 60000);
+        }, 60000));
+        setCachedHints(exercise.id, hints); // cache để học sinh khác dùng lại
+        return hints;
       } catch (e) {
         lastErr = e;
         if (i < attempts.length - 1) console.warn('[AI] hints attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
