@@ -2,6 +2,39 @@
 // Trả về kết quả chấm + bài viết gợi ý (suggested_writing) theo tiêu chí từng kỳ thi
 const Anthropic = require('@anthropic-ai/sdk');
 
+// ── Helper: gọi Gemini với timeout + parse JSON ──────────────────────────────
+async function callGemini(url, apiKey, requestBody, timeoutMs) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs || 90000);
+  try {
+    const r = await fetch(url, {
+      signal : ctrl.signal,
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+      body   : JSON.stringify(requestBody)
+    });
+    clearTimeout(timer);
+    if (!r.ok) {
+      const errTxt = await r.text().catch(() => '');
+      throw new Error('Gemini HTTP ' + r.status + ': ' + errTxt.slice(0, 300));
+    }
+    const data = await r.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const text  = parts.map(p => p.text || '').join('');
+    const finishReason = data?.candidates?.[0]?.finishReason || 'UNKNOWN';
+    if (!text) throw new Error('Gemini phản hồi rỗng (finishReason=' + finishReason + ')');
+    try {
+      return JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error('Gemini JSON parse thất bại: ' + parseErr.message + ' — snippet: ' + text.slice(0, 150));
+    }
+  } catch (e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') throw new Error('Gemini timeout sau ' + Math.round((timeoutMs || 90000) / 1000) + 's — thử lại sau');
+    throw e;
+  }
+}
+
 function provider() {
   const p = (process.env.AI_PROVIDER || '').toLowerCase();
   if (p === 'gemini' || p === 'claude') return p;
@@ -612,7 +645,7 @@ const CLAUDE_SCHEMA = {
     error_list:       { type: 'array', items: ERROR_NOTE_SCHEMA },
     annotations:      { type: 'array', items: ANNOTATION_ITEM_SCHEMA }
   },
-  required: ['image_content', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'error_list', 'annotations'],
+  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations'],
   additionalProperties: false
 };
 
@@ -634,7 +667,12 @@ async function gradeWithClaude(exercise, essay, imageData, studentImage) {
     output_config: { format: { type: 'json_schema', schema: CLAUDE_SCHEMA } }
   });
   const block = resp.content.find(b => b.type === 'text');
-  return JSON.parse(block.text);
+  if (!block || !block.text) throw new Error('Claude: phản hồi rỗng hoặc không có text block');
+  try {
+    return JSON.parse(block.text);
+  } catch (parseErr) {
+    throw new Error('Claude JSON parse thất bại: ' + parseErr.message + ' — snippet: ' + block.text.slice(0, 150));
+  }
 }
 
 // ===== Gemini (Google) — REST =====
@@ -684,7 +722,7 @@ const GEMINI_SCHEMA = {
       }
     }
   },
-  required: ['image_content', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'error_list', 'annotations']
+  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
 };
 
 async function gradeWithGemini(exercise, essay, imageData, studentImage) {
@@ -699,26 +737,32 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
     parts.push({ inline_data: { mime_type: studentImage.mimeType, data: studentImage.base64 } });
   }
   parts.push({ text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay) });
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: buildSystem(exercise, !!studentImage) }] },
-      contents: [{ role: 'user', parts }],
-      generationConfig: {
-        responseMimeType: 'application/json',
-        responseSchema: GEMINI_SCHEMA,
-        maxOutputTokens: 12000,
-        thinkingConfig: { thinkingBudget: 12000 }
-      }
-    })
-  });
-  if (!r.ok) throw new Error('Gemini ' + r.status + ': ' + (await r.text()));
-  const data = await r.json();
-  const resParts = data?.candidates?.[0]?.content?.parts || [];
-  const text = resParts.map(p => p.text || '').join('');
-  if (!text) throw new Error('Gemini: phản hồi rỗng (finishReason=' + (data?.candidates?.[0]?.finishReason) + ')');
-  return JSON.parse(text);
+
+  const baseBody = {
+    system_instruction: { parts: [{ text: buildSystem(exercise, !!studentImage) }] },
+    contents: [{ role: 'user', parts }],
+    generationConfig: { responseMimeType: 'application/json', responseSchema: GEMINI_SCHEMA }
+  };
+
+  // Lần 1: có thinking (chính xác hơn); Lần 2: không thinking (nhanh hơn, dùng làm fallback)
+  const attempts = [
+    { maxOutputTokens: 10000, thinkingBudget: 8000 },
+    { maxOutputTokens: 8000,  thinkingBudget: 0    }
+  ];
+  let lastErr;
+  for (let i = 0; i < attempts.length; i++) {
+    const cfg = attempts[i];
+    try {
+      return await callGemini(url, process.env.GEMINI_API_KEY, {
+        ...baseBody,
+        generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
+      }, 90000);
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts.length - 1) console.warn('[AI] grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
+    }
+  }
+  throw lastErr;
 }
 
 async function gradeWriting(exercise, essay, studentImage) {
@@ -807,7 +851,9 @@ Quy tắc JSON output:
 - summary: 2–3 câu tổng quan tiếng Việt — điểm mạnh và yếu chính từng component.
 - suggestions: 4–5 gợi ý cải thiện tiếng Việt, ưu tiên component điểm thấp nhất.
 - suggested_writing: Bài mẫu TIẾNG ANH cho Part 4 Task 2 (120–150 từ, formal register, đáp ứng đúng đề bài cụ thể, KHÔNG generic). BẮT BUỘC dùng đúng formal register.
-- suggested_notes: Giải thích TIẾNG VIỆT 3–5 câu vì sao bài mẫu đạt điểm cao theo rubric Part 4.`;
+- suggested_notes: Giải thích TIẾNG VIỆT 3–5 câu vì sao bài mẫu đạt điểm cao theo rubric Part 4.
+- image_content: [] (APTIS không có ảnh đề — để mảng rỗng)
+- error_list: Liệt kê 5–10 lỗi nổi bật nhất từ TOÀN BỘ 4 parts, ưu tiên lỗi lặp đi lặp lại. Mỗi lỗi gồm: category (Grammar/Vocabulary/Punctuation/Style), error (copy nguyên văn), correction (cách đúng), explanation (2–3 câu tiếng Việt), rule (quy tắc ≤15 từ tiếng Anh).`;
 }
 
 function buildAptisUser(exercise, testContent, answers) {
@@ -860,26 +906,30 @@ async function gradeAptisWriting(exercise, testContent, answers) {
   if (p === 'gemini') {
     const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseSchema: GEMINI_SCHEMA,
-          maxOutputTokens: 10000,
-          thinkingConfig: { thinkingBudget: 0 }
-        }
-      })
-    });
-    if (!r.ok) throw new Error('Gemini ' + r.status + ': ' + (await r.text()));
-    const data = await r.json();
-    const parts = data?.candidates?.[0]?.content?.parts || [];
-    const text = parts.map(pp => pp.text || '').join('');
-    if (!text) throw new Error('Gemini: phản hồi rỗng');
-    return JSON.parse(text);
+    const baseBody = {
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+      generationConfig: { responseMimeType: 'application/json', responseSchema: GEMINI_SCHEMA }
+    };
+    // Retry: lần 1 không thinking (APTIS đã phức tạp, không cần), lần 2 fallback token nhỏ hơn
+    const attempts = [
+      { maxOutputTokens: 10000, thinkingBudget: 0 },
+      { maxOutputTokens: 7000,  thinkingBudget: 0 }
+    ];
+    let lastErr;
+    for (let i = 0; i < attempts.length; i++) {
+      const cfg = attempts[i];
+      try {
+        return await callGemini(url, process.env.GEMINI_API_KEY, {
+          ...baseBody,
+          generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
+        }, 90000);
+      } catch (e) {
+        lastErr = e;
+        if (i < attempts.length - 1) console.warn('[AI] APTIS grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
+      }
+    }
+    throw lastErr;
   }
 
   if (p === 'claude') {
@@ -891,7 +941,8 @@ async function gradeAptisWriting(exercise, testContent, answers) {
       output_config: { format: { type: 'json_schema', schema: CLAUDE_SCHEMA } }
     });
     const block = resp.content.find(b => b.type === 'text');
-    return JSON.parse(block.text);
+    if (!block || !block.text) throw new Error('Claude: phản hồi rỗng');
+    try { return JSON.parse(block.text); } catch (e) { throw new Error('Claude JSON parse thất bại: ' + e.message); }
   }
 
   throw new Error('Chưa cấu hình AI');
@@ -1016,26 +1067,30 @@ async function getWritingHints(exercise) {
     const parts  = [];
     if (imageData) parts.push({ inline_data: { mime_type: imageData.mimeType, data: imageData.base64 } });
     parts.push({ text: userText });
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: sysPrompt }] },
-        contents: [{ role: 'user', parts }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseSchema: HINTS_GEMINI_SCHEMA,
-          maxOutputTokens: 5000,
-          thinkingConfig: { thinkingBudget: 10000 }
-        }
-      })
-    });
-    if (!r.ok) throw new Error('Gemini ' + r.status + ': ' + (await r.text()));
-    const data = await r.json();
-    const resParts = data?.candidates?.[0]?.content?.parts || [];
-    const text = resParts.map(pp => pp.text || '').join('');
-    if (!text) throw new Error('Gemini: phản hồi rỗng');
-    return JSON.parse(text);
+    const baseBody = {
+      system_instruction: { parts: [{ text: sysPrompt }] },
+      contents: [{ role: 'user', parts }],
+      generationConfig: { responseMimeType: 'application/json', responseSchema: HINTS_GEMINI_SCHEMA }
+    };
+    // Lần 1: có thinking; Lần 2: không thinking (fallback nhanh hơn)
+    const attempts = [
+      { maxOutputTokens: 5000, thinkingBudget: 8000 },
+      { maxOutputTokens: 4000, thinkingBudget: 0    }
+    ];
+    let lastErr;
+    for (let i = 0; i < attempts.length; i++) {
+      const cfg = attempts[i];
+      try {
+        return await callGemini(url, process.env.GEMINI_API_KEY, {
+          ...baseBody,
+          generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
+        }, 80000);
+      } catch (e) {
+        lastErr = e;
+        if (i < attempts.length - 1) console.warn('[AI] hints attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
+      }
+    }
+    throw lastErr;
   }
 
   if (p === 'claude') {
@@ -1050,7 +1105,8 @@ async function getWritingHints(exercise) {
       output_config: { format: { type: 'json_schema', schema: HINTS_CLAUDE_SCHEMA } }
     });
     const block = resp.content.find(b => b.type === 'text');
-    return JSON.parse(block.text);
+    if (!block || !block.text) throw new Error('Claude hints: phản hồi rỗng');
+    try { return JSON.parse(block.text); } catch (e) { throw new Error('Claude hints JSON parse thất bại: ' + e.message); }
   }
 
   throw new Error('Chưa cấu hình AI');

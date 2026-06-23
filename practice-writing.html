@@ -884,16 +884,31 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
     payload.essay = text;
   }
 
-  var r = await fetch('/api/grade-writing', {
-    method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  });
+  var gradeCtrl = new AbortController();
+  var gradeTimer = setTimeout(function() { gradeCtrl.abort(); }, 130000); // 130s (server has 90s retry)
+  var r, data;
+  try {
+    r = await fetch('/api/grade-writing', {
+      method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload), signal: gradeCtrl.signal
+    });
+    clearTimeout(gradeTimer);
+  } catch (fetchErr) {
+    clearTimeout(gradeTimer);
+    this.disabled = false;
+    document.getElementById('loading').style.display = 'none';
+    var msg = (fetchErr && fetchErr.name === 'AbortError')
+      ? 'Chấm bài quá lâu (>2 phút). Máy chủ AI có thể đang tải — vui lòng thử lại sau 30 giây.'
+      : 'Mất kết nối khi nộp bài — kiểm tra mạng rồi thử lại.';
+    alert(msg);
+    return;
+  }
   this.disabled = false;
   document.getElementById('loading').style.display = 'none';
 
   if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next='+encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
-  var data = await r.json().catch(function(){ return {}; });
-  if (!r.ok) { alert(data.error || 'Nộp bài thất bại.'); return; }
+  data = await r.json().catch(function(){ return {}; });
+  if (!r.ok) { alert((data.error || 'Nộp bài thất bại.') + (data.detail ? '\n\nChi tiết: ' + data.detail : '')); return; }
   if (data.pending) { alert('Bài đã được lưu và đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.'); location.href='dashboard.html'; return; }
 
   var res = data.result;
@@ -1129,19 +1144,26 @@ function toggleHints() {
 }
 
 async function loadHints() {
+  var hintCtrl = new AbortController();
+  var hintTimer = setTimeout(function() { hintCtrl.abort(); }, 100000);
   try {
     var r = await fetch('/api/writing-hints', {
       method:'POST', credentials:'same-origin',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ exercise_id: EXERCISE_ID })
+      body: JSON.stringify({ exercise_id: EXERCISE_ID }),
+      signal: hintCtrl.signal
     });
+    clearTimeout(hintTimer);
     var data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Server error');
     renderHints(data.hints);
     hintsLoaded = true;
   } catch(e) {
-    document.getElementById('hintsLoading').innerHTML =
-      '<span style="color:var(--danger);">❌ Không tải được gợi ý lúc này. Thử lại sau.</span>';
+    clearTimeout(hintTimer);
+    var errMsg = (e && e.name === 'AbortError')
+      ? '❌ Gợi ý mất quá lâu. Đóng rồi mở lại để thử lại.'
+      : '❌ Không tải được gợi ý lúc này. Nhấn lại để thử lại.';
+    document.getElementById('hintsLoading').innerHTML = '<span style="color:var(--danger);">' + errMsg + '</span>';
   }
 }
 
