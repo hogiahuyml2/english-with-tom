@@ -25,20 +25,22 @@ function ketRubric(title) {
 
   const partIntro = isPart1
     ? `KET (A2 Key) WRITING PART 1 — Email/lời nhắn ngắn (tối thiểu 25 từ).
-Đề bài yêu cầu học sinh đề cập ĐỦ 3 Ý cụ thể (bullet points).
+Đề bài yêu cầu học sinh đề cập ĐỦ 3 Ý cụ thể (bullet points) — thường in đậm hoặc liệt kê trong đề.
 
+⚠️ ĐỌC ẢNH ĐỀ TRƯỚC — image_content ĐÃ LIỆT KÊ CHÍNH XÁC 3 bullet points từ đề.
 BẮT BUỘC trước khi chấm:
-1. Đọc kỹ đề, xác định CHÍNH XÁC 3 ý (bullet points) được yêu cầu.
-2. Kiểm tra từng ý — học sinh có đề cập không, có rõ ràng không.
-3. Content bị hạ điểm nếu thiếu ý hoặc thêm nội dung không liên quan.
-4. Organisation: kiểm tra có greeting (Hi/Dear...) và sign-off (Bye/Best wishes...) không — đây là yếu tố tổ chức đặc thù của email.`
+1. Dùng image_content để biết chính xác 3 ý học sinh phải đề cập — KHÔNG suy đoán từ title.
+2. Kiểm tra từng ý trong image_content — học sinh có đề cập không, rõ ràng không.
+3. Content bị hạ điểm nếu thiếu ý hoặc thêm nội dung không liên quan đến 3 ý đó.
+4. Organisation: kiểm tra có greeting (Hi/Dear...) và sign-off (Bye/Best wishes...) không.`
     : `KET (A2 Key) WRITING PART 2 — Viết truyện ngắn (tối thiểu 35 từ) dựa theo 3 tranh cho sẵn.
 
+⚠️ ĐỌC ẢNH ĐỀ TRƯỚC — image_content ĐÃ MÔ TẢ NỘI DUNG TỪNG TRANH.
 BẮT BUỘC trước khi chấm:
-1. Đọc kỹ mô tả tranh trong đề (và hình ảnh nếu có).
-2. Kiểm tra học sinh có đề cập ĐỦ CẢ 3 tình huống/bức tranh không — thiếu tranh nào thì hạ Content.
+1. Dùng image_content để biết 3 bức tranh mô tả tình huống gì — KHÔNG tự đoán.
+2. Kiểm tra học sinh có đề cập ĐỦ CẢ 3 tình huống theo đúng thứ tự không — thiếu tranh nào thì hạ Content.
 3. Bài phải là CÂU CHUYỆN CÓ TÌNH TIẾT, không phải mô tả rời rạc.
-4. Thường bắt đầu bằng câu mở đầu cho sẵn (nếu đề cung cấp) — kiểm tra học sinh có dùng không.`;
+4. Câu mở đầu cho sẵn (nếu có trong đề): kiểm tra học sinh có dùng không.`;
 
   return `${partIntro}
 
@@ -76,8 +78,8 @@ overall_score = MEAN 3 tiêu chí, làm tròn về 0.5 gần nhất, thang 0–5
 criteria gồm ĐÚNG 3 mục: "Content (Nội dung)", "Organisation (Tổ chức)", "Language (Ngôn ngữ)". Mỗi mục có max=5.
 
 ${isPart1
-    ? 'suggested_writing: Viết EMAIL TIẾNG ANH 25–40 từ: có greeting phù hợp, đề cập ĐỦ CẢ 3 ý yêu cầu (mỗi ý 1–2 câu ngắn tự nhiên), có sign-off. Dùng từ vựng A2 tự nhiên, đúng format email thân mật. Bám sát ĐÚNG nội dung 3 ý của đề — không thêm thông tin ngoài phạm vi.'
-    : 'suggested_writing: Viết CÂU CHUYỆN TIẾNG ANH 35–55 từ: bắt đầu bằng câu mở đầu cho sẵn (nếu có), đề cập ĐỦ CẢ 3 tranh/tình huống theo đúng thứ tự, dùng linking words tự nhiên (Last Saturday... First... then... When... Suddenly...), dùng thì quá khứ đơn là chủ yếu, kết thúc tự nhiên.'}`;
+    ? 'suggested_writing: Viết EMAIL TIẾNG ANH 25–40 từ dựa ĐÚNG theo image_content (3 bullet points). Mỗi ý 1–2 câu ngắn tự nhiên, có greeting phù hợp và sign-off. Từ vựng A2. KHÔNG thêm thông tin ngoài 3 ý trong image_content.'
+    : 'suggested_writing: Viết CÂU CHUYỆN TIẾNG ANH 35–55 từ dựa ĐÚNG theo image_content (nội dung 3 tranh). Bắt đầu bằng câu mở đầu cho sẵn (nếu có), đề cập ĐỦ CẢ 3 tình huống theo đúng thứ tự, dùng linking words (Last Saturday... First... then... When... Suddenly...), thì quá khứ đơn, kết thúc tự nhiên.'}`;
 }
 
 // Rubric FCE — bám sát Assessment Scale chính thức Cambridge B2 First
@@ -87,11 +89,12 @@ function fceRubric(title) {
     ? `FCE Part 1 — ESSAY nghị luận BẮT BUỘC (140–190 từ).
 
 ══ YÊU CẦU ĐẶC THÙ FCE PART 1 ══
-Đề bài FCE Part 1 luôn có cấu trúc: câu hỏi/tình huống + HAI NOTES cho sẵn (bullet points) mà học sinh BẮT BUỘC phải thảo luận. Ngoài ra, học sinh phải tự thêm MỘT ĐIỂM thứ ba của riêng mình.
-Bước 1: ĐỌC KỸ đề để xác định CHÍNH XÁC 2 notes được liệt kê.
-Bước 2: Kiểm tra học sinh có (a) thảo luận ĐỦ CẢ 2 notes, (b) thêm 1 điểm riêng không.
-Bước 3: Content bị hạ điểm nếu thiếu bất kỳ note bắt buộc nào.`
-    : 'FCE Part 2 — Học sinh chọn một dạng bài (article, review, story, letter, report...). Xác định đúng dạng bài từ đề rồi chấm đúng quy ước dạng bài đó.';
+Đề bài FCE Part 1 luôn có: câu hỏi/tình huống + HAI NOTES bắt buộc (bullet points) + học sinh phải tự thêm 1 điểm riêng.
+⚠️ ĐỌC ẢNH ĐỀ TRƯỚC — image_content ĐÃ LIỆT KÊ CHÍNH XÁC 2 notes từ đề.
+Bước 1: Dùng image_content để biết 2 notes cụ thể của ĐỀ NÀY — KHÔNG suy đoán hay dùng notes từ bài khác.
+Bước 2: Kiểm tra học sinh có (a) thảo luận ĐỦ CẢ 2 notes trong image_content, (b) thêm 1 điểm riêng không.
+Bước 3: Content bị hạ điểm nếu thiếu bất kỳ note nào trong image_content.`
+    : 'FCE Part 2 — Học sinh chọn một dạng bài (article, review, story, letter, report...). Xác định đúng dạng bài từ đề (text + ảnh nếu có) rồi chấm đúng quy ước dạng bài đó.';
 
   return `${taskHint}
 
@@ -131,8 +134,8 @@ scale_label = "B2 First (0–5)"
 
 suggested_writing: Viết bài mẫu TIẾNG ANH 140–190 từ, đúng dạng bài của ĐỀ NÀY.
 ${isPart1
-  ? 'BẮT BUỘC với Part 1: (a) Đọc kỹ đề, xác định chính xác 2 notes cho sẵn. (b) Thảo luận ĐẦY ĐỦ cả 2 notes đó trong bài mẫu, mỗi note thành 1 đoạn thân bài riêng. (c) Thêm 1 điểm thứ ba của riêng mình (clearly labelled). (d) Dùng đúng format essay, có introduction và conclusion. KHÔNG bịa notes ngoài những gì đề yêu cầu.'
-  : 'Bài mẫu phải: (a) đáp ứng đúng yêu cầu cụ thể của đề, (b) dùng đúng format/quy ước của dạng bài, (c) thể hiện less common lexis và cấu trúc đa dạng, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
+  ? 'BẮT BUỘC với Part 1: (a) Dùng ĐÚNG 2 notes trong image_content — mỗi note thành 1 đoạn thân bài riêng. (b) Thêm 1 điểm thứ ba của riêng mình (clearly labelled). (c) Format essay đầy đủ: intro → 2 body paragraphs theo notes → 1 body paragraph own idea → conclusion. (d) KHÔNG bịa notes hay dùng notes ngoài image_content.'
+  : 'Bài mẫu phải: (a) đáp ứng đúng yêu cầu của đề (text + ảnh nếu có), (b) dùng đúng format/quy ước của dạng bài, (c) less common lexis và cấu trúc đa dạng, (d) đạt Band 4–5.'}`;
 }
 
 // Rubric PET — bám sát 100% Cambridge B1 Assessment Scales (UCLES 2014)
@@ -148,7 +151,7 @@ function petRubric(title) {
 Đây là dạng bài BẮT BUỘC có notes. Đề bài luôn có các NOTES/CUES mà học sinh PHẢI đề cập đầy đủ.
 • Notes thường xuất hiện dưới dạng CHỮ NGHIÊNG hoặc CHÚ THÍCH MŨI TÊN bên cạnh email/thư gốc trong HÌNH ẢNH đề bài (ví dụ: "Me too!", "Tell Charlie", "Yes, but...", "Suggest...").
 • Đọc KỸ HÌNH ẢNH đề để xác định đúng notes — chúng thường ở bên lề phải hoặc cuối email gốc.
-• Điền đầy đủ vào notes_in_exercise trước khi chấm.
+• Điền đầy đủ vào image_content trước khi chấm.
 • Communicative Achievement: kiểm tra register (informal/semi-formal phù hợp người nhận), format email/thư đúng (greeting + sign-off).`
     : `PET (B1 Preliminary) WRITING PART 2 — Article / story / review (~100 từ).
 Học sinh tự do phát triển bài theo dạng bài được yêu cầu. Xác định đúng dạng bài (article, story, review...) rồi chấm đúng quy ước dạng bài đó.`;
@@ -204,7 +207,7 @@ criteria gồm ĐÚNG 4 mục: "Content (Nội dung)", "Communicative Achievemen
 
 suggested_writing: Viết bài mẫu TIẾNG ANH ~100 từ đúng dạng bài yêu cầu.
 ${isPart1
-    ? 'BẮT BUỘC với Part 1: (a) Dùng đúng các notes đã liệt kê trong notes_in_exercise — theo đúng thứ tự, mỗi note triển khai 1–2 câu tự nhiên. (b) Format email/thư đầy đủ: greeting → nội dung theo từng note → sign-off. (c) Register phù hợp người nhận trong đề. (d) KHÔNG bịa thêm nội dung ngoài phạm vi notes. (e) Khoảng 100 từ.'
+    ? 'BẮT BUỘC với Part 1: (a) Dùng đúng các notes đã liệt kê trong image_content — theo đúng thứ tự, mỗi note triển khai 1–2 câu tự nhiên. (b) Format email/thư đầy đủ: greeting → nội dung theo từng note → sign-off. (c) Register phù hợp người nhận trong đề. (d) KHÔNG bịa thêm nội dung ngoài phạm vi notes. (e) Khoảng 100 từ.'
     : 'Bài mẫu phải: (a) đúng dạng bài yêu cầu (article/story/review), (b) dùng đúng quy ước format của dạng bài đó, (c) nội dung hấp dẫn và phù hợp đề, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
 }
 
@@ -218,12 +221,12 @@ function ieltsRubric(title) {
     return `IELTS WRITING TASK 1 — Academic: Mô tả biểu đồ/số liệu/sơ đồ (tối thiểu 150 từ).
 General Training: Viết thư (tối thiểu 150 từ).
 
+⚠️ ĐỌC ẢNH ĐỀ TRƯỚC — image_content ĐÃ TRÍCH XUẤT DỮ LIỆU/YÊU CẦU TỪ HÌNH.
 BẮT BUỘC trước khi chấm:
-1. Xác định Task 1 là Academic (biểu đồ/số liệu/diagram) hay General Training (thư).
-2. Đọc kỹ đề và hình ảnh (nếu có) — ghi nhận TẤT CẢ xu hướng, số liệu nổi bật, điểm so sánh.
-3. Academic: kiểm tra có overview (tổng quan xu hướng chính) không — đây là yêu cầu bắt buộc từ Band 7+.
-4. General Training: kiểm tra có đủ bullet points, rõ mục đích thư, đúng tone không.
-5. Kiểm tra độ dài: dưới 150 từ → phạt Task Achievement nặng. Dưới 20 từ → Band 1.
+1. Dùng image_content để biết chính xác: loại biểu đồ/sơ đồ, tiêu đề, trục, số liệu thực tế, xu hướng — KHÔNG suy đoán từ title bài.
+2. Academic: kiểm tra học sinh có đề cập đúng số liệu trong image_content không; có overview không (Band 7+).
+3. General Training: kiểm tra có đủ bullet points (dùng image_content), rõ mục đích thư, đúng tone không.
+4. Kiểm tra độ dài: dưới 150 từ → phạt Task Achievement nặng. Dưới 20 từ → Band 1.
 
 Chấm ĐÚNG 4 TIÊU CHÍ, mỗi tiêu chí thang 0–9 (half-bands được phép: 0.5, 1.5, 2.5... 8.5):
 
@@ -286,8 +289,8 @@ HƯỚNG DẪN CHẤM CHUẨN IELTS — HOLISTIC BEST FIT:
 • Band 8 Task 1: Overview sắc bén, data grouping thông minh và efficient, LR dùng uncommon lexis tự nhiên với chỉ infrequent errors, GRA rare errors → cho Band 8. Không hạ xuống 7.5 chỉ vì có 1–2 lỗi nhỏ không hệ thống.
 • Biên độ chấm: Nếu còn nghi ngờ giữa Band 7 và Band 7.5, hãy xét ĐỘ MẠNH tổng thể — bài có nhiều điểm tích cực hơn tiêu cực → band cao hơn.
 
-suggested_writing: Viết bài mẫu Task 1 TIẾNG ANH 150–180 từ.
-BẮT BUỘC: (a) Phân tích KỸ đề và hình ảnh (nếu có) — ghi nhận TẤT CẢ xu hướng, số liệu, điểm so sánh. (b) Có overview (1–2 câu mô tả xu hướng tổng quát nhất — KHÔNG phải số liệu cụ thể) — đặt ở đoạn 2 (sau intro) hoặc ở cuối. (c) Đoạn thân bài: nhóm và so sánh dữ liệu THEO ĐẶC ĐIỂM/XU HƯỚNG — không liệt kê cơ học từng số. (d) Academic: dùng passive voice và hedging language phù hợp. (e) GT: viết đúng format thư (Dear..., Yours sincerely/faithfully). (f) Đạt Band 7–8.`;
+suggested_writing: Viết bài mẫu Task 1 TIẾNG ANH 150–180 từ DỰA TRÊN image_content.
+BẮT BUỘC: (a) Dùng ĐÚNG số liệu/dữ liệu đã trích trong image_content — không bịa số, không dùng số liệu từ bài khác. (b) Có overview (1–2 câu xu hướng tổng quát — KHÔNG phải số liệu cụ thể) đặt sau intro hoặc ở cuối. (c) Thân bài: nhóm và so sánh dữ liệu THEO ĐẶC ĐIỂM/XU HƯỚNG — không liệt kê cơ học. (d) Academic: passive voice, hedging language. (e) GT: format thư (Dear..., Yours sincerely/faithfully). (f) Đạt Band 7–8.`;
   }
 
   // Task 2
@@ -459,23 +462,38 @@ ${rubricFor(exercise)}
 ${hasImage ? '\nĐề bài này có kèm HÌNH ẢNH ĐỀ BÀI (hình thứ nhất). Hãy phân tích kỹ nội dung hình (biểu đồ, bản đồ, tranh, sơ đồ...) cùng với phần text để chấm bài chính xác — đặc biệt khi đánh giá Content.' : ''}
 ${hasStudentImage ? '\n⚠️ HỌC SINH NỘP BÀI BẰNG ẢNH (hình cuối cùng). Đây là ảnh chụp bài viết tay hoặc scan của học sinh. Hãy:\n1. ĐỌC KỸ toàn bộ nội dung chữ viết trong hình ảnh đó.\n2. Tự transcribe (ghi lại) bài viết của học sinh trước khi chấm.\n3. Nếu một số từ khó đọc, cố gắng đoán dựa trên ngữ cảnh — đừng bỏ qua.\n4. Chấm bài dựa trên nội dung đã đọc được từ hình ảnh.' : ''}
 
-══ BƯỚC BẮT BUỘC TRƯỚC KHI LÀM BẤT CỨ ĐIỀU GÌ ══
-BƯỚC 1 — Đọc đề và trích xuất notes từ ảnh:
-• Đọc kỹ text đề BÀI VÀ HÌNH ẢNH đề (nếu có).
-• Tìm các NOTES/CUES bắt buộc trong đề — thường là chú thích ngắn bên lề, mũi tên, hoặc bullet points chỉ định học sinh phải đề cập gì.
-  - PET Part 1 / FCE Part 1: notes thường là CHỮ NGHIÊNG hoặc CHÚ THÍCH MŨI TÊN bên cạnh email/thư gốc trong ảnh (ví dụ: "Me too!", "Tell Charlie", "Yes, but...", "Suggest...").
-• Điền CHÍNH XÁC từng note vào trường notes_in_exercise (nguyên văn tiếng Anh như đề).
-• Nếu đề KHÔNG có notes bắt buộc: để notes_in_exercise = [].
-• ⚠️ TUYỆT ĐỐI không tự bịa notes hay dùng notes từ đề bài khác.
+══ BƯỚC 1 — ĐỌC ẢNH ĐỀ VÀ ĐIỀN image_content (BẮT BUỘC TRƯỚC MỌI THỨ) ══
+Đọc KỸ toàn bộ hình ảnh đề bài (nếu có) VÀ text đề. Điền vào image_content theo loại bài:
 
-BƯỚC 2 — Chấm bài học sinh:
-• Khi chấm Content: đối chiếu từng note trong notes_in_exercise — học sinh có đề cập không, đúng không.
-• Thiếu note → phản ánh trong điểm Content và comment, ghi rõ note nào bị thiếu.
+• Bài có NOTES/CUES bắt buộc (PET Part 1, FCE Part 1, KET Part 1):
+  → Liệt kê NGUYÊN VĂN từng note/bullet point từ ảnh (thường là chú thích mũi tên/in nghiêng bên lề email, hoặc bullet points).
+  → Ví dụ: ["Me too!", "Tell Charlie which sport", "Yes, but...", "Suggest what to bring"]
 
-BƯỚC 3 — Viết bài mẫu (suggested_writing):
-• Nếu notes_in_exercise không rỗng: bài mẫu PHẢI đề cập ĐẦY ĐỦ TỪNG NOTE theo đúng thứ tự — mỗi note triển khai thành 1–3 câu tự nhiên.
-• KHÔNG bịa thêm nội dung ngoài phạm vi notes (trừ phần mở/kết thư).
-• Nếu notes_in_exercise rỗng: bài mẫu viết tự do theo yêu cầu đề.
+• Bài có BIỂU ĐỒ / SỐ LIỆU (IELTS Task 1 Academic):
+  → Liệt kê: loại biểu đồ, tiêu đề, trục X/Y (đơn vị), TẤT CẢ số liệu nổi bật, xu hướng chính.
+  → Ví dụ: ["Type: Bar chart", "Title: Internet users 1990-2020", "Y-axis: millions", "UK: 1990=5, 2000=20, 2010=50, 2020=65", "US: 1990=15, 2000=100, 2010=220, 2020=300", "Trend: Both countries grew rapidly, US always higher"]
+
+• Bài có TRANH / ẢNH MÔ TẢ (KET Part 2, APTIS Part 3 group chat):
+  → Mô tả ngắn gọn từng tranh/panel/message theo thứ tự.
+  → Ví dụ KET Part 2: ["Picture 1: Boy finds lost puppy in park", "Picture 2: He puts up Found posters", "Picture 3: Family reunited with dog"]
+  → Ví dụ APTIS chat: ["Tom: Do you prefer working from home?", "Sarah: Yes, I love the flexibility! What about you?", "Alex: Not really, I miss socialising in the office."]
+
+• Bài có MAP / SƠ ĐỒ / PROCESS (IELTS Task 1):
+  → Liệt kê các đặc điểm/thay đổi chính từ ảnh.
+
+• Đề KHÔNG có ảnh HOẶC ảnh không định nghĩa yêu cầu bài (IELTS Task 2 essay, FCE/PET Part 2 open task):
+  → Để image_content = []
+
+⚠️ TUYỆT ĐỐI không tự bịa dữ liệu/notes hay lấy từ bài khác. Nếu ảnh mờ/không rõ, ghi "(không đọc được rõ)" thay vì đoán.
+
+══ BƯỚC 2 — CHẤM BÀI HỌC SINH ══
+• Dùng image_content làm chuẩn: học sinh có đề cập đúng và đủ các yêu cầu trong image_content không.
+• Thiếu/sai → phản ánh trong điểm Content và comment, ghi rõ phần nào bị thiếu/sai.
+
+══ BƯỚC 3 — VIẾT BÀI MẪU (suggested_writing) ══
+• Nếu image_content không rỗng: bài mẫu PHẢI bám sát từng mục trong image_content theo đúng thứ tự.
+• KHÔNG bịa thêm nội dung ngoài image_content (trừ intro, outro, own idea của FCE Part 1).
+• Nếu image_content rỗng: viết theo yêu cầu text đề bài.
 
 Quy tắc chung:
 - Mọi nhận xét (comment, summary, suggestions, suggested_notes) viết bằng TIẾNG VIỆT, cụ thể, mang tính xây dựng, kèm ví dụ ngắn.
@@ -524,7 +542,7 @@ const ANNOTATION_ITEM_SCHEMA = {
 const CLAUDE_SCHEMA = {
   type: 'object',
   properties: {
-    notes_in_exercise:{ type: 'array', items: { type: 'string' } },
+    image_content:{ type: 'array', items: { type: 'string' } },
     overall_score:    { type: 'number' },
     scale_label:      { type: 'string' },
     criteria: {
@@ -541,7 +559,7 @@ const CLAUDE_SCHEMA = {
     suggested_notes:  { type: 'string' },
     annotations:      { type: 'array', items: ANNOTATION_ITEM_SCHEMA }
   },
-  required: ['notes_in_exercise', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations'],
+  required: ['image_content', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations'],
   additionalProperties: false
 };
 
@@ -584,7 +602,7 @@ const GEMINI_SCHEMA = {
     suggestions:      { type: 'ARRAY', items: { type: 'STRING' } },
     suggested_writing:{ type: 'STRING' },
     suggested_notes:  { type: 'STRING' },
-    notes_in_exercise:{ type: 'ARRAY', items: { type: 'STRING' } },
+    image_content:{ type: 'ARRAY', items: { type: 'STRING' } },
     annotations: {
       type: 'ARRAY',
       items: {
@@ -599,7 +617,7 @@ const GEMINI_SCHEMA = {
       }
     }
   },
-  required: ['notes_in_exercise', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
+  required: ['image_content', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
 };
 
 async function gradeWithGemini(exercise, essay, imageData, studentImage) {
@@ -820,7 +838,7 @@ const HINTS_CLAUDE_SCHEMA = {
   type: 'object',
   properties: {
     task_type:      { type: 'string' },
-    notes_found:    { type: 'array', items: { type: 'string' } },
+    image_content:    { type: 'array', items: { type: 'string' } },
     outline:        { type: 'string' },
     key_vocabulary: { type: 'array', items: { type: 'string' } },
     useful_phrases: { type: 'array', items: { type: 'string' } },
@@ -828,7 +846,7 @@ const HINTS_CLAUDE_SCHEMA = {
     dos_and_donts:  { type: 'array', items: { type: 'string' } },
     time_guide:     { type: 'string' }
   },
-  required: ['task_type','notes_found','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
+  required: ['task_type','image_content','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
   additionalProperties: false
 };
 
@@ -836,7 +854,7 @@ const HINTS_GEMINI_SCHEMA = {
   type: 'OBJECT',
   properties: {
     task_type:      { type: 'STRING' },
-    notes_found:    { type: 'ARRAY', items: { type: 'STRING' } },
+    image_content:    { type: 'ARRAY', items: { type: 'STRING' } },
     outline:        { type: 'STRING' },
     key_vocabulary: { type: 'ARRAY', items: { type: 'STRING' } },
     useful_phrases: { type: 'ARRAY', items: { type: 'STRING' } },
@@ -844,51 +862,60 @@ const HINTS_GEMINI_SCHEMA = {
     dos_and_donts:  { type: 'ARRAY', items: { type: 'STRING' } },
     time_guide:     { type: 'STRING' }
   },
-  required: ['task_type','notes_found','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
+  required: ['task_type','image_content','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
 };
 
 function buildHintsSystem(exercise) {
   const hasImage = !!exercise.image_url;
-  const isPetFcePart1 = /^(PET|FCE)/.test(exercise.program) && /Part 1/i.test(exercise.title);
 
-  return `Bạn là giáo viên luyện thi Cambridge giàu kinh nghiệm. Nhiệm vụ: tạo GỢI Ý LÀM BÀI chính xác cho ĐỀ BÀI CỤ THỂ NÀY.
-${hasImage ? '\n⚠️ ĐỀ CÓ HÌNH ẢNH — PHẢI đọc hình trước, đặc biệt chú ý các CHÚ THÍCH / MŨI TÊN / GHI CHÚ bên lề (thường là các "notes" bắt buộc của đề).' : ''}
+  return `Bạn là giáo viên luyện thi Cambridge/IELTS/APTIS giàu kinh nghiệm. Nhiệm vụ: tạo GỢI Ý LÀM BÀI chính xác và cụ thể cho ĐỀ BÀI CỤ THỂ NÀY.
 
-═══ BƯỚC 1 — ĐỌC VÀ TRÍCH XUẤT NOTES (BẮT BUỘC) ═══
-${isPetFcePart1 ? `Đây là dạng bài ${exercise.program} Part 1 — loại bài BẮT BUỘC có notes.
-• Trong hình đề bài có các CHÚ THÍCH NGẮN viết bằng mực xanh/in nghiêng bên cạnh hoặc mũi tên trỏ vào từng đoạn của email/thư gốc.
-• Đây là các NOTES/CUES mà thí sinh PHẢI đáp ứng — KHÔNG PHẢI nội dung email gốc.
-• Đọc KỸ hình và liệt kê CHÍNH XÁC từng note (ví dụ: "Me too!", "Tell Charlie", "Yes, but...", "Suggest...").
-• TUYỆT ĐỐI không tự bịa notes hay dùng notes từ đề bài khác.` : `Xác định xem đề có notes/bullet points bắt buộc không (thường hiện dưới dạng dấu chấm đầu dòng, mũi tên, hoặc chú thích bên lề).`}
+══ BƯỚC 1 — ĐỌC ẢNH ĐỀ VÀ ĐIỀN image_content (BẮT BUỘC ĐẦU TIÊN) ══
+${hasImage ? '⚠️ ĐỀ CÓ HÌNH ẢNH — ĐỌC KỸ HÌNH TRƯỚC KHI LÀM BẤT CỨ ĐIỀU GÌ.' : ''}
+Điền image_content theo loại bài (mảng các string tiếng Anh):
 
-notes_found: Liệt kê ĐÚNG các notes/cues bắt buộc bạn thấy trong ĐỀ NÀY (từ hình hoặc text).
-  • Mỗi phần tử = 1 note, viết nguyên văn tiếng Anh như đề (ví dụ: "Me too!", "Tell Charlie which sport", "Yes, but...", "Suggest what to bring").
-  • Nếu đề KHÔNG có notes bắt buộc (KET Part 1, IELTS, v.v.): để mảng rỗng [].
+• Bài có NOTES/CUES bắt buộc (PET Part 1, FCE Part 1, KET Part 1):
+  → Liệt kê nguyên văn từng note/bullet point từ ảnh (chú thích mũi tên/in nghiêng bên lề email, hoặc bullet points).
+  → PET Part 1: notes là những ghi chú ngắn CẠNH email gốc, KHÔNG phải nội dung email gốc.
+  → Ví dụ: ["Me too!", "Tell Charlie which sport", "Yes, but...", "Suggest what to bring"]
 
-═══ BƯỚC 2 — TẠO GỢI Ý DỰA TRÊN NOTES ĐÃ TRÍCH ═══
+• Bài có BIỂU ĐỒ / SỐ LIỆU (IELTS Task 1 Academic):
+  → Loại biểu đồ, tiêu đề, trục, TẤT CẢ số liệu/xu hướng chính thấy trong ảnh.
+  → Ví dụ: ["Type: Line graph", "Title: Electricity consumption 1990-2020", "Y: terawatt-hours", "Country A: rose from 100 to 350", "Country B: fell from 200 to 150", "Crossover: around 2005"]
 
-task_type: Loại bài + số notes (ví dụ: "PET Part 1 — Email (4 notes bắt buộc)", "KET Part 1 — Email", "IELTS Task 2 — Opinion Essay").
+• Bài có TRANH (KET Part 2) hoặc GROUP CHAT (APTIS Part 3):
+  → KET: mô tả ngắn gọn từng bức tranh theo thứ tự.
+  → APTIS: ghi lại nội dung từng tin nhắn chat theo thứ tự.
 
-outline: Dàn bài CHI TIẾT bằng TIẾNG VIỆT — XÂY DỰNG HOÀN TOÀN TỪ notes_found.
-  • Nếu notes_found KHÔNG rỗng: mỗi note = 1 mục riêng. Viết: "Note [n]: '[note nguyên văn]' — [giải thích cụ thể cần viết gì, ví dụ content gợi ý, 2–3 câu]".
-    - Theo đúng THỨ TỰ notes xuất hiện trong đề.
-    - Mở đầu thư/email + Kết thư là phần riêng (không phải note).
-    - KHÔNG thêm nội dung ngoài notes (trừ FCE Part 1 cần thêm 1 ý riêng của thí sinh).
-  • Nếu notes_found rỗng: dàn bài theo cấu trúc chuẩn của dạng bài.
-  • Với đề có số liệu/biểu đồ: gợi ý điểm dữ liệu nổi bật cần đề cập.
+• Bài có MAP / SƠ ĐỒ / PROCESS DIAGRAM (IELTS Task 1):
+  → Liệt kê các thay đổi/đặc điểm chính thấy trong ảnh.
 
-key_vocabulary: 8–10 từ/cụm tiếng Anh CỤ THỂ cho CHỦ ĐỀ đề này. Dạng "từ/cụm (nghĩa tiếng Việt)". Không dùng từ chung chung.
+• Đề không có ảnh HOẶC ảnh không định nghĩa yêu cầu (IELTS Task 2, FCE/PET Part 2):
+  → image_content = []
 
-useful_phrases: 6–8 câu/cụm mẫu bằng tiếng Anh. Ưu tiên các cụm giúp triển khai TỪNG NOTE trong notes_found.
+⚠️ KHÔNG tự bịa dữ liệu/notes — nếu ảnh không rõ, ghi "(không đọc rõ)".
 
-criteria_tips: Đúng 4 gợi ý — mỗi gợi ý ứng 1 tiêu chí chấm, bắt đầu "[Tên tiêu chí]: ...".
-  • Content: PHẢI nhắc "đáp ứng đủ ${isPetFcePart1 ? 'tất cả notes trong đề' : 'yêu cầu đề bài'} — thiếu note bị trừ điểm nặng".
+══ BƯỚC 2 — TẠO GỢI Ý DỰA TRÊN image_content ══
 
-dos_and_donts: 5–6 lưu ý — mix ✅ DOs và ❌ DON'Ts.
-  • Nếu notes_found không rỗng: PHẢI có "❌ Không bỏ sót hay tự bịa notes — chỉ viết đúng những gì đề yêu cầu".
-  • Lưu ý PHẢI cụ thể cho đề này, không viết chung chung.
+task_type: Tên dạng bài + thông tin nổi bật (ví dụ: "PET Part 1 — Email (4 notes bắt buộc)", "IELTS Task 1 — Bar Chart", "KET Part 2 — Picture Story (3 tranh)").
 
-time_guide: Phân bổ thời gian phù hợp kỳ thi và dạng bài.`;
+outline: Dàn bài CHI TIẾT bằng TIẾNG VIỆT — XÂY DỰNG HOÀN TOÀN TỪ image_content:
+  • image_content KHÔNG rỗng (notes): mỗi item = 1 mục. Viết rõ "[item nguyên văn] — cần viết: [giải thích cụ thể + ví dụ content 2–3 câu]". Đúng thứ tự. KHÔNG thêm ý ngoài (trừ FCE Part 1 thêm 1 own idea).
+  • image_content KHÔNG rỗng (biểu đồ): dàn bài gồm intro → overview → 2 đoạn body nhóm theo xu hướng/đặc điểm, gợi ý cụ thể số liệu nào nêu ở đoạn nào.
+  • image_content KHÔNG rỗng (tranh/chat): dàn bài theo từng tranh/message, gợi ý nội dung viết cho từng cái.
+  • image_content rỗng: dàn bài chuẩn theo dạng bài (IELTS Task 2 4 đoạn, PET/FCE Part 2 mở bài/thân/kết...).
+
+key_vocabulary: 8–10 từ/cụm tiếng Anh CỤ THỂ cho chủ đề/nội dung ĐỀ NÀY (từ ảnh + text đề). Dạng "từ/cụm (nghĩa tiếng Việt)". Không dùng từ chung chung áp dụng mọi đề.
+
+useful_phrases: 6–8 cụm/câu tiếng Anh mẫu. Ưu tiên cụm triển khai trực tiếp từng item trong image_content.
+
+criteria_tips: Đúng 4 gợi ý — mỗi gợi ý ứng 1 tiêu chí chấm chính thức của kỳ thi này, bắt đầu "[Tên tiêu chí]: ...". CỤ THỂ cho đề này.
+  • Tiêu chí Content/Task Achievement: nhắc đáp ứng đủ TẤT CẢ yêu cầu trong image_content (nếu có), nêu rõ rủi ro thiếu sót.
+
+dos_and_donts: 5–6 lưu ý mix ✅ DOs và ❌ DON'Ts. CỤ THỂ cho đề này — không viết chung chung.
+  • Nếu image_content không rỗng: PHẢI có "❌ Không bỏ sót hay tự bịa — chỉ viết đúng những gì thấy trong đề (image_content)".
+
+time_guide: Gợi ý phân bổ thời gian phù hợp kỳ thi + dạng bài này.`;
 }
 
 async function getWritingHints(exercise) {

@@ -1080,12 +1080,13 @@ function renderHints(h) {
     '</div>';
   }
 
-  // Hiển thị notes bắt buộc nổi bật lên đầu
-  if (h.notes_found && h.notes_found.length) {
+  // Hiển thị nội dung đọc từ ảnh đề (notes, số liệu, mô tả tranh, chat messages...)
+  var imgContent = h.image_content || h.notes_found; // backwards compat
+  if (imgContent && imgContent.length) {
     html += '<div class="hint-section" style="background:#fff7ed;border:1.5px solid #fb923c;border-radius:10px;padding:12px 14px;margin-bottom:12px;">'+
-      '<div class="hint-section-title" style="color:#c2410c;">📌 Notes bắt buộc trong đề (PHẢI đáp ứng đủ)</div>'+
+      '<div class="hint-section-title" style="color:#c2410c;">📌 Yêu cầu đọc từ đề (PHẢI đáp ứng đủ)</div>'+
       '<ol style="margin:6px 0 0 18px;padding:0;">';
-    h.notes_found.forEach(function(n){
+    imgContent.forEach(function(n){
       html += '<li style="font-size:13.5px;font-weight:600;color:#9a3412;margin-bottom:4px;">'+esc(n)+'</li>';
     });
     html += '</ol></div>';
