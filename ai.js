@@ -455,10 +455,52 @@ async function fetchImageBase64(url) {
   }
 }
 
+function ieltsSuggestedWritingGuide(title) {
+  const isTask1 = /task\s*1/i.test(title);
+  if (isTask1) {
+    return `
+⭐ KHI VIẾT BÀI MẪU IELTS TASK 1 — THAM KHẢO NGUỒN UY TÍN SAU:
+Các nguồn chuẩn để học structure, từ vựng và cách nhóm dữ liệu:
+  • IELTS Simon (ielts-simon.com) — chuẩn mực về overview + data grouping đơn giản, hiệu quả
+  • IDP IELTS Official (ielts.org) — sample answers Band 7-9, chuẩn Cambridge chính thức
+  • IELTS Liz (ieltsliz.com) — model answers Band 9 kèm phân tích từng câu
+  • IELTS Advantage (ieltsadvantage.com) — hướng dẫn academic vocabulary cho Task 1
+  • Magoosh IELTS Blog — model answers kèm score breakdown
+  • E2 IELTS (e2language.com) — model essays Band 7.5-8.5 có phân tích
+
+Cách dùng để viết bài mẫu Task 1:
+  (a) Overview: tham khảo structure "The chart shows... Overall, it is clear that..." từ IELTS Simon / IELTS Liz — 1-2 câu, KHÔNG có số liệu cụ thể.
+  (b) Body 1: nhóm xu hướng cao nhất/nổi bật nhất; Body 2: nhóm xu hướng đối lập/còn lại — học cách nhóm từ IELTS Advantage.
+  (c) Academic vocabulary: passive ("can be seen", "is illustrated"), hedging ("approximately", "roughly", "around"), comparison ("compared to", "while", "whereas", "in contrast").
+  (d) Dùng đúng số liệu từ image_content — KHÔNG bịa số.
+  (e) Viết bài RIÊNG (không copy), đạt Band 7-8.`;
+  }
+  return `
+⭐ KHI VIẾT BÀI MẪU IELTS TASK 2 — THAM KHẢO NGUỒN UY TÍN SAU:
+Các nguồn chuẩn để học structure, argument development và lexical resource:
+  • IELTS Simon (ielts-simon.com) — "4-sentence introduction", "3-sentence paragraph" structures, Band 9 essays
+  • IDP IELTS Official (ielts.org) — Band 9 model answers chính thức
+  • IELTS Liz (ieltsliz.com) — model essays Band 9 + phân tích Task Response chi tiết
+  • IELTS Nguyễn Huyền (YouTube/blog) — lexical resource band 8-9 tiếng Việt phân tích
+  • IELTS 1984 (blog) — model essays Band 7-8 với breakdown từng tiêu chí
+  • The IELTS Workshop (theieltsworkshop.com) — cấu trúc đoạn body chuẩn Cambridge
+  • DOL English — từ vựng học thuật và topic vocabulary band cao
+  • IELTS Fighter — model essays theo topic phân loại rõ ràng
+
+Cách dùng để viết bài mẫu Task 2:
+  (a) Introduction: paraphrase đề (KHÔNG copy) + thesis statement rõ ràng — học từ IELTS Simon "4-sentence intro".
+  (b) Body paragraphs: mỗi đoạn = topic sentence + explanation + example/evidence + link back — học IELTS Liz / The IELTS Workshop.
+  (c) Lexical resource: dùng less common lexis phù hợp topic này (tham khảo DOL English / IELTS Nguyễn Huyền), tránh lặp từ, tránh từ quá đơn giản.
+  (d) Argument: develop ideas thực chất — không over-generalise, không liệt kê ý không có evidence — học IELTS 1984 / IELTS Fighter.
+  (e) Conclusion: restate position + summary — ngắn gọn, không thêm ý mới.
+  (f) Viết bài RIÊNG (không copy từ nguồn), đạt Band 7-8.`;
+}
+
 function buildSystem(exercise, hasStudentImage) {
   const hasImage = !!exercise.image_url;
+  const isIelts  = exercise.program === 'IELTS';
   return `Bạn là giám khảo chấm Writing giàu kinh nghiệm cho các kỳ thi tiếng Anh quốc tế.
-${rubricFor(exercise)}
+${rubricFor(exercise)}${isIelts ? ieltsSuggestedWritingGuide(exercise.title || '') : ''}
 ${hasImage ? '\nĐề bài này có kèm HÌNH ẢNH ĐỀ BÀI (hình thứ nhất). Hãy phân tích kỹ nội dung hình (biểu đồ, bản đồ, tranh, sơ đồ...) cùng với phần text để chấm bài chính xác — đặc biệt khi đánh giá Content.' : ''}
 ${hasStudentImage ? '\n⚠️ HỌC SINH NỘP BÀI BẰNG ẢNH (hình cuối cùng). Đây là ảnh chụp bài viết tay hoặc scan của học sinh. Hãy:\n1. ĐỌC KỸ toàn bộ nội dung chữ viết trong hình ảnh đó.\n2. Tự transcribe (ghi lại) bài viết của học sinh trước khi chấm.\n3. Nếu một số từ khó đọc, cố gắng đoán dựa trên ngữ cảnh — đừng bỏ qua.\n4. Chấm bài dựa trên nội dung đã đọc được từ hình ảnh.' : ''}
 
@@ -500,17 +542,7 @@ Quy tắc chung:
 - criteria: danh sách tiêu chí, mỗi tiêu chí gồm name (song ngữ), score, max, comment.
 - summary: 2–3 câu tổng quan bằng tiếng Việt.
 - suggestions: 3–5 gợi ý cải thiện cụ thể bằng tiếng Việt.
-- suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu. Bám sát yêu cầu đề (notes nếu có, số liệu hình nếu có), KHÔNG viết generic.
-  ⭐ **KHI VIẾT BÀI MẪU (suggested_writing)**: LUÔN tham khảo từ các kho bài mẫu uy tín sau để đảm bảo bài mẫu đạt chuẩn band cao và đáng tin cậy:
-    • Youpass (youpass.io) — kho bài band 8-9 phân loại theo topics
-    • IDP IELTS Official — official.ielts.org
-    • IELTS Nguyễn Huyền — kho bài phân tích chi tiết criterion
-    • IELTS 1984 — model essays Band 7-8 với giải thích
-    • The IELTS Workshop — bài mẫu chuẩn Cambridge
-    • DOL English — trang web IELTS uy tín
-    • IELTS Fighter — bài mẫu band cao
-    • Cambridge và British Council official resources
-  🎯 Khi viết bài mẫu: tham khảo STRUCTURE, từ vựng Academic, ngữ pháp phức tạp từ các bài trên, rồi viết bài riêng (không copy-paste). Bài mẫu phải thể hiện đặc điểm Band 7-8: lexical range cao, complex structures, smooth cohesion, sophisticated argument.
+- suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu. Bám sát yêu cầu đề (image_content nếu có), KHÔNG viết generic. Đạt Band/Level cao nhất phù hợp kỳ thi.
 - suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao — nêu cụ thể bài mẫu đã đề cập những notes/điểm nào của đề.
 ${hasStudentImage ? '- annotations: [] (bài nộp bằng ảnh — không thể highlight trực tiếp).' : `- annotations: Xác định 4–8 LỖI QUAN TRỌNG NHẤT trong bài. Mỗi lỗi gồm:
   • text: COPY NGUYÊN VĂN đúng từng ký tự (kể cả lỗi chính tả) đoạn sai từ bài học sinh, 1–7 từ, ĐỦ NGẮN để khoanh đúng chỗ sai.
@@ -867,8 +899,27 @@ const HINTS_GEMINI_SCHEMA = {
 
 function buildHintsSystem(exercise) {
   const hasImage = !!exercise.image_url;
+  const isIelts  = exercise.program === 'IELTS';
+  const isTask1  = isIelts && /task\s*1/i.test(exercise.title || '');
+  const isTask2  = isIelts && !isTask1;
 
-  return `Bạn là giáo viên luyện thi Cambridge/IELTS/APTIS giàu kinh nghiệm. Nhiệm vụ: tạo GỢI Ý LÀM BÀI chính xác và cụ thể cho ĐỀ BÀI CỤ THỂ NÀY.
+  const ieltsHintsGuide = !isIelts ? '' : `
+══ NGUỒN THAM KHẢO ĐỂ TẠO GỢI Ý IELTS ══
+${isTask1 ? `IELTS Task 1 — dàn bài, từ vựng và useful phrases tham khảo từ:
+  • IELTS Simon (ielts-simon.com) — overview structure, data grouping pattern đơn giản chuẩn Band 7-8
+  • IELTS Liz (ieltsliz.com) — academic vocabulary cho từng loại biểu đồ, mẫu câu intro/overview
+  • IELTS Advantage (ieltsadvantage.com) — dynamic vs static chart vocabulary
+  • E2 IELTS — model answers kèm Band score phân tích
+Khi tạo dàn bài: học cách NHÓM DỮ LIỆU từ image_content (không liệt kê hết); overview pattern "Overall, it is clear that..."; academic phrases "rose significantly", "saw a sharp decline", "remained relatively stable".` : `IELTS Task 2 — dàn bài, từ vựng và useful phrases tham khảo từ:
+  • IELTS Simon (ielts-simon.com) — "4-sentence introduction", paragraph structure Band 9
+  • IELTS Liz (ieltsliz.com) — model essays Band 9, topic vocabulary theo chủ đề
+  • IELTS 1984 (blog) — argument development, topic sentences chuẩn Band 7-8
+  • The IELTS Workshop (theieltsworkshop.com) — body paragraph structure: claim + explanation + example
+  • DOL English / IELTS Nguyễn Huyền — lexical resource, academic collocation, less common vocabulary
+  • IELTS Fighter — topic vocabulary phân loại theo chủ đề
+Khi tạo dàn bài: gợi ý ideas CỤ THỂ (không chung chung), mỗi body paragraph gợi ý topic sentence + 1 example cụ thể; useful phrases phải là less common lexis Band 7+.`}`;
+
+  return `Bạn là giáo viên luyện thi Cambridge/IELTS/APTIS giàu kinh nghiệm. Nhiệm vụ: tạo GỢI Ý LÀM BÀI chính xác và cụ thể cho ĐỀ BÀI CỤ THỂ NÀY.${ieltsHintsGuide}
 
 ══ BƯỚC 1 — ĐỌC ẢNH ĐỀ VÀ ĐIỀN image_content (BẮT BUỘC ĐẦU TIÊN) ══
 ${hasImage ? '⚠️ ĐỀ CÓ HÌNH ẢNH — ĐỌC KỸ HÌNH TRƯỚC KHI LÀM BẤT CỨ ĐIỀU GÌ.' : ''}
