@@ -144,12 +144,12 @@ function petRubric(title) {
   const partIntro = isPart1
     ? `PET (B1 Preliminary) WRITING PART 1 — Email/thư (~100 từ).
 
-══ YÊU CẦU ĐẶC THÙ PART 1 — BẮT BUỘC ĐỌC TRƯỚC KHI CHẤM ══
-Đề bài LUÔN cung cấp NOTES (bullet points) mà học sinh BẮT BUỘC phải đề cập ĐẦY ĐỦ.
-Bước 1: Đọc kỹ đề, liệt kê CHÍNH XÁC từng note được yêu cầu.
-Bước 2: Kiểm tra từng note — học sinh có đề cập rõ ràng không.
-Bước 3: Content bị hạ điểm nếu thiếu note hoặc thêm nội dung không liên quan.
-Bước 4: Communicative Achievement — kiểm tra register (informal/semi-formal), format email/thư đúng quy ước (có greeting, sign-off).`
+══ YÊU CẦU ĐẶC THÙ PART 1 ══
+Đây là dạng bài BẮT BUỘC có notes. Đề bài luôn có các NOTES/CUES mà học sinh PHẢI đề cập đầy đủ.
+• Notes thường xuất hiện dưới dạng CHỮ NGHIÊNG hoặc CHÚ THÍCH MŨI TÊN bên cạnh email/thư gốc trong HÌNH ẢNH đề bài (ví dụ: "Me too!", "Tell Charlie", "Yes, but...", "Suggest...").
+• Đọc KỸ HÌNH ẢNH đề để xác định đúng notes — chúng thường ở bên lề phải hoặc cuối email gốc.
+• Điền đầy đủ vào notes_in_exercise trước khi chấm.
+• Communicative Achievement: kiểm tra register (informal/semi-formal phù hợp người nhận), format email/thư đúng (greeting + sign-off).`
     : `PET (B1 Preliminary) WRITING PART 2 — Article / story / review (~100 từ).
 Học sinh tự do phát triển bài theo dạng bài được yêu cầu. Xác định đúng dạng bài (article, story, review...) rồi chấm đúng quy ước dạng bài đó.`;
 
@@ -204,7 +204,7 @@ criteria gồm ĐÚNG 4 mục: "Content (Nội dung)", "Communicative Achievemen
 
 suggested_writing: Viết bài mẫu TIẾNG ANH ~100 từ đúng dạng bài yêu cầu.
 ${isPart1
-    ? 'BẮT BUỘC với Part 1: (a) Đọc kỹ đề, xác định TẤT CẢ các notes được liệt kê. (b) Đề cập ĐẦY ĐỦ từng note theo đúng thứ tự, triển khai mỗi note thành 1–2 câu tự nhiên. (c) Dùng đúng format email/thư (greeting + nội dung theo notes + sign-off). (d) Register phù hợp với người nhận trong đề. (e) KHÔNG bịa thêm nội dung ngoài phạm vi notes.'
+    ? 'BẮT BUỘC với Part 1: (a) Dùng đúng các notes đã liệt kê trong notes_in_exercise — theo đúng thứ tự, mỗi note triển khai 1–2 câu tự nhiên. (b) Format email/thư đầy đủ: greeting → nội dung theo từng note → sign-off. (c) Register phù hợp người nhận trong đề. (d) KHÔNG bịa thêm nội dung ngoài phạm vi notes. (e) Khoảng 100 từ.'
     : 'Bài mẫu phải: (a) đúng dạng bài yêu cầu (article/story/review), (b) dùng đúng quy ước format của dạng bài đó, (c) nội dung hấp dẫn và phù hợp đề, (d) đạt Band 4–5 trên cả 4 tiêu chí.'}`;
 }
 
@@ -459,11 +459,23 @@ ${rubricFor(exercise)}
 ${hasImage ? '\nĐề bài này có kèm HÌNH ẢNH ĐỀ BÀI (hình thứ nhất). Hãy phân tích kỹ nội dung hình (biểu đồ, bản đồ, tranh, sơ đồ...) cùng với phần text để chấm bài chính xác — đặc biệt khi đánh giá Content.' : ''}
 ${hasStudentImage ? '\n⚠️ HỌC SINH NỘP BÀI BẰNG ẢNH (hình cuối cùng). Đây là ảnh chụp bài viết tay hoặc scan của học sinh. Hãy:\n1. ĐỌC KỸ toàn bộ nội dung chữ viết trong hình ảnh đó.\n2. Tự transcribe (ghi lại) bài viết của học sinh trước khi chấm.\n3. Nếu một số từ khó đọc, cố gắng đoán dựa trên ngữ cảnh — đừng bỏ qua.\n4. Chấm bài dựa trên nội dung đã đọc được từ hình ảnh.' : ''}
 
-BƯỚC BẮT BUỘC TRƯỚC KHI CHẤM:
-1. Đọc toàn bộ đề bài (text + hình nếu có).
-2. Xác định xem đề có NOTES/BULLET POINTS bắt buộc không (thường xuất hiện ở PET Part 1, FCE Part 1). Nếu có, liệt kê ra trong đầu từng note một.
-3. Khi chấm Content: kiểm tra từng note xem học sinh có đề cập không — thiếu note nào thì phải phản ánh trong điểm và comment.
-4. Khi viết suggested_writing: nếu đề có notes bắt buộc, bài mẫu PHẢI đề cập ĐẦY ĐỦ TỪNG NOTE — không được bỏ sót hay tự sáng tạo nội dung ngoài phạm vi notes.
+══ BƯỚC BẮT BUỘC TRƯỚC KHI LÀM BẤT CỨ ĐIỀU GÌ ══
+BƯỚC 1 — Đọc đề và trích xuất notes từ ảnh:
+• Đọc kỹ text đề BÀI VÀ HÌNH ẢNH đề (nếu có).
+• Tìm các NOTES/CUES bắt buộc trong đề — thường là chú thích ngắn bên lề, mũi tên, hoặc bullet points chỉ định học sinh phải đề cập gì.
+  - PET Part 1 / FCE Part 1: notes thường là CHỮ NGHIÊNG hoặc CHÚ THÍCH MŨI TÊN bên cạnh email/thư gốc trong ảnh (ví dụ: "Me too!", "Tell Charlie", "Yes, but...", "Suggest...").
+• Điền CHÍNH XÁC từng note vào trường notes_in_exercise (nguyên văn tiếng Anh như đề).
+• Nếu đề KHÔNG có notes bắt buộc: để notes_in_exercise = [].
+• ⚠️ TUYỆT ĐỐI không tự bịa notes hay dùng notes từ đề bài khác.
+
+BƯỚC 2 — Chấm bài học sinh:
+• Khi chấm Content: đối chiếu từng note trong notes_in_exercise — học sinh có đề cập không, đúng không.
+• Thiếu note → phản ánh trong điểm Content và comment, ghi rõ note nào bị thiếu.
+
+BƯỚC 3 — Viết bài mẫu (suggested_writing):
+• Nếu notes_in_exercise không rỗng: bài mẫu PHẢI đề cập ĐẦY ĐỦ TỪNG NOTE theo đúng thứ tự — mỗi note triển khai thành 1–3 câu tự nhiên.
+• KHÔNG bịa thêm nội dung ngoài phạm vi notes (trừ phần mở/kết thư).
+• Nếu notes_in_exercise rỗng: bài mẫu viết tự do theo yêu cầu đề.
 
 Quy tắc chung:
 - Mọi nhận xét (comment, summary, suggestions, suggested_notes) viết bằng TIẾNG VIỆT, cụ thể, mang tính xây dựng, kèm ví dụ ngắn.
@@ -512,6 +524,7 @@ const ANNOTATION_ITEM_SCHEMA = {
 const CLAUDE_SCHEMA = {
   type: 'object',
   properties: {
+    notes_in_exercise:{ type: 'array', items: { type: 'string' } },
     overall_score:    { type: 'number' },
     scale_label:      { type: 'string' },
     criteria: {
@@ -528,7 +541,7 @@ const CLAUDE_SCHEMA = {
     suggested_notes:  { type: 'string' },
     annotations:      { type: 'array', items: ANNOTATION_ITEM_SCHEMA }
   },
-  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations'],
+  required: ['notes_in_exercise', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations'],
   additionalProperties: false
 };
 
@@ -571,6 +584,7 @@ const GEMINI_SCHEMA = {
     suggestions:      { type: 'ARRAY', items: { type: 'STRING' } },
     suggested_writing:{ type: 'STRING' },
     suggested_notes:  { type: 'STRING' },
+    notes_in_exercise:{ type: 'ARRAY', items: { type: 'STRING' } },
     annotations: {
       type: 'ARRAY',
       items: {
@@ -585,7 +599,7 @@ const GEMINI_SCHEMA = {
       }
     }
   },
-  required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
+  required: ['notes_in_exercise', 'overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
 };
 
 async function gradeWithGemini(exercise, essay, imageData, studentImage) {
