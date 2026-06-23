@@ -2,26 +2,25 @@
 // Trả về kết quả chấm + bài viết gợi ý (suggested_writing) theo tiêu chí từng kỳ thi
 const Anthropic = require('@anthropic-ai/sdk');
 
-// ── Rate limiter: chống vượt 10 RPM của Gemini Free ─────────────────────────
-// Đảm bảo tối thiểu 7.5s giữa các lần gọi Gemini (≈ 8 req/phút, buffer dưới 10 RPM)
-// Promise chain đảm bảo các request được xử lý lần lượt, không bao giờ burst
-let _geminiChain    = Promise.resolve();
-let _geminiLastCall = 0;
-const GEMINI_MIN_GAP_MS = 7500;
+// ── Sliding-window rate limiter: tối đa 8 req/60s (buffer dưới 10 RPM free) ──
+// Cho phép xử lý ĐỒNG THỜI (không queue tuần tự) → tránh cascade delay
+// Chỉ block khi đã gửi đủ 8 req trong 60s gần nhất (hiếm khi xảy ra thực tế)
+const _callTs = []; // timestamps của các lần gọi gần nhất
+const MAX_CALLS_PER_MIN = 8;
 
-function queueGeminiCall(fn) {
-  _geminiChain = _geminiChain
-    .catch(() => {}) // không để lỗi của request trước làm dừng chain
-    .then(async () => {
-      const wait = Math.max(0, _geminiLastCall + GEMINI_MIN_GAP_MS - Date.now());
-      if (wait > 0) {
-        console.log('[AI] rate limiter: chờ ' + wait + 'ms trước khi gọi Gemini');
-        await new Promise(r => setTimeout(r, wait));
-      }
-      _geminiLastCall = Date.now();
-      return fn();
-    });
-  return _geminiChain;
+async function rateLimitedGeminiCall(fn) {
+  const now = Date.now();
+  // Xóa các timestamp cũ hơn 60s
+  while (_callTs.length && _callTs[0] < now - 60000) _callTs.shift();
+  // Nếu đã đủ giới hạn, chờ đến khi slot mở
+  if (_callTs.length >= MAX_CALLS_PER_MIN) {
+    const waitMs = _callTs[0] + 60000 - Date.now() + 200;
+    console.log('[AI] rate limiter: window đầy, chờ ' + Math.round(waitMs / 1000) + 's');
+    await new Promise(r => setTimeout(r, waitMs));
+    while (_callTs.length && _callTs[0] < Date.now() - 60000) _callTs.shift();
+  }
+  _callTs.push(Date.now());
+  return fn();
 }
 
 // ── Hints cache: tránh gọi AI nhiều lần cho cùng 1 đề ───────────────────────
@@ -41,8 +40,9 @@ function setCachedHints(id, hints) {
 
 // ── Helper: gọi Gemini với timeout + parse JSON + retry 429 ─────────────────
 async function callGemini(url, apiKey, requestBody, timeoutMs) {
-  // Khi gặp 429 (rate limit), tự động chờ rồi thử lại tối đa 3 lần
-  const RETRY_DELAYS = [8000, 20000, 40000]; // 8s, 20s, 40s
+  // Khi gặp 429 (rate limit), chờ ngắn rồi thử lại tối đa 2 lần
+  // Giữ tổng thời gian 429-retry ≤ 15s để không vượt frontend timeout
+  const RETRY_DELAYS = [5000, 10000]; // 5s, 10s
   let lastErr;
 
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
@@ -808,10 +808,10 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage) {
   for (let i = 0; i < attempts.length; i++) {
     const cfg = attempts[i];
     try {
-      return await queueGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
+      return await rateLimitedGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
         ...baseBody,
         generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-      }, 75000));
+      }, 45000));
     } catch (e) {
       lastErr = e;
       if (i < attempts.length - 1) console.warn('[AI] grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
@@ -974,10 +974,10 @@ async function gradeAptisWriting(exercise, testContent, answers) {
     for (let i = 0; i < attempts.length; i++) {
       const cfg = attempts[i];
       try {
-        return await queueGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
+        return await rateLimitedGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
           ...baseBody,
           generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-        }, 90000));
+        }, 50000));
       } catch (e) {
         lastErr = e;
         if (i < attempts.length - 1) console.warn('[AI] APTIS grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');

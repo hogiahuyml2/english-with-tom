@@ -885,7 +885,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   }
 
   var gradeCtrl = new AbortController();
-  var gradeTimer = setTimeout(function() { gradeCtrl.abort(); }, 130000); // 130s (server has 90s retry)
+  var gradeTimer = setTimeout(function() { gradeCtrl.abort(); }, 180000); // 180s frontend timeout
   var r, data;
   try {
     r = await fetch('/api/grade-writing', {
