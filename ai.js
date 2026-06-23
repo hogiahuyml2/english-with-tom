@@ -39,15 +39,41 @@ function setCachedHints(id, hints) {
 }
 
 // ── Helper: gọi Gemini với timeout + parse JSON + retry 429 ─────────────────
-async function callGemini(url, apiKey, requestBody, timeoutMs) {
-  // Khi gặp 429 (rate limit), chờ ngắn rồi thử lại tối đa 2 lần
-  // Giữ tổng thời gian 429-retry ≤ 15s để không vượt frontend timeout
-  const RETRY_DELAYS = [5000, 10000]; // 5s, 10s
-  let lastErr;
+// ── Lấy danh sách Gemini API keys (hỗ trợ tối đa 3 keys) ───────────────────
+// Trong Railway: đặt GEMINI_API_KEY (chính) + GEMINI_API_KEY_2, GEMINI_API_KEY_3 (dự phòng)
+function getGeminiKeys() {
+  return [
+    process.env.GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY_2,
+    process.env.GEMINI_API_KEY_3,
+  ].filter(Boolean);
+}
 
-  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+async function callGemini(url, _ignored, requestBody, timeoutMs) {
+  // _ignored: tham số apiKey cũ, hiện dùng getGeminiKeys() để hỗ trợ multi-key
+  const keys = getGeminiKeys();
+  if (!keys.length) throw new Error('Chưa cấu hình GEMINI_API_KEY');
+
+  // Khi gặp 429: ngay lập tức chuyển sang key tiếp theo (không cần chờ)
+  // Sau khi hết 1 vòng keys → chờ rồi thử lại
+  // Với 2 keys: key1 → key2 → chờ 5s → key1 → key2 → chờ 10s → fail
+  const CYCLE_WAITS = [5000, 10000];
+  let cycleWaitIdx = 0;
+
+  for (let i = 0; ; i++) {
+    // Sau mỗi vòng đã thử hết keys: chờ trước khi vòng tiếp
+    if (i > 0 && i % keys.length === 0) {
+      const wait = CYCLE_WAITS[cycleWaitIdx++];
+      if (wait === undefined) throw new Error('Hệ thống AI đang bận (rate limit). Thử lại sau 1–2 phút.');
+      console.warn('[AI] Đã thử ' + keys.length + ' key, chờ ' + wait / 1000 + 's...');
+      await new Promise(r => setTimeout(r, wait));
+    }
+
+    const apiKey = keys[i % keys.length];
+    const keyLabel = keys.length > 1 ? ' (key ' + (i % keys.length + 1) + ')' : '';
     const ctrl  = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs || 90000);
+
     try {
       const r = await fetch(url, {
         signal : ctrl.signal,
@@ -57,24 +83,22 @@ async function callGemini(url, apiKey, requestBody, timeoutMs) {
       });
       clearTimeout(timer);
 
-      // Rate limit — chờ rồi retry
       if (r.status === 429) {
-        const delay = RETRY_DELAYS[attempt];
-        if (delay === undefined) throw new Error('RATE_LIMIT'); // hết lần retry
-        console.warn('[AI] Gemini 429 rate limit — chờ ' + delay / 1000 + 's rồi thử lại (attempt ' + (attempt + 1) + ')');
-        await new Promise(res => setTimeout(res, delay));
-        continue;
+        const nextKey = keys.length > 1 ? ' → thử key ' + ((i + 1) % keys.length + 1) : '';
+        console.warn('[AI] 429 rate limit' + keyLabel + nextKey);
+        continue; // ngay lập tức thử key tiếp
       }
 
       if (!r.ok) {
         const errTxt = await r.text().catch(() => '');
-        throw new Error('Gemini HTTP ' + r.status + ': ' + errTxt.slice(0, 300));
+        throw new Error('Gemini HTTP ' + r.status + keyLabel + ': ' + errTxt.slice(0, 300));
       }
       const data = await r.json();
       const parts = data?.candidates?.[0]?.content?.parts || [];
       const text  = parts.map(p => p.text || '').join('');
       const finishReason = data?.candidates?.[0]?.finishReason || 'UNKNOWN';
-      if (!text) throw new Error('Gemini phản hồi rỗng (finishReason=' + finishReason + ')');
+      if (!text) throw new Error('Gemini phản hồi rỗng' + keyLabel + ' (finishReason=' + finishReason + ')');
+      if (i > 0 && keys.length > 1) console.log('[AI] Thành công với key ' + (i % keys.length + 1));
       try {
         return JSON.parse(text);
       } catch (parseErr) {
@@ -82,8 +106,7 @@ async function callGemini(url, apiKey, requestBody, timeoutMs) {
       }
     } catch (e) {
       clearTimeout(timer);
-      if (e.message === 'RATE_LIMIT') throw new Error('Hệ thống AI đang bận (rate limit). Vui lòng thử lại sau 1–2 phút.');
-      if (e.name === 'AbortError') throw new Error('Gemini timeout sau ' + Math.round((timeoutMs || 90000) / 1000) + 's — thử lại sau');
+      if (e.name === 'AbortError') throw new Error('Gemini timeout' + keyLabel + ' sau ' + Math.round((timeoutMs || 90000) / 1000) + 's');
       throw e;
     }
   }
