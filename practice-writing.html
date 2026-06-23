@@ -53,6 +53,26 @@
   .hint-lines li { font-size:13px; color:#0c4a6e; padding:4px 0; border-bottom:1px dashed #c7e9fb; line-height:1.55; }
   .hint-lines li:last-child { border:none; }
 
+  /* ── Error list (take notes) ── */
+  .err-item { border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; background:#fff; }
+  .err-item:last-child { margin-bottom:0; }
+  .err-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .err-badge { font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; letter-spacing:.3px; }
+  .err-badge.Grammar    { background:#dbeafe; color:#1d4ed8; }
+  .err-badge.Vocabulary { background:#fce7f3; color:#9d174d; }
+  .err-badge.Punctuation{ background:#d1fae5; color:#065f46; }
+  .err-badge.Style      { background:#ede9fe; color:#5b21b6; }
+  .err-badge.Register   { background:#ede9fe; color:#5b21b6; }
+  .err-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+  .err-cell { background:#f8f7ff; border-radius:7px; padding:8px 11px; }
+  .err-cell-label { font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+  .err-cell-val { font-size:13.5px; color:var(--text); font-family:Georgia,serif; line-height:1.5; }
+  .err-wrong { color:#dc2626; }
+  .err-right { color:#16a34a; }
+  .err-explain { font-size:13px; color:var(--text-muted); line-height:1.65; margin-bottom:6px; }
+  .err-rule { background:#fff7ed; border-left:3px solid #f59e0b; padding:5px 10px; border-radius:0 6px 6px 0; font-size:12.5px; font-weight:600; color:#92400e; }
+  @media print { #errorListSection { display:block !important; } .result-actions,.hints-toggle,#hintsPanel,.card:not(#errorListSection):not(#result) { display:none !important; } }
+
   /* ── Message modal ── */
   #messageModal {
     display:none; position:fixed; inset:0;
@@ -398,7 +418,7 @@
     <!-- Loading -->
     <div class="card" id="loading" style="display:none; text-align:center; margin-top:22px;">
       <div style="font-size:30px;">⏳</div>
-      <p style="color:var(--text-muted); margin-top:8px;">Đang phân tích và chấm bài của bạn... (khoảng 15–25 giây)</p>
+      <p style="color:var(--text-muted); margin-top:8px;">Đang đọc đề, phân tích và chấm bài của bạn... (khoảng 20–35 giây)</p>
     </div>
 
     <!-- Kết quả chấm -->
@@ -454,6 +474,18 @@
       <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Di chuột (hoặc bấm) vào phần được tô màu để xem giải thích và cách sửa.</p>
       <div class="ann-essay-body" id="annEssayBody"></div>
       <div class="ann-list" id="annList"></div>
+    </div>
+
+    <!-- Danh sách lỗi chi tiết để take notes -->
+    <div class="card" id="errorListSection" style="display:none; margin-top:18px; border:2px solid #f59e0b;">
+      <div class="card-head" style="align-items:flex-start; margin-bottom:4px;">
+        <div>
+          <h3 style="margin-bottom:4px;">📒 Sổ tay lỗi — Take notes</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin:0;">Danh sách lỗi chi tiết kèm cách sửa và quy tắc cần nhớ.</p>
+        </div>
+        <button onclick="window.print()" class="btn" style="font-size:12px; padding:5px 12px; white-space:nowrap;">📄 In trang</button>
+      </div>
+      <div id="errorListBody" style="margin-top:12px;"></div>
     </div>
 
     <!-- Bài viết gợi ý -->
@@ -891,12 +923,54 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   document.getElementById('historyBtnArrow').textContent = '▼';
   await loadHistory();
 
+  renderErrorList(res.error_list || []);
+
   if (res.suggested_writing) {
     document.getElementById('suggestedWriting').textContent = res.suggested_writing;
     document.getElementById('suggestedNotes').textContent = res.suggested_notes || '';
     document.getElementById('suggestedSection').style.display = 'block';
   }
 });
+
+function renderErrorList(errors) {
+  var sec = document.getElementById('errorListSection');
+  var body = document.getElementById('errorListBody');
+  if (!errors || !errors.length) { sec.style.display = 'none'; return; }
+
+  var catMap = {
+    'Grammar': 'Grammar', 'Vocabulary': 'Vocabulary',
+    'Punctuation': 'Punctuation', 'Style': 'Style', 'Style/Register': 'Style', 'Register': 'Register'
+  };
+
+  body.innerHTML = errors.map(function(e, i) {
+    var cat = e.category || 'Grammar';
+    var badgeCls = catMap[cat] || 'Grammar';
+    var catLabel = {
+      'Grammar':'Ngữ pháp','Vocabulary':'Từ vựng',
+      'Punctuation':'Dấu câu','Style':'Văn phong','Style/Register':'Văn phong','Register':'Văn phong'
+    }[cat] || cat;
+    return '<div class="err-item">'+
+      '<div class="err-header">'+
+        '<span style="font-size:13px;font-weight:700;color:var(--text-muted);">'+(i+1)+'.</span>'+
+        '<span class="err-badge '+badgeCls+'">'+esc(catLabel)+'</span>'+
+      '</div>'+
+      '<div class="err-row">'+
+        '<div class="err-cell">'+
+          '<div class="err-cell-label">❌ Lỗi trong bài</div>'+
+          '<div class="err-cell-val err-wrong">'+esc(e.error || '')+'</div>'+
+        '</div>'+
+        '<div class="err-cell">'+
+          '<div class="err-cell-label">✅ Cách sửa</div>'+
+          '<div class="err-cell-val err-right">'+esc(e.correction || '')+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="err-explain">'+esc(e.explanation || '')+'</div>'+
+      (e.rule ? '<div class="err-rule">📌 Quy tắc: '+esc(e.rule)+'</div>' : '')+
+    '</div>';
+  }).join('');
+
+  sec.style.display = 'block';
+}
 
 /* ── Render tiêu chí với thanh màu ── */
 function bandColor(score, max) {
