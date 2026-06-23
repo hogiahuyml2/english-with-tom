@@ -83,9 +83,9 @@ async function callGemini(url, _ignored, requestBody, timeoutMs) {
       });
       clearTimeout(timer);
 
-      if (r.status === 429) {
+      if (r.status === 429 || r.status === 503) {
         const nextKey = keys.length > 1 ? ' → thử key ' + ((i + 1) % keys.length + 1) : '';
-        console.warn('[AI] 429 rate limit' + keyLabel + nextKey);
+        console.warn('[AI] HTTP ' + r.status + keyLabel + nextKey);
         continue; // ngay lập tức thử key tiếp
       }
 
