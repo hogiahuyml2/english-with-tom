@@ -2,36 +2,53 @@
 // Trả về kết quả chấm + bài viết gợi ý (suggested_writing) theo tiêu chí từng kỳ thi
 const Anthropic = require('@anthropic-ai/sdk');
 
-// ── Helper: gọi Gemini với timeout + parse JSON ──────────────────────────────
+// ── Helper: gọi Gemini với timeout + parse JSON + retry 429 ─────────────────
 async function callGemini(url, apiKey, requestBody, timeoutMs) {
-  const ctrl  = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs || 90000);
-  try {
-    const r = await fetch(url, {
-      signal : ctrl.signal,
-      method : 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
-      body   : JSON.stringify(requestBody)
-    });
-    clearTimeout(timer);
-    if (!r.ok) {
-      const errTxt = await r.text().catch(() => '');
-      throw new Error('Gemini HTTP ' + r.status + ': ' + errTxt.slice(0, 300));
-    }
-    const data = await r.json();
-    const parts = data?.candidates?.[0]?.content?.parts || [];
-    const text  = parts.map(p => p.text || '').join('');
-    const finishReason = data?.candidates?.[0]?.finishReason || 'UNKNOWN';
-    if (!text) throw new Error('Gemini phản hồi rỗng (finishReason=' + finishReason + ')');
+  // Khi gặp 429 (rate limit), tự động chờ rồi thử lại tối đa 3 lần
+  const RETRY_DELAYS = [8000, 20000, 40000]; // 8s, 20s, 40s
+  let lastErr;
+
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs || 90000);
     try {
-      return JSON.parse(text);
-    } catch (parseErr) {
-      throw new Error('Gemini JSON parse thất bại: ' + parseErr.message + ' — snippet: ' + text.slice(0, 150));
+      const r = await fetch(url, {
+        signal : ctrl.signal,
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+        body   : JSON.stringify(requestBody)
+      });
+      clearTimeout(timer);
+
+      // Rate limit — chờ rồi retry
+      if (r.status === 429) {
+        const delay = RETRY_DELAYS[attempt];
+        if (delay === undefined) throw new Error('RATE_LIMIT'); // hết lần retry
+        console.warn('[AI] Gemini 429 rate limit — chờ ' + delay / 1000 + 's rồi thử lại (attempt ' + (attempt + 1) + ')');
+        await new Promise(res => setTimeout(res, delay));
+        continue;
+      }
+
+      if (!r.ok) {
+        const errTxt = await r.text().catch(() => '');
+        throw new Error('Gemini HTTP ' + r.status + ': ' + errTxt.slice(0, 300));
+      }
+      const data = await r.json();
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const text  = parts.map(p => p.text || '').join('');
+      const finishReason = data?.candidates?.[0]?.finishReason || 'UNKNOWN';
+      if (!text) throw new Error('Gemini phản hồi rỗng (finishReason=' + finishReason + ')');
+      try {
+        return JSON.parse(text);
+      } catch (parseErr) {
+        throw new Error('Gemini JSON parse thất bại: ' + parseErr.message + ' — snippet: ' + text.slice(0, 150));
+      }
+    } catch (e) {
+      clearTimeout(timer);
+      if (e.message === 'RATE_LIMIT') throw new Error('Hệ thống AI đang bận (rate limit). Vui lòng thử lại sau 1–2 phút.');
+      if (e.name === 'AbortError') throw new Error('Gemini timeout sau ' + Math.round((timeoutMs || 90000) / 1000) + 's — thử lại sau');
+      throw e;
     }
-  } catch (e) {
-    clearTimeout(timer);
-    if (e.name === 'AbortError') throw new Error('Gemini timeout sau ' + Math.round((timeoutMs || 90000) / 1000) + 's — thử lại sau');
-    throw e;
   }
 }
 
