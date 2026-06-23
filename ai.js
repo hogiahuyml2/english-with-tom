@@ -806,6 +806,7 @@ const HINTS_CLAUDE_SCHEMA = {
   type: 'object',
   properties: {
     task_type:      { type: 'string' },
+    notes_found:    { type: 'array', items: { type: 'string' } },
     outline:        { type: 'string' },
     key_vocabulary: { type: 'array', items: { type: 'string' } },
     useful_phrases: { type: 'array', items: { type: 'string' } },
@@ -813,7 +814,7 @@ const HINTS_CLAUDE_SCHEMA = {
     dos_and_donts:  { type: 'array', items: { type: 'string' } },
     time_guide:     { type: 'string' }
   },
-  required: ['task_type','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
+  required: ['task_type','notes_found','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide'],
   additionalProperties: false
 };
 
@@ -821,6 +822,7 @@ const HINTS_GEMINI_SCHEMA = {
   type: 'OBJECT',
   properties: {
     task_type:      { type: 'STRING' },
+    notes_found:    { type: 'ARRAY', items: { type: 'STRING' } },
     outline:        { type: 'STRING' },
     key_vocabulary: { type: 'ARRAY', items: { type: 'STRING' } },
     useful_phrases: { type: 'ARRAY', items: { type: 'STRING' } },
@@ -828,31 +830,51 @@ const HINTS_GEMINI_SCHEMA = {
     dos_and_donts:  { type: 'ARRAY', items: { type: 'STRING' } },
     time_guide:     { type: 'STRING' }
   },
-  required: ['task_type','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
+  required: ['task_type','notes_found','outline','key_vocabulary','useful_phrases','criteria_tips','dos_and_donts','time_guide']
 };
 
 function buildHintsSystem(exercise) {
   const hasImage = !!exercise.image_url;
-  return `Bạn là giáo viên luyện thi ${exercise.program} giàu kinh nghiệm. Hãy tạo GỢI Ý LÀM BÀI cụ thể và chính xác nhất cho đề bài này.
-${hasImage ? 'Đề bài có kèm HÌNH ẢNH — đọc kỹ hình (biểu đồ, bản đồ, tranh, dữ liệu...) và đưa ra gợi ý DỰA TRÊN NỘI DUNG THỰC TẾ CỦA HÌNH.' : ''}
+  const isPetFcePart1 = /^(PET|FCE)/.test(exercise.program) && /Part 1/i.test(exercise.title);
 
-═══ QUY TRÌNH BẮT BUỘC TRƯỚC KHI TẠO GỢI Ý ═══
-1. Đọc toàn bộ đề bài (text + hình nếu có).
-2. Xác định: đề có NOTES/BULLET POINTS bắt buộc không?
-   • Nếu CÓ (PET Part 1, FCE Part 1): liệt kê ra từng note — outline PHẢI xây dựng quanh từng note đó, không được tự thêm/bỏ.
-   • Nếu KHÔNG: dàn bài theo cấu trúc phù hợp dạng bài.
-3. Mọi gợi ý phải xuất phát TỪ ĐỀ NÀY — không gợi ý chung chung áp dụng được cho mọi đề.
+  return `Bạn là giáo viên luyện thi Cambridge giàu kinh nghiệm. Nhiệm vụ: tạo GỢI Ý LÀM BÀI chính xác cho ĐỀ BÀI CỤ THỂ NÀY.
+${hasImage ? '\n⚠️ ĐỀ CÓ HÌNH ẢNH — PHẢI đọc hình trước, đặc biệt chú ý các CHÚ THÍCH / MŨI TÊN / GHI CHÚ bên lề (thường là các "notes" bắt buộc của đề).' : ''}
 
-task_type: Loại bài viết theo đề (ví dụ: "FCE Part 1 — Essay (2 notes bắt buộc)", "IELTS Task 1 — Bar Chart", "KET Part 1 — Email", "PET Part 1 — Email (3 notes bắt buộc)"...).
-outline: Dàn bài CHI TIẾT bằng TIẾNG VIỆT.
-  • Nếu đề có NOTES: mỗi note = 1 mục trong dàn bài, ghi rõ "Note 1: [tên note] — viết 3–4 câu về...". KHÔNG thêm điểm ngoài notes (trừ FCE Part 1 cần thêm 1 điểm riêng).
-  • Nếu đề có SỐ LIỆU/BIỂU ĐỒ: gợi ý cụ thể điểm nào cần đề cập, số liệu nào nổi bật, xu hướng gì cần so sánh.
-  • Nêu số câu gợi ý cho mỗi phần.
-key_vocabulary: 8–10 từ/cụm tiếng Anh CỤ THỂ CHO CHỦ ĐỀ/NỘI DUNG của đề này. Dạng "từ/cụm (nghĩa tiếng Việt)".
-useful_phrases: 6–8 câu/cụm phù hợp DẠNG BÀI này. Nếu có notes bắt buộc thì ưu tiên cụm giúp triển khai các notes đó.
-criteria_tips: Đúng 4 gợi ý tiếng Việt — mỗi gợi ý ứng với 1 tiêu chí chấm. Bắt đầu "[Tên tiêu chí]: ..." và giải thích CỤ THỂ cần làm gì trong ĐỀ NÀY. Với Content: nhắc học sinh phải bao gồm đủ các notes bắt buộc (nếu có).
-dos_and_donts: 5–6 lưu ý tiếng Việt — mix ✅ DOs và ❌ DON'Ts. Nếu đề có notes bắt buộc thì PHẢI có: "❌ Không bỏ sót bất kỳ note nào của đề — thiếu note sẽ bị trừ điểm Content nặng".
-time_guide: Gợi ý phân bổ thời gian tiếng Việt phù hợp với kỳ thi và dạng bài.`;
+═══ BƯỚC 1 — ĐỌC VÀ TRÍCH XUẤT NOTES (BẮT BUỘC) ═══
+${isPetFcePart1 ? `Đây là dạng bài ${exercise.program} Part 1 — loại bài BẮT BUỘC có notes.
+• Trong hình đề bài có các CHÚ THÍCH NGẮN viết bằng mực xanh/in nghiêng bên cạnh hoặc mũi tên trỏ vào từng đoạn của email/thư gốc.
+• Đây là các NOTES/CUES mà thí sinh PHẢI đáp ứng — KHÔNG PHẢI nội dung email gốc.
+• Đọc KỸ hình và liệt kê CHÍNH XÁC từng note (ví dụ: "Me too!", "Tell Charlie", "Yes, but...", "Suggest...").
+• TUYỆT ĐỐI không tự bịa notes hay dùng notes từ đề bài khác.` : `Xác định xem đề có notes/bullet points bắt buộc không (thường hiện dưới dạng dấu chấm đầu dòng, mũi tên, hoặc chú thích bên lề).`}
+
+notes_found: Liệt kê ĐÚNG các notes/cues bắt buộc bạn thấy trong ĐỀ NÀY (từ hình hoặc text).
+  • Mỗi phần tử = 1 note, viết nguyên văn tiếng Anh như đề (ví dụ: "Me too!", "Tell Charlie which sport", "Yes, but...", "Suggest what to bring").
+  • Nếu đề KHÔNG có notes bắt buộc (KET Part 1, IELTS, v.v.): để mảng rỗng [].
+
+═══ BƯỚC 2 — TẠO GỢI Ý DỰA TRÊN NOTES ĐÃ TRÍCH ═══
+
+task_type: Loại bài + số notes (ví dụ: "PET Part 1 — Email (4 notes bắt buộc)", "KET Part 1 — Email", "IELTS Task 2 — Opinion Essay").
+
+outline: Dàn bài CHI TIẾT bằng TIẾNG VIỆT — XÂY DỰNG HOÀN TOÀN TỪ notes_found.
+  • Nếu notes_found KHÔNG rỗng: mỗi note = 1 mục riêng. Viết: "Note [n]: '[note nguyên văn]' — [giải thích cụ thể cần viết gì, ví dụ content gợi ý, 2–3 câu]".
+    - Theo đúng THỨ TỰ notes xuất hiện trong đề.
+    - Mở đầu thư/email + Kết thư là phần riêng (không phải note).
+    - KHÔNG thêm nội dung ngoài notes (trừ FCE Part 1 cần thêm 1 ý riêng của thí sinh).
+  • Nếu notes_found rỗng: dàn bài theo cấu trúc chuẩn của dạng bài.
+  • Với đề có số liệu/biểu đồ: gợi ý điểm dữ liệu nổi bật cần đề cập.
+
+key_vocabulary: 8–10 từ/cụm tiếng Anh CỤ THỂ cho CHỦ ĐỀ đề này. Dạng "từ/cụm (nghĩa tiếng Việt)". Không dùng từ chung chung.
+
+useful_phrases: 6–8 câu/cụm mẫu bằng tiếng Anh. Ưu tiên các cụm giúp triển khai TỪNG NOTE trong notes_found.
+
+criteria_tips: Đúng 4 gợi ý — mỗi gợi ý ứng 1 tiêu chí chấm, bắt đầu "[Tên tiêu chí]: ...".
+  • Content: PHẢI nhắc "đáp ứng đủ ${isPetFcePart1 ? 'tất cả notes trong đề' : 'yêu cầu đề bài'} — thiếu note bị trừ điểm nặng".
+
+dos_and_donts: 5–6 lưu ý — mix ✅ DOs và ❌ DON'Ts.
+  • Nếu notes_found không rỗng: PHẢI có "❌ Không bỏ sót hay tự bịa notes — chỉ viết đúng những gì đề yêu cầu".
+  • Lưu ý PHẢI cụ thể cho đề này, không viết chung chung.
+
+time_guide: Phân bổ thời gian phù hợp kỳ thi và dạng bài.`;
 }
 
 async function getWritingHints(exercise) {
