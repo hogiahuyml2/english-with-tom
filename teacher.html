@@ -2821,9 +2821,13 @@ function closeGradingPanel() {
 }
 
 function gpShowTab(tab) {
-  ['ai','manual','model'].forEach(function(t) {
-    document.getElementById('gpPane' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
-    document.getElementById('gpTab'  + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+  var idMap = { ai: 'AI', manual: 'Manual', model: 'Model' };
+  Object.keys(idMap).forEach(function(t) {
+    var s = idMap[t];
+    var pane = document.getElementById('gpPane' + s);
+    var btn  = document.getElementById('gpTab'  + s);
+    if (pane) pane.classList.toggle('active', t === tab);
+    if (btn)  btn.classList.toggle('active',  t === tab);
   });
 }
 
