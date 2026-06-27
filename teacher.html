@@ -626,7 +626,7 @@
               <select id="groupAssignExId"><option value="">-- Đang tải đề --</option></select>
             </div>
             <div class="grid grid-2" style="gap:12px;">
-              <div class="field" style="margin:0;"><label>Hạn nộp (tuỳ chọn)</label><input type="date" id="groupAssignDeadline"></div>
+              <div class="field" style="margin:0;"><label>Hạn nộp (tuỳ chọn)</label><input type="datetime-local" id="groupAssignDeadline"></div>
               <div class="field" style="margin:0;"><label>Ghi chú</label><input type="text" id="groupAssignNote" placeholder="VD: Làm trước buổi học thứ Tư"></div>
             </div>
             <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="assignToGroup()">📤 Giao bài &amp; thông báo cả lớp</button>
@@ -666,7 +666,7 @@
 
         <div class="grid grid-2" style="gap:12px;">
           <div class="field" style="margin:0;"><label>Hạn nộp <span style="font-weight:400;color:var(--text-faint);">(tuỳ chọn)</span></label>
-            <input type="date" id="assignDeadline">
+            <input type="datetime-local" id="assignDeadline">
           </div>
           <div class="field" style="margin:0;"><label>Ghi chú cho học sinh</label>
             <input type="text" id="assignNote" placeholder="VD: Làm bài trước buổi học thứ Tư">
@@ -833,7 +833,7 @@
     <div id="asgnEditInfo" style="background:var(--bg-soft,#f8f7ff);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;"></div>
     <div class="field">
       <label>Hạn nộp</label>
-      <input type="date" id="asgnEditDeadline">
+      <input type="datetime-local" id="asgnEditDeadline">
     </div>
     <div class="field">
       <label>Ghi chú cho học sinh</label>
@@ -1721,8 +1721,18 @@
 
   function fmtDate(iso){
     if (!iso) return '–';
-    try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
-    catch(e){ return iso.slice(0,10); }
+    try {
+      var hasTime = iso.indexOf('T') >= 0;
+      var d = new Date(iso);
+      var s = ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+      if (hasTime) s += ' ' + ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+      return s;
+    } catch(e){ return iso.slice(0,10); }
+  }
+  function toDateTimeLocal(iso){
+    if (!iso) return '';
+    if (iso.indexOf('T') >= 0) return iso.slice(0,16);
+    return iso.slice(0,10) + 'T23:59';
   }
 
   var _asgnMap = {};
@@ -1741,8 +1751,7 @@
               : '<span class="badge badge-grading">Đã nộp — chờ chấm</span>')
           : '<span class="badge" style="background:#f5f5f5;color:#888;">Chưa nộp</span>';
         var noteHtml = a.note ? '<br><span style="font-size:12px;color:var(--text-faint);">📌 '+escHtml(a.note)+'</span>' : '';
-        var dl = a.deadline ? a.deadline.slice(0,10) : '';
-        _asgnMap[a.id] = { title: a.title, student: a.student_name||a.student_email, deadline: dl, note: a.note||'' };
+        _asgnMap[a.id] = { title: a.title, student: a.student_name||a.student_email, deadline: a.deadline||'', note: a.note||'' };
         return '<tr>'+
           '<td>'+escHtml(a.student_name||a.student_email)+'<br><span style="font-size:12px;color:var(--text-faint);">'+escHtml(a.student_email)+'</span></td>'+
           '<td>'+escHtml(a.title)+(a.group_name?'<br><span style="font-size:12px;color:#6F58EE;">🏫 '+escHtml(a.group_name)+'</span>':'')+'</td>'+
@@ -1769,7 +1778,7 @@
     if (!d) return;
     _asgnEditId = id;
     document.getElementById('asgnEditInfo').innerHTML = '<b>'+escHtml(d.title)+'</b> → '+escHtml(d.student);
-    document.getElementById('asgnEditDeadline').value = d.deadline || '';
+    document.getElementById('asgnEditDeadline').value = toDateTimeLocal(d.deadline);
     document.getElementById('asgnEditNote').value = d.note || '';
     var msgEl = document.getElementById('asgnEditMsg');
     msgEl.style.display = 'none'; msgEl.textContent = '';

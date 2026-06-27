@@ -70,6 +70,16 @@ function isHttps(req) {
 // ===== Gửi email qua Brevo (HTTP API, không cần thư viện) =====
 function emailEnabled() { return !!process.env.BREVO_API_KEY && !!process.env.FROM_EMAIL; }
 
+function fmtDeadline(iso) {
+  if (!iso) return '';
+  try {
+    const hasTime = iso.includes('T');
+    const d = new Date(iso);
+    const date = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    return hasTime ? `${date} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : date;
+  } catch { return iso; }
+}
+
 async function sendBrevoEmail(to, subject, htmlContent) {
   if (!emailEnabled()) return { ok: false, detail: 'Email chưa cấu hình' };
   try {
@@ -969,7 +979,7 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
     const u = db.prepare('SELECT id,name FROM users WHERE email=?').get(email);
     const assignLink = baseUrl(req) + '/assigned.html';
     if (emailEnabled()) {
-      const dline = deadline ? `<p>⏰ Hạn nộp: <b>${deadline}</b></p>` : '';
+      const dline = deadline ? `<p>⏰ Hạn nộp: <b>${fmtDeadline(deadline)}</b></p>` : '';
       const noteHtml = note ? `<p>📌 Ghi chú: ${note}</p>` : '';
       const classHtml = groupName ? `<p>🏫 Lớp: <b>${groupName}</b></p>` : '';
       await sendBrevoEmail({ email, name: u ? u.name : email },
