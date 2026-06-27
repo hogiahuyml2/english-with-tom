@@ -69,6 +69,16 @@
   .char-count { text-align:right; font-size:11.5px; color:var(--text-faint); margin-top:3px; }
   .edit-action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
 
+  /* ── Assignment Edit Modal ── */
+  .asgn-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.42); z-index:1400; display:none; align-items:center; justify-content:center; }
+  .asgn-modal-overlay.open { display:flex; }
+  .asgn-modal { background:#fff; border-radius:16px; padding:28px 28px 22px; width:min(460px,95vw); box-shadow:0 8px 40px rgba(0,0,0,.18); }
+  .asgn-modal h3 { margin:0 0 18px; font-size:17px; }
+  .asgn-modal .field { margin-bottom:14px; }
+  .asgn-modal .field label { display:block; font-size:13px; font-weight:600; margin-bottom:5px; color:var(--text-faint); }
+  .asgn-modal .field input, .asgn-modal .field textarea { width:100%; box-sizing:border-box; }
+  .asgn-modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
+
   /* ── Student Profile Drawer ── */
   .sp-overlay { position:fixed; inset:0; background:rgba(0,0,0,.42); z-index:1300; display:none; }
   .sp-overlay.open { display:block; }
@@ -619,7 +629,7 @@
       <div class="card" style="margin-top:20px;">
         <div class="card-head"><h3>📋 Danh sách bài đã giao</h3><button class="btn btn-sm" onclick="loadAssignments()">🔄 Làm mới</button></div>
         <table class="table">
-          <thead><tr><th>Học sinh</th><th>Đề bài</th><th>Hạn nộp</th><th>Trạng thái</th><th></th></tr></thead>
+          <thead><tr><th>Học sinh</th><th>Đề bài</th><th>Hạn nộp / Ghi chú</th><th>Trạng thái</th><th></th></tr></thead>
           <tbody id="assignTable"><tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
         </table>
       </div>
@@ -763,6 +773,27 @@
   </div>
   <div class="sp-body" id="spBody">
     <p style="text-align:center;color:var(--text-faint);padding:40px 0;">Đang tải dữ liệu...</p>
+  </div>
+</div>
+
+<!-- ===== ASSIGNMENT EDIT MODAL ===== -->
+<div id="asgnEditOverlay" class="asgn-modal-overlay" onclick="if(event.target===this)closeAsgnEdit()">
+  <div class="asgn-modal">
+    <h3>✏️ Chỉnh sửa bài đã giao</h3>
+    <div id="asgnEditInfo" style="background:var(--bg-soft,#f8f7ff);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;"></div>
+    <div class="field">
+      <label>Hạn nộp</label>
+      <input type="date" id="asgnEditDeadline">
+    </div>
+    <div class="field">
+      <label>Ghi chú cho học sinh</label>
+      <input type="text" id="asgnEditNote" placeholder="VD: Làm bài trước buổi học thứ Tư" maxlength="200">
+    </div>
+    <div id="asgnEditMsg" style="display:none;font-size:13px;margin-top:8px;"></div>
+    <div class="asgn-modal-footer">
+      <button class="btn" onclick="closeAsgnEdit()">Huỷ</button>
+      <button class="btn btn-primary" onclick="saveAsgnEdit()">💾 Lưu thay đổi</button>
+    </div>
   </div>
 </div>
 
@@ -1648,7 +1679,7 @@
     fetch('/api/teacher/assignments',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
       var tbody = document.getElementById('assignTable');
       if (!d.assignments || !d.assignments.length){
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa giao bài nào.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa giao bài nào.</td></tr>';
         return;
       }
       tbody.innerHTML = d.assignments.map(function(a){
@@ -1657,9 +1688,18 @@
               ? '<span class="badge badge-done">Đã chấm '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'')+'</span>'
               : '<span class="badge badge-grading">Đã nộp — chờ chấm</span>')
           : '<span class="badge" style="background:#f5f5f5;color:#888;">Chưa nộp</span>';
-        return '<tr><td>'+(a.student_name||a.student_email)+'<br><span style="font-size:12px;color:var(--text-faint);">'+a.student_email+'</span></td>'+
-          '<td>'+a.title+'</td><td>'+fmtDate(a.deadline)+'</td><td>'+statusBadge+'</td>'+
-          '<td><button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteAssignment('+a.id+')">Xoá</button></td></tr>';
+        var noteHtml = a.note ? '<br><span style="font-size:12px;color:var(--text-faint);">📌 '+escHtml(a.note)+'</span>' : '';
+        var dl = a.deadline ? a.deadline.slice(0,10) : '';
+        return '<tr>'+
+          '<td>'+(a.student_name||a.student_email)+'<br><span style="font-size:12px;color:var(--text-faint);">'+a.student_email+'</span></td>'+
+          '<td>'+escHtml(a.title)+(a.group_name?'<br><span style="font-size:12px;color:#6F58EE;">🏫 '+escHtml(a.group_name)+'</span>':'')+'</td>'+
+          '<td>'+fmtDate(a.deadline)+noteHtml+'</td>'+
+          '<td>'+statusBadge+'</td>'+
+          '<td style="white-space:nowrap;">'+
+            '<button class="btn btn-sm" onclick="openAsgnEdit('+a.id+','+JSON.stringify(escHtml(a.title))+','+JSON.stringify(a.student_name||a.student_email)+','+JSON.stringify(dl)+','+JSON.stringify(a.note||'')+')">✏️</button> '+
+            '<button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteAssignment('+a.id+')">Xoá</button>'+
+          '</td>'+
+        '</tr>';
       }).join('');
     }).catch(function(){});
   }
@@ -1667,6 +1707,46 @@
   function deleteAssignment(id){
     if (!confirm('Xoá bài đã giao này?')) return;
     fetch('/api/teacher/assignments/'+id,{method:'DELETE',credentials:'same-origin'}).then(function(){loadAssignments();});
+  }
+
+  /* ===== ASSIGNMENT EDIT ===== */
+  var _asgnEditId = null;
+  function openAsgnEdit(id, title, student, deadline, note){
+    _asgnEditId = id;
+    document.getElementById('asgnEditInfo').innerHTML = '<b>'+title+'</b> → '+escHtml(student);
+    document.getElementById('asgnEditDeadline').value = deadline || '';
+    document.getElementById('asgnEditNote').value = note || '';
+    var msgEl = document.getElementById('asgnEditMsg');
+    msgEl.style.display = 'none'; msgEl.textContent = '';
+    document.getElementById('asgnEditOverlay').classList.add('open');
+  }
+  function closeAsgnEdit(){
+    document.getElementById('asgnEditOverlay').classList.remove('open');
+    _asgnEditId = null;
+  }
+  function saveAsgnEdit(){
+    if (!_asgnEditId) return;
+    var deadline = document.getElementById('asgnEditDeadline').value;
+    var note = document.getElementById('asgnEditNote').value.trim();
+    var msgEl = document.getElementById('asgnEditMsg');
+    fetch('/api/teacher/assignments/'+_asgnEditId, {
+      method:'PUT', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ deadline: deadline||null, note: note||null })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (d.ok) {
+        msgEl.style.display = 'block'; msgEl.style.color = '#16a34a';
+        msgEl.textContent = '✅ Đã lưu thay đổi.';
+        loadAssignments();
+        setTimeout(closeAsgnEdit, 900);
+      } else {
+        msgEl.style.display = 'block'; msgEl.style.color = 'var(--danger)';
+        msgEl.textContent = d.error || 'Lưu thất bại.';
+      }
+    }).catch(function(){
+      msgEl.style.display = 'block'; msgEl.style.color = 'var(--danger)';
+      msgEl.textContent = 'Lỗi kết nối.';
+    });
   }
 
   /* ===== BÀI NỘP & CHẤM ===== */

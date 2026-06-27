@@ -1077,6 +1077,17 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
   res.json({ ok: true });
 });
 
+// Giáo viên sửa bài đã giao (deadline + note)
+app.put('/api/teacher/assignments/:id', requireRole('teacher','admin'), (req, res) => {
+  const { deadline, note } = req.body || {};
+  const id = Number(req.params.id);
+  const row = db.prepare('SELECT id FROM assignments WHERE id=? AND assigned_by=?').get(id, req.user.id);
+  if (!row) return res.status(404).json({ error: 'Không tìm thấy bài đã giao.' });
+  db.prepare('UPDATE assignments SET deadline=?, note=? WHERE id=?')
+    .run(deadline || null, note || null, id);
+  res.json({ ok: true });
+});
+
 // Giáo viên xoá bài đã giao
 app.delete('/api/teacher/assignments/:id', requireRole('teacher','admin'), (req, res) => {
   db.prepare('DELETE FROM assignments WHERE id=? AND assigned_by=?').run(Number(req.params.id), req.user.id);
