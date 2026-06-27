@@ -2639,6 +2639,19 @@
 
 </script>
 
+<!-- ===== EXAM PART SELECTOR MODAL ===== -->
+<div id="partSelectorOverlay" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px;width:420px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+    <h3 style="margin:0 0 6px;font-size:17px;">🎯 Chọn phần thi để chấm</h3>
+    <p style="font-size:13px;color:#6b7280;margin:0 0 18px;">Tiêu chí chấm điểm khác nhau theo từng phần.</p>
+    <div id="partSelectorOptions" style="display:grid;gap:8px;"></div>
+    <div style="display:flex;gap:8px;margin-top:18px;">
+      <button class="btn btn-primary" id="partSelectorConfirm" onclick="confirmPartAndGrade()" style="flex:1;">✅ Xác nhận & Chấm AI</button>
+      <button class="btn btn-sm" onclick="closePartSelector()" style="flex-shrink:0;">Huỷ</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== PROFESSIONAL GRADING PANEL ===== -->
 <div id="gpOverlay">
   <!-- Header -->
@@ -2684,6 +2697,16 @@
           <div style="color:var(--text-faint);font-size:14px;">Đang phân tích bài làm...</div>
         </div>
         <div id="gpAIResult" style="display:none;"></div>
+        <!-- Review bar — hiện sau khi AI chấm xong -->
+        <div id="gpReviewBar" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:#374151;">✏️ Chỉnh sửa nhận xét trước khi gửi:</div>
+          <textarea id="gpAIFeedbackEdit" rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:13px;resize:vertical;font-family:inherit;" placeholder="Nhận xét tổng quát (tuỳ chỉnh nếu cần)..."></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn btn-primary" onclick="doSendGrade()" style="flex:1;">📨 Gửi kết quả cho học sinh</button>
+            <button class="btn btn-sm" onclick="doAiGradeAgain()" title="Chấm lại">🔄</button>
+          </div>
+          <div id="gpSendMsg" style="display:none;margin-top:8px;font-size:13px;"></div>
+        </div>
       </div>
 
       <!-- ─── Pane: Manual ─── -->
@@ -2726,11 +2749,17 @@
    PROFESSIONAL GRADING PANEL — JavaScript
    =================================================================== */
 
-var _gpSubId = null;
-var _gpExId  = null;
+var _gpSubId       = null;
+var _gpExId        = null;
+var _gpProgram     = null;
+var _gpMaxScore    = null;
+var _gpTaskOverride = null;
 
 function openGradingPanel(subId) {
-  _gpSubId = subId;
+  _gpSubId        = subId;
+  _gpProgram      = null;
+  _gpMaxScore     = null;
+  _gpTaskOverride = null;
   var overlay = document.getElementById('gpOverlay');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2746,6 +2775,8 @@ function openGradingPanel(subId) {
   document.getElementById('gpAIResult').innerHTML        = '';
   document.getElementById('gpAILoading').style.display   = 'none';
   document.getElementById('gpAIActions').style.display   = '';
+  document.getElementById('gpReviewBar').style.display   = 'none';
+  document.getElementById('gpSendMsg').style.display     = 'none';
   document.getElementById('gpModelResult').style.display = 'none';
   document.getElementById('gpModelLoading').style.display= 'none';
   document.getElementById('gpManualMsg').style.display   = 'none';
@@ -2756,7 +2787,8 @@ function openGradingPanel(subId) {
     .then(function(d) {
       var sub = d.submission;
       if (!sub) { document.getElementById('gpStudentName').textContent = 'Lỗi tải bài nộp.'; return; }
-      _gpExId = sub.exercise_id;
+      _gpExId    = sub.exercise_id;
+      _gpProgram = sub.program || null;
 
       // Header info
       var progBadge = sub.program ? '<span style="background:#ede9fe;color:#5b21b6;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-left:6px;">'+escHtml(sub.program)+'</span>' : '';
@@ -2764,9 +2796,12 @@ function openGradingPanel(subId) {
       document.getElementById('gpExerciseTitle').textContent = sub.title + (sub.skill ? ' · ' + sub.skill : '');
 
       var scoreText = sub.score != null ? sub.score + (sub.max_score ? '/' + sub.max_score : '') : null;
-      document.getElementById('gpStatusBadge').innerHTML = sub.status === 'graded'
-        ? '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm' + (scoreText ? ': ' + scoreText : '') + '</span>'
-        : '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
+      document.getElementById('gpStatusBadge').innerHTML =
+        (sub.status === 'graded')
+          ? '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm' + (scoreText ? ': ' + scoreText : '') + '</span>'
+          : (sub.status === 'pending_review')
+            ? '<span class="badge badge-grading" style="font-size:13px;">🔍 Chờ xác nhận GV</span>'
+            : '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
 
       // Essay
       var essayText = '';
@@ -2785,14 +2820,20 @@ function openGradingPanel(subId) {
       catch(e) { feedbackVal = sub.feedback || ''; }
       document.getElementById('gpFeedback').value = feedbackVal;
 
-      // If already AI-graded, show result
-      if (sub.status === 'graded' && sub.feedback) {
+      // If already AI-graded (or pending review), show result
+      if ((sub.status === 'graded' || sub.status === 'pending_review') && sub.feedback) {
         try {
           var fb2 = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback;
           if (fb2 && fb2.criteria) {
+            _gpMaxScore = sub.max_score || 5;
             document.getElementById('gpAIActions').style.display = 'none';
             document.getElementById('gpAIResult').style.display  = '';
             document.getElementById('gpAIResult').innerHTML = renderAIResult(fb2);
+            // Show review bar if pending
+            if (sub.status === 'pending_review') {
+              document.getElementById('gpAIFeedbackEdit').value = fb2.summary || '';
+              document.getElementById('gpReviewBar').style.display = '';
+            }
           }
         } catch(e) {}
       }
@@ -2813,10 +2854,14 @@ function openGradingPanel(subId) {
 
 function closeGradingPanel() {
   document.getElementById('gpOverlay').classList.remove('open');
+  closePartSelector();
   document.body.style.overflow = '';
   hideAnnToolbar();
-  _gpSubId = null;
-  _gpExId  = null;
+  _gpSubId        = null;
+  _gpExId         = null;
+  _gpProgram      = null;
+  _gpMaxScore     = null;
+  _gpTaskOverride = null;
   loadSubmissions(); // refresh list
 }
 
@@ -2831,16 +2876,77 @@ function gpShowTab(tab) {
   });
 }
 
-/* ─── AI GRADING ─── */
-async function doAiGrade() {
+/* ─── PART SELECTOR ─── */
+var _PART_OPTIONS = {
+  KET:   [['Part 1 — Email/Lời nhắn (~25 từ)', 'Part 1 email'], ['Part 2 — Viết truyện từ tranh (~35 từ)', 'Part 2 story']],
+  PET:   [['Part 1 — Email/thư (~100 từ, có notes)', 'Part 1 email'], ['Part 2 — Article/Story/Review (~100 từ, tự do)', 'Part 2 article']],
+  FCE:   [['Part 1 — Essay nghị luận bắt buộc (140–190 từ)', 'Part 1 essay'], ['Part 2 — Bài viết tự chọn (140–190 từ)', 'Part 2 choice']],
+  IELTS: [['Task 1 — Mô tả biểu đồ / Viết thư (≥150 từ)', 'Task 1'], ['Task 2 — Luận điểm / Essay (≥250 từ)', 'Task 2']],
+  APTIS: [['Part 1 — Word-level (5 tin nhắn ngắn, thang 0–3)', 'Part 1'], ['Part 2 — Short text (20–30 từ, thang 0–5)', 'Part 2'], ['Part 3 — Group chat replies (30–40 từ/reply, thang 0–5)', 'Part 3'], ['Part 4 — Formal & Informal email (thang 0–6)', 'Part 4']]
+};
+
+function doAiGrade() {
+  if (!_gpSubId) return;
+  var opts = _gpProgram ? _PART_OPTIONS[_gpProgram] : null;
+  if (opts) {
+    // Show part selector
+    var el = document.getElementById('partSelectorOptions');
+    el.innerHTML = '';
+    opts.forEach(function(o, i) {
+      var id = 'psOpt' + i;
+      el.innerHTML += '<label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s;" onclick="psSelect(this)">' +
+        '<input type="radio" name="psOpt" value="' + escHtml(o[1]) + '" style="margin-top:2px;accent-color:var(--primary);">' +
+        '<span style="font-size:14px;">' + escHtml(o[0]) + '</span></label>';
+    });
+    // Default select first
+    var first = el.querySelector('input[type=radio]');
+    if (first) { first.checked = true; psSelect(first.closest('label')); }
+    var overlay = document.getElementById('partSelectorOverlay');
+    overlay.style.display = 'flex';
+  } else {
+    _gpTaskOverride = null;
+    _runAiGrade();
+  }
+}
+
+function psSelect(label) {
+  document.querySelectorAll('#partSelectorOptions label').forEach(function(l) {
+    l.style.borderColor = 'var(--border)';
+    l.style.background  = '';
+  });
+  label.style.borderColor = 'var(--primary)';
+  label.style.background  = 'var(--primary-soft,#f5f3ff)';
+}
+
+function closePartSelector() {
+  document.getElementById('partSelectorOverlay').style.display = 'none';
+}
+
+function confirmPartAndGrade() {
+  var checked = document.querySelector('#partSelectorOptions input[name=psOpt]:checked');
+  _gpTaskOverride = checked ? checked.value : null;
+  closePartSelector();
+  _runAiGrade();
+}
+
+function doAiGradeAgain() {
+  document.getElementById('gpReviewBar').style.display  = 'none';
+  document.getElementById('gpAIResult').style.display   = 'none';
+  document.getElementById('gpAIResult').innerHTML       = '';
+  document.getElementById('gpAIActions').style.display  = '';
+}
+
+async function _runAiGrade() {
   if (!_gpSubId) return;
   document.getElementById('gpAIActions').style.display  = 'none';
+  document.getElementById('gpReviewBar').style.display  = 'none';
   document.getElementById('gpAILoading').style.display  = '';
   document.getElementById('gpAIResult').style.display   = 'none';
   try {
     var r = await fetch('/api/teacher/ai-grade/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json' }, body: '{}'
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task_type_override: _gpTaskOverride || undefined })
     });
     var d = await r.json();
     document.getElementById('gpAILoading').style.display = 'none';
@@ -2849,19 +2955,53 @@ async function doAiGrade() {
       alert('Chấm AI thất bại: ' + (d.error || 'Lỗi không xác định'));
       return;
     }
+    _gpMaxScore = d.max_score || 5;
     document.getElementById('gpAIResult').innerHTML = renderAIResult(d.result);
     document.getElementById('gpAIResult').style.display = '';
     // Update status badge
     var sc = d.result.overall_score;
-    document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm' + (sc != null ? ': ' + sc + '/100' : '') + '</span>';
+    var sl = d.result.scale_label || '';
+    document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-grading" style="font-size:13px;">🔍 Chờ xác nhận GV' + (sc != null ? ': ' + sc + '/' + _gpMaxScore : '') + '</span>';
     // Prefill manual tab
-    if (sc != null) { document.getElementById('gpScore').value = sc; document.getElementById('gpMaxScore').value = 100; }
+    if (sc != null) { document.getElementById('gpScore').value = sc; document.getElementById('gpMaxScore').value = _gpMaxScore; }
     if (d.result.summary) document.getElementById('gpFeedback').value = d.result.summary;
+    // Show review bar
+    document.getElementById('gpAIFeedbackEdit').value = d.result.summary || '';
+    document.getElementById('gpReviewBar').style.display = '';
+    document.getElementById('gpSendMsg').style.display   = 'none';
     loadSubmissions();
   } catch(e) {
     document.getElementById('gpAILoading').style.display = 'none';
     document.getElementById('gpAIActions').style.display = '';
     alert('Lỗi kết nối khi chấm AI.');
+  }
+}
+
+/* ─── SEND GRADE TO STUDENT ─── */
+async function doSendGrade() {
+  if (!_gpSubId) return;
+  var msgEl    = document.getElementById('gpSendMsg');
+  var feedback = document.getElementById('gpAIFeedbackEdit').value.trim();
+  var score    = document.getElementById('gpScore').value;
+  var maxScore = _gpMaxScore || document.getElementById('gpMaxScore').value || 5;
+  try {
+    var r = await fetch('/api/teacher/send-grade/' + _gpSubId, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), feedback: feedback || undefined })
+    });
+    var d = await r.json();
+    msgEl.style.display = 'block';
+    if (d.ok) {
+      msgEl.style.color = 'var(--success,#16a34a)';
+      msgEl.textContent = '✅ Đã gửi kết quả cho học sinh!';
+      document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm: ' + (score || '?') + '/' + maxScore + '</span>';
+      loadSubmissions();
+    } else {
+      msgEl.style.color = 'var(--danger)'; msgEl.textContent = d.error || 'Gửi thất bại.';
+    }
+  } catch(e) {
+    msgEl.style.display = 'block'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = 'Lỗi kết nối.';
   }
 }
 

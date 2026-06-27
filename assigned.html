@@ -75,6 +75,80 @@
   }
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
 
+  function renderStudentGradeResult(result, score, maxScore) {
+    var sc  = score != null ? score : (result.overall_score != null ? result.overall_score : null);
+    var mx  = maxScore || (result.scale_label && result.scale_label.match(/\(0[–\-](\d+)\)/) ? parseInt(result.scale_label.match(/\(0[–\-](\d+)\)/)[1]) : 5);
+    var sl  = result.scale_label || '';
+    if (sc == null) return '<span style="color:var(--text-faint);">Đã chấm</span>';
+    var pct = mx ? Math.round((sc / mx) * 100) : 0;
+    var col = pct >= 70 ? '#16a34a' : pct >= 50 ? '#d97706' : '#dc2626';
+    return '<div style="text-align:center;min-width:72px;">' +
+      '<div style="font-size:26px;font-weight:800;color:'+col+';">'+sc+'<span style="font-size:14px;font-weight:500;color:#9ca3af;">/'+mx+'</span></div>' +
+      (sl ? '<div style="font-size:10px;color:#9ca3af;margin-top:1px;white-space:nowrap;">'+esc(sl)+'</div>' : '') +
+      '</div>';
+  }
+
+  function renderStudentFeedback(result) {
+    var html = '<div style="margin-top:12px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">';
+    // Summary
+    if (result.summary) {
+      html += '<div style="padding:12px 14px;background:#f5f3ff;border-bottom:1px solid #e5e7eb;font-size:13px;line-height:1.6;color:#374151;">'+esc(result.summary)+'</div>';
+    }
+    // Criteria table
+    if (result.criteria && result.criteria.length) {
+      html += '<div style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">';
+      html += '<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">📊 Phân tích tiêu chí</div>';
+      result.criteria.forEach(function(c) {
+        var pct = c.max_score ? Math.round((c.score/c.max_score)*100) : c.score*10;
+        var barColor = pct>=70?'#22c55e':pct>=50?'#f59e0b':'#ef4444';
+        html += '<div style="margin-bottom:8px;">';
+        html += '<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;">';
+        html += '<span style="font-weight:600;color:#374151;">'+esc(c.name)+'</span>';
+        html += '<span style="font-weight:700;color:#111827;">'+c.score+(c.max_score?'<span style="color:#9ca3af;font-weight:400;">/'+c.max_score+'</span>':'')+'</span>';
+        html += '</div>';
+        html += '<div style="height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;">';
+        html += '<div style="height:100%;width:'+Math.min(pct,100)+'%;background:'+barColor+';border-radius:3px;transition:width .4s;"></div></div>';
+        if (c.comment) html += '<div style="font-size:11.5px;color:#6b7280;margin-top:3px;">'+esc(c.comment)+'</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+    // Suggestions / keynotes
+    if (result.suggestions && result.suggestions.length) {
+      html += '<div style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">';
+      html += '<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">💡 Điểm cần cải thiện</div>';
+      result.suggestions.forEach(function(s) {
+        html += '<div style="display:flex;gap:6px;font-size:13px;color:#374151;padding:3px 0;"><span>•</span><span>'+esc(s)+'</span></div>';
+      });
+      html += '</div>';
+    }
+    // Error list (collapsed by default)
+    if (result.error_list && result.error_list.length) {
+      html += '<div style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">';
+      html += '<details><summary style="font-size:13px;font-weight:600;cursor:pointer;color:#374151;">🔍 Phân tích lỗi ('+result.error_list.length+' lỗi)</summary>';
+      html += '<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">';
+      result.error_list.forEach(function(err) {
+        var cat = err.category || 'Other';
+        html += '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px;">';
+        html += '<span style="display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:10px;margin-bottom:6px;background:#ede9fe;color:#5b21b6;">'+esc(cat)+'</span>';
+        html += '<div style="font-size:13px;color:#dc2626;margin-bottom:4px;">❌ '+esc(err.error||'')+'</div>';
+        html += '<div style="font-size:13px;color:#16a34a;margin-bottom:4px;">✅ '+esc(err.correction||'')+'</div>';
+        if (err.explanation) html += '<div style="font-size:12px;color:#6b7280;">'+esc(err.explanation)+'</div>';
+        html += '</div>';
+      });
+      html += '</div></details></div>';
+    }
+    // Suggested writing (model answer from AI)
+    if (result.suggested_writing) {
+      html += '<div style="padding:12px 14px;">';
+      html += '<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">✍️ Bài mẫu tham khảo</div>';
+      html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:13px;line-height:1.8;color:#374151;white-space:pre-wrap;">'+esc(result.suggested_writing)+'</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
   function skillIcon(skill){
     return {Reading:'📖',Listening:'🎧',Writing:'✍️',Speaking:'🗣️'}[skill] || '📝';
   }
@@ -198,21 +272,30 @@
       html += '<div class="card"><div class="card-head"><h3>✅ Đã có điểm <span class="tag">'+graded.length+'</span></h3></div>';
       graded.forEach(function(a){
         var ico = skillColor(a.skill);
-        var score = (a.submission_score!==null && a.submission_score!==undefined)
-          ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||10)+'</span>'
-          : '<span style="color:var(--text-faint);">Đã chấm</span>';
         var fb = '';
+        var scoreDisplay = '';
         if (a.submission_feedback){
           try {
             var fbData = JSON.parse(a.submission_feedback);
-            var fbText = typeof fbData==='string' ? fbData : (fbData.overall||fbData.feedback||JSON.stringify(fbData));
-            fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;color:var(--text);">'+esc(fbText)+'</div>';
+            if (fbData && fbData.criteria) {
+              // AI graded — render beautifully
+              scoreDisplay = renderStudentGradeResult(fbData, a.submission_score, a.submission_max);
+              fb = renderStudentFeedback(fbData);
+            } else {
+              // Plain text feedback
+              var fbText = typeof fbData === 'string' ? fbData : (fbData.overall || fbData.feedback || '');
+              scoreDisplay = (a.submission_score != null) ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||5)+'</span>' : '<span style="color:var(--text-faint);">Đã chấm</span>';
+              if (fbText) fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;color:var(--text);">'+esc(fbText)+'</div>';
+            }
           } catch(e){
+            scoreDisplay = (a.submission_score != null) ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||5)+'</span>' : '<span style="color:var(--text-faint);">Đã chấm</span>';
             fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;">'+esc(a.submission_feedback)+'</div>';
           }
+        } else {
+          scoreDisplay = (a.submission_score != null) ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||5)+'</span>' : '<span style="color:var(--text-faint);">Đã chấm</span>';
         }
         var annBtn = a.submission_id
-          ? '<button onclick="toggleAnnotations('+a.submission_id+',this)" style="background:none;border:1px solid #c7d2fe;border-radius:8px;padding:4px 12px;font-size:12px;color:#6366f1;cursor:pointer;margin-top:6px;">🖍 Xem ghi chú của giáo viên</button>'
+          ? '<button onclick="toggleAnnotations('+a.submission_id+',this)" style="background:none;border:1px solid #c7d2fe;border-radius:8px;padding:4px 12px;font-size:12px;color:#6366f1;cursor:pointer;margin-top:10px;">🖍 Xem ghi chú của giáo viên</button>'
           : '';
         html += '<div class="task" style="flex-direction:column;align-items:stretch;gap:0;">'+
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">'+
@@ -220,7 +303,7 @@
           '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
           '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
           '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div></div></div>'+
-          score+'</div>'+fb+
+          scoreDisplay+'</div>'+fb+
           (a.submission_id ? '<div id="annPanel-'+a.submission_id+'" style="display:none;margin-top:10px;"></div>' : '')+
           annBtn+'</div>';
       });

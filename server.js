@@ -1080,6 +1080,7 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
 // Giáo viên chấm bài bằng AI (dùng lại gradeWriting đã có)
 app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const subId = Number(req.params.id);
+  const { task_type_override } = req.body || {};
   const sub = db.prepare(`
     SELECT s.*, u.name AS student_name, u.email AS student_email,
            e.title AS exercise_title, e.program, e.skill,
@@ -1101,15 +1102,60 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
   if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
 
   try {
-    const ex = { program: sub.program, skill: sub.skill, content: sub.content, image_url: sub.image_url, task_type: sub.task_type, metadata: sub.metadata };
+    const ex = {
+      program: sub.program, skill: sub.skill, content: sub.content,
+      image_url: sub.image_url, task_type: sub.task_type, metadata: sub.metadata,
+      title: sub.exercise_title,
+      _task_override: task_type_override || null
+    };
     const result = await gradeWriting(ex, essay, null);
+    // Tính max_score từ scale_label (ví dụ "A2 Key (0–5)" → 5)
+    let maxScore = 5;
+    if (result.scale_label) {
+      const m = result.scale_label.match(/\(0[–\-](\d+)\)/);
+      if (m) maxScore = parseInt(m[1]);
+    }
+    // Lưu kết quả với status='pending_review' — chưa gửi cho học sinh
     db.prepare('UPDATE submissions SET feedback=?, score=?, max_score=?, status=? WHERE id=?')
-      .run(JSON.stringify(result), result.overall_score ?? null, 100, 'graded', subId);
-    res.json({ ok: true, result });
+      .run(JSON.stringify(result), result.overall_score ?? null, maxScore, 'pending_review', subId);
+    res.json({ ok: true, result, max_score: maxScore });
   } catch (e) {
     console.error('[teacher/ai-grade]', e.message);
     res.status(500).json({ error: 'Chấm AI thất bại: ' + String(e.message).slice(0, 300) });
   }
+});
+
+// Giáo viên xác nhận & gửi kết quả chấm cho học sinh
+app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
+  const subId = Number(req.params.id);
+  const { score, max_score, feedback } = req.body || {};
+  const sub = db.prepare(`
+    SELECT s.*, u.name AS student_name, u.email AS student_email, e.title AS exercise_title
+    FROM submissions s JOIN users u ON u.id=s.user_id JOIN exercises e ON e.id=s.exercise_id
+    WHERE s.id=?
+  `).get(subId);
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
+  // Cập nhật score/feedback nếu giáo viên có chỉnh sửa
+  db.prepare('UPDATE submissions SET score=?, max_score=?, feedback=?, status=? WHERE id=?')
+    .run(score ?? sub.score, max_score ?? sub.max_score, feedback ?? sub.feedback, 'graded', subId);
+  const link = baseUrl(req) + '/assigned.html';
+  const scoreText = (score !== undefined && score !== null) ? `${score}/${max_score ?? sub.max_score ?? 5}` : 'Đã chấm';
+  if (emailEnabled()) {
+    const fbHtml = feedback ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${feedback}</p>` : '';
+    sendBrevoEmail(
+      { email: sub.student_email, name: sub.student_name },
+      `Bài của bạn đã được chấm — ${sub.exercise_title}`,
+      `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
+        <h2 style="color:#6F58EE">✅ Bài của bạn đã được chấm!</h2>
+        <p>Bài tập: <b>${sub.exercise_title}</b></p>
+        <p>Điểm số: <b style="font-size:20px;color:#6F58EE">${scoreText}</b></p>
+        ${fbHtml}
+        <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem kết quả chi tiết</a></p>
+      </div>`
+    ).catch(() => {});
+  }
+  sendPushToUser(sub.user_id, '✅ Bài của bạn đã được chấm!', sub.exercise_title, link).catch(() => {});
+  res.json({ ok: true });
 });
 
 // Giáo viên lấy bài mẫu AI cho một đề (từ submission_id)
