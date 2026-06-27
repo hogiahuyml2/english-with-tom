@@ -69,6 +69,56 @@
   .char-count { text-align:right; font-size:11.5px; color:var(--text-faint); margin-top:3px; }
   .edit-action-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
 
+  /* ── Professional Grading Panel ── */
+  #gpOverlay { position:fixed; inset:0; z-index:2000; display:none; flex-direction:column; background:#f3f4f6; }
+  #gpOverlay.open { display:flex; }
+  #gpHeader { display:flex; align-items:center; gap:12px; padding:12px 20px; background:#fff; border-bottom:1px solid var(--border); flex-shrink:0; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+  #gpHeader h4 { margin:0; font-size:15px; }
+  #gpHeader .gp-meta { font-size:12px; color:var(--text-faint); margin-top:2px; }
+  #gpBody { flex:1; display:grid; grid-template-columns:45% 55%; min-height:0; overflow:hidden; }
+  @media(max-width:860px){ #gpBody{ grid-template-columns:1fr; grid-template-rows:auto 1fr; } }
+  #gpLeft { overflow-y:auto; padding:20px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:10px; background:#fff; }
+  #gpRight { overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:14px; }
+  .gp-section-title { font-size:11px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.07em; margin-bottom:2px; }
+  #gpEssay { font-size:14px; line-height:1.95; white-space:pre-wrap; background:var(--bg-soft,#f8f7ff); border:1px solid var(--border); border-radius:10px; padding:16px; cursor:text; user-select:text; }
+  /* Tab bar */
+  .gp-tabs { display:flex; gap:4px; background:#e9eaed; padding:4px; border-radius:12px; }
+  .gp-tab { flex:1; padding:7px 4px; border:none; background:transparent; border-radius:9px; font-size:12.5px; font-weight:600; cursor:pointer; color:#6b7280; transition:all .15s; }
+  .gp-tab.active { background:#fff; color:var(--primary); box-shadow:0 1px 6px rgba(0,0,0,.1); }
+  .gp-pane { display:none; flex-direction:column; gap:12px; }
+  .gp-pane.active { display:flex; }
+  /* Criteria table */
+  .crit-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .crit-table th { text-align:left; font-size:11px; color:var(--text-faint); font-weight:600; text-transform:uppercase; padding:6px 8px; border-bottom:2px solid var(--border); }
+  .crit-table td { padding:8px; border-bottom:1px solid var(--border); vertical-align:top; }
+  .crit-bar-wrap { background:#e9eaed; border-radius:99px; height:7px; margin-top:5px; overflow:hidden; }
+  .crit-bar { height:7px; border-radius:99px; background:linear-gradient(90deg,#6F58EE,#a78bfa); }
+  /* Score badge */
+  .gp-score-badge { display:inline-flex; flex-direction:column; align-items:center; background:linear-gradient(135deg,#6F58EE,#a78bfa); color:#fff; border-radius:14px; padding:14px 22px; min-width:90px; }
+  .gp-score-badge .score-num { font-size:32px; font-weight:800; line-height:1; }
+  .gp-score-badge .score-label { font-size:11px; opacity:.85; margin-top:3px; }
+  /* Error list */
+  .err-card { border-radius:10px; padding:12px 14px; border:1px solid var(--border); margin-bottom:8px; }
+  .err-badge { display:inline-block; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:700; margin-bottom:6px; }
+  .err-badge.Grammar    { background:#dbeafe; color:#1d4ed8; }
+  .err-badge.Vocabulary { background:#fce7f3; color:#9d174d; }
+  .err-badge.Punctuation{ background:#d1fae5; color:#065f46; }
+  .err-badge.Style      { background:#ede9fe; color:#5b21b6; }
+  .err-badge.Spelling   { background:#fef3c7; color:#92400e; }
+  .err-badge.Coherence  { background:#f0fdf4; color:#166534; }
+  .err-compare { display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12.5px; margin:4px 0; }
+  .err-wrong { background:#fee2e2; color:#991b1b; border-radius:6px; padding:4px 8px; }
+  .err-right { background:#d1fae5; color:#065f46; border-radius:6px; padding:4px 8px; }
+  /* Model answer */
+  .model-answer-box { background:#f8f7ff; border:1px solid #c4b5fd; border-radius:10px; padding:14px; font-size:13.5px; line-height:1.9; white-space:pre-wrap; color:#2e2b45; }
+  .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .vocab-item { background:#fff; border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12.5px; }
+  .vocab-item strong { display:block; color:var(--primary); }
+  /* AI result summary */
+  .gp-summary-box { background:#f0fdf4; border:1px solid #86efac; border-radius:10px; padding:14px; font-size:13.5px; line-height:1.8; color:#14532d; }
+  .gp-suggestion-item { display:flex; gap:8px; font-size:13px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .gp-suggestion-item:last-child { border-bottom:none; }
+
   /* ── Assignment Edit Modal ── */
   .asgn-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.42); z-index:1400; display:none; align-items:center; justify-content:center; }
   .asgn-modal-overlay.open { display:flex; }
@@ -1912,7 +1962,8 @@
       note: note || null,
       color: color ? color.dataset.color : '#fbbf24'
     };
-    var subId = _pendingSelection.subId;
+    var subId   = _pendingSelection.subId;
+    var gpMode  = _pendingSelection.gpMode;
     hideAnnToolbar();
     window.getSelection && window.getSelection().removeAllRanges();
     document.getElementById('annNoteInput').value = '';
@@ -1920,12 +1971,16 @@
       method:'POST', credentials:'same-origin',
       headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
     });
-    if (r.ok) renderAnnotations(subId);
+    if (r.ok) {
+      if (gpMode) gpLoadAnnotations();
+      else renderAnnotations(subId);
+    }
   }
 
   async function annDelete(annId, subId) {
     await fetch('/api/annotations/'+annId, { method:'DELETE', credentials:'same-origin' });
-    renderAnnotations(subId);
+    if (_gpSubId) gpLoadAnnotations();
+    else renderAnnotations(subId);
   }
 
   /* Tính offset ký tự trong plain-text của essay */
@@ -1985,62 +2040,9 @@
     }
   }
 
-  /* ===== LOAD & GRADE ===== */
-  async function loadAndGrade(subId, btn){
-    var box = document.getElementById('gradeBox'+subId);
-    if (box.style.display !== 'none'){ box.style.display='none'; btn.textContent='📖 Xem bài & chấm'; hideAnnToolbar(); return; }
-    btn.textContent = '⏳ Đang tải...';
-    var d = await fetch('/api/teacher/submission/'+subId,{credentials:'same-origin'}).then(r=>r.json()).catch(function(){return {};});
-    btn.textContent = '📖 Xem bài & chấm';
-    var sub = d.submission;
-    if (!sub){ box.innerHTML='<p style="color:var(--danger);">Không tải được bài nộp.</p>'; box.style.display='block'; return; }
-
-    var essayText = '';
-    try { var ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers; essayText = ans.essay || JSON.stringify(ans); } catch(e){ essayText = sub.answers || ''; }
-
-    var feedbackVal = '';
-    try { var fb = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback; feedbackVal = fb && fb.summary ? fb.summary : (sub.feedback || ''); } catch(e){ feedbackVal = sub.feedback || ''; }
-
-    box.innerHTML =
-      '<p style="font-size:13px;font-weight:700;margin-bottom:4px;">📝 Bài làm của học sinh <span style="font-size:11px;font-weight:400;color:var(--text-muted);">(bôi đen để highlight & ghi chú)</span></p>' +
-      '<div class="sub-essay" id="essay-'+subId+'" data-raw="'+escHtml(essayText)+'"></div>' +
-      '<details style="margin-top:8px;"><summary style="font-size:13px;font-weight:600;cursor:pointer;color:var(--primary);">🖍 Annotations (<span id="annCount-'+subId+'">...</span>)</summary><div id="annList-'+subId+'" style="padding:8px 0;"></div></details>' +
-      '<div class="grade-row">' +
-        '<div class="field"><label>Điểm</label><input type="number" id="sc'+subId+'" min="0" max="100" value="'+(sub.score!=null?sub.score:'')+'" placeholder="VD: 8"></div>' +
-        '<div class="field"><label>Điểm tối đa</label><input type="number" id="mx'+subId+'" min="1" max="100" value="'+(sub.max_score||10)+'" placeholder="10"></div>' +
-        '<div class="field" style="flex:3;"><label>Nhận xét cho học sinh</label><input type="text" id="fb'+subId+'" value="'+escHtml(String(feedbackVal))+'" placeholder="Nhận xét..."></div>' +
-        '<button class="btn btn-primary" onclick="saveGrade('+subId+')">💾 Lưu điểm</button>' +
-      '</div>' +
-      '<p id="gradeMsg'+subId+'" style="display:none;font-size:13px;margin-top:8px;"></p>';
-    box.style.display = 'block';
-
-    // Load annotations & bind selection event
-    await renderAnnotations(subId);
-    var countEl = document.getElementById('annCount-'+subId);
-    if (countEl) {
-      var annD = await fetch('/api/submissions/'+subId+'/annotations',{credentials:'same-origin'}).then(r=>r.json()).catch(function(){return{};});
-      countEl.textContent = (annD.annotations||[]).length;
-    }
-
-    var essayEl = document.getElementById('essay-'+subId);
-    essayEl.addEventListener('mouseup', function(e) {
-      var offsets = getSelectionOffsets(essayEl);
-      if (!offsets) { hideAnnToolbar(); return; }
-      _pendingSelection = Object.assign(offsets, { subId: subId });
-      showAnnToolbar(e.clientX, e.clientY);
-    });
-  }
-
-  async function saveGrade(subId){
-    var score    = Number(document.getElementById('sc'+subId).value);
-    var max      = Number(document.getElementById('mx'+subId).value) || 10;
-    var feedback = document.getElementById('fb'+subId).value.trim();
-    var r = await fetch('/api/teacher/grade/'+subId,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({score,max_score:max,feedback})});
-    var p = document.getElementById('gradeMsg'+subId);
-    if (r.ok){ p.style.color='var(--success)'; p.textContent='✅ Đã lưu điểm & gửi thông báo cho học sinh!'; }
-    else      { p.style.color='var(--danger)';  p.textContent='Lưu thất bại.'; }
-    p.style.display='block';
-    loadSubmissions();
+  /* ===== LOAD & GRADE — mở Professional Grading Panel ===== */
+  function loadAndGrade(subId, btn) {
+    openGradingPanel(subId);
   }
 
   // Đóng toolbar khi click ra ngoài
@@ -2635,6 +2637,452 @@
     });
   })();
 
+</script>
+
+<!-- ===== PROFESSIONAL GRADING PANEL ===== -->
+<div id="gpOverlay">
+  <!-- Header -->
+  <div id="gpHeader">
+    <button class="btn btn-sm" onclick="closeGradingPanel()" style="flex-shrink:0;">← Đóng</button>
+    <div style="flex:1;min-width:0;">
+      <h4 id="gpStudentName"></h4>
+      <div class="gp-meta" id="gpExerciseTitle"></div>
+    </div>
+    <div id="gpStatusBadge"></div>
+  </div>
+
+  <!-- Body -->
+  <div id="gpBody">
+    <!-- LEFT: Essay + Annotations -->
+    <div id="gpLeft">
+      <div class="gp-section-title">📝 Bài làm học sinh</div>
+      <div style="font-size:12px;color:var(--text-faint);">Bôi đen text → chọn màu → highlight & ghi chú lỗi</div>
+      <div id="gpEssay" data-raw=""></div>
+      <details style="margin-top:4px;" open>
+        <summary style="font-size:13px;font-weight:600;cursor:pointer;color:var(--primary);user-select:none;">🖍 Annotations (<span id="gpAnnCount">0</span>)</summary>
+        <div id="gpAnnList" style="margin-top:8px;"></div>
+      </details>
+    </div>
+
+    <!-- RIGHT: Grading tools -->
+    <div id="gpRight">
+      <!-- Tab bar -->
+      <div class="gp-tabs">
+        <button class="gp-tab active" id="gpTabAI"     onclick="gpShowTab('ai')">🤖 Chấm AI</button>
+        <button class="gp-tab"        id="gpTabManual" onclick="gpShowTab('manual')">✍️ Thủ công</button>
+        <button class="gp-tab"        id="gpTabModel"  onclick="gpShowTab('model')">📖 Bài mẫu</button>
+      </div>
+
+      <!-- ─── Pane: AI ─── -->
+      <div class="gp-pane active" id="gpPaneAI">
+        <div id="gpAIActions">
+          <button class="btn btn-primary" id="gpAIBtn" onclick="doAiGrade()" style="width:100%;">🤖 Chấm bài bằng AI ngay</button>
+          <p style="font-size:12px;color:var(--text-faint);margin:6px 0 0;text-align:center;">Chấm theo tiêu chí chuẩn của kỳ thi · ~15–30 giây</p>
+        </div>
+        <div id="gpAILoading" style="display:none;text-align:center;padding:30px;">
+          <div style="font-size:28px;margin-bottom:10px;">⏳</div>
+          <div style="color:var(--text-faint);font-size:14px;">Đang phân tích bài làm...</div>
+        </div>
+        <div id="gpAIResult" style="display:none;"></div>
+      </div>
+
+      <!-- ─── Pane: Manual ─── -->
+      <div class="gp-pane" id="gpPaneManual">
+        <div class="gp-section-title">Chấm thủ công</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="field" style="margin:0;">
+            <label>Điểm đạt được</label>
+            <input type="number" id="gpScore" min="0" max="100" placeholder="VD: 8">
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Điểm tối đa</label>
+            <input type="number" id="gpMaxScore" min="1" max="100" value="10">
+          </div>
+        </div>
+        <div class="field" style="margin:0;">
+          <label>Nhận xét chi tiết cho học sinh</label>
+          <textarea id="gpFeedback" style="min-height:140px;" placeholder="Nhập nhận xét — điểm mạnh, điểm yếu, gợi ý cải thiện..."></textarea>
+        </div>
+        <div id="gpCriteriaManual"></div>
+        <button class="btn btn-primary" onclick="saveManualGrade()" style="width:100%;">💾 Lưu điểm & gửi thông báo học sinh</button>
+        <p id="gpManualMsg" style="display:none;font-size:13px;margin:0;"></p>
+      </div>
+
+      <!-- ─── Pane: Model Answer ─── -->
+      <div class="gp-pane" id="gpPaneModel">
+        <button class="btn" id="gpModelBtn" onclick="loadGpModelAnswer()" style="width:100%;">📖 Tạo bài mẫu AI cho đề này</button>
+        <div id="gpModelLoading" style="display:none;text-align:center;padding:30px;">
+          <div style="font-size:28px;margin-bottom:10px;">📝</div>
+          <div style="color:var(--text-faint);font-size:14px;">Đang tạo bài mẫu...</div>
+        </div>
+        <div id="gpModelResult" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================================================================
+   PROFESSIONAL GRADING PANEL — JavaScript
+   =================================================================== */
+
+var _gpSubId = null;
+var _gpExId  = null;
+
+function openGradingPanel(subId) {
+  _gpSubId = subId;
+  var overlay = document.getElementById('gpOverlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Reset UI
+  document.getElementById('gpStudentName').textContent   = '⏳ Đang tải...';
+  document.getElementById('gpExerciseTitle').textContent = '';
+  document.getElementById('gpStatusBadge').innerHTML     = '';
+  document.getElementById('gpEssay').textContent         = '';
+  document.getElementById('gpAnnList').innerHTML         = '';
+  document.getElementById('gpAnnCount').textContent      = '0';
+  document.getElementById('gpAIResult').style.display    = 'none';
+  document.getElementById('gpAIResult').innerHTML        = '';
+  document.getElementById('gpAILoading').style.display   = 'none';
+  document.getElementById('gpAIActions').style.display   = '';
+  document.getElementById('gpModelResult').style.display = 'none';
+  document.getElementById('gpModelLoading').style.display= 'none';
+  document.getElementById('gpManualMsg').style.display   = 'none';
+  gpShowTab('ai');
+
+  fetch('/api/teacher/submission/' + subId, { credentials: 'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var sub = d.submission;
+      if (!sub) { document.getElementById('gpStudentName').textContent = 'Lỗi tải bài nộp.'; return; }
+      _gpExId = sub.exercise_id;
+
+      // Header info
+      var progBadge = sub.program ? '<span style="background:#ede9fe;color:#5b21b6;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-left:6px;">'+escHtml(sub.program)+'</span>' : '';
+      document.getElementById('gpStudentName').innerHTML = escHtml(sub.student_name || sub.student_email) + progBadge;
+      document.getElementById('gpExerciseTitle').textContent = sub.title + (sub.skill ? ' · ' + sub.skill : '');
+
+      var scoreText = sub.score != null ? sub.score + (sub.max_score ? '/' + sub.max_score : '') : null;
+      document.getElementById('gpStatusBadge').innerHTML = sub.status === 'graded'
+        ? '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm' + (scoreText ? ': ' + scoreText : '') + '</span>'
+        : '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
+
+      // Essay
+      var essayText = '';
+      try { var ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers; essayText = ans.essay || JSON.stringify(ans); }
+      catch(e) { essayText = sub.answers || ''; }
+      var essayEl = document.getElementById('gpEssay');
+      essayEl.dataset.raw = essayText;
+      essayEl.textContent = essayText;
+
+      // Manual grade prefill
+      document.getElementById('gpScore').value    = sub.score != null ? sub.score : '';
+      document.getElementById('gpMaxScore').value = sub.max_score || 10;
+      var feedbackVal = '';
+      try { var fb = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback;
+            feedbackVal = fb && fb.summary ? fb.summary : (typeof sub.feedback === 'string' ? sub.feedback : ''); }
+      catch(e) { feedbackVal = sub.feedback || ''; }
+      document.getElementById('gpFeedback').value = feedbackVal;
+
+      // If already AI-graded, show result
+      if (sub.status === 'graded' && sub.feedback) {
+        try {
+          var fb2 = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback;
+          if (fb2 && fb2.criteria) {
+            document.getElementById('gpAIActions').style.display = 'none';
+            document.getElementById('gpAIResult').style.display  = '';
+            document.getElementById('gpAIResult').innerHTML = renderAIResult(fb2);
+          }
+        } catch(e) {}
+      }
+
+      // Load annotations
+      gpLoadAnnotations();
+
+      // Bind selection
+      essayEl.addEventListener('mouseup', function(e) {
+        var offsets = getSelectionOffsets(essayEl);
+        if (!offsets) { hideAnnToolbar(); return; }
+        _pendingSelection = Object.assign(offsets, { subId: subId, gpMode: true });
+        showAnnToolbar(e.clientX, e.clientY);
+      });
+    })
+    .catch(function(){ document.getElementById('gpStudentName').textContent = 'Lỗi kết nối.'; });
+}
+
+function closeGradingPanel() {
+  document.getElementById('gpOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  hideAnnToolbar();
+  _gpSubId = null;
+  _gpExId  = null;
+  loadSubmissions(); // refresh list
+}
+
+function gpShowTab(tab) {
+  ['ai','manual','model'].forEach(function(t) {
+    document.getElementById('gpPane' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+    document.getElementById('gpTab'  + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+  });
+}
+
+/* ─── AI GRADING ─── */
+async function doAiGrade() {
+  if (!_gpSubId) return;
+  document.getElementById('gpAIActions').style.display  = 'none';
+  document.getElementById('gpAILoading').style.display  = '';
+  document.getElementById('gpAIResult').style.display   = 'none';
+  try {
+    var r = await fetch('/api/teacher/ai-grade/' + _gpSubId, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: '{}'
+    });
+    var d = await r.json();
+    document.getElementById('gpAILoading').style.display = 'none';
+    if (!r.ok || !d.result) {
+      document.getElementById('gpAIActions').style.display = '';
+      alert('Chấm AI thất bại: ' + (d.error || 'Lỗi không xác định'));
+      return;
+    }
+    document.getElementById('gpAIResult').innerHTML = renderAIResult(d.result);
+    document.getElementById('gpAIResult').style.display = '';
+    // Update status badge
+    var sc = d.result.overall_score;
+    document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm' + (sc != null ? ': ' + sc + '/100' : '') + '</span>';
+    // Prefill manual tab
+    if (sc != null) { document.getElementById('gpScore').value = sc; document.getElementById('gpMaxScore').value = 100; }
+    if (d.result.summary) document.getElementById('gpFeedback').value = d.result.summary;
+    loadSubmissions();
+  } catch(e) {
+    document.getElementById('gpAILoading').style.display = 'none';
+    document.getElementById('gpAIActions').style.display = '';
+    alert('Lỗi kết nối khi chấm AI.');
+  }
+}
+
+function renderAIResult(result) {
+  var html = '';
+
+  // Score + scale
+  var scoreNum  = result.overall_score != null ? result.overall_score : '–';
+  var scaleText = result.scale_label || '';
+  html += '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;">';
+  html += '<div class="gp-score-badge"><span class="score-num">' + scoreNum + '</span><span class="score-label">' + escHtml(scaleText) + '</span></div>';
+  if (result.summary) html += '<div class="gp-summary-box" style="flex:1;">' + escHtml(result.summary) + '</div>';
+  html += '</div>';
+
+  // Criteria table
+  if (result.criteria && result.criteria.length) {
+    html += '<div class="gp-section-title" style="margin-bottom:8px;">📊 Phân tích theo tiêu chí</div>';
+    html += '<table class="crit-table"><thead><tr><th>Tiêu chí</th><th style="width:70px;text-align:right;">Điểm</th></tr></thead><tbody>';
+    result.criteria.forEach(function(c) {
+      var pct = c.max_score ? Math.round((c.score / c.max_score) * 100) : c.score;
+      var barColor = pct >= 70 ? 'linear-gradient(90deg,#22c55e,#86efac)' : pct >= 50 ? 'linear-gradient(90deg,#f59e0b,#fde68a)' : 'linear-gradient(90deg,#ef4444,#fca5a5)';
+      html += '<tr><td>';
+      html += '<div style="font-weight:600;">' + escHtml(c.name) + '</div>';
+      html += '<div class="crit-bar-wrap"><div class="crit-bar" style="width:' + Math.min(pct,100) + '%;background:' + barColor + ';"></div></div>';
+      if (c.comment) html += '<div style="font-size:12px;color:var(--text-faint);margin-top:4px;">' + escHtml(c.comment) + '</div>';
+      html += '</td><td style="text-align:right;font-weight:700;white-space:nowrap;">' + c.score + (c.max_score ? '<span style="color:var(--text-faint);font-weight:400;">/' + c.max_score + '</span>' : '') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  }
+
+  // Key suggestions (keynotes)
+  if (result.suggestions && result.suggestions.length) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">💡 Keynotes — Điểm cần cải thiện</div>';
+    html += '<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px 0;">';
+    result.suggestions.forEach(function(s) {
+      html += '<div class="gp-suggestion-item"><span>•</span><span>' + escHtml(s) + '</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Error list
+  if (result.error_list && result.error_list.length) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">🔍 Phân tích lỗi chi tiết (' + result.error_list.length + ' lỗi)</div>';
+    result.error_list.forEach(function(err) {
+      var cat = err.category || 'Other';
+      html += '<div class="err-card">';
+      html += '<span class="err-badge ' + escHtml(cat) + '">' + escHtml(cat) + '</span>';
+      html += '<div class="err-compare">';
+      html += '<div class="err-wrong">❌ ' + escHtml(err.error || '') + '</div>';
+      html += '<div class="err-right">✅ ' + escHtml(err.correction || '') + '</div>';
+      html += '</div>';
+      if (err.explanation) html += '<div style="font-size:12.5px;color:#374151;margin-top:6px;">' + escHtml(err.explanation) + '</div>';
+      if (err.rule) html += '<div style="font-size:11.5px;color:var(--text-faint);margin-top:3px;">📌 ' + escHtml(err.rule) + '</div>';
+      html += '</div>';
+    });
+  }
+
+  // Suggested writing (bài mẫu từ AI grading)
+  if (result.suggested_writing) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu AI (từ kết quả chấm)</div>';
+    html += '<div class="model-answer-box">' + escHtml(result.suggested_writing) + '</div>';
+  }
+
+  return html;
+}
+
+/* ─── MANUAL GRADE ─── */
+async function saveManualGrade() {
+  if (!_gpSubId) return;
+  var score    = document.getElementById('gpScore').value;
+  var maxScore = document.getElementById('gpMaxScore').value || 10;
+  var feedback = document.getElementById('gpFeedback').value.trim();
+  var msgEl    = document.getElementById('gpManualMsg');
+  try {
+    var r = await fetch('/api/teacher/grade/' + _gpSubId, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score: Number(score), max_score: Number(maxScore), feedback })
+    });
+    var d = await r.json();
+    msgEl.style.display = 'block';
+    if (d.ok) {
+      msgEl.style.color = 'var(--success,#16a34a)'; msgEl.textContent = '✅ Đã lưu điểm & gửi thông báo cho học sinh!';
+      document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm: ' + score + '/' + maxScore + '</span>';
+      loadSubmissions();
+    } else {
+      msgEl.style.color = 'var(--danger)'; msgEl.textContent = d.error || 'Lưu thất bại.';
+    }
+  } catch(e) {
+    msgEl.style.display = 'block'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = 'Lỗi kết nối.';
+  }
+}
+
+/* ─── MODEL ANSWER ─── */
+async function loadGpModelAnswer() {
+  if (!_gpSubId) return;
+  document.getElementById('gpModelBtn').style.display     = 'none';
+  document.getElementById('gpModelLoading').style.display = '';
+  document.getElementById('gpModelResult').style.display  = 'none';
+  try {
+    var r = await fetch('/api/teacher/model-answer/' + _gpSubId, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: '{}'
+    });
+    var d = await r.json();
+    document.getElementById('gpModelLoading').style.display = 'none';
+    if (!r.ok || !d.hints) {
+      document.getElementById('gpModelBtn').style.display = '';
+      alert('Không tạo được bài mẫu: ' + (d.error || 'Lỗi không xác định'));
+      return;
+    }
+    document.getElementById('gpModelResult').innerHTML = renderModelAnswer(d.hints);
+    document.getElementById('gpModelResult').style.display = '';
+  } catch(e) {
+    document.getElementById('gpModelLoading').style.display = 'none';
+    document.getElementById('gpModelBtn').style.display = '';
+    alert('Lỗi kết nối.');
+  }
+}
+
+function renderModelAnswer(hints) {
+  var html = '';
+  if (hints.suggested_writing || hints.image_content) {
+    html += '<div class="gp-section-title" style="margin-bottom:6px;">✍️ Bài mẫu</div>';
+    html += '<div class="model-answer-box">' + escHtml(hints.suggested_writing || '') + '</div>';
+  }
+  if (hints.outline && hints.outline.length) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">🗂 Dàn ý gợi ý</div>';
+    html += '<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px 0;">';
+    hints.outline.forEach(function(item) {
+      html += '<div class="gp-suggestion-item"><span>•</span><span>' + escHtml(item) + '</span></div>';
+    });
+    html += '</div>';
+  }
+  if (hints.key_vocabulary && hints.key_vocabulary.length) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">📚 Từ vựng quan trọng</div>';
+    html += '<div class="vocab-grid">';
+    hints.key_vocabulary.forEach(function(v) {
+      var word = typeof v === 'string' ? v : (v.word || v);
+      var def  = typeof v === 'object' ? (v.meaning || v.definition || '') : '';
+      html += '<div class="vocab-item"><strong>' + escHtml(word) + '</strong>' + (def ? escHtml(def) : '') + '</div>';
+    });
+    html += '</div>';
+  }
+  if (hints.useful_phrases && hints.useful_phrases.length) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">💬 Cụm từ hữu ích</div>';
+    html += '<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px 0;">';
+    hints.useful_phrases.forEach(function(p) {
+      html += '<div class="gp-suggestion-item"><span>→</span><span style="font-style:italic;">' + escHtml(p) + '</span></div>';
+    });
+    html += '</div>';
+  }
+  if (hints.criteria_tips) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">🎯 Tips theo tiêu chí</div>';
+    html += '<div class="gp-summary-box">' + escHtml(JSON.stringify(hints.criteria_tips)).replace(/\\n/g,'<br>') + '</div>';
+  }
+  if (hints.dos_and_donts) {
+    var dos   = hints.dos_and_donts.dos || [];
+    var donts = hints.dos_and_donts.donts || [];
+    if (dos.length || donts.length) {
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">';
+      html += '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;">';
+      html += '<div style="font-weight:700;color:#15803d;margin-bottom:8px;font-size:13px;">✅ Nên làm</div>';
+      dos.forEach(function(d){ html += '<div style="font-size:12.5px;padding:3px 0;color:#166534;">• '+escHtml(d)+'</div>'; });
+      html += '</div>';
+      html += '<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:12px;">';
+      html += '<div style="font-weight:700;color:#dc2626;margin-bottom:8px;font-size:13px;">❌ Không nên</div>';
+      donts.forEach(function(d){ html += '<div style="font-size:12.5px;padding:3px 0;color:#991b1b;">• '+escHtml(d)+'</div>'; });
+      html += '</div></div>';
+    }
+  }
+  return html || '<p style="color:var(--text-faint);font-size:13px;">Không có dữ liệu bài mẫu.</p>';
+}
+
+/* ─── ANNOTATIONS in GP ─── */
+async function gpLoadAnnotations() {
+  if (!_gpSubId) return;
+  var essayEl = document.getElementById('gpEssay');
+  var annList = document.getElementById('gpAnnList');
+  var essayText = essayEl.dataset.raw || '';
+  var d = await fetch('/api/submissions/' + _gpSubId + '/annotations', { credentials: 'same-origin' }).then(function(r){ return r.json(); }).catch(function(){ return {}; });
+  var anns = d.annotations || [];
+  document.getElementById('gpAnnCount').textContent = anns.length;
+  renderEssayWithAnnotations(essayEl, essayText, anns);
+  if (!anns.length) {
+    annList.innerHTML = '<p style="font-size:13px;color:var(--text-faint);margin:0;">Chưa có annotation. Bôi đen text trong bài để thêm.</p>';
+    return;
+  }
+  annList.innerHTML = '<div class="ann-list">' + anns.map(function(a) {
+    return '<div class="ann-item"><span class="ann-dot" style="background:'+a.color+';"></span><div><b style="font-size:12px;">'+escHtml(a.selected_text.slice(0,45))+(a.selected_text.length>45?'…':'')+'</b>'+(a.note?'<br><span style="color:var(--text-faint);">'+escHtml(a.note)+'</span>':'')+'</div><button class="ann-del-btn" onclick="gpDelAnnotation('+a.id+')" title="Xoá">✕</button></div>';
+  }).join('') + '</div>';
+}
+
+async function gpDelAnnotation(annId) {
+  if (!confirm('Xoá annotation này?')) return;
+  await fetch('/api/annotations/' + annId, { method: 'DELETE', credentials: 'same-origin' });
+  gpLoadAnnotations();
+}
+
+// Escape key closes grading panel
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && _gpSubId) closeGradingPanel();
+});
+
+// Override annSave to refresh GP panel when in GP mode
+var _origAnnSave = typeof annSave === 'function' ? annSave : null;
+window._gpAnnSaveHook = async function() {
+  if (!_pendingSelection || !_pendingSelection.gpMode) return false;
+  var color = document.querySelector('.ann-color-btn.active');
+  var note  = document.getElementById('annNoteInput').value.trim();
+  var payload = {
+    start_offset: _pendingSelection.start, end_offset: _pendingSelection.end,
+    selected_text: _pendingSelection.text, note: note || null,
+    color: color ? color.dataset.color : '#fbbf24'
+  };
+  hideAnnToolbar();
+  window.getSelection && window.getSelection().removeAllRanges();
+  document.getElementById('annNoteInput').value = '';
+  await fetch('/api/submissions/' + _gpSubId + '/annotations', {
+    method: 'POST', credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+  });
+  gpLoadAnnotations();
+  return true;
+};
 </script>
 </body>
 </html>

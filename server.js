@@ -1077,6 +1077,57 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
   res.json({ ok: true });
 });
 
+// Giáo viên chấm bài bằng AI (dùng lại gradeWriting đã có)
+app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req, res) => {
+  const subId = Number(req.params.id);
+  const sub = db.prepare(`
+    SELECT s.*, u.name AS student_name, u.email AS student_email,
+           e.title AS exercise_title, e.program, e.skill,
+           e.content, e.image_url, e.task_type, e.metadata
+    FROM submissions s
+    JOIN users u ON u.id = s.user_id
+    JOIN exercises e ON e.id = s.exercise_id
+    WHERE s.id = ?
+  `).get(subId);
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
+
+  let essay = '';
+  try {
+    const ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers;
+    essay = ans.essay || '';
+  } catch (e) { essay = sub.answers || ''; }
+
+  if (!essay.trim()) return res.status(400).json({ error: 'Bài nộp không có nội dung text để chấm AI.' });
+  if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
+
+  try {
+    const ex = { program: sub.program, skill: sub.skill, content: sub.content, image_url: sub.image_url, task_type: sub.task_type, metadata: sub.metadata };
+    const result = await gradeWriting(ex, essay, null);
+    db.prepare('UPDATE submissions SET feedback=?, score=?, max_score=?, status=? WHERE id=?')
+      .run(JSON.stringify(result), result.overall_score ?? null, 100, 'graded', subId);
+    res.json({ ok: true, result });
+  } catch (e) {
+    console.error('[teacher/ai-grade]', e.message);
+    res.status(500).json({ error: 'Chấm AI thất bại: ' + String(e.message).slice(0, 300) });
+  }
+});
+
+// Giáo viên lấy bài mẫu AI cho một đề (từ submission_id)
+app.post('/api/teacher/model-answer/:id', requireRole('teacher','admin'), async (req, res) => {
+  const subId = Number(req.params.id);
+  const sub = db.prepare(`
+    SELECT e.* FROM submissions s JOIN exercises e ON e.id=s.exercise_id WHERE s.id=?
+  `).get(subId);
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
+  if (!aiEnabled()) return res.status(503).json({ error: 'AI chưa sẵn sàng.' });
+  try {
+    const hints = await getWritingHints(sub);
+    res.json({ hints });
+  } catch (e) {
+    res.status(500).json({ error: 'Không thể tạo bài mẫu: ' + String(e.message).slice(0, 200) });
+  }
+});
+
 // Giáo viên sửa bài đã giao (deadline + note)
 app.put('/api/teacher/assignments/:id', requireRole('teacher','admin'), (req, res) => {
   const { deadline, note } = req.body || {};
