@@ -2698,24 +2698,42 @@
         </div>
         <div id="gpAIResult" style="display:none;"></div>
         <!-- Review bar — hiện sau khi AI chấm xong -->
-        <div id="gpReviewBar" style="display:none;margin-top:16px;border:1.5px solid #d1fae5;border-radius:12px;padding:14px;background:#f0fdf4;">
-          <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#15803d;">✏️ Xem lại &amp; chỉnh sửa kết quả trước khi gửi</div>
-          <!-- Score row -->
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-            <label style="font-size:13px;font-weight:600;color:#374151;white-space:nowrap;">Điểm:</label>
-            <input id="gpReviewScore" type="number" step="0.5" min="0" style="width:72px;border:1.5px solid #d1d5db;border-radius:8px;padding:6px 10px;font-size:15px;font-weight:700;text-align:center;color:#111827;">
-            <span id="gpReviewMaxLabel" style="font-size:13px;color:#6b7280;"></span>
+        <div id="gpReviewBar" style="display:none;margin-top:16px;border:1.5px solid #d1fae5;border-radius:14px;overflow:hidden;">
+          <!-- Header -->
+          <div style="background:#f0fdf4;padding:12px 14px;border-bottom:1px solid #d1fae5;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:13px;font-weight:700;color:#15803d;">✏️ Xem lại &amp; chỉnh sửa trước khi gửi</span>
+            <button onclick="doAiGradeAgain()" style="background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:3px 10px;font-size:12px;color:#6b7280;cursor:pointer;">🔄 Chấm lại</button>
           </div>
-          <!-- Feedback textarea -->
-          <div style="font-size:12.5px;font-weight:600;color:#374151;margin-bottom:5px;">Nhận xét cho học sinh (có thể chỉnh sửa):</div>
-          <textarea id="gpAIFeedbackEdit" rows="3" style="width:100%;border:1px solid #d1d5db;border-radius:8px;padding:8px;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Nhận xét tổng quát..."></textarea>
-          <!-- Buttons -->
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-            <button class="btn btn-sm" onclick="doSaveDraft()" style="flex:1;min-width:130px;background:#fff;border:1.5px solid #6F58EE;color:#6F58EE;">💾 Lưu thay đổi</button>
-            <button class="btn btn-primary" onclick="doSendGrade()" style="flex:1;min-width:160px;">📨 Xác nhận &amp; Gửi cho học sinh</button>
-            <button class="btn btn-sm" onclick="doAiGradeAgain()" title="Chấm lại từ đầu" style="background:#fff;border:1.5px solid #d1d5db;color:#374151;">🔄 Chấm lại</button>
+          <div style="padding:14px;background:#fff;">
+            <!-- Score row -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f3f4f6;flex-wrap:wrap;">
+              <span style="font-size:12.5px;font-weight:700;color:#374151;white-space:nowrap;">🏆 Điểm chính thức:</span>
+              <input id="gpReviewScore" type="number" step="0.5" min="0" style="width:68px;border:1.5px solid #6F58EE;border-radius:8px;padding:5px 8px;font-size:16px;font-weight:800;text-align:center;color:#6F58EE;background:#faf5ff;">
+              <span id="gpReviewMaxLabel" style="font-size:13px;color:#6b7280;font-weight:600;"></span>
+            </div>
+            <!-- Teacher comment -->
+            <div style="margin-bottom:14px;">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:6px;">💬 Nhận xét của giáo viên</div>
+              <textarea id="gpAIFeedbackEdit" rows="3" style="width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;line-height:1.6;" placeholder="Viết nhận xét cho học sinh..."></textarea>
+            </div>
+            <!-- Visibility toggles -->
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin-bottom:14px;">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:10px;">👁 Chọn phần hiển thị cho học sinh</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;cursor:pointer;"><input type="checkbox" id="gpVis_comment" checked style="width:15px;height:15px;accent-color:#6F58EE;"> 💬 Nhận xét GV</label>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;cursor:pointer;"><input type="checkbox" id="gpVis_criteria" checked style="width:15px;height:15px;accent-color:#6F58EE;"> 📊 Điểm từng tiêu chí</label>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;cursor:pointer;"><input type="checkbox" id="gpVis_suggestions" checked style="width:15px;height:15px;accent-color:#6F58EE;"> 💡 Gợi ý cải thiện</label>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;cursor:pointer;"><input type="checkbox" id="gpVis_errors" style="width:15px;height:15px;accent-color:#6F58EE;"> 🔍 Phân tích lỗi</label>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;cursor:pointer;"><input type="checkbox" id="gpVis_writing" style="width:15px;height:15px;accent-color:#6F58EE;"> ✍️ Bài mẫu gợi ý</label>
+              </div>
+            </div>
+            <!-- Buttons -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm" onclick="doSaveDraft()" style="flex:1;min-width:120px;background:#fff;border:1.5px solid #6F58EE;color:#6F58EE;font-weight:600;">💾 Lưu thay đổi</button>
+              <button class="btn btn-primary" onclick="doSendGrade()" style="flex:1;min-width:160px;font-weight:700;">📨 Xác nhận &amp; Gửi cho học sinh</button>
+            </div>
+            <div id="gpSendMsg" style="display:none;margin-top:10px;font-size:13px;padding:8px 12px;border-radius:8px;"></div>
           </div>
-          <div id="gpSendMsg" style="display:none;margin-top:8px;font-size:13px;"></div>
         </div>
       </div>
 
@@ -2789,6 +2807,7 @@ function openGradingPanel(subId) {
   document.getElementById('gpSendMsg').style.display      = 'none';
   document.getElementById('gpReviewScore').value          = '';
   document.getElementById('gpReviewMaxLabel').textContent = '';
+  resetVisibility();
   document.getElementById('gpModelResult').style.display = 'none';
   document.getElementById('gpModelLoading').style.display= 'none';
   document.getElementById('gpManualMsg').style.display   = 'none';
@@ -2849,13 +2868,14 @@ function openGradingPanel(subId) {
             document.getElementById('gpAIActions').style.display = 'none';
             document.getElementById('gpAIResult').style.display  = '';
             document.getElementById('gpAIResult').innerHTML = renderAIResult(fb2);
-            // Show review bar if pending
+            // Show review bar if pending — restore all edits
             if (sub.status === 'pending_review') {
               var sl2 = fb2.scale_label || '';
-              document.getElementById('gpReviewScore').value      = sub.score != null ? sub.score : (fb2.overall_score != null ? fb2.overall_score : '');
+              document.getElementById('gpReviewScore').value         = sub.score != null ? sub.score : (fb2.overall_score != null ? fb2.overall_score : '');
               document.getElementById('gpReviewMaxLabel').textContent = '/ ' + _gpMaxScore + (sl2 ? '  (' + sl2 + ')' : '');
-              document.getElementById('gpAIFeedbackEdit').value   = fb2.summary || '';
-              document.getElementById('gpReviewBar').style.display = '';
+              document.getElementById('gpAIFeedbackEdit').value      = fb2.teacher_comment || fb2.summary || '';
+              setVisibility(fb2.visibility || null);
+              document.getElementById('gpReviewBar').style.display   = '';
             }
           }
         } catch(e) {}
@@ -2953,17 +2973,17 @@ function confirmPartAndGrade() {
 }
 
 function doAiGradeAgain() {
-  document.getElementById('gpReviewBar').style.display   = 'none';
-  document.getElementById('gpAIResult').style.display    = 'none';
-  document.getElementById('gpAIResult').innerHTML        = '';
-  document.getElementById('gpSendMsg').style.display     = 'none';
-  document.getElementById('gpReviewScore').value         = '';
+  document.getElementById('gpReviewBar').style.display    = 'none';
+  document.getElementById('gpAIResult').style.display     = 'none';
+  document.getElementById('gpAIResult').innerHTML         = '';
+  document.getElementById('gpSendMsg').style.display      = 'none';
+  document.getElementById('gpReviewScore').value          = '';
   document.getElementById('gpReviewMaxLabel').textContent = '';
-  document.getElementById('gpAIFeedbackEdit').value      = '';
-  _gpMaxScore    = null;
+  document.getElementById('gpAIFeedbackEdit').value       = '';
+  _gpMaxScore     = null;
   _gpTaskOverride = null;
-  document.getElementById('gpAIActions').style.display   = '';
-  // Cập nhật status badge về chờ chấm
+  resetVisibility();
+  document.getElementById('gpAIActions').style.display    = '';
   document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
 }
 
@@ -2996,12 +3016,13 @@ async function _runAiGrade() {
     // Prefill manual tab
     if (sc != null) { document.getElementById('gpScore').value = sc; document.getElementById('gpMaxScore').value = _gpMaxScore; }
     if (d.result.summary) document.getElementById('gpFeedback').value = d.result.summary;
-    // Show review bar — fill score + scale label
-    document.getElementById('gpReviewScore').value      = sc != null ? sc : '';
+    // Show review bar — fill score + scale label, reset visibility to defaults
+    document.getElementById('gpReviewScore').value          = sc != null ? sc : '';
     document.getElementById('gpReviewMaxLabel').textContent = '/ ' + _gpMaxScore + (sl ? '  (' + sl + ')' : '');
-    document.getElementById('gpAIFeedbackEdit').value   = d.result.summary || '';
-    document.getElementById('gpReviewBar').style.display = '';
-    document.getElementById('gpSendMsg').style.display   = 'none';
+    document.getElementById('gpAIFeedbackEdit').value       = d.result.summary || '';
+    resetVisibility();
+    document.getElementById('gpReviewBar').style.display    = '';
+    document.getElementById('gpSendMsg').style.display      = 'none';
     loadSubmissions();
   } catch(e) {
     document.getElementById('gpAILoading').style.display = 'none';
@@ -3010,59 +3031,87 @@ async function _runAiGrade() {
   }
 }
 
+/* ─── Visibility helpers ─── */
+function getVisibility() {
+  return {
+    comment:          document.getElementById('gpVis_comment').checked,
+    criteria:         document.getElementById('gpVis_criteria').checked,
+    suggestions:      document.getElementById('gpVis_suggestions').checked,
+    error_list:       document.getElementById('gpVis_errors').checked,
+    suggested_writing: document.getElementById('gpVis_writing').checked
+  };
+}
+function setVisibility(vis) {
+  if (!vis) return;
+  document.getElementById('gpVis_comment').checked     = vis.comment !== false;
+  document.getElementById('gpVis_criteria').checked    = vis.criteria !== false;
+  document.getElementById('gpVis_suggestions').checked = vis.suggestions !== false;
+  document.getElementById('gpVis_errors').checked      = vis.error_list === true;
+  document.getElementById('gpVis_writing').checked     = vis.suggested_writing === true;
+}
+function resetVisibility() {
+  document.getElementById('gpVis_comment').checked     = true;
+  document.getElementById('gpVis_criteria').checked    = true;
+  document.getElementById('gpVis_suggestions').checked = true;
+  document.getElementById('gpVis_errors').checked      = false;
+  document.getElementById('gpVis_writing').checked     = false;
+}
+
 /* ─── SAVE DRAFT (không gửi) ─── */
 async function doSaveDraft() {
   if (!_gpSubId) return;
-  var msgEl    = document.getElementById('gpSendMsg');
-  var score    = document.getElementById('gpReviewScore').value;
-  var maxScore = _gpMaxScore || 5;
-  var feedback = document.getElementById('gpAIFeedbackEdit').value.trim();
+  var msgEl          = document.getElementById('gpSendMsg');
+  var score          = document.getElementById('gpReviewScore').value;
+  var maxScore       = _gpMaxScore || 5;
+  var teacher_comment = document.getElementById('gpAIFeedbackEdit').value.trim();
+  var visibility     = getVisibility();
   try {
     var r = await fetch('/api/teacher/save-draft/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), summary: feedback || undefined })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
     if (d.ok) {
-      msgEl.style.color = '#15803d'; msgEl.textContent = '💾 Đã lưu thay đổi. Chưa gửi cho học sinh.';
-      // Sync score vào manual tab
+      msgEl.style.background = '#f0fdf4'; msgEl.style.color = '#15803d';
+      msgEl.textContent = '💾 Đã lưu thay đổi. Chưa gửi cho học sinh.';
       if (score !== '') { document.getElementById('gpScore').value = score; document.getElementById('gpMaxScore').value = maxScore; }
       loadSubmissions();
     } else {
-      msgEl.style.color = 'var(--danger)'; msgEl.textContent = d.error || 'Lưu thất bại.';
+      msgEl.style.background = '#fef2f2'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = d.error || 'Lưu thất bại.';
     }
   } catch(e) {
-    msgEl.style.display = 'block'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = 'Lỗi kết nối.';
+    msgEl.style.display = 'block'; msgEl.style.background = '#fef2f2'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = 'Lỗi kết nối.';
   }
 }
 
 /* ─── SEND GRADE TO STUDENT ─── */
 async function doSendGrade() {
   if (!_gpSubId) return;
-  var msgEl    = document.getElementById('gpSendMsg');
-  var feedback = document.getElementById('gpAIFeedbackEdit').value.trim();
-  var score    = document.getElementById('gpReviewScore').value;
-  var maxScore = _gpMaxScore || 5;
+  var msgEl           = document.getElementById('gpSendMsg');
+  var teacher_comment = document.getElementById('gpAIFeedbackEdit').value.trim();
+  var score           = document.getElementById('gpReviewScore').value;
+  var maxScore        = _gpMaxScore || 5;
+  var visibility      = getVisibility();
   try {
     var r = await fetch('/api/teacher/send-grade/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), feedback: feedback || undefined })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
     if (d.ok) {
-      msgEl.style.color = 'var(--success,#16a34a)';
+      msgEl.style.background = '#f0fdf4'; msgEl.style.color = '#15803d';
       msgEl.textContent = '✅ Đã gửi kết quả cho học sinh!';
       document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-done" style="font-size:13px;">✅ Đã chấm: ' + (score || '?') + '/' + maxScore + '</span>';
       loadSubmissions();
     } else {
-      msgEl.style.color = 'var(--danger)'; msgEl.textContent = d.error || 'Gửi thất bại.';
+      msgEl.style.background = '#fef2f2'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = d.error || 'Gửi thất bại.';
     }
   } catch(e) {
-    msgEl.style.display = 'block'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = 'Lỗi kết nối.';
+    msgEl.style.display = 'block'; msgEl.style.background = '#fef2f2'; msgEl.style.color = 'var(--danger)'; msgEl.textContent = 'Lỗi kết nối.';
   }
 }
 

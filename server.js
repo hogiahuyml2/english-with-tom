@@ -1126,20 +1126,21 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
 });
 
 // Giáo viên lưu chỉnh sửa (không gửi cho học sinh, giữ pending_review)
+// Helper: merge teacher edits (comment + visibility) vào feedback JSON
+function mergeTeacherEdits(existingFeedback, { teacher_comment, visibility } = {}) {
+  let fb = {};
+  try { fb = typeof existingFeedback === 'string' ? JSON.parse(existingFeedback) : (existingFeedback || {}); } catch(e) {}
+  if (teacher_comment !== undefined) fb.teacher_comment = teacher_comment;
+  if (visibility      !== undefined) fb.visibility      = visibility;
+  return JSON.stringify(fb);
+}
+
 app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, res) => {
   const subId = Number(req.params.id);
-  const { score, max_score, summary } = req.body || {};
+  const { score, max_score, teacher_comment, visibility } = req.body || {};
   const sub = db.prepare('SELECT id, feedback FROM submissions WHERE id=?').get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
-  // Merge summary vào feedback JSON nếu có
-  let feedbackJson = sub.feedback;
-  if (summary !== undefined) {
-    try {
-      const fb = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : (sub.feedback || {});
-      fb.summary = summary;
-      feedbackJson = JSON.stringify(fb);
-    } catch(e) { feedbackJson = summary; }
-  }
+  const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility });
   db.prepare('UPDATE submissions SET score=?, max_score=?, feedback=?, status=? WHERE id=?')
     .run(score ?? null, max_score ?? null, feedbackJson, 'pending_review', subId);
   res.json({ ok: true });
@@ -1148,20 +1149,23 @@ app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, re
 // Giáo viên xác nhận & gửi kết quả chấm cho học sinh
 app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const subId = Number(req.params.id);
-  const { score, max_score, feedback } = req.body || {};
+  const { score, max_score, teacher_comment, visibility } = req.body || {};
   const sub = db.prepare(`
     SELECT s.*, u.name AS student_name, u.email AS student_email, e.title AS exercise_title
     FROM submissions s JOIN users u ON u.id=s.user_id JOIN exercises e ON e.id=s.exercise_id
     WHERE s.id=?
   `).get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
-  // Cập nhật score/feedback nếu giáo viên có chỉnh sửa
+  const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility });
+  const finalScore    = score    ?? sub.score;
+  const finalMaxScore = max_score ?? sub.max_score ?? 5;
   db.prepare('UPDATE submissions SET score=?, max_score=?, feedback=?, status=? WHERE id=?')
-    .run(score ?? sub.score, max_score ?? sub.max_score, feedback ?? sub.feedback, 'graded', subId);
+    .run(finalScore, finalMaxScore, feedbackJson, 'graded', subId);
   const link = baseUrl(req) + '/assigned.html';
-  const scoreText = (score !== undefined && score !== null) ? `${score}/${max_score ?? sub.max_score ?? 5}` : 'Đã chấm';
+  const scoreText = finalScore != null ? `${finalScore}/${finalMaxScore}` : 'Đã chấm';
   if (emailEnabled()) {
-    const fbHtml = feedback ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${feedback}</p>` : '';
+    const commentHtml = teacher_comment
+      ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${teacher_comment}</p>` : '';
     sendBrevoEmail(
       { email: sub.student_email, name: sub.student_name },
       `Bài của bạn đã được chấm — ${sub.exercise_title}`,
@@ -1169,7 +1173,7 @@ app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (r
         <h2 style="color:#6F58EE">✅ Bài của bạn đã được chấm!</h2>
         <p>Bài tập: <b>${sub.exercise_title}</b></p>
         <p>Điểm số: <b style="font-size:20px;color:#6F58EE">${scoreText}</b></p>
-        ${fbHtml}
+        ${commentHtml}
         <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem kết quả chi tiết</a></p>
       </div>`
     ).catch(() => {});

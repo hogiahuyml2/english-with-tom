@@ -73,7 +73,142 @@
     try { var d=new Date(iso); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
     catch(e){ return iso.slice(0,10); }
   }
+  var _feedbackMap = {};
+
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+  /* ── Student Result Detail Modal ── */
+  function openResultDetail(sid) {
+    var data = _feedbackMap[sid];
+    if (!data) return;
+    var sc = data.score, mx = data.maxScore || 5;
+    var sl = (data.fbData && data.fbData.scale_label) || '';
+    var pct = (sc != null && mx) ? Math.round((sc/mx)*100) : null;
+    var col = pct==null?'rgba(255,255,255,.6)':pct>=70?'#86efac':pct>=50?'#fde68a':'#fca5a5';
+    document.getElementById('srmTitle').textContent = data.title || '';
+    document.getElementById('srmMeta').textContent  = (data.program||'') + (data.skill ? ' · '+data.skill : '');
+    document.getElementById('srmScore').innerHTML   = sc != null
+      ? '<div style="font-size:36px;font-weight:900;color:'+col+';line-height:1;">'+sc+'<span style="font-size:18px;font-weight:500;opacity:.7;">/'+mx+'</span></div>'+(sl?'<div style="font-size:11px;opacity:.65;margin-top:3px;">'+esc(sl)+'</div>':'')
+      : '<div style="font-size:16px;opacity:.6;">Đã chấm</div>';
+    document.getElementById('srmBodyInner').innerHTML = renderDetailContent(data);
+    if (sid) setTimeout(function(){ loadDetailAnnotations(sid); }, 80);
+    document.getElementById('srmOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeResultDetail() {
+    document.getElementById('srmOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  function renderDetailContent(data) {
+    var fb  = data.fbData || {};
+    var vis = fb.visibility || {};
+    var html = '';
+
+    // Teacher comment
+    if (vis.comment !== false && fb.teacher_comment) {
+      html += '<div class="srm-card">';
+      html += '<div class="srm-card-title">💬 Nhận xét của giáo viên</div>';
+      html += '<div style="background:#f5f3ff;border-left:4px solid #7c3aed;border-radius:0 10px 10px 0;padding:14px 16px;font-size:14px;line-height:1.8;color:#1f2937;">'+esc(fb.teacher_comment)+'</div>';
+      html += '</div>';
+    } else if (vis.comment !== false && fb.summary) {
+      html += '<div class="srm-card">';
+      html += '<div class="srm-card-title">📝 Nhận xét tổng quát</div>';
+      html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.8;color:#374151;">'+esc(fb.summary)+'</div>';
+      html += '</div>';
+    }
+
+    // Criteria breakdown
+    if (vis.criteria !== false && fb.criteria && fb.criteria.length) {
+      html += '<div class="srm-card">';
+      html += '<div class="srm-card-title">📊 Điểm từng tiêu chí</div>';
+      html += '<div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">';
+      fb.criteria.forEach(function(c, i) {
+        var cpct = c.max_score ? Math.round((c.score/c.max_score)*100) : c.score*10;
+        var bclr = cpct>=70?'#22c55e':cpct>=50?'#f59e0b':'#ef4444';
+        html += '<div style="padding:13px 16px;'+(i>0?'border-top:1px solid #f3f4f6;':'')+'">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">';
+        html += '<span style="font-size:13.5px;font-weight:600;color:#1f2937;">'+esc(c.name)+'</span>';
+        html += '<span style="font-size:16px;font-weight:800;color:'+bclr+';">'+c.score+(c.max_score?'<span style="font-size:12px;font-weight:500;color:#9ca3af;">/'+c.max_score+'</span>':'')+'</span>';
+        html += '</div>';
+        html += '<div style="height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden;">';
+        html += '<div style="height:100%;width:'+Math.min(cpct,100)+'%;background:'+bclr+';border-radius:4px;"></div></div>';
+        if (c.comment) html += '<div style="font-size:12px;color:#6b7280;margin-top:6px;line-height:1.5;">'+esc(c.comment)+'</div>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+    }
+
+    // Suggestions / keynotes
+    if (vis.suggestions !== false && fb.suggestions && fb.suggestions.length) {
+      html += '<div class="srm-card">';
+      html += '<div class="srm-card-title">💡 Điểm cần cải thiện</div>';
+      html += '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:9px;">';
+      fb.suggestions.forEach(function(s) {
+        html += '<div style="display:flex;gap:8px;font-size:13.5px;color:#78350f;line-height:1.5;"><span style="color:#d97706;font-weight:700;flex-shrink:0;margin-top:1px;">→</span><span>'+esc(s)+'</span></div>';
+      });
+      html += '</div></div>';
+    }
+
+    // Error list
+    if (vis.error_list && fb.error_list && fb.error_list.length) {
+      html += '<div class="srm-card">';
+      html += '<div class="srm-card-title">🔍 Phân tích lỗi <span style="font-size:12px;background:#fee2e2;color:#b91c1c;border-radius:10px;padding:1px 8px;margin-left:6px;">'+fb.error_list.length+' lỗi</span></div>';
+      html += '<div style="display:flex;flex-direction:column;gap:10px;">';
+      fb.error_list.forEach(function(err) {
+        html += '<div style="background:#fff;border:1px solid #fecaca;border-radius:12px;padding:12px 14px;">';
+        html += '<span style="display:inline-block;font-size:11px;font-weight:700;background:#fee2e2;color:#b91c1c;border-radius:10px;padding:2px 9px;margin-bottom:8px;">'+esc(err.category||'Other')+'</span>';
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+        html += '<div style="background:#fef2f2;border-radius:8px;padding:8px 10px;"><div style="font-size:10.5px;font-weight:700;color:#dc2626;margin-bottom:3px;">❌ Sai</div><div style="font-size:13px;color:#1f2937;">'+esc(err.error||'')+'</div></div>';
+        html += '<div style="background:#f0fdf4;border-radius:8px;padding:8px 10px;"><div style="font-size:10.5px;font-weight:700;color:#16a34a;margin-bottom:3px;">✅ Đúng</div><div style="font-size:13px;color:#1f2937;">'+esc(err.correction||'')+'</div></div>';
+        html += '</div>';
+        if (err.explanation) html += '<div style="font-size:12px;color:#6b7280;margin-top:8px;line-height:1.5;">'+esc(err.explanation)+'</div>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+    }
+
+    // Suggested writing / model answer
+    if (vis.suggested_writing && fb.suggested_writing) {
+      html += '<div class="srm-card">';
+      html += '<div class="srm-card-title">✍️ Bài mẫu tham khảo</div>';
+      html += '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px;font-size:14px;line-height:2;color:#14532d;white-space:pre-wrap;font-family:Georgia,\'Times New Roman\',serif;">'+esc(fb.suggested_writing)+'</div>';
+      html += '</div>';
+    }
+
+    // Annotations placeholder
+    html += '<div id="srmAnnSection" style="display:none;" class="srm-card">';
+    html += '<div class="srm-card-title">🖍 Ghi chú trực tiếp trên bài</div>';
+    html += '<div id="srmAnnList"></div>';
+    html += '</div>';
+
+    if (html === '<div id="srmAnnSection" style="display:none;" class="srm-card"><div class="srm-card-title">🖍 Ghi chú trực tiếp trên bài</div><div id="srmAnnList"></div></div>') {
+      html = '<div style="text-align:center;padding:40px;color:#9ca3af;font-size:15px;">Không có nội dung nhận xét chi tiết.</div>' + html;
+    }
+    return html;
+  }
+
+  async function loadDetailAnnotations(sid) {
+    try {
+      var r = await fetch('/api/submissions/'+sid+'/annotations', { credentials:'same-origin' });
+      var d = await r.json();
+      var anns = d.annotations || [];
+      var el = document.getElementById('srmAnnList');
+      var sec = document.getElementById('srmAnnSection');
+      if (!el || !sec || !anns.length) return;
+      sec.style.display = '';
+      var colMap = { yellow:'#fbbf24', red:'#f87171', green:'#34d399', blue:'#60a5fa' };
+      el.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+anns.map(function(a){
+        var dot = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+(colMap[a.color]||'#fbbf24')+';flex-shrink:0;"></span>';
+        return '<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;">'
+          +'<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;margin-bottom:6px;">'+dot+'Đoạn được đánh dấu</div>'
+          +'<div style="font-size:13px;font-style:italic;color:#374151;background:#fff;border-radius:6px;padding:6px 10px;margin-bottom:6px;border-left:3px solid '+(colMap[a.color]||'#fbbf24')+';">"'+esc(a.selected_text||'')+'"</div>'
+          +(a.comment?'<div style="font-size:13.5px;color:#1f2937;line-height:1.6;">'+esc(a.comment)+'</div>':'')
+          +'</div>';
+      }).join('')+'</div>';
+    } catch(e) {}
+  }
 
   function renderStudentGradeResult(result, score, maxScore) {
     var sc  = score != null ? score : (result.overall_score != null ? result.overall_score : null);
@@ -272,40 +407,38 @@
       html += '<div class="card"><div class="card-head"><h3>✅ Đã có điểm <span class="tag">'+graded.length+'</span></h3></div>';
       graded.forEach(function(a){
         var ico = skillColor(a.skill);
-        var fb = '';
-        var scoreDisplay = '';
-        if (a.submission_feedback){
-          try {
-            var fbData = JSON.parse(a.submission_feedback);
-            if (fbData && fbData.criteria) {
-              // AI graded — render beautifully
-              scoreDisplay = renderStudentGradeResult(fbData, a.submission_score, a.submission_max);
-              fb = renderStudentFeedback(fbData);
-            } else {
-              // Plain text feedback
-              var fbText = typeof fbData === 'string' ? fbData : (fbData.overall || fbData.feedback || '');
-              scoreDisplay = (a.submission_score != null) ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||5)+'</span>' : '<span style="color:var(--text-faint);">Đã chấm</span>';
-              if (fbText) fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;color:var(--text);">'+esc(fbText)+'</div>';
-            }
-          } catch(e){
-            scoreDisplay = (a.submission_score != null) ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||5)+'</span>' : '<span style="color:var(--text-faint);">Đã chấm</span>';
-            fb = '<div style="margin-top:8px;padding:10px 12px;background:var(--primary-soft);border-radius:8px;font-size:13px;line-height:1.6;">'+esc(a.submission_feedback)+'</div>';
-          }
-        } else {
-          scoreDisplay = (a.submission_score != null) ? '<span style="font-size:18px;font-weight:700;color:var(--primary);">'+a.submission_score+'/'+(a.submission_max||5)+'</span>' : '<span style="color:var(--text-faint);">Đã chấm</span>';
+        var sid = a.submission_id;
+        // Parse và lưu vào map để modal dùng
+        var fbData = null;
+        try { fbData = a.submission_feedback ? JSON.parse(a.submission_feedback) : null; } catch(e) {}
+        if (sid) _feedbackMap[sid] = { fbData: fbData, title: a.title, program: a.program, skill: a.skill, score: a.submission_score, maxScore: a.submission_max };
+        // Compact score badge
+        var sc = a.submission_score; var mx = a.submission_max || 5;
+        var sl = (fbData && fbData.scale_label) || '';
+        var pct = (sc != null && mx) ? Math.round((sc/mx)*100) : null;
+        var scColor = pct==null?'#6b7280':pct>=70?'#16a34a':pct>=50?'#d97706':'#dc2626';
+        var scoreDisplay = sc != null
+          ? '<div style="text-align:right;"><div style="font-size:22px;font-weight:800;color:'+scColor+';">'+sc+'<span style="font-size:13px;font-weight:500;color:#9ca3af;">/'+mx+'</span></div>'+(sl?'<div style="font-size:10.5px;color:#9ca3af;white-space:nowrap;">'+esc(sl)+'</div>':'')+'</div>'
+          : '<span style="font-size:13px;color:var(--text-faint);">Đã chấm</span>';
+        // Preview: teacher comment nếu có
+        var commentPreview = '';
+        if (fbData && fbData.teacher_comment && (fbData.visibility == null || fbData.visibility.comment !== false)) {
+          commentPreview = '<div style="margin-top:6px;font-size:12.5px;color:#4b5563;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">💬 '+esc(fbData.teacher_comment)+'</div>';
         }
-        var annBtn = a.submission_id
-          ? '<button onclick="toggleAnnotations('+a.submission_id+',this)" style="background:none;border:1px solid #c7d2fe;border-radius:8px;padding:4px 12px;font-size:12px;color:#6366f1;cursor:pointer;margin-top:10px;">🖍 Xem ghi chú của giáo viên</button>'
+        var detailBtn = sid
+          ? '<button onclick="openResultDetail('+sid+')" style="background:linear-gradient(135deg,#6F58EE,#a855f7);color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">📋 Xem kết quả</button>'
           : '';
-        html += '<div class="task" style="flex-direction:column;align-items:stretch;gap:0;">'+
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">'+
-          '<div class="task-left" style="margin:0;">'+
+        html += '<div class="task" style="flex-direction:column;align-items:stretch;gap:6px;">'+
+          '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">'+
+          '<div class="task-left" style="margin:0;flex:1;min-width:0;">'+
           '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
-          '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
-          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div></div></div>'+
-          scoreDisplay+'</div>'+fb+
-          (a.submission_id ? '<div id="annPanel-'+a.submission_id+'" style="display:none;margin-top:10px;"></div>' : '')+
-          annBtn+'</div>';
+          '<div class="task-info"><h4 style="margin:0 0 3px;">'+esc(a.title)+'</h4>'+
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+'</div>'+
+          commentPreview+'</div></div>'+
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">'+scoreDisplay+detailBtn+'</div>'+
+          '</div>'+
+          (sid ? '<div id="annPanel-'+sid+'" style="display:none;margin-top:6px;"></div>' : '')+
+          '</div>';
       });
       html += '</div>';
     }
@@ -412,5 +545,74 @@
   });
 </script>
 <script src="js/push.js"></script>
+
+<!-- ===== STUDENT RESULT DETAIL MODAL ===== -->
+<style>
+#srmOverlay {
+  position: fixed; inset: 0; z-index: 4000;
+  display: none; flex-direction: column;
+  background: #f1f5f9;
+}
+#srmOverlay.open { display: flex; }
+#srmHeader {
+  background: linear-gradient(135deg, #6F58EE 0%, #9333ea 100%);
+  color: #fff;
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(111,88,238,.35);
+}
+#srmHeaderInner {
+  max-width: 720px; margin: 0 auto; width: 100%;
+  padding: 20px 24px;
+  display: flex; align-items: flex-start; gap: 16px;
+}
+#srmCloseBtn {
+  background: rgba(255,255,255,.15); border: none; color: #fff;
+  border-radius: 10px; padding: 8px 14px; font-size: 14px;
+  cursor: pointer; flex-shrink: 0; font-weight: 600;
+  transition: background .15s;
+}
+#srmCloseBtn:hover { background: rgba(255,255,255,.25); }
+#srmHeaderText { flex: 1; min-width: 0; }
+#srmTitle { font-size: 16px; font-weight: 700; margin: 0 0 3px; }
+#srmMeta  { font-size: 12px; opacity: .75; }
+#srmBody {
+  flex: 1; overflow-y: auto;
+  padding: 20px 16px 40px;
+}
+#srmBodyInner {
+  max-width: 720px; margin: 0 auto; width: 100%;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.srm-card {
+  background: #fff; border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  padding: 16px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.srm-card-title {
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px;
+  color: #6b7280; margin-bottom: 12px;
+}
+</style>
+<div id="srmOverlay">
+  <div id="srmHeader">
+    <div id="srmHeaderInner">
+      <button id="srmCloseBtn" onclick="closeResultDetail()">← Đóng</button>
+      <div id="srmHeaderText">
+        <div id="srmTitle"></div>
+        <div id="srmMeta"></div>
+      </div>
+      <div id="srmScore" style="text-align:right;flex-shrink:0;"></div>
+    </div>
+  </div>
+  <div id="srmBody">
+    <div id="srmBodyInner"></div>
+  </div>
+</div>
+<script>
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeResultDetail(); });
+</script>
 </body>
 </html>
