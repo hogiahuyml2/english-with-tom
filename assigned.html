@@ -121,19 +121,22 @@
 
     // Criteria breakdown
     if (vis.criteria !== false && fb.criteria && fb.criteria.length) {
+      var scaleMax = 5;
+      try { var _m = (fb.scale_label||'').match(/\(0[–\-](\d+)\)/); if(_m) scaleMax=parseInt(_m[1]); } catch(e){}
       html += '<div class="srm-card">';
       html += '<div class="srm-card-title">📊 Điểm từng tiêu chí</div>';
       html += '<div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">';
       fb.criteria.forEach(function(c, i) {
-        var cpct = c.max_score ? Math.round((c.score/c.max_score)*100) : c.score*10;
+        var denom = c.max_score || scaleMax;
+        var cpct = Math.round((c.score / denom) * 100);
         var bclr = cpct>=70?'#22c55e':cpct>=50?'#f59e0b':'#ef4444';
         html += '<div style="padding:13px 16px;'+(i>0?'border-top:1px solid #f3f4f6;':'')+'">';
         html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">';
         html += '<span style="font-size:13.5px;font-weight:600;color:#1f2937;">'+esc(c.name)+'</span>';
-        html += '<span style="font-size:16px;font-weight:800;color:'+bclr+';">'+c.score+(c.max_score?'<span style="font-size:12px;font-weight:500;color:#9ca3af;">/'+c.max_score+'</span>':'')+'</span>';
+        html += '<span style="font-size:16px;font-weight:800;color:'+bclr+';">'+c.score+'<span style="font-size:12px;font-weight:500;color:#9ca3af;">/'+denom+'</span></span>';
         html += '</div>';
         html += '<div style="height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden;">';
-        html += '<div style="height:100%;width:'+Math.min(cpct,100)+'%;background:'+bclr+';border-radius:4px;"></div></div>';
+        html += '<div style="height:100%;width:'+Math.min(cpct,100)+'%;background:'+bclr+';border-radius:4px;transition:width .4s;"></div></div>';
         if (c.comment) html += '<div style="font-size:12px;color:#6b7280;margin-top:6px;line-height:1.5;">'+esc(c.comment)+'</div>';
         html += '</div>';
       });
@@ -171,9 +174,16 @@
 
     // Suggested writing / model answer
     if (vis.suggested_writing && fb.suggested_writing) {
+      var raw = fb.suggested_writing;
+      // If AI returned no real newlines, insert them at natural email/letter break points
+      if (raw.indexOf('\n') < 0) {
+        raw = raw.replace(/(Hi\s+\w[\w ]*,|Dear\s+\w[\w ]*,)\s*/g, '$1\n\n');
+        raw = raw.replace(/([.!?])\s+(Best|Regards|Yours truly|Yours sincerely|Sincerely|Love|Cheers|Thanks|See you|Bye|All the best|Best wishes),/g, '$1\n\n$2,');
+        raw = raw.replace(/(Best|Regards|Yours truly|Yours sincerely|Sincerely|Love|Cheers|Thanks|See you|Bye|All the best|Best wishes),\s*(\w)/g, '$1,\n$2');
+      }
       html += '<div class="srm-card">';
       html += '<div class="srm-card-title">✍️ Bài mẫu tham khảo</div>';
-      html += '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px;font-size:14px;line-height:2;color:#14532d;white-space:pre-wrap;font-family:Georgia,\'Times New Roman\',serif;">'+esc(fb.suggested_writing)+'</div>';
+      html += '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px;font-size:14px;line-height:2;color:#14532d;white-space:pre-wrap;font-family:Georgia,\'Times New Roman\',serif;">'+esc(raw)+'</div>';
       html += '</div>';
     }
 

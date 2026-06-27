@@ -548,18 +548,21 @@ function startTimerMode(timed) {
   wa.style.opacity = '1';
   wa.style.pointerEvents = 'auto';
 
+  if (G_timerInterval) { clearInterval(G_timerInterval); G_timerInterval = null; }
+
   if (timed && G_currentExercise) {
     var mins = officialTimeMinutes(G_currentExercise);
-    var secs = mins * 60;
-    updateTimerDisplay(secs);
+    var endTime = Date.now() + mins * 60 * 1000;
+    updateTimerDisplay(mins * 60);
     G_timerInterval = setInterval(function() {
-      secs--;
-      updateTimerDisplay(secs);
-      if (secs <= 0) {
+      var left = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+      updateTimerDisplay(left);
+      if (left <= 0) {
         clearInterval(G_timerInterval);
+        G_timerInterval = null;
         alert('⏱ Hết giờ! Bài đã được tự động dừng. Hãy nộp bài ngay.');
       }
-    }, 1000);
+    }, 500);
   } else {
     document.getElementById('timer').textContent = '∞';
   }
