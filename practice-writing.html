@@ -331,8 +331,9 @@
       <h4>⏱ Chọn chế độ làm bài</h4>
       <p class="mode-hint" id="modeHintText">Bạn muốn luyện tập như thế nào?</p>
       <div class="mode-btn-group">
-        <button class="btn btn-primary" id="timedBtn" onclick="startTimerMode(true)">⏱ Thi thật (<span id="officialTimeLabel">20</span> phút)</button>
-        <button class="btn" onclick="startTimerMode(false)">🕐 Không giới hạn thời gian</button>
+        <button class="btn btn-primary" onclick="startTimerMode('official')">⏱ Thi thật — <span id="officialTimeLabel">20</span> phút</button>
+        <button class="btn" style="background:#f0fdf4;border-color:#86efac;color:#15803d;" onclick="startTimerMode('extended')">⏱ Thêm 10 phút — <span id="extendedTimeLabel">30</span> phút</button>
+        <button class="btn" style="background:#f8f7ff;border-color:#c4b5fd;color:#6d28d9;" onclick="startTimerMode('unlimited')">∞ Không giới hạn</button>
       </div>
     </div>
 
@@ -523,26 +524,43 @@ var G_activeTab      = 'text';
 var G_timerMode      = null;
 var G_submittedEssay = ''; // lưu bài gõ trực tiếp để highlight sau khi chấm
 
-/* ── Thời gian quy định theo từng kỳ thi ── */
+/* ── Thời gian quy định theo từng kỳ thi (nguồn: Cambridge / British Council chính thức) ── */
 function officialTimeMinutes(ex) {
   var prog  = (ex.program || '').toUpperCase();
   var title = (ex.title   || '').toLowerCase();
-  if (prog === 'KET')   { return /part\s*1/i.test(title) ? 8  : 12; }
+  // KET (A2 Key): Reading & Writing 60 phút, writing chiếm ~20 phút
+  //   Part 6 — viết lời nhắn ngắn (~25 từ): 8 phút
+  //   Part 7 — viết câu chuyện từ tranh (~35 từ): 12 phút
+  if (prog === 'KET')   { return /part\s*[16]/i.test(title) ? 8 : 12; }
+  // PET (B1 Preliminary): Writing 45 phút
+  //   Part 1 — email có gợi ý (~100 từ): 15 phút
+  //   Part 2 — bài viết tự do (~100 từ): 30 phút
   if (prog === 'PET')   { return /part\s*1/i.test(title) ? 15 : 30; }
+  // FCE (B2 First): Writing 80 phút, 2 phần mỗi phần ~40 phút
+  //   Part 1 — essay bắt buộc (140–190 từ): 40 phút
+  //   Part 2 — bài tự chọn (140–190 từ): 40 phút
   if (prog === 'FCE')   { return 40; }
+  // IELTS: Writing 60 phút
+  //   Task 1 (≥150 từ): 20 phút
+  //   Task 2 (≥250 từ): 40 phút
   if (prog === 'IELTS') { return /task\s*1/i.test(title) ? 20 : 40; }
+  // APTIS: Writing ~50 phút tổng
+  //   Part 1 — 5 tin nhắn ngắn (word-level, ~10 từ/tin): 5 phút
+  //   Part 2 — short text (20–30 từ): 8 phút
+  //   Part 3 — group chat (3 replies × 30–40 từ): 12 phút
+  //   Part 4 — formal + informal email (~150 từ mỗi bài): 25 phút
   if (prog === 'APTIS') {
-    if (/component\s*1|part\s*1/i.test(title)) return 3;
-    if (/component\s*2|part\s*2/i.test(title)) return 7;
-    if (/component\s*3|part\s*3/i.test(title)) return 10;
-    return 30;
+    if (/component\s*1|part\s*1/i.test(title)) return 5;
+    if (/component\s*2|part\s*2/i.test(title)) return 8;
+    if (/component\s*3|part\s*3/i.test(title)) return 12;
+    return 25;
   }
   return 20;
 }
 
 /* ── Bắt đầu làm bài sau khi chọn chế độ ── */
-function startTimerMode(timed) {
-  G_timerMode = timed ? 'timed' : 'unlimited';
+function startTimerMode(mode) {
+  G_timerMode = mode;
   document.getElementById('timerModeCard').style.display = 'none';
   var wa = document.getElementById('writingArea');
   wa.style.opacity = '1';
@@ -550,8 +568,9 @@ function startTimerMode(timed) {
 
   if (G_timerInterval) { clearInterval(G_timerInterval); G_timerInterval = null; }
 
-  if (timed && G_currentExercise) {
-    var mins = officialTimeMinutes(G_currentExercise);
+  if (mode !== 'unlimited' && G_currentExercise) {
+    var base = officialTimeMinutes(G_currentExercise);
+    var mins = (mode === 'extended') ? base + 10 : base;
     var endTime = Date.now() + mins * 60 * 1000;
     updateTimerDisplay(mins * 60);
     G_timerInterval = setInterval(function() {
@@ -805,6 +824,7 @@ function showLoadError(msg) {
   // Hiện thời gian quy định trong timer mode card
   var mins = officialTimeMinutes(e);
   document.getElementById('officialTimeLabel').textContent = mins;
+  document.getElementById('extendedTimeLabel').textContent = mins + 10;
   document.getElementById('modeHintText').textContent =
     'Bài ' + e.program + ' — ' + e.title + ' (quy định ' + mins + ' phút). Bạn muốn luyện tập theo chế độ nào?';
   if (e.is_private) {
