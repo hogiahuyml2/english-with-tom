@@ -1125,6 +1125,26 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
   }
 });
 
+// Giáo viên lưu chỉnh sửa (không gửi cho học sinh, giữ pending_review)
+app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, res) => {
+  const subId = Number(req.params.id);
+  const { score, max_score, summary } = req.body || {};
+  const sub = db.prepare('SELECT id, feedback FROM submissions WHERE id=?').get(subId);
+  if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
+  // Merge summary vào feedback JSON nếu có
+  let feedbackJson = sub.feedback;
+  if (summary !== undefined) {
+    try {
+      const fb = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : (sub.feedback || {});
+      fb.summary = summary;
+      feedbackJson = JSON.stringify(fb);
+    } catch(e) { feedbackJson = summary; }
+  }
+  db.prepare('UPDATE submissions SET score=?, max_score=?, feedback=?, status=? WHERE id=?')
+    .run(score ?? null, max_score ?? null, feedbackJson, 'pending_review', subId);
+  res.json({ ok: true });
+});
+
 // Giáo viên xác nhận & gửi kết quả chấm cho học sinh
 app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const subId = Number(req.params.id);
