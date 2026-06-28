@@ -310,12 +310,21 @@
       <a href="#" id="backLink" style="color:var(--primary);">‹ Quay lại</a> › <span id="crumbTitle">Writing</span>
     </div>
 
+    <!-- Hết giờ banner -->
+    <div id="timerUpBanner" style="display:none;position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px 18px;z-index:9999;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.25);">
+      <div style="font-size:15px;">⏱ <strong>Hết giờ!</strong> Bài làm đã được lưu tạm — hãy nộp bài ngay.</div>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <button id="timerUpSubmitBtn" style="background:#fff;color:#dc2626;border:none;padding:7px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;">📤 Nộp bài</button>
+        <button onclick="document.getElementById('timerUpBanner').style.display='none';" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;">✕</button>
+      </div>
+    </div>
+
     <div class="practice-bar" style="margin-bottom:14px;">
       <div>
         <div style="font-weight:700; font-size:16px;" id="exTitle">Đang tải đề...</div>
         <div style="font-size:12.5px; color:var(--text-faint);" id="exSub">Chấm điểm tự động</div>
       </div>
-      <div class="timer">⏱ <span id="timer">20:00</span></div>
+      <div class="timer">⏱ <span id="timer">--:--</span></div>
     </div>
 
     <!-- Hình ảnh đề bài -->
@@ -519,7 +528,8 @@ var IS_PRIVATE = false;
 var G_submissionId = null;
 var G_currentExercise = null;
 var G_studentImageData = null;
-var G_timerInterval  = null;
+var G_timerTick      = null;  // single global interval — started once, never restarted
+var G_endTime        = null;  // epoch ms when timer should hit 0; null = no active timer
 var G_activeTab      = 'text';
 var G_timerMode      = null;
 var G_submittedEssay = ''; // lưu bài gõ trực tiếp để highlight sau khi chấm
@@ -558,6 +568,20 @@ function officialTimeMinutes(ex) {
   return 20;
 }
 
+/* ── Single global tick — started once at page load, reads G_endTime ── */
+function startGlobalTick() {
+  if (G_timerTick) return;
+  G_timerTick = setInterval(function() {
+    if (G_endTime === null) return;
+    var left = Math.max(0, Math.floor((G_endTime - Date.now()) / 1000));
+    updateTimerDisplay(left);
+    if (left <= 0) {
+      G_endTime = null;
+      handleTimeUp();
+    }
+  }, 1000);
+}
+
 /* ── Bắt đầu làm bài sau khi chọn chế độ ── */
 function startTimerMode(mode) {
   G_timerMode = mode;
@@ -566,33 +590,38 @@ function startTimerMode(mode) {
   wa.style.opacity = '1';
   wa.style.pointerEvents = 'auto';
 
-  if (G_timerInterval) { clearInterval(G_timerInterval); G_timerInterval = null; }
-
   if (mode !== 'unlimited' && G_currentExercise) {
     var base = officialTimeMinutes(G_currentExercise);
     var mins = (mode === 'extended') ? base + 10 : base;
-    var endTime = Date.now() + mins * 60 * 1000;
+    G_endTime = Date.now() + mins * 1000 * 60;
     updateTimerDisplay(mins * 60);
-    G_timerInterval = setInterval(function() {
-      var left = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
-      updateTimerDisplay(left);
-      if (left <= 0) {
-        clearInterval(G_timerInterval);
-        G_timerInterval = null;
-        alert('⏱ Hết giờ! Bài đã được tự động dừng. Hãy nộp bài ngay.');
-      }
-    }, 500);
+    startGlobalTick();
   } else {
+    G_endTime = null;
     document.getElementById('timer').textContent = '∞';
+    document.getElementById('timer').style.color = '';
   }
 }
 
 function updateTimerDisplay(secs) {
-  var m = Math.max(0, Math.floor(secs / 60));
-  var s = Math.max(0, secs % 60);
+  var m = Math.floor(secs / 60);
+  var s = secs % 60;
   document.getElementById('timer').textContent =
     (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-  if (secs <= 60) document.getElementById('timer').style.color = '#ef4444';
+  document.getElementById('timer').style.color = secs <= 60 ? '#ef4444' : '';
+}
+
+/* ── Hết giờ: lưu tạm + hiện banner ── */
+function handleTimeUp() {
+  // Lưu bài làm vào localStorage phòng mất dữ liệu
+  try {
+    var txt = essayEditor ? essayEditor.getText().trim()
+                          : (document.getElementById('essay') || {}).value || '';
+    if (txt) localStorage.setItem('autosave_' + EXERCISE_ID, txt);
+  } catch(e) {}
+  // Hiện banner hết giờ
+  document.getElementById('timerUpBanner').style.display = 'flex';
+  document.getElementById('submitBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 /* ── Chuyển tab Text / Image ── */
@@ -853,6 +882,12 @@ fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
     document.getElementById('aiNote').textContent = '⚠️ Hệ thống chấm tự động chưa sẵn sàng — bài sẽ lưu chờ chấm.';
 }).catch(function(){});
 
+/* ── Banner "hết giờ" → trigger nộp bài ── */
+document.getElementById('timerUpSubmitBtn').addEventListener('click', function() {
+  document.getElementById('timerUpBanner').style.display = 'none';
+  document.getElementById('submitBtn').click();
+});
+
 /* ── Nộp bài ── */
 document.getElementById('submitBtn').addEventListener('click', async function(){
   // Kiểm tra đầu vào theo tab đang active
@@ -866,7 +901,8 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   G_submittedEssay = text; // lưu lại để highlight sau khi chấm
 
   // Dừng đếm ngược khi nộp bài
-  if (G_timerInterval) { clearInterval(G_timerInterval); G_timerInterval = null; }
+  G_endTime = null;
+  document.getElementById('timerUpBanner').style.display = 'none';
 
   document.getElementById('loading').style.display = 'block';
   document.getElementById('result').style.display = 'none';
