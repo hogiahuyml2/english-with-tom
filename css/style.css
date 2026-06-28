@@ -311,7 +311,7 @@ img.brand-logo {
 .feature p { color:var(--text-muted); font-size:14px; }
 
 /* ===== Footer ===== */
-.site-footer { background:#fff; border-top:1px solid var(--border); padding: 40px 0 28px; margin-top: 40px; }
+.site-footer { background:var(--surface); border-top:1px solid var(--border); padding: 40px 0 28px; margin-top: 40px; }
 .footer-grid { display:grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 26px; margin-bottom: 28px; }
 .footer-grid h4 { font-size:14px; margin-bottom:12px; }
 .footer-grid a { display:block; color:var(--text-muted); font-size:13.5px; padding:4px 0; }
@@ -906,9 +906,15 @@ img.brand-logo {
 /* Note callout */
 [data-theme="dark"] .note { border-color: #1d3060; color: var(--info); }
 
-/* Logo & seal images (PNG with potential white bg) */
-[data-theme="dark"] img.brand-logo { mix-blend-mode: screen; }
-[data-theme="dark"] .footer-seal { opacity: .85; mix-blend-mode: screen; }
+/* Logo & seal PNG — invert dark-on-white stamp to white-on-dark */
+[data-theme="dark"] img.brand-logo { filter: invert(1) brightness(0.9); }
+[data-theme="dark"] .footer-seal { filter: invert(1) brightness(0.85); }
+
+/* Footer contact section */
+[data-theme="dark"] .footer-contact {
+  background: rgba(255,255,255,0.03);
+  border-color: var(--border);
+}
 
 /* Dark mode toggle button */
 .dark-toggle {
