@@ -7,145 +7,438 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6F58EE">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=13">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  font-family: 'Be Vietnam Pro', -apple-system, sans-serif;
+  background: radial-gradient(ellipse at 20% 50%, #1a0a3c 0%, #0a0a1f 45%, #060b1a 100%);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; overflow-x: hidden; position: relative;
+}
+.starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.star {
+  position: absolute; background: #fff; border-radius: 50%;
+  animation: twinkle var(--dur,3s) var(--delay,0s) infinite alternate ease-in-out;
+}
+@keyframes twinkle {
+  from { opacity: var(--lo,.15); transform: scale(1); }
+  to   { opacity: var(--hi,.85); transform: scale(1.5); }
+}
+.shoot {
+  position: fixed; width: 2px; height: 70px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,.9));
+  border-radius: 1px; transform-origin: top center;
+  animation: shooting 1.4s ease-out forwards;
+  pointer-events: none; z-index: 0;
+}
+@keyframes shooting {
+  0%   { transform: rotate(-45deg) translateY(0); opacity: 1; }
+  100% { transform: rotate(-45deg) translateY(320px); opacity: 0; }
+}
+.planet { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+.p1 {
+  width: 340px; height: 340px;
+  background: radial-gradient(circle at 32% 28%, #7b5cf0, #1e0870 55%, #0a043a);
+  top: -100px; right: -80px;
+  box-shadow: 0 0 100px rgba(111,88,238,.35), inset -30px -20px 60px rgba(0,0,0,.5);
+  opacity: .65; animation: float1 18s ease-in-out infinite alternate;
+}
+.p2 {
+  width: 180px; height: 180px;
+  background: radial-gradient(circle at 38% 30%, #5baaf5, #0e3575 60%, #050f28);
+  bottom: 30px; left: -55px;
+  box-shadow: 0 0 70px rgba(79,139,240,.3), inset -20px -15px 40px rgba(0,0,0,.5);
+  opacity: .55; animation: float2 14s ease-in-out infinite alternate;
+}
+.p3 {
+  width: 90px; height: 90px;
+  background: radial-gradient(circle at 35% 30%, #f0a56a, #8c3810 60%, #2a0e04);
+  top: 28%; right: 7%;
+  box-shadow: 0 0 40px rgba(240,160,96,.25);
+  opacity: .5; animation: float1 22s ease-in-out infinite alternate-reverse;
+}
+@keyframes float1 { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-18px) rotate(3deg); } }
+@keyframes float2 { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+
+.card {
+  background: rgba(12,8,35,.82);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 22px; padding: 36px 32px 28px;
+  width: 100%; max-width: 420px;
+  position: relative; z-index: 10;
+  box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(111,88,238,.18), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.card-brand { text-align: center; margin-bottom: 26px; }
+.card-brand a { text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; gap: 8px; }
+.card-brand img { width: 52px; height: 52px; object-fit: contain; filter: invert(1) brightness(.9); }
+.card-brand h1 { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+.card-brand small { font-size: 12px; color: rgba(255,255,255,.38); }
+
+.g-tabs {
+  display: flex; gap: 5px;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 13px; padding: 4px; margin-bottom: 22px;
+}
+.g-tab {
+  flex: 1; padding: 9px 0; background: transparent; border: none;
+  border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600;
+  color: rgba(255,255,255,.42); transition: all .2s;
+}
+.g-tab.active {
+  background: linear-gradient(135deg,rgba(111,88,238,.9),rgba(79,139,240,.85));
+  color: #fff; box-shadow: 0 4px 18px rgba(111,88,238,.4);
+}
+.g-label { display: block; font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,.5); margin-bottom: 6px; letter-spacing: .03em; }
+.g-input {
+  width: 100%; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.11);
+  border-radius: 11px; padding: 11px 14px; font-family: inherit; font-size: 14.5px;
+  color: #fff; margin-bottom: 13px;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.g-input:focus { outline: none; border-color: rgba(111,88,238,.75); background: rgba(111,88,238,.1); box-shadow: 0 0 0 3px rgba(111,88,238,.18); }
+.g-input::placeholder { color: rgba(255,255,255,.2); }
+.g-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 13px;
+  font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+  background: linear-gradient(135deg,#6F58EE 0%,#4F8BF0 100%); color: #fff;
+  letter-spacing: .02em; box-shadow: 0 8px 26px rgba(111,88,238,.45);
+  transition: transform .18s, box-shadow .18s, opacity .18s;
+}
+.g-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(111,88,238,.55); }
+.g-btn:active:not(:disabled) { transform: translateY(0); }
+.g-btn:disabled { opacity: .55; cursor: not-allowed; }
+.g-btn-google {
+  width: 100%; padding: 11px 14px; border-radius: 13px;
+  border: 1.5px solid rgba(255,255,255,.13); background: rgba(255,255,255,.06);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  color: rgba(255,255,255,.85); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 5px; transition: background .15s, border-color .15s;
+}
+.g-btn-google:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.22); }
+.g-btn-google:disabled { opacity: .4; cursor: not-allowed; }
+.g-divider {
+  text-align: center; color: rgba(255,255,255,.25); font-size: 12px;
+  margin: 13px 0; position: relative;
+}
+.g-divider::before, .g-divider::after {
+  content: ''; position: absolute; top: 50%; width: 36%; height: 1px; background: rgba(255,255,255,.1);
+}
+.g-divider::before { left: 0; } .g-divider::after { right: 0; }
+.g-msg {
+  border-radius: 11px; padding: 11px 14px; font-size: 13.5px;
+  display: none; align-items: flex-start; gap: 9px; margin-bottom: 13px;
+}
+.g-msg.error { background: rgba(240,60,60,.14); border: 1px solid rgba(240,60,60,.28); color: #ff8888; }
+.g-msg.ok    { background: rgba(46,158,123,.14); border: 1px solid rgba(46,158,123,.28); color: #5ee0aa; }
+.g-msg.info  { background: rgba(111,88,238,.14); border: 1px solid rgba(111,88,238,.28); color: #c0aaff; }
+.g-note {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
+  border-radius: 11px; padding: 11px 14px; font-size: 13px;
+  color: rgba(255,255,255,.45); display: flex; gap: 9px; margin-bottom: 15px;
+}
+.g-note strong { color: rgba(255,255,255,.75); }
+.g-link {
+  display: block; text-align: right; font-size: 12.5px;
+  color: rgba(160,140,255,.65); text-decoration: none;
+  margin-top: -7px; margin-bottom: 14px; transition: color .15s;
+}
+.g-link:hover { color: rgba(180,160,255,.95); }
+.card-foot { text-align: center; margin-top: 20px; font-size: 12.5px; color: rgba(255,255,255,.28); }
+.card-foot a { color: rgba(160,140,255,.55); text-decoration: none; }
+.card-foot a:hover { color: rgba(180,160,255,.85); }
+.hint-text { text-align: center; font-size: 12px; color: rgba(255,255,255,.25); margin-top: 10px; }
+
+/* OTP */
+.otp-header { text-align: center; margin-bottom: 18px; }
+.otp-icon { font-size: 42px; display: block; margin-bottom: 10px; }
+.otp-header h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.otp-header p { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.55; }
+.email-badge {
+  color: rgba(180,155,255,.9); font-weight: 600; font-size: 14px;
+  background: rgba(111,88,238,.15); border: 1px solid rgba(111,88,238,.25);
+  border-radius: 8px; padding: 3px 10px; display: inline-block; margin-top: 4px;
+}
+.spam-warn {
+  background: rgba(240,180,41,.1); border: 1px solid rgba(240,180,41,.22);
+  border-radius: 11px; padding: 11px 14px; font-size: 13px;
+  color: rgba(240,205,80,.85); display: flex; gap: 9px;
+  align-items: flex-start; margin-bottom: 16px; line-height: 1.5;
+}
+.otp-row { display: flex; gap: 9px; justify-content: center; margin: 18px 0 20px; }
+.otp-box {
+  width: 50px; height: 58px;
+  background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.14);
+  border-radius: 13px; font-size: 24px; font-weight: 700; color: #fff;
+  text-align: center; font-family: 'Courier New', monospace;
+  transition: border-color .15s, background .15s, box-shadow .15s; caret-color: transparent;
+}
+.otp-box:focus { outline: none; border-color: rgba(111,88,238,.9); background: rgba(111,88,238,.18); box-shadow: 0 0 0 3px rgba(111,88,238,.22); }
+.otp-box.filled { border-color: rgba(111,88,238,.5); }
+.resend-row { text-align: center; margin-top: 16px; font-size: 13px; color: rgba(255,255,255,.35); }
+.resend-btn {
+  background: none; border: none; padding: 0; font-family: inherit; font-size: 13px; cursor: pointer;
+  color: rgba(165,145,255,.75); text-decoration: underline; transition: color .15s;
+}
+.resend-btn:not(:disabled):hover { color: rgba(185,165,255,.95); }
+.resend-btn:disabled { color: rgba(255,255,255,.25); cursor: not-allowed; text-decoration: none; }
+.back-btn {
+  background: none; border: none; padding: 0; font-family: inherit; font-size: 12.5px; cursor: pointer;
+  color: rgba(255,255,255,.28); display: block; margin: 14px auto 0; text-align: center; transition: color .15s;
+}
+.back-btn:hover { color: rgba(255,255,255,.6); }
+
+@media (max-width: 480px) {
+  .card { padding: 28px 18px 22px; border-radius: 18px; }
+  .otp-box { width: 42px; height: 52px; font-size: 20px; border-radius: 10px; }
+  .otp-row { gap: 6px; }
+  .p1 { width: 220px; height: 220px; top: -60px; right: -60px; }
+  .p2 { width: 120px; height: 120px; }
+}
+</style>
 </head>
-<body data-page="login">
-<div id="site-header"></div>
+<body>
+<div class="starfield" id="starfield"></div>
+<div class="planet p1"></div>
+<div class="planet p2"></div>
+<div class="planet p3"></div>
 
-<section class="section">
-  <div class="container">
-    <div class="form-wrap">
-
-      <div style="display:flex; gap:8px; margin-bottom:18px; background:var(--primary-soft); padding:5px; border-radius:12px;">
-        <button class="btn btn-block" id="tabLogin" style="background:#fff;">Đăng nhập</button>
-        <button class="btn btn-block btn-ghost" id="tabReg">Đăng ký</button>
-      </div>
-
-      <div class="auth-card">
-        <!-- ĐĂNG NHẬP -->
-        <div id="paneLogin">
-          <h2 style="font-size:22px; margin-bottom:6px;">Chào mừng trở lại 👋</h2>
-          <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Đăng nhập để tiếp tục luyện thi.</p>
-
-          <button class="btn btn-block btn-google" id="googleLogin" style="margin-bottom:4px;">
-            <span style="font-weight:700; color:#4285F4;">G</span> Tiếp tục với Google
-          </button>
-          <div class="divider">hoặc dùng email</div>
-
-          <div id="loginMsg" style="display:none;" class="note"></div>
-          <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="ban@email.com"></div>
-          <div class="field"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="••••••••"></div>
-          <div style="text-align:right; margin-top:-6px; margin-bottom:14px;">
-            <a href="forgot-password.html" style="font-size:12.5px; color:var(--primary); text-decoration:none;">Quên mật khẩu?</a>
-          </div>
-          <button class="btn btn-primary btn-block" id="loginBtn">Đăng nhập</button>
-          <p style="text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:12px;">Học sinh và giáo viên đều đăng nhập tại đây. Tài khoản giáo viên do quản trị viên cấp.</p>
-        </div>
-
-        <!-- ĐĂNG KÝ -->
-        <div id="paneReg" style="display:none;">
-          <h2 style="font-size:22px; margin-bottom:6px;">Tạo tài khoản học sinh</h2>
-          <p style="color:var(--text-muted); font-size:14px; margin-bottom:18px;">Miễn phí — bắt đầu trong 1 phút.</p>
-
-          <div class="note" style="margin-bottom:18px;">
-            <span>👨‍🏫</span>
-            <div>Đăng ký công khai chỉ dành cho <strong>học sinh</strong>. Tài khoản <strong>giáo viên</strong> do quản trị viên cấp sẵn — giáo viên vui lòng dùng tab <strong>Đăng nhập</strong>.</div>
-          </div>
-
-          <button class="btn btn-block btn-google" id="googleReg" style="margin-bottom:4px;">
-            <span style="font-weight:700; color:#4285F4;">G</span> Đăng ký với Google
-          </button>
-          <div class="divider">hoặc dùng email</div>
-
-          <div id="regMsg" style="display:none;" class="note"></div>
-          <div class="field"><label>Họ và tên</label><input type="text" id="regName" placeholder="Nguyễn Văn A"></div>
-          <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="ban@email.com"></div>
-          <div class="field"><label>Mật khẩu</label><input type="password" id="regPass" placeholder="Tối thiểu 6 ký tự"></div>
-          <button class="btn btn-primary btn-block" id="regBtn">Tạo tài khoản</button>
-        </div>
-      </div>
-
-    </div>
+<div class="card">
+  <div class="card-brand">
+    <a href="index.html">
+      <img src="images/logo-icon.png" alt="EWT" onerror="this.style.display='none'">
+      <h1>English With Tom</h1>
+      <small>Học tiếng Anh cùng Tom</small>
+    </a>
   </div>
-</section>
 
-<div id="site-footer"></div>
-<script src="js/main.js?v=13"></script>
+  <div class="g-tabs" id="tabs">
+    <button class="g-tab active" id="tabLogin" onclick="show(false)">Đăng nhập</button>
+    <button class="g-tab"        id="tabReg"   onclick="show(true)">Đăng ký</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="paneLogin">
+    <button class="g-btn-google" id="googleLogin">
+      <svg width="18" height="18" viewBox="0 0 48 48" fill="none"><path d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z" fill="#FFC107"/><path d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12 24 12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4c-7.7 0-14.3 4.4-17.7 10.7z" fill="#FF3D00"/><path d="M24 44c5.4 0 10.3-2 14-5.3l-6.5-5.5C29.6 35 27 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5c3.4 6.4 10.1 11 17.8 11z" fill="#4CAF50"/><path d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.1 4-3.9 5.3l6.5 5.5C37.6 39.6 44 35 44 24c0-1.2-.1-2.3-.4-3.5z" fill="#1976D2"/></svg>
+      Tiếp tục với Google
+    </button>
+    <div class="g-divider">hoặc dùng email</div>
+    <div class="g-msg" id="loginMsg"></div>
+    <label class="g-label">Email</label>
+    <input class="g-input" type="email" id="loginEmail" placeholder="ban@email.com" autocomplete="email">
+    <label class="g-label">Mật khẩu</label>
+    <input class="g-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    <a href="forgot-password.html" class="g-link">Quên mật khẩu?</a>
+    <button class="g-btn" id="loginBtn">Đăng nhập</button>
+    <p class="hint-text">Học sinh và giáo viên đều đăng nhập tại đây.</p>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="paneReg" style="display:none;">
+    <div class="g-note">
+      <span>👨‍🏫</span>
+      <div>Đăng ký công khai dành cho <strong>học sinh</strong>. Tài khoản <strong>giáo viên</strong> do quản trị viên cấp — vui lòng dùng tab <strong>Đăng nhập</strong>.</div>
+    </div>
+    <button class="g-btn-google" id="googleReg">
+      <svg width="18" height="18" viewBox="0 0 48 48" fill="none"><path d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z" fill="#FFC107"/><path d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12 24 12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4c-7.7 0-14.3 4.4-17.7 10.7z" fill="#FF3D00"/><path d="M24 44c5.4 0 10.3-2 14-5.3l-6.5-5.5C29.6 35 27 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5c3.4 6.4 10.1 11 17.8 11z" fill="#4CAF50"/><path d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.1 4-3.9 5.3l6.5 5.5C37.6 39.6 44 35 44 24c0-1.2-.1-2.3-.4-3.5z" fill="#1976D2"/></svg>
+      Đăng ký với Google
+    </button>
+    <div class="g-divider">hoặc dùng email</div>
+    <div class="g-msg" id="regMsg"></div>
+    <label class="g-label">Họ và tên</label>
+    <input class="g-input" type="text" id="regName" placeholder="Nguyễn Văn A" autocomplete="name">
+    <label class="g-label">Email</label>
+    <input class="g-input" type="email" id="regEmail" placeholder="ban@email.com" autocomplete="email">
+    <label class="g-label">Mật khẩu</label>
+    <input class="g-input" type="password" id="regPass" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
+    <button class="g-btn" id="regBtn">Tạo tài khoản</button>
+  </div>
+
+  <!-- OTP VERIFY -->
+  <div id="paneVerify" style="display:none;">
+    <div class="otp-header">
+      <span class="otp-icon">📬</span>
+      <h2>Xác thực tài khoản</h2>
+      <p>Chúng tôi đã gửi mã 6 chữ số tới</p>
+      <span class="email-badge" id="verifyEmailBadge"></span>
+    </div>
+    <div class="spam-warn">
+      <span style="flex-shrink:0;">⚠️</span>
+      <div>Không thấy email? Kiểm tra thư mục <strong>Spam / Thư rác</strong>. Đôi khi mất 1–2 phút mới đến.</div>
+    </div>
+    <div class="g-msg" id="verifyMsg"></div>
+    <div class="otp-row" id="otpRow">
+      <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code">
+      <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+      <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+      <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+      <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+      <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+    </div>
+    <button class="g-btn" id="verifyBtn">Xác nhận mã</button>
+    <div class="resend-row">
+      Chưa nhận được mã?
+      <button class="resend-btn" id="resendBtn">Gửi lại</button>
+      <span id="resendTimer" style="display:none;color:rgba(255,255,255,.3)">&nbsp;(<span id="resendCount">60</span>s)</span>
+    </div>
+    <button class="back-btn" id="backBtn">← Quay lại đăng ký</button>
+  </div>
+
+  <div class="card-foot"><a href="index.html">← Về trang chủ</a></div>
+</div>
+
 <script>
-  var tabL = document.getElementById('tabLogin'), tabR = document.getElementById('tabReg');
-  var paneL = document.getElementById('paneLogin'), paneR = document.getElementById('paneReg');
-  function show(reg){
-    paneL.style.display = reg ? 'none' : 'block';
-    paneR.style.display = reg ? 'block' : 'none';
-    tabL.style.background = reg ? 'transparent' : '#fff';
-    tabR.style.background = reg ? '#fff' : 'transparent';
-    tabL.classList.toggle('btn-ghost', reg);
-    tabR.classList.toggle('btn-ghost', !reg);
+/* Stars */
+(function(){
+  var sf = document.getElementById('starfield');
+  for(var i=0;i<160;i++){
+    var el=document.createElement('div'); el.className='star';
+    var sz=(Math.random()*2.4+0.4).toFixed(1);
+    var lo=(0.1+Math.random()*0.25).toFixed(2);
+    var hi=(0.6+Math.random()*0.4).toFixed(2);
+    el.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+(Math.random()*100).toFixed(1)+'%;left:'+(Math.random()*100).toFixed(1)+'%;--dur:'+(2+Math.random()*4).toFixed(1)+'s;--delay:'+(Math.random()*5).toFixed(1)+'s;--lo:'+lo+';--hi:'+hi+';opacity:'+lo+';';
+    sf.appendChild(el);
   }
-  tabL.onclick = function(){ show(false); };
-  tabR.onclick = function(){ show(true); };
-  if (location.hash === '#register') show(true);
-
-  /* ===== Nối API thật ===== */
-  function qp(name){ return new URLSearchParams(location.search).get(name); }
-  var nextPage = qp('next') || 'dashboard.html';
-
-  function msg(el, text, ok){
-    el.style.display = 'flex';
-    el.style.background = ok ? 'var(--success-soft)' : 'var(--warning-soft)';
-    el.style.borderColor = 'transparent';
-    el.style.color = ok ? 'var(--success)' : 'var(--warning)';
-    el.innerHTML = '<span>' + (ok ? '✅' : '⚠️') + '</span><div>' + text + '</div>';
+  function shoot(){
+    var s=document.createElement('div'); s.className='shoot';
+    s.style.top=(Math.random()*45)+'%'; s.style.left=(20+Math.random()*60)+'%';
+    document.body.appendChild(s);
+    setTimeout(function(){s.remove();},1600);
+    setTimeout(shoot,5000+Math.random()*9000);
   }
+  setTimeout(shoot,3000);
+})();
 
-  async function postJSON(url, data){
-    var r = await fetch(url, {
-      method:'POST', credentials:'same-origin',
-      headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
-    });
-    return { ok: r.ok, data: await r.json().catch(function(){ return {}; }) };
-  }
+var _verifyEmail='', _resendTimer=null;
 
-  document.getElementById('loginBtn').onclick = async function(){
-    var res = await postJSON('/api/login', {
-      email: document.getElementById('loginEmail').value,
-      password: document.getElementById('loginPass').value
-    });
-    if (res.ok) { location.href = nextPage; }
-    else { msg(document.getElementById('loginMsg'), res.data.error || 'Đăng nhập thất bại.', false); }
-  };
+function show(reg){
+  document.getElementById('paneLogin').style.display=reg?'none':'block';
+  document.getElementById('paneReg').style.display=reg?'block':'none';
+  document.getElementById('paneVerify').style.display='none';
+  document.getElementById('tabs').style.display='flex';
+  document.getElementById('tabLogin').classList.toggle('active',!reg);
+  document.getElementById('tabReg').classList.toggle('active',reg);
+}
+function showVerify(email){
+  _verifyEmail=email;
+  document.getElementById('paneLogin').style.display='none';
+  document.getElementById('paneReg').style.display='none';
+  document.getElementById('paneVerify').style.display='block';
+  document.getElementById('tabs').style.display='none';
+  document.getElementById('verifyEmailBadge').textContent=email;
+  clearMsg(document.getElementById('verifyMsg'));
+  otpBoxes().forEach(function(b){b.value='';b.classList.remove('filled');});
+  otpBoxes()[0].focus();
+  startResendTimer();
+}
+if(location.hash==='#register') show(true);
 
-  document.getElementById('regBtn').onclick = async function(){
-    var res = await postJSON('/api/register', {
-      name: document.getElementById('regName').value,
-      email: document.getElementById('regEmail').value,
-      password: document.getElementById('regPass').value
-    });
-    if (res.ok) { location.href = nextPage; }
-    else { msg(document.getElementById('regMsg'), res.data.error || 'Đăng ký thất bại.', false); }
-  };
+function msg(el,text,type){
+  el.style.display='flex'; el.className='g-msg '+(type||'error');
+  el.innerHTML='<span>'+(type==='ok'?'✅':type==='info'?'ℹ️':'⚠️')+'</span><div>'+text+'</div>';
+}
+function clearMsg(el){el.style.display='none';}
+function qp(n){return new URLSearchParams(location.search).get(n);}
+var nextPage=qp('next')||'dashboard.html';
+async function postJSON(url,data){
+  var r=await fetch(url,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  return{ok:r.ok,data:await r.json().catch(function(){return{};})};
+}
 
-  function goGoogle(){ location.href = '/api/auth/google'; }
-  document.getElementById('googleLogin').onclick = goGoogle;
-  document.getElementById('googleReg').onclick = goGoogle;
+var errParam=qp('error');
+if(errParam){show(false);setTimeout(function(){msg(document.getElementById('loginMsg'),errParam,'error');},50);}
+if(qp('verified')){show(false);setTimeout(function(){msg(document.getElementById('loginMsg'),'Email đã được xác thực! Mời bạn đăng nhập.','ok');},50);}
 
-  // Hiện thông báo lỗi nếu Google chuyển về kèm ?error=
-  var err = qp('error');
-  if (err) { show(false); msg(document.getElementById('loginMsg'), err, false); }
-  if (qp('verified')) { show(false); msg(document.getElementById('loginMsg'), 'Email đã được xác thực thành công! Mời bạn đăng nhập.', true); }
+function goGoogle(){location.href='/api/auth/google';}
+document.getElementById('googleLogin').onclick=goGoogle;
+document.getElementById('googleReg').onclick=goGoogle;
 
-  // Nếu Google chưa cấu hình thì làm mờ nút cho rõ
-  fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
-    if (!c.googleEnabled) {
-      ['googleLogin','googleReg'].forEach(function(id){
-        var b = document.getElementById(id);
-        b.style.opacity = '.55';
-        b.title = 'Đăng nhập Google sắp có';
-      });
-    }
-  }).catch(function(){});
+document.getElementById('loginBtn').onclick=async function(){
+  var btn=this; btn.disabled=true; btn.textContent='Đang đăng nhập…';
+  clearMsg(document.getElementById('loginMsg'));
+  var res=await postJSON('/api/login',{email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPass').value});
+  btn.disabled=false; btn.textContent='Đăng nhập';
+  if(res.ok){location.href=nextPage;}
+  else if(res.data.needVerify){showVerify(res.data.email||document.getElementById('loginEmail').value.trim());msg(document.getElementById('verifyMsg'),'Tài khoản chưa xác thực email. Nhập mã đã gửi tới email của bạn.','info');}
+  else{msg(document.getElementById('loginMsg'),res.data.error||'Đăng nhập thất bại.','error');}
+};
+document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('loginBtn').click();});
+document.getElementById('loginEmail').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('loginPass').focus();});
+
+document.getElementById('regBtn').onclick=async function(){
+  var btn=this; btn.disabled=true; btn.textContent='Đang tạo tài khoản…';
+  clearMsg(document.getElementById('regMsg'));
+  var res=await postJSON('/api/register',{name:document.getElementById('regName').value.trim(),email:document.getElementById('regEmail').value.trim(),password:document.getElementById('regPass').value});
+  btn.disabled=false; btn.textContent='Tạo tài khoản';
+  if(res.ok){res.data.needVerify?showVerify(document.getElementById('regEmail').value.trim()):(location.href=nextPage);}
+  else{msg(document.getElementById('regMsg'),res.data.error||'Đăng ký thất bại.','error');}
+};
+document.getElementById('regPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('regBtn').click();});
+
+function otpBoxes(){return Array.from(document.querySelectorAll('.otp-box'));}
+function getOtpCode(){return otpBoxes().map(function(b){return b.value;}).join('');}
+
+document.getElementById('otpRow').addEventListener('input',function(e){
+  var boxes=otpBoxes(), idx=boxes.indexOf(e.target);
+  e.target.value=e.target.value.replace(/[^0-9]/g,'').slice(-1);
+  e.target.classList.toggle('filled',!!e.target.value);
+  if(e.target.value&&idx<boxes.length-1) boxes[idx+1].focus();
+  if(getOtpCode().length===6) setTimeout(function(){document.getElementById('verifyBtn').click();},120);
+});
+document.getElementById('otpRow').addEventListener('keydown',function(e){
+  var boxes=otpBoxes(), idx=boxes.indexOf(e.target);
+  if(e.key==='Backspace'&&!e.target.value&&idx>0){boxes[idx-1].value='';boxes[idx-1].classList.remove('filled');boxes[idx-1].focus();}
+  if(e.key==='ArrowLeft'&&idx>0) boxes[idx-1].focus();
+  if(e.key==='ArrowRight'&&idx<boxes.length-1) boxes[idx+1].focus();
+});
+document.getElementById('otpRow').addEventListener('paste',function(e){
+  var pasted=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+  if(!pasted) return; e.preventDefault();
+  var boxes=otpBoxes();
+  boxes.forEach(function(b,i){b.value=pasted[i]||'';b.classList.toggle('filled',!!b.value);});
+  if(pasted.length===6) setTimeout(function(){document.getElementById('verifyBtn').click();},120);
+  else boxes[Math.min(pasted.length,5)].focus();
+});
+
+document.getElementById('verifyBtn').onclick=async function(){
+  var code=getOtpCode(), msgEl=document.getElementById('verifyMsg');
+  if(code.length<6){msg(msgEl,'Vui lòng nhập đủ 6 chữ số.','error');return;}
+  var btn=this; btn.disabled=true; btn.textContent='Đang xác nhận…';
+  clearMsg(msgEl);
+  var res=await postJSON('/api/verify-code',{email:_verifyEmail,code:code});
+  if(res.ok){btn.textContent='✅ Thành công!';setTimeout(function(){location.href=nextPage;},700);}
+  else{btn.disabled=false;btn.textContent='Xác nhận mã';msg(msgEl,res.data.error||'Mã không đúng.','error');otpBoxes().forEach(function(b){b.value='';b.classList.remove('filled');});otpBoxes()[0].focus();}
+};
+
+function startResendTimer(){
+  var secs=60;
+  document.getElementById('resendBtn').disabled=true;
+  document.getElementById('resendTimer').style.display='inline';
+  document.getElementById('resendCount').textContent=secs;
+  clearInterval(_resendTimer);
+  _resendTimer=setInterval(function(){
+    secs--; document.getElementById('resendCount').textContent=secs;
+    if(secs<=0){clearInterval(_resendTimer);document.getElementById('resendBtn').disabled=false;document.getElementById('resendTimer').style.display='none';}
+  },1000);
+}
+document.getElementById('resendBtn').onclick=async function(){
+  var btn=this; btn.disabled=true;
+  var res=await postJSON('/api/resend-verify-code',{email:_verifyEmail});
+  if(res.ok){msg(document.getElementById('verifyMsg'),'Đã gửi mã mới! Kiểm tra cả hộp Spam nếu không thấy.','ok');startResendTimer();}
+  else{msg(document.getElementById('verifyMsg'),res.data.error||'Gửi email thất bại.','error');btn.disabled=false;}
+};
+document.getElementById('backBtn').onclick=function(){clearInterval(_resendTimer);show(true);};
+
+fetch('/api/config').then(function(r){return r.json();}).then(function(c){
+  if(!c.googleEnabled){['googleLogin','googleReg'].forEach(function(id){var b=document.getElementById(id);b.disabled=true;b.style.opacity='.35';b.title='Đăng nhập Google sắp có';});}
+}).catch(function(){});
 </script>
 </body>
 </html>

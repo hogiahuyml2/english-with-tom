@@ -102,16 +102,25 @@ async function sendBrevoEmail(to, subject, htmlContent) {
   }
 }
 
-async function sendVerificationEmail(user, link) {
+async function sendVerificationCode(user, code) {
   const html =
-    '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6">' +
-    '<h2 style="color:#6F58EE">Chào ' + user.name + '! 👋</h2>' +
-    '<p>Cảm ơn bạn đã đăng ký <b>English With Tom</b>. Bấm nút bên dưới để xác thực email của bạn:</p>' +
-    '<p style="margin:22px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Xác thực email</a></p>' +
-    '<p style="font-size:13px;color:#888">Hoặc mở liên kết: <a href="' + link + '">' + link + '</a></p>' +
-    '<p style="font-size:13px;color:#888">Nếu bạn không đăng ký tài khoản này, hãy bỏ qua email.</p>' +
-    '</div>';
-  return sendBrevoEmail(user, 'Xác thực email — English With Tom', html);
+    '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6;max-width:480px">' +
+    '<div style="background:linear-gradient(135deg,#6F58EE,#4F8BF0);padding:24px;border-radius:12px 12px 0 0;text-align:center">' +
+      '<h2 style="color:#fff;margin:0;font-size:22px">English With Tom ✨</h2>' +
+    '</div>' +
+    '<div style="background:#fff;padding:28px;border-radius:0 0 12px 12px;border:1px solid #e8e6f2">' +
+    '<h3 style="color:#2E2B45;margin-bottom:8px">Xin chào ' + user.name + '! 👋</h3>' +
+    '<p style="color:#6B6880">Đây là mã xác thực tài khoản của bạn trên <b>English With Tom</b>:</p>' +
+    '<div style="text-align:center;margin:24px 0">' +
+      '<div style="display:inline-block;background:linear-gradient(135deg,#6F58EE,#4F8BF0);color:#fff;font-size:38px;font-weight:700;letter-spacing:10px;padding:18px 32px;border-radius:14px;box-shadow:0 8px 24px rgba(111,88,238,.3)">' + code + '</div>' +
+    '</div>' +
+    '<p style="color:#6B6880;font-size:14px">Mã có hiệu lực trong <strong style="color:#6F58EE">15 phút</strong>.</p>' +
+    '<div style="background:#fff8e1;border-left:4px solid #f0b429;padding:12px 16px;border-radius:8px;margin:16px 0;font-size:13.5px;color:#7a6000">' +
+      '📬 <strong>Không thấy email?</strong> Hãy kiểm tra thư mục <strong>Spam / Thư rác</strong> — email đôi khi bị lọc nhầm.' +
+    '</div>' +
+    '<p style="color:#9C99AE;font-size:12.5px;margin-top:16px">Nếu bạn không đăng ký tài khoản này, hãy bỏ qua email này.</p>' +
+    '</div></div>';
+  return sendBrevoEmail(user, 'Mã xác thực tài khoản — English With Tom', html);
 }
 
 // ===== Phân tích cookie thủ công (không cần thư viện) =====
@@ -165,16 +174,18 @@ app.post('/api/register', async (req, res) => {
     return res.status(409).json({ error: 'Email này đã được đăng ký.' });
 
   const needVerify = emailEnabled();
-  const token = needVerify ? crypto.randomBytes(24).toString('hex') : null;
-  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,verify_token,created_at) VALUES (?,?,?,?,?,?,?)')
-    .run(name, mail, hashPassword(password), 'student', needVerify ? 0 : 1, token, now());
+  const code = needVerify ? String(Math.floor(100000 + Math.random() * 900000)) : null;
+  const codeExpiry = code ? new Date(Date.now() + 15 * 60 * 1000).toISOString() : null;
 
-  if (needVerify) await sendVerificationEmail({ name, email: mail }, baseUrl(req) + '/api/verify-email?token=' + token);
+  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,verify_token,verify_token_expiry,created_at) VALUES (?,?,?,?,?,?,?,?)')
+    .run(name, mail, hashPassword(password), 'student', needVerify ? 0 : 1, code, codeExpiry, now());
   const newId = Number(r.lastInsertRowid);
-  // Nếu email này đã được mời vào lớp trước khi đăng ký, tự động liên kết
+
+  if (needVerify) await sendVerificationCode({ name, email: mail }, code);
   db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
-  startSession(res, newId, req);
-  res.json({ user: { id: newId, name, email: mail, role: 'student' }, needVerify });
+
+  if (!needVerify) startSession(res, newId, req);
+  res.json({ needVerify });
 });
 
 // Đăng nhập — học sinh và giáo viên đều dùng
@@ -183,6 +194,8 @@ app.post('/api/login', (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE email=?').get((email || '').toLowerCase());
   if (!u || !verifyPassword(password || '', u.pass))
     return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng.' });
+  if (!u.email_verified)
+    return res.status(403).json({ error: 'Tài khoản chưa xác thực email.', needVerify: true, email: u.email });
   startSession(res, u.id, req);
   res.json({ user: { id: u.id, name: u.name, email: u.email, role: u.role } });
 });
@@ -455,17 +468,50 @@ app.get('/api/verify-email', (req, res) => {
   res.redirect('/login.html?verified=1');
 });
 
-// Gửi lại email xác thực (cho người đang đăng nhập, chưa xác thực)
+// Xác thực bằng mã OTP (6 chữ số) — không cần đăng nhập
+app.post('/api/verify-code', (req, res) => {
+  const { email, code } = req.body || {};
+  if (!email || !code) return res.status(400).json({ error: 'Thiếu thông tin xác thực.' });
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email.toLowerCase());
+  if (!u) return res.status(400).json({ error: 'Email không tồn tại.' });
+  if (u.email_verified) {
+    startSession(res, u.id, req);
+    return res.json({ ok: true });
+  }
+  if (u.verify_token !== String(code).trim())
+    return res.status(400).json({ error: 'Mã xác thực không đúng. Vui lòng kiểm tra lại.' });
+  if (u.verify_token_expiry && new Date(u.verify_token_expiry) < new Date())
+    return res.status(400).json({ error: 'Mã đã hết hạn. Bấm "Gửi lại" để nhận mã mới.' });
+  db.prepare('UPDATE users SET email_verified=1, verify_token=NULL, verify_token_expiry=NULL WHERE id=?').run(u.id);
+  startSession(res, u.id, req);
+  res.json({ ok: true });
+});
+
+// Gửi lại mã OTP — không cần đăng nhập (dùng khi đăng ký hoặc login bị chặn)
+app.post('/api/resend-verify-code', async (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Vui lòng nhập email.' });
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email.toLowerCase());
+  if (!u) return res.status(400).json({ error: 'Email không tồn tại.' });
+  if (u.email_verified) return res.json({ ok: true, already: true });
+  if (!emailEnabled()) return res.status(400).json({ error: 'Hệ thống email chưa được cấu hình.' });
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const expiry = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+  db.prepare('UPDATE users SET verify_token=?, verify_token_expiry=? WHERE id=?').run(code, expiry, u.id);
+  const result = await sendVerificationCode({ name: u.name, email: u.email }, code);
+  return result.ok ? res.json({ ok: true })
+    : res.status(500).json({ error: 'Gửi email thất bại. Vui lòng thử lại sau.' });
+});
+
+// Gửi lại xác thực cho người đã đăng nhập chưa verify
 app.post('/api/me/resend-verification', requireAuth, async (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE id=?').get(req.user.id);
   if (u.email_verified) return res.json({ ok: true, already: true });
   if (!emailEnabled()) return res.status(400).json({ error: 'Hệ thống email chưa được cấu hình.' });
-  let token = u.verify_token;
-  if (!token) {
-    token = crypto.randomBytes(24).toString('hex');
-    db.prepare('UPDATE users SET verify_token=? WHERE id=?').run(token, u.id);
-  }
-  const result = await sendVerificationEmail({ name: u.name, email: u.email }, baseUrl(req) + '/api/verify-email?token=' + token);
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const expiry = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+  db.prepare('UPDATE users SET verify_token=?, verify_token_expiry=? WHERE id=?').run(code, expiry, u.id);
+  const result = await sendVerificationCode({ name: u.name, email: u.email }, code);
   return result.ok ? res.json({ ok: true })
     : res.status(500).json({ error: 'Gửi email thất bại.', status: result.status, detail: result.detail });
 });

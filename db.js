@@ -54,8 +54,9 @@ CREATE TABLE IF NOT EXISTS submissions (
 const userCols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
 if (!userCols.includes('email_verified')) db.exec('ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0');
 if (!userCols.includes('verify_token'))   db.exec('ALTER TABLE users ADD COLUMN verify_token TEXT');
-if (!userCols.includes('reset_token'))    db.exec('ALTER TABLE users ADD COLUMN reset_token TEXT');
-if (!userCols.includes('reset_token_expiry')) db.exec('ALTER TABLE users ADD COLUMN reset_token_expiry TEXT');
+if (!userCols.includes('reset_token'))         db.exec('ALTER TABLE users ADD COLUMN reset_token TEXT');
+if (!userCols.includes('reset_token_expiry'))  db.exec('ALTER TABLE users ADD COLUMN reset_token_expiry TEXT');
+if (!userCols.includes('verify_token_expiry')) db.exec('ALTER TABLE users ADD COLUMN verify_token_expiry TEXT');
 
 const subCols = db.prepare('PRAGMA table_info(submissions)').all().map(c => c.name);
 if (!subCols.includes('feedback')) db.exec('ALTER TABLE submissions ADD COLUMN feedback TEXT');
