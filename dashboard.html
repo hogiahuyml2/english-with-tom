@@ -362,6 +362,10 @@
   background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;
   border-radius:20px; padding:2px 10px; margin-bottom:10px;
 }
+.rev-essay-text {
+  font-size:14px; line-height:1.9; color:#1f2937;
+  white-space:pre-wrap; font-family:Georgia,'Times New Roman',serif;
+}
 
 /* Loading spinner */
 .rev-loading {
@@ -573,7 +577,11 @@ function fmtDate(s) {
 function fmtDateTime(s) {
   if (!s) return '';
   try {
-    var d = new Date(s.replace(' ','T')+'Z');
+    var str = String(s);
+    // If no timezone info, treat as UTC; if already has Z/offset, leave as-is
+    if (!str.endsWith('Z') && !/[+\-]\d{2}:\d{2}$/.test(str)) str = str.replace(' ','T') + 'Z';
+    var d = new Date(str);
+    if (isNaN(d)) return '';
     return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()
       + ' lúc ' + ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
   } catch(e){ return ''; }
@@ -1053,20 +1061,41 @@ async function loadProgress() {
     '</div>';
   }
 
+  // Smart line-break formatter for email/writing text stored without explicit newlines
+  function fmtEssayText(txt) {
+    if (!txt) return '';
+    // If text already has real newlines, just use it directly
+    if (/\n/.test(txt)) return esc(txt);
+    // Otherwise insert line breaks at common email structure points
+    var t = txt
+      // After email header fields: To: ... Subject: ...
+      .replace(/(To:\s*[^\n]+?)\s+(Subject:|Hi |Hey |Dear |Hello )/g, '$1\n$2')
+      .replace(/(Subject:\s*[^\n]+?)\s*(Hi |Hey |Dear |Hello )/g, '$1\n\n$2')
+      // After greeting line: "Hi X," or "Dear X,"
+      .replace(/^((?:To:[^\n]*\n)?(?:Subject:[^\n]*\n\n)?(?:Dear|Hi|Hey|Hello)\s[^,\n]+,)\s*/gm, '$1\n')
+      // Before closing: "Best,", "Regards,", "Yours,", "Sincerely,"
+      .replace(/\s*(Best(?:\s+regards)?|Kind regards|Regards|Yours(?: sincerely| truly)?|Sincerely|Thank you),\s*/gi, '\n\n$1,\n')
+      // Between paragraphs: sentence end followed by capital letter
+      .replace(/([.!?])\s+([A-Z][a-z])/g, '$1\n\n$2');
+    return esc(t);
+  }
+
+  function essayBox(text) {
+    var wc = (text||'').trim().split(/\s+/).filter(Boolean).length;
+    return '<div class="rev-word-count">'+wc+' từ</div>' +
+      '<div class="rev-essay-text">' + fmtEssayText(text) + '</div>';
+  }
+
   function buildSingleRevContent(promptText, ans) {
     var essayText = ans && ans.essay ? ans.essay : '';
-    var wc = essayText.trim().split(/\s+/).filter(Boolean).length;
 
     var promptHtml = promptText
       ? '<div class="rev-prompt-text">'+esc(String(promptText))+'</div>'
       : '<em style="color:var(--text-faint)">Không có đề bài</em>';
 
-    var answerHtml = '';
-    if (essayText) {
-      answerHtml = '<div class="rev-word-count">'+wc+' từ</div>' + esc(essayText);
-    } else {
-      answerHtml = '<em style="color:var(--text-faint)">Không có bài làm</em>';
-    }
+    var answerHtml = essayText
+      ? essayBox(essayText)
+      : '<em style="color:var(--text-faint)">Không có bài làm</em>';
 
     return '<div class="rev-part-block">' +
       '<div class="rev-two-col">' +
@@ -1078,16 +1107,16 @@ async function loadProgress() {
   function buildAptisRevContent(exParts, ans) {
     var html = '';
 
-    // Part 1 — Word level
-    var p1Content = exParts && exParts.part1;
-    var p1Qs = p1Content && p1Content.questions ? p1Content.questions : [];
-    var p1Ctx = p1Content && p1Content.context ? p1Content.context : '';
-    var p1Prompt = '';
-    if (p1Ctx) p1Prompt += '<div style="margin-bottom:10px;color:#374151;">'+esc(p1Ctx)+'</div>';
+    /* ── Part 1: Word-level ── */
+    var p1 = (exParts && exParts.part1) || {};
+    var p1Qs  = p1.questions || [];
+    var p1Ex  = p1.example_q ? ('<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">Ví dụ: "'+esc(p1.example_q)+'" → "'+esc(p1.example_a||'')+'"</div>') : '';
+    var p1Ctx = p1.context ? '<div style="margin-bottom:8px;color:#374151;font-size:13px;">'+esc(p1.context)+'</div>' : '';
+    var p1Prompt = p1Ctx + p1Ex;
     if (p1Qs.length) {
-      p1Prompt += '<ol style="padding-left:18px;margin:0;display:flex;flex-direction:column;gap:6px;">' +
-        p1Qs.map(function(q,i){ return '<li style="font-size:13.5px;color:#1f2937;">'+esc(q)+'</li>'; }).join('') + '</ol>';
-    } else if (!p1Ctx) {
+      p1Prompt += '<ol style="padding-left:18px;margin:0;display:flex;flex-direction:column;gap:7px;">' +
+        p1Qs.map(function(q,i){ return '<li style="font-size:13.5px;color:#1f2937;line-height:1.6;">'+esc(q)+'</li>'; }).join('') + '</ol>';
+    } else if (!p1Prompt) {
       p1Prompt = '<em style="color:var(--text-faint)">Part 1 — Word-level tasks</em>';
     }
 
@@ -1099,120 +1128,99 @@ async function loadProgress() {
           return '<li><span class="rev-ans-num">'+(i+1)+'</span><span class="rev-ans-text">'+esc(String(a||''))+'</span></li>';
         }).join('') + '</ul>';
     } else if (typeof p1Ans === 'string' && p1Ans.trim()) {
-      p1AnsHtml = esc(p1Ans);
+      p1AnsHtml = '<div class="rev-essay-text">'+esc(p1Ans)+'</div>';
     } else {
       p1AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
     }
+    html += revPartBlock('Part 1 — Word-level', p1Prompt, p1AnsHtml);
 
-    html += '<div class="rev-part-block">' +
-      '<div class="rev-part-title">Part 1 — Word-level</div>' +
-      '<div class="rev-two-col">' +
-        panel('prompt', '📋 Đề', p1Prompt) +
-        panel('answer', '✍️ Bài làm', p1AnsHtml) +
-      '</div></div>';
+    /* ── Part 2: Short text ── */
+    var p2 = (exParts && exParts.part2) || {};
+    var p2PromptParts = [];
+    if (p2.context) p2PromptParts.push('<div style="margin-bottom:8px;color:#374151;font-size:13px;">'+esc(p2.context)+'</div>');
+    if (p2.prompt)  p2PromptParts.push('<div class="rev-prompt-text">'+esc(p2.prompt)+'</div>');
+    if (p2.word_range || p2.word_target) p2PromptParts.push('<div style="font-size:11.5px;color:#6b7280;margin-top:6px;">Yêu cầu: '+esc(String(p2.word_range||p2.word_target||''))+' từ</div>');
+    var p2Prompt = p2PromptParts.length ? p2PromptParts.join('') : '<em style="color:var(--text-faint)">Part 2 — Short text task</em>';
 
-    // Part 2 — Short text
-    var p2Content = exParts && exParts.part2;
-    var p2Ctx = p2Content && (p2Content.context || p2Content.prompt || '');
-    var p2Prompt = p2Ctx
-      ? '<div class="rev-prompt-text">'+esc(String(p2Ctx))+'</div>'
-      : '<em style="color:var(--text-faint)">Part 2 — Short text task</em>';
-
-    var p2Ans = ans.part2 || '';
-    var p2Wc = p2Ans.trim().split(/\s+/).filter(Boolean).length;
+    var p2Ans = (ans.part2 || '').trim();
     var p2AnsHtml = p2Ans
-      ? '<div class="rev-word-count">'+p2Wc+' từ</div>'+esc(p2Ans)
+      ? essayBox(p2Ans)
       : '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
+    html += revPartBlock('Part 2 — Short text', p2Prompt, p2AnsHtml);
 
-    html += '<div class="rev-part-block">' +
-      '<div class="rev-part-title">Part 2 — Short text</div>' +
-      '<div class="rev-two-col">' +
-        panel('prompt', '📋 Đề', p2Prompt) +
-        panel('answer', '✍️ Bài làm', p2AnsHtml) +
-      '</div></div>';
-
-    // Part 3 — Group chat
-    var p3Content = exParts && exParts.part3;
-    var p3Msgs = p3Content && p3Content.messages ? p3Content.messages : [];
-    var p3Ctx  = p3Content && p3Content.context  ? p3Content.context  : '';
-    var p3Prompt = '';
-    if (p3Ctx) p3Prompt += '<div style="margin-bottom:8px;color:#374151;font-size:13px;">'+esc(p3Ctx)+'</div>';
-    if (p3Msgs.length) {
-      p3Prompt += '<div class="rev-chat-list">' +
-        p3Msgs.map(function(m){
-          var who = m.author || m.name || '';
-          var txt = m.text || m.message || String(m);
-          return '<div class="rev-chat-msg">' +
-            (who ? '<div class="rev-chat-label">'+esc(who)+'</div>' : '') +
-            esc(txt) + '</div>';
-        }).join('') + '</div>';
-    } else if (!p3Ctx) {
-      p3Prompt = '<em style="color:var(--text-faint)">Part 3 — Group chat task</em>';
+    /* ── Part 3: Group chat ── */
+    var p3 = (exParts && exParts.part3) || {};
+    var p3Msgs = p3.messages || [];
+    var p3PromptParts = [];
+    if (p3.context) p3PromptParts.push('<div style="margin-bottom:8px;color:#374151;font-size:13px;">'+esc(p3.context)+'</div>');
+    if (p3.reply_prompts && p3.reply_prompts.length) {
+      p3PromptParts.push('<div style="font-size:11.5px;color:#6b7280;margin-bottom:6px;">'+esc(p3.reply_prompts.join(' | '))+'</div>');
     }
+    if (p3Msgs.length) {
+      p3PromptParts.push('<div class="rev-chat-list">' +
+        p3Msgs.map(function(m){
+          var who = m.name || m.author || '';
+          var txt = m.text || m.message || String(m);
+          return '<div class="rev-chat-msg">'+(who?'<div class="rev-chat-label">'+esc(who)+'</div>':'')+esc(txt)+'</div>';
+        }).join('') + '</div>');
+    }
+    var p3Prompt = p3PromptParts.length ? p3PromptParts.join('') : '<em style="color:var(--text-faint)">Part 3 — Group chat task</em>';
 
     var p3Ans = ans.part3;
     var p3AnsHtml = '';
     if (Array.isArray(p3Ans) && p3Ans.length) {
       p3AnsHtml = '<div class="rev-chat-list">' +
         p3Ans.map(function(a,i){
-          return '<div class="rev-chat-msg rev-chat-you">' +
-            '<div class="rev-chat-label">Câu trả lời '+(i+1)+'</div>'+esc(String(a||''))+'</div>';
+          return '<div class="rev-chat-msg rev-chat-you"><div class="rev-chat-label">Reply '+(i+1)+'</div>'+esc(String(a||''))+'</div>';
         }).join('') + '</div>';
     } else if (typeof p3Ans === 'string' && p3Ans.trim()) {
-      p3AnsHtml = esc(p3Ans);
+      p3AnsHtml = '<div class="rev-essay-text">'+esc(p3Ans)+'</div>';
     } else {
       p3AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
     }
+    html += revPartBlock('Part 3 — Group chat', p3Prompt, p3AnsHtml);
 
-    html += '<div class="rev-part-block">' +
-      '<div class="rev-part-title">Part 3 — Group chat</div>' +
-      '<div class="rev-two-col">' +
-        panel('prompt', '📋 Đề', p3Prompt) +
-        panel('answer', '✍️ Bài làm', p3AnsHtml) +
-      '</div></div>';
-
-    // Part 4 — Email writing
-    var p4Content = exParts && exParts.part4;
-    var p4T1Desc = p4Content && (p4Content.task1 || p4Content.task_1 || '') || '';
-    var p4T2Desc = p4Content && (p4Content.task2 || p4Content.task_2 || '') || '';
-    var p4Prompt = p4T1Desc || p4T2Desc
-      ? '<div class="rev-task-block"><div class="rev-task-label">Task 1 — Informal email</div><div class="rev-prompt-text">'+esc(String(p4T1Desc||''))+'</div></div>' +
-        '<div class="rev-task-block"><div class="rev-task-label">Task 2 — Formal email</div><div class="rev-prompt-text">'+esc(String(p4T2Desc||''))+'</div></div>'
-      : '<em style="color:var(--text-faint)">Part 4 — Email tasks</em>';
+    /* ── Part 4: Email writing ── */
+    var p4 = (exParts && exParts.part4) || {};
+    // p4.task1 and p4.task2 are objects: {prompt, word_target, time}
+    var t1Obj = p4.task1 || {};
+    var t2Obj = p4.task2 || {};
+    var p4PromptParts = [];
+    if (p4.email_context) p4PromptParts.push('<div style="margin-bottom:10px;color:#374151;font-size:13px;">'+esc(p4.email_context)+'</div>');
+    if (p4.email_body) {
+      p4PromptParts.push(
+        '<div style="background:#f8f7ff;border-left:3px solid #c4b5fd;border-radius:0 8px 8px 0;padding:10px 13px;margin-bottom:10px;">' +
+        '<div style="font-size:10.5px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Email nhận được</div>' +
+        '<div style="font-size:13px;line-height:1.7;color:#374151;white-space:pre-wrap;">'+esc(p4.email_body)+'</div></div>'
+      );
+    }
+    if (t1Obj.prompt) p4PromptParts.push('<div class="rev-task-block"><div class="rev-task-label">Task 1'+(t1Obj.word_target?' (~'+t1Obj.word_target+' từ)':'')+'</div><div class="rev-prompt-text">'+esc(t1Obj.prompt)+'</div></div>');
+    if (t2Obj.prompt) p4PromptParts.push('<div class="rev-task-block"><div class="rev-task-label">Task 2'+(t2Obj.word_target?' ('+t2Obj.word_target+' từ)':'')+'</div><div class="rev-prompt-text">'+esc(t2Obj.prompt)+'</div></div>');
+    var p4Prompt = p4PromptParts.length ? p4PromptParts.join('') : '<em style="color:var(--text-faint)">Part 4 — Email tasks</em>';
 
     var p4Ans = ans.part4;
     var p4AnsHtml = '';
     if (p4Ans && typeof p4Ans === 'object') {
-      var t1 = String(p4Ans.task1 || p4Ans.task_1 || '').trim();
-      var t2 = String(p4Ans.task2 || p4Ans.task_2 || '').trim();
-      if (t1 || t2) {
-        if (t1) {
-          var wc1 = t1.split(/\s+/).filter(Boolean).length;
-          p4AnsHtml += '<div class="rev-task-block"><div class="rev-task-label">Task 1 — Informal</div>' +
-            '<div class="rev-word-count">'+wc1+' từ</div><div style="white-space:pre-wrap;">'+esc(t1)+'</div></div>';
-        }
-        if (t2) {
-          var wc2 = t2.split(/\s+/).filter(Boolean).length;
-          p4AnsHtml += '<div class="rev-task-block"><div class="rev-task-label">Task 2 — Formal</div>' +
-            '<div class="rev-word-count">'+wc2+' từ</div><div style="white-space:pre-wrap;">'+esc(t2)+'</div></div>';
-        }
-      } else {
-        p4AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
-      }
-    } else if (typeof p4Ans === 'string' && p4Ans.trim()) {
-      p4AnsHtml = esc(p4Ans);
+      var at1 = String(p4Ans.task1 || '').trim();
+      var at2 = String(p4Ans.task2 || '').trim();
+      if (at1) p4AnsHtml += '<div class="rev-task-block"><div class="rev-task-label">Task 1 — Informal</div>' + essayBox(at1) + '</div>';
+      if (at2) p4AnsHtml += '<div class="rev-task-block"><div class="rev-task-label">Task 2 — Formal</div>' + essayBox(at2) + '</div>';
+      if (!at1 && !at2) p4AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
     } else {
       p4AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
     }
-
-    html += '<div class="rev-part-block">' +
-      '<div class="rev-part-title">Part 4 — Email writing</div>' +
-      '<div class="rev-two-col">' +
-        panel('prompt', '📋 Đề', p4Prompt) +
-        panel('answer', '✍️ Bài làm', p4AnsHtml) +
-      '</div></div>';
+    html += revPartBlock('Part 4 — Email writing', p4Prompt, p4AnsHtml);
 
     return html;
+  }
+
+  function revPartBlock(title, promptHtml, answerHtml) {
+    return '<div class="rev-part-block">' +
+      '<div class="rev-part-title">'+esc(title)+'</div>' +
+      '<div class="rev-two-col">' +
+        panel('prompt', '📋 Đề', promptHtml) +
+        panel('answer', '✍️ Bài làm', answerHtml) +
+      '</div></div>';
   }
 
   function buildFeedbackSection(fb, sc) {
