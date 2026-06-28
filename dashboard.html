@@ -507,7 +507,8 @@ function renderSubList() {
 
   var html = filtered.map(function(s, idx) {
     var sc = getScore(s);
-    var fb = safeJson(s.feedback);
+    var fb  = safeJson(s.feedback);
+    var ans = safeJson(s.answers);
     var scoreHtml = '';
     var scoreColor = 'var(--primary)';
     if (sc) {
@@ -527,14 +528,15 @@ function renderSubList() {
     if (fb && fb.criteria && fb.criteria.length) {
       critHtml = '<div class="sub-crit">';
       fb.criteria.forEach(function(c) {
-        var pct = c.max > 0 ? c.score / c.max : 0;
+        var mx = c.max_score || c.max || 0;
+        var pct = mx > 0 ? c.score / mx : 0;
         var color = bandColor(pct);
         critHtml += '<div>' +
           '<div class="crit-row-dash">' +
             '<span class="crit-name-dash">' + esc(c.name) + '</span>' +
-            '<span class="crit-score-dash" style="color:' + color + ';">' + c.score + ' / ' + c.max + '</span>' +
+            '<span class="crit-score-dash" style="color:' + color + ';">' + c.score + ' / ' + mx + '</span>' +
           '</div>' +
-          '<div class="crit-bar-dash-wrap"><div class="crit-bar-dash" style="width:' + Math.round(pct*100) + '%;background:' + color + ';"></div></div>' +
+          '<div class="crit-bar-dash-wrap"><div class="crit-bar-dash" style="width:' + Math.min(100, Math.round(pct*100)) + '%;background:' + color + ';"></div></div>' +
           (c.comment ? '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;line-height:1.5;">'+esc(c.comment)+'</div>' : '') +
         '</div>';
       });
@@ -548,6 +550,39 @@ function renderSubList() {
     if (fb && fb.suggestions && fb.suggestions.length) {
       suggHtml = '<div style="margin-top:12px;"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 Gợi ý cải thiện</div>' +
         '<ul class="sub-sugg">' + fb.suggestions.map(function(sg){ return '<li>'+esc(sg)+'</li>'; }).join('') + '</ul></div>';
+    }
+
+    // Bài làm của học sinh
+    var essayHtml = '';
+    if (ans) {
+      var essayContent = '';
+      if (ans.part1 || ans.part2 || ans.part3 || ans.part4) {
+        // APTIS full test
+        var aptParts = [
+          { label: 'Part 1 — Word-level', val: ans.part1 },
+          { label: 'Part 2 — Short text', val: ans.part2 },
+          { label: 'Part 3 — Group chat', val: ans.part3 },
+          { label: 'Part 4 — Email', val: ans.part4 }
+        ];
+        aptParts.forEach(function(p) {
+          if (!p.val) return;
+          var txt = typeof p.val === 'object' ? JSON.stringify(p.val, null, 2) : String(p.val).trim();
+          if (!txt) return;
+          essayContent += '<div style="margin-bottom:10px;">' +
+            '<div style="font-size:11px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">'+esc(p.label)+'</div>' +
+            '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:10px 13px;font-size:13.5px;line-height:1.8;color:#1f2937;white-space:pre-wrap;">'+esc(txt)+'</div>' +
+          '</div>';
+        });
+      } else if (ans.essay) {
+        var wc = ans.essay.trim().split(/\s+/).filter(Boolean).length;
+        essayContent = '<div style="font-size:11.5px;color:#6b7280;margin-bottom:6px;">'+wc+' từ</div>' +
+          '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.85;color:#1f2937;white-space:pre-wrap;font-family:Georgia,serif;">'+esc(ans.essay)+'</div>';
+      }
+      if (essayContent) {
+        essayHtml = '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #f3f4f6;">' +
+          '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">📝 Bài làm của bạn</div>' +
+          essayContent + '</div>';
+      }
     }
 
     var link = exerciseLink(s);
@@ -567,7 +602,7 @@ function renderSubList() {
         '<span class="sub-chevron">▼</span>' +
       '</div>' +
       '<div class="sub-body">' +
-        critHtml + summaryHtml + suggHtml + actionsHtml +
+        critHtml + summaryHtml + suggHtml + essayHtml + actionsHtml +
       '</div>' +
     '</div>';
   }).join('');

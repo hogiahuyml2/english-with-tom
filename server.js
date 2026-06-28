@@ -718,7 +718,7 @@ app.get('/api/me/submissions', requireAuth, (req, res) => {
   if (skill)   { cond.push('e.skill = ?');   params.push(skill); }
   const lim = Math.min(parseInt(limit) || 100, 200);
   const rows = db.prepare(`
-    SELECT s.id, s.exercise_id, s.score, s.max_score, s.status, s.feedback, s.submitted_at,
+    SELECT s.id, s.exercise_id, s.score, s.max_score, s.status, s.feedback, s.answers, s.submitted_at,
            e.title, e.program, e.skill
     FROM submissions s JOIN exercises e ON e.id = s.exercise_id
     WHERE ${cond.join(' AND ')} ORDER BY s.id DESC LIMIT ?
