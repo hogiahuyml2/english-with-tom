@@ -36,7 +36,7 @@
     '<header class="site-header"><div class="container nav">' +
       '<a class="brand" href="index.html">' +
         '<img class="brand-logo" src="images/logo-icon.png" alt="EWT" onerror="this.outerHTML=\'<span class=&quot;brand-logo&quot;>T</span>\'">' +
-        '<span>English With Tom<small>Luyện tập các kỹ năng ngôn ngữ</small></span>' +
+        '<span>English With Tom<small>Học tiếng Anh cùng Tom</small></span>' +
       '</a>' +
       '<nav class="nav-links" id="navLinks">' + links + '</nav>' +
       '<div class="nav-actions" id="navActions">' +
