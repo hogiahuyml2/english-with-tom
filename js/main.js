@@ -164,16 +164,7 @@
     }
   }
 
-  /* Đồng hồ đếm ngược demo cho trang làm bài */
-  var t = document.getElementById('timer');
-  if (t) {
-    var secs = 20 * 60;
-    setInterval(function () {
-      secs = Math.max(0, secs - 1);
-      var m = Math.floor(secs / 60), s = secs % 60;
-      t.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-    }, 1000);
-  }
+  /* Demo timer removed — each practice page manages its own timer via G_timerTick/G_endTime */
 })();
 
 /* ===== PWA: Service Worker + Install Prompt ===== */
