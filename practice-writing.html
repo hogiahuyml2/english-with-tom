@@ -98,7 +98,9 @@
   .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
 
   /* ── Hình ảnh đề bài ── */
-  #exImageWrap { display:none; margin-bottom:16px; }
+  #exImageWrap { display:none; margin-bottom:14px; }
+  /* Khi có ảnh: cột trái sticky để ảnh luôn hiển thị khi scroll */
+  .passage.has-image { position:sticky; top:72px; max-height:calc(100vh - 90px); overflow-y:auto; }
   .exam-img-box {
     position:relative; background:#f5f5f8; border:1px solid var(--border);
     border-radius:12px; overflow:hidden; cursor:zoom-in;
@@ -327,14 +329,6 @@
       <div class="timer">⏱ <span id="timer">--:--</span></div>
     </div>
 
-    <!-- Hình ảnh đề bài -->
-    <div id="exImageWrap">
-      <div class="exam-img-box" onclick="openLightbox()">
-        <img id="examImg" src="" alt="Hình ảnh đề bài">
-        <span class="zoom-hint">🔍 Bấm để phóng to</span>
-      </div>
-    </div>
-
     <!-- Chọn chế độ thời gian -->
     <div id="timerModeCard">
       <h4>⏱ Chọn chế độ làm bài</h4>
@@ -347,8 +341,15 @@
     </div>
 
     <div class="two-col" id="writingArea" style="opacity:0.4; pointer-events:none; transition:opacity .3s;">
-      <!-- Đề bài -->
-      <div class="passage">
+      <!-- Đề bài (+ ảnh nếu có) -->
+      <div class="passage" id="passageCol">
+        <!-- Hình ảnh đề bài — nằm trong cột trái, phía trên đề -->
+        <div id="exImageWrap">
+          <div class="exam-img-box" onclick="openLightbox()">
+            <img id="examImg" src="" alt="Hình ảnh đề bài">
+            <span class="zoom-hint">🔍 Bấm để phóng to</span>
+          </div>
+        </div>
         <h3 style="margin-bottom:10px;">📋 Đề bài</h3>
         <div class="prompt-text" id="promptText" style="font-size:14.5px; color:#403d57; line-height:1.85;">...</div>
       </div>
@@ -858,6 +859,7 @@ function showLoadError(msg) {
   if (e.image_url) {
     document.getElementById('examImg').src = e.image_url;
     document.getElementById('exImageWrap').style.display = 'block';
+    document.getElementById('passageCol').classList.add('has-image');
   }
   // Tải lịch sử bài làm
   loadHistory();
