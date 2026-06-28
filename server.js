@@ -576,8 +576,9 @@ app.get('/api/exercises/:id', requireAuth, (req, res) => {
   if (ex.is_private) {
     if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
     if (!['teacher','admin'].includes(req.user.role)) {
-      const ok = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(req.params.id, req.user.email);
-      if (!ok) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+      const assigned = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(req.params.id, req.user.email);
+      const submitted = db.prepare('SELECT id FROM submissions WHERE exercise_id=? AND user_id=?').get(req.params.id, req.user.id);
+      if (!assigned && !submitted) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
     }
   }
   ex.questions = ex.questions ? JSON.parse(ex.questions) : null;

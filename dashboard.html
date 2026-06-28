@@ -1028,7 +1028,10 @@ async function loadProgress() {
     var exContent = null;
     try {
       var r = await fetch('/api/exercises/' + data.exerciseId, {credentials:'same-origin'});
-      if (r.ok) { var exData = await r.json(); exContent = exData.content || null; }
+      if (r.ok) {
+        var exData = await r.json();
+        exContent = (exData.exercise && exData.exercise.content) || exData.content || null;
+      }
     } catch(e) {}
 
     document.getElementById('revContent').innerHTML = buildRevContent(exContent, data.ans, data.fb, sc);
