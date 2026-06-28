@@ -166,12 +166,13 @@ img.brand-logo {
 .hero p { font-size: 17px; color: var(--text-muted); max-width: 560px; margin: 0 auto 28px; }
 .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .hero-badge {
-  display:inline-flex; align-items:center; gap:7px; background:#fff; border:1px solid var(--border);
+  display:inline-flex; align-items:center; gap:7px; background:var(--surface); border:1px solid var(--border);
   padding:6px 14px; border-radius:999px; font-size:13px; color:var(--primary); font-weight:600; margin-bottom:20px;
 }
 
 /* ===== Section ===== */
 .section { padding: 52px 0; }
+.section-alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .section-head { text-align: center; margin-bottom: 34px; }
 .section-head h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
 .section-head p { color: var(--text-muted); font-size: 15px; }
@@ -288,7 +289,7 @@ img.brand-logo {
 .field label { display:block; font-size:13.5px; font-weight:600; margin-bottom:7px; }
 .field input, .field select, .field textarea {
   width:100%; font-family:inherit; font-size:14.5px; padding:11px 13px;
-  border:1px solid var(--border); border-radius: var(--radius-sm); background:#fff; color:var(--text);
+  border:1px solid var(--border); border-radius: var(--radius-sm); background:var(--surface); color:var(--text);
 }
 .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(123,110,246,.12); }
 .field textarea { resize:vertical; min-height: 90px; }
@@ -415,7 +416,7 @@ img.brand-logo {
   flex-direction: column;
   gap: 12px;
   margin-bottom: 24px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 16px 18px;
@@ -468,7 +469,7 @@ img.brand-logo {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(123,110,246,.12);
-  background: #fff;
+  background: var(--surface);
 }
 .fbar-pills {
   display: flex;
@@ -482,7 +483,7 @@ img.brand-logo {
   padding: 5px 13px;
   border-radius: 20px;
   border: 1.5px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   font-size: 12.5px;
   font-weight: 600;
   font-family: var(--font);
@@ -534,12 +535,12 @@ img.brand-logo {
 }
 
 /* ===== Practice page ===== */
-.practice-bar { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.practice-bar { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
 .timer { display:flex; align-items:center; gap:8px; font-weight:700; color:var(--primary); }
-.passage { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:26px; font-size:14.5px; line-height:1.8; color:#403d57; }
+.passage { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:26px; font-size:14.5px; line-height:1.8; color:#403d57; }
 .passage h3 { margin-bottom:12px; }
 .passage p { margin-bottom:14px; }
-.q-block { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
+.q-block { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
 .q-item { padding:14px 0; border-bottom:1px solid var(--border); }
 .q-item:last-child { border-bottom:none; }
 .q-item .q-text { font-weight:600; font-size:14.5px; margin-bottom:10px; }
@@ -696,7 +697,7 @@ img.brand-logo {
 .re-wrap {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: #fff;
+  background: var(--surface);
   transition: border-color .15s, box-shadow .15s;
   overflow: hidden;
 }
@@ -901,6 +902,13 @@ img.brand-logo {
 
 /* Stat chips (game) */
 [data-theme="dark"] .stat-chip { background: var(--surface); border-color: var(--border); }
+
+/* Note callout */
+[data-theme="dark"] .note { border-color: #1d3060; color: var(--info); }
+
+/* Logo & seal images (PNG with potential white bg) */
+[data-theme="dark"] img.brand-logo { mix-blend-mode: screen; }
+[data-theme="dark"] .footer-seal { opacity: .85; mix-blend-mode: screen; }
 
 /* Dark mode toggle button */
 .dark-toggle {
