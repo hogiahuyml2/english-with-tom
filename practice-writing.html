@@ -976,7 +976,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
     this.disabled = false;
     document.getElementById('loading').style.display = 'none';
     var msg = (fetchErr && fetchErr.name === 'AbortError')
-      ? 'Chấm bài quá lâu (>2 phút). Máy chủ AI có thể đang tải — vui lòng thử lại sau 30 giây.'
+      ? 'Chấm bài quá lâu (>2 phút). Hệ thống tự động có thể đang bận — vui lòng thử lại sau 30 giây.'
       : 'Mất kết nối khi nộp bài — kiểm tra mạng rồi thử lại.';
     alert(msg);
     return;

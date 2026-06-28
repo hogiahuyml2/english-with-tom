@@ -417,7 +417,7 @@
             </div>
           </div>
           <details style="margin-bottom:14px;">
-            <summary style="cursor:pointer;font-size:13.5px;font-weight:600;padding:8px 0;color:var(--text);">📝 Model Answer (đáp án mẫu) — tuỳ chọn, giúp AI chấm chính xác hơn</summary>
+            <summary style="cursor:pointer;font-size:13.5px;font-weight:600;padding:8px 0;color:var(--text);">📝 Model Answer (đáp án mẫu) — tuỳ chọn, giúp hệ thống chấm chính xác hơn</summary>
             <div class="field" style="margin-top:8px;">
               <textarea id="exModelAnswer" style="min-height:110px;font-family:inherit;font-size:13.5px;" placeholder="Nhập bài viết mẫu tham khảo..."></textarea>
             </div>
@@ -2655,7 +2655,7 @@
     <p style="font-size:13px;color:#6b7280;margin:0 0 18px;">Tiêu chí chấm điểm khác nhau theo từng phần.</p>
     <div id="partSelectorOptions" style="display:grid;gap:8px;"></div>
     <div style="display:flex;gap:8px;margin-top:18px;">
-      <button class="btn btn-primary" id="partSelectorConfirm" onclick="confirmPartAndGrade()" style="flex:1;">✅ Xác nhận & Chấm AI</button>
+      <button class="btn btn-primary" id="partSelectorConfirm" onclick="confirmPartAndGrade()" style="flex:1;">✅ Xác nhận & Chấm tự động</button>
       <button class="btn btn-sm" onclick="closePartSelector()" style="flex-shrink:0;">Huỷ</button>
     </div>
   </div>
@@ -2698,7 +2698,7 @@
       <!-- ─── Pane: AI ─── -->
       <div class="gp-pane active" id="gpPaneAI">
         <div id="gpAIActions">
-          <button class="btn btn-primary" id="gpAIBtn" onclick="doAiGrade()" style="width:100%;">🤖 Chấm bài bằng AI ngay</button>
+          <button class="btn btn-primary" id="gpAIBtn" onclick="doAiGrade()" style="width:100%;">✅ Chấm bài tự động ngay</button>
           <p style="font-size:12px;color:var(--text-faint);margin:6px 0 0;text-align:center;">Chấm theo tiêu chí chuẩn của kỳ thi · ~15–30 giây</p>
         </div>
         <div id="gpAILoading" style="display:none;text-align:center;padding:30px;">
@@ -2770,7 +2770,7 @@
 
       <!-- ─── Pane: Model Answer ─── -->
       <div class="gp-pane" id="gpPaneModel">
-        <button class="btn" id="gpModelBtn" onclick="loadGpModelAnswer()" style="width:100%;">📖 Tạo bài mẫu AI cho đề này</button>
+        <button class="btn" id="gpModelBtn" onclick="loadGpModelAnswer()" style="width:100%;">📖 Tạo bài mẫu tự động cho đề này</button>
         <div id="gpModelLoading" style="display:none;text-align:center;padding:30px;">
           <div style="font-size:28px;margin-bottom:10px;">📝</div>
           <div style="color:var(--text-faint);font-size:14px;">Đang tạo bài mẫu...</div>
@@ -3012,7 +3012,7 @@ async function _runAiGrade() {
     document.getElementById('gpAILoading').style.display = 'none';
     if (!r.ok || !d.result) {
       document.getElementById('gpAIActions').style.display = '';
-      alert('Chấm AI thất bại: ' + (d.error || 'Lỗi không xác định'));
+      alert('Chấm tự động thất bại: ' + (d.error || 'Lỗi không xác định'));
       return;
     }
     _gpMaxScore = d.max_score || 5;
@@ -3036,7 +3036,7 @@ async function _runAiGrade() {
   } catch(e) {
     document.getElementById('gpAILoading').style.display = 'none';
     document.getElementById('gpAIActions').style.display = '';
-    alert('Lỗi kết nối khi chấm AI.');
+    alert('Lỗi kết nối khi chấm tự động.');
   }
 }
 
@@ -3180,7 +3180,7 @@ function renderAIResult(result) {
 
   // Suggested writing (bài mẫu từ AI grading)
   if (result.suggested_writing) {
-    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu AI (từ kết quả chấm)</div>';
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu tự động (từ kết quả chấm)</div>';
     html += '<div class="model-answer-box">' + escHtml(result.suggested_writing) + '</div>';
   }
 
