@@ -224,6 +224,157 @@
 .skel { background:linear-gradient(90deg,#f0effe 25%,#e8e4fc 50%,#f0effe 75%); background-size:200% 100%; animation:skel .9s infinite; border-radius:8px; }
 @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
+/* ── Review overlay modal ── */
+#revOverlay {
+  display:none; position:fixed; inset:0; z-index:6000;
+  background:#f5f4fc; overflow-y:auto;
+  font-family:var(--font,'Be Vietnam Pro',sans-serif);
+}
+#revOverlay.open { display:block; }
+.rev-header {
+  position:sticky; top:0; z-index:10;
+  background:rgba(255,255,255,.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border,#e5e7eb);
+  padding:0 20px;
+  display:flex; align-items:center; gap:14px; min-height:58px;
+}
+.rev-back-btn {
+  display:flex; align-items:center; gap:6px;
+  background:none; border:none; cursor:pointer;
+  font-size:13.5px; font-weight:700; color:var(--primary,#6F58EE);
+  padding:8px 0; flex-shrink:0;
+}
+.rev-back-btn:hover { opacity:.75; }
+.rev-header-mid { flex:1; min-width:0; }
+.rev-header-title {
+  font-size:15px; font-weight:800; color:var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.rev-header-meta { font-size:12px; color:var(--text-faint); margin-top:1px; }
+.rev-header-score {
+  font-size:26px; font-weight:900; flex-shrink:0; line-height:1;
+}
+.rev-header-score-label { font-size:11px; color:var(--text-faint); text-align:right; margin-top:1px; }
+
+.rev-body { max-width:960px; margin:0 auto; padding:24px 20px 60px; }
+
+/* Part sections */
+.rev-part-block { margin-bottom:28px; }
+.rev-part-title {
+  font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  color:#7c3aed; margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.rev-part-title::after {
+  content:''; flex:1; height:1px; background:linear-gradient(to right,#e9d5ff,transparent);
+}
+.rev-two-col {
+  display:grid; grid-template-columns:1fr 1fr; gap:14px;
+}
+@media(max-width:640px){ .rev-two-col { grid-template-columns:1fr; } }
+
+.rev-panel {
+  border-radius:14px; overflow:hidden;
+}
+.rev-panel-head {
+  padding:9px 14px; font-size:11.5px; font-weight:800;
+  letter-spacing:.05em; text-transform:uppercase;
+}
+.rev-panel.prompt .rev-panel-head { background:#ede9fe; color:#5b21b6; }
+.rev-panel.answer .rev-panel-head { background:#ecfdf5; color:#065f46; }
+.rev-panel-body {
+  background:#fff; border:1.5px solid #e5e7eb; border-top:none;
+  border-radius:0 0 14px 14px; padding:14px 16px;
+  font-size:13.5px; line-height:1.85; color:#1f2937;
+  min-height:60px;
+}
+.rev-panel.prompt .rev-panel-body { border-color:#ddd6fe; }
+.rev-panel.answer .rev-panel-body { border-color:#a7f3d0; font-family:Georgia,'Times New Roman',serif; white-space:pre-wrap; }
+
+/* Prompt text styles */
+.rev-prompt-text { white-space:pre-wrap; }
+.rev-prompt-bullets { list-style:disc; padding-left:18px; margin:6px 0 0; }
+.rev-prompt-bullets li { margin-bottom:4px; }
+
+/* Numbered answer list */
+.rev-ans-list { list-style:none; padding:0; margin:0; }
+.rev-ans-list li {
+  display:flex; gap:10px; align-items:baseline;
+  padding:6px 0; border-bottom:1px solid #f3f4f6;
+}
+.rev-ans-list li:last-child { border-bottom:none; }
+.rev-ans-num {
+  min-width:22px; height:22px; border-radius:50%;
+  background:#d1fae5; color:#065f46; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.rev-ans-text { font-size:13.5px; color:#1f2937; line-height:1.6; }
+
+/* Chat message style for Part 3 */
+.rev-chat-list { display:flex; flex-direction:column; gap:8px; }
+.rev-chat-msg {
+  background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px;
+  padding:8px 12px; font-size:13px; line-height:1.6; color:#374151;
+}
+.rev-chat-you {
+  background:#f0effe; border-color:#c4b5fd; color:#3b0764;
+  margin-left:16px;
+}
+.rev-chat-label { font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px; }
+
+/* Part 4 tasks */
+.rev-task-block { margin-bottom:12px; }
+.rev-task-label { font-size:11px; font-weight:800; color:#0369a1; text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px; }
+
+/* Feedback section */
+.rev-feedback { margin-top:28px; }
+.rev-fb-section {
+  background:#fff; border:1.5px solid var(--border,#e5e7eb);
+  border-radius:16px; padding:20px; margin-bottom:14px;
+}
+.rev-fb-title {
+  font-size:13px; font-weight:800; color:var(--text);
+  margin-bottom:14px; display:flex; align-items:center; gap:7px;
+}
+.rev-score-big {
+  text-align:center; margin-bottom:16px; padding-bottom:16px;
+  border-bottom:1px solid var(--border,#e5e7eb);
+}
+.rev-score-num { font-size:48px; font-weight:900; line-height:1; }
+.rev-score-scale { font-size:13px; color:var(--text-faint); margin-top:4px; }
+.rev-crit-list { display:flex; flex-direction:column; gap:10px; }
+.rev-crit-row { display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:3px; }
+.rev-crit-name { font-weight:600; color:var(--text); }
+.rev-crit-score { font-weight:800; font-size:13.5px; }
+.rev-crit-bar-wrap { height:7px; background:#f0effe; border-radius:4px; overflow:hidden; margin-bottom:4px; }
+.rev-crit-bar { height:100%; border-radius:4px; transition:width .6s; }
+.rev-crit-comment { font-size:12px; color:var(--text-muted); line-height:1.55; }
+.rev-summary-text { font-size:14px; line-height:1.8; color:var(--text); }
+.rev-sugg-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+.rev-sugg-list li {
+  display:flex; gap:10px; align-items:baseline;
+  font-size:13.5px; color:var(--text); line-height:1.6;
+}
+.rev-sugg-list li::before {
+  content:'→'; color:var(--primary,#6F58EE); font-weight:700; flex-shrink:0;
+}
+.rev-word-count {
+  display:inline-block; font-size:11.5px; font-weight:700;
+  background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;
+  border-radius:20px; padding:2px 10px; margin-bottom:10px;
+}
+
+/* Loading spinner */
+.rev-loading {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:300px; color:var(--text-faint); font-size:14px; gap:14px;
+}
+.rev-spinner {
+  width:36px; height:36px; border:3px solid #e0e0e0;
+  border-top-color:var(--primary,#6F58EE); border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
 /* ── Stat mini theo chương trình ── */
 .prog-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; margin-bottom:22px; }
 .prog-stat-card {
@@ -407,6 +558,7 @@ var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản tr�
 var G_allSubs = [];
 var G_filterProg  = '';
 var G_filterSkill = '';
+var _subReviewMap = {};
 
 function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
 
@@ -552,42 +704,20 @@ function renderSubList() {
         '<ul class="sub-sugg">' + fb.suggestions.map(function(sg){ return '<li>'+esc(sg)+'</li>'; }).join('') + '</ul></div>';
     }
 
-    // Bài làm của học sinh
-    var essayHtml = '';
-    if (ans) {
-      var essayContent = '';
-      if (ans.part1 || ans.part2 || ans.part3 || ans.part4) {
-        // APTIS full test
-        var aptParts = [
-          { label: 'Part 1 — Word-level', val: ans.part1 },
-          { label: 'Part 2 — Short text', val: ans.part2 },
-          { label: 'Part 3 — Group chat', val: ans.part3 },
-          { label: 'Part 4 — Email', val: ans.part4 }
-        ];
-        aptParts.forEach(function(p) {
-          if (!p.val) return;
-          var txt = typeof p.val === 'object' ? JSON.stringify(p.val, null, 2) : String(p.val).trim();
-          if (!txt) return;
-          essayContent += '<div style="margin-bottom:10px;">' +
-            '<div style="font-size:11px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">'+esc(p.label)+'</div>' +
-            '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:10px 13px;font-size:13.5px;line-height:1.8;color:#1f2937;white-space:pre-wrap;">'+esc(txt)+'</div>' +
-          '</div>';
-        });
-      } else if (ans.essay) {
-        var wc = ans.essay.trim().split(/\s+/).filter(Boolean).length;
-        essayContent = '<div style="font-size:11.5px;color:#6b7280;margin-bottom:6px;">'+wc+' từ</div>' +
-          '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.85;color:#1f2937;white-space:pre-wrap;font-family:Georgia,serif;">'+esc(ans.essay)+'</div>';
-      }
-      if (essayContent) {
-        essayHtml = '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #f3f4f6;">' +
-          '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">📝 Bài làm của bạn</div>' +
-          essayContent + '</div>';
-      }
-    }
+    // Store for review modal
+    _subReviewMap[s.id] = { fb: fb, ans: ans, exerciseId: s.exercise_id, sc: sc,
+      title: s.title, program: s.program, skill: s.skill, submittedAt: s.submitted_at };
+
+    var hasContent = ans && (ans.essay || ans.part1 || ans.part2 || ans.part3 || ans.part4);
+    var reviewBtn = hasContent
+      ? '<button class="btn btn-sm" onclick="openReviewModal('+s.id+')" ' +
+        'style="background:#f0effe;color:var(--primary);border:1.5px solid #c4b5fd;font-weight:700;">' +
+        '📝 Xem lại bài làm</button>'
+      : '';
 
     var link = exerciseLink(s);
-    var actionsHtml = '<div class="sub-actions">';
-    if (link) actionsHtml += '<a class="btn btn-primary btn-sm" href="' + esc(link) + '">✏️ Làm lại</a>';
+    var actionsHtml = '<div class="sub-actions">' + reviewBtn;
+    if (link) actionsHtml += '<a class="btn btn-sm" href="' + esc(link) + '" style="background:#f8fafc;border:1.5px solid var(--border);color:var(--text-muted);font-weight:700;">✏️ Làm lại</a>';
     actionsHtml += '</div>';
 
     var cardId = 'sc-' + s.id;
@@ -602,7 +732,7 @@ function renderSubList() {
         '<span class="sub-chevron">▼</span>' +
       '</div>' +
       '<div class="sub-body">' +
-        critHtml + summaryHtml + suggHtml + essayHtml + actionsHtml +
+        critHtml + summaryHtml + suggHtml + actionsHtml +
       '</div>' +
     '</div>';
   }).join('');
@@ -847,6 +977,313 @@ async function loadProgress() {
     };
   }
 
+  // ── Review modal functions ──────────────────────────────────────────────
+  function bandColorRev(pct) {
+    if (pct >= 0.85) return '#6366f1';
+    if (pct >= 0.70) return '#22c55e';
+    if (pct >= 0.55) return '#84cc16';
+    if (pct >= 0.35) return '#fbbf24';
+    if (pct >  0)    return '#f97316';
+    return '#ef4444';
+  }
+
+  window.closeReviewModal = function() {
+    document.getElementById('revOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  window.openReviewModal = async function(subId) {
+    var data = _subReviewMap[subId];
+    if (!data) return;
+    var ov = document.getElementById('revOverlay');
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // Header
+    var sc = data.sc;
+    var scoreColor = sc && sc.pct != null ? bandColorRev(sc.pct) : 'var(--primary)';
+    if (sc && sc.pct == null && data.fb && data.fb.overall_score != null) {
+      var m = String(data.fb.scale_label || '').match(/\(0[–-](\d+)\)/);
+      if (m) { var denom = parseInt(m[1]); scoreColor = bandColorRev(data.fb.overall_score / denom); }
+    }
+    document.getElementById('revTitle').textContent = data.title || '';
+    document.getElementById('revMeta').textContent = (data.program || '') + ' · ' + (data.skill || '') + ' · ' + fmtDateTime(data.submittedAt);
+    document.getElementById('revScore').textContent = sc ? sc.val : '—';
+    document.getElementById('revScore').style.color = scoreColor;
+    document.getElementById('revScaleLabel').textContent = sc ? (sc.label || '') : '';
+
+    // Body: loading
+    document.getElementById('revContent').innerHTML =
+      '<div class="rev-loading"><div class="rev-spinner"></div><span>Đang tải đề bài...</span></div>';
+
+    // Fetch exercise content
+    var exContent = null;
+    try {
+      var r = await fetch('/api/exercises/' + data.exerciseId, {credentials:'same-origin'});
+      if (r.ok) { var exData = await r.json(); exContent = exData.content || null; }
+    } catch(e) {}
+
+    document.getElementById('revContent').innerHTML = buildRevContent(exContent, data.ans, data.fb, sc);
+  };
+
+  function buildRevContent(rawContent, ans, fb, sc) {
+    var html = '';
+    var isAptis = ans && (ans.part1 != null || ans.part2 != null || ans.part3 != null || ans.part4 != null);
+
+    // Try parse content JSON for APTIS
+    var exParts = null;
+    if (isAptis && rawContent) {
+      try { exParts = typeof rawContent === 'object' ? rawContent : JSON.parse(rawContent); } catch(e) {}
+    }
+
+    if (isAptis) {
+      html += buildAptisRevContent(exParts, ans);
+    } else {
+      html += buildSingleRevContent(rawContent, ans);
+    }
+
+    html += buildFeedbackSection(fb, sc);
+    return html;
+  }
+
+  function panel(cls, headLabel, bodyHtml) {
+    return '<div class="rev-panel '+cls+'">' +
+      '<div class="rev-panel-head">'+headLabel+'</div>' +
+      '<div class="rev-panel-body">'+bodyHtml+'</div>' +
+    '</div>';
+  }
+
+  function buildSingleRevContent(promptText, ans) {
+    var essayText = ans && ans.essay ? ans.essay : '';
+    var wc = essayText.trim().split(/\s+/).filter(Boolean).length;
+
+    var promptHtml = promptText
+      ? '<div class="rev-prompt-text">'+esc(String(promptText))+'</div>'
+      : '<em style="color:var(--text-faint)">Không có đề bài</em>';
+
+    var answerHtml = '';
+    if (essayText) {
+      answerHtml = '<div class="rev-word-count">'+wc+' từ</div>' + esc(essayText);
+    } else {
+      answerHtml = '<em style="color:var(--text-faint)">Không có bài làm</em>';
+    }
+
+    return '<div class="rev-part-block">' +
+      '<div class="rev-two-col">' +
+        panel('prompt', '📋 Đề bài', promptHtml) +
+        panel('answer', '✍️ Bài làm của bạn', answerHtml) +
+      '</div></div>';
+  }
+
+  function buildAptisRevContent(exParts, ans) {
+    var html = '';
+
+    // Part 1 — Word level
+    var p1Content = exParts && exParts.part1;
+    var p1Qs = p1Content && p1Content.questions ? p1Content.questions : [];
+    var p1Ctx = p1Content && p1Content.context ? p1Content.context : '';
+    var p1Prompt = '';
+    if (p1Ctx) p1Prompt += '<div style="margin-bottom:10px;color:#374151;">'+esc(p1Ctx)+'</div>';
+    if (p1Qs.length) {
+      p1Prompt += '<ol style="padding-left:18px;margin:0;display:flex;flex-direction:column;gap:6px;">' +
+        p1Qs.map(function(q,i){ return '<li style="font-size:13.5px;color:#1f2937;">'+esc(q)+'</li>'; }).join('') + '</ol>';
+    } else if (!p1Ctx) {
+      p1Prompt = '<em style="color:var(--text-faint)">Part 1 — Word-level tasks</em>';
+    }
+
+    var p1Ans = ans.part1;
+    var p1AnsHtml = '';
+    if (Array.isArray(p1Ans) && p1Ans.length) {
+      p1AnsHtml = '<ul class="rev-ans-list">' +
+        p1Ans.map(function(a,i){
+          return '<li><span class="rev-ans-num">'+(i+1)+'</span><span class="rev-ans-text">'+esc(String(a||''))+'</span></li>';
+        }).join('') + '</ul>';
+    } else if (typeof p1Ans === 'string' && p1Ans.trim()) {
+      p1AnsHtml = esc(p1Ans);
+    } else {
+      p1AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
+    }
+
+    html += '<div class="rev-part-block">' +
+      '<div class="rev-part-title">Part 1 — Word-level</div>' +
+      '<div class="rev-two-col">' +
+        panel('prompt', '📋 Đề', p1Prompt) +
+        panel('answer', '✍️ Bài làm', p1AnsHtml) +
+      '</div></div>';
+
+    // Part 2 — Short text
+    var p2Content = exParts && exParts.part2;
+    var p2Ctx = p2Content && (p2Content.context || p2Content.prompt || '');
+    var p2Prompt = p2Ctx
+      ? '<div class="rev-prompt-text">'+esc(String(p2Ctx))+'</div>'
+      : '<em style="color:var(--text-faint)">Part 2 — Short text task</em>';
+
+    var p2Ans = ans.part2 || '';
+    var p2Wc = p2Ans.trim().split(/\s+/).filter(Boolean).length;
+    var p2AnsHtml = p2Ans
+      ? '<div class="rev-word-count">'+p2Wc+' từ</div>'+esc(p2Ans)
+      : '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
+
+    html += '<div class="rev-part-block">' +
+      '<div class="rev-part-title">Part 2 — Short text</div>' +
+      '<div class="rev-two-col">' +
+        panel('prompt', '📋 Đề', p2Prompt) +
+        panel('answer', '✍️ Bài làm', p2AnsHtml) +
+      '</div></div>';
+
+    // Part 3 — Group chat
+    var p3Content = exParts && exParts.part3;
+    var p3Msgs = p3Content && p3Content.messages ? p3Content.messages : [];
+    var p3Ctx  = p3Content && p3Content.context  ? p3Content.context  : '';
+    var p3Prompt = '';
+    if (p3Ctx) p3Prompt += '<div style="margin-bottom:8px;color:#374151;font-size:13px;">'+esc(p3Ctx)+'</div>';
+    if (p3Msgs.length) {
+      p3Prompt += '<div class="rev-chat-list">' +
+        p3Msgs.map(function(m){
+          var who = m.author || m.name || '';
+          var txt = m.text || m.message || String(m);
+          return '<div class="rev-chat-msg">' +
+            (who ? '<div class="rev-chat-label">'+esc(who)+'</div>' : '') +
+            esc(txt) + '</div>';
+        }).join('') + '</div>';
+    } else if (!p3Ctx) {
+      p3Prompt = '<em style="color:var(--text-faint)">Part 3 — Group chat task</em>';
+    }
+
+    var p3Ans = ans.part3;
+    var p3AnsHtml = '';
+    if (Array.isArray(p3Ans) && p3Ans.length) {
+      p3AnsHtml = '<div class="rev-chat-list">' +
+        p3Ans.map(function(a,i){
+          return '<div class="rev-chat-msg rev-chat-you">' +
+            '<div class="rev-chat-label">Câu trả lời '+(i+1)+'</div>'+esc(String(a||''))+'</div>';
+        }).join('') + '</div>';
+    } else if (typeof p3Ans === 'string' && p3Ans.trim()) {
+      p3AnsHtml = esc(p3Ans);
+    } else {
+      p3AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
+    }
+
+    html += '<div class="rev-part-block">' +
+      '<div class="rev-part-title">Part 3 — Group chat</div>' +
+      '<div class="rev-two-col">' +
+        panel('prompt', '📋 Đề', p3Prompt) +
+        panel('answer', '✍️ Bài làm', p3AnsHtml) +
+      '</div></div>';
+
+    // Part 4 — Email writing
+    var p4Content = exParts && exParts.part4;
+    var p4T1Desc = p4Content && (p4Content.task1 || p4Content.task_1 || '') || '';
+    var p4T2Desc = p4Content && (p4Content.task2 || p4Content.task_2 || '') || '';
+    var p4Prompt = p4T1Desc || p4T2Desc
+      ? '<div class="rev-task-block"><div class="rev-task-label">Task 1 — Informal email</div><div class="rev-prompt-text">'+esc(String(p4T1Desc||''))+'</div></div>' +
+        '<div class="rev-task-block"><div class="rev-task-label">Task 2 — Formal email</div><div class="rev-prompt-text">'+esc(String(p4T2Desc||''))+'</div></div>'
+      : '<em style="color:var(--text-faint)">Part 4 — Email tasks</em>';
+
+    var p4Ans = ans.part4;
+    var p4AnsHtml = '';
+    if (p4Ans && typeof p4Ans === 'object') {
+      var t1 = String(p4Ans.task1 || p4Ans.task_1 || '').trim();
+      var t2 = String(p4Ans.task2 || p4Ans.task_2 || '').trim();
+      if (t1 || t2) {
+        if (t1) {
+          var wc1 = t1.split(/\s+/).filter(Boolean).length;
+          p4AnsHtml += '<div class="rev-task-block"><div class="rev-task-label">Task 1 — Informal</div>' +
+            '<div class="rev-word-count">'+wc1+' từ</div><div style="white-space:pre-wrap;">'+esc(t1)+'</div></div>';
+        }
+        if (t2) {
+          var wc2 = t2.split(/\s+/).filter(Boolean).length;
+          p4AnsHtml += '<div class="rev-task-block"><div class="rev-task-label">Task 2 — Formal</div>' +
+            '<div class="rev-word-count">'+wc2+' từ</div><div style="white-space:pre-wrap;">'+esc(t2)+'</div></div>';
+        }
+      } else {
+        p4AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
+      }
+    } else if (typeof p4Ans === 'string' && p4Ans.trim()) {
+      p4AnsHtml = esc(p4Ans);
+    } else {
+      p4AnsHtml = '<em style="color:var(--text-faint)">Không có câu trả lời</em>';
+    }
+
+    html += '<div class="rev-part-block">' +
+      '<div class="rev-part-title">Part 4 — Email writing</div>' +
+      '<div class="rev-two-col">' +
+        panel('prompt', '📋 Đề', p4Prompt) +
+        panel('answer', '✍️ Bài làm', p4AnsHtml) +
+      '</div></div>';
+
+    return html;
+  }
+
+  function buildFeedbackSection(fb, sc) {
+    if (!fb) return '';
+    var html = '<div class="rev-feedback">';
+
+    // Score summary + criteria
+    if (fb.criteria && fb.criteria.length) {
+      html += '<div class="rev-fb-section">';
+      html += '<div class="rev-fb-title">📊 Chấm điểm chi tiết</div>';
+
+      if (fb.overall_score != null) {
+        var scaleLabel = fb.scale_label || '';
+        var m = String(scaleLabel).match(/\(0[–-](\d+)\)/);
+        var denom = m ? parseInt(m[1]) : 0;
+        var pct = denom > 0 ? fb.overall_score / denom : (sc && sc.pct);
+        var clr = pct != null ? bandColorRev(pct) : 'var(--primary)';
+        html += '<div class="rev-score-big"><div class="rev-score-num" style="color:'+clr+'">'+fb.overall_score+'</div>' +
+          (scaleLabel ? '<div class="rev-score-scale">'+esc(scaleLabel)+'</div>' : '') + '</div>';
+      }
+
+      html += '<div class="rev-crit-list">';
+      fb.criteria.forEach(function(c) {
+        var mx = c.max_score || c.max || 0;
+        var pct = mx > 0 ? c.score / mx : 0;
+        var clr = bandColorRev(pct);
+        html += '<div>' +
+          '<div class="rev-crit-row">' +
+            '<span class="rev-crit-name">'+esc(c.name)+'</span>' +
+            '<span class="rev-crit-score" style="color:'+clr+'">'+c.score+' / '+mx+'</span>' +
+          '</div>' +
+          '<div class="rev-crit-bar-wrap"><div class="rev-crit-bar" style="width:'+Math.min(100,Math.round(pct*100))+'%;background:'+clr+';"></div></div>' +
+          (c.comment ? '<div class="rev-crit-comment">'+esc(c.comment)+'</div>' : '') +
+        '</div>';
+      });
+      html += '</div></div>';
+    }
+
+    // Summary / nhận xét
+    if (fb.summary) {
+      html += '<div class="rev-fb-section"><div class="rev-fb-title">📝 Nhận xét tổng quan</div>' +
+        '<div class="rev-summary-text">'+esc(fb.summary)+'</div></div>';
+    }
+
+    // Teacher comment
+    if (fb.teacher_comment) {
+      html += '<div class="rev-fb-section" style="border-color:#fde68a;background:#fffbeb;">' +
+        '<div class="rev-fb-title" style="color:#92400e;">💬 Nhận xét của giáo viên</div>' +
+        '<div class="rev-summary-text" style="color:#78350f;">'+esc(fb.teacher_comment)+'</div></div>';
+    }
+
+    // Suggestions
+    if (fb.suggestions && fb.suggestions.length) {
+      html += '<div class="rev-fb-section"><div class="rev-fb-title">💡 Gợi ý cải thiện</div>' +
+        '<ul class="rev-sugg-list">' +
+        fb.suggestions.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('') +
+        '</ul></div>';
+    }
+
+    // Model answer
+    if (fb.suggested_writing && (!fb.visibility || fb.visibility.suggested_writing !== false)) {
+      html += '<div class="rev-fb-section" style="border-color:#a7f3d0;background:#f0fdf4;">' +
+        '<div class="rev-fb-title" style="color:#065f46;">⭐ Bài mẫu tham khảo</div>' +
+        '<div style="font-size:14px;line-height:1.9;color:#1f2937;white-space:pre-wrap;font-family:Georgia,serif;">'+esc(String(fb.suggested_writing))+'</div>' +
+        '</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
   // Stats + progress (parallel)
   loadProgress();
   var st = await fetch('/api/me/stats',{credentials:'same-origin'}).then(r=>r.json()).catch(()=>({done:0,graded:0,avgPercent:null}));
@@ -875,5 +1312,26 @@ async function loadProgress() {
   renderSubList();
 })();
 </script>
+
+<!-- ── Review overlay ── -->
+<div id="revOverlay">
+  <div class="rev-header">
+    <button class="rev-back-btn" onclick="closeReviewModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Đóng
+    </button>
+    <div class="rev-header-mid">
+      <div class="rev-header-title" id="revTitle"></div>
+      <div class="rev-header-meta" id="revMeta"></div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;">
+      <div class="rev-header-score" id="revScore"></div>
+      <div class="rev-header-score-label" id="revScaleLabel"></div>
+    </div>
+  </div>
+  <div class="rev-body">
+    <div id="revContent"></div>
+  </div>
+</div>
 </body>
 </html>
