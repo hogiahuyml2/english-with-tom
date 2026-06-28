@@ -113,24 +113,6 @@ body {
 .g-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(111,88,238,.55); }
 .g-btn:active:not(:disabled) { transform: translateY(0); }
 .g-btn:disabled { opacity: .55; cursor: not-allowed; }
-.g-btn-google {
-  width: 100%; padding: 11px 14px; border-radius: 13px;
-  border: 1.5px solid rgba(255,255,255,.13); background: rgba(255,255,255,.06);
-  font-family: inherit; font-size: 14px; font-weight: 600;
-  color: rgba(255,255,255,.85); cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-bottom: 5px; transition: background .15s, border-color .15s;
-}
-.g-btn-google:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.22); }
-.g-btn-google:disabled { opacity: .4; cursor: not-allowed; }
-.g-divider {
-  text-align: center; color: rgba(255,255,255,.25); font-size: 12px;
-  margin: 13px 0; position: relative;
-}
-.g-divider::before, .g-divider::after {
-  content: ''; position: absolute; top: 50%; width: 36%; height: 1px; background: rgba(255,255,255,.1);
-}
-.g-divider::before { left: 0; } .g-divider::after { right: 0; }
 .g-msg {
   border-radius: 11px; padding: 11px 14px; font-size: 13.5px;
   display: none; align-items: flex-start; gap: 9px; margin-bottom: 13px;
@@ -225,11 +207,6 @@ body {
 
   <!-- LOGIN -->
   <div id="paneLogin">
-    <button class="g-btn-google" id="googleLogin">
-      <svg width="18" height="18" viewBox="0 0 48 48" fill="none"><path d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z" fill="#FFC107"/><path d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12 24 12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4c-7.7 0-14.3 4.4-17.7 10.7z" fill="#FF3D00"/><path d="M24 44c5.4 0 10.3-2 14-5.3l-6.5-5.5C29.6 35 27 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5c3.4 6.4 10.1 11 17.8 11z" fill="#4CAF50"/><path d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.1 4-3.9 5.3l6.5 5.5C37.6 39.6 44 35 44 24c0-1.2-.1-2.3-.4-3.5z" fill="#1976D2"/></svg>
-      Tiếp tục với Google
-    </button>
-    <div class="g-divider">hoặc dùng email</div>
     <div class="g-msg" id="loginMsg"></div>
     <label class="g-label">Email</label>
     <input class="g-input" type="email" id="loginEmail" placeholder="ban@email.com" autocomplete="email">
@@ -246,11 +223,6 @@ body {
       <span>👨‍🏫</span>
       <div>Đăng ký công khai dành cho <strong>học sinh</strong>. Tài khoản <strong>giáo viên</strong> do quản trị viên cấp — vui lòng dùng tab <strong>Đăng nhập</strong>.</div>
     </div>
-    <button class="g-btn-google" id="googleReg">
-      <svg width="18" height="18" viewBox="0 0 48 48" fill="none"><path d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z" fill="#FFC107"/><path d="M6.3 14.7l6.6 4.8C14.6 15.1 19 12 24 12c3.1 0 5.8 1.1 8 2.9l5.7-5.7C34.5 6.6 29.5 4 24 4c-7.7 0-14.3 4.4-17.7 10.7z" fill="#FF3D00"/><path d="M24 44c5.4 0 10.3-2 14-5.3l-6.5-5.5C29.6 35 27 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5c3.4 6.4 10.1 11 17.8 11z" fill="#4CAF50"/><path d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.1 4-3.9 5.3l6.5 5.5C37.6 39.6 44 35 44 24c0-1.2-.1-2.3-.4-3.5z" fill="#1976D2"/></svg>
-      Đăng ký với Google
-    </button>
-    <div class="g-divider">hoặc dùng email</div>
     <div class="g-msg" id="regMsg"></div>
     <label class="g-label">Họ và tên</label>
     <input class="g-input" type="text" id="regName" placeholder="Nguyễn Văn A" autocomplete="name">
@@ -356,9 +328,6 @@ var errParam=qp('error');
 if(errParam){show(false);setTimeout(function(){msg(document.getElementById('loginMsg'),errParam,'error');},50);}
 if(qp('verified')){show(false);setTimeout(function(){msg(document.getElementById('loginMsg'),'Email đã được xác thực! Mời bạn đăng nhập.','ok');},50);}
 
-function goGoogle(){location.href='/api/auth/google';}
-document.getElementById('googleLogin').onclick=goGoogle;
-document.getElementById('googleReg').onclick=goGoogle;
 
 document.getElementById('loginBtn').onclick=async function(){
   var btn=this; btn.disabled=true; btn.textContent='Đang đăng nhập…';
@@ -436,9 +405,6 @@ document.getElementById('resendBtn').onclick=async function(){
 };
 document.getElementById('backBtn').onclick=function(){clearInterval(_resendTimer);show(true);};
 
-fetch('/api/config').then(function(r){return r.json();}).then(function(c){
-  if(!c.googleEnabled){['googleLogin','googleReg'].forEach(function(id){var b=document.getElementById(id);b.disabled=true;b.style.opacity='.35';b.title='Đăng nhập Google sắp có';});}
-}).catch(function(){});
 </script>
 </body>
 </html>
