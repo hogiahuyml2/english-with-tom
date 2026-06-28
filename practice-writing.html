@@ -468,6 +468,18 @@
       </p>
     </div>
 
+    <!-- Bài làm của học sinh — hiển thị nguyên văn -->
+    <div class="card" id="myEssaySection" style="display:none; margin-top:18px; border:2px solid #e5e7eb;">
+      <div class="card-head" style="align-items:flex-start; margin-bottom:12px;">
+        <div>
+          <h3 style="margin-bottom:4px;">📝 Bài làm của bạn</h3>
+          <div style="font-size:12.5px; color:var(--text-muted);">Đây là nội dung bạn đã nộp — đọc lại để so sánh với nhận xét và bài mẫu.</div>
+        </div>
+        <span id="myEssayWordCount" style="font-size:12px;background:#f3f4f6;color:#6b7280;border-radius:20px;padding:3px 10px;white-space:nowrap;flex-shrink:0;"></span>
+      </div>
+      <div id="myEssayBody" style="background:#fafafa;border:1px solid #e5e7eb;border-radius:12px;padding:16px 18px;font-size:14px;line-height:1.9;color:#1f2937;white-space:pre-wrap;font-family:Georgia,'Times New Roman',serif;"></div>
+    </div>
+
     <!-- Bài viết đã chấm — highlight lỗi -->
     <div class="card" id="annotationSection" style="display:none; margin-top:18px; border:2px solid #e5e7eb;">
       <div class="card-head" style="align-items:flex-start; margin-bottom:14px;">
@@ -983,6 +995,22 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   var box = document.getElementById('result');
   box.style.display = 'block';
   box.scrollIntoView({behavior:'smooth'});
+
+  // Hiển thị bài làm của học sinh
+  var essaySec = document.getElementById('myEssaySection');
+  var essayBody = document.getElementById('myEssayBody');
+  if (G_activeTab === 'image') {
+    essayBody.innerHTML = '<div style="display:flex;align-items:center;gap:10px;color:#6b7280;font-style:italic;"><span style="font-size:24px;">🖼</span><span>Bạn đã nộp bài dạng ảnh. Xem lại ảnh ở trên.</span></div>';
+    document.getElementById('myEssayWordCount').textContent = '';
+    essaySec.style.display = 'block';
+  } else if (G_submittedEssay) {
+    essayBody.textContent = G_submittedEssay;
+    var wc = G_submittedEssay.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('myEssayWordCount').textContent = wc + ' từ';
+    essaySec.style.display = 'block';
+  } else {
+    essaySec.style.display = 'none';
+  }
 
   // Render annotation highlights (chỉ cho bài gõ trực tiếp)
   document.getElementById('annotationSection').style.display = 'none';
