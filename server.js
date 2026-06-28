@@ -1008,7 +1008,8 @@ app.get('/api/my-assignments', requireAuth, (req, res) => {
            g.name AS group_name,
            sub.id AS submission_id, sub.status AS submission_status,
            sub.score AS submission_score, sub.max_score AS submission_max,
-           sub.feedback AS submission_feedback, sub.submitted_at
+           sub.feedback AS submission_feedback, sub.answers AS submission_answers,
+           sub.submitted_at
     FROM assignments a
     JOIN exercises e ON e.id = a.exercise_id
     JOIN users u ON u.id = a.assigned_by

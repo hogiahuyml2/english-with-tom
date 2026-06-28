@@ -106,10 +106,43 @@
     document.body.style.overflow = '';
   }
 
+  function renderStudentEssay(ans) {
+    if (!ans) return '';
+    var body = '';
+    // APTIS full test: part1..part4
+    if (ans.part1 || ans.part2 || ans.part3 || ans.part4) {
+      var parts = [
+        { label: 'Part 1 — Word-level', val: ans.part1 },
+        { label: 'Part 2 — Short text', val: ans.part2 },
+        { label: 'Part 3 — Group chat', val: ans.part3 },
+        { label: 'Part 4 — Email', val: ans.part4 }
+      ];
+      parts.forEach(function(p) {
+        if (!p.val) return;
+        var txt = typeof p.val === 'object' ? JSON.stringify(p.val, null, 2) : String(p.val).trim();
+        if (!txt) return;
+        body += '<div style="margin-bottom:12px;">';
+        body += '<div style="font-size:11.5px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">'+esc(p.label)+'</div>';
+        body += '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:11px 14px;font-size:13.5px;line-height:1.8;color:#1f2937;white-space:pre-wrap;">'+esc(txt)+'</div>';
+        body += '</div>';
+      });
+    } else {
+      var essayText = (ans.essay || '').trim();
+      if (essayText) {
+        body = '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.85;color:#1f2937;white-space:pre-wrap;">'+esc(essayText)+'</div>';
+      }
+    }
+    if (!body) return '';
+    return '<div class="srm-card"><div class="srm-card-title">📝 Bài làm của bạn</div>'+body+'</div>';
+  }
+
   function renderDetailContent(data) {
     var fb  = data.fbData || {};
     var vis = fb.visibility || {};
     var html = '';
+
+    // Bài làm của học sinh (luôn hiện ở đầu)
+    html += renderStudentEssay(data.answers);
 
     // Teacher comment
     if (vis.comment !== false && fb.teacher_comment) {
@@ -424,9 +457,10 @@
         var ico = skillColor(a.skill);
         var sid = a.submission_id;
         // Parse và lưu vào map để modal dùng
-        var fbData = null;
+        var fbData = null; var ansData = null;
         try { fbData = a.submission_feedback ? JSON.parse(a.submission_feedback) : null; } catch(e) {}
-        if (sid) _feedbackMap[sid] = { fbData: fbData, title: a.title, program: a.program, skill: a.skill, score: a.submission_score, maxScore: a.submission_max };
+        try { ansData = a.submission_answers ? JSON.parse(a.submission_answers) : null; } catch(e) {}
+        if (sid) _feedbackMap[sid] = { fbData: fbData, answers: ansData, title: a.title, program: a.program, skill: a.skill, score: a.submission_score, maxScore: a.submission_max };
         // Compact score badge
         var sc = a.submission_score; var mx = a.submission_max || 5;
         var sl = (fbData && fbData.scale_label) || '';

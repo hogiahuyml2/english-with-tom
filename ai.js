@@ -916,21 +916,21 @@ Tiêu chí: Task Fulfilment & Register + Grammatical Range & Accuracy + Vocabula
 • 0 (A1/A2): Below B1. No meaningful language. Off-topic.
 
 ════════════════════════════════════════════════
-TÍNH ĐIỂM TOÀN BÀI:
-Chuẩn hóa về thang 0–5:
-  C1_norm = (C1_score / 3) × 5
-  C2_norm = C2_score  (đã 0–5)
-  C3_norm = C3_score  (đã 0–5)
-  C4_norm = (C4_score / 6) × 5
-overall_score = (C1_norm×10% + C2_norm×20% + C3_norm×30% + C4_norm×40%), thang 0–5, làm tròn 0.5.
-scale_label = "APTIS Writing (0–5)"
+TÍNH ĐIỂM TOÀN BÀI (thang 0–50, bám sát APTIS General revised 2020):
+  Part 1 đóng góp tối đa 12 điểm: C1_total = C1_score × 4    (0–3 → 0–12)
+  Part 2 đóng góp tối đa 10 điểm: C2_total = C2_score × 2    (0–5 → 0–10)
+  Part 3 đóng góp tối đa 10 điểm: C3_total = C3_score × 2    (0–5 → 0–10)
+  Part 4 đóng góp tối đa 18 điểm: C4_total = C4_score × 3    (0–6 → 0–18)
+  overall_score = C1_total + C2_total + C3_total + C4_total   (0–50, số nguyên)
+Ngưỡng band tham chiếu: A1 ≥ 6 | A2 ≥ 18 | B1 ≥ 26 | B2 ≥ 40 | C ≥ 48
+scale_label = "APTIS Writing (0–50)"
 
 Quy tắc JSON output:
-- criteria: ĐÚNG 4 mục, mỗi mục là 1 component:
-  • name: "Part 1 — Word-level Writing (0–3)" | score: [0–3] | max: 3
-  • name: "Part 2 — Short Text Writing (0–5)" | score: [0–5] | max: 5
-  • name: "Part 3 — Group Chat Replies (0–5)" | score: [0–5] | max: 5
-  • name: "Part 4 — Formal & Informal Email (0–6)" | score: [0–6] | max: 6
+- criteria: ĐÚNG 4 mục, mỗi mục là 1 component. Dùng ĐÚNG các giá trị score và max sau:
+  • name: "Part 1 — Word-level Writing" | score: [0–3] | max_score: 3   → đóng góp score×4 vào tổng /50
+  • name: "Part 2 — Short Text Writing" | score: [0–5] | max_score: 5   → đóng góp score×2 vào tổng /50
+  • name: "Part 3 — Group Chat Replies" | score: [0–5] | max_score: 5   → đóng góp score×2 vào tổng /50
+  • name: "Part 4 — Formal & Informal Email" | score: [0–6] | max_score: 6 → đóng góp score×3 vào tổng /50
   Mỗi comment: giải thích TIẾNG VIỆT cụ thể vì sao cho điểm đó, dẫn ví dụ từ bài làm.
 - summary: 2–3 câu tổng quan tiếng Việt — điểm mạnh và yếu chính từng component.
 - suggestions: 4–5 gợi ý cải thiện tiếng Việt, ưu tiên component điểm thấp nhất.
