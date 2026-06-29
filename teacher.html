@@ -718,7 +718,7 @@
     <!-- ===== TAB: NGÂN HÀNG ĐỀ ===== -->
     <div id="tabBank" style="display:none;">
       <div class="card">
-        <div class="card-head"><h3>📚 Đề bạn đã tạo</h3><button class="btn btn-sm" onclick="loadBank()">🔄 Làm mới</button></div>
+        <div class="card-head"><h3>📚 Ngân hàng đề chung</h3><button class="btn btn-sm" onclick="loadBank()">🔄 Làm mới</button></div>
 
         <!-- Toolbar: Search + Filter -->
         <div style="display:flex;gap:10px;flex-wrap:wrap;padding:0 0 14px;">
@@ -744,7 +744,7 @@
         <table class="table">
           <thead><tr>
             <th style="width:36px;"><input type="checkbox" id="chkAllBank" title="Chọn tất cả" onchange="toggleAllBank(this)"></th>
-            <th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Loại</th><th>Ngày</th><th></th>
+            <th>Tên bài</th><th>Chương trình</th><th>Kỹ năng</th><th>Người tạo</th><th>Loại</th><th>Ngày</th><th></th>
           </tr></thead>
           <tbody id="exBank"><tr><td colspan="7" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
         </table>
@@ -1192,8 +1192,9 @@
       list.innerHTML = d.groups.map(function(g){
         var total = (g.member_count||0) + (g.pending_count||0);
         var pending = g.pending_count > 0 ? ' <span style="font-size:11px;color:var(--text-faint);">('+g.pending_count+' chờ đăng ký)</span>' : '';
+        var byTeacher = g.teacher_name ? '<span style="font-size:11px;color:var(--text-faint);"> · GV: '+escHtml(g.teacher_name)+'</span>' : '';
         return '<div class="group-row" id="grow-'+g.id+'" onclick="loadGroupDetail('+g.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:10px;cursor:pointer;margin-bottom:4px;transition:background .15s;">'
-          +'<div><div style="font-weight:600;font-size:14px;">'+escHtml(g.name)+'</div>'
+          +'<div><div style="font-weight:600;font-size:14px;">'+escHtml(g.name)+byTeacher+'</div>'
           +'<div style="font-size:12px;color:var(--text-faint);">'+total+' học sinh'+pending+'</div></div>'
           +'<span style="font-size:18px;color:var(--text-faint);">›</span></div>';
       }).join('');
@@ -1668,9 +1669,10 @@
   function loadPrivateExercises(){
     fetch('/api/exercises?private_only=1',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
       var opts = !d.exercises || !d.exercises.length
-        ? '<option value="">-- Chưa có đề riêng nào (hãy tạo đề và tick 🔒) --</option>'
+        ? '<option value="">-- Chưa có đề nào trong ngân hàng --</option>'
         : d.exercises.map(function(e){
-            return '<option value="'+e.id+'">'+e.title+' ('+e.program+' · '+e.skill+')</option>';
+            var by = e.creator_name ? ' — GV: '+e.creator_name : '';
+            return '<option value="'+e.id+'">'+e.title+' ('+e.program+' · '+e.skill+by+')</option>';
           }).join('');
       document.getElementById('assignExId').innerHTML = opts;
       var gs = document.getElementById('groupAssignExId');
@@ -2102,9 +2104,11 @@
         +'<button class="btn btn-sm" onclick="openEditDrawer('+e.id+')" title="Chỉnh sửa đề">✏️</button>'
         +'<button class="btn btn-sm" style="color:var(--danger,#e53e3e);border-color:currentColor;" onclick="deleteExercise('+e.id+','+JSON.stringify(escHtml(e.title))+')" title="Xoá đề">🗑️</button>'
         +'</div>';
+      var creator = e.creator_name ? '<span style="font-size:12px;color:var(--text-faint);">'+escHtml(e.creator_name)+'</span>' : '<span style="font-size:12px;color:var(--text-faint);">—</span>';
       return '<tr>'
         +'<td><input type="checkbox" class="rowChk" value="'+e.id+'" onchange="onBankChkChange()"></td>'
         +'<td>'+escHtml(e.title)+'</td><td>'+e.program+'</td><td>'+e.skill+'</td>'
+        +'<td>'+creator+'</td>'
         +'<td>'+grade+' '+priv+'</td><td>'+fmtDate(e.created_at)+'</td><td>'+actions+'</td>'
         +'</tr>';
     }).join('');

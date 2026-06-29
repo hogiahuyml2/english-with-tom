@@ -589,22 +589,22 @@ app.get('/api/exercises', requireAuth, (req, res) => {
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
   /* Trả thêm content khi lọc aptis_full để client parse JSON metadata */
   const cols = type === 'aptis_full'
-    ? 'id,program,skill,title,content,task_type,metadata,image_url,auto_grade,is_private,created_at,(questions IS NOT NULL) AS has_questions'
-    : 'id,program,skill,title,task_type,metadata,image_url,auto_grade,is_private,created_at,SUBSTR(content,1,200) AS excerpt,(questions IS NOT NULL) AS has_questions';
-  let sql = 'SELECT ' + cols + ' FROM exercises';
+    ? 'e.id,e.program,e.skill,e.title,e.content,e.task_type,e.metadata,e.image_url,e.auto_grade,e.is_private,e.created_at,e.created_by,(e.questions IS NOT NULL) AS has_questions,u.name AS creator_name'
+    : 'e.id,e.program,e.skill,e.title,e.task_type,e.metadata,e.image_url,e.auto_grade,e.is_private,e.created_at,e.created_by,SUBSTR(e.content,1,200) AS excerpt,(e.questions IS NOT NULL) AS has_questions,u.name AS creator_name';
+  let sql = 'SELECT ' + cols + ' FROM exercises e LEFT JOIN users u ON u.id = e.created_by';
   const cond = [], params = [];
-  if (program) { cond.push('program=?'); params.push(program); }
-  if (skill)   { cond.push('skill=?');   params.push(skill); }
+  if (program) { cond.push('e.program=?'); params.push(program); }
+  if (skill)   { cond.push('e.skill=?');   params.push(skill); }
   if (type === 'aptis_full') {
-    cond.push("content LIKE '%\"_aptis_full\":true%'");
+    cond.push("e.content LIKE '%\"_aptis_full\":true%'");
   }
   if (private_only === '1' && isTeacher) {
-    cond.push('is_private=1'); cond.push('created_by=?'); params.push(req.user.id);
+    cond.push('e.is_private=1');   // tất cả đề riêng — dùng chung cả hệ thống
   } else if (!isTeacher) {
-    cond.push('is_private=0');
+    cond.push('e.is_private=0');
   }
   if (cond.length) sql += ' WHERE ' + cond.join(' AND ');
-  sql += ' ORDER BY id ASC';
+  sql += ' ORDER BY e.id ASC';
   res.json({ exercises: db.prepare(sql).all(...params) });
 });
 
@@ -1000,7 +1000,7 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
   let emails = [];
   let groupName = null;
   if (group_id) {
-    const grp = db.prepare('SELECT id,name FROM groups WHERE id=? AND teacher_id=?').get(group_id, req.user.id);
+    const grp = db.prepare('SELECT id,name FROM groups WHERE id=?').get(group_id);
     if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
     groupName = grp.name;
     const members = db.prepare('SELECT u.email FROM group_members gm JOIN users u ON u.id=gm.user_id WHERE gm.group_id=? AND gm.user_id IS NOT NULL').all(group_id);
@@ -1327,14 +1327,15 @@ app.get('/api/admin/backup-db', requireRole('admin'), (req, res) => {
 // Danh sách lớp của giáo viên (kèm số học sinh)
 app.get('/api/groups', requireRole('teacher','admin'), (req, res) => {
   const rows = db.prepare(`
-    SELECT g.id, g.name, g.created_at,
+    SELECT g.id, g.name, g.created_at, g.teacher_id,
+      u.name AS teacher_name,
       COUNT(CASE WHEN gm.user_id IS NOT NULL THEN 1 END) AS member_count,
       COUNT(CASE WHEN gm.user_id IS NULL THEN 1 END) AS pending_count
     FROM groups g
+    LEFT JOIN users u ON u.id = g.teacher_id
     LEFT JOIN group_members gm ON gm.group_id = g.id
-    WHERE g.teacher_id = ?
     GROUP BY g.id ORDER BY g.id DESC
-  `).all(req.user.id);
+  `).all();
   res.json({ groups: rows });
 });
 
@@ -1350,21 +1351,25 @@ app.post('/api/groups', requireRole('teacher','admin'), (req, res) => {
 app.put('/api/groups/:id', requireRole('teacher','admin'), (req, res) => {
   const { name } = req.body || {};
   if (!name || !name.trim()) return res.status(400).json({ error: 'Tên lớp không được để trống.' });
-  const r = db.prepare('UPDATE groups SET name=? WHERE id=? AND teacher_id=?').run(name.trim(), Number(req.params.id), req.user.id);
+  const r = db.prepare('UPDATE groups SET name=? WHERE id=?').run(name.trim(), Number(req.params.id));
   if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   res.json({ ok: true });
 });
 
 // Xoá lớp (cascade xoá members nhờ ON DELETE CASCADE)
 app.delete('/api/groups/:id', requireRole('teacher','admin'), (req, res) => {
-  const r = db.prepare('DELETE FROM groups WHERE id=? AND teacher_id=?').run(Number(req.params.id), req.user.id);
+  const grpCheck = db.prepare('SELECT teacher_id FROM groups WHERE id=?').get(Number(req.params.id));
+  if (!grpCheck) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  if (req.user.role !== 'admin' && grpCheck.teacher_id !== req.user.id)
+    return res.status(403).json({ error: 'Chỉ giáo viên tạo lớp hoặc quản trị viên mới có thể xoá lớp.' });
+  const r = db.prepare('DELETE FROM groups WHERE id=?').run(Number(req.params.id));
   if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   res.json({ ok: true });
 });
 
 // Danh sách thành viên của lớp
 app.get('/api/groups/:id/members', requireRole('teacher','admin'), (req, res) => {
-  const grp = db.prepare('SELECT id,name FROM groups WHERE id=? AND teacher_id=?').get(Number(req.params.id), req.user.id);
+  const grp = db.prepare('SELECT id,name FROM groups WHERE id=?').get(Number(req.params.id));
   if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   const members = db.prepare(`
     SELECT gm.id, gm.user_id, gm.invited_email, gm.added_at,
@@ -1380,7 +1385,7 @@ app.get('/api/groups/:id/members', requireRole('teacher','admin'), (req, res) =>
 // Thêm thành viên vào lớp (theo email)
 app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, res) => {
   const groupId = Number(req.params.id);
-  const grp = db.prepare('SELECT id,name FROM groups WHERE id=? AND teacher_id=?').get(groupId, req.user.id);
+  const grp = db.prepare('SELECT id,name FROM groups WHERE id=?').get(groupId);
   if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   const { email } = req.body || {};
   if (!email || !email.trim()) return res.status(400).json({ error: 'Vui lòng nhập email.' });
@@ -1418,7 +1423,7 @@ app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, 
 // Xoá thành viên khỏi lớp
 app.delete('/api/groups/:id/members/:memberId', requireRole('teacher','admin'), (req, res) => {
   const groupId = Number(req.params.id);
-  const grp = db.prepare('SELECT id FROM groups WHERE id=? AND teacher_id=?').get(groupId, req.user.id);
+  const grp = db.prepare('SELECT id FROM groups WHERE id=?').get(groupId);
   if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   const r = db.prepare('DELETE FROM group_members WHERE id=? AND group_id=?').run(Number(req.params.memberId), groupId);
   if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy thành viên.' });
