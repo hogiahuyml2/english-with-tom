@@ -786,7 +786,7 @@ app.get('/api/me/stats', requireAuth, (req, res) => {
 // Tiến độ học tập — streak, weekly trend, by-program, week comparison
 app.get('/api/me/progress', requireAuth, (req, res) => {
   const userId = req.user.id;
-  const MAX_SCALE = { IELTS: 9, KET: 5, PET: 5, FCE: 5, APTIS: 50 };
+  const MAX_SCALE = { IELTS: 9, KET: 15, PET: 20, FCE: 20, APTIS: 50 };
 
   const subs = db.prepare(`
     SELECT s.feedback, s.submitted_at, s.score, s.max_score, e.program
@@ -805,8 +805,9 @@ app.get('/api/me/progress', requireAuth, (req, res) => {
         const fb = JSON.parse(sub.feedback);
         if (fb.overall_score != null) {
           const raw = parseFloat(fb.overall_score);
-          const maxScale = MAX_SCALE[sub.program] || 9;
-          return { raw, pct: Math.round(raw / maxScale * 100) };
+          // Ưu tiên max_score thực từ submission (chính xác hơn hằng số)
+          const denom = sub.max_score > 0 ? sub.max_score : (MAX_SCALE[sub.program] || 9);
+          return { raw, pct: Math.round(raw / denom * 100) };
         }
       } catch (e) {}
     }
@@ -1167,7 +1168,7 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
       _task_override: task_type_override || null
     };
     const result = await gradeWriting(ex, essay, null);
-    // Tính max_score từ scale_label (ví dụ "A2 Key (0–5)" → 5)
+    // Tính max_score từ scale_label (ví dụ "A2 Key (0–15)" → 15, "B2 First (0–20)" → 20)
     let maxScore = 5;
     if (result.scale_label) {
       const m = result.scale_label.match(/\(0[–\-](\d+)\)/);
@@ -1182,6 +1183,35 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
     res.status(500).json({ error: 'Chấm AI thất bại: ' + String(e.message).slice(0, 300) });
   }
 });
+
+// Cambridge 2-part grade conversion (chỉ dùng khi có điểm tổng 2 part)
+// KET: tổng tối đa 30 (2×15), PET/FCE: tổng tối đa 40 (2×20)
+function cambridgeTwoPartGrade(program, totalScore, totalMax) {
+  if (!['KET', 'PET', 'FCE'].includes(program)) return null;
+  const pct = totalScore / totalMax;
+  if (program === 'KET') {
+    // KET A2 Key: tổng 2 part = 0–30
+    if (pct >= 0.90) return { grade: 'A', label: 'Merit — Xuất sắc' };
+    if (pct >= 0.75) return { grade: 'B', label: 'Pass with Merit' };
+    if (pct >= 0.60) return { grade: 'C', label: 'Pass — Đạt' };
+    if (pct >= 0.45) return { grade: 'A1', label: 'A1 — Gần đạt' };
+    return { grade: 'F', label: 'Fail — Chưa đạt' };
+  }
+  if (program === 'PET') {
+    // PET B1 Preliminary: tổng 2 part = 0–40
+    if (pct >= 0.90) return { grade: 'A', label: 'Distinction — Xuất sắc' };
+    if (pct >= 0.80) return { grade: 'B', label: 'Merit — Giỏi' };
+    if (pct >= 0.70) return { grade: 'C', label: 'Pass — Đạt' };
+    if (pct >= 0.55) return { grade: 'B1-', label: 'B1 (gần đạt)' };
+    return { grade: 'F', label: 'Fail — Chưa đạt' };
+  }
+  // FCE B2 First: tổng 2 part = 0–40
+  if (pct >= 0.90) return { grade: 'A', label: 'Grade A — Xuất sắc' };
+  if (pct >= 0.75) return { grade: 'B', label: 'Grade B — Giỏi' };
+  if (pct >= 0.60) return { grade: 'C', label: 'Grade C — Đạt' };
+  if (pct >= 0.45) return { grade: 'B1', label: 'B1 (gần đạt)' };
+  return { grade: 'F', label: 'Fail — Chưa đạt' };
+}
 
 // Giáo viên lưu chỉnh sửa (không gửi cho học sinh, giữ pending_review)
 // Helper: merge teacher edits (comment + visibility) vào feedback JSON
@@ -1500,7 +1530,7 @@ app.get('/api/teacher/student/:id', requireRole('teacher','admin'), (req, res) =
     ORDER BY s.submitted_at DESC
   `).all(userId);
 
-  const MAX_SCALE = { IELTS: 9, KET: 5, PET: 5, FCE: 5, APTIS: 50 };
+  const MAX_SCALE = { IELTS: 9, KET: 15, PET: 20, FCE: 20, APTIS: 50 };
   const criteriaMap = {};
   const progMap = {};
   const timeline = [];

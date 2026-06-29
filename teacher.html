@@ -2852,7 +2852,8 @@ function openGradingPanel(subId) {
       essayEl.textContent = essayText;
 
       // Manual grade prefill — derive max from feedback scale_label if possible
-      var derivedMax = sub.max_score || 5;
+      var _defaultMax = sub.program === 'KET' ? 15 : (['PET','FCE'].includes(sub.program) ? 20 : 5);
+      var derivedMax = sub.max_score || _defaultMax;
       try {
         var fbTmp = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback;
         if (fbTmp && fbTmp.scale_label) {
@@ -2873,7 +2874,7 @@ function openGradingPanel(subId) {
         try {
           var fb2 = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback;
           if (fb2 && fb2.criteria) {
-            _gpMaxScore = sub.max_score || 5;
+            _gpMaxScore = sub.max_score || _defaultMax;
             document.getElementById('gpAIActions').style.display = 'none';
             document.getElementById('gpAIResult').style.display  = '';
             document.getElementById('gpAIResult').innerHTML = renderAIResult(fb2);
@@ -3015,7 +3016,8 @@ async function _runAiGrade() {
       alert('Chấm tự động thất bại: ' + (d.error || 'Lỗi không xác định'));
       return;
     }
-    _gpMaxScore = d.max_score || 5;
+    var _pDefault = _gpProgram === 'KET' ? 15 : (['PET','FCE'].includes(_gpProgram) ? 20 : 5);
+    _gpMaxScore = d.max_score || _pDefault;
     document.getElementById('gpAIResult').innerHTML = renderAIResult(d.result);
     document.getElementById('gpAIResult').style.display = '';
     // Update status badge
@@ -3071,7 +3073,7 @@ async function doSaveDraft() {
   if (!_gpSubId) return;
   var msgEl          = document.getElementById('gpSendMsg');
   var score          = document.getElementById('gpReviewScore').value;
-  var maxScore       = _gpMaxScore || 5;
+  var maxScore       = _gpMaxScore || (_gpProgram === 'KET' ? 15 : (['PET','FCE'].includes(_gpProgram) ? 20 : 5));
   var teacher_comment = document.getElementById('gpAIFeedbackEdit').value.trim();
   var visibility     = getVisibility();
   try {
