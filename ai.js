@@ -660,18 +660,22 @@ Quy tắc chung:
 - suggestions: 3–5 gợi ý cải thiện cụ thể bằng tiếng Việt.
 - suggested_writing: BÀI MẪU HOÀN CHỈNH bằng TIẾNG ANH, đúng độ dài và format yêu cầu. Bám sát yêu cầu đề (image_content nếu có), KHÔNG viết generic. Đạt Band/Level cao nhất phù hợp kỳ thi.
 - suggested_notes: Giải thích TIẾNG VIỆT ngắn gọn (3–5 câu) vì sao bài mẫu đạt điểm cao — nêu cụ thể bài mẫu đã đề cập những notes/điểm nào của đề.
-- error_list: Danh sách LỖI CHI TIẾT để học sinh take notes — liệt kê 5–12 lỗi quan trọng nhất, bao gồm ĐỦ 4 loại (nếu bài có):
+- error_list: Danh sách nhận xét chi tiết để học sinh take notes — liệt kê 5–12 điểm quan trọng nhất. Mỗi điểm gồm:
+  • severity: PHÂN LOẠI QUAN TRỌNG — chỉ 2 giá trị:
+    - "error": SAI THỰC SỰ — grammar sai (chia động từ sai, thiếu mạo từ, sai cấu trúc câu), spelling sai, từ dùng sai nghĩa hoàn toàn, punctuation thiếu/sai.
+    - "improvement": DÙNG ĐƯỢC NHƯNG CHƯA TỰ NHIÊN — từ/cụm từ học sinh dùng đúng nghĩa nhưng người bản ngữ sẽ diễn đạt khác hơn, hay hơn, tự nhiên hơn. KHÔNG quy vào "error" chỉ vì có cách hay hơn.
   • category: "Grammar" | "Vocabulary" | "Punctuation" | "Style/Register"
-  • error: copy NGUYÊN VĂN đoạn sai từ bài học sinh (1–10 từ), hoặc mô tả ngắn nếu là lỗi cấu trúc/style.
-  • correction: cách viết/diễn đạt ĐÚNG bằng tiếng Anh.
-  • explanation: giải thích TẠI SAO sai — 2–3 câu tiếng Việt, cụ thể, có thể ghi vào vở. Ví dụ: "Động từ 'go' cần chia ở thì Simple Past vì câu có trạng từ 'yesterday'. Dạng quá khứ của 'go' là 'went', không phải 'goed'."
-  • rule: quy tắc/pattern ngắn để nhớ lâu — tiếng Việt, ≤ 15 từ. Ví dụ: "yesterday/last week/ago → dùng V-ed (Simple Past)".
-  Lưu ý: Bao gồm lỗi punctuation (thiếu dấu phẩy sau mệnh đề if, dấu câu cuối câu...) và style (quá informal trong formal writing, lặp từ, câu quá ngắn/đơn giản...) — không chỉ grammar và vocabulary.
-${hasStudentImage ? '- annotations: [] (bài nộp bằng ảnh — không thể highlight trực tiếp).' : `- annotations: Xác định 4–8 LỖI QUAN TRỌNG NHẤT trong bài. Mỗi lỗi gồm:
-  • text: COPY NGUYÊN VĂN đúng từng ký tự (kể cả lỗi chính tả) đoạn sai từ bài học sinh, 1–7 từ, ĐỦ NGẮN để khoanh đúng chỗ sai.
+  • error: copy NGUYÊN VĂN đoạn từ bài học sinh (1–10 từ), hoặc mô tả ngắn nếu là lỗi cấu trúc/style.
+  • correction: cách viết/diễn đạt ĐÚNG hoặc TỰ NHIÊN HƠN bằng tiếng Anh.
+  • explanation: giải thích 2–3 câu tiếng Việt, cụ thể. Nếu severity="error": giải thích TẠI SAO sai. Nếu severity="improvement": giải thích TẠI SAO cách mới TỰ NHIÊN HƠN, không nói "sai".
+  • rule: quy tắc/gợi nhớ ngắn — tiếng Việt, ≤ 15 từ.
+  ⚠️ Ví dụ severity: "I am very happy to meet you" → severity="improvement" (đúng ngữ pháp, nhưng "I was thrilled to meet you" tự nhiên hơn). "He go to school yesterday" → severity="error" (sai động từ).
+${hasStudentImage ? '- annotations: [] (bài nộp bằng ảnh — không thể highlight trực tiếp).' : `- annotations: Xác định 4–8 điểm quan trọng nhất trong bài. Mỗi điểm gồm:
+  • text: COPY NGUYÊN VĂN đúng từng ký tự đoạn từ bài học sinh, 1–7 từ, ĐỦ NGẮN để khoanh đúng chỗ.
   • type: "grammar" | "vocabulary" | "cohesion" | "spelling"
-  • correction: cách viết đúng (tiếng Anh)
-  • explanation: lý do ngắn (tiếng Việt, ≤ 12 từ)
+  • severity: "error" (sai thực sự) | "improvement" (dùng được, có thể hay hơn) — áp dụng quy tắc tương tự error_list
+  • correction: cách viết đúng hoặc tự nhiên hơn (tiếng Anh)
+  • explanation: lý do ngắn (tiếng Việt, ≤ 12 từ) — KHÔNG dùng từ "sai" nếu severity="improvement"
   ⚠️ Trường text phải khớp CHÍNH XÁC ký tự trong bài — không được paraphrase hay sửa lỗi trong text, chỉ ghi lại nguyên văn.`}`;
 }
 
@@ -687,23 +691,25 @@ const ANNOTATION_ITEM_SCHEMA = {
   properties: {
     text:        { type: 'string' },
     type:        { type: 'string' },
+    severity:    { type: 'string', enum: ['error', 'improvement'] },
     correction:  { type: 'string' },
     explanation: { type: 'string' }
   },
-  required: ['text', 'type', 'correction', 'explanation'],
+  required: ['text', 'type', 'severity', 'correction', 'explanation'],
   additionalProperties: false
 };
 
 const ERROR_NOTE_SCHEMA = {
   type: 'object',
   properties: {
+    severity:    { type: 'string', enum: ['error', 'improvement'] },
     category:    { type: 'string' },
     error:       { type: 'string' },
     correction:  { type: 'string' },
     explanation: { type: 'string' },
     rule:        { type: 'string' }
   },
-  required: ['category', 'error', 'correction', 'explanation', 'rule'],
+  required: ['severity', 'category', 'error', 'correction', 'explanation', 'rule'],
   additionalProperties: false
 };
 
@@ -782,13 +788,14 @@ const GEMINI_SCHEMA = {
       items: {
         type: 'OBJECT',
         properties: {
+          severity:    { type: 'STRING' },
           category:    { type: 'STRING' },
           error:       { type: 'STRING' },
           correction:  { type: 'STRING' },
           explanation: { type: 'STRING' },
           rule:        { type: 'STRING' }
         },
-        required: ['category', 'error', 'correction', 'explanation', 'rule']
+        required: ['severity', 'category', 'error', 'correction', 'explanation', 'rule']
       }
     },
     annotations: {
@@ -798,10 +805,11 @@ const GEMINI_SCHEMA = {
         properties: {
           text:        { type: 'STRING' },
           type:        { type: 'STRING' },
+          severity:    { type: 'STRING' },
           correction:  { type: 'STRING' },
           explanation: { type: 'STRING' }
         },
-        required: ['text', 'type', 'correction', 'explanation']
+        required: ['text', 'type', 'severity', 'correction', 'explanation']
       }
     }
   },

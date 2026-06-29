@@ -192,19 +192,36 @@
       html += '</div></div>';
     }
 
-    // Error list
+    // Error list — phân biệt "sai" vs "có thể cải thiện"
     if (vis.error_list && fb.error_list && fb.error_list.length) {
+      var errCount   = fb.error_list.filter(function(e){ return e.severity !== 'improvement'; }).length;
+      var imprvCount = fb.error_list.filter(function(e){ return e.severity === 'improvement'; }).length;
+      var badges = '';
+      if (errCount)   badges += '<span style="font-size:11px;background:#fee2e2;color:#b91c1c;border-radius:10px;padding:1px 8px;margin-left:6px;font-weight:700;">'+errCount+' lỗi</span>';
+      if (imprvCount) badges += '<span style="font-size:11px;background:#fef3c7;color:#92400e;border-radius:10px;padding:1px 8px;margin-left:4px;font-weight:700;">'+imprvCount+' điểm cải thiện</span>';
       html += '<div class="srm-card">';
-      html += '<div class="srm-card-title">🔍 Phân tích lỗi <span style="font-size:12px;background:#fee2e2;color:#b91c1c;border-radius:10px;padding:1px 8px;margin-left:6px;">'+fb.error_list.length+' lỗi</span></div>';
+      html += '<div class="srm-card-title">🔍 Nhận xét chi tiết'+badges+'</div>';
       html += '<div style="display:flex;flex-direction:column;gap:10px;">';
       fb.error_list.forEach(function(err) {
-        html += '<div style="background:#fff;border:1px solid #fecaca;border-radius:12px;padding:12px 14px;">';
-        html += '<span style="display:inline-block;font-size:11px;font-weight:700;background:#fee2e2;color:#b91c1c;border-radius:10px;padding:2px 9px;margin-bottom:8px;">'+esc(err.category||'Other')+'</span>';
+        var isImprv    = err.severity === 'improvement';
+        var cardBorder = isImprv ? '#fde68a' : '#fecaca';
+        var leftBg     = isImprv ? '#fef3c7' : '#fef2f2';
+        var leftColor  = isImprv ? '#92400e'  : '#dc2626';
+        var leftIcon   = isImprv ? '💡' : '❌';
+        var leftLabel  = isImprv ? 'Có thể cải thiện' : 'Sai';
+        var rightIcon  = isImprv ? '✨' : '✅';
+        var rightLabel = isImprv ? 'Hay hơn' : 'Đúng';
+        html += '<div style="background:#fff;border:1px solid '+cardBorder+';border-radius:12px;padding:12px 14px;">';
+        html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">';
+        html += '<span style="display:inline-block;font-size:11px;font-weight:700;background:'+leftBg+';color:'+leftColor+';border-radius:10px;padding:2px 9px;">'+esc(err.category||'Other')+'</span>';
+        if (isImprv) html += '<span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;border-radius:10px;padding:2px 9px;">Điểm cải thiện</span>';
+        html += '</div>';
         html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-        html += '<div style="background:#fef2f2;border-radius:8px;padding:8px 10px;"><div style="font-size:10.5px;font-weight:700;color:#dc2626;margin-bottom:3px;">❌ Sai</div><div style="font-size:13px;color:#1f2937;">'+esc(err.error||'')+'</div></div>';
-        html += '<div style="background:#f0fdf4;border-radius:8px;padding:8px 10px;"><div style="font-size:10.5px;font-weight:700;color:#16a34a;margin-bottom:3px;">✅ Đúng</div><div style="font-size:13px;color:#1f2937;">'+esc(err.correction||'')+'</div></div>';
+        html += '<div style="background:'+leftBg+';border-radius:8px;padding:8px 10px;"><div style="font-size:10.5px;font-weight:700;color:'+leftColor+';margin-bottom:3px;">'+leftIcon+' '+leftLabel+'</div><div style="font-size:13px;color:#1f2937;">'+esc(err.error||'')+'</div></div>';
+        html += '<div style="background:#f0fdf4;border-radius:8px;padding:8px 10px;"><div style="font-size:10.5px;font-weight:700;color:#16a34a;margin-bottom:3px;">'+rightIcon+' '+rightLabel+'</div><div style="font-size:13px;color:#1f2937;">'+esc(err.correction||'')+'</div></div>';
         html += '</div>';
         if (err.explanation) html += '<div style="font-size:12px;color:#6b7280;margin-top:8px;line-height:1.5;">'+esc(err.explanation)+'</div>';
+        if (err.rule) html += '<div style="font-size:11.5px;color:#9ca3af;margin-top:5px;">📌 '+esc(err.rule)+'</div>';
         html += '</div>';
       });
       html += '</div></div>';
@@ -305,17 +322,32 @@
       });
       html += '</div>';
     }
-    // Error list (collapsed by default)
+    // Error list (collapsed by default) — phân biệt "sai" vs "có thể cải thiện"
     if (result.error_list && result.error_list.length) {
+      var ec2 = result.error_list.filter(function(e){ return e.severity !== 'improvement'; }).length;
+      var ic2 = result.error_list.filter(function(e){ return e.severity === 'improvement'; }).length;
+      var sumLabel = (ec2 ? ec2+' lỗi' : '') + (ec2 && ic2 ? ' · ' : '') + (ic2 ? ic2+' cải thiện' : '');
       html += '<div style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">';
-      html += '<details><summary style="font-size:13px;font-weight:600;cursor:pointer;color:#374151;">🔍 Phân tích lỗi ('+result.error_list.length+' lỗi)</summary>';
+      html += '<details><summary style="font-size:13px;font-weight:600;cursor:pointer;color:#374151;">🔍 Nhận xét chi tiết ('+sumLabel+')</summary>';
       html += '<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">';
       result.error_list.forEach(function(err) {
-        var cat = err.category || 'Other';
-        html += '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px;">';
-        html += '<span style="display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:10px;margin-bottom:6px;background:#ede9fe;color:#5b21b6;">'+esc(cat)+'</span>';
-        html += '<div style="font-size:13px;color:#dc2626;margin-bottom:4px;">❌ '+esc(err.error||'')+'</div>';
-        html += '<div style="font-size:13px;color:#16a34a;margin-bottom:4px;">✅ '+esc(err.correction||'')+'</div>';
+        var cat      = err.category || 'Other';
+        var isImprv  = err.severity === 'improvement';
+        var cardBg   = isImprv ? '#fffbeb' : '#fafafa';
+        var border   = isImprv ? '#fde68a' : '#e5e7eb';
+        var leftBg   = isImprv ? '#fef3c7' : '#fef2f2';
+        var leftColor= isImprv ? '#92400e'  : '#dc2626';
+        var leftIcon = isImprv ? '💡' : '❌';
+        var leftLbl  = isImprv ? 'Có thể cải thiện' : 'Sai';
+        var rightIcon= isImprv ? '✨' : '✅';
+        var rightLbl = isImprv ? 'Hay hơn' : 'Đúng';
+        html += '<div style="background:'+cardBg+';border:1px solid '+border+';border-radius:8px;padding:10px 12px;">';
+        html += '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;">';
+        html += '<span style="display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:10px;background:'+leftBg+';color:'+leftColor+';">'+esc(cat)+'</span>';
+        if (isImprv) html += '<span style="font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:10px;background:#fef3c7;color:#92400e;">Điểm cải thiện</span>';
+        html += '</div>';
+        html += '<div style="font-size:13px;color:'+leftColor+';margin-bottom:4px;">'+leftIcon+' <b>'+leftLbl+':</b> '+esc(err.error||'')+'</div>';
+        html += '<div style="font-size:13px;color:#16a34a;margin-bottom:4px;">'+rightIcon+' <b>'+rightLbl+':</b> '+esc(err.correction||'')+'</div>';
         if (err.explanation) html += '<div style="font-size:12px;color:#6b7280;">'+esc(err.explanation)+'</div>';
         html += '</div>';
       });

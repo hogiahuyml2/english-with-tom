@@ -3163,16 +3163,35 @@ function renderAIResult(result) {
     html += '</div>';
   }
 
-  // Error list
+  // Error list — phân biệt "sai" vs "có thể cải thiện"
   if (result.error_list && result.error_list.length) {
-    html += '<div class="gp-section-title" style="margin:14px 0 6px;">🔍 Phân tích lỗi chi tiết (' + result.error_list.length + ' lỗi)</div>';
+    var errCount  = result.error_list.filter(function(e){ return e.severity !== 'improvement'; }).length;
+    var imprvCount = result.error_list.filter(function(e){ return e.severity === 'improvement'; }).length;
+    var titleParts = [];
+    if (errCount)   titleParts.push('<span style="background:#fee2e2;color:#b91c1c;border-radius:10px;padding:1px 8px;font-size:12px;font-weight:700;">' + errCount + ' lỗi</span>');
+    if (imprvCount) titleParts.push('<span style="background:#fef3c7;color:#92400e;border-radius:10px;padding:1px 8px;font-size:12px;font-weight:700;">' + imprvCount + ' cải thiện</span>');
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">🔍 Phân tích chi tiết ' + titleParts.join(' ') + '</div>';
     result.error_list.forEach(function(err) {
       var cat = err.category || 'Other';
-      html += '<div class="err-card">';
+      var isImprv = err.severity === 'improvement';
+      var cardBorder = isImprv ? '#fde68a' : '#fecaca';
+      var cardBg     = isImprv ? '#fffbeb' : '#fff';
+      var leftBg     = isImprv ? '#fef3c7' : '#fef2f2';
+      var leftColor  = isImprv ? '#92400e'  : '#dc2626';
+      var leftIcon   = isImprv ? '💡'       : '❌';
+      var leftLabel  = isImprv ? 'Có thể cải thiện' : 'Sai';
+      var rightBg    = isImprv ? '#f0fdf4'  : '#f0fdf4';
+      var rightColor = '#16a34a';
+      var rightIcon  = isImprv ? '✨'       : '✅';
+      var rightLabel = isImprv ? 'Hay hơn' : 'Đúng';
+      html += '<div class="err-card" style="border-color:' + cardBorder + ';background:' + cardBg + ';">';
+      html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">';
       html += '<span class="err-badge ' + escHtml(cat) + '">' + escHtml(cat) + '</span>';
+      if (isImprv) html += '<span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;border-radius:10px;padding:2px 8px;">Điểm cải thiện</span>';
+      html += '</div>';
       html += '<div class="err-compare">';
-      html += '<div class="err-wrong">❌ ' + escHtml(err.error || '') + '</div>';
-      html += '<div class="err-right">✅ ' + escHtml(err.correction || '') + '</div>';
+      html += '<div class="err-wrong" style="background:' + leftBg + ';color:' + leftColor + ';">' + leftIcon + ' <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">' + leftLabel + '</span><br>' + escHtml(err.error || '') + '</div>';
+      html += '<div class="err-right" style="background:' + rightBg + ';color:' + rightColor + ';">' + rightIcon + ' <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">' + rightLabel + '</span><br>' + escHtml(err.correction || '') + '</div>';
       html += '</div>';
       if (err.explanation) html += '<div style="font-size:12.5px;color:#374151;margin-top:6px;">' + escHtml(err.explanation) + '</div>';
       if (err.rule) html += '<div style="font-size:11.5px;color:var(--text-faint);margin-top:3px;">📌 ' + escHtml(err.rule) + '</div>';
