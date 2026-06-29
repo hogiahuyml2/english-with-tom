@@ -335,7 +335,6 @@ document.getElementById('loginBtn').onclick=async function(){
   var res=await postJSON('/api/login',{email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPass').value});
   btn.disabled=false; btn.textContent='Đăng nhập';
   if(res.ok){location.href=nextPage;}
-  else if(res.data.needVerify){showVerify(res.data.email||document.getElementById('loginEmail').value.trim());msg(document.getElementById('verifyMsg'),'Tài khoản chưa xác thực email. Nhập mã đã gửi tới email của bạn.','info');}
   else{msg(document.getElementById('loginMsg'),res.data.error||'Đăng nhập thất bại.','error');}
 };
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('loginBtn').click();});
@@ -346,7 +345,7 @@ document.getElementById('regBtn').onclick=async function(){
   clearMsg(document.getElementById('regMsg'));
   var res=await postJSON('/api/register',{name:document.getElementById('regName').value.trim(),email:document.getElementById('regEmail').value.trim(),password:document.getElementById('regPass').value});
   btn.disabled=false; btn.textContent='Tạo tài khoản';
-  if(res.ok){res.data.needVerify?showVerify(document.getElementById('regEmail').value.trim()):(location.href=nextPage);}
+  if(res.ok){location.href=nextPage;}
   else{msg(document.getElementById('regMsg'),res.data.error||'Đăng ký thất bại.','error');}
 };
 document.getElementById('regPass').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('regBtn').click();});

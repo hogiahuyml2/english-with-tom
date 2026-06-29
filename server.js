@@ -173,19 +173,13 @@ app.post('/api/register', async (req, res) => {
   if (db.prepare('SELECT id FROM users WHERE email=?').get(mail))
     return res.status(409).json({ error: 'Email này đã được đăng ký.' });
 
-  const needVerify = emailEnabled();
-  const code = needVerify ? String(Math.floor(100000 + Math.random() * 900000)) : null;
-  const codeExpiry = code ? new Date(Date.now() + 15 * 60 * 1000).toISOString() : null;
-
-  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,verify_token,verify_token_expiry,created_at) VALUES (?,?,?,?,?,?,?,?)')
-    .run(name, mail, hashPassword(password), 'student', needVerify ? 0 : 1, code, codeExpiry, now());
+  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
+    .run(name, mail, hashPassword(password), 'student', now());
   const newId = Number(r.lastInsertRowid);
 
-  if (needVerify) await sendVerificationCode({ name, email: mail }, code);
   db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
-
-  if (!needVerify) startSession(res, newId, req);
-  res.json({ needVerify });
+  startSession(res, newId, req);
+  res.json({ needVerify: false });
 });
 
 // Đăng nhập — học sinh và giáo viên đều dùng
@@ -194,8 +188,6 @@ app.post('/api/login', (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE email=?').get((email || '').toLowerCase());
   if (!u || !verifyPassword(password || '', u.pass))
     return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng.' });
-  if (!u.email_verified)
-    return res.status(403).json({ error: 'Tài khoản chưa xác thực email.', needVerify: true, email: u.email });
   startSession(res, u.id, req);
   res.json({ user: { id: u.id, name: u.name, email: u.email, role: u.role } });
 });
