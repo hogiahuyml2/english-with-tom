@@ -2710,12 +2710,22 @@
           <div style="color:var(--text-faint);font-size:14px;">Đang phân tích bài làm...</div>
         </div>
         <div id="gpAIResult" style="display:none;"></div>
+        <!-- Panel ghi chú chấm lại — hiện khi bấm 🔄 Chấm lại -->
+        <div id="gpRegradeNote" style="display:none;margin-top:14px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:14px;">
+          <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;">🔄 Chấm lại — điều gì chưa hợp lý?</div>
+          <p style="font-size:12px;color:#78716c;margin:0 0 8px;">Ghi chú ngắn để hệ thống cân nhắc lại (tuỳ chọn) — ví dụ: "Điểm Language có vẻ hơi thấp, bài chỉ sai vài lỗi nhỏ" hoặc "Annotation về từ X chưa đúng, học sinh dùng đúng nghĩa".</p>
+          <textarea id="gpRegradeNoteInput" rows="3" style="width:100%;border:1.5px solid #fde68a;border-radius:8px;padding:8px 10px;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Để trống nếu chỉ muốn chấm lại từ đầu, không có ghi chú cụ thể..."></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn btn-sm" onclick="cancelRegradeNote()" style="background:#fff;">Huỷ</button>
+            <button class="btn btn-primary btn-sm" onclick="confirmRegrade()" style="flex:1;">🔄 Chấm lại ngay</button>
+          </div>
+        </div>
         <!-- Review bar — hiện sau khi AI chấm xong -->
         <div id="gpReviewBar" style="display:none;margin-top:16px;border:1.5px solid #d1fae5;border-radius:14px;overflow:hidden;">
           <!-- Header -->
           <div style="background:#f0fdf4;padding:12px 14px;border-bottom:1px solid #d1fae5;display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:13px;font-weight:700;color:#15803d;">✏️ Xem lại &amp; chỉnh sửa trước khi gửi</span>
-            <button onclick="doAiGradeAgain()" style="background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:3px 10px;font-size:12px;color:#6b7280;cursor:pointer;">🔄 Chấm lại</button>
+            <button onclick="openRegradeNote()" style="background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:3px 10px;font-size:12px;color:#6b7280;cursor:pointer;">🔄 Chấm lại</button>
           </div>
           <div style="padding:14px;background:#fff;">
             <!-- Score row -->
@@ -2795,12 +2805,14 @@ var _gpExId        = null;
 var _gpProgram     = null;
 var _gpMaxScore    = null;
 var _gpTaskOverride = null;
+var _gpTeacherNote  = null;
 
 function openGradingPanel(subId) {
   _gpSubId        = subId;
   _gpProgram      = null;
   _gpMaxScore     = null;
   _gpTaskOverride = null;
+  _gpTeacherNote  = null;
   var overlay = document.getElementById('gpOverlay');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2996,9 +3008,30 @@ function doAiGradeAgain() {
   document.getElementById('gpAIFeedbackEdit').value       = '';
   _gpMaxScore     = null;
   _gpTaskOverride = null;
+  _gpTeacherNote  = null;
   resetVisibility();
   document.getElementById('gpAIActions').style.display    = '';
   document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
+}
+
+/* ─── CHẤM LẠI (với ghi chú tuỳ chọn) — khi giáo viên thấy kết quả AI chưa hợp lý ─── */
+function openRegradeNote() {
+  document.getElementById('gpRegradeNoteInput').value = '';
+  document.getElementById('gpRegradeNote').style.display = '';
+  document.getElementById('gpRegradeNoteInput').focus();
+}
+function cancelRegradeNote() {
+  document.getElementById('gpRegradeNote').style.display = 'none';
+}
+function confirmRegrade() {
+  _gpTeacherNote = document.getElementById('gpRegradeNoteInput').value.trim() || null;
+  document.getElementById('gpRegradeNote').style.display   = 'none';
+  document.getElementById('gpReviewBar').style.display     = 'none';
+  document.getElementById('gpAIResult').style.display      = 'none';
+  document.getElementById('gpAIResult').innerHTML          = '';
+  document.getElementById('gpSendMsg').style.display       = 'none';
+  resetVisibility();
+  _runAiGrade();
 }
 
 async function _runAiGrade() {
@@ -3011,8 +3044,9 @@ async function _runAiGrade() {
     var r = await fetch('/api/teacher/ai-grade/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task_type_override: _gpTaskOverride || undefined })
+      body: JSON.stringify({ task_type_override: _gpTaskOverride || undefined, teacher_note: _gpTeacherNote || undefined })
     });
+    _gpTeacherNote = null;
     var d = await r.json();
     document.getElementById('gpAILoading').style.display = 'none';
     if (!r.ok || !d.result) {

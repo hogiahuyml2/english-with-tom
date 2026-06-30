@@ -1131,7 +1131,7 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
 // Giáo viên chấm bài bằng AI (dùng lại gradeWriting đã có)
 app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const subId = Number(req.params.id);
-  const { task_type_override } = req.body || {};
+  const { task_type_override, teacher_note } = req.body || {};
   const sub = db.prepare(`
     SELECT s.*, u.name AS student_name, u.email AS student_email,
            e.title AS exercise_title, e.program, e.skill,
@@ -1159,7 +1159,7 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
       title: sub.exercise_title,
       _task_override: task_type_override || null
     };
-    const result = await gradeWriting(ex, essay, null);
+    const result = await gradeWriting(ex, essay, null, teacher_note || null);
     // Tính max_score từ scale_label (ví dụ "A2 Key (0–15)" → 15, "B2 First (0–20)" → 20)
     let maxScore = 5;
     if (result.scale_label) {
