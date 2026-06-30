@@ -16,14 +16,21 @@
   .sub-essay { background:var(--bg-soft,#f8f7ff); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:14px; white-space:pre-wrap; line-height:1.9; max-height:400px; overflow-y:auto; cursor:text; user-select:text; position:relative; }
   .annotation-highlight { border-radius:3px; cursor:pointer; position:relative; }
   .annotation-highlight:hover::after { content:attr(data-note); position:absolute; left:0; top:100%; margin-top:4px; background:#1e1b4b; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; white-space:pre-wrap; max-width:260px; z-index:100; pointer-events:none; box-shadow:0 4px 12px rgba(0,0,0,.2); }
-  .annotation-toolbar { display:none; position:fixed; background:#1e1b4b; border-radius:10px; padding:8px 12px; gap:8px; align-items:center; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+  .annotation-toolbar { display:none; position:fixed; background:#1e1b4b; border-radius:12px; padding:12px; flex-direction:column; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.3); width:320px; max-width:92vw; }
   .annotation-toolbar.show { display:flex; }
+  .ann-toolbar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; }
+  .ann-color-row { display:flex; gap:8px; align-items:center; }
   .ann-color-btn { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,.4); cursor:pointer; flex-shrink:0; }
   .ann-color-btn:hover { border-color:#fff; }
   .ann-color-btn.active { border-color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.3); }
-  .ann-note-input { background:rgba(255,255,255,.15); border:none; border-radius:6px; color:#fff; font-size:13px; padding:4px 8px; width:160px; outline:none; }
-  .ann-note-input::placeholder { color:rgba(255,255,255,.5); }
-  .ann-save-btn { background:#6F58EE; color:#fff; border:none; border-radius:6px; padding:5px 12px; font-size:13px; font-weight:600; cursor:pointer; }
+  .ann-note-textarea {
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); border-radius:8px;
+    color:#fff; font-size:13.5px; padding:9px 11px; width:100%; min-height:88px; max-height:240px;
+    outline:none; resize:vertical; font-family:inherit; line-height:1.55; box-sizing:border-box;
+  }
+  .ann-note-textarea::placeholder { color:rgba(255,255,255,.5); }
+  .ann-note-textarea:focus { border-color:rgba(255,255,255,.4); background:rgba(255,255,255,.16); }
+  .ann-save-btn { background:#6F58EE; color:#fff; border:none; border-radius:8px; padding:9px 12px; font-size:13.5px; font-weight:600; cursor:pointer; width:100%; margin-top:9px; }
   .ann-save-btn:hover { background:#5a45d4; }
   .ann-cancel-btn { background:transparent; border:none; color:rgba(255,255,255,.7); font-size:18px; cursor:pointer; line-height:1; }
   .ann-list { margin-top:12px; display:flex; flex-direction:column; gap:6px; }
@@ -1929,10 +1936,9 @@
       return '<span class="ann-color-btn'+(i===0?' active':'')+'" data-color="'+c+'" style="background:'+c+';" onclick="annSelectColor(this)"></span>';
     }).join('');
     tb.innerHTML =
-      colorDots +
-      '<input class="ann-note-input" id="annNoteInput" placeholder="Ghi chú (tuỳ chọn)..." maxlength="200">' +
-      '<button class="ann-save-btn" onclick="annSave()">Highlight</button>' +
-      '<button class="ann-cancel-btn" onclick="annCancel()">✕</button>';
+      '<div class="ann-toolbar-top"><div class="ann-color-row">' + colorDots + '</div><button class="ann-cancel-btn" onclick="annCancel()">✕</button></div>' +
+      '<textarea class="ann-note-textarea" id="annNoteInput" placeholder="Ghi chú chi tiết (tuỳ chọn) — có thể xuống dòng, viết dài hơn..." rows="4"></textarea>' +
+      '<button class="ann-save-btn" onclick="annSave()">Highlight</button>';
     document.body.appendChild(tb);
     _annToolbar = tb;
   }
@@ -1946,10 +1952,11 @@
     buildAnnotationToolbar();
     var tb = document.getElementById('annToolbar');
     tb.classList.add('show');
-    var tw = tb.offsetWidth || 420, th = tb.offsetHeight || 50;
-    var left = Math.min(x, window.innerWidth - tw - 12);
+    var tw = tb.offsetWidth || 320, th = tb.offsetHeight || 190;
+    var left = Math.min(Math.max(x, 8), window.innerWidth - tw - 12);
     var top  = y - th - 10;
     if (top < 8) top = y + 20;
+    if (top + th > window.innerHeight - 8) top = Math.max(8, window.innerHeight - th - 8);
     tb.style.left = left + 'px';
     tb.style.top  = top  + 'px';
     setTimeout(function(){ document.getElementById('annNoteInput').focus(); }, 50);
@@ -2806,6 +2813,7 @@ var _gpProgram     = null;
 var _gpMaxScore    = null;
 var _gpTaskOverride = null;
 var _gpTeacherNote  = null;
+var _gpAIResult     = null;
 
 function openGradingPanel(subId) {
   _gpSubId        = subId;
@@ -2813,6 +2821,7 @@ function openGradingPanel(subId) {
   _gpMaxScore     = null;
   _gpTaskOverride = null;
   _gpTeacherNote  = null;
+  _gpAIResult     = null;
   var overlay = document.getElementById('gpOverlay');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2891,6 +2900,7 @@ function openGradingPanel(subId) {
           var fb2 = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback;
           if (fb2 && fb2.criteria) {
             _gpMaxScore = sub.max_score || _defaultMax;
+            _gpAIResult = fb2;
             document.getElementById('gpAIActions').style.display = 'none';
             document.getElementById('gpAIResult').style.display  = '';
             document.getElementById('gpAIResult').innerHTML = renderAIResult(fb2);
@@ -3009,6 +3019,7 @@ function doAiGradeAgain() {
   _gpMaxScore     = null;
   _gpTaskOverride = null;
   _gpTeacherNote  = null;
+  _gpAIResult     = null;
   resetVisibility();
   document.getElementById('gpAIActions').style.display    = '';
   document.getElementById('gpStatusBadge').innerHTML = '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
@@ -3056,6 +3067,7 @@ async function _runAiGrade() {
     }
     var _pDefault = _gpProgram === 'KET' ? 15 : (['PET','FCE'].includes(_gpProgram) ? 20 : 5);
     _gpMaxScore = d.max_score || _pDefault;
+    _gpAIResult = d.result;
     document.getElementById('gpAIResult').innerHTML = renderAIResult(d.result);
     document.getElementById('gpAIResult').style.display = '';
     // Update status badge
@@ -3118,7 +3130,7 @@ async function doSaveDraft() {
     var r = await fetch('/api/teacher/save-draft/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
@@ -3147,7 +3159,7 @@ async function doSendGrade() {
     var r = await fetch('/api/teacher/send-grade/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
@@ -3208,8 +3220,9 @@ function renderAIResult(result) {
     var titleParts = [];
     if (errCount)   titleParts.push('<span style="background:#fee2e2;color:#b91c1c;border-radius:10px;padding:1px 8px;font-size:12px;font-weight:700;">' + errCount + ' lỗi</span>');
     if (imprvCount) titleParts.push('<span style="background:#fef3c7;color:#92400e;border-radius:10px;padding:1px 8px;font-size:12px;font-weight:700;">' + imprvCount + ' cải thiện</span>');
+    html += '<p style="font-size:11.5px;color:var(--text-faint);margin:0 0 8px;">Bấm ✕ trên thẻ nào để loại bỏ — học sinh sẽ KHÔNG thấy nhận xét đã xoá.</p>';
     html += '<div class="gp-section-title" style="margin:14px 0 6px;">🔍 Phân tích chi tiết ' + titleParts.join(' ') + '</div>';
-    result.error_list.forEach(function(err) {
+    result.error_list.forEach(function(err, idx) {
       var cat = err.category || 'Other';
       var isImprv = err.severity === 'improvement';
       var cardBorder = isImprv ? '#fde68a' : '#fecaca';
@@ -3222,8 +3235,9 @@ function renderAIResult(result) {
       var rightColor = '#16a34a';
       var rightIcon  = isImprv ? '✨'       : '✅';
       var rightLabel = isImprv ? 'Hay hơn' : 'Đúng';
-      html += '<div class="err-card" style="border-color:' + cardBorder + ';background:' + cardBg + ';">';
-      html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">';
+      html += '<div class="err-card" style="border-color:' + cardBorder + ';background:' + cardBg + ';position:relative;">';
+      html += '<button type="button" onclick="deleteErrorItem(' + idx + ')" title="Xoá nhận xét này — học sinh sẽ không thấy" style="position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;border:1px solid #d1d5db;background:#fff;color:#9ca3af;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>';
+      html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding-right:26px;">';
       html += '<span class="err-badge ' + escHtml(cat) + '">' + escHtml(cat) + '</span>';
       if (isImprv) html += '<span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;border-radius:10px;padding:2px 8px;">Điểm cải thiện</span>';
       html += '</div>';
@@ -3244,6 +3258,14 @@ function renderAIResult(result) {
   }
 
   return html;
+}
+
+/* Xoá 1 mục nhận xét (lỗi/điểm cải thiện) khỏi error_list — học sinh sẽ không thấy mục đã xoá */
+function deleteErrorItem(idx) {
+  if (!_gpAIResult || !Array.isArray(_gpAIResult.error_list)) return;
+  if (!confirm('Xoá nhận xét này? Học sinh sẽ KHÔNG thấy nhận xét này khi nhận kết quả.')) return;
+  _gpAIResult.error_list.splice(idx, 1);
+  document.getElementById('gpAIResult').innerHTML = renderAIResult(_gpAIResult);
 }
 
 /* ─── MANUAL GRADE ─── */
