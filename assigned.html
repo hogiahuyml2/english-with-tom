@@ -129,7 +129,7 @@
     } else {
       var essayText = (ans.essay || '').trim();
       if (essayText) {
-        body = '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.85;color:#1f2937;white-space:pre-wrap;">'+esc(essayText)+'</div>';
+        body = '<div id="srmEssayBody" style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.85;color:#1f2937;white-space:pre-wrap;">'+esc(essayText)+'</div>';
       }
     }
     if (!body) return '';
@@ -165,7 +165,7 @@
       html += '<div class="srm-card-title">📊 Điểm từng tiêu chí</div>';
       html += '<div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">';
       fb.criteria.forEach(function(c, i) {
-        var denom = c.max_score || scaleMax;
+        var denom = c.max || c.max_score || scaleMax;
         var cpct = Math.round((c.score / denom) * 100);
         var bclr = cpct>=70?'#22c55e':cpct>=50?'#f59e0b':'#ef4444';
         html += '<div style="padding:13px 16px;'+(i>0?'border-top:1px solid #f3f4f6;':'')+'">';
@@ -254,22 +254,50 @@
     return html;
   }
 
+  /* Vẽ lại bài essay có highlight của giáo viên — hover để xem ghi chú (chỉ đọc) */
+  function renderEssayWithAnnotationsRO(essayText, annotations) {
+    if (!annotations || !annotations.length) return esc(essayText);
+    var sorted = annotations.slice().sort(function(a,b){ return a.start_offset - b.start_offset; });
+    var html = '', cursor = 0;
+    sorted.forEach(function(ann) {
+      var s = Math.max(ann.start_offset, cursor);
+      var e = Math.min(ann.end_offset, essayText.length);
+      if (s >= e) return;
+      if (s > cursor) html += esc(essayText.slice(cursor, s));
+      var noteAttr = ann.note ? ' data-note="'+esc(ann.note)+'"' : '';
+      html += '<mark class="ro-annotation-highlight" style="background:'+(ann.color||'#fbbf24')+'88;border-bottom:2px solid '+(ann.color||'#fbbf24')+';"'+noteAttr+'>'+esc(essayText.slice(s, e))+'</mark>';
+      cursor = e;
+    });
+    if (cursor < essayText.length) html += esc(essayText.slice(cursor));
+    return html;
+  }
+
   async function loadDetailAnnotations(sid) {
     try {
       var r = await fetch('/api/submissions/'+sid+'/annotations', { credentials:'same-origin' });
       var d = await r.json();
       var anns = d.annotations || [];
+      if (!anns.length) return;
+
+      // Highlight trực tiếp trên bài làm — hover để xem nhận xét của giáo viên
+      var data = _feedbackMap[sid];
+      var essayBody = document.getElementById('srmEssayBody');
+      if (essayBody && data && data.answers) {
+        var essayText = (data.answers.essay || '').trim();
+        if (essayText) essayBody.innerHTML = renderEssayWithAnnotationsRO(essayText, anns);
+      }
+
       var el = document.getElementById('srmAnnList');
       var sec = document.getElementById('srmAnnSection');
-      if (!el || !sec || !anns.length) return;
+      if (!el || !sec) return;
       sec.style.display = '';
       var colMap = { yellow:'#fbbf24', red:'#f87171', green:'#34d399', blue:'#60a5fa' };
       el.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+anns.map(function(a){
-        var dot = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+(colMap[a.color]||'#fbbf24')+';flex-shrink:0;"></span>';
+        var dot = '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+(colMap[a.color]||a.color||'#fbbf24')+';flex-shrink:0;"></span>';
         return '<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;">'
           +'<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;margin-bottom:6px;">'+dot+'Đoạn được đánh dấu</div>'
-          +'<div style="font-size:13px;font-style:italic;color:#374151;background:#fff;border-radius:6px;padding:6px 10px;margin-bottom:6px;border-left:3px solid '+(colMap[a.color]||'#fbbf24')+';">"'+esc(a.selected_text||'')+'"</div>'
-          +(a.comment?'<div style="font-size:13.5px;color:#1f2937;line-height:1.6;">'+esc(a.comment)+'</div>':'')
+          +'<div style="font-size:13px;font-style:italic;color:#374151;background:#fff;border-radius:6px;padding:6px 10px;margin-bottom:6px;border-left:3px solid '+(colMap[a.color]||a.color||'#fbbf24')+';">"'+esc(a.selected_text||'')+'"</div>'
+          +(a.note?'<div style="font-size:13.5px;color:#1f2937;line-height:1.6;">'+esc(a.note)+'</div>':'')
           +'</div>';
       }).join('')+'</div>';
     } catch(e) {}
@@ -299,12 +327,13 @@
       html += '<div style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">';
       html += '<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">📊 Phân tích tiêu chí</div>';
       result.criteria.forEach(function(c) {
-        var pct = c.max_score ? Math.round((c.score/c.max_score)*100) : c.score*10;
+        var denom = c.max || c.max_score;
+        var pct = denom ? Math.round((c.score/denom)*100) : c.score*10;
         var barColor = pct>=70?'#22c55e':pct>=50?'#f59e0b':'#ef4444';
         html += '<div style="margin-bottom:8px;">';
         html += '<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px;">';
         html += '<span style="font-weight:600;color:#374151;">'+esc(c.name)+'</span>';
-        html += '<span style="font-weight:700;color:#111827;">'+c.score+(c.max_score?'<span style="color:#9ca3af;font-weight:400;">/'+c.max_score+'</span>':'')+'</span>';
+        html += '<span style="font-weight:700;color:#111827;">'+c.score+(denom?'<span style="color:#9ca3af;font-weight:400;">/'+denom+'</span>':'')+'</span>';
         html += '</div>';
         html += '<div style="height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;">';
         html += '<div style="height:100%;width:'+Math.min(pct,100)+'%;background:'+barColor+';border-radius:3px;transition:width .4s;"></div></div>';
@@ -629,6 +658,14 @@
 
 <!-- ===== STUDENT RESULT DETAIL MODAL ===== -->
 <style>
+.ro-annotation-highlight { border-radius:3px; position:relative; }
+.ro-annotation-highlight[data-note] { cursor:help; }
+.ro-annotation-highlight[data-note]:hover::after {
+  content: attr(data-note); position:absolute; left:0; top:100%; margin-top:4px;
+  background:#1e1b4b; color:#fff; padding:7px 11px; border-radius:8px; font-size:12.5px;
+  line-height:1.5; white-space:pre-wrap; max-width:280px; z-index:100; pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
 #srmOverlay {
   position: fixed; inset: 0; z-index: 4000;
   display: none; flex-direction: column;

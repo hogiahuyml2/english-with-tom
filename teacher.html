@@ -3192,13 +3192,14 @@ function renderAIResult(result) {
     html += '<div class="gp-section-title" style="margin-bottom:8px;">📊 Phân tích theo tiêu chí</div>';
     html += '<table class="crit-table"><thead><tr><th>Tiêu chí</th><th style="width:70px;text-align:right;">Điểm</th></tr></thead><tbody>';
     result.criteria.forEach(function(c) {
-      var pct = c.max_score ? Math.round((c.score / c.max_score) * 100) : c.score;
+      var denom = c.max || c.max_score;
+      var pct = denom ? Math.round((c.score / denom) * 100) : c.score;
       var barColor = pct >= 70 ? 'linear-gradient(90deg,#22c55e,#86efac)' : pct >= 50 ? 'linear-gradient(90deg,#f59e0b,#fde68a)' : 'linear-gradient(90deg,#ef4444,#fca5a5)';
       html += '<tr><td>';
       html += '<div style="font-weight:600;">' + escHtml(c.name) + '</div>';
       html += '<div class="crit-bar-wrap"><div class="crit-bar" style="width:' + Math.min(pct,100) + '%;background:' + barColor + ';"></div></div>';
       if (c.comment) html += '<div style="font-size:12px;color:var(--text-faint);margin-top:4px;">' + escHtml(c.comment) + '</div>';
-      html += '</td><td style="text-align:right;font-weight:700;white-space:nowrap;">' + c.score + (c.max_score ? '<span style="color:var(--text-faint);font-weight:400;">/' + c.max_score + '</span>' : '') + '</td></tr>';
+      html += '</td><td style="text-align:right;font-weight:700;white-space:nowrap;">' + c.score + (denom ? '<span style="color:var(--text-faint);font-weight:400;">/' + denom + '</span>' : '') + '</td></tr>';
     });
     html += '</tbody></table>';
   }
