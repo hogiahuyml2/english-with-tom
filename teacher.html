@@ -15,7 +15,7 @@
   .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
   .sub-essay { background:var(--bg-soft,#f8f7ff); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:14px; white-space:pre-wrap; line-height:1.9; max-height:400px; overflow-y:auto; cursor:text; user-select:text; position:relative; }
   .annotation-highlight { border-radius:3px; cursor:pointer; position:relative; }
-  .annotation-highlight:hover::after { content:attr(data-note); position:absolute; left:0; top:100%; margin-top:6px; background:#1e1b4b; color:#fff; padding:12px 14px; border-radius:10px; font-size:13.5px; line-height:1.6; white-space:pre-wrap; width:340px; max-width:min(380px, 85vw); box-sizing:border-box; z-index:100; pointer-events:none; box-shadow:0 8px 24px rgba(0,0,0,.3); }
+  .annotation-highlight:hover::after { content:attr(data-note); display:block; position:absolute; left:0; top:100%; margin-top:6px; background:#1e1b4b; color:#fff; padding:14px 16px; border-radius:10px; font-size:14px; line-height:1.65; white-space:pre-wrap; width:420px; max-width:min(460px, 92vw); box-sizing:border-box; z-index:9999; pointer-events:none; box-shadow:0 8px 28px rgba(0,0,0,.35); }
   .annotation-toolbar { display:none; position:fixed; background:#1e1b4b; border-radius:12px; padding:12px; flex-direction:column; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.3); width:320px; max-width:92vw; }
   .annotation-toolbar.show { display:flex; }
   .ann-toolbar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; }

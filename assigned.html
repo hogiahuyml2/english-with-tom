@@ -661,11 +661,11 @@
 .ro-annotation-highlight { border-radius:3px; position:relative; }
 .ro-annotation-highlight[data-note] { cursor:help; }
 .ro-annotation-highlight[data-note]:hover::after {
-  content: attr(data-note); position:absolute; left:0; top:100%; margin-top:6px;
-  background:#1e1b4b; color:#fff; padding:12px 14px; border-radius:10px; font-size:13.5px;
-  line-height:1.6; white-space:pre-wrap; width:340px; max-width:min(380px, 85vw);
-  box-sizing:border-box; z-index:100; pointer-events:none;
-  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  content: attr(data-note); display:block; position:absolute; left:0; top:100%; margin-top:6px;
+  background:#1e1b4b; color:#fff; padding:14px 16px; border-radius:10px; font-size:14px;
+  line-height:1.65; white-space:pre-wrap; width:420px; max-width:min(460px, 92vw);
+  box-sizing:border-box; z-index:9999; pointer-events:none;
+  box-shadow:0 8px 28px rgba(0,0,0,.35);
 }
 #srmOverlay {
   position: fixed; inset: 0; z-index: 4000;
