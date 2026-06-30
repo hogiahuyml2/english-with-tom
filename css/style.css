@@ -92,6 +92,26 @@ img.brand-logo {
 .nav-links a:hover { background: var(--primary-soft); color: var(--primary); }
 .nav-links a.active { background: var(--primary-soft); color: var(--primary); }
 
+/* Dropdown "Chương trình" */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  font: inherit; background: none; border: none; cursor: pointer;
+  padding: 8px 9px; border-radius: 9px; font-size: 13px; font-weight: 500;
+  color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;
+  white-space: nowrap; transition: .15s;
+}
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.active { background: var(--primary-soft); color: var(--primary); }
+.nav-dropdown-toggle .caret { font-size: 10px; transition: transform .15s; }
+.nav-dropdown.open .nav-dropdown-toggle .caret { transform: rotate(180deg); }
+.nav-dropdown-menu {
+  display: none; position: absolute; top: 100%; left: 0; margin-top: 6px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 6px; min-width: 140px; z-index: 120;
+}
+.nav-dropdown.open .nav-dropdown-menu { display: block; }
+.nav-dropdown-menu a { display: block; padding: 8px 10px; border-radius: 7px; font-size: 13px; color: var(--text-muted); white-space: nowrap; }
+.nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: var(--primary-soft); color: var(--primary); }
+
 .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .btn {
   font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
@@ -238,6 +258,9 @@ img.brand-logo {
 }
 .profile-row h2 { font-size: 20px; font-weight: 700; }
 .profile-row .sub { color: var(--text-muted); font-size: 14px; }
+
+.account-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .account-grid { grid-template-columns: 1fr; } }
 
 .stat-grid { display:grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 32px; }
 .stat-card {
@@ -582,8 +605,21 @@ img.brand-logo {
   .nav-links a { padding: 11px 12px; border-radius: 9px; font-size: 14px; }
   .menu-toggle { display: block; }
 
+  /* Dropdown "Chương trình" — bung phẳng trong menu mobile, không cần hover */
+  .nav-dropdown-menu { position: static; display: none; box-shadow: none; border: none; background: transparent; padding: 0 0 0 14px; margin-top: 2px; }
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  .nav-dropdown-toggle { width: 100%; justify-content: space-between; padding: 11px 12px; font-size: 14px; }
+
   /* Hero */
   .hero h1 { font-size: 30px; }
+}
+
+/* ── 1280px: laptop nhỏ/trung — tránh tràn nav khi đã đăng nhập (admin/teacher có nhiều nút) ── */
+@media (max-width: 1280px) and (min-width: 861px) {
+  .nav-account-text { display: none; }
+  .nav-links a, .nav-dropdown-toggle { padding: 8px 7px; font-size: 12.5px; }
+  .nav-actions { gap: 5px; }
+  .nav-actions .btn-sm { padding: 6px 10px; font-size: 12.5px; }
 }
 
 /* ── 640px: phone ── */

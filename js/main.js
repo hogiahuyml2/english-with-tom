@@ -14,23 +14,36 @@
 
   var homeIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:5px;"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>';
 
-  var navItems = [
+  var navItemsBefore = [
     { href: 'index.html', label: 'Trang chủ', key: 'home', icon: homeIcon },
     { href: 'dashboard.html', label: 'Tiến trình', key: 'dashboard' },
     { href: 'assigned.html', label: 'Bài tập được giao', key: 'assigned' },
+  ];
+  var programItems = [
     { href: 'ket.html', label: 'KET', key: 'ket' },
     { href: 'pet.html', label: 'PET', key: 'pet' },
     { href: 'fce.html', label: 'FCE', key: 'fce' },
     { href: 'ielts.html', label: 'IELTS', key: 'ielts' },
     { href: 'aptis.html', label: 'APTIS', key: 'aptis' },
+  ];
+  var navItemsAfter = [
     { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
     { href: 'vocabulary.html', label: 'Học từ vựng', key: 'vocabulary' },
   ];
 
-  var links = navItems.map(function (i) {
+  function renderLink(i) {
     var active = i.key === page ? ' class="active"' : '';
     return '<a href="' + i.href + '"' + active + '>' + (i.icon || '') + i.label + '</a>';
-  }).join('');
+  }
+
+  var isProgramActive = programItems.some(function (i) { return i.key === page; });
+  var programDropdown =
+    '<div class="nav-dropdown' + (isProgramActive ? ' active' : '') + '" id="navProgramDropdown">' +
+      '<button type="button" class="nav-dropdown-toggle' + (isProgramActive ? ' active' : '') + '" id="navProgramToggle">Chương trình <span class="caret">▾</span></button>' +
+      '<div class="nav-dropdown-menu">' + programItems.map(renderLink).join('') + '</div>' +
+    '</div>';
+
+  var links = navItemsBefore.map(renderLink).join('') + programDropdown + navItemsAfter.map(renderLink).join('');
 
   var header = '' +
     '<header class="site-header"><div class="container nav">' +
@@ -92,6 +105,20 @@
     document.getElementById('navLinks').classList.toggle('open');
   });
 
+  /* ===== Dropdown "Chương trình" ===== */
+  (function () {
+    var dd = document.getElementById('navProgramDropdown');
+    var btn = document.getElementById('navProgramToggle');
+    if (!dd || !btn) return;
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dd.classList.toggle('open');
+    });
+    document.addEventListener('click', function (e) {
+      if (dd.classList.contains('open') && !dd.contains(e.target)) dd.classList.remove('open');
+    });
+  })();
+
   /* ===== Dark mode toggle ===== */
   function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
   function updateDarkBtn() {
@@ -136,9 +163,9 @@
           ? '<a class="btn btn-sm" href="admin.html">Quản trị</a>' : '';
         actions.innerHTML =
           adminLink + teacherLink +
-          '<a href="account.html" title="Tài khoản" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
-            '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;">' + initials + '</span>' +
-            '<span>' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
+          '<a href="account.html" title="Tài khoản" class="nav-account" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
+            '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;flex-shrink:0;">' + initials + '</span>' +
+            '<span class="nav-account-text">' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
           '</a>' +
           '<button class="dark-toggle" id="darkToggle2" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode">' + (isDark() ? '☀️' : '🌙') + '</button>' +
           '<button class="btn btn-sm" id="logoutBtn">Đăng xuất</button>' +
