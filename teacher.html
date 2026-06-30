@@ -2703,7 +2703,7 @@
       <div class="gp-tabs">
         <button class="gp-tab active" id="gpTabAI"     onclick="gpShowTab('ai')">🤖 Chấm AI</button>
         <button class="gp-tab"        id="gpTabManual" onclick="gpShowTab('manual')">✍️ Thủ công</button>
-        <button class="gp-tab"        id="gpTabModel"  onclick="gpShowTab('model')">📖 Bài mẫu</button>
+        <button class="gp-tab"        id="gpTabModel"  onclick="gpShowTab('model')">📖 Bài mẫu gợi ý</button>
       </div>
 
       <!-- ─── Pane: AI ─── -->
@@ -2791,7 +2791,7 @@
 
       <!-- ─── Pane: Model Answer ─── -->
       <div class="gp-pane" id="gpPaneModel">
-        <button class="btn" id="gpModelBtn" onclick="loadGpModelAnswer()" style="width:100%;">📖 Tạo bài mẫu tự động cho đề này</button>
+        <button class="btn" id="gpModelBtn" onclick="loadGpModelAnswer()" style="width:100%;">📖 Tạo bài mẫu gợi ý cho đề này</button>
         <div id="gpModelLoading" style="display:none;text-align:center;padding:30px;">
           <div style="font-size:28px;margin-bottom:10px;">📝</div>
           <div style="color:var(--text-faint);font-size:14px;">Đang tạo bài mẫu...</div>
@@ -3254,7 +3254,7 @@ function renderAIResult(result) {
 
   // Suggested writing (bài mẫu từ AI grading)
   if (result.suggested_writing) {
-    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu tự động (từ kết quả chấm)</div>';
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu gợi ý (từ kết quả chấm)</div>';
     html += '<div class="model-answer-box">' + escHtml(result.suggested_writing) + '</div>';
   }
 
@@ -3326,7 +3326,7 @@ async function loadGpModelAnswer() {
 function renderModelAnswer(hints) {
   var html = '';
   if (hints.suggested_writing || hints.image_content) {
-    html += '<div class="gp-section-title" style="margin-bottom:6px;">✍️ Bài mẫu</div>';
+    html += '<div class="gp-section-title" style="margin-bottom:6px;">✍️ Bài mẫu gợi ý</div>';
     html += '<div class="model-answer-box">' + escHtml(hints.suggested_writing || '') + '</div>';
   }
   if (hints.outline && hints.outline.length) {

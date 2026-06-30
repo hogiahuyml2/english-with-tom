@@ -237,7 +237,7 @@
         raw = raw.replace(/(Best|Regards|Yours truly|Yours sincerely|Sincerely|Love|Cheers|Thanks|See you|Bye|All the best|Best wishes),\s*(\w)/g, '$1,\n$2');
       }
       html += '<div class="srm-card">';
-      html += '<div class="srm-card-title">✍️ Bài mẫu tham khảo</div>';
+      html += '<div class="srm-card-title">✍️ Bài mẫu gợi ý</div>';
       html += '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px;font-size:14px;line-height:2;color:#14532d;white-space:pre-wrap;font-family:Georgia,\'Times New Roman\',serif;">'+esc(raw)+'</div>';
       html += '</div>';
     }
@@ -385,7 +385,7 @@
     // Suggested writing (model answer from AI)
     if (result.suggested_writing) {
       html += '<div style="padding:12px 14px;">';
-      html += '<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">✍️ Bài mẫu tham khảo</div>';
+      html += '<div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">✍️ Bài mẫu gợi ý</div>';
       html += '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:13px;line-height:1.8;color:#374151;white-space:pre-wrap;">'+esc(result.suggested_writing)+'</div>';
       html += '</div>';
     }
