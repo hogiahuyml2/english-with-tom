@@ -611,6 +611,19 @@ function exCacheKey(q, role) {
 }
 function exCacheInvalidate() { _exCache.clear(); }
 
+// Cache từng bài tập theo ID — load từ DB 1 lần khi khởi động, serve từ RAM
+// Tránh DB query mỗi lần học sinh vào làm bài (giảm tải NFS Railway)
+const _exById = new Map(); // id → exercise row
+(function warmExerciseCache() {
+  try {
+    const rows = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises').all();
+    rows.forEach(r => _exById.set(r.id, r));
+    console.log(`Exercise cache: ${rows.length} bài tập đã load vào RAM`);
+  } catch(e) {
+    console.error('Không thể warm exercise cache, sẽ query DB từng request:', e.message);
+  }
+})();
+
 app.get('/api/exercises', requireAuth, (req, res) => {
   const { program, skill, private_only, type } = req.query;
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
@@ -647,7 +660,12 @@ app.get('/api/exercises/:id', requireAuth, (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (!id) return res.status(400).json({ error: 'ID đề không hợp lệ.' });
-    const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(id);
+    // Lấy từ RAM cache trước, chỉ query DB nếu chưa có trong cache
+    let ex = _exById.get(id);
+    if (!ex) {
+      ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(id);
+      if (ex) _exById.set(id, ex); // thêm vào cache cho lần sau
+    }
     if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
     if (ex.is_private) {
       if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
@@ -657,8 +675,9 @@ app.get('/api/exercises/:id', requireAuth, (req, res) => {
         if (!assigned && !submitted) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
       }
     }
-    ex.questions = ex.questions ? JSON.parse(ex.questions) : null;
-    res.json({ exercise: ex });
+    const result = Object.assign({}, ex);
+    result.questions = result.questions ? JSON.parse(result.questions) : null;
+    res.json({ exercise: result });
   } catch (err) {
     console.error('GET /api/exercises/:id error:', err);
     res.status(500).json({ error: 'Lỗi tải đề.', detail: err.message });
@@ -692,8 +711,12 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
   const metaJson = metadata ? JSON.stringify(metadata) : null;
   const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,is_private,created_by,created_at,task_type,metadata) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, is_private ? 1 : 0, req.user.id, now(), task_type || null, metaJson);
+  const newId = Number(r.lastInsertRowid);
+  // Cập nhật cache theo ID cụ thể
+  const newEx = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(newId);
+  if (newEx) _exById.set(newId, newEx);
   exCacheInvalidate();
-  res.json({ id: Number(r.lastInsertRowid) });
+  res.json({ id: newId });
 });
 
 // Giáo viên/Admin cập nhật đề
@@ -730,6 +753,9 @@ app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
       newType, newMeta,
       ex.id
     );
+  // Cập nhật cache theo ID cụ thể
+  const updatedEx = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(ex.id);
+  if (updatedEx) _exById.set(ex.id, updatedEx); else _exById.delete(ex.id);
   exCacheInvalidate();
   res.json({ ok: true });
 });
@@ -741,6 +767,7 @@ app.delete('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => 
   if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
     return res.status(403).json({ error: 'Bạn không có quyền xoá đề này.' });
   db.prepare('DELETE FROM exercises WHERE id=?').run(ex.id);
+  _exById.delete(ex.id);
   exCacheInvalidate();
   res.json({ ok: true });
 });
@@ -754,6 +781,7 @@ app.post('/api/exercises/bulk-delete', requireRole('teacher', 'admin'), (req, re
   let count = 0;
   ids.forEach(id => {
     const r = isAdmin ? del.run(Number(id)) : del.run(Number(id), req.user.id);
+    if (r.changes) _exById.delete(Number(id));
     count += r.changes;
   });
   exCacheInvalidate();
