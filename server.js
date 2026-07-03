@@ -1662,6 +1662,54 @@ app.post('/api/push/unsubscribe', requireAuth, (req, res) => {
   res.json({ ok: true });
 });
 
+// ===================== NHẮC DEADLINE =====================
+async function sendDeadlineReminders() {
+  if (!emailEnabled()) return;
+  const pending = db.prepare(`
+    SELECT a.id, a.student_email, a.deadline,
+           e.title, e.program,
+           u.name AS student_name,
+           sub.id AS submission_id
+    FROM assignments a
+    JOIN exercises e ON e.id = a.exercise_id
+    LEFT JOIN users u ON u.email = a.student_email
+    LEFT JOIN submissions sub ON sub.exercise_id = a.exercise_id AND sub.user_id = u.id
+    WHERE a.deadline IS NOT NULL
+      AND a.reminder_sent = 0
+      AND datetime(a.deadline) > datetime('now')
+      AND datetime(a.deadline) <= datetime('now', '+24 hours')
+      AND sub.id IS NULL
+  `).all();
+
+  for (const row of pending) {
+    const name = row.student_name || row.student_email;
+    const assignLink = (process.env.BASE_URL || 'https://engwithtom.online') + '/assigned.html';
+    const dline = fmtDeadline(row.deadline);
+    await sendBrevoEmail(
+      { email: row.student_email, name },
+      `⏰ Nhắc nhở: Bài tập "${row.title}" sắp đến hạn — English With Tom`,
+      `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
+        <h2 style="color:#E57C2B">⏰ Nhắc nhở nộp bài</h2>
+        <p>Xin chào <b>${name}</b>,</p>
+        <p>Bài tập <b>${row.title}</b>${row.program ? ` (${row.program})` : ''} của bạn sẽ <b>hết hạn vào ${dline}</b>.</p>
+        <p>Bạn chưa nộp bài này. Hãy hoàn thành trước khi hết giờ nhé!</p>
+        <p style="margin:22px 0">
+          <a href="${assignLink}" style="display:inline-block;background:#E57C2B;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Nộp bài ngay</a>
+        </p>
+        <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này (${row.student_email}) để xem bài được giao.</p>
+      </div>`
+    ).catch(() => {});
+    db.prepare('UPDATE assignments SET reminder_sent=1 WHERE id=?').run(row.id);
+    console.log(`📬 Nhắc deadline: ${row.student_email} — "${row.title}" (hạn ${dline})`);
+  }
+}
+
+// Chạy ngay sau khi server khởi động (trễ 30s) rồi mỗi giờ
+setTimeout(() => {
+  sendDeadlineReminders().catch(console.error);
+  setInterval(() => sendDeadlineReminders().catch(console.error), 60 * 60 * 1000);
+}, 30_000);
+
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 

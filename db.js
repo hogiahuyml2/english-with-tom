@@ -96,7 +96,8 @@ CREATE TABLE IF NOT EXISTS group_members (
 `);
 
 const assignCols = db.prepare('PRAGMA table_info(assignments)').all().map(c => c.name);
-if (!assignCols.includes('group_id')) db.exec('ALTER TABLE assignments ADD COLUMN group_id INTEGER');
+if (!assignCols.includes('group_id'))      db.exec('ALTER TABLE assignments ADD COLUMN group_id INTEGER');
+if (!assignCols.includes('reminder_sent')) db.exec('ALTER TABLE assignments ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0');
 
 // ===== Bảng Annotation & Push Subscription =====
 db.exec(`
