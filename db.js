@@ -18,14 +18,13 @@ for (const ext of ['-wal', '-shm']) {
 const db = new DatabaseSync(DB_PATH);
 
 // ===== Tối ưu hiệu năng SQLite =====
-// journal_mode=MEMORY: lưu journal trong RAM thay vì NFS → ghi DB xong ngay,
-// không tạo file .db-journal trên NFS → không block request đọc của học sinh.
-// WAL không dùng được vì Railway NFS không hỗ trợ file locking của WAL.
-db.exec('PRAGMA journal_mode=MEMORY');    // journal trong RAM, không tạo file NFS
+// KHÔNG đổi journal_mode — đổi mode cần ghi vào DB file, có thể treo trên NFS.
+// Giữ DELETE mode (đã lưu trong header DB file từ commit trước).
+// Chỉ set các pragma connection-level (không cần ghi file):
+db.exec('PRAGMA busy_timeout=5000');      // đợi tối đa 5s khi bị lock, không block vô hạn
 db.exec('PRAGMA synchronous=NORMAL');     // an toàn nhưng nhanh hơn FULL
 db.exec('PRAGMA cache_size=-8000');       // 8MB page cache trong RAM
 db.exec('PRAGMA temp_store=MEMORY');      // bảng tạm trong RAM, không tạo file NFS
-db.exec('PRAGMA busy_timeout=5000');      // đợi tối đa 5s khi bị lock, không block vô hạn
 
 // ===== Tạo bảng nếu chưa có =====
 db.exec(`

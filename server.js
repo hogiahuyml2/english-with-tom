@@ -611,18 +611,8 @@ function exCacheKey(q, role) {
 }
 function exCacheInvalidate() { _exCache.clear(); }
 
-// Cache từng bài tập theo ID — load từ DB 1 lần khi khởi động, serve từ RAM
-// Tránh DB query mỗi lần học sinh vào làm bài (giảm tải NFS Railway)
+// Cache từng bài tập theo ID — lazy: populate khi học sinh vào lần đầu, serve từ RAM sau đó
 const _exById = new Map(); // id → exercise row
-(function warmExerciseCache() {
-  try {
-    const rows = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises').all();
-    rows.forEach(r => _exById.set(r.id, r));
-    console.log(`Exercise cache: ${rows.length} bài tập đã load vào RAM`);
-  } catch(e) {
-    console.error('Không thể warm exercise cache, sẽ query DB từng request:', e.message);
-  }
-})();
 
 app.get('/api/exercises', requireAuth, (req, res) => {
   const { program, skill, private_only, type } = req.query;
