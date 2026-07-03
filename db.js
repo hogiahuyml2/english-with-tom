@@ -2,13 +2,23 @@
 const { DatabaseSync } = require('node:sqlite');
 const crypto = require('crypto');
 const path = require('path');
+const fs = require('fs');
 
 const DATA_DIR = process.env.DATA_DIR || __dirname;
-const db = new DatabaseSync(path.join(DATA_DIR, 'data.db'));
+const DB_PATH  = path.join(DATA_DIR, 'data.db');
+
+// Xoá WAL/SHM files rác nếu tồn tại (có thể do WAL mode cũ để lại trên NFS)
+// Phải làm TRƯỚC khi mở DB để tránh SQLite cố checkpoint trên NFS
+for (const ext of ['-wal', '-shm']) {
+  const f = DB_PATH + ext;
+  try { if (fs.existsSync(f)) { fs.unlinkSync(f); console.log('Removed stale', f); } }
+  catch (e) { console.warn('Cannot remove', f, e.message); }
+}
+
+const db = new DatabaseSync(DB_PATH);
 
 // ===== Tối ưu hiệu năng SQLite =====
 // KHÔNG dùng WAL mode — Railway volumes dùng NFS, WAL không tương thích với NFS
-// và có thể gây deadlock vô hạn làm treo toàn bộ server
 db.exec('PRAGMA journal_mode=DELETE');    // chế độ mặc định, an toàn trên mọi filesystem
 db.exec('PRAGMA synchronous=NORMAL');     // an toàn nhưng nhanh hơn FULL
 db.exec('PRAGMA cache_size=-8000');       // 8MB page cache trong RAM
