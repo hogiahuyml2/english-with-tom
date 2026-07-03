@@ -183,13 +183,25 @@
   // Init pills
   renderPills();
 
-  // Load data
-  fetch('/api/exercises', {credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(d){
-    ALL_DATA = d.exercises || [];
-    renderList();
-  }).catch(function(){
-    document.getElementById('list').innerHTML = '<p style="color:var(--text-faint);text-align:center;">Không tải được danh sách đề.</p>';
-  });
+  // Load data — tự retry 1 lần nếu timeout
+  (function loadExList(attempt) {
+    attempt = attempt || 1;
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 25000);
+    fetch('/api/exercises', {credentials:'same-origin', signal: ctrl.signal})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      ALL_DATA = d.exercises || [];
+      renderList();
+    }).catch(function(){
+      if (attempt < 2) {
+        setTimeout(function(){ loadExList(attempt + 1); }, 3000);
+      } else {
+        document.getElementById('list').innerHTML =
+          '<p style="color:var(--text-faint);text-align:center;">Không tải được danh sách đề. <button onclick="location.reload()" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 12px;cursor:pointer;">Thử lại</button></p>';
+      }
+    });
+  })(1);
 </script>
 </body>
 </html>

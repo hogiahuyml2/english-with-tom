@@ -419,13 +419,18 @@ function updateWc(taId, wcId, rangeStr){
 /* ── Load exercise ── */
 if(!EXERCISE_ID){ document.body.innerHTML='<p style="padding:40px;text-align:center;color:#888;">Không tìm thấy đề. <a href="aptis-writing.html">Quay lại</a></p>'; }
 else {
-  fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin'}).then(function(r){
-    if(r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
-    return r.json();
-  }).then(function(d){
-    if(!d) return;
-    var e = d.exercise;
-    if(!e){ document.getElementById('introTitle').textContent='Không tìm thấy đề'; return; }
+  (function loadAptisTest(attempt) {
+    attempt = attempt || 1;
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 25000);
+    fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin', signal: ctrl.signal}).then(function(r){
+      if(r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
+      if(!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then(function(d){
+      if(!d) return;
+      var e = d.exercise;
+      if(!e){ document.getElementById('introTitle').textContent='Không tìm thấy đề'; return; }
     var parsed = null;
     try{ parsed = typeof e.content === 'object' ? e.content : JSON.parse(e.content||'{}'); }catch(err){}
     if(!parsed || !parsed._aptis_full){
@@ -453,8 +458,17 @@ else {
       return '<div class="intro-time-item"><div class="part-lbl">'+n+'</div><div class="part-time">⏱ '+times[i]+'</div></div>';
     }).join('');
 
-    buildParts(parsed);
-  }).catch(function(err){ console.error(err); });
+      buildParts(parsed);
+    }).catch(function(err){
+      if (attempt < 2) {
+        document.getElementById('introTitle').textContent = 'Đang thử lại...';
+        setTimeout(function(){ loadAptisTest(attempt + 1); }, 3000);
+      } else {
+        document.getElementById('introTitle').textContent = 'Không tải được đề — vui lòng thử lại';
+        console.error(err);
+      }
+    });
+  })(1);
 }
 
 function buildParts(p){

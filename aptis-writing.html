@@ -69,11 +69,13 @@
 <script>
   function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
 
-  var _aptisCtrl = new AbortController();
-  setTimeout(function(){ _aptisCtrl.abort(); }, 12000);
-  fetch('/api/exercises?program=APTIS&skill=Writing&type=aptis_full', {credentials:'same-origin', signal:_aptisCtrl.signal})
-  .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-  .then(function(d){
+  (function loadAptis(attempt) {
+    attempt = attempt || 1;
+    var _aptisCtrl = new AbortController();
+    setTimeout(function(){ _aptisCtrl.abort(); }, 25000);
+    fetch('/api/exercises?program=APTIS&skill=Writing&type=aptis_full', {credentials:'same-origin', signal:_aptisCtrl.signal})
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(d){
     var exercises = (d.exercises||[]).filter(function(e){
       if(!e.content) return false;
       try{
@@ -115,9 +117,14 @@
           +'</div>';
       }).join('')
       + '</div>';
-  }).catch(function(){
-    document.getElementById('testList').innerHTML='<div class="empty-state"><div class="ico">⚠️</div><p>Không tải được danh sách đề.</p></div>';
-  });
+    }).catch(function(){
+      if (attempt < 2) {
+        setTimeout(function(){ loadAptis(attempt + 1); }, 3000);
+      } else {
+        document.getElementById('testList').innerHTML='<div class="empty-state"><div class="ico">⚠️</div><p>Không tải được danh sách đề. <button onclick="location.reload()" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 12px;cursor:pointer;font-size:13px;">Thử lại</button></p></div>';
+      }
+    });
+  })(1);
 </script>
 </body>
 </html>

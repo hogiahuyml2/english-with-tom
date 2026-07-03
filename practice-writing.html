@@ -833,13 +833,20 @@ var essayEditor = new RichEditor('essay', {
 /* ── Load đề bài ── */
 function showLoadError(msg) {
   document.getElementById('exTitle').textContent = msg || 'Không tải được đề';
-  document.getElementById('exSub').textContent = 'Vui lòng tải lại trang (F5)';
+  document.getElementById('exSub').innerHTML =
+    'Vui lòng <button onclick="location.reload()" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 12px;cursor:pointer;font-size:13px;">Thử lại</button> hoặc nhấn F5';
   document.getElementById('timerModeCard').style.display = 'none';
 }
 
-(function loadExercise() {
+(function loadExercise(attempt) {
+  attempt = attempt || 1;
+  if (attempt === 1) {
+    document.getElementById('exTitle').textContent = 'Đang tải đề...';
+  } else {
+    document.getElementById('exTitle').textContent = 'Đang thử lại (' + attempt + '/2)...';
+  }
   var ctrl = new AbortController();
-  var timeout = setTimeout(function(){ ctrl.abort(); }, 12000);
+  var timeout = setTimeout(function(){ ctrl.abort(); }, 25000);
   fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin', signal: ctrl.signal})
   .then(function(r){
     clearTimeout(timeout);
@@ -889,13 +896,16 @@ function showLoadError(msg) {
   })
   .catch(function(err){
     clearTimeout(timeout);
-    if (err && err.name === 'AbortError') {
-      showLoadError('Tải đề quá lâu — máy chủ có thể đang khởi động. Tải lại trang sau 10 giây.');
+    if (attempt < 2) {
+      document.getElementById('exTitle').textContent = 'Đang thử lại...';
+      setTimeout(function(){ loadExercise(attempt + 1); }, 3000);
+    } else if (err && err.name === 'AbortError') {
+      showLoadError('Máy chủ phản hồi chậm — vui lòng thử lại.');
     } else {
-      showLoadError('Mất kết nối — kiểm tra mạng rồi tải lại trang (F5).');
+      showLoadError('Mất kết nối — kiểm tra mạng rồi thử lại.');
     }
   });
-})();
+})(1);
 
 fetch('/api/config').then(function(r){ return r.json(); }).then(function(c){
   if (!IS_PRIVATE && !c.aiEnabled)

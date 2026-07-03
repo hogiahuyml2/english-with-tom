@@ -79,18 +79,28 @@
   var LETTERS = ['A','B','C','D','E'];
   var QS = [];
 
+  function showQuizError(msg) {
+    document.getElementById('exTitle').textContent = msg;
+    document.getElementById('exSub').innerHTML =
+      '<button onclick="location.reload()" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 12px;cursor:pointer;font-size:13px;">Thử lại</button>';
+  }
+  (function loadQuiz(attempt) {
+  attempt = attempt || 1;
+  document.getElementById('exTitle').textContent = attempt > 1 ? 'Đang thử lại...' : 'Đang tải đề...';
   var _quizCtrl = new AbortController();
-  var _quizTimeout = setTimeout(function(){ _quizCtrl.abort(); }, 12000);
+  var _quizTimeout = setTimeout(function(){ _quizCtrl.abort(); }, 25000);
   fetch('/api/exercises/'+EXERCISE_ID, {credentials:'same-origin', signal: _quizCtrl.signal})
   .then(function(r){
     clearTimeout(_quizTimeout);
     if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
-    if (!r.ok){ document.getElementById('exTitle').textContent='Lỗi tải đề ('+r.status+'), thử tải lại.'; return null; }
+    if (r.status===403){ showQuizError('Bạn chưa được giao đề này.'); return null; }
+    if (r.status===404){ showQuizError('Không tìm thấy đề (ID ' + EXERCISE_ID + ')'); return null; }
+    if (!r.ok){ showQuizError('Lỗi tải đề ('+r.status+'), thử tải lại.'); return null; }
     return r.json();
   }).then(function(d){
     if (!d) return;
     var e = d.exercise;
-    if (!e) { document.getElementById('exTitle').textContent='Không tìm thấy đề'; return; }
+    if (!e) { showQuizError('Không tìm thấy đề'); return; }
     document.getElementById('exTitle').textContent = e.title;
     document.getElementById('crumbTitle').textContent = e.program + ' ' + e.skill;
     document.getElementById('exSub').textContent = e.program + ' · ' + e.skill + ' · chấm tự động';
@@ -125,11 +135,16 @@
     }).join('');
   }).catch(function(err){
     clearTimeout(_quizTimeout);
-    var msg = (err && err.name==='AbortError')
-      ? 'Tải đề quá lâu — thử tải lại trang (F5).'
-      : 'Mất kết nối — kiểm tra mạng rồi thử lại.';
-    document.getElementById('exTitle').textContent = msg;
+    if (attempt < 2) {
+      document.getElementById('exTitle').textContent = 'Đang thử lại...';
+      setTimeout(function(){ loadQuiz(attempt + 1); }, 3000);
+    } else {
+      showQuizError((err && err.name==='AbortError')
+        ? 'Máy chủ phản hồi chậm — vui lòng thử lại.'
+        : 'Mất kết nối — kiểm tra mạng rồi thử lại.');
+    }
   });
+  })(1);
 
   document.getElementById('submitBtn').addEventListener('click', async function(){
     var answers = QS.map(function(_, i){
