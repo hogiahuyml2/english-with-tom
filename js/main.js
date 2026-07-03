@@ -1,5 +1,20 @@
 /* English With Tom — header/footer dùng chung + tương tác nhẹ */
 
+/* ===== FAVICON — inject sớm để hiện ngay khi load ===== */
+(function () {
+  if (!document.querySelector('link[rel="icon"]')) {
+    var lnk = document.createElement('link');
+    lnk.rel = 'icon'; lnk.type = 'image/png'; lnk.href = '/images/logo-icon.png';
+    document.head.appendChild(lnk);
+  }
+  // Apple Touch Icon (nếu chưa có)
+  if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+    var atl = document.createElement('link');
+    atl.rel = 'apple-touch-icon'; atl.href = '/images/apple-touch-icon.png';
+    document.head.appendChild(atl);
+  }
+})();
+
 /* ===== DARK MODE — áp dụng trước khi render để tránh flash ===== */
 (function () {
   var saved = localStorage.getItem('ewt-theme');
