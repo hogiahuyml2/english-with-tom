@@ -258,6 +258,9 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
   res.json({ ok: true });
 });
 
+// Favicon — browser tự request /favicon.ico
+app.get('/favicon.ico', (req, res) => res.redirect('/images/logo-icon.png'));
+
 // Health check — dùng để keep-alive, tránh Railway cold start
 app.get('/api/ping', (req, res) => res.json({ ok: true, t: Date.now() }));
 
