@@ -99,6 +99,20 @@ const assignCols = db.prepare('PRAGMA table_info(assignments)').all().map(c => c
 if (!assignCols.includes('group_id'))      db.exec('ALTER TABLE assignments ADD COLUMN group_id INTEGER');
 if (!assignCols.includes('reminder_sent')) db.exec('ALTER TABLE assignments ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0');
 
+// ===== Bảng Messages =====
+db.exec(`
+CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sender_id INTEGER NOT NULL REFERENCES users(id),
+  receiver_id INTEGER NOT NULL REFERENCES users(id),
+  content TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  read_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_messages_thread ON messages(sender_id, receiver_id);
+CREATE INDEX IF NOT EXISTS idx_messages_receiver ON messages(receiver_id, read_at);
+`);
+
 // ===== Bảng Annotation & Push Subscription =====
 db.exec(`
 CREATE TABLE IF NOT EXISTS annotations (

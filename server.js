@@ -1044,7 +1044,7 @@ app.get('/api/my-assignments', requireAuth, (req, res) => {
   const rows = db.prepare(`
     SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
            e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
-           u.name AS teacher_name,
+           u.id AS teacher_id, u.name AS teacher_name,
            g.name AS group_name,
            sub.id AS submission_id, sub.status AS submission_status,
            sub.score AS submission_score, sub.max_score AS submission_max,
@@ -1660,6 +1660,96 @@ app.post('/api/push/unsubscribe', requireAuth, (req, res) => {
   const { endpoint } = req.body || {};
   if (endpoint) db.prepare('DELETE FROM push_subscriptions WHERE user_id=? AND endpoint=?').run(req.user.id, endpoint);
   res.json({ ok: true });
+});
+
+// ===================== MESSAGES =====================
+
+// Danh sách liên hệ: giáo viên thấy học sinh của mình, học sinh thấy giáo viên giao bài
+app.get('/api/messages/contacts', requireAuth, (req, res) => {
+  const me = req.user.id;
+  let contacts;
+  if (req.user.role === 'student') {
+    contacts = db.prepare(`
+      SELECT DISTINCT u.id, u.name, u.role,
+        (SELECT content FROM messages WHERE (sender_id=u.id AND receiver_id=?) OR (sender_id=? AND receiver_id=u.id) ORDER BY created_at DESC LIMIT 1) AS last_msg,
+        (SELECT created_at FROM messages WHERE (sender_id=u.id AND receiver_id=?) OR (sender_id=? AND receiver_id=u.id) ORDER BY created_at DESC LIMIT 1) AS last_at,
+        (SELECT COUNT(*) FROM messages WHERE sender_id=u.id AND receiver_id=? AND read_at IS NULL) AS unread
+      FROM assignments a
+      JOIN users u ON u.id = a.assigned_by
+      WHERE a.student_email = ?
+      ORDER BY CASE WHEN last_at IS NULL THEN 1 ELSE 0 END, last_at DESC, u.name
+    `).all(me, me, me, me, me, req.user.email);
+  } else {
+    contacts = db.prepare(`
+      SELECT DISTINCT u.id, u.name, u.role,
+        (SELECT content FROM messages WHERE (sender_id=u.id AND receiver_id=?) OR (sender_id=? AND receiver_id=u.id) ORDER BY created_at DESC LIMIT 1) AS last_msg,
+        (SELECT created_at FROM messages WHERE (sender_id=u.id AND receiver_id=?) OR (sender_id=? AND receiver_id=u.id) ORDER BY created_at DESC LIMIT 1) AS last_at,
+        (SELECT COUNT(*) FROM messages WHERE sender_id=u.id AND receiver_id=? AND read_at IS NULL) AS unread
+      FROM assignments a
+      JOIN users u ON u.email = a.student_email
+      WHERE a.assigned_by = ?
+      ORDER BY CASE WHEN last_at IS NULL THEN 1 ELSE 0 END, last_at DESC, u.name
+    `).all(me, me, me, me, me, req.user.id);
+  }
+  // Thêm những người đã nhắn tin nhưng chưa có trong danh sách trên
+  const msgContacts = db.prepare(`
+    SELECT DISTINCT u.id, u.name, u.role,
+      (SELECT content FROM messages WHERE (sender_id=u.id AND receiver_id=?) OR (sender_id=? AND receiver_id=u.id) ORDER BY created_at DESC LIMIT 1) AS last_msg,
+      (SELECT created_at FROM messages WHERE (sender_id=u.id AND receiver_id=?) OR (sender_id=? AND receiver_id=u.id) ORDER BY created_at DESC LIMIT 1) AS last_at,
+      (SELECT COUNT(*) FROM messages WHERE sender_id=u.id AND receiver_id=? AND read_at IS NULL) AS unread
+    FROM messages m
+    JOIN users u ON u.id = CASE WHEN m.sender_id=? THEN m.receiver_id ELSE m.sender_id END
+    WHERE (m.sender_id=? OR m.receiver_id=?) AND u.id != ?
+  `).all(me, me, me, me, me, me, me, me, me);
+
+  const seen = new Set(contacts.map(c => c.id));
+  msgContacts.forEach(c => { if (!seen.has(c.id)) { seen.add(c.id); contacts.push(c); } });
+  contacts.sort((a, b) => (b.last_at || '').localeCompare(a.last_at || '') || a.name.localeCompare(b.name));
+  res.json({ contacts });
+});
+
+// Tổng số tin nhắn chưa đọc
+app.get('/api/messages/unread-count', requireAuth, (req, res) => {
+  const row = db.prepare('SELECT COUNT(*) AS cnt FROM messages WHERE receiver_id=? AND read_at IS NULL').get(req.user.id);
+  res.json({ count: row.cnt });
+});
+
+// Lấy lịch sử tin nhắn với một người dùng
+app.get('/api/messages/:userId', requireAuth, (req, res) => {
+  const me = req.user.id;
+  const other = Number(req.params.userId);
+  if (!other) return res.status(400).json({ error: 'Invalid userId' });
+  const msgs = db.prepare(`
+    SELECT m.id, m.sender_id, m.receiver_id, m.content, m.created_at, m.read_at,
+           s.name AS sender_name, r.name AS receiver_name
+    FROM messages m
+    JOIN users s ON s.id = m.sender_id
+    JOIN users r ON r.id = m.receiver_id
+    WHERE (m.sender_id=? AND m.receiver_id=?) OR (m.sender_id=? AND m.receiver_id=?)
+    ORDER BY m.created_at ASC
+  `).all(me, other, other, me);
+  // Đánh dấu đã đọc
+  db.prepare('UPDATE messages SET read_at=? WHERE receiver_id=? AND sender_id=? AND read_at IS NULL')
+    .run(new Date().toISOString(), me, other);
+  const otherUser = db.prepare('SELECT id, name, role FROM users WHERE id=?').get(other);
+  res.json({ messages: msgs, other: otherUser });
+});
+
+// Gửi tin nhắn
+app.post('/api/messages/:userId', requireAuth, (req, res) => {
+  const me = req.user.id;
+  const other = Number(req.params.userId);
+  const { content } = req.body || {};
+  if (!other || !content || !content.trim()) return res.status(400).json({ error: 'Thiếu nội dung.' });
+  const otherUser = db.prepare('SELECT id, name FROM users WHERE id=?').get(other);
+  if (!otherUser) return res.status(404).json({ error: 'Người dùng không tồn tại.' });
+  const r = db.prepare('INSERT INTO messages (sender_id, receiver_id, content, created_at) VALUES (?,?,?,?)')
+    .run(me, other, content.trim(), new Date().toISOString());
+  const msg = db.prepare('SELECT * FROM messages WHERE id=?').get(r.lastInsertRowid);
+  // Push notification cho người nhận
+  const assignLink = (process.env.BASE_URL || 'https://engwithtom.online') + '/chat.html?u=' + me;
+  sendPushToUser(other, '💬 ' + req.user.name, content.trim().slice(0, 80), assignLink).catch(() => {});
+  res.json({ ok: true, message: msg });
 });
 
 // ===================== NHẮC DEADLINE =====================

@@ -29,11 +29,13 @@
   var navItemsAfter = [
     { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
     { href: 'vocabulary.html', label: 'Học từ vựng', key: 'vocabulary' },
+    { href: 'chat.html', label: '💬 Tin nhắn', key: 'chat', id: 'navChatLink' },
   ];
 
   function renderLink(i) {
     var active = i.key === page ? ' class="active"' : '';
-    return '<a href="' + i.href + '"' + active + '>' + (i.icon || '') + i.label + '</a>';
+    var idAttr = i.id ? ' id="' + i.id + '"' : '';
+    return '<a href="' + i.href + '"' + active + idAttr + ' style="position:relative">' + (i.icon || '') + i.label + '</a>';
   }
 
   var isProgramActive = programItems.some(function (i) { return i.key === page; });
@@ -178,6 +180,32 @@
         var mt2 = document.getElementById('menuToggle2');
         if (mt2) mt2.onclick = function () { document.getElementById('navLinks').classList.toggle('open'); };
       }
+    }
+
+    /* Badge unread cho link Tin nhắn */
+    if (user) {
+      function refreshUnread() {
+        fetch('/api/messages/unread-count', { credentials:'same-origin' })
+          .then(function(r){ return r.ok ? r.json() : { count:0 }; })
+          .then(function(d){
+            var link = document.getElementById('navChatLink');
+            if (!link) return;
+            var badge = link.querySelector('.nav-unread-badge');
+            if (d.count > 0) {
+              if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'nav-unread-badge';
+                badge.style.cssText = 'position:absolute;top:-5px;right:-8px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;padding:0 4px;display:grid;place-items:center;line-height:1;';
+                link.appendChild(badge);
+              }
+              badge.textContent = d.count > 99 ? '99+' : d.count;
+            } else if (badge) {
+              badge.remove();
+            }
+          }).catch(function(){});
+      }
+      refreshUnread();
+      setInterval(refreshUnread, 30000);
     }
 
     /* Chặn truy cập theo vai trò */

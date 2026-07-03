@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tin nhắn — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=13">
+<style>
+/* ===== LAYOUT ===== */
+.chat-page { display:flex; gap:0; height:calc(100vh - 74px); overflow:hidden; }
+
+/* ===== SIDEBAR ===== */
+.chat-sidebar {
+  width:320px; flex-shrink:0; display:flex; flex-direction:column;
+  background:#fff; border-right:1px solid var(--border);
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.chat-sidebar-head {
+  padding:20px 18px 14px;
+  background:linear-gradient(135deg,#6F58EE 0%,#4F8BF0 100%);
+  color:#fff; flex-shrink:0;
+}
+.chat-sidebar-head h2 { font-size:17px; font-weight:700; margin-bottom:4px; }
+.chat-sidebar-head p  { font-size:12.5px; opacity:.78; }
+.chat-search-wrap { padding:12px 14px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.chat-search {
+  width:100%; border:1.5px solid var(--border); border-radius:20px;
+  padding:8px 14px; font-size:13.5px; font-family:inherit; color:var(--text);
+  background:var(--bg); outline:none;
+}
+.chat-search:focus { border-color:var(--primary); }
+.chat-contacts { flex:1; overflow-y:auto; }
+.contact-item {
+  display:flex; align-items:center; gap:11px; padding:12px 16px;
+  cursor:pointer; border-bottom:1px solid var(--border);
+  transition:background .15s; position:relative;
+}
+.contact-item:hover { background:var(--primary-soft); }
+.contact-item.active { background:linear-gradient(90deg,#ECE9FE,#E4EFFE); border-left:3px solid var(--primary); }
+.contact-avatar {
+  width:42px; height:42px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,#6F58EE,#4F8BF0);
+  display:grid; place-items:center; color:#fff; font-weight:700; font-size:16px;
+}
+.contact-info { flex:1; min-width:0; }
+.contact-name { font-weight:600; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.contact-role { font-size:11.5px; color:var(--text-faint); margin-top:1px; }
+.contact-preview { font-size:12px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:3px; }
+.contact-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+.contact-time { font-size:11px; color:var(--text-faint); white-space:nowrap; }
+.unread-badge {
+  background:var(--primary); color:#fff; font-size:11px; font-weight:700;
+  border-radius:999px; min-width:18px; height:18px; padding:0 5px;
+  display:grid; place-items:center;
+}
+.contacts-empty { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:14px; }
+.contacts-loading { text-align:center; padding:30px; color:var(--text-faint); }
+
+/* ===== CHAT AREA ===== */
+.chat-area {
+  flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;
+  background:linear-gradient(150deg,#ece8ff 0%,#e4effe 40%,#f0e8ff 100%);
+}
+.chat-empty-state {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:var(--text-muted); gap:14px; padding:30px;
+}
+.chat-empty-icon {
+  width:72px; height:72px; border-radius:50%;
+  background:linear-gradient(135deg,#6F58EE,#4F8BF0);
+  display:grid; place-items:center; font-size:32px;
+}
+.chat-empty-state h3 { font-size:18px; font-weight:700; color:var(--text); }
+.chat-empty-state p  { font-size:14px; text-align:center; max-width:280px; line-height:1.6; }
+
+/* ===== CHAT HEADER ===== */
+.chat-head {
+  display:flex; align-items:center; gap:13px; padding:14px 20px;
+  background:linear-gradient(135deg,#6F58EE 0%,#4F8BF0 100%);
+  color:#fff; flex-shrink:0;
+  box-shadow:0 2px 12px rgba(111,88,238,.25);
+}
+.chat-head-avatar {
+  width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.22);
+  display:grid; place-items:center; font-weight:700; font-size:15px; flex-shrink:0;
+}
+.chat-head-name { font-weight:700; font-size:15px; }
+.chat-head-role { font-size:12px; opacity:.8; margin-top:1px; }
+.chat-back-btn {
+  display:none; background:rgba(255,255,255,.18); border:none; color:#fff;
+  border-radius:8px; padding:6px 10px; cursor:pointer; font-size:18px; margin-right:4px;
+}
+
+/* ===== MESSAGES ===== */
+.chat-messages {
+  flex:1; overflow-y:auto; padding:20px 16px; display:flex; flex-direction:column; gap:6px;
+  scroll-behavior:smooth;
+}
+.msg-date-sep {
+  text-align:center; font-size:12px; color:var(--text-faint);
+  margin:10px 0 4px; position:relative;
+}
+.msg-date-sep::before, .msg-date-sep::after {
+  content:''; position:absolute; top:50%; width:calc(50% - 60px); height:1px; background:var(--border);
+}
+.msg-date-sep::before { left:0; }
+.msg-date-sep::after  { right:0; }
+
+.msg-row { display:flex; align-items:flex-end; gap:8px; max-width:78%; animation:msgIn .18s ease; }
+.msg-row.mine { align-self:flex-end; flex-direction:row-reverse; }
+.msg-row.theirs { align-self:flex-start; }
+@keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+.msg-avatar {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,#6F58EE,#4F8BF0);
+  display:grid; place-items:center; color:#fff; font-weight:700; font-size:11px;
+}
+.msg-bubble {
+  padding:10px 14px; border-radius:18px; font-size:14px; line-height:1.6;
+  max-width:100%; word-break:break-word; white-space:pre-wrap;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+}
+.msg-row.mine .msg-bubble {
+  background:linear-gradient(135deg,#6F58EE 0%,#4F8BF0 100%);
+  color:#fff; border-bottom-right-radius:5px;
+}
+.msg-row.theirs .msg-bubble {
+  background:#fff; color:var(--text); border-bottom-left-radius:5px;
+  border:1px solid var(--border);
+}
+.msg-time { font-size:10.5px; opacity:.6; margin-top:4px; text-align:right; }
+.msg-row.theirs .msg-time { text-align:left; }
+
+/* ===== INPUT ===== */
+.chat-input-area {
+  padding:14px 16px; background:#fff; border-top:1px solid var(--border);
+  display:flex; gap:10px; align-items:flex-end; flex-shrink:0;
+}
+.chat-textarea {
+  flex:1; border:1.5px solid var(--border); border-radius:20px;
+  padding:10px 16px; font-size:14px; font-family:inherit; color:var(--text);
+  resize:none; outline:none; line-height:1.5; max-height:120px; min-height:42px;
+  background:var(--bg); transition:border-color .15s;
+}
+.chat-textarea:focus { border-color:var(--primary); }
+.chat-send-btn {
+  width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
+  background:linear-gradient(135deg,#6F58EE,#4F8BF0);
+  color:#fff; display:grid; place-items:center; flex-shrink:0;
+  transition:transform .15s, box-shadow .15s;
+  box-shadow:0 3px 12px rgba(111,88,238,.3);
+}
+.chat-send-btn:hover { transform:scale(1.08); box-shadow:0 5px 16px rgba(111,88,238,.4); }
+.chat-send-btn:active { transform:scale(.96); }
+.chat-send-btn svg { width:18px; height:18px; }
+
+/* ===== MOBILE ===== */
+@media (max-width:700px) {
+  .chat-page { position:relative; }
+  .chat-sidebar { position:absolute; inset:0; width:100%; z-index:10; transform:translateX(0); }
+  .chat-sidebar.hidden { transform:translateX(-100%); }
+  .chat-area { width:100%; }
+  .chat-back-btn { display:block; }
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .chat-sidebar { background:#1e1b2e; border-color:#2d2a44; }
+[data-theme="dark"] .chat-search-wrap { border-color:#2d2a44; }
+[data-theme="dark"] .chat-search { background:#16142a; border-color:#2d2a44; color:#e2dff5; }
+[data-theme="dark"] .contact-item { border-color:#2d2a44; }
+[data-theme="dark"] .contact-item:hover { background:rgba(111,88,238,.15); }
+[data-theme="dark"] .contact-item.active { background:linear-gradient(90deg,rgba(111,88,238,.2),rgba(79,139,240,.15)); }
+[data-theme="dark"] .chat-area { background:linear-gradient(150deg,#16142a 0%,#12182e 40%,#1a1428 100%); }
+[data-theme="dark"] .chat-input-area { background:#1e1b2e; border-color:#2d2a44; }
+[data-theme="dark"] .chat-textarea { background:#16142a; border-color:#2d2a44; color:#e2dff5; }
+[data-theme="dark"] .msg-row.theirs .msg-bubble { background:#2d2a44; color:#e2dff5; border-color:#3d3a58; }
+</style>
+</head>
+<body data-page="chat" data-guard="auth">
+<div id="site-header"></div>
+
+<div class="chat-page" id="chatPage">
+
+  <!-- SIDEBAR -->
+  <div class="chat-sidebar" id="chatSidebar">
+    <div class="chat-sidebar-head">
+      <h2>💬 Tin nhắn</h2>
+      <p id="chatSidebarSub">Nhắn tin với giáo viên hoặc học sinh</p>
+    </div>
+    <div class="chat-search-wrap">
+      <input class="chat-search" id="chatSearch" type="text" placeholder="Tìm tên...">
+    </div>
+    <div class="chat-contacts" id="chatContacts">
+      <div class="contacts-loading">Đang tải...</div>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="chat-area" id="chatArea">
+    <div class="chat-empty-state" id="chatEmptyState">
+      <div class="chat-empty-icon">💬</div>
+      <h3>Chọn cuộc trò chuyện</h3>
+      <p>Chọn một giáo viên hoặc học sinh bên trái để bắt đầu nhắn tin.</p>
+    </div>
+    <!-- Thread (hidden until contact selected) -->
+    <div id="chatThread" style="display:none; flex:1; display:none; flex-direction:column; overflow:hidden;">
+      <div class="chat-head" id="chatHead">
+        <button class="chat-back-btn" id="chatBackBtn" onclick="showSidebar()">←</button>
+        <div class="chat-head-avatar" id="chatHeadAvatar"></div>
+        <div>
+          <div class="chat-head-name" id="chatHeadName"></div>
+          <div class="chat-head-role" id="chatHeadRole"></div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-area">
+        <textarea class="chat-textarea" id="chatInput" placeholder="Nhập tin nhắn..." rows="1"></textarea>
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=13"></script>
+<script>
+var _me = null;
+var _contacts = [];
+var _activeUserId = null;
+var _pollTimer = null;
+var _lastMsgId = 0;
+var _roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị' };
+
+/* ===== INIT ===== */
+window.addEventListener('DOMContentLoaded', function() {
+  fetch('/api/me', { credentials:'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      _me = d.user;
+      if (!_me) { location.href='login.html?next=chat.html'; return; }
+      var sub = document.getElementById('chatSidebarSub');
+      if (sub) sub.textContent = _me.role === 'teacher' || _me.role === 'admin'
+        ? 'Nhắn tin với học sinh của bạn'
+        : 'Nhắn tin với giáo viên của bạn';
+      loadContacts();
+      // Mở thẳng cuộc trò chuyện nếu có ?u= trong URL
+      var params = new URLSearchParams(location.search);
+      var uid = parseInt(params.get('u'));
+      if (uid) setTimeout(function(){ openChat(uid); }, 600);
+    });
+
+  // Auto-resize textarea
+  var ta = document.getElementById('chatInput');
+  if (ta) ta.addEventListener('input', function(){
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+
+  // Gửi bằng Enter (Shift+Enter = xuống dòng)
+  if (ta) ta.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+});
+
+/* ===== CONTACTS ===== */
+function loadContacts() {
+  fetch('/api/messages/contacts', { credentials:'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      _contacts = d.contacts || [];
+      renderContacts();
+    })
+    .catch(function(){
+      document.getElementById('chatContacts').innerHTML = '<div class="contacts-empty">Không thể tải danh sách.</div>';
+    });
+}
+
+function renderContacts(filter) {
+  var list = _contacts;
+  if (filter) {
+    var q = filter.toLowerCase();
+    list = list.filter(function(c){ return c.name.toLowerCase().includes(q); });
+  }
+  var el = document.getElementById('chatContacts');
+  if (!list.length) {
+    el.innerHTML = '<div class="contacts-empty">Chưa có liên hệ nào.<br><small>Danh sách được tạo tự động từ giáo viên giao bài.</small></div>';
+    return;
+  }
+  el.innerHTML = list.map(function(c){
+    var init = (c.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+    var preview = c.last_msg ? esc(c.last_msg).slice(0,40) + (c.last_msg.length>40?'…':'') : '<em style="opacity:.6">Chưa có tin nhắn</em>';
+    var timeStr = c.last_at ? fmtTime(c.last_at) : '';
+    var unread = c.unread > 0 ? '<span class="unread-badge">'+c.unread+'</span>' : '';
+    var active = c.id === _activeUserId ? ' active' : '';
+    return '<div class="contact-item'+active+'" onclick="openChat('+c.id+')" data-id="'+c.id+'">' +
+      '<div class="contact-avatar">'+init+'</div>' +
+      '<div class="contact-info">' +
+        '<div class="contact-name">'+esc(c.name)+'</div>' +
+        '<div class="contact-role">'+(_roleLabel[c.role]||c.role)+'</div>' +
+        '<div class="contact-preview">'+preview+'</div>' +
+      '</div>' +
+      '<div class="contact-meta">'+timeStr+'<div>'+unread+'</div></div>' +
+    '</div>';
+  }).join('');
+}
+
+document.getElementById('chatSearch').addEventListener('input', function(){
+  renderContacts(this.value.trim());
+});
+
+/* ===== OPEN CHAT ===== */
+function openChat(userId) {
+  _activeUserId = userId;
+  // Mobile: ẩn sidebar
+  document.getElementById('chatSidebar').classList.add('hidden');
+
+  // Highlight contact
+  document.querySelectorAll('.contact-item').forEach(function(el){
+    el.classList.toggle('active', parseInt(el.dataset.id) === userId);
+  });
+
+  // Hiện thread
+  document.getElementById('chatEmptyState').style.display = 'none';
+  var thread = document.getElementById('chatThread');
+  thread.style.display = 'flex';
+  thread.style.flexDirection = 'column';
+
+  clearInterval(_pollTimer);
+  _lastMsgId = 0;
+  loadThread(userId, true);
+  _pollTimer = setInterval(function(){ loadThread(userId, false); }, 3000);
+}
+
+function showSidebar() {
+  document.getElementById('chatSidebar').classList.remove('hidden');
+  document.getElementById('chatThread').style.display = 'none';
+  document.getElementById('chatEmptyState').style.display = 'flex';
+  _activeUserId = null;
+  clearInterval(_pollTimer);
+}
+
+/* ===== LOAD THREAD ===== */
+function loadThread(userId, reset) {
+  fetch('/api/messages/'+userId, { credentials:'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d.other) return;
+      var other = d.other;
+      // Header
+      var init = (other.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+      document.getElementById('chatHeadAvatar').textContent = init;
+      document.getElementById('chatHeadName').textContent = other.name;
+      document.getElementById('chatHeadRole').textContent = _roleLabel[other.role]||other.role;
+
+      var msgs = d.messages || [];
+      if (!msgs.length) {
+        if (reset) {
+          document.getElementById('chatMessages').innerHTML =
+            '<div style="text-align:center;padding:40px 20px;color:var(--text-faint);font-size:14px;">Chưa có tin nhắn nào.<br>Hãy bắt đầu cuộc trò chuyện!</div>';
+        }
+        return;
+      }
+      var latestId = msgs[msgs.length-1].id;
+      if (!reset && latestId === _lastMsgId) return; // Không có tin nhắn mới
+      _lastMsgId = latestId;
+
+      var container = document.getElementById('chatMessages');
+      var shouldScroll = reset || isNearBottom(container);
+      container.innerHTML = renderMessages(msgs);
+      if (shouldScroll) container.scrollTop = container.scrollHeight;
+
+      // Cập nhật badge unread về 0 trong danh sách liên hệ
+      var contact = _contacts.find(function(c){ return c.id === userId; });
+      if (contact && contact.unread) {
+        contact.unread = 0;
+        renderContacts(document.getElementById('chatSearch').value.trim());
+      }
+      // Cập nhật preview tin nhắn cuối
+      if (contact) {
+        var last = msgs[msgs.length-1];
+        contact.last_msg = last.content;
+        contact.last_at = last.created_at;
+      }
+    })
+    .catch(function(){});
+}
+
+function isNearBottom(el) {
+  return el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+}
+
+/* ===== RENDER MESSAGES ===== */
+function renderMessages(msgs) {
+  var html = '';
+  var lastDate = '';
+  msgs.forEach(function(m){
+    var d = new Date(m.created_at);
+    var dateStr = fmtDate(d);
+    if (dateStr !== lastDate) {
+      html += '<div class="msg-date-sep">'+dateStr+'</div>';
+      lastDate = dateStr;
+    }
+    var mine = m.sender_id === _me.id;
+    var init = (mine ? _me.name : m.sender_name).trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+    var timeStr = fmtHM(d);
+    html += '<div class="msg-row '+(mine?'mine':'theirs')+'">' +
+      (mine ? '' : '<div class="msg-avatar">'+init+'</div>') +
+      '<div>' +
+        '<div class="msg-bubble">'+esc(m.content)+'</div>' +
+        '<div class="msg-time">'+timeStr+'</div>' +
+      '</div>' +
+    '</div>';
+  });
+  return html;
+}
+
+/* ===== SEND ===== */
+function sendMessage() {
+  if (!_activeUserId) return;
+  var ta = document.getElementById('chatInput');
+  var content = (ta.value || '').trim();
+  if (!content) return;
+  ta.value = '';
+  ta.style.height = 'auto';
+  ta.disabled = true;
+
+  fetch('/api/messages/'+_activeUserId, {
+    method:'POST', credentials:'same-origin',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ content: content })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    ta.disabled = false;
+    if (d.ok) { _lastMsgId = 0; loadThread(_activeUserId, false); }
+    else alert(d.error || 'Gửi thất bại.');
+  })
+  .catch(function(){ ta.disabled = false; alert('Không gửi được tin nhắn.'); });
+}
+
+/* ===== HELPERS ===== */
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(d) {
+  if (!(d instanceof Date)) d = new Date(d);
+  var today = new Date(); var yest = new Date(today); yest.setDate(yest.getDate()-1);
+  if (d.toDateString()===today.toDateString()) return 'Hôm nay';
+  if (d.toDateString()===yest.toDateString()) return 'Hôm qua';
+  return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+}
+function fmtHM(d) {
+  if (!(d instanceof Date)) d = new Date(d);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function fmtTime(iso) {
+  var d = new Date(iso);
+  var today = new Date();
+  if (d.toDateString()===today.toDateString()) return fmtHM(d);
+  return d.getDate()+'/'+(d.getMonth()+1);
+}
+</script>
+</body>
+</html>

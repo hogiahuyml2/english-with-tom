@@ -340,6 +340,7 @@
       <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
       <button class="btn" id="tabBankBtn"     onclick="showTab('bank')">📚 Ngân hàng đề</button>
       <button class="btn" id="tabStudentsBtn" onclick="showTab('students')">👩‍🎓 Học sinh của tôi</button>
+      <a class="btn" href="chat.html" id="tabChatBtn" style="position:relative;">💬 Tin nhắn<span id="teacherUnreadBadge" style="display:none;position:absolute;top:-5px;right:-8px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;padding:0 4px;place-items:center;line-height:1;"></span></a>
     </div>
 
     <!-- ===== TAB: TẠO ĐỀ ===== -->
@@ -1115,7 +1116,10 @@
         + '<td><div class="stu-prog-tags">'+progTags+'</div></td>'
         + '<td style="font-size:12px;color:var(--text-faint);">'+fmtDate(s.last_active)+'</td>'
         + '<td>'+groupCell+'</td>'
-        + '<td><button class="btn btn-sm" style="white-space:nowrap;" onclick="openStudentProfile('+s.id+','+JSON.stringify(s.name||s.email)+')">🔍 Hồ sơ</button></td>'
+        + '<td style="white-space:nowrap;">'
+        + '<button class="btn btn-sm" style="white-space:nowrap;" onclick="openStudentProfile('+s.id+','+JSON.stringify(s.name||s.email)+')">🔍 Hồ sơ</button> '
+        + (s.id ? '<a class="btn btn-sm" href="chat.html?u='+s.id+'" title="Nhắn tin học sinh">💬</a>' : '')
+        + '</td>'
         + '</tr>';
     }).join('');
   }

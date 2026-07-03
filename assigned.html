@@ -494,6 +494,8 @@
           noteHtml+'</div></div>'+
           '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">'+
           deadlineHtml+
+          '<div style="display:flex;gap:6px;">' +
+          (a.teacher_id ? '<a class="btn btn-sm" href="chat.html?u='+a.teacher_id+'" title="Nhắn tin giáo viên" style="font-size:13px;">💬</a>' : '') +
           '<a class="btn btn-primary btn-sm" href="'+practiceUrl+'">Làm bài</a></div></div>';
       });
       html += '</div>';
