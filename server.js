@@ -258,12 +258,12 @@ app.post('/api/me/change-password', requireAuth, (req, res) => {
   res.json({ ok: true });
 });
 
-// Favicon — browser tự request /favicon.ico và /favicon.svg
-app.get('/favicon.ico', (req, res) => res.redirect('/favicon.svg'));
-app.get('/favicon.svg', (req, res) => {
-  res.setHeader('Content-Type', 'image/svg+xml');
+// Favicon
+app.get('/favicon.ico', (req, res) => res.redirect('/favicon.png'));
+app.get('/favicon.png', (req, res) => {
+  res.setHeader('Content-Type', 'image/png');
   res.setHeader('Cache-Control', 'public, max-age=604800');
-  res.sendFile(path.join(__dirname, 'favicon.svg'));
+  res.sendFile(path.join(__dirname, 'favicon.png'));
 });
 
 // Health check — dùng để keep-alive, tránh Railway cold start
