@@ -578,12 +578,19 @@
     });
   });
 
-  fetch('/api/my-assignments',{credentials:'same-origin'}).then(function(r){
-    if (r.status===401){ location.href='login.html?next=assigned.html'; return null; }
-    return r.json();
-  }).then(function(d){
-    if (!d) return;
-    AS_ALL = d.assignments || [];
+  (function loadAssignments(attempt) {
+    attempt = attempt || 1;
+    if (attempt > 1) document.getElementById('assignedContent').innerHTML =
+      '<p style="text-align:center;padding:30px;color:var(--text-muted);">Đang thử lại...</p>';
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 25000);
+    fetch('/api/my-assignments',{credentials:'same-origin', signal: ctrl.signal}).then(function(r){
+      if (r.status===401){ location.href='login.html?next=assigned.html'; return null; }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(d){
+      if (!d) return;
+      AS_ALL = d.assignments || [];
 
     if (!AS_ALL.length){
       document.getElementById('assignedContent').innerHTML =
@@ -612,9 +619,16 @@
 
     asRenderPills();
     asRenderList();
-  }).catch(function(){
-    document.getElementById('assignedContent').innerHTML='<p style="color:var(--danger);text-align:center;padding:30px;">Không tải được dữ liệu.</p>';
-  });
+    }).catch(function(){
+      if (attempt < 2) {
+        setTimeout(function(){ loadAssignments(attempt + 1); }, 3000);
+      } else {
+        document.getElementById('assignedContent').innerHTML=
+          '<p style="color:var(--danger);text-align:center;padding:30px;">Không tải được dữ liệu. '+
+          '<button onclick="location.reload()" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:3px 12px;cursor:pointer;">Thử lại</button></p>';
+      }
+    });
+  })(1);
 
   /* ===== ANNOTATIONS (Student view) ===== */
   function escAnn(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }

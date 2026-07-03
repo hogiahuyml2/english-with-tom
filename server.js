@@ -135,10 +135,14 @@ function parseCookies(req) {
 
 // ===== Middleware: gắn người dùng hiện tại vào req.user =====
 app.use((req, res, next) => {
-  const token = parseCookies(req).ewt_session;
-  if (token) {
-    const s = db.prepare('SELECT user_id FROM sessions WHERE token=?').get(token);
-    if (s) req.user = db.prepare('SELECT id,name,email,role,email_verified FROM users WHERE id=?').get(s.user_id);
+  try {
+    const token = parseCookies(req).ewt_session;
+    if (token) {
+      const s = db.prepare('SELECT user_id FROM sessions WHERE token=?').get(token);
+      if (s) req.user = db.prepare('SELECT id,name,email,role,email_verified FROM users WHERE id=?').get(s.user_id);
+    }
+  } catch (e) {
+    console.error('Auth middleware error:', e.message);
   }
   next();
 });
@@ -633,18 +637,25 @@ app.get('/api/exercises', requireAuth, (req, res) => {
 });
 
 app.get('/api/exercises/:id', requireAuth, (req, res) => {
-  const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(req.params.id);
-  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
-  if (ex.is_private) {
-    if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
-    if (!['teacher','admin'].includes(req.user.role)) {
-      const assigned = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(req.params.id, req.user.email);
-      const submitted = db.prepare('SELECT id FROM submissions WHERE exercise_id=? AND user_id=?').get(req.params.id, req.user.id);
-      if (!assigned && !submitted) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).json({ error: 'ID đề không hợp lệ.' });
+    const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(id);
+    if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+    if (ex.is_private) {
+      if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
+      if (!['teacher','admin'].includes(req.user.role)) {
+        const assigned = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(id, req.user.email);
+        const submitted = db.prepare('SELECT id FROM submissions WHERE exercise_id=? AND user_id=?').get(id, req.user.id);
+        if (!assigned && !submitted) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+      }
     }
+    ex.questions = ex.questions ? JSON.parse(ex.questions) : null;
+    res.json({ exercise: ex });
+  } catch (err) {
+    console.error('GET /api/exercises/:id error:', err);
+    res.status(500).json({ error: 'Lỗi tải đề.', detail: err.message });
   }
-  ex.questions = ex.questions ? JSON.parse(ex.questions) : null;
-  res.json({ exercise: ex });
 });
 
 // Giáo viên/Admin tải ảnh hoặc âm thanh, trả về đường dẫn để gắn vào đề
@@ -1070,24 +1081,29 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
 
 // Học sinh xem bài tập được giao cho mình
 app.get('/api/my-assignments', requireAuth, (req, res) => {
-  const rows = db.prepare(`
-    SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
-           e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
-           u.id AS teacher_id, u.name AS teacher_name,
-           g.name AS group_name,
-           sub.id AS submission_id, sub.status AS submission_status,
-           sub.score AS submission_score, sub.max_score AS submission_max,
-           sub.feedback AS submission_feedback, sub.answers AS submission_answers,
-           sub.submitted_at
-    FROM assignments a
-    JOIN exercises e ON e.id = a.exercise_id
-    JOIN users u ON u.id = a.assigned_by
-    LEFT JOIN groups g ON g.id = a.group_id
-    LEFT JOIN submissions sub ON sub.exercise_id = e.id AND sub.user_id = ?
-    WHERE a.student_email = ?
-    ORDER BY a.id DESC
-  `).all(req.user.id, req.user.email);
-  res.json({ assignments: rows });
+  try {
+    const rows = db.prepare(`
+      SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
+             e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
+             u.id AS teacher_id, u.name AS teacher_name,
+             g.name AS group_name,
+             sub.id AS submission_id, sub.status AS submission_status,
+             sub.score AS submission_score, sub.max_score AS submission_max,
+             sub.feedback AS submission_feedback, sub.answers AS submission_answers,
+             sub.submitted_at
+      FROM assignments a
+      JOIN exercises e ON e.id = a.exercise_id
+      JOIN users u ON u.id = a.assigned_by
+      LEFT JOIN groups g ON g.id = a.group_id
+      LEFT JOIN submissions sub ON sub.exercise_id = e.id AND sub.user_id = ?
+      WHERE a.student_email = ?
+      ORDER BY a.id DESC
+    `).all(req.user.id, req.user.email);
+    res.json({ assignments: rows });
+  } catch (err) {
+    console.error('my-assignments error:', err);
+    res.status(500).json({ error: 'Lỗi tải bài tập.', detail: err.message });
+  }
 });
 
 // Giáo viên xem tất cả bài đã giao kèm trạng thái nộp
