@@ -271,7 +271,14 @@ app.get('/favicon.png', (req, res) => {
 });
 
 // Health check — dùng để keep-alive, tránh Railway cold start
-app.get('/api/ping', (req, res) => res.json({ ok: true, t: Date.now() }));
+app.get('/api/ping', (req, res) => {
+  try {
+    db.prepare('SELECT 1').get();
+    res.json({ ok: true, t: Date.now(), db: 'ok' });
+  } catch(e) {
+    res.status(500).json({ ok: false, t: Date.now(), db: 'error', error: e.message });
+  }
+});
 
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
