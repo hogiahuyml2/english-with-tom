@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const webpush = require('web-push');
-const { Worker } = require('worker_threads');
+const sqlite3 = require('sqlite3');
 const { db, hashPassword, verifyPassword, now } = require('./db');
 const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider } = require('./ai');
 
@@ -615,79 +615,29 @@ function exCacheInvalidate() { _exCache.clear(); }
 // Cache từng bài tập theo ID — lazy: populate khi học sinh vào lần đầu, serve từ RAM sau đó
 const _exById = new Map(); // id → exercise row
 
-// ── Exercise Worker Thread ──────────────────────────────────────────────────
-// node:sqlite (DatabaseSync) block event loop khi NFS chậm.
-// Chạy exercise query trong Worker Thread riêng: main thread không bao giờ bị block.
+// ── Async exercise reads dùng sqlite3 (không block event loop) ──────────────
+// node:sqlite (DatabaseSync) block toàn bộ event loop khi NFS chậm.
+// sqlite3 dùng libuv thread pool → truly async, event loop luôn tự do.
 const DATA_DIR_PATH = process.env.DATA_DIR || __dirname;
 const DB_FILE_PATH  = path.join(DATA_DIR_PATH, 'data.db');
 
-let _exWorker = null;
-const _exPending = new Map();
-let _exMsgId = 0;
+const asyncExDb = new sqlite3.Database(DB_FILE_PATH, sqlite3.OPEN_READONLY, (err) => {
+  if (err) console.error('[asyncExDb] Cannot open:', err.message);
+  else     console.log('[asyncExDb] Opened (read-only, async):', DB_FILE_PATH);
+});
 
-function startExerciseWorker() {
-  try {
-    _exWorker = new Worker(path.join(__dirname, 'workers/exercise-query.js'), {
-      workerData: { dbPath: DB_FILE_PATH }
-    });
-    _exWorker.on('message', ({ msgId, ex, error }) => {
-      const cb = _exPending.get(msgId);
-      if (!cb) return;
-      _exPending.delete(msgId);
-      cb(error, ex);
-    });
-    _exWorker.on('error', (e) => {
-      console.error('[ExWorker] Crashed:', e.message);
-      _exWorker = null;
-      // Tự khởi động lại sau 3 giây
-      setTimeout(startExerciseWorker, 3000);
-    });
-    _exWorker.on('exit', (code) => {
-      if (code !== 0) {
-        console.warn('[ExWorker] Exited with code', code, '— restarting in 3s');
-        _exWorker = null;
-        setTimeout(startExerciseWorker, 3000);
-      }
-    });
-    console.log('[ExWorker] Started');
-  } catch (e) {
-    console.error('[ExWorker] Cannot start:', e.message);
-  }
-}
+const EX_SELECT = 'SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?';
 
-// Lấy exercise theo ID — không block event loop, timeout 10s
 function fetchExerciseById(id) {
-  // Trả từ RAM nếu đã có
   if (_exById.has(id)) return Promise.resolve(_exById.get(id));
-
   return new Promise((resolve, reject) => {
-    // Fallback sync nếu worker chưa sẵn sàng
-    if (!_exWorker) {
-      try {
-        const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(id);
-        if (ex) _exById.set(id, ex);
-        return resolve(ex || null);
-      } catch (e) { return reject(e); }
-    }
-
-    const msgId = ++_exMsgId;
-    const timer = setTimeout(() => {
-      _exPending.delete(msgId);
-      reject(new Error('Exercise DB query timeout sau 10 giây'));
-    }, 10000);
-
-    _exPending.set(msgId, (err, ex) => {
-      clearTimeout(timer);
-      if (err) return reject(new Error(err));
-      if (ex) _exById.set(id, ex);
-      resolve(ex || null);
+    asyncExDb.get(EX_SELECT, [id], (err, row) => {
+      if (err) return reject(err);
+      if (row) _exById.set(id, row);
+      resolve(row || null);
     });
-
-    _exWorker.postMessage({ msgId, id });
   });
 }
-
-startExerciseWorker();
 // ───────────────────────────────────────────────────────────────────────────
 
 app.get('/api/exercises', requireAuth, (req, res) => {

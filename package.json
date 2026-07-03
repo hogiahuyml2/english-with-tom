@@ -9,6 +9,7 @@
     "@anthropic-ai/sdk": "^0.104.2",
     "express": "^4.19.2",
     "multer": "^2.2.0",
+    "sqlite3": "^5.1.7",
     "web-push": "^3.6.7"
   },
   "engines": {
