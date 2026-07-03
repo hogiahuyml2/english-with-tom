@@ -6,6 +6,13 @@ const path = require('path');
 const DATA_DIR = process.env.DATA_DIR || __dirname;
 const db = new DatabaseSync(path.join(DATA_DIR, 'data.db'));
 
+// ===== Tối ưu hiệu năng SQLite =====
+db.exec('PRAGMA journal_mode=WAL');       // cho phép đọc song song với ghi
+db.exec('PRAGMA synchronous=NORMAL');     // an toàn nhưng nhanh hơn FULL
+db.exec('PRAGMA cache_size=-16000');      // 16MB page cache trong RAM
+db.exec('PRAGMA temp_store=MEMORY');      // sort/index temp tables trong RAM
+db.exec('PRAGMA mmap_size=134217728');    // 128MB memory-mapped I/O
+
 // ===== Tạo bảng nếu chưa có =====
 db.exec(`
 CREATE TABLE IF NOT EXISTS users (
@@ -134,6 +141,20 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
   auth TEXT NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+`);
+
+// ===== Indexes — tăng tốc query thường dùng =====
+db.exec(`
+CREATE INDEX IF NOT EXISTS idx_exercises_program    ON exercises(program);
+CREATE INDEX IF NOT EXISTS idx_exercises_created_by ON exercises(created_by);
+CREATE INDEX IF NOT EXISTS idx_exercises_private    ON exercises(is_private);
+CREATE INDEX IF NOT EXISTS idx_submissions_user     ON submissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_exercise ON submissions(exercise_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_user_ex  ON submissions(user_id, exercise_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_email    ON assignments(student_email);
+CREATE INDEX IF NOT EXISTS idx_assignments_exercise ON assignments(exercise_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_reminder ON assignments(reminder_sent, deadline);
+CREATE INDEX IF NOT EXISTS idx_sessions_user        ON sessions(user_id);
 `);
 
 // ===== Băm & kiểm tra mật khẩu =====

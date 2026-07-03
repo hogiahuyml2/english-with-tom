@@ -592,9 +592,23 @@ app.get('/api/auth/google/callback', async (req, res) => {
 
 // ===================== API ĐỀ BÀI =====================
 
+// Cache exercise list trong RAM — TTL 60s, invalidate khi thêm/sửa/xóa
+const _exCache = new Map(); // key=cacheKey, value={data, ts}
+const EX_CACHE_TTL = 60_000;
+function exCacheKey(q, role) {
+  return `${role}|${q.program||''}|${q.skill||''}|${q.private_only||''}|${q.type||''}`;
+}
+function exCacheInvalidate() { _exCache.clear(); }
+
 app.get('/api/exercises', requireAuth, (req, res) => {
   const { program, skill, private_only, type } = req.query;
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
+  const role = isTeacher ? 'teacher' : 'student';
+  const ck = exCacheKey(req.query, role);
+  const cached = _exCache.get(ck);
+  if (cached && Date.now() - cached.ts < EX_CACHE_TTL) {
+    return res.json(cached.data);
+  }
   /* Trả thêm content khi lọc aptis_full để client parse JSON metadata */
   const cols = type === 'aptis_full'
     ? 'e.id,e.program,e.skill,e.title,e.content,e.task_type,e.metadata,e.image_url,e.auto_grade,e.is_private,e.created_at,e.created_by,(e.questions IS NOT NULL) AS has_questions,u.name AS creator_name'
@@ -604,16 +618,18 @@ app.get('/api/exercises', requireAuth, (req, res) => {
   if (program) { cond.push('e.program=?'); params.push(program); }
   if (skill)   { cond.push('e.skill=?');   params.push(skill); }
   if (type === 'aptis_full') {
-    cond.push("e.content LIKE '%\"_aptis_full\":true%'");
+    cond.push("(e.task_type='aptis_full' OR e.content LIKE '%\"_aptis_full\":true%')");
   }
   if (private_only === '1' && isTeacher) {
-    cond.push('e.is_private=1');   // tất cả đề riêng — dùng chung cả hệ thống
+    cond.push('e.is_private=1');
   } else if (!isTeacher) {
     cond.push('e.is_private=0');
   }
   if (cond.length) sql += ' WHERE ' + cond.join(' AND ');
   sql += ' ORDER BY e.id ASC';
-  res.json({ exercises: db.prepare(sql).all(...params) });
+  const result = { exercises: db.prepare(sql).all(...params) };
+  _exCache.set(ck, { data: result, ts: Date.now() });
+  res.json(result);
 });
 
 app.get('/api/exercises/:id', requireAuth, (req, res) => {
@@ -658,6 +674,7 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
   const metaJson = metadata ? JSON.stringify(metadata) : null;
   const r = db.prepare('INSERT INTO exercises (program,skill,title,content,answer_key,questions,image_url,audio_url,auto_grade,is_private,created_by,created_at,task_type,metadata) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     .run(program, skill, title, content || '', key, qJson, image_url || null, audio_url || null, auto, is_private ? 1 : 0, req.user.id, now(), task_type || null, metaJson);
+  exCacheInvalidate();
   res.json({ id: Number(r.lastInsertRowid) });
 });
 
@@ -695,6 +712,7 @@ app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
       newType, newMeta,
       ex.id
     );
+  exCacheInvalidate();
   res.json({ ok: true });
 });
 
@@ -705,6 +723,7 @@ app.delete('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => 
   if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
     return res.status(403).json({ error: 'Bạn không có quyền xoá đề này.' });
   db.prepare('DELETE FROM exercises WHERE id=?').run(ex.id);
+  exCacheInvalidate();
   res.json({ ok: true });
 });
 
@@ -719,6 +738,7 @@ app.post('/api/exercises/bulk-delete', requireRole('teacher', 'admin'), (req, re
     const r = isAdmin ? del.run(Number(id)) : del.run(Number(id), req.user.id);
     count += r.changes;
   });
+  exCacheInvalidate();
   res.json({ deleted: count });
 });
 
@@ -975,6 +995,7 @@ app.post('/api/admin/exercises/bulk-delete', requireRole('admin'), (req, res) =>
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
   let count = 0;
   ids.map(Number).forEach(id => { count += db.prepare('DELETE FROM exercises WHERE id=?').run(id).changes; });
+  exCacheInvalidate();
   res.json({ deleted: count });
 });
 
