@@ -7,11 +7,11 @@ const DATA_DIR = process.env.DATA_DIR || __dirname;
 const db = new DatabaseSync(path.join(DATA_DIR, 'data.db'));
 
 // ===== Tối ưu hiệu năng SQLite =====
-db.exec('PRAGMA journal_mode=WAL');       // cho phép đọc song song với ghi
+// KHÔNG dùng WAL mode — Railway volumes dùng NFS, WAL không tương thích với NFS
+// và có thể gây deadlock vô hạn làm treo toàn bộ server
+db.exec('PRAGMA journal_mode=DELETE');    // chế độ mặc định, an toàn trên mọi filesystem
 db.exec('PRAGMA synchronous=NORMAL');     // an toàn nhưng nhanh hơn FULL
-db.exec('PRAGMA cache_size=-16000');      // 16MB page cache trong RAM
-db.exec('PRAGMA temp_store=MEMORY');      // sort/index temp tables trong RAM
-db.exec('PRAGMA mmap_size=134217728');    // 128MB memory-mapped I/O
+db.exec('PRAGMA cache_size=-8000');       // 8MB page cache trong RAM
 
 // ===== Tạo bảng nếu chưa có =====
 db.exec(`
