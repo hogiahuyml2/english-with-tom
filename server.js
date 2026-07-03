@@ -621,6 +621,9 @@ const _exById = new Map(); // id → exercise row
 const DATA_DIR_PATH = process.env.DATA_DIR || __dirname;
 const DB_FILE_PATH  = path.join(DATA_DIR_PATH, 'data.db');
 
+// 'pending' → warmup chưa xong; 'ready' → OK; 'failed' → lỗi load file
+let _warmupState = 'pending';
+
 async function warmExerciseCacheFromFile() {
   try {
     console.log('[sqljs] Đang đọc DB file vào RAM...');
@@ -639,25 +642,22 @@ async function warmExerciseCacheFromFile() {
     }
     stmt.free();
     memDb.close();
+    _warmupState = 'ready';
     console.log('[sqljs] Đã load ' + count + ' đề bài vào RAM — exercise load sẽ instant từ giờ.');
   } catch (e) {
-    console.error('[sqljs] Warm-up thất bại:', e.message, '— sẽ fallback sync DB mỗi request');
+    _warmupState = 'failed';
+    console.error('[sqljs] Warm-up thất bại:', e.message);
   }
 }
 
 function fetchExerciseById(id) {
   if (_exById.has(id)) return Promise.resolve(_exById.get(id));
-  // Fallback: sync DB (dùng khi warm-up chưa xong hoặc thất bại)
-  return new Promise((resolve, reject) => {
-    try {
-      const ex = db.prepare(
-        'SELECT id,program,skill,title,content,questions,answer_key,' +
-        'image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?'
-      ).get(id);
-      if (ex) _exById.set(id, ex);
-      resolve(ex || null);
-    } catch (e) { reject(e); }
-  });
+  if (_warmupState === 'pending') {
+    // Warmup chưa xong — trả lỗi ngay, client sẽ retry sau vài giây
+    return Promise.reject(Object.assign(new Error('warming-up'), { warmingUp: true }));
+  }
+  // Warmup xong (ready hoặc failed) mà không có → bài không tồn tại
+  return Promise.resolve(null);
 }
 // ───────────────────────────────────────────────────────────────────────────
 
@@ -698,12 +698,17 @@ app.get('/api/exercises/:id', requireAuth, async (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (!id) return res.status(400).json({ error: 'ID đề không hợp lệ.' });
 
-    // Dùng worker thread — không block event loop, timeout 10s
     let ex;
     try {
       ex = await fetchExerciseById(id);
-    } catch (workerErr) {
-      console.error('fetchExerciseById error:', workerErr.message);
+    } catch (fetchErr) {
+      if (fetchErr.warmingUp) {
+        return res.status(503).set('Retry-After', '5').json({
+          error: 'Server đang khởi động, vui lòng chờ 5–10 giây rồi thử lại.',
+          warmingUp: true
+        });
+      }
+      console.error('fetchExerciseById error:', fetchErr.message);
       return res.status(503).json({ error: 'Máy chủ đang bận, vui lòng thử lại sau vài giây.' });
     }
 

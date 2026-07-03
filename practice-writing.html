@@ -840,19 +840,29 @@ function showLoadError(msg) {
 
 (function loadExercise(attempt) {
   attempt = attempt || 1;
+  var MAX_ATTEMPTS = 8;
   if (attempt === 1) {
     document.getElementById('exTitle').textContent = 'Đang tải đề...';
   } else {
-    document.getElementById('exTitle').textContent = 'Đang thử lại (' + attempt + '/2)...';
+    document.getElementById('exTitle').textContent = 'Đang tải (' + attempt + '/' + MAX_ATTEMPTS + ')...';
   }
   var ctrl = new AbortController();
-  var timeout = setTimeout(function(){ ctrl.abort(); }, 25000);
+  var timeout = setTimeout(function(){ ctrl.abort(); }, 15000);
   fetch('/api/exercises/' + EXERCISE_ID, {credentials:'same-origin', signal: ctrl.signal})
   .then(function(r){
     clearTimeout(timeout);
     if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
     if (r.status===403){ showLoadError('Bạn chưa được giao đề này.'); return null; }
     if (r.status===404){ showLoadError('Không tìm thấy đề (ID ' + EXERCISE_ID + ')'); return null; }
+    if (r.status===503){
+      return r.json().then(function(d){
+        if (attempt < MAX_ATTEMPTS) {
+          document.getElementById('exTitle').textContent = 'Server đang khởi động, thử lại sau 5 giây...';
+          setTimeout(function(){ loadExercise(attempt + 1); }, 5000);
+        } else { showLoadError((d && d.error) || 'Server bận, vui lòng tải lại trang.'); }
+        return null;
+      });
+    }
     if (!r.ok){ showLoadError('Lỗi server (' + r.status + '), thử tải lại trang.'); return null; }
     return r.json();
   })
@@ -896,11 +906,11 @@ function showLoadError(msg) {
   })
   .catch(function(err){
     clearTimeout(timeout);
-    if (attempt < 2) {
+    if (attempt < 8) {
       document.getElementById('exTitle').textContent = 'Đang thử lại...';
-      setTimeout(function(){ loadExercise(attempt + 1); }, 3000);
+      setTimeout(function(){ loadExercise(attempt + 1); }, 5000);
     } else if (err && err.name === 'AbortError') {
-      showLoadError('Máy chủ phản hồi chậm — vui lòng thử lại.');
+      showLoadError('Máy chủ phản hồi chậm — vui lòng tải lại trang.');
     } else {
       showLoadError('Mất kết nối — kiểm tra mạng rồi thử lại.');
     }

@@ -86,15 +86,25 @@
   }
   (function loadQuiz(attempt) {
   attempt = attempt || 1;
-  document.getElementById('exTitle').textContent = attempt > 1 ? 'Đang thử lại...' : 'Đang tải đề...';
+  var MAX_ATTEMPTS = 8;
+  document.getElementById('exTitle').textContent = attempt > 1 ? 'Đang tải (' + attempt + '/' + MAX_ATTEMPTS + ')...' : 'Đang tải đề...';
   var _quizCtrl = new AbortController();
-  var _quizTimeout = setTimeout(function(){ _quizCtrl.abort(); }, 25000);
+  var _quizTimeout = setTimeout(function(){ _quizCtrl.abort(); }, 15000);
   fetch('/api/exercises/'+EXERCISE_ID, {credentials:'same-origin', signal: _quizCtrl.signal})
   .then(function(r){
     clearTimeout(_quizTimeout);
     if (r.status===401){ location.href='login.html?next='+encodeURIComponent(location.href); return null; }
     if (r.status===403){ showQuizError('Bạn chưa được giao đề này.'); return null; }
     if (r.status===404){ showQuizError('Không tìm thấy đề (ID ' + EXERCISE_ID + ')'); return null; }
+    if (r.status===503){
+      return r.json().then(function(d){
+        if (attempt < MAX_ATTEMPTS) {
+          document.getElementById('exTitle').textContent = 'Server đang khởi động, thử lại sau 5 giây...';
+          setTimeout(function(){ loadQuiz(attempt + 1); }, 5000);
+        } else { showQuizError((d && d.error) || 'Server bận, vui lòng tải lại trang.'); }
+        return null;
+      });
+    }
     if (!r.ok){ showQuizError('Lỗi tải đề ('+r.status+'), thử tải lại.'); return null; }
     return r.json();
   }).then(function(d){
@@ -135,12 +145,12 @@
     }).join('');
   }).catch(function(err){
     clearTimeout(_quizTimeout);
-    if (attempt < 2) {
+    if (attempt < 8) {
       document.getElementById('exTitle').textContent = 'Đang thử lại...';
-      setTimeout(function(){ loadQuiz(attempt + 1); }, 3000);
+      setTimeout(function(){ loadQuiz(attempt + 1); }, 5000);
     } else {
       showQuizError((err && err.name==='AbortError')
-        ? 'Máy chủ phản hồi chậm — vui lòng thử lại.'
+        ? 'Máy chủ phản hồi chậm — vui lòng tải lại trang.'
         : 'Mất kết nối — kiểm tra mạng rồi thử lại.');
     }
   });
