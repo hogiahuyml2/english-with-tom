@@ -36,7 +36,21 @@
   .ann-list { margin-top:12px; display:flex; flex-direction:column; gap:6px; }
   .ann-item { display:flex; align-items:flex-start; gap:8px; background:#fff; border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13px; }
   .ann-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:3px; }
-  .ann-del-btn { background:none; border:none; color:var(--danger,#dc2626); cursor:pointer; font-size:15px; margin-left:auto; line-height:1; }
+  .ann-del-btn { background:none; border:none; color:var(--danger,#dc2626); cursor:pointer; font-size:15px; line-height:1; }
+  .ann-edit-btn { background:none; border:none; color:var(--primary,#6F58EE); cursor:pointer; font-size:14px; line-height:1; opacity:.7; }
+  .ann-edit-btn:hover { opacity:1; }
+  .ann-item-actions { display:flex; gap:2px; margin-left:auto; align-items:center; }
+  .ann-edit-form { margin-top:6px; display:flex; flex-direction:column; gap:6px; }
+  .ann-edit-textarea { width:100%; border:1.5px solid var(--border); border-radius:7px; padding:7px 9px; font-size:13px; font-family:inherit; resize:vertical; min-height:56px; outline:none; color:var(--text); background:var(--bg,#f7f6fd); }
+  .ann-edit-textarea:focus { border-color:var(--primary); }
+  .ann-edit-colors { display:flex; gap:6px; align-items:center; }
+  .ann-edit-color-dot { width:16px; height:16px; border-radius:50%; border:2px solid transparent; cursor:pointer; flex-shrink:0; }
+  .ann-edit-color-dot.active { border-color:#374151; box-shadow:0 0 0 2px rgba(55,65,81,.25); }
+  .ann-edit-actions { display:flex; gap:6px; }
+  .ann-edit-save { background:var(--primary,#6F58EE); color:#fff; border:none; border-radius:6px; padding:5px 14px; font-size:12.5px; font-weight:600; cursor:pointer; }
+  .ann-edit-save:hover { opacity:.88; }
+  .ann-edit-cancel { background:none; border:1px solid var(--border); border-radius:6px; padding:5px 12px; font-size:12.5px; cursor:pointer; color:var(--text-muted); }
+  .ann-edit-cancel:hover { background:var(--bg); }
   .grade-row { display:flex; gap:10px; align-items:flex-end; margin-top:10px; flex-wrap:wrap; }
   .grade-row .field { margin:0; flex:1; min-width:80px; }
   .assign-email-tag { display:inline-flex; align-items:center; gap:5px; background:#ede9ff; color:#5a3d8a; border-radius:20px; padding:4px 12px; font-size:13px; margin:3px; }
@@ -2005,6 +2019,64 @@
     else renderAnnotations(subId);
   }
 
+  var _ANN_COLORS = ['#fbbf24','#86efac','#93c5fd','#f9a8d4','#c4b5fd'];
+
+  // Wrapper đọc data attributes từ ann-item rồi gọi annStartEdit
+  function annStartEditFromEl(btn) {
+    var itemEl = btn.closest('.ann-item');
+    var annId  = parseInt(itemEl.dataset.annId);
+    var note   = itemEl.dataset.annNote || '';
+    var color  = itemEl.dataset.annColor || '#fbbf24';
+    var subId  = itemEl.dataset.subId ? parseInt(itemEl.dataset.subId) : null;
+    annStartEdit(itemEl, annId, note, color, subId);
+  }
+
+  function annStartEdit(itemEl, annId, currentNote, currentColor, subId) {
+    if (itemEl.querySelector('.ann-edit-form')) return; // đang edit rồi
+    itemEl.querySelector('.ann-note-display').style.display = 'none';
+    itemEl.querySelector('.ann-item-actions').style.display = 'none';
+    var colorDots = _ANN_COLORS.map(function(c){
+      return '<span class="ann-edit-color-dot'+(c===currentColor?' active':'')+'" data-color="'+c+'" style="background:'+c+';" onclick="this.parentNode.querySelectorAll(\'.ann-edit-color-dot\').forEach(function(d){d.classList.remove(\'active\')});this.classList.add(\'active\')"></span>';
+    }).join('');
+    var form = document.createElement('div');
+    form.className = 'ann-edit-form';
+    form.innerHTML =
+      '<div class="ann-edit-colors">'+colorDots+'</div>'+
+      '<textarea class="ann-edit-textarea" rows="3"></textarea>'+
+      '<div class="ann-edit-actions">'+
+        '<button class="ann-edit-save" onclick="annSaveEdit(this)">Lưu</button>'+
+        '<button class="ann-edit-cancel" onclick="annCancelEdit(this.closest(\'.ann-item\'))">Huỷ</button>'+
+      '</div>';
+    itemEl.appendChild(form);
+    // Gán note vào textarea sau khi tạo DOM (tránh XSS qua innerHTML)
+    form.querySelector('.ann-edit-textarea').value = currentNote || '';
+    form.querySelector('.ann-edit-textarea').focus();
+  }
+
+  async function annSaveEdit(btn) {
+    var itemEl = btn.closest('.ann-item');
+    var annId  = parseInt(itemEl.dataset.annId);
+    var subId  = itemEl.dataset.subId ? parseInt(itemEl.dataset.subId) : null;
+    var note   = itemEl.querySelector('.ann-edit-textarea').value.trim();
+    var colorEl = itemEl.querySelector('.ann-edit-color-dot.active');
+    var color  = colorEl ? colorEl.dataset.color : (itemEl.dataset.annColor || '#fbbf24');
+    btn.disabled = true; btn.textContent = 'Đang lưu…';
+    await fetch('/api/annotations/'+annId, {
+      method:'PATCH', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ note: note, color: color })
+    });
+    if (_gpSubId) gpLoadAnnotations();
+    else renderAnnotations(subId);
+  }
+
+  function annCancelEdit(itemEl) {
+    var form = itemEl.querySelector('.ann-edit-form');
+    if (form) form.remove();
+    itemEl.querySelector('.ann-note-display').style.display = '';
+    itemEl.querySelector('.ann-item-actions').style.display = '';
+  }
+
   /* Tính offset ký tự trong plain-text của essay */
   function getSelectionOffsets(container) {
     var sel = window.getSelection();
@@ -2057,7 +2129,17 @@
     if (annList) {
       if (anns.length === 0) { annList.innerHTML = '<p style="font-size:13px;color:var(--text-muted);margin:0;">Chưa có annotation nào. Bôi đen text để thêm.</p>'; return; }
       annList.innerHTML = '<div class="ann-list">'+anns.map(function(a){
-        return '<div class="ann-item"><span class="ann-dot" style="background:'+a.color+';"></span><div><b style="font-size:12px;">'+escHtml(a.selected_text.slice(0,40))+(a.selected_text.length>40?'…':'')+'</b>'+(a.note?'<br><span style="color:var(--text-muted);">'+escHtml(a.note)+'</span>':'')+'</div><button class="ann-del-btn" onclick="annDelete('+a.id+','+subId+')" title="Xoá">✕</button></div>';
+        return '<div class="ann-item" id="ann-item-'+a.id+'" data-ann-id="'+a.id+'" data-ann-note="'+escHtml(a.note||'')+'" data-ann-color="'+escHtml(a.color||'#fbbf24')+'" data-sub-id="'+subId+'">'+
+          '<span class="ann-dot" style="background:'+a.color+';margin-top:3px;"></span>'+
+          '<div class="ann-note-display" style="flex:1;min-width:0;">'+
+            '<b style="font-size:12px;">'+escHtml(a.selected_text.slice(0,40))+(a.selected_text.length>40?'…':'')+'</b>'+
+            (a.note?'<br><span style="color:var(--text-muted);font-size:12.5px;white-space:pre-wrap;">'+escHtml(a.note)+'</span>':'<br><span style="color:var(--text-faint);font-size:12px;font-style:italic;">Chưa có nhận xét</span>')+
+          '</div>'+
+          '<div class="ann-item-actions">'+
+            '<button class="ann-edit-btn" onclick="annStartEditFromEl(this)" title="Chỉnh sửa">✏️</button>'+
+            '<button class="ann-del-btn" onclick="annDelete('+a.id+','+subId+')" title="Xoá">✕</button>'+
+          '</div>'+
+        '</div>';
       }).join('')+'</div>';
     }
   }
@@ -3396,7 +3478,17 @@ async function gpLoadAnnotations() {
     return;
   }
   annList.innerHTML = '<div class="ann-list">' + anns.map(function(a) {
-    return '<div class="ann-item"><span class="ann-dot" style="background:'+a.color+';"></span><div><b style="font-size:12px;">'+escHtml(a.selected_text.slice(0,45))+(a.selected_text.length>45?'…':'')+'</b>'+(a.note?'<br><span style="color:var(--text-faint);">'+escHtml(a.note)+'</span>':'')+'</div><button class="ann-del-btn" onclick="gpDelAnnotation('+a.id+')" title="Xoá">✕</button></div>';
+    return '<div class="ann-item" id="ann-item-'+a.id+'" data-ann-id="'+a.id+'" data-ann-note="'+escHtml(a.note||'')+'" data-ann-color="'+escHtml(a.color||'#fbbf24')+'" data-sub-id="">'+
+      '<span class="ann-dot" style="background:'+a.color+';margin-top:3px;"></span>'+
+      '<div class="ann-note-display" style="flex:1;min-width:0;">'+
+        '<b style="font-size:12px;">'+escHtml(a.selected_text.slice(0,45))+(a.selected_text.length>45?'…':'')+'</b>'+
+        (a.note?'<br><span style="color:var(--text-faint);font-size:12.5px;white-space:pre-wrap;">'+escHtml(a.note)+'</span>':'<br><span style="color:var(--text-faint);font-size:12px;font-style:italic;">Chưa có nhận xét</span>')+
+      '</div>'+
+      '<div class="ann-item-actions">'+
+        '<button class="ann-edit-btn" onclick="annStartEditFromEl(this)" title="Chỉnh sửa">✏️</button>'+
+        '<button class="ann-del-btn" onclick="gpDelAnnotation('+a.id+')" title="Xoá">✕</button>'+
+      '</div>'+
+    '</div>';
   }).join('') + '</div>';
 }
 
