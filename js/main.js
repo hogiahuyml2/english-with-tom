@@ -29,7 +29,6 @@
   var navItemsAfter = [
     { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
     { href: 'vocabulary.html', label: 'Học từ vựng', key: 'vocabulary' },
-    { href: 'chat.html', label: '💬 Tin nhắn', key: 'chat', id: 'navChatLink' },
   ];
 
   function renderLink(i) {
@@ -165,6 +164,7 @@
           ? '<a class="btn btn-sm" href="admin.html">Quản trị</a>' : '';
         actions.innerHTML =
           adminLink + teacherLink +
+          '<a href="chat.html" id="navChatBtn" title="Tin nhắn" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);text-decoration:none;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">💬</a>' +
           '<a href="account.html" title="Tài khoản" class="nav-account" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;flex-shrink:0;">' + initials + '</span>' +
             '<span class="nav-account-text">' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
@@ -188,7 +188,7 @@
         fetch('/api/messages/unread-count', { credentials:'same-origin' })
           .then(function(r){ return r.ok ? r.json() : { count:0 }; })
           .then(function(d){
-            var link = document.getElementById('navChatLink');
+            var link = document.getElementById('navChatBtn');
             if (!link) return;
             var badge = link.querySelector('.nav-unread-badge');
             if (d.count > 0) {
