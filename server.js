@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const webpush = require('web-push');
-const sqlite3 = require('sqlite3');
+const initSqlJs = require('sql.js');
 const { db, hashPassword, verifyPassword, now } = require('./db');
 const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider } = require('./ai');
 
@@ -615,27 +615,48 @@ function exCacheInvalidate() { _exCache.clear(); }
 // Cache từng bài tập theo ID — lazy: populate khi học sinh vào lần đầu, serve từ RAM sau đó
 const _exById = new Map(); // id → exercise row
 
-// ── Async exercise reads dùng sqlite3 (không block event loop) ──────────────
-// node:sqlite (DatabaseSync) block toàn bộ event loop khi NFS chậm.
-// sqlite3 dùng libuv thread pool → truly async, event loop luôn tự do.
+// ── Load exercises vào RAM qua sql.js (WASM, không cần native addon) ─────────
+// fs.readFile đọc DB file bất đồng bộ (không block event loop dù NFS chậm).
+// sql.js parse toàn bộ file trong bộ nhớ → query từ RAM, không bao giờ đụng NFS.
 const DATA_DIR_PATH = process.env.DATA_DIR || __dirname;
 const DB_FILE_PATH  = path.join(DATA_DIR_PATH, 'data.db');
 
-const asyncExDb = new sqlite3.Database(DB_FILE_PATH, sqlite3.OPEN_READONLY, (err) => {
-  if (err) console.error('[asyncExDb] Cannot open:', err.message);
-  else     console.log('[asyncExDb] Opened (read-only, async):', DB_FILE_PATH);
-});
-
-const EX_SELECT = 'SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?';
+async function warmExerciseCacheFromFile() {
+  try {
+    console.log('[sqljs] Đang đọc DB file vào RAM...');
+    const SQL  = await initSqlJs();
+    const buf  = await fs.promises.readFile(DB_FILE_PATH); // async — không block event loop
+    const memDb = new SQL.Database(new Uint8Array(buf));
+    const stmt  = memDb.prepare(
+      'SELECT id,program,skill,title,content,questions,answer_key,' +
+      'image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises'
+    );
+    let count = 0;
+    while (stmt.step()) {
+      const row = stmt.getAsObject();
+      _exById.set(Number(row.id), row);
+      count++;
+    }
+    stmt.free();
+    memDb.close();
+    console.log('[sqljs] Đã load ' + count + ' đề bài vào RAM — exercise load sẽ instant từ giờ.');
+  } catch (e) {
+    console.error('[sqljs] Warm-up thất bại:', e.message, '— sẽ fallback sync DB mỗi request');
+  }
+}
 
 function fetchExerciseById(id) {
   if (_exById.has(id)) return Promise.resolve(_exById.get(id));
+  // Fallback: sync DB (dùng khi warm-up chưa xong hoặc thất bại)
   return new Promise((resolve, reject) => {
-    asyncExDb.get(EX_SELECT, [id], (err, row) => {
-      if (err) return reject(err);
-      if (row) _exById.set(id, row);
-      resolve(row || null);
-    });
+    try {
+      const ex = db.prepare(
+        'SELECT id,program,skill,title,content,questions,answer_key,' +
+        'image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?'
+      ).get(id);
+      if (ex) _exById.set(id, ex);
+      resolve(ex || null);
+    } catch (e) { reject(e); }
   });
 }
 // ───────────────────────────────────────────────────────────────────────────
@@ -1906,6 +1927,10 @@ app.use(express.static(__dirname));
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log('English With Tom đang chạy tại cổng ' + port);
+  // Đọc DB file vào RAM qua sql.js (async, không block event loop dù NFS chậm).
+  // Server đã lắng nghe port rồi → Railway health check pass → warmup chạy nền.
+  warmExerciseCacheFromFile();
+
   console.log('📁 Database:', path.join(DATA_DIR, 'data.db'));
   if (DATA_DIR === __dirname)
     console.warn('⚠️  DATA_DIR chưa set — database nằm trong thư mục app, SẼ MẤT khi Railway redeploy! Hãy tạo Volume trong Railway và set DATA_DIR=/data');
