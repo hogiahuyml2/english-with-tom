@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const webpush = require('web-push');
+const { Worker } = require('worker_threads');
 const { db, hashPassword, verifyPassword, now } = require('./db');
 const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider } = require('./ai');
 
@@ -614,6 +615,81 @@ function exCacheInvalidate() { _exCache.clear(); }
 // Cache từng bài tập theo ID — lazy: populate khi học sinh vào lần đầu, serve từ RAM sau đó
 const _exById = new Map(); // id → exercise row
 
+// ── Exercise Worker Thread ──────────────────────────────────────────────────
+// node:sqlite (DatabaseSync) block event loop khi NFS chậm.
+// Chạy exercise query trong Worker Thread riêng: main thread không bao giờ bị block.
+const DATA_DIR_PATH = process.env.DATA_DIR || __dirname;
+const DB_FILE_PATH  = path.join(DATA_DIR_PATH, 'data.db');
+
+let _exWorker = null;
+const _exPending = new Map();
+let _exMsgId = 0;
+
+function startExerciseWorker() {
+  try {
+    _exWorker = new Worker(path.join(__dirname, 'workers/exercise-query.js'), {
+      workerData: { dbPath: DB_FILE_PATH }
+    });
+    _exWorker.on('message', ({ msgId, ex, error }) => {
+      const cb = _exPending.get(msgId);
+      if (!cb) return;
+      _exPending.delete(msgId);
+      cb(error, ex);
+    });
+    _exWorker.on('error', (e) => {
+      console.error('[ExWorker] Crashed:', e.message);
+      _exWorker = null;
+      // Tự khởi động lại sau 3 giây
+      setTimeout(startExerciseWorker, 3000);
+    });
+    _exWorker.on('exit', (code) => {
+      if (code !== 0) {
+        console.warn('[ExWorker] Exited with code', code, '— restarting in 3s');
+        _exWorker = null;
+        setTimeout(startExerciseWorker, 3000);
+      }
+    });
+    console.log('[ExWorker] Started');
+  } catch (e) {
+    console.error('[ExWorker] Cannot start:', e.message);
+  }
+}
+
+// Lấy exercise theo ID — không block event loop, timeout 10s
+function fetchExerciseById(id) {
+  // Trả từ RAM nếu đã có
+  if (_exById.has(id)) return Promise.resolve(_exById.get(id));
+
+  return new Promise((resolve, reject) => {
+    // Fallback sync nếu worker chưa sẵn sàng
+    if (!_exWorker) {
+      try {
+        const ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(id);
+        if (ex) _exById.set(id, ex);
+        return resolve(ex || null);
+      } catch (e) { return reject(e); }
+    }
+
+    const msgId = ++_exMsgId;
+    const timer = setTimeout(() => {
+      _exPending.delete(msgId);
+      reject(new Error('Exercise DB query timeout sau 10 giây'));
+    }, 10000);
+
+    _exPending.set(msgId, (err, ex) => {
+      clearTimeout(timer);
+      if (err) return reject(new Error(err));
+      if (ex) _exById.set(id, ex);
+      resolve(ex || null);
+    });
+
+    _exWorker.postMessage({ msgId, id });
+  });
+}
+
+startExerciseWorker();
+// ───────────────────────────────────────────────────────────────────────────
+
 app.get('/api/exercises', requireAuth, (req, res) => {
   const { program, skill, private_only, type } = req.query;
   const isTeacher = req.user && ['teacher','admin'].includes(req.user.role);
@@ -646,16 +722,20 @@ app.get('/api/exercises', requireAuth, (req, res) => {
   res.json(result);
 });
 
-app.get('/api/exercises/:id', requireAuth, (req, res) => {
+app.get('/api/exercises/:id', requireAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (!id) return res.status(400).json({ error: 'ID đề không hợp lệ.' });
-    // Lấy từ RAM cache trước, chỉ query DB nếu chưa có trong cache
-    let ex = _exById.get(id);
-    if (!ex) {
-      ex = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(id);
-      if (ex) _exById.set(id, ex); // thêm vào cache cho lần sau
+
+    // Dùng worker thread — không block event loop, timeout 10s
+    let ex;
+    try {
+      ex = await fetchExerciseById(id);
+    } catch (workerErr) {
+      console.error('fetchExerciseById error:', workerErr.message);
+      return res.status(503).json({ error: 'Máy chủ đang bận, vui lòng thử lại sau vài giây.' });
     }
+
     if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
     if (ex.is_private) {
       if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
