@@ -2,6 +2,8 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "node server.js"
+# Kiểm cú pháp JS mọi trang HTML TRƯỚC khi khởi động. Nếu có lỗi → server không
+# chạy → deploy thất bại → Railway giữ nguyên bản đang chạy tốt cho học sinh.
+startCommand = "node scripts/check-html.js && node server.js"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3

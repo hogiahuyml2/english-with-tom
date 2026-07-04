@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Website luyện thi chứng chỉ quốc tế English With Tom (KET, PET, FCE, IELTS, APTIS)",
   "scripts": {
+    "check": "node scripts/check-html.js",
+    "prestart": "node scripts/check-html.js",
     "start": "node server.js"
   },
   "dependencies": {
