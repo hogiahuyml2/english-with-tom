@@ -4,3 +4,6 @@ node_modules/
 *.log
 data.db
 data.db-*
+
+# Tệp học sinh/giáo viên tải lên — nằm ở Railway volume, không commit
+uploads/

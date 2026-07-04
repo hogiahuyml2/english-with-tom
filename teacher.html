@@ -368,6 +368,7 @@
         <div class="field"><label>Loại đề</label>
           <select id="exType">
             <option value="writing">✍️ Writing — chấm tự động (đề công khai) hoặc giáo viên chấm (đề riêng)</option>
+            <option value="speaking">🎤 Speaking — học sinh ghi âm, giáo viên nghe &amp; chấm</option>
             <option value="quiz">📝 Trắc nghiệm (Reading / Listening) — tự chấm</option>
             <option value="aptis_full">🎯 APTIS Writing Full Test — 4 Components (50 phút)</option>
           </select>
@@ -458,6 +459,23 @@
           </div>
           <img id="imgPreview" class="img-preview" alt="Xem trước ảnh">
           <input type="hidden" id="imageUrl" value="">
+        </div>
+
+        <!-- Upload âm thanh đề (Speaking có audio giám khảo / Listening) -->
+        <div class="field" id="audioField" style="display:none;">
+          <label>🔊 Âm thanh đề bài <span style="font-weight:400;color:var(--text-faint);">(tuỳ chọn — audio mẫu/câu hỏi của giám khảo)</span></label>
+          <div class="upload-row">
+            <input type="file" id="audioFileEx" accept="audio/*" style="display:none;">
+            <button class="btn btn-sm" type="button" onclick="document.getElementById('audioFileEx').click();">📎 Chọn tệp âm thanh</button>
+            <span id="audioNameEx" style="font-size:13px; color:var(--text-muted);">Chưa chọn tệp</span>
+            <span id="audioStatusEx" style="font-size:13px; display:none;"></span>
+          </div>
+          <audio id="audioPreviewEx" controls style="width:100%;margin-top:10px;display:none;"></audio>
+          <input type="hidden" id="audioUrl" value="">
+        </div>
+
+        <div id="speakingNote" class="note" style="margin-bottom:12px;display:none;"><span>🎤</span>
+          <div>Đề <b>Speaking</b>: học sinh ghi âm bài nói (hoặc tải tệp) rồi nộp; <b>giáo viên nghe và chấm</b> ở tab "Bài nộp &amp; chấm". Chèn ảnh cho đề có tranh, chèn audio nếu đề có câu hỏi giám khảo. Bật "Đề riêng" để chỉ giao cho học sinh cụ thể.</div>
         </div>
 
         <div id="writingNote" class="note" style="margin-bottom:12px;"><span>⚡</span>
@@ -1404,18 +1422,57 @@
     saveExBtn.disabled = false;
   });
 
+  /* ===== Upload âm thanh đề (Speaking/Listening) ===== */
+  var audioFileEx = document.getElementById('audioFileEx');
+  if (audioFileEx) audioFileEx.addEventListener('change', async function(){
+    var f = audioFileEx.files[0];
+    if (!f) return;
+    var nameEl = document.getElementById('audioNameEx');
+    var statusEl = document.getElementById('audioStatusEx');
+    var prev = document.getElementById('audioPreviewEx');
+    nameEl.textContent = f.name;
+    document.getElementById('audioUrl').value = '';
+    prev.src = URL.createObjectURL(f); prev.style.display = 'block';
+    statusEl.style.display = 'inline'; statusEl.style.color = 'var(--text-muted)';
+    statusEl.textContent = '⏳ Đang tải âm thanh lên...';
+    saveExBtn.disabled = true;
+    var fd = new FormData(); fd.append('file', f);
+    try {
+      var r = await fetch('/api/upload', {method:'POST', credentials:'same-origin', body:fd});
+      var data = await r.json().catch(function(){return {};});
+      if (r.ok && data.url) {
+        document.getElementById('audioUrl').value = data.url;
+        statusEl.style.color = 'var(--success)';
+        statusEl.textContent = '✅ Âm thanh đã tải lên';
+      } else {
+        statusEl.style.color = 'var(--danger,#e53e3e)';
+        statusEl.textContent = '❌ ' + (data.error || 'Tải âm thanh thất bại');
+        audioFileEx.value = '';
+      }
+    } catch(e) {
+      statusEl.style.color = 'var(--danger,#e53e3e)';
+      statusEl.textContent = '❌ Lỗi kết nối — thử lại';
+      audioFileEx.value = '';
+    }
+    saveExBtn.disabled = false;
+  });
+
   /* ===== TOGGLE LOẠI ĐỀ ===== */
   var exType = document.getElementById('exType');
   var exSkill = document.getElementById('exSkill');
   function syncType(){
     var t = exType.value;
-    var quiz    = t === 'quiz';
-    var aptis   = t === 'aptis_full';
-    var writing = t === 'writing';
+    var quiz     = t === 'quiz';
+    var aptis    = t === 'aptis_full';
+    var writing  = t === 'writing';
+    var speaking = t === 'speaking';
     document.getElementById('quizBuilder').style.display   = quiz   ? 'block' : 'none';
     document.getElementById('aptisBuilder').style.display  = aptis  ? 'block' : 'none';
     document.getElementById('writingNote').style.display   = writing ? 'flex' : 'none';
-    document.getElementById('contentLabel').textContent    = quiz ? 'Đoạn văn / nội dung đề (tuỳ chọn)' : 'Yêu cầu đề bài';
+    document.getElementById('speakingNote').style.display  = speaking ? 'flex' : 'none';
+    document.getElementById('audioField').style.display    = speaking ? '' : 'none';
+    document.getElementById('contentLabel').textContent    =
+      quiz ? 'Đoạn văn / nội dung đề (tuỳ chọn)' : speaking ? 'Yêu cầu / câu hỏi phần nói' : 'Yêu cầu đề bài';
 
     /* Ẩn/hiện các field không cần cho APTIS */
     var hideForAptis = ['partField','exContent','writingNote'];
@@ -1430,6 +1487,7 @@
 
     if (quiz && exSkill.value === 'Writing') exSkill.value = 'Reading';
     if (writing) exSkill.value = 'Writing';
+    if (speaking) exSkill.value = 'Speaking';
     if (aptis) { exSkill.value = 'Writing'; document.getElementById('exProgram').value = 'APTIS'; }
     if (quiz && !document.querySelectorAll('.qbuild').length) addQuestion();
     if (aptis && !document.querySelectorAll('.ap-msg').length) { addChatMsg(); addChatMsg(); addChatMsg(); }
@@ -1501,11 +1559,16 @@
 
   /* ===== PART / TASK SELECTOR ===== */
   var PART_OPTIONS = {
-    KET:   { Writing: ['Part 1','Part 2'] },
-    PET:   { Writing: ['Part 1','Part 2'] },
-    FCE:   { Writing: ['Part 1','Part 2'] },
-    IELTS: { Writing: ['Task 1','Task 2'] },
-    APTIS: { Writing: ['Component 1 — Câu trả lời ngắn','Component 2 — Điền form','Component 3 — Group chat','Component 4 — Viết email','🎯 Full Test (4 Components)'] },
+    KET:   { Writing: ['Part 1','Part 2'],
+             Speaking: ['Part 1 — Phỏng vấn (examiner hỏi thông tin cá nhân)','Part 2 — Hỏi & đáp (thẻ gợi ý / tranh)'] },
+    PET:   { Writing: ['Part 1','Part 2'],
+             Speaking: ['Part 1 — Phỏng vấn','Part 2 — Mô tả ảnh (long turn ~1 phút)','Part 3 — Thảo luận tình huống (tranh)','Part 4 — Trò chuyện chung'] },
+    FCE:   { Writing: ['Part 1','Part 2'],
+             Speaking: ['Part 1 — Phỏng vấn','Part 2 — So sánh 2 ảnh (long turn ~1 phút)','Part 3 — Thảo luận cùng bạn (gợi ý viết)','Part 4 — Thảo luận mở rộng'] },
+    IELTS: { Writing: ['Task 1','Task 2'],
+             Speaking: ['Part 1 — Giới thiệu & phỏng vấn','Part 2 — Cue card (long turn 1–2 phút)','Part 3 — Thảo luận hai chiều'] },
+    APTIS: { Writing: ['Component 1 — Câu trả lời ngắn','Component 2 — Điền form','Component 3 — Group chat','Component 4 — Viết email','🎯 Full Test (4 Components)'],
+             Speaking: ['Part 1 — Thông tin cá nhân (3 câu hỏi)','Part 2 — Mô tả & nêu ý kiến (1 ảnh)','Part 3 — Mô tả & so sánh (2 ảnh)','Part 4 — Nói về chủ đề trừu tượng (long turn)'] },
     _default: ['Part 1','Part 2','Part 3','Part 4','Part 5'],
   };
 
@@ -1632,8 +1695,9 @@
       return;
     }
 
-    /* ── Writing / Quiz thông thường ── */
+    /* ── Writing / Speaking / Quiz thông thường ── */
     var imgUrl = document.getElementById('imageUrl').value;
+    var audUrl = document.getElementById('audioUrl').value;
     var payload = {
       program: document.getElementById('exProgram').value,
       skill:   exSkill.value,
@@ -1641,11 +1705,15 @@
       content: exContentEditor ? exContentEditor.getHTML() : document.getElementById('exContent').value,
       type:    type,
       is_private: document.getElementById('isPrivate').checked ? 1 : 0,
-      image_url: imgUrl || null
+      image_url: imgUrl || null,
+      audio_url: audUrl || null
     };
     if (!payload.title){ msg('Vui lòng nhập tên đề.', false); return; }
     if (imgFile.files[0] && !document.getElementById('imageUrl').value){
       msg('⏳ Ảnh đang tải lên — vui lòng chờ vài giây rồi thử lại.', false); return;
+    }
+    if (audioFileEx && audioFileEx.files[0] && !document.getElementById('audioUrl').value){
+      msg('⏳ Âm thanh đang tải lên — vui lòng chờ vài giây rồi thử lại.', false); return;
     }
     /* ── IELTS metadata ── */
     if (payload.program==='IELTS' && payload.skill==='Writing') {
@@ -1682,6 +1750,11 @@
       document.getElementById('uploadStatus').style.display='none';
       document.getElementById('isPrivate').checked=false;
       imgFile.value='';
+      document.getElementById('audioUrl').value='';
+      document.getElementById('audioPreviewEx').style.display='none';
+      document.getElementById('audioNameEx').textContent='Chưa chọn tệp';
+      document.getElementById('audioStatusEx').style.display='none';
+      if (audioFileEx) audioFileEx.value='';
       document.getElementById('qList').innerHTML='';
       if (type==='quiz') addQuestion();
     } else { msg(data.error || 'Lưu thất bại.', false); }
@@ -2955,13 +3028,23 @@ function openGradingPanel(subId) {
             ? '<span class="badge badge-grading" style="font-size:13px;">🔍 Chờ xác nhận GV</span>'
             : '<span class="badge badge-grading" style="font-size:13px;">⏳ Chờ chấm</span>';
 
-      // Essay
-      var essayText = '';
-      try { var ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers; essayText = ans.essay || JSON.stringify(ans); }
-      catch(e) { essayText = sub.answers || ''; }
+      // Essay (Writing) hoặc bản ghi âm (Speaking)
+      var essayText = '', speakingAudio = '';
+      try {
+        var ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers;
+        if (ans && ans.audio_url) speakingAudio = ans.audio_url;
+        else essayText = (ans && ans.essay) || JSON.stringify(ans);
+      } catch(e) { essayText = sub.answers || ''; }
       var essayEl = document.getElementById('gpEssay');
-      essayEl.dataset.raw = essayText;
-      essayEl.textContent = essayText;
+      if (speakingAudio) {
+        essayEl.dataset.raw = '';
+        essayEl.innerHTML = '<div style="font-weight:600;font-size:13.5px;margin-bottom:8px;color:#5b21b6;">🎤 Bản ghi bài nói của học sinh</div>'+
+          '<audio controls preload="none" style="width:100%;" src="'+escHtml(speakingAudio)+'"></audio>'+
+          '<div style="font-size:12.5px;color:var(--text-muted);margin-top:8px;">Nghe bản ghi rồi nhập điểm &amp; nhận xét bên dưới.</div>';
+      } else {
+        essayEl.dataset.raw = essayText;
+        essayEl.textContent = essayText;
+      }
 
       // Manual grade prefill — derive max from feedback scale_label if possible
       var _defaultMax = sub.program === 'KET' ? 15 : (['PET','FCE'].includes(sub.program) ? 20 : 5);

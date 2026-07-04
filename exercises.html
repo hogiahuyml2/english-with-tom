@@ -67,6 +67,7 @@
   var F = { q:'', program:'', skill:'', type:'' }; // active filters
 
   function doer(e){
+    if (e.skill==='Speaking') return { href:'practice-speaking.html?id='+e.id, label:'Làm bài', ok:true, tag:'Giáo viên chấm' };
     if (e.skill==='Writing') return { href:'practice-writing.html?id='+e.id, label:'Làm bài', ok:true, tag:'Chấm tự động' };
     if (e.has_questions)     return { href:'practice-quiz.html?id='+e.id,    label:'Làm bài', ok:true, tag:'Tự chấm' };
     return { href:'#', label:'Đề mẫu', ok:false, tag:'Chưa có câu hỏi' };

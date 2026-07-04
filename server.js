@@ -812,6 +812,16 @@ app.post('/api/upload', requireRole('teacher', 'admin'), (req, res) => {
   });
 });
 
+// Học sinh tải BẢN GHI ÂM Speaking của mình (chỉ audio) — dùng khi nộp bài nói
+app.post('/api/upload-recording', requireAuth, (req, res) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    if (!req.file) return res.status(400).json({ error: 'Thiếu tệp ghi âm.' });
+    if (!/^audio\//.test(req.file.mimetype)) return res.status(400).json({ error: 'Chỉ chấp nhận tệp âm thanh.' });
+    res.json({ url: '/uploads/' + req.file.filename });
+  });
+});
+
 // Giáo viên/Admin tạo đề mới (Writing = AI chấm; Quiz = trắc nghiệm tự chấm)
 app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
   const { program, skill, title, content, type, questions, answer_key, image_url, audio_url, is_private, task_type, metadata } = req.body || {};
