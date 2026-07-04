@@ -246,12 +246,13 @@
           .then(function(d){
             var btn = document.getElementById('navBellBtn');
             if (!btn) return;
+            btn.classList.toggle('has-unread', d.count > 0); // chuông sáng đỏ + nhấp nháy khi có thông báo mới
             var badge = btn.querySelector('.nav-unread-badge');
             if (d.count > 0) {
               if (!badge) {
                 badge = document.createElement('span');
                 badge.className = 'nav-unread-badge';
-                badge.style.cssText = 'position:absolute;top:-5px;right:-8px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;padding:0 4px;display:grid;place-items:center;line-height:1;';
+                badge.style.cssText = 'position:absolute;top:-5px;right:-8px;background:#fff;color:#ef4444;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;padding:0 4px;display:grid;place-items:center;line-height:1;box-shadow:0 0 0 2px #ef4444;';
                 btn.appendChild(badge);
               }
               badge.textContent = d.count > 99 ? '99+' : d.count;
