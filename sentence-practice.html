@@ -638,8 +638,7 @@ function renderSentence() {
       '<button class="btn btn-primary" id="checkBtn" onclick="checkSentence()">✓ Kiểm tra</button>'+
       '<button class="btn btn-sm" onclick="toggleTip()">💡 Gợi ý</button>'+
     '</div>'+
-    (prevScore!==null ? buildResult(prevScore) : '')+
-    '</div>';
+    (prevScore!==null ? buildResult(prevScore) : '');
 
   document.getElementById('spInput').focus();
 }
