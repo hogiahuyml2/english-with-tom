@@ -177,8 +177,8 @@
           ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
         var adminLink = (user.role === 'admin')
           ? '<a class="btn btn-sm" href="admin.html">Quản trị</a>' : '';
-        var bellBtn = (user.role === 'teacher' || user.role === 'admin')
-          ? '<button type="button" id="navBellBtn" title="Thông báo" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);border:none;cursor:pointer;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">🔔</button>' : '';
+        // Chuông thông báo — hiện cho MỌI vai trò đã đăng nhập (học sinh, giáo viên, admin)
+        var bellBtn = '<button type="button" id="navBellBtn" title="Thông báo" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);border:none;cursor:pointer;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">🔔</button>';
         actions.innerHTML =
           adminLink + teacherLink + bellBtn +
           '<a href="chat.html" id="navChatBtn" title="Tin nhắn" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);text-decoration:none;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">💬</a>' +
@@ -225,8 +225,8 @@
       setInterval(refreshUnread, 30000);
     }
 
-    /* Chuông thông báo (giáo viên/admin) — badge + dropdown danh sách */
-    if (user && (user.role === 'teacher' || user.role === 'admin')) {
+    /* Chuông thông báo (mọi vai trò: học sinh, giáo viên, admin) — badge + dropdown danh sách */
+    if (user) {
       function fmtNotifTime(s){
         if (!s) return '';
         // created_at là ISO 8601 đầy đủ (now() = new Date().toISOString(), đã có T và Z sẵn)

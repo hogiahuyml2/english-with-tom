@@ -1280,8 +1280,8 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
         </div>`
       ).catch(() => {});
     }
-    // Gửi push notification cho học sinh (nếu đã có tài khoản)
-    if (u) sendPushToUser(u.id, '📝 Bạn có bài tập mới!', ex.title, assignLink).catch(() => {});
+    // Thông báo trong ứng dụng + push cho học sinh (nếu đã có tài khoản)
+    if (u) notifyUser(u.id, 'assignment_created', '📝 Bạn có bài tập mới!', ex.title + (groupName ? ' · Lớp ' + groupName : ''), assignLink);
   }
   res.json({ ok: true, assigned: count, group_name: groupName });
 });
@@ -1375,8 +1375,8 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
       </div>`
     ).catch(() => {});
   }
-  // Gửi push notification cho học sinh
-  sendPushToUser(sub.user_id, '✅ Bài của bạn đã được chấm!', sub.exercise_title, link).catch(() => {});
+  // Thông báo trong ứng dụng + push cho học sinh
+  notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, link);
   res.json({ ok: true });
 });
 
@@ -1511,7 +1511,7 @@ app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (r
       </div>`
     ).catch(() => {});
   }
-  sendPushToUser(sub.user_id, '✅ Bài của bạn đã được chấm!', sub.exercise_title, link).catch(() => {});
+  notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, link);
   res.json({ ok: true });
 });
 
@@ -2037,8 +2037,8 @@ async function sendDeadlineReminders() {
   if (!emailEnabled()) return;
   const pending = db.prepare(`
     SELECT a.id, a.student_email, a.deadline,
-           e.title, e.program,
-           u.name AS student_name,
+           e.title, e.program, e.id AS exercise_id,
+           u.id AS student_id, u.name AS student_name,
            sub.id AS submission_id
     FROM assignments a
     JOIN exercises e ON e.id = a.exercise_id
@@ -2069,6 +2069,9 @@ async function sendDeadlineReminders() {
         <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này (${row.student_email}) để xem bài được giao.</p>
       </div>`
     ).catch(() => {});
+    if (row.student_id) {
+      notifyUser(row.student_id, 'deadline_reminder', '⏰ Sắp hết hạn: ' + row.title, 'Hạn nộp ' + dline + ' — bạn chưa nộp bài.', 'assigned.html');
+    }
     db.prepare('UPDATE assignments SET reminder_sent=1 WHERE id=?').run(row.id);
     console.log(`📬 Nhắc deadline: ${row.student_email} — "${row.title}" (hạn ${dline})`);
   }
