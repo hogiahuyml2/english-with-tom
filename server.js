@@ -281,6 +281,18 @@ app.get('/api/ping', (req, res) => {
   }
 });
 
+// Chẩn đoán warmup RAM — không cần auth, không lộ dữ liệu nhạy cảm
+app.get('/api/health', (req, res) => {
+  res.json({
+    warmup: _warmupState,          // pending | ready | failed
+    exercises: _exById.size,       // số đề đã nạp vào RAM
+    assigned: _assignedSet.size,
+    submitted: _submittedSet.size,
+    dbFile: DB_FILE_PATH,
+    t: Date.now()
+  });
+});
+
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
   res.json({ googleEnabled: !!process.env.GOOGLE_CLIENT_ID, emailEnabled: emailEnabled(), aiEnabled: aiEnabled(), aiProvider: provider() });
