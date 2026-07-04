@@ -137,6 +137,16 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
   auth TEXT NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT,
+  link TEXT,
+  read_at TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
 `, 'create tables');
 
 // Migrations — mỗi cái trong try/catch riêng
@@ -192,6 +202,7 @@ CREATE INDEX IF NOT EXISTS idx_assignments_email    ON assignments(student_email
 CREATE INDEX IF NOT EXISTS idx_assignments_exercise ON assignments(exercise_id);
 CREATE INDEX IF NOT EXISTS idx_assignments_reminder ON assignments(reminder_sent, deadline);
 CREATE INDEX IF NOT EXISTS idx_sessions_user        ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user    ON notifications(user_id, read_at);
 `, 'indexes');
 
 console.log('[DB] Init complete. DB path:', dbPath);

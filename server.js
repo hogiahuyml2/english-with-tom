@@ -37,6 +37,28 @@ const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
 app.use(express.json());
 
+// ===== Thông báo trong ứng dụng (chuông 🔔) — dành cho giáo viên/admin =====
+// Tạo bản ghi + gửi kèm push (nếu người dùng đã đăng ký push). Không throw —
+// lỗi tạo thông báo không được làm hỏng luồng chính (nộp bài, tạo đề...).
+function notifyUser(userId, type, title, body, link) {
+  try {
+    db.prepare('INSERT INTO notifications (user_id,type,title,body,link,created_at) VALUES (?,?,?,?,?,?)')
+      .run(userId, type, title, body || null, link || null, now());
+  } catch (e) { console.error('[notify] insert lỗi:', e.message); }
+  sendPushToUser(userId, title, body || '', link || '/').catch(() => {});
+}
+
+// Gửi thông báo cho MỌI giáo viên + admin, trừ (tuỳ chọn) người vừa thực hiện hành động
+function notifyAllStaff(type, title, body, link, exceptUserId) {
+  try {
+    const staff = db.prepare("SELECT id FROM users WHERE role IN ('teacher','admin')").all();
+    for (const u of staff) {
+      if (exceptUserId && u.id === exceptUserId) continue;
+      notifyUser(u.id, type, title, body, link);
+    }
+  } catch (e) { console.error('[notify] notifyAllStaff lỗi:', e.message); }
+}
+
 // ===== Tải file ảnh/âm thanh — lưu trên ổ đĩa bền vững (/data/uploads trên Railway) =====
 const DATA_DIR = process.env.DATA_DIR || __dirname;
 const uploadsDir = path.join(DATA_DIR, 'uploads');
@@ -184,6 +206,7 @@ app.post('/api/register', async (req, res) => {
 
   db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
   startSession(res, newId, req);
+  notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html');
   res.json({ needVerify: false });
 });
 
@@ -624,6 +647,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
       const r2 = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
         .run(info.name || email, email, 'google-oauth', 'student', now());
       u = { id: Number(r2.lastInsertRowid) };
+      notifyAllStaff('new_student', '🎓 Học sinh mới: ' + (info.name || email), email + ' vừa đăng ký qua Google.', 'teacher.html');
     } else if (!u.email_verified) {
       db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id);
     }
@@ -845,6 +869,8 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
   const newEx = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(newId);
   if (newEx) _exById.set(newId, newEx);
   exCacheInvalidate();
+  // Báo các giáo viên/admin khác biết có đề mới (trừ người vừa tạo)
+  notifyAllStaff('exercise_created', '📚 Đề mới: ' + title, program + ' · ' + skill + ' · Tạo bởi ' + req.user.name, 'teacher.html', req.user.id);
   res.json({ id: newId });
 });
 
@@ -938,6 +964,23 @@ app.post('/api/submissions', requireAuth, (req, res) => {
   }
   const r = db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,score,max_score,status,submitted_at) VALUES (?,?,?,?,?,?,?)')
     .run(req.user.id, exercise_id, JSON.stringify(answers || []), score, max, status, now());
+
+  // Bài cần giáo viên chấm tay (Writing riêng / Speaking) → báo cho giáo viên phụ trách
+  if (status === 'pending') {
+    let teacherId = null;
+    if (ex.is_private) {
+      const asg = db.prepare('SELECT assigned_by FROM assignments WHERE exercise_id=? AND student_email=? ORDER BY id DESC LIMIT 1')
+        .get(exercise_id, req.user.email);
+      teacherId = asg ? asg.assigned_by : null;
+    } else {
+      teacherId = ex.created_by || null;
+    }
+    const notifTitle = '📤 Bài nộp mới: ' + ex.title;
+    const notifBody  = req.user.name + ' vừa nộp bài ' + ex.skill + ' — cần chấm.';
+    if (teacherId) notifyUser(teacherId, 'submission_received', notifTitle, notifBody, 'teacher.html');
+    else notifyAllStaff('submission_received', notifTitle, notifBody, 'teacher.html');
+  }
+
   res.json({ id: Number(r.lastInsertRowid), score, max_score: max, status });
 });
 
@@ -1921,6 +1964,34 @@ app.get('/api/messages/contacts', requireAuth, (req, res) => {
 app.get('/api/messages/unread-count', requireAuth, (req, res) => {
   const row = db.prepare('SELECT COUNT(*) AS cnt FROM messages WHERE receiver_id=? AND read_at IS NULL').get(req.user.id);
   res.json({ count: row.cnt });
+});
+
+// ===================== THÔNG BÁO (chuông 🔔) =====================
+
+// Số thông báo chưa đọc
+app.get('/api/notifications/unread-count', requireAuth, (req, res) => {
+  const row = db.prepare('SELECT COUNT(*) AS cnt FROM notifications WHERE user_id=? AND read_at IS NULL').get(req.user.id);
+  res.json({ count: row.cnt });
+});
+
+// Danh sách thông báo gần nhất (mới nhất trước)
+app.get('/api/notifications', requireAuth, (req, res) => {
+  const rows = db.prepare('SELECT id,type,title,body,link,read_at,created_at FROM notifications WHERE user_id=? ORDER BY id DESC LIMIT 30')
+    .all(req.user.id);
+  res.json({ notifications: rows });
+});
+
+// Đánh dấu 1 thông báo đã đọc
+app.post('/api/notifications/:id/read', requireAuth, (req, res) => {
+  db.prepare('UPDATE notifications SET read_at=? WHERE id=? AND user_id=? AND read_at IS NULL')
+    .run(now(), Number(req.params.id), req.user.id);
+  res.json({ ok: true });
+});
+
+// Đánh dấu tất cả đã đọc
+app.post('/api/notifications/read-all', requireAuth, (req, res) => {
+  db.prepare('UPDATE notifications SET read_at=? WHERE user_id=? AND read_at IS NULL').run(now(), req.user.id);
+  res.json({ ok: true });
 });
 
 // Lấy lịch sử tin nhắn với một người dùng

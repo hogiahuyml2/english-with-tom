@@ -177,8 +177,10 @@
           ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
         var adminLink = (user.role === 'admin')
           ? '<a class="btn btn-sm" href="admin.html">Quản trị</a>' : '';
+        var bellBtn = (user.role === 'teacher' || user.role === 'admin')
+          ? '<button type="button" id="navBellBtn" title="Thông báo" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);border:none;cursor:pointer;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">🔔</button>' : '';
         actions.innerHTML =
-          adminLink + teacherLink +
+          adminLink + teacherLink + bellBtn +
           '<a href="chat.html" id="navChatBtn" title="Tin nhắn" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);text-decoration:none;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">💬</a>' +
           '<a href="account.html" title="Tài khoản" class="nav-account" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;flex-shrink:0;">' + initials + '</span>' +
@@ -221,6 +223,114 @@
       }
       refreshUnread();
       setInterval(refreshUnread, 30000);
+    }
+
+    /* Chuông thông báo (giáo viên/admin) — badge + dropdown danh sách */
+    if (user && (user.role === 'teacher' || user.role === 'admin')) {
+      function fmtNotifTime(s){
+        if (!s) return '';
+        // created_at là ISO 8601 đầy đủ (now() = new Date().toISOString(), đã có T và Z sẵn)
+        var d = new Date(s);
+        var diffMin = Math.round((Date.now()-d.getTime())/60000);
+        if (diffMin < 1) return 'Vừa xong';
+        if (diffMin < 60) return diffMin+' phút trước';
+        var diffH = Math.round(diffMin/60);
+        if (diffH < 24) return diffH+' giờ trước';
+        return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'}) + ' lúc ' + d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+      }
+      function escNotif(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+
+      function refreshBellBadge(){
+        fetch('/api/notifications/unread-count', { credentials:'same-origin' })
+          .then(function(r){ return r.ok ? r.json() : { count:0 }; })
+          .then(function(d){
+            var btn = document.getElementById('navBellBtn');
+            if (!btn) return;
+            var badge = btn.querySelector('.nav-unread-badge');
+            if (d.count > 0) {
+              if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'nav-unread-badge';
+                badge.style.cssText = 'position:absolute;top:-5px;right:-8px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;padding:0 4px;display:grid;place-items:center;line-height:1;';
+                btn.appendChild(badge);
+              }
+              badge.textContent = d.count > 99 ? '99+' : d.count;
+            } else if (badge) {
+              badge.remove();
+            }
+          }).catch(function(){});
+      }
+      refreshBellBadge();
+      setInterval(refreshBellBadge, 30000);
+
+      var notifPanel = null;
+      function buildNotifPanel(){
+        if (notifPanel) return notifPanel;
+        notifPanel = document.createElement('div');
+        notifPanel.className = 'notif-panel';
+        notifPanel.id = 'notifPanel';
+        notifPanel.innerHTML =
+          '<div class="notif-panel-head"><h4>🔔 Thông báo</h4><button type="button" id="notifMarkAllBtn">Đánh dấu đã đọc tất cả</button></div>' +
+          '<div class="notif-list" id="notifList"><div class="notif-empty">Đang tải...</div></div>';
+        document.body.appendChild(notifPanel);
+        document.getElementById('notifMarkAllBtn').addEventListener('click', function(){
+          fetch('/api/notifications/read-all', { method:'POST', credentials:'same-origin' })
+            .then(function(){ loadNotifList(); refreshBellBadge(); });
+        });
+        return notifPanel;
+      }
+
+      function loadNotifList(){
+        var listEl = document.getElementById('notifList');
+        fetch('/api/notifications', { credentials:'same-origin' })
+          .then(function(r){ return r.ok ? r.json() : { notifications: [] }; })
+          .then(function(d){
+            var items = d.notifications || [];
+            if (!items.length) { listEl.innerHTML = '<div class="notif-empty">Chưa có thông báo nào.</div>'; return; }
+            listEl.innerHTML = items.map(function(n){
+              var unread = !n.read_at;
+              return '<div class="notif-item' + (unread ? ' unread' : '') + '" data-id="' + n.id + '" data-link="' + escNotif(n.link || '') + '">' +
+                '<div class="notif-item-title">' + escNotif(n.title) + '</div>' +
+                (n.body ? '<div class="notif-item-body">' + escNotif(n.body) + '</div>' : '') +
+                '<div class="notif-item-time">' + fmtNotifTime(n.created_at) + '</div>' +
+              '</div>';
+            }).join('');
+            listEl.querySelectorAll('.notif-item').forEach(function(el){
+              el.addEventListener('click', function(){
+                var id = el.getAttribute('data-id');
+                var link = el.getAttribute('data-link');
+                fetch('/api/notifications/' + id + '/read', { method:'POST', credentials:'same-origin' })
+                  .then(function(){ refreshBellBadge(); if (link) location.href = link; });
+              });
+            });
+          }).catch(function(){ listEl.innerHTML = '<div class="notif-empty">Không tải được thông báo.</div>'; });
+      }
+
+      var bellOpen = false;
+      function toggleNotifPanel(){
+        var panel = buildNotifPanel();
+        bellOpen = !bellOpen;
+        if (bellOpen) {
+          var btn = document.getElementById('navBellBtn');
+          var r = btn.getBoundingClientRect();
+          var panelWidth = 340;
+          var left = Math.min(r.left, window.innerWidth - panelWidth - 12);
+          panel.style.left = Math.max(8, left) + 'px';
+          panel.style.top  = (r.bottom + 8) + 'px';
+          panel.classList.add('open');
+          loadNotifList();
+        } else {
+          panel.classList.remove('open');
+        }
+      }
+      document.addEventListener('click', function(e){
+        var btn = document.getElementById('navBellBtn');
+        if (!btn) return;
+        if (btn.contains(e.target)) { toggleNotifPanel(); return; }
+        if (notifPanel && bellOpen && !notifPanel.contains(e.target)) {
+          bellOpen = false; notifPanel.classList.remove('open');
+        }
+      });
     }
 
     /* Chặn truy cập theo vai trò */
