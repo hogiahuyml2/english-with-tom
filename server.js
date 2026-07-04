@@ -615,9 +615,14 @@ function exCacheInvalidate() { _exCache.clear(); }
 // Cache từng bài tập theo ID — lazy: populate khi học sinh vào lần đầu, serve từ RAM sau đó
 const _exById = new Map(); // id → exercise row
 
-// ── Load exercises vào RAM qua sql.js (WASM, không cần native addon) ─────────
+// Cache quyền truy cập đề riêng — key "exerciseId|email(lowercase)" và "exerciseId|userId".
+// Đọc từ RAM để check private KHÔNG BAO GIỜ đụng NFS → không thể treo.
+const _assignedSet  = new Set(); // "exId|email"  — học sinh được giao đề
+const _submittedSet = new Set(); // "exId|userId" — học sinh đã từng nộp đề
+
+// ── Load DB vào RAM qua sql.js (WASM, không cần native addon) ────────────────
 // fs.readFile đọc DB file bất đồng bộ (không block event loop dù NFS chậm).
-// sql.js parse toàn bộ file trong bộ nhớ → query từ RAM, không bao giờ đụng NFS.
+// sql.js parse toàn bộ file trong bộ nhớ → mọi read phục vụ từ RAM, không đụng NFS.
 const DATA_DIR_PATH = process.env.DATA_DIR || __dirname;
 const DB_FILE_PATH  = path.join(DATA_DIR_PATH, 'data.db');
 
@@ -626,28 +631,64 @@ let _warmupState = 'pending';
 
 async function warmExerciseCacheFromFile() {
   try {
-    console.log('[sqljs] Đang đọc DB file vào RAM...');
     const SQL  = await initSqlJs();
     const buf  = await fs.promises.readFile(DB_FILE_PATH); // async — không block event loop
     const memDb = new SQL.Database(new Uint8Array(buf));
-    const stmt  = memDb.prepare(
+
+    // 1) Đề bài
+    const stmt = memDb.prepare(
       'SELECT id,program,skill,title,content,questions,answer_key,' +
       'image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises'
     );
-    let count = 0;
+    let exCount = 0;
     while (stmt.step()) {
       const row = stmt.getAsObject();
       _exById.set(Number(row.id), row);
-      count++;
+      exCount++;
     }
     stmt.free();
+
+    // 2) Quyền: assignments (exercise_id, student_email) → làm mới toàn bộ Set
+    _assignedSet.clear();
+    try {
+      const aStmt = memDb.prepare('SELECT exercise_id, student_email FROM assignments');
+      while (aStmt.step()) {
+        const r = aStmt.getAsObject();
+        if (r.exercise_id != null && r.student_email)
+          _assignedSet.add(Number(r.exercise_id) + '|' + String(r.student_email).toLowerCase());
+      }
+      aStmt.free();
+    } catch (e) { console.error('[sqljs] load assignments lỗi:', e.message); }
+
+    // 3) Quyền: submissions (exercise_id, user_id) → học sinh đã nộp thì luôn xem lại được
+    _submittedSet.clear();
+    try {
+      const sStmt = memDb.prepare('SELECT exercise_id, user_id FROM submissions');
+      while (sStmt.step()) {
+        const r = sStmt.getAsObject();
+        if (r.exercise_id != null && r.user_id != null)
+          _submittedSet.add(Number(r.exercise_id) + '|' + Number(r.user_id));
+      }
+      sStmt.free();
+    } catch (e) { console.error('[sqljs] load submissions lỗi:', e.message); }
+
     memDb.close();
     _warmupState = 'ready';
-    console.log('[sqljs] Đã load ' + count + ' đề bài vào RAM — exercise load sẽ instant từ giờ.');
+    console.log('[sqljs] RAM: ' + exCount + ' đề, ' + _assignedSet.size + ' lượt giao, ' + _submittedSet.size + ' lượt nộp.');
   } catch (e) {
     _warmupState = 'failed';
     console.error('[sqljs] Warm-up thất bại:', e.message);
   }
+}
+
+// Check quyền truy cập đề riêng từ RAM (tức thì, không đụng NFS)
+function canAccessPrivate(exId, user) {
+  if (!user) return false;
+  if (['teacher','admin'].includes(user.role)) return true;
+  const email = String(user.email || '').toLowerCase();
+  if (_assignedSet.has(exId + '|' + email)) return true;
+  if (_submittedSet.has(exId + '|' + user.id)) return true;
+  return false;
 }
 
 function fetchExerciseById(id) {
@@ -715,10 +756,9 @@ app.get('/api/exercises/:id', requireAuth, async (req, res) => {
     if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
     if (ex.is_private) {
       if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
-      if (!['teacher','admin'].includes(req.user.role)) {
-        const assigned = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(id, req.user.email);
-        const submitted = db.prepare('SELECT id FROM submissions WHERE exercise_id=? AND user_id=?').get(id, req.user.id);
-        if (!assigned && !submitted) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+      // Check quyền từ RAM — KHÔNG đụng NFS nên không thể treo
+      if (!canAccessPrivate(id, req.user)) {
+        return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
       }
     }
     const result = Object.assign({}, ex);
@@ -1935,6 +1975,8 @@ app.listen(port, () => {
   // Đọc DB file vào RAM qua sql.js (async, không block event loop dù NFS chậm).
   // Server đã lắng nghe port rồi → Railway health check pass → warmup chạy nền.
   warmExerciseCacheFromFile();
+  // Làm mới RAM mỗi 20s: đề mới, lượt giao/nộp mới xuất hiện trong ≤20s mà không cần đọc NFS lúc học sinh mở đề.
+  setInterval(warmExerciseCacheFromFile, 20 * 1000);
 
   console.log('📁 Database:', path.join(DATA_DIR, 'data.db'));
   if (DATA_DIR === __dirname)
