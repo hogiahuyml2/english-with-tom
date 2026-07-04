@@ -50,6 +50,7 @@
 .chip-topic { background:#dcfce7; color:#15803d; }
 .ex-card-title { font-size:13.5px; font-weight:700; color:var(--text); margin:0 0 7px; line-height:1.45; }
 .ex-card-excerpt { font-size:12.5px; color:var(--text-muted); line-height:1.6; margin:0 0 14px; flex:1; }
+.ex-card-body .btn { margin-top:auto; }  /* nút "Làm bài" luôn ở đáy thẻ dù có/không có excerpt */
 </style>
 </head>
 <body data-page="" data-guard="auth">
@@ -203,9 +204,18 @@ function renderCard(e){
   if (meta.band_target) chips += '<span class="chip chip-band">🎯 Band '+esc(meta.band_target)+'</span>';
   if (meta.topic_tag)   chips += '<span class="chip chip-topic">'+esc(meta.topic_tag)+'</span>';
 
-  /* Excerpt — strip HTML tags */
-  var excerpt = (e.excerpt||'').replace(/<[^>]+>/g,'').replace(/&[a-zA-Z]+;/g,' ').replace(/\s+/g,' ').trim();
-  if (excerpt.length > 110) excerpt = excerpt.substring(0,110)+'…';
+  /* Excerpt — làm sạch triệt để: server cắt content ở 200 ký tự nên hay đứt
+     GIỮA thẻ HTML (Google Docs paste) → phải xoá cả thẻ dở dang + entity cụt.
+     Nếu sau khi làm sạch không còn văn bản thật (rỗng/quá ngắn) → ẩn để giữ thẩm mỹ. */
+  var excerpt = (e.excerpt||'')
+    .replace(/<[^>]*>/g, ' ')        // thẻ HTML hoàn chỉnh
+    .replace(/<[^>]*$/g, ' ')        // thẻ dở dang ở cuối (vd '<span id="docs-internal-guid...')
+    .replace(/&[a-zA-Z]+;/g, ' ')    // ký tự đặc biệt hoàn chỉnh (&nbsp; ...)
+    .replace(/&[a-zA-Z#0-9]*$/g, '') // ký tự đặc biệt dở dang ở cuối
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (excerpt.length < 12) excerpt = '';   // mảnh vụn quá ngắn → ẩn
+  else if (excerpt.length > 110) excerpt = excerpt.substring(0,110)+'…';
 
   return '<div class="ex-preview-card" onclick="location.href=\'practice-writing.html?id='+e.id+'\'">'+
     '<div class="ex-thumb">'+thumbHtml+taskBadge+'</div>'+
