@@ -54,6 +54,32 @@
   .hint-lines li { font-size:13px; color:#0c4a6e; padding:4px 0; border-bottom:1px dashed #c7e9fb; line-height:1.55; }
   .hint-lines li:last-child { border:none; }
 
+  /* ── Vocab & collocations panel (tím, tách biệt hints) ── */
+  .vocab-toggle {
+    width:100%; margin-top:12px;
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+    border:1.5px solid #ddd6fe; border-radius:10px;
+    padding:10px 16px; font-size:13.5px; font-weight:600;
+    color:#6d28d9; cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font);
+  }
+  .vocab-toggle:hover { background:linear-gradient(135deg,#ede9fe,#ddd6fe); }
+  #vocabPanel {
+    background:#faf8ff; border:1.5px solid #ddd6fe;
+    border-radius:12px; padding:18px; margin-top:8px; display:none;
+  }
+  .vocab-section { margin-bottom:18px; }
+  .vocab-section:last-child { margin-bottom:0; }
+  .vocab-section-title { font-size:13px; font-weight:700; color:#6d28d9; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .vocab-item { background:#fff; border:1px solid #e9d5ff; border-radius:9px; padding:9px 12px; margin-bottom:8px; }
+  .vocab-item:last-child { margin-bottom:0; }
+  .vocab-term { font-size:14px; font-weight:700; color:#5b21b6; }
+  .vocab-pos { font-size:11px; font-style:italic; color:#9333ea; font-weight:500; margin-left:6px; }
+  .vocab-mean { font-size:12.5px; color:#6b21a8; margin:2px 0 5px; }
+  .vocab-eg { font-size:12.5px; color:#4c1d95; font-family:Georgia,serif; font-style:italic; line-height:1.5; background:#f5f3ff; border-left:3px solid #c4b5fd; padding:4px 9px; border-radius:0 6px 6px 0; }
+  .vocab-note { font-size:12.5px; color:#6b21a8; background:#f3e8ff; border-radius:8px; padding:8px 12px; margin-bottom:14px; line-height:1.55; }
+
   /* ── Error list (take notes) ── */
   .err-item { border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; background:#fff; }
   .err-item:last-child { margin-bottom:0; }
@@ -72,7 +98,7 @@
   .err-right { color:#16a34a; }
   .err-explain { font-size:13px; color:var(--text-muted); line-height:1.65; margin-bottom:6px; }
   .err-rule { background:#fff7ed; border-left:3px solid #f59e0b; padding:5px 10px; border-radius:0 6px 6px 0; font-size:12.5px; font-weight:600; color:#92400e; }
-  @media print { #errorListSection { display:block !important; } .result-actions,.hints-toggle,#hintsPanel,.card:not(#errorListSection):not(#result) { display:none !important; } }
+  @media print { #errorListSection { display:block !important; } .result-actions,.hints-toggle,#hintsPanel,.vocab-toggle,#vocabPanel,.card:not(#errorListSection):not(#result) { display:none !important; } }
 
   /* ── Message modal ── */
   #messageModal {
@@ -269,7 +295,7 @@
   @media print {
     #site-header, #site-footer, .q-block, #exImageWrap,
     #loading, .result-actions, #messageModal, .hints-toggle,
-    #hintsPanel, #submitBtn, #submitHint, #aiNote,
+    #hintsPanel, .vocab-toggle, #vocabPanel, #submitBtn, #submitHint, #aiNote,
     .crumb, .practice-bar { display:none !important; }
     .two-col { display:block !important; }
     .passage { display:none !important; }
@@ -415,6 +441,21 @@
             🔄 Đang tạo gợi ý riêng cho đề này...
           </div>
           <div id="hintsContent" style="display:none;"></div>
+        </div>
+
+        <!-- Vocab & collocations toggle -->
+        <button class="vocab-toggle" id="vocabBtn" type="button" onclick="toggleVocab()">
+          <span>📚</span>
+          <span>Từ vựng &amp; Cụm từ gợi ý</span>
+          <span id="vocabBtnArrow" style="margin-left:auto; font-size:11px;">▼</span>
+        </button>
+
+        <!-- Vocab panel -->
+        <div id="vocabPanel">
+          <div id="vocabLoading" style="text-align:center; padding:16px; color:var(--text-muted);">
+            🔄 Đang tìm từ vựng &amp; collocations phù hợp đề này...
+          </div>
+          <div id="vocabContent" style="display:none;"></div>
         </div>
 
         <!-- History toggle -->
@@ -1344,6 +1385,96 @@ function renderHints(h) {
   document.getElementById('hintsContent').innerHTML = html;
   document.getElementById('hintsContent').style.display = 'block';
   document.getElementById('hintsLoading').style.display = 'none';
+}
+
+/* ── Từ vựng & Collocations ── */
+var vocabLoaded = false;
+var vocabOpen   = false;
+
+function toggleVocab() {
+  vocabOpen = !vocabOpen;
+  document.getElementById('vocabBtnArrow').textContent = vocabOpen ? '▲' : '▼';
+  document.getElementById('vocabPanel').style.display  = vocabOpen ? 'block' : 'none';
+  if (vocabOpen && !vocabLoaded) loadVocab();
+}
+
+async function loadVocab() {
+  var ctrl  = new AbortController();
+  var timer = setTimeout(function() { ctrl.abort(); }, 100000);
+  try {
+    var r = await fetch('/api/writing-vocab', {
+      method:'POST', credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ exercise_id: EXERCISE_ID }),
+      signal: ctrl.signal
+    });
+    clearTimeout(timer);
+    var data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Server error');
+    renderVocab(data.vocab);
+    vocabLoaded = true;
+  } catch(e) {
+    clearTimeout(timer);
+    var errMsg = (e && e.name === 'AbortError')
+      ? '❌ Tải từ vựng mất quá lâu. Đóng rồi mở lại để thử lại.'
+      : '❌ Không tải được từ vựng lúc này. Nhấn lại để thử lại.';
+    document.getElementById('vocabLoading').innerHTML = '<span style="color:var(--danger);">' + errMsg + '</span>';
+  }
+}
+
+function renderVocab(v) {
+  if (!v) { document.getElementById('vocabLoading').innerHTML = '<span style="color:var(--danger);">Không có dữ liệu.</span>'; return; }
+  var html = '';
+
+  if (v.topic) {
+    html += '<div style="margin-bottom:12px;">'+
+      '<span style="background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700;padding:3px 14px;border-radius:20px;">📎 '+esc(v.topic)+'</span>'+
+    '</div>';
+  }
+  if (v.register_note) {
+    html += '<div class="vocab-note">💡 '+esc(v.register_note)+'</div>';
+  }
+
+  if (v.vocabulary && v.vocabulary.length) {
+    html += '<div class="vocab-section"><div class="vocab-section-title">📖 Từ vựng theo chủ đề</div>';
+    v.vocabulary.forEach(function(it){
+      html += '<div class="vocab-item">'+
+        '<span class="vocab-term">'+esc(it.term||'')+'</span>'+
+        (it.pos ? '<span class="vocab-pos">('+esc(it.pos)+')</span>' : '')+
+        (it.meaning_vi ? '<div class="vocab-mean">'+esc(it.meaning_vi)+'</div>' : '')+
+        (it.example ? '<div class="vocab-eg">“'+esc(it.example)+'”</div>' : '')+
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (v.collocations && v.collocations.length) {
+    html += '<div class="vocab-section"><div class="vocab-section-title">🔗 Collocations (kết hợp từ tự nhiên)</div>';
+    v.collocations.forEach(function(it){
+      html += '<div class="vocab-item">'+
+        '<span class="vocab-term">'+esc(it.collocation||'')+'</span>'+
+        (it.meaning_vi ? '<div class="vocab-mean">'+esc(it.meaning_vi)+'</div>' : '')+
+        (it.example ? '<div class="vocab-eg">“'+esc(it.example)+'”</div>' : '')+
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (v.key_phrases && v.key_phrases.length) {
+    html += '<div class="vocab-section"><div class="vocab-section-title">💬 Key phrases (mẫu câu chức năng)</div>';
+    v.key_phrases.forEach(function(it){
+      html += '<div class="vocab-item">'+
+        '<span class="vocab-term">'+esc(it.phrase||'')+'</span>'+
+        (it.use_vi ? '<div class="vocab-mean">'+esc(it.use_vi)+'</div>' : '')+
+        (it.example ? '<div class="vocab-eg">“'+esc(it.example)+'”</div>' : '')+
+      '</div>';
+    });
+    html += '</div>';
+  }
+
+  document.getElementById('vocabContent').innerHTML = html;
+  document.getElementById('vocabContent').style.display = 'block';
+  document.getElementById('vocabLoading').style.display = 'none';
 }
 
 /* ── PDF / In ── */

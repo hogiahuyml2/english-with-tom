@@ -7,7 +7,7 @@ const multer = require('multer');
 const webpush = require('web-push');
 const initSqlJs = require('sql.js');
 const { db, hashPassword, verifyPassword, now } = require('./db');
-const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider } = require('./ai');
+const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider } = require('./ai');
 
 // ===== Web Push VAPID =====
 // Tạo keys bằng: node -e "const wp=require('web-push');const k=wp.generateVAPIDKeys();console.log(k);"
@@ -412,6 +412,27 @@ app.post('/api/writing-hints', requireAuth, async (req, res) => {
   } catch (e) {
     console.error('Writing hints error', e.message);
     res.status(500).json({ error: 'Không thể tạo gợi ý lúc này, thử lại sau.' });
+  }
+});
+
+// Gợi ý TỪ VỰNG & COLLOCATIONS theo đề (đọc đề từ RAM cache — không đụng NFS)
+app.post('/api/writing-vocab', requireAuth, async (req, res) => {
+  const id = parseInt((req.body || {}).exercise_id, 10);
+  if (!id) return res.status(400).json({ error: 'ID đề không hợp lệ.' });
+  if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
+  let ex;
+  try {
+    ex = await fetchExerciseById(id);
+  } catch (fetchErr) {
+    return res.status(503).json({ error: 'Server đang khởi động, thử lại sau vài giây.' });
+  }
+  if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
+  try {
+    const vocab = await getVocabSuggestions(ex);
+    res.json({ vocab });
+  } catch (e) {
+    console.error('Writing vocab error', e.message);
+    res.status(500).json({ error: 'Không thể tạo gợi ý từ vựng lúc này, thử lại sau.' });
   }
 });
 

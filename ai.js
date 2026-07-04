@@ -1183,7 +1183,7 @@ async function getWritingHints(exercise) {
     for (let i = 0; i < attempts.length; i++) {
       const cfg = attempts[i];
       try {
-        const hints = await queueGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
+        const hints = await rateLimitedGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
           ...baseBody,
           generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
         }, 60000));
@@ -1216,4 +1216,171 @@ async function getWritingHints(exercise) {
   throw new Error('Chưa cấu hình AI');
 }
 
-module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, provider };
+// ═══════════════════════════════════════════════════════════════════════════
+// TỪ VỰNG & COLLOCATIONS gợi ý theo đề (tách riêng khỏi hints — chuyên sâu vocab)
+// Yêu cầu cốt lõi: đúng ngữ cảnh đề, collocation TỰ NHIÊN có trong corpus (không bịa),
+// đúng cấp độ kỳ thi, mỗi mục có ví dụ dùng được cho chính đề này.
+// ═══════════════════════════════════════════════════════════════════════════
+const _vocabCache = new Map(); // exercise.id → { vocab, ts }
+function getCachedVocab(id) {
+  const e = _vocabCache.get(String(id));
+  if (!e) return null;
+  if (Date.now() - e.ts > HINTS_CACHE_MS) { _vocabCache.delete(String(id)); return null; }
+  return e.vocab;
+}
+function setCachedVocab(id, vocab) { _vocabCache.set(String(id), { vocab, ts: Date.now() }); }
+
+// Cấp độ ngôn ngữ + register theo từng kỳ thi (CEFR)
+function examRegisterGuide(program) {
+  switch ((program || '').toUpperCase()) {
+    case 'KET':
+      return `Cấp độ KET (CEFR A2). Từ vựng ĐỜI THƯỜNG, thông dụng, cụ thể. Collocation cơ bản, tần suất cao (vd "have lunch", "go shopping", "a lot of"). Cụm từ chức năng đơn giản (chào hỏi, mời, cảm ơn, đề nghị). TUYỆT ĐỐI không đưa từ học thuật/less-common lexis — sẽ không phù hợp A2.`;
+    case 'PET':
+      return `Cấp độ PET (CEFR B1). Từ vựng đời thường mở rộng, một vài từ trung cấp. Collocation thông dụng, tự nhiên. Cụm từ chức năng B1 (nêu ý kiến đơn giản, gợi ý, so sánh cơ bản).`;
+    case 'FCE':
+      return `Cấp độ FCE (CEFR B2). Từ vựng trung–cao cấp, một phần LESS COMMON LEXIS phù hợp. Collocation phong phú, tự nhiên (phrasal verbs, adj+noun, verb+noun mạnh). Cụm từ triển khai lập luận, đánh giá, mô tả theo đúng dạng bài (essay/article/review/story...).`;
+    case 'IELTS':
+      return `Cấp độ IELTS Academic (hướng Band 7.0+). Ưu tiên LEXICAL RESOURCE học thuật: less common & topic-specific vocabulary, academic collocations chuẩn (vd "pose a threat", "a significant proportion", "mitigate the impact"), cohesive/academic phrases. Tham khảo phong cách từ Cambridge, Oxford Collocations Dictionary, IELTS Liz/Simon, DOL English. Tránh từ quá thông tục/informal.`;
+    case 'APTIS':
+      return `Cấp độ APTIS (B1–C1 tùy task). Với email/thư formal (Part 4 Task 2) dùng formal register + collocation trang trọng ("I am writing to...", "I would appreciate it if..."). Với task thông thường dùng register trung tính, tự nhiên.`;
+    default:
+      return `Từ vựng phù hợp trình độ trung cấp, tự nhiên, đúng ngữ cảnh. Collocation thông dụng có trong corpus.`;
+  }
+}
+
+function buildVocabSystem(exercise) {
+  const hasImage = !!exercise.image_url;
+  return `Bạn là chuyên gia ngôn ngữ học ứng dụng & giáo viên luyện thi Cambridge/IELTS/APTIS. Nhiệm vụ: gợi ý TỪ VỰNG, COLLOCATIONS và CỤM TỪ (key phrases) để học sinh áp dụng vào bài WRITING của ĐỀ BÀI CỤ THỂ NÀY.
+
+${hasImage ? '⚠️ ĐỀ CÓ HÌNH ẢNH — đọc kỹ hình để nắm chủ đề/nội dung thực tế trước khi gợi ý.\n' : ''}══ NGUYÊN TẮC BẮT BUỘC (CƠ SỞ NGÔN NGỮ HỌC) ══
+1. ĐÚNG NGỮ CẢNH ĐỀ: mọi từ/cụm phải liên quan trực tiếp chủ đề & yêu cầu của đề này, dùng được ngay trong bài. KHÔNG đưa từ chung chung áp dụng cho mọi đề.
+2. COLLOCATION PHẢI TỰ NHIÊN & CÓ THẬT: chỉ đưa những kết hợp từ mà người bản ngữ THỰC SỰ dùng, kiểm chứng được trong từ điển/corpus (Oxford Collocations Dictionary, Cambridge Dictionary, COCA/BNC). TUYỆT ĐỐI KHÔNG tự bịa ra collocation nghe "có vẻ đúng". Nếu không chắc, chọn collocation thông dụng, an toàn hơn.
+3. ĐÚNG NGỮ PHÁP & TỪ LOẠI: ghi đúng part of speech; collocation đúng mẫu ngữ pháp (vd verb + noun, adj + noun, preposition đi kèm).
+4. ĐÚNG CẤP ĐỘ: ${examRegisterGuide(exercise.program)}
+5. MỖI MỤC CÓ VÍ DỤ THẬT: một câu ví dụ tiếng Anh tự nhiên, đúng ngữ pháp, DÙNG ĐƯỢC cho chính đề này (không phải câu generic).
+
+══ TRẢ VỀ (JSON) ══
+• topic: (tiếng Việt, ngắn) chủ đề/nội dung của đề — để học sinh biết những gợi ý này xoay quanh cái gì.
+• register_note: (tiếng Việt, 1 câu) nhắc register/độ trang trọng phù hợp kỳ thi & dạng bài này.
+• vocabulary: 8–12 mục TỪ VỰNG then chốt theo chủ đề đề. Mỗi mục:
+    - term: từ/cụm tiếng Anh
+    - pos: từ loại (n, v, adj, adv, phrasal verb...)
+    - meaning_vi: nghĩa tiếng Việt ngắn gọn
+    - example: 1 câu ví dụ tiếng Anh dùng được cho đề này
+• collocations: 6–10 COLLOCATION tự nhiên, đúng chủ đề. Mỗi mục:
+    - collocation: cụm kết hợp (vd "raise awareness", "a major concern", "heavily dependent on")
+    - meaning_vi: nghĩa/sắc thái tiếng Việt
+    - example: 1 câu ví dụ tiếng Anh dùng collocation đó, hợp ngữ cảnh đề
+• key_phrases: 5–8 CỤM TỪ / mẫu câu chức năng phù hợp DẠNG BÀI này (mở bài, nêu ý kiến, chuyển ý, kết luận, hoặc greeting/sign-off với thư...). Mỗi mục:
+    - phrase: cụm/mẫu câu tiếng Anh
+    - use_vi: (tiếng Việt) dùng khi nào / để làm gì
+    - example: 1 câu ví dụ áp dụng cho đề này
+
+⚠️ Thà đưa ÍT mục nhưng CHUẨN XÁC còn hơn nhiều mục mà sai collocation. Chất lượng > số lượng.`;
+}
+
+const VOCAB_GEMINI_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    topic:         { type: 'STRING' },
+    register_note: { type: 'STRING' },
+    vocabulary: { type: 'ARRAY', items: { type: 'OBJECT',
+      properties: { term:{type:'STRING'}, pos:{type:'STRING'}, meaning_vi:{type:'STRING'}, example:{type:'STRING'} },
+      required: ['term','meaning_vi','example'] } },
+    collocations: { type: 'ARRAY', items: { type: 'OBJECT',
+      properties: { collocation:{type:'STRING'}, meaning_vi:{type:'STRING'}, example:{type:'STRING'} },
+      required: ['collocation','meaning_vi','example'] } },
+    key_phrases: { type: 'ARRAY', items: { type: 'OBJECT',
+      properties: { phrase:{type:'STRING'}, use_vi:{type:'STRING'}, example:{type:'STRING'} },
+      required: ['phrase','use_vi','example'] } }
+  },
+  required: ['topic','vocabulary','collocations','key_phrases']
+};
+
+const VOCAB_CLAUDE_SCHEMA = {
+  type: 'object',
+  properties: {
+    topic:         { type: 'string' },
+    register_note: { type: 'string' },
+    vocabulary: { type: 'array', items: { type: 'object',
+      properties: { term:{type:'string'}, pos:{type:'string'}, meaning_vi:{type:'string'}, example:{type:'string'} },
+      required: ['term','meaning_vi','example'], additionalProperties: false } },
+    collocations: { type: 'array', items: { type: 'object',
+      properties: { collocation:{type:'string'}, meaning_vi:{type:'string'}, example:{type:'string'} },
+      required: ['collocation','meaning_vi','example'], additionalProperties: false } },
+    key_phrases: { type: 'array', items: { type: 'object',
+      properties: { phrase:{type:'string'}, use_vi:{type:'string'}, example:{type:'string'} },
+      required: ['phrase','use_vi','example'], additionalProperties: false } }
+  },
+  required: ['topic','vocabulary','collocations','key_phrases'],
+  additionalProperties: false
+};
+
+async function getVocabSuggestions(exercise) {
+  const cached = getCachedVocab(exercise.id);
+  if (cached) {
+    console.log('[AI] vocab cache hit — exercise', exercise.id, '(tiết kiệm 1 API call)');
+    return cached;
+  }
+
+  const p         = provider();
+  const sysPrompt = buildVocabSystem(exercise);
+  const userText  = `KỲ THI: ${exercise.program} — Kỹ năng: ${exercise.skill}\nĐỀ BÀI: ${exercise.title}\n\n${exercise.content || ''}`;
+  const imageData = await fetchImageBase64(exercise.image_url);
+
+  if (p === 'gemini') {
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const parts = [];
+    if (imageData) parts.push({ inline_data: { mime_type: imageData.mimeType, data: imageData.base64 } });
+    parts.push({ text: userText });
+    const baseBody = {
+      system_instruction: { parts: [{ text: sysPrompt }] },
+      contents: [{ role: 'user', parts }],
+      generationConfig: { responseMimeType: 'application/json', responseSchema: VOCAB_GEMINI_SCHEMA }
+    };
+    const attempts = [
+      { maxOutputTokens: 4000, thinkingBudget: 0 },
+      { maxOutputTokens: 3000, thinkingBudget: 0 }
+    ];
+    let lastErr;
+    for (let i = 0; i < attempts.length; i++) {
+      const cfg = attempts[i];
+      try {
+        const vocab = await rateLimitedGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
+          ...baseBody,
+          generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
+        }, 60000));
+        setCachedVocab(exercise.id, vocab);
+        return vocab;
+      } catch (e) {
+        lastErr = e;
+        if (i < attempts.length - 1) console.warn('[AI] vocab attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
+      }
+    }
+    throw lastErr;
+  }
+
+  if (p === 'claude') {
+    const client       = new Anthropic();
+    const model        = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const contentParts = [];
+    if (imageData) contentParts.push({ type: 'image', source: { type: 'base64', media_type: imageData.mimeType, data: imageData.base64 } });
+    contentParts.push({ type: 'text', text: userText });
+    const resp = await client.messages.create({
+      model, max_tokens: 8000, system: sysPrompt,
+      messages: [{ role: 'user', content: contentParts }],
+      output_config: { format: { type: 'json_schema', schema: VOCAB_CLAUDE_SCHEMA } }
+    });
+    const block = resp.content.find(b => b.type === 'text');
+    if (!block || !block.text) throw new Error('Claude vocab: phản hồi rỗng');
+    let vocab;
+    try { vocab = JSON.parse(block.text); } catch (e) { throw new Error('Claude vocab JSON parse thất bại: ' + e.message); }
+    setCachedVocab(exercise.id, vocab);
+    return vocab;
+  }
+
+  throw new Error('Chưa cấu hình AI');
+}
+
+module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider };
