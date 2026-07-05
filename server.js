@@ -59,6 +59,15 @@ function notifyAllStaff(type, title, body, link, exceptUserId) {
   } catch (e) { console.error('[notify] notifyAllStaff lỗi:', e.message); }
 }
 
+// Đường link mở ĐÚNG trang làm bài của 1 đề theo skill — dùng để chuông thông báo
+// đưa học sinh vào thẳng bài, không phải trang danh sách chung chung.
+function practiceUrlFor(skill, exerciseId, assigned) {
+  const suffix = assigned ? '&assigned=1' : '';
+  if (skill === 'Speaking') return 'practice-speaking.html?id=' + exerciseId + suffix;
+  if (skill === 'Writing')  return 'practice-writing.html?id=' + exerciseId + suffix;
+  return 'practice-quiz.html?id=' + exerciseId + suffix;
+}
+
 // ===== Tải file ảnh/âm thanh — lưu trên ổ đĩa bền vững (/data/uploads trên Railway) =====
 const DATA_DIR = process.env.DATA_DIR || __dirname;
 const uploadsDir = path.join(DATA_DIR, 'uploads');
@@ -206,7 +215,7 @@ app.post('/api/register', async (req, res) => {
 
   db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
   startSession(res, newId, req);
-  notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html');
+  notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html?tab=students');
   res.json({ needVerify: false });
 });
 
@@ -647,7 +656,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
       const r2 = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
         .run(info.name || email, email, 'google-oauth', 'student', now());
       u = { id: Number(r2.lastInsertRowid) };
-      notifyAllStaff('new_student', '🎓 Học sinh mới: ' + (info.name || email), email + ' vừa đăng ký qua Google.', 'teacher.html');
+      notifyAllStaff('new_student', '🎓 Học sinh mới: ' + (info.name || email), email + ' vừa đăng ký qua Google.', 'teacher.html?tab=students');
     } else if (!u.email_verified) {
       db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id);
     }
@@ -688,6 +697,12 @@ let _warmupState = 'pending';
 
 async function warmExerciseCacheFromFile() {
   try {
+    // Nếu DB đang ở chế độ WAL (dù db.js không chủ động bật, file có thể đã ở WAL
+    // từ trước), dữ liệu mới nhất nằm trong data.db-wal, KHÔNG nằm trong data.db.
+    // fs.readFile bên dưới chỉ đọc data.db → sẽ đọc dữ liệu CŨ nếu không checkpoint
+    // trước. PASSIVE không khoá độc quyền, không chờ reader khác → an toàn, không
+    // có rủi ro "treo" như khi đổi journal_mode.
+    try { db.exec('PRAGMA wal_checkpoint(PASSIVE);'); } catch (e) { /* không sao nếu DB không ở WAL */ }
     const SQL  = await initSqlJs();
     const buf  = await fs.promises.readFile(DB_FILE_PATH); // async — không block event loop
     const memDb = new SQL.Database(new Uint8Array(buf));
@@ -870,7 +885,7 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
   if (newEx) _exById.set(newId, newEx);
   exCacheInvalidate();
   // Báo các giáo viên/admin khác biết có đề mới (trừ người vừa tạo)
-  notifyAllStaff('exercise_created', '📚 Đề mới: ' + title, program + ' · ' + skill + ' · Tạo bởi ' + req.user.name, 'teacher.html', req.user.id);
+  notifyAllStaff('exercise_created', '📚 Đề mới: ' + title, program + ' · ' + skill + ' · Tạo bởi ' + req.user.name, 'teacher.html?tab=bank', req.user.id);
   res.json({ id: newId });
 });
 
@@ -964,8 +979,11 @@ app.post('/api/submissions', requireAuth, (req, res) => {
   }
   const r = db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,score,max_score,status,submitted_at) VALUES (?,?,?,?,?,?,?)')
     .run(req.user.id, exercise_id, JSON.stringify(answers || []), score, max, status, now());
+  const newSubId = Number(r.lastInsertRowid);
+  // Cập nhật RAM cache NGAY (giống assignments) — học sinh vừa nộp có thể xem lại ngay
+  _submittedSet.add(Number(exercise_id) + '|' + req.user.id);
 
-  // Bài cần giáo viên chấm tay (Writing riêng / Speaking) → báo cho giáo viên phụ trách
+  // Bài cần giáo viên chấm tay (Writing riêng / Speaking) → báo cho giáo viên phụ trách, mở thẳng bài cần chấm
   if (status === 'pending') {
     let teacherId = null;
     if (ex.is_private) {
@@ -977,11 +995,12 @@ app.post('/api/submissions', requireAuth, (req, res) => {
     }
     const notifTitle = '📤 Bài nộp mới: ' + ex.title;
     const notifBody  = req.user.name + ' vừa nộp bài ' + ex.skill + ' — cần chấm.';
-    if (teacherId) notifyUser(teacherId, 'submission_received', notifTitle, notifBody, 'teacher.html');
-    else notifyAllStaff('submission_received', notifTitle, notifBody, 'teacher.html');
+    const gradeLink  = 'teacher.html?tab=grade&sub=' + newSubId;
+    if (teacherId) notifyUser(teacherId, 'submission_received', notifTitle, notifBody, gradeLink);
+    else notifyAllStaff('submission_received', notifTitle, notifBody, gradeLink);
   }
 
-  res.json({ id: Number(r.lastInsertRowid), score, max_score: max, status });
+  res.json({ id: newSubId, score, max_score: max, status });
 });
 
 // Lịch sử các lần nộp bài của tôi cho 1 đề cụ thể
@@ -1240,7 +1259,7 @@ app.delete('/api/admin/exercises/:id', requireRole('admin'), (req, res) => {
 app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) => {
   const { exercise_id, student_emails, group_id, deadline, note } = req.body || {};
   if (!exercise_id) return res.status(400).json({ error: 'Thiếu thông tin đề.' });
-  const ex = db.prepare('SELECT id,title,is_private FROM exercises WHERE id=?').get(exercise_id);
+  const ex = db.prepare('SELECT id,title,skill,is_private FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
 
   // Xây dựng danh sách email cần giao
@@ -1263,6 +1282,9 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
   for (const email of emails) {
     const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
     if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null); count++; }
+    // Cập nhật RAM cache NGAY — không chờ chu kỳ làm mới 20s (tránh học sinh bấm vào
+    // bài vừa được giao mà bị báo "chưa được giao" do cache chưa kịp cập nhật)
+    _assignedSet.add(Number(exercise_id) + '|' + email);
     const u = db.prepare('SELECT id,name FROM users WHERE email=?').get(email);
     const assignLink = baseUrl(req) + '/assigned.html';
     if (emailEnabled()) {
@@ -1280,8 +1302,8 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
         </div>`
       ).catch(() => {});
     }
-    // Thông báo trong ứng dụng + push cho học sinh (nếu đã có tài khoản)
-    if (u) notifyUser(u.id, 'assignment_created', '📝 Bạn có bài tập mới!', ex.title + (groupName ? ' · Lớp ' + groupName : ''), assignLink);
+    // Thông báo trong ứng dụng + push cho học sinh (nếu đã có tài khoản) — mở thẳng vào bài
+    if (u) notifyUser(u.id, 'assignment_created', '📝 Bạn có bài tập mới!', ex.title + (groupName ? ' · Lớp ' + groupName : ''), practiceUrlFor(ex.skill, ex.id, true));
   }
   res.json({ ok: true, assigned: count, group_name: groupName });
 });
@@ -1375,8 +1397,8 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
       </div>`
     ).catch(() => {});
   }
-  // Thông báo trong ứng dụng + push cho học sinh
-  notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, link);
+  // Thông báo trong ứng dụng + push cho học sinh — mở thẳng kết quả bài nộp này
+  notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, 'assigned.html?open=' + subId);
   res.json({ ok: true });
 });
 
@@ -1511,7 +1533,7 @@ app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (r
       </div>`
     ).catch(() => {});
   }
-  notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, link);
+  notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, 'assigned.html?open=' + subId);
   res.json({ ok: true });
 });
 
@@ -2037,7 +2059,7 @@ async function sendDeadlineReminders() {
   if (!emailEnabled()) return;
   const pending = db.prepare(`
     SELECT a.id, a.student_email, a.deadline,
-           e.title, e.program, e.id AS exercise_id,
+           e.title, e.program, e.id AS exercise_id, e.skill,
            u.id AS student_id, u.name AS student_name,
            sub.id AS submission_id
     FROM assignments a
@@ -2070,7 +2092,7 @@ async function sendDeadlineReminders() {
       </div>`
     ).catch(() => {});
     if (row.student_id) {
-      notifyUser(row.student_id, 'deadline_reminder', '⏰ Sắp hết hạn: ' + row.title, 'Hạn nộp ' + dline + ' — bạn chưa nộp bài.', 'assigned.html');
+      notifyUser(row.student_id, 'deadline_reminder', '⏰ Sắp hết hạn: ' + row.title, 'Hạn nộp ' + dline + ' — bạn chưa nộp bài.', practiceUrlFor(row.skill, row.exercise_id, true));
     }
     db.prepare('UPDATE assignments SET reminder_sent=1 WHERE id=?').run(row.id);
     console.log(`📬 Nhắc deadline: ${row.student_email} — "${row.title}" (hạn ${dline})`);

@@ -621,6 +621,13 @@
 
     asRenderPills();
     asRenderList();
+
+    // Mở sâu từ thông báo (chuông 🔔): ?open=<submission_id> → mở thẳng kết quả bài đó
+    var openSid = new URLSearchParams(location.search).get('open');
+    if (openSid) {
+      var openSidNum = parseInt(openSid, 10);
+      if (openSidNum && _feedbackMap[openSidNum]) setTimeout(function(){ openResultDetail(openSidNum); }, 60);
+    }
     }).catch(function(){
       if (attempt < 2) {
         setTimeout(function(){ loadAssignments(attempt + 1); }, 3000);

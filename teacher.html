@@ -3608,6 +3608,18 @@ window._gpAnnSaveHook = async function() {
   gpLoadAnnotations();
   return true;
 };
+
+/* ── Mở sâu từ thông báo (chuông 🔔): ?tab=grade&sub=123 → mở đúng bài nộp ── */
+(function openFromNotification(){
+  var qp = new URLSearchParams(location.search);
+  var tab = qp.get('tab');
+  var sub = qp.get('sub');
+  if (tab && TABS.indexOf(tab) > -1) showTab(tab);
+  if (sub) {
+    var subId = parseInt(sub, 10);
+    if (subId) setTimeout(function(){ openGradingPanel(subId); }, 60);
+  }
+})();
 </script>
 </body>
 </html>
