@@ -685,6 +685,7 @@ const _exById = new Map(); // id → exercise row
 // Đọc từ RAM để check private KHÔNG BAO GIỜ đụng NFS → không thể treo.
 const _assignedSet  = new Set(); // "exId|email"  — học sinh được giao đề
 const _submittedSet = new Set(); // "exId|userId" — học sinh đã từng nộp đề
+const _assignmentDeadlines = new Map(); // "exId|email" → deadline (string) — để khoá bài quá hạn
 
 // ── Load DB vào RAM qua sql.js (WASM, không cần native addon) ────────────────
 // fs.readFile đọc DB file bất đồng bộ (không block event loop dù NFS chậm).
@@ -721,13 +722,18 @@ async function warmExerciseCacheFromFile() {
     stmt.free();
 
     // 2) Quyền: assignments (exercise_id, student_email) → làm mới toàn bộ Set
+    // Đồng thời nạp deadline để khoá bài quá hạn (đề giao riêng).
     _assignedSet.clear();
+    _assignmentDeadlines.clear();
     try {
-      const aStmt = memDb.prepare('SELECT exercise_id, student_email FROM assignments');
+      const aStmt = memDb.prepare('SELECT exercise_id, student_email, deadline FROM assignments');
       while (aStmt.step()) {
         const r = aStmt.getAsObject();
-        if (r.exercise_id != null && r.student_email)
-          _assignedSet.add(Number(r.exercise_id) + '|' + String(r.student_email).toLowerCase());
+        if (r.exercise_id != null && r.student_email) {
+          const key = Number(r.exercise_id) + '|' + String(r.student_email).toLowerCase();
+          _assignedSet.add(key);
+          if (r.deadline) _assignmentDeadlines.set(key, r.deadline);
+        }
       }
       aStmt.free();
     } catch (e) { console.error('[sqljs] load assignments lỗi:', e.message); }
@@ -761,6 +767,22 @@ function canAccessPrivate(exId, user) {
   if (_assignedSet.has(exId + '|' + email)) return true;
   if (_submittedSet.has(exId + '|' + user.id)) return true;
   return false;
+}
+
+// Lấy deadline (nếu có) của 1 học sinh cho 1 đề giao riêng — từ RAM, không đụng NFS
+function getAssignmentDeadline(exId, user) {
+  if (!user) return null;
+  const email = String(user.email || '').toLowerCase();
+  return _assignmentDeadlines.get(exId + '|' + email) || null;
+}
+function isPastDeadline(deadlineStr) {
+  if (!deadlineStr) return false;
+  // Giáo viên nhập deadline qua <input type="datetime-local"> trên trình duyệt ở Việt Nam
+  // (giờ ICT, UTC+7) — chuỗi lưu KHÔNG có timezone (vd "2026-07-15T23:59"). Server (Railway)
+  // chạy giờ UTC, nên phải tự gắn +07:00 khi so sánh, nếu không sẽ lệch 7 tiếng.
+  const hasZone = /[+-]\d{2}:?\d{2}$|Z$/i.test(deadlineStr);
+  const iso = hasZone ? deadlineStr : deadlineStr.replace(' ', 'T') + '+07:00';
+  return new Date(iso) < new Date();
 }
 
 function fetchExerciseById(id) {
@@ -835,6 +857,12 @@ app.get('/api/exercises/:id', requireAuth, async (req, res) => {
     }
     const result = Object.assign({}, ex);
     result.questions = result.questions ? JSON.parse(result.questions) : null;
+    // Đề giao riêng có hạn nộp đã qua → khoá, học sinh không làm bài được nữa
+    if (ex.is_private && req.user && req.user.role === 'student') {
+      const dl = getAssignmentDeadline(id, req.user);
+      result.deadline = dl;
+      result.deadline_locked = isPastDeadline(dl);
+    }
     res.json({ exercise: result });
   } catch (err) {
     console.error('GET /api/exercises/:id error:', err);
@@ -965,8 +993,11 @@ app.post('/api/submissions', requireAuth, (req, res) => {
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private && req.user.role === 'student') {
-    const ok = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, req.user.email);
+    const ok = db.prepare('SELECT id, deadline FROM assignments WHERE exercise_id=? AND student_email=? ORDER BY id DESC LIMIT 1').get(exercise_id, req.user.email);
     if (!ok) return res.status(403).json({ error: 'Đề này được giao riêng — bạn chưa được giao.' });
+    if (isPastDeadline(ok.deadline)) {
+      return res.status(403).json({ error: 'Đã quá hạn nộp bài (hạn: ' + fmtDeadline(ok.deadline) + '). Bạn không thể nộp bài này nữa.', deadline_locked: true });
+    }
   }
 
   let score = null, max = null, status = 'pending';
@@ -1281,7 +1312,11 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
   let count = 0;
   for (const email of emails) {
     const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
-    if (!exists) { ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null); count++; }
+    if (!exists) {
+      ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null);
+      count++;
+      if (deadline) _assignmentDeadlines.set(Number(exercise_id) + '|' + email, deadline);
+    }
     // Cập nhật RAM cache NGAY — không chờ chu kỳ làm mới 20s (tránh học sinh bấm vào
     // bài vừa được giao mà bị báo "chưa được giao" do cache chưa kịp cập nhật)
     _assignedSet.add(Number(exercise_id) + '|' + email);
@@ -1557,10 +1592,13 @@ app.post('/api/teacher/model-answer/:id', requireRole('teacher','admin'), async 
 app.put('/api/teacher/assignments/:id', requireRole('teacher','admin'), (req, res) => {
   const { deadline, note } = req.body || {};
   const id = Number(req.params.id);
-  const row = db.prepare('SELECT id FROM assignments WHERE id=? AND assigned_by=?').get(id, req.user.id);
+  const row = db.prepare('SELECT id, exercise_id, student_email FROM assignments WHERE id=? AND assigned_by=?').get(id, req.user.id);
   if (!row) return res.status(404).json({ error: 'Không tìm thấy bài đã giao.' });
   db.prepare('UPDATE assignments SET deadline=?, note=? WHERE id=?')
     .run(deadline || null, note || null, id);
+  // Cập nhật RAM cache NGAY để khoá/mở khoá bài phản ánh đúng ngay lập tức
+  const key = Number(row.exercise_id) + '|' + String(row.student_email).toLowerCase();
+  if (deadline) _assignmentDeadlines.set(key, deadline); else _assignmentDeadlines.delete(key);
   res.json({ ok: true });
 });
 

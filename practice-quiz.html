@@ -75,6 +75,14 @@
 <script>
   function qp(n){ return new URLSearchParams(location.search).get(n); }
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+  // Định dạng deadline hiển thị — deadline nhập bằng giờ Việt Nam trên trình duyệt, hiển thị
+  // lại cũng bằng trình duyệt (giờ VN) nên parse tự nhiên là đúng, không cần quy đổi timezone.
+  function fmtDeadlineClient(dl){
+    if (!dl) return '';
+    var d = new Date(dl);
+    if (isNaN(d.getTime())) return dl;
+    return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' lúc ' + d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  }
   var EXERCISE_ID = parseInt(qp('id')||'0',10);
   var LETTERS = ['A','B','C','D','E'];
   var QS = [];
@@ -118,6 +126,18 @@
     var back = document.getElementById('backLink');
     back.textContent = '‹ ' + e.program;
     back.href = 'exercises.html?program=' + encodeURIComponent(e.program);
+
+    // Đề giao riêng đã quá hạn nộp → khoá, không cho làm bài nữa
+    if (e.deadline_locked) {
+      var dlText = fmtDeadlineClient(e.deadline);
+      document.getElementById('questions').innerHTML =
+        '<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:16px 18px;">' +
+        '<h4 style="color:#dc2626;margin:0 0 6px;">🔒 Đã quá hạn nộp bài</h4>' +
+        '<p style="color:#991b1b;font-size:13.5px;margin:0;line-height:1.6;">Hạn nộp: <b>' + esc(dlText) + '</b>. Bạn không thể làm bài này nữa. Liên hệ giáo viên nếu cần gia hạn.</p>' +
+        '</div>';
+      document.getElementById('submitBtn').style.display = 'none';
+      return;
+    }
 
     // Hiện ảnh đề nếu có
     if (e.image_url) {

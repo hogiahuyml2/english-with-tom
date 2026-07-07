@@ -407,8 +407,18 @@
   var SKILLS = ['Writing','Reading','Listening','Speaking'];
   var SKILL_ICONS = {Writing:'✍️',Reading:'📖',Listening:'🎧',Speaking:'🗣️'};
 
+  // Deadline nhập bằng giờ Việt Nam trên trình duyệt, học sinh cũng xem bằng trình duyệt
+  // (giờ VN) nên parse tự nhiên là đúng, không cần quy đổi timezone.
+  function isDeadlinePassedClient(dl){
+    if (!dl) return false;
+    return new Date(dl) < new Date();
+  }
+
   function statusOf(a){
-    if (!a.submission_id) return 'todo';
+    if (!a.submission_id) {
+      if (a.is_private && isDeadlinePassedClient(a.deadline)) return 'locked';
+      return 'todo';
+    }
     if (a.submission_status==='graded') return 'graded';
     return 'pending';
   }
@@ -432,7 +442,7 @@
       }).join('');
 
     document.getElementById('asStatusPills').innerHTML = [
-      ['todo','📋 Cần làm'],['pending','⏳ Đang chấm'],['graded','✅ Đã có điểm']
+      ['todo','📋 Cần làm'],['pending','⏳ Đang chấm'],['graded','✅ Đã có điểm'],['locked','🔒 Quá hạn']
     ].map(function(pair){
       return '<button class="fpill'+(AS_F.status===pair[0]?' active':'')+'" onclick="asSetFilter(\'status\',\''+pair[0]+'\')">'+pair[1]+'</button>';
     }).join('');
@@ -461,6 +471,7 @@
     var todo    = filtered.filter(function(a){ return statusOf(a)==='todo'; });
     var pending = filtered.filter(function(a){ return statusOf(a)==='pending'; });
     var graded  = filtered.filter(function(a){ return statusOf(a)==='graded'; });
+    var locked  = filtered.filter(function(a){ return statusOf(a)==='locked'; });
     document.getElementById('cntTodo').textContent    = AS_ALL.filter(function(a){ return statusOf(a)==='todo'; }).length;
     document.getElementById('cntPending').textContent = AS_ALL.filter(function(a){ return statusOf(a)==='pending'; }).length;
     document.getElementById('cntDone').textContent    = AS_ALL.filter(function(a){ return statusOf(a)==='graded'; }).length;
@@ -554,6 +565,24 @@
           '</div>'+
           (sid ? '<div id="annPanel-'+sid+'" style="display:none;margin-top:6px;"></div>' : '')+
           '</div>';
+      });
+      html += '</div>';
+    }
+
+    if (locked.length){
+      html += '<div class="card" style="margin-top:20px;"><div class="card-head"><h3>🔒 Đã quá hạn <span class="tag">'+locked.length+'</span></h3></div>';
+      locked.forEach(function(a){
+        var ico = skillColor(a.skill);
+        var noteHtml = a.note ? '<div style="font-size:12.5px;color:var(--text-muted);margin-top:3px;">📌 '+esc(a.note)+'</div>' : '';
+        html += '<div class="task" style="opacity:.7;"><div class="task-left">'+
+          '<div class="task-ico '+ico+'">'+skillIcon(a.skill)+'</div>'+
+          '<div class="task-info"><h4>'+esc(a.title)+'</h4>'+
+          '<div class="meta">'+groupBadge(a)+esc(a.program)+' · '+esc(a.skill)+' · Giao bởi '+esc(a.teacher_name)+'</div>'+
+          noteHtml+'</div></div>'+
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">'+
+          '<span style="background:#fee2e2;color:#b91c1c;border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600;">🔒 Hạn '+fmtDate(a.deadline)+'</span>'+
+          '<span class="btn btn-sm" style="background:#f3f4f6;color:var(--text-faint);cursor:not-allowed;border-color:var(--border);" title="Đã quá hạn nộp bài">Đã khoá</span>'+
+          '</div></div>';
       });
       html += '</div>';
     }

@@ -98,6 +98,14 @@ var IS_PRIVATE = false;
 
 function qp(k){ return new URLSearchParams(location.search).get(k); }
 function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+// Định dạng deadline hiển thị — deadline nhập bằng giờ Việt Nam trên trình duyệt, hiển thị
+// lại cũng bằng trình duyệt (giờ VN) nên parse tự nhiên là đúng, không cần quy đổi timezone.
+function fmtDeadlineClient(dl){
+  if (!dl) return '';
+  var d = new Date(dl);
+  if (isNaN(d.getTime())) return dl;
+  return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' lúc ' + d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+}
 function showLoadError(msg){ document.getElementById('exTitle').textContent = msg; }
 
 /* ── Tải đề (retry khi server đang khởi động) ── */
@@ -143,6 +151,17 @@ function showLoadError(msg){ document.getElementById('exTitle').textContent = ms
     }
     IS_PRIVATE = !!e.is_private;
     document.getElementById('exSub').textContent = e.program + ' · Speaking · ' + (IS_PRIVATE ? 'Đề riêng — ' : '') + 'giáo viên nghe & chấm';
+
+    // Đề giao riêng đã quá hạn nộp → khoá, không cho ghi âm/nộp bài nữa
+    if (e.deadline_locked) {
+      var dlText = fmtDeadlineClient(e.deadline);
+      document.getElementById('recordCard').innerHTML =
+        '<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:16px 18px;">' +
+        '<h4 style="color:#dc2626;margin:0 0 6px;">🔒 Đã quá hạn nộp bài</h4>' +
+        '<p style="color:#991b1b;font-size:13.5px;margin:0;line-height:1.6;">Hạn nộp: <b>' + esc(dlText) + '</b>. Bạn không thể làm bài này nữa. Liên hệ giáo viên nếu cần gia hạn.</p>' +
+        '</div>';
+    }
+
     loadHistory();
   })
   .catch(function(err){
