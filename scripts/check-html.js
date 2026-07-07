@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Hàng rào an toàn: kiểm tra cú pháp JavaScript inline trong MỌI file .html,
-// và cảnh báo khi thẻ <div> trong JS build-HTML (kiểu html += '<div>...') bị
-// lệch số lượng mở/đóng.
+// và cảnh báo các lỗi phổ biến khác (thẻ <div> lệch, link nội bộ hỏng, ID
+// trùng lặp, ảnh thiếu).
 //
 // Vì sao cần: một lỗi cú pháp nhỏ (vd chuỗi '...' bị xuống dòng) làm CHẾT toàn bộ
 // <script> của trang → JS không chạy → trang kẹt "Đang tải đề...". Kiểu lỗi này
@@ -15,6 +15,10 @@
 // TOÀN BỘ mỗi <script> — lệch số lượng là CẢNH BÁO (không chặn deploy, có thể có
 // false positive từ div trong nhánh điều kiện không chạy cùng lúc).
 //
+// Link hỏng / ID trùng / ảnh thiếu: cũng chỉ CẢNH BÁO (không chặn) — heuristic
+// dựa trên regex nên có thể có báo động giả, nhưng đủ để người sửa code chú ý
+// trước khi học sinh gặp phải.
+//
 // Script này chạy TRƯỚC khi server khởi động (xem railway.toml startCommand).
 // Nếu phát hiện lỗi cú pháp → thoát mã 1 → deploy thất bại → Railway giữ nguyên
 // bản đang chạy tốt → học sinh KHÔNG BAO GIỜ thấy trang hỏng.
@@ -26,6 +30,7 @@ const path = require('path');
 const vm   = require('vm');
 
 const ROOT = path.join(__dirname, '..');
+let ALL_FILES_SET = null; // tên file trong ROOT — nạp 1 lần, dùng cho check link/ảnh
 
 // Lấy dòng bắt đầu (1-based) của một vị trí ký tự trong chuỗi
 function lineAt(text, index) {
@@ -55,8 +60,42 @@ function countDivBalance(code) {
   return { opens, closes, diff: opens - closes };
 }
 
+// Link nội bộ hỏng: href="xxx.html" trỏ tới file không tồn tại trong ROOT.
+function checkBrokenLinks(html, relFile, warnings) {
+  const hrefs = [...html.matchAll(/href=["']([a-zA-Z0-9_-]+\.html)(?:[?#][^"']*)?["']/g)].map(m => m[1]);
+  const unique = [...new Set(hrefs)];
+  const missing = unique.filter(h => !ALL_FILES_SET.has(h));
+  if (missing.length) {
+    warnings.push({ file: relFile, msg: 'link nội bộ trỏ tới file KHÔNG TỒN TẠI: ' + missing.join(', ') });
+  }
+}
+
+// Ảnh tĩnh thiếu: src="images/xxx" không có file tương ứng trên đĩa.
+function checkMissingImages(html, relFile, warnings) {
+  const srcs = [...html.matchAll(/src=["'](\/?images\/[a-zA-Z0-9_.-]+)["']/g)].map(m => m[1].replace(/^\//, ''));
+  const unique = [...new Set(srcs)];
+  const missing = unique.filter(s => !fs.existsSync(path.join(ROOT, s)));
+  if (missing.length) {
+    warnings.push({ file: relFile, msg: 'ảnh tham chiếu KHÔNG TỒN TẠI: ' + missing.join(', ') });
+  }
+}
+
+// ID trùng lặp trong markup TĨNH (ngoài <script>) — getElementById chỉ thấy cái đầu,
+// dễ gây bug khó hiểu (vd nút thứ 2 không bao giờ nhận sự kiện).
+function checkDuplicateIds(html, relFile, warnings) {
+  const withoutScripts = html.replace(/<script[\s\S]*?<\/script>/gi, '');
+  const ids = [...withoutScripts.matchAll(/\bid=["']([a-zA-Z0-9_-]+)["']/g)].map(m => m[1]);
+  const counts = {};
+  ids.forEach(id => counts[id] = (counts[id] || 0) + 1);
+  const dups = Object.keys(counts).filter(id => counts[id] > 1);
+  if (dups.length) {
+    warnings.push({ file: relFile, msg: 'ID trùng lặp trong HTML tĩnh: ' + dups.map(d => d + ' (x' + counts[d] + ')').join(', ') });
+  }
+}
+
 function checkFile(file) {
   const html = fs.readFileSync(file, 'utf8');
+  const relFile = path.relative(ROOT, file);
   const errors = [];
   const warnings = [];
   const re = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
@@ -74,24 +113,31 @@ function checkFile(file) {
       new vm.Script(src, { filename: path.basename(file) });
     } catch (e) {
       const startLine = lineAt(html, m.index);
-      errors.push({ file: path.relative(ROOT, file), htmlLine: startLine, msg: e.message });
+      errors.push({ file: relFile, htmlLine: startLine, msg: e.message });
     }
 
     const bal = countDivBalance(code);
     if (bal.diff !== 0) {
       warnings.push({
-        file: path.relative(ROOT, file),
+        file: relFile,
         msg: 'thẻ <div> trong JS lệch: mở=' + bal.opens + ' đóng=' + bal.closes + ' (lệch ' + (bal.diff > 0 ? '+' : '') + bal.diff + ') — kiểm tra các hàm html += "<div>..." có đóng đủ không.'
       });
     }
   }
+
+  checkBrokenLinks(html, relFile, warnings);
+  checkMissingImages(html, relFile, warnings);
+  checkDuplicateIds(html, relFile, warnings);
+
   return { errors, warnings };
 }
 
 function main() {
   let files;
   try {
-    files = fs.readdirSync(ROOT).filter(f => f.toLowerCase().endsWith('.html'));
+    const all = fs.readdirSync(ROOT);
+    ALL_FILES_SET = new Set(all);
+    files = all.filter(f => f.toLowerCase().endsWith('.html'));
   } catch (e) {
     // Không đọc được thư mục — KHÔNG chặn deploy vì đây là lỗi của checker, không phải của trang
     console.warn('[check-html] Bỏ qua (không liệt kê được file):', e.message);
