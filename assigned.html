@@ -67,6 +67,7 @@
 </section>
 
 <div id="site-footer"></div>
+<script src="js/editor.js"></script>
 <script src="js/main.js?v=18"></script>
 <script>
   function fmtDate(iso){
@@ -107,6 +108,19 @@
     document.body.style.overflow = '';
   }
 
+  function renderExercisePrompt(data) {
+    var content = data.exerciseContent || '';
+    var img     = data.exerciseImageUrl || '';
+    var audio   = data.exerciseAudioUrl || '';
+    if (!content && !img && !audio) return '';
+    var body = (window.RichEditor && RichEditor.sanitize) ? RichEditor.sanitize(content) : esc(content);
+    if (img)   body += '<img src="'+esc(img)+'" alt="Hình ảnh đề bài" style="max-width:100%;border-radius:8px;margin-top:10px;display:block;">';
+    if (audio) body += '<audio controls preload="none" style="width:100%;margin-top:10px;" src="'+esc(audio)+'"></audio>';
+    return '<div class="srm-card"><div class="srm-card-title">📋 Đề bài</div>'+
+      '<div style="background:#f8f7ff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.8;color:#1f2937;">'+body+'</div>'+
+      '</div>';
+  }
+
   function renderStudentEssay(ans) {
     if (!ans) return '';
     var body = '';
@@ -141,6 +155,9 @@
     var fb  = data.fbData || {};
     var vis = fb.visibility || {};
     var html = '';
+
+    // Đề bài — để học sinh xem lại vừa đề vừa bài làm cùng lúc
+    html += renderExercisePrompt(data);
 
     // Bài làm của học sinh (luôn hiện ở đầu)
     html += renderStudentEssay(data.answers);
@@ -537,7 +554,8 @@
         var fbData = null; var ansData = null;
         try { fbData = a.submission_feedback ? JSON.parse(a.submission_feedback) : null; } catch(e) {}
         try { ansData = a.submission_answers ? JSON.parse(a.submission_answers) : null; } catch(e) {}
-        if (sid) _feedbackMap[sid] = { fbData: fbData, answers: ansData, title: a.title, program: a.program, skill: a.skill, score: a.submission_score, maxScore: a.submission_max };
+        if (sid) _feedbackMap[sid] = { fbData: fbData, answers: ansData, title: a.title, program: a.program, skill: a.skill, score: a.submission_score, maxScore: a.submission_max,
+          exerciseContent: a.exercise_content, exerciseImageUrl: a.exercise_image_url, exerciseAudioUrl: a.exercise_audio_url };
         // Compact score badge
         var sc = a.submission_score; var mx = a.submission_max || 5;
         var sl = (fbData && fbData.scale_label) || '';

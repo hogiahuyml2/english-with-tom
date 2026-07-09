@@ -1349,6 +1349,7 @@ app.get('/api/my-assignments', requireAuth, (req, res) => {
     const rows = db.prepare(`
       SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
              e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
+             e.content AS exercise_content, e.image_url AS exercise_image_url, e.audio_url AS exercise_audio_url,
              u.id AS teacher_id, u.name AS teacher_name,
              g.name AS group_name,
              sub.id AS submission_id, sub.status AS submission_status,
@@ -1393,7 +1394,8 @@ app.get('/api/teacher/assignments', requireRole('teacher','admin'), (req, res) =
 app.get('/api/teacher/submission/:id', requireRole('teacher','admin'), (req, res) => {
   const sub = db.prepare(`
     SELECT s.*, u.name AS student_name, u.email AS student_email,
-           e.title, e.program, e.skill, e.content AS exercise_content
+           e.title, e.program, e.skill, e.content AS exercise_content,
+           e.image_url AS exercise_image_url, e.audio_url AS exercise_audio_url
     FROM submissions s
     JOIN users u ON u.id = s.user_id
     JOIN exercises e ON e.id = s.exercise_id

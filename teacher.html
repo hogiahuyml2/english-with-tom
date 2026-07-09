@@ -2846,8 +2846,12 @@
 
   <!-- Body -->
   <div id="gpBody">
-    <!-- LEFT: Essay + Annotations -->
+    <!-- LEFT: Đề bài + Essay + Annotations -->
     <div id="gpLeft">
+      <details class="gp-prompt-details" open style="margin-bottom:14px;">
+        <summary class="gp-section-title" style="cursor:pointer;user-select:none;display:inline-flex;">📋 Đề bài <span style="font-size:11px;font-weight:400;color:var(--text-faint);margin-left:6px;">(bấm để thu gọn)</span></summary>
+        <div id="gpPromptContent" style="margin-top:8px;background:var(--bg-soft,#f8f7ff);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.8;color:var(--text);"></div>
+      </details>
       <div class="gp-section-title">📝 Bài làm học sinh</div>
       <div style="font-size:12px;color:var(--text-faint);">Bôi đen text → chọn màu → highlight & ghi chú lỗi</div>
       <div id="gpEssay" data-raw=""></div>
@@ -3019,6 +3023,16 @@ function openGradingPanel(subId) {
       var progBadge = sub.program ? '<span style="background:#ede9fe;color:#5b21b6;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;margin-left:6px;">'+escHtml(sub.program)+'</span>' : '';
       document.getElementById('gpStudentName').innerHTML = escHtml(sub.student_name || sub.student_email) + progBadge;
       document.getElementById('gpExerciseTitle').textContent = sub.title + (sub.skill ? ' · ' + sub.skill : '');
+
+      // Đề bài — để giáo viên biết chính xác yêu cầu học sinh đang làm là gì
+      var promptHtml = (window.RichEditor && RichEditor.sanitize) ? RichEditor.sanitize(sub.exercise_content || '') : escHtml(sub.exercise_content || '');
+      if (sub.exercise_image_url) {
+        promptHtml += '<img src="'+escHtml(sub.exercise_image_url)+'" alt="Hình ảnh đề bài" style="max-width:100%;border-radius:8px;margin-top:10px;display:block;">';
+      }
+      if (sub.exercise_audio_url) {
+        promptHtml += '<audio controls preload="none" style="width:100%;margin-top:10px;" src="'+escHtml(sub.exercise_audio_url)+'"></audio>';
+      }
+      document.getElementById('gpPromptContent').innerHTML = promptHtml || '<span style="color:var(--text-faint);">(Đề không có nội dung text)</span>';
 
       var scoreText = sub.score != null ? sub.score + (sub.max_score ? '/' + sub.max_score : '') : null;
       document.getElementById('gpStatusBadge').innerHTML =
