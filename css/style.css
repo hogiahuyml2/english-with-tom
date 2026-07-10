@@ -2,6 +2,7 @@
 :root {
   --bg: #F7F6FD;
   --surface: #FFFFFF;
+  --bg-soft: #F8F7FF;
   --primary: #7B6EF6;
   --primary-2: #6FA8F5;
   --primary-soft: #ECE9FE;
@@ -884,6 +885,7 @@ img.brand-logo {
 [data-theme="dark"] {
   --bg:           #0f0d1c;
   --surface:      #1a1829;
+  --bg-soft:      #211d3a;
   --primary:      #a897f8;
   --primary-2:    #80b4f8;
   --primary-soft: #27234a;

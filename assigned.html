@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=17">
+<link rel="stylesheet" href="css/style.css?v=18">
 </head>
 <body data-page="assigned" data-guard="student">
 <div id="site-header"></div>
@@ -117,7 +117,7 @@
     if (img)   body += '<img src="'+esc(img)+'" alt="Hình ảnh đề bài" style="max-width:100%;border-radius:8px;margin-top:10px;display:block;">';
     if (audio) body += '<audio controls preload="none" style="width:100%;margin-top:10px;" src="'+esc(audio)+'"></audio>';
     return '<div class="srm-card"><div class="srm-card-title">📋 Đề bài</div>'+
-      '<div style="background:#f8f7ff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.8;color:#1f2937;">'+body+'</div>'+
+      '<div class="srm-prompt-box">'+body+'</div>'+
       '</div>';
   }
 
@@ -137,14 +137,14 @@
         var txt = typeof p.val === 'object' ? JSON.stringify(p.val, null, 2) : String(p.val).trim();
         if (!txt) return;
         body += '<div style="margin-bottom:12px;">';
-        body += '<div style="font-size:11.5px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">'+esc(p.label)+'</div>';
-        body += '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:11px 14px;font-size:13.5px;line-height:1.8;color:#1f2937;white-space:pre-wrap;">'+esc(txt)+'</div>';
+        body += '<div class="srm-part-label">'+esc(p.label)+'</div>';
+        body += '<div class="srm-essay-box">'+esc(txt)+'</div>';
         body += '</div>';
       });
     } else {
       var essayText = (ans.essay || '').trim();
       if (essayText) {
-        body = '<div id="srmEssayBody" style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.85;color:#1f2937;white-space:pre-wrap;">'+esc(essayText)+'</div>';
+        body = '<div id="srmEssayBody" class="srm-essay-box">'+esc(essayText)+'</div>';
       }
     }
     if (!body) return '';
@@ -787,6 +787,25 @@
   text-transform: uppercase; letter-spacing: .5px;
   color: #6b7280; margin-bottom: 12px;
 }
+.srm-prompt-box {
+  background: #f8f7ff; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px 16px; font-size: 13.5px; line-height: 1.8; color: #1f2937;
+}
+.srm-essay-box {
+  background: #fafafa; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px 16px; font-size: 14px; line-height: 1.85; color: #1f2937;
+  white-space: pre-wrap;
+}
+.srm-part-label {
+  font-size: 11.5px; font-weight: 700; color: #6d28d9;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px;
+}
+[data-theme="dark"] #srmOverlay { background: var(--bg); }
+[data-theme="dark"] .srm-card { background: var(--surface); border-color: var(--border); }
+[data-theme="dark"] .srm-card-title { color: var(--text-muted); }
+[data-theme="dark"] .srm-prompt-box { background: var(--bg-soft); border-color: var(--border); color: var(--text); }
+[data-theme="dark"] .srm-essay-box { background: var(--bg-soft); border-color: var(--border); color: var(--text); }
+[data-theme="dark"] .srm-part-label { color: #c4b5fd; }
 </style>
 <div id="srmOverlay">
   <div id="srmHeader">

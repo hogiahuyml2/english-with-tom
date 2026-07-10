@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=17">
+<link rel="stylesheet" href="css/style.css?v=18">
 <style>
   /* ── Kết quả chấm ── */
   .band-big { font-size:42px; font-weight:800; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
@@ -53,6 +53,10 @@
   .hint-lines { list-style:none; padding:0; margin:0; }
   .hint-lines li { font-size:13px; color:#0c4a6e; padding:4px 0; border-bottom:1px dashed #c7e9fb; line-height:1.55; }
   .hint-lines li:last-child { border:none; }
+  .hint-alert-box { background:#fff7ed; border:1.5px solid #fb923c; border-radius:10px; padding:12px 14px; }
+  .hint-alert-title { color:#c2410c; }
+  .hint-alert-item { font-size:13.5px; font-weight:600; color:#9a3412; margin-bottom:4px; }
+  .hint-outline-text { font-size:13px; color:#0c4a6e; white-space:pre-line; line-height:1.75; }
 
   /* ── Vocab & collocations panel (tím, tách biệt hints) ── */
   .vocab-toggle {
@@ -79,6 +83,7 @@
   .vocab-mean { font-size:12.5px; color:#6b21a8; margin:2px 0 5px; }
   .vocab-eg { font-size:12.5px; color:#4c1d95; font-family:Georgia,serif; font-style:italic; line-height:1.5; background:#f5f3ff; border-left:3px solid #c4b5fd; padding:4px 9px; border-radius:0 6px 6px 0; }
   .vocab-note { font-size:12.5px; color:#6b21a8; background:#f3e8ff; border-radius:8px; padding:8px 12px; margin-bottom:14px; line-height:1.55; }
+  .vocab-topic-badge { background:#ede9fe; color:#6d28d9; font-size:12px; font-weight:700; padding:3px 14px; border-radius:20px; }
 
   /* ── Error list (take notes) ── */
   .err-item { border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; background:#fff; }
@@ -99,6 +104,39 @@
   .err-explain { font-size:13px; color:var(--text-muted); line-height:1.65; margin-bottom:6px; }
   .err-rule { background:#fff7ed; border-left:3px solid #f59e0b; padding:5px 10px; border-radius:0 6px 6px 0; font-size:12.5px; font-weight:600; color:#92400e; }
   @media print { #errorListSection { display:block !important; } .result-actions,.hints-toggle,#hintsPanel,.vocab-toggle,#vocabPanel,.card:not(#errorListSection):not(#result) { display:none !important; } }
+
+  /* ── Dark mode: các khung màu pastel ở trên gắn cứng màu sáng, không tự đổi
+     theo theme — làm sáng chói giữa nền tối. Ghi đè riêng cho từng khung. ── */
+  [data-theme="dark"] .crit { background:var(--surface); }
+  [data-theme="dark"] .crit-bar-wrap { background:var(--border); }
+  [data-theme="dark"] .suggested-body { color:var(--text); }
+
+  [data-theme="dark"] .hints-toggle { background:linear-gradient(135deg,#12233f,#153054); border-color:#1f3d63; color:#7dd3fc; }
+  [data-theme="dark"] .hints-toggle:hover { background:linear-gradient(135deg,#153054,#1a3b68); }
+  [data-theme="dark"] #hintsPanel { background:#0f1e3a; border-color:#1f3d63; }
+  [data-theme="dark"] .hint-section-title { color:#7dd3fc; }
+  [data-theme="dark"] .hint-chip { background:#152945; border-color:#274b73; color:#bae6fd; }
+  [data-theme="dark"] .hint-lines li { color:#bae6fd; border-bottom-color:#1f3d63; }
+  [data-theme="dark"] .hint-alert-box { background:#2a1a08; border-color:#c2620f; }
+  [data-theme="dark"] .hint-alert-title { color:#fb923c; }
+  [data-theme="dark"] .hint-alert-item { color:#fdba74; }
+  [data-theme="dark"] .hint-outline-text { color:#bae6fd; }
+
+  [data-theme="dark"] .vocab-toggle { background:linear-gradient(135deg,#221a42,#2a2050); border-color:#3d2e6b; color:#c4b5fd; }
+  [data-theme="dark"] .vocab-toggle:hover { background:linear-gradient(135deg,#2a2050,#33285e); }
+  [data-theme="dark"] #vocabPanel { background:#1c1638; border-color:#3d2e6b; }
+  [data-theme="dark"] .vocab-section-title { color:#c4b5fd; }
+  [data-theme="dark"] .vocab-item { background:#241c47; border-color:#3d2e6b; }
+  [data-theme="dark"] .vocab-term { color:#d8b4fe; }
+  [data-theme="dark"] .vocab-pos { color:#a78bfa; }
+  [data-theme="dark"] .vocab-mean { color:#c4b5fd; }
+  [data-theme="dark"] .vocab-eg { background:#1c1638; border-left-color:#7c3aed; color:#ddd6fe; }
+  [data-theme="dark"] .vocab-note { background:#241c47; color:#c4b5fd; }
+  [data-theme="dark"] .vocab-topic-badge { background:#241c47; color:#c4b5fd; }
+
+  [data-theme="dark"] .err-item { background:var(--surface); }
+  [data-theme="dark"] .err-cell { background:var(--primary-soft); }
+  [data-theme="dark"] .err-rule { background:#2a1f08; color:#fbbf24; }
 
   /* ── Message modal ── */
   #messageModal {
@@ -382,7 +420,7 @@
           </div>
         </div>
         <h3 style="margin-bottom:10px;">📋 Đề bài</h3>
-        <div class="prompt-text" id="promptText" style="font-size:14.5px; color:#403d57; line-height:1.85;">...</div>
+        <div class="prompt-text" id="promptText" style="font-size:14.5px; line-height:1.85;">...</div>
       </div>
 
       <!-- Vùng viết -->
@@ -1355,11 +1393,11 @@ function renderHints(h) {
   // Hiển thị nội dung đọc từ ảnh đề (notes, số liệu, mô tả tranh, chat messages...)
   var imgContent = h.image_content || h.notes_found; // backwards compat
   if (imgContent && imgContent.length) {
-    html += '<div class="hint-section" style="background:#fff7ed;border:1.5px solid #fb923c;border-radius:10px;padding:12px 14px;margin-bottom:12px;">'+
-      '<div class="hint-section-title" style="color:#c2410c;">📌 Yêu cầu đọc từ đề (PHẢI đáp ứng đủ)</div>'+
+    html += '<div class="hint-section hint-alert-box">'+
+      '<div class="hint-section-title hint-alert-title">📌 Yêu cầu đọc từ đề (PHẢI đáp ứng đủ)</div>'+
       '<ol style="margin:6px 0 0 18px;padding:0;">';
     imgContent.forEach(function(n){
-      html += '<li style="font-size:13.5px;font-weight:600;color:#9a3412;margin-bottom:4px;">'+esc(n)+'</li>';
+      html += '<li class="hint-alert-item">'+esc(n)+'</li>';
     });
     html += '</ol></div>';
   }
@@ -1367,7 +1405,7 @@ function renderHints(h) {
   if (h.outline) {
     html += '<div class="hint-section">'+
       '<div class="hint-section-title">📋 Dàn bài gợi ý</div>'+
-      '<div style="font-size:13px;color:#0c4a6e;white-space:pre-line;line-height:1.75;">'+esc(h.outline)+'</div>'+
+      '<div class="hint-outline-text">'+esc(h.outline)+'</div>'+
     '</div>';
   }
 
@@ -1398,7 +1436,7 @@ function renderHints(h) {
   if (h.time_guide) {
     html += '<div class="hint-section">'+
       '<div class="hint-section-title">⏱ Phân bổ thời gian</div>'+
-      '<div style="font-size:13px;color:#0c4a6e;">'+esc(h.time_guide)+'</div>'+
+      '<div class="hint-outline-text" style="white-space:normal;">'+esc(h.time_guide)+'</div>'+
     '</div>';
   }
 
@@ -1448,7 +1486,7 @@ function renderVocab(v) {
 
   if (v.topic) {
     html += '<div style="margin-bottom:12px;">'+
-      '<span style="background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700;padding:3px 14px;border-radius:20px;">📎 '+esc(v.topic)+'</span>'+
+      '<span class="vocab-topic-badge">📎 '+esc(v.topic)+'</span>'+
     '</div>';
   }
   if (v.register_note) {
