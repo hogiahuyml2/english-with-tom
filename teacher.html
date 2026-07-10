@@ -3314,7 +3314,7 @@ async function doSaveDraft() {
     var r = await fetch('/api/teacher/save-draft/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined, suggested_writing: (_gpAIResult && _gpAIResult.suggested_writing != null) ? _gpAIResult.suggested_writing : undefined })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
@@ -3343,7 +3343,7 @@ async function doSendGrade() {
     var r = await fetch('/api/teacher/send-grade/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined, suggested_writing: (_gpAIResult && _gpAIResult.suggested_writing != null) ? _gpAIResult.suggested_writing : undefined })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
@@ -3436,13 +3436,19 @@ function renderAIResult(result) {
     });
   }
 
-  // Suggested writing (bài mẫu từ AI grading)
-  if (result.suggested_writing) {
-    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu gợi ý (từ kết quả chấm)</div>';
-    html += '<div class="model-answer-box">' + escHtml(result.suggested_writing) + '</div>';
+  // Suggested writing (bài mẫu từ AI grading) — cho phép giáo viên chỉnh sửa trước khi gửi
+  if (result.suggested_writing != null) {
+    html += '<div class="gp-section-title" style="margin:14px 0 6px;">✍️ Bài mẫu gợi ý (từ kết quả chấm) <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-faint);">— có thể chỉnh sửa</span></div>';
+    html += '<textarea class="model-answer-box" style="width:100%;min-height:160px;resize:vertical;font-family:inherit;box-sizing:border-box;" oninput="updateSuggestedWriting(this)">' + escHtml(result.suggested_writing) + '</textarea>';
   }
 
   return html;
+}
+
+/* Giáo viên sửa tay nội dung bài mẫu gợi ý — lưu lại để gửi kèm khi xác nhận chấm */
+function updateSuggestedWriting(el) {
+  if (!_gpAIResult) return;
+  _gpAIResult.suggested_writing = el.value;
 }
 
 /* Xoá 1 mục nhận xét (lỗi/điểm cải thiện) khỏi error_list — học sinh sẽ không thấy mục đã xoá */
