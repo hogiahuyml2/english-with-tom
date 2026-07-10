@@ -1454,6 +1454,12 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
   `).get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
 
+  // Khi chấm lại (có teacher_note), lấy kết quả chấm cũ để AI so sánh và điều chỉnh đúng chỗ
+  let previousResult = null;
+  if (teacher_note && sub.feedback) {
+    try { previousResult = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback; } catch (e) { previousResult = null; }
+  }
+
   let essay = '';
   try {
     const ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers;
@@ -1470,7 +1476,7 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
       title: sub.exercise_title,
       _task_override: task_type_override || null
     };
-    const result = await gradeWriting(ex, essay, null, teacher_note || null);
+    const result = await gradeWriting(ex, essay, null, teacher_note || null, previousResult);
     // Tính max_score từ scale_label (ví dụ "A2 Key (0–15)" → 15, "B2 First (0–20)" → 20)
     let maxScore = 5;
     if (result.scale_label) {

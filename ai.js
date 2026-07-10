@@ -679,10 +679,23 @@ ${hasStudentImage ? '- annotations: [] (bài nộp bằng ảnh — không thể
   ⚠️ Trường text phải khớp CHÍNH XÁC ký tự trong bài — không được paraphrase hay sửa lỗi trong text, chỉ ghi lại nguyên văn.`}`;
 }
 
-function buildUserText(exercise, essay, teacherNote) {
-  const noteBlock = teacherNote && teacherNote.trim()
-    ? `\n\n⚠️ ĐÂY LÀ LẦN CHẤM LẠI — Giáo viên đã xem kết quả chấm trước đó và thấy CHƯA HỢP LÝ. Giáo viên ghi chú lý do/yêu cầu điều chỉnh:\n"""\n${teacherNote.trim()}\n"""\nHãy CHẤM LẠI TOÀN BỘ bài viết, cân nhắc kỹ ghi chú trên (vd: nếu giáo viên nói điểm tiêu chí nào đó chưa hợp lý, hãy xem lại đúng tiêu chí đó; nếu giáo viên nói annotation/error nào sai, hãy bỏ qua hoặc sửa lại). KHÔNG bê nguyên kết quả cũ — đọc lại bài từ đầu và chấm độc lập, có tính đến góp ý của giáo viên.`
-    : '';
+function buildUserText(exercise, essay, teacherNote, previousResult) {
+  let noteBlock = '';
+  if (teacherNote && teacherNote.trim()) {
+    let prevBlock = '';
+    if (previousResult && Array.isArray(previousResult.criteria) && previousResult.criteria.length) {
+      const critLines = previousResult.criteria.map(c =>
+        `  • ${c.name}: ${c.score}/${c.max} — ${c.comment || ''}`
+      ).join('\n');
+      prevBlock = `\n\nKẾT QUẢ CHẤM LẦN TRƯỚC (giáo viên thấy CHƯA HỢP LÝ):\n` +
+        `Tổng điểm: ${previousResult.overall_score ?? '?'} (${previousResult.scale_label || ''})\n` +
+        `Điểm từng tiêu chí:\n${critLines}\n` +
+        `Nhận xét tổng quan cũ: ${previousResult.summary || '(không có)'}`;
+    }
+    noteBlock = `\n\n⚠️ ĐÂY LÀ LẦN CHẤM LẠI — Giáo viên đã xem kết quả chấm trước đó và thấy CHƯA HỢP LÝ.${prevBlock}\n\n` +
+      `GHI CHÚ CỦA GIÁO VIÊN (lý do/yêu cầu điều chỉnh):\n"""\n${teacherNote.trim()}\n"""\n\n` +
+      `YÊU CẦU BẮT BUỘC: So sánh kỹ ghi chú của giáo viên với kết quả chấm lần trước ở trên. Xác định CHÍNH XÁC tiêu chí/điểm/nhận xét nào giáo viên đang phản đối, rồi ĐIỀU CHỈNH LẠI đúng những chỗ đó (tăng/giảm điểm, viết lại comment cho tiêu chí đó theo đúng góp ý). Các tiêu chí KHÔNG bị giáo viên nhắc tới thì vẫn chấm lại độc lập dựa trên bài làm, không cần giữ y hệt điểm/nhận xét cũ nếu đọc lại thấy cần sửa. TUYỆT ĐỐI KHÔNG trả về điểm và nhận xét giống hệt lần chấm trước — nếu giáo viên đã góp ý, bảng điểm thành phần PHẢI thay đổi ở đúng tiêu chí liên quan.`;
+  }
   return `KỲ THI: ${exercise.program} — Kỹ năng: ${exercise.skill}\n` +
     `ĐỀ BÀI: ${exercise.title}\n${exercise.content || ''}\n\n` +
     `BÀI VIẾT CỦA HỌC SINH:\n"""\n${essay}\n"""${noteBlock}`;
@@ -741,7 +754,7 @@ const CLAUDE_SCHEMA = {
   additionalProperties: false
 };
 
-async function gradeWithClaude(exercise, essay, imageData, studentImage, teacherNote) {
+async function gradeWithClaude(exercise, essay, imageData, studentImage, teacherNote, previousResult) {
   const client = new Anthropic();
   const model  = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
   const contentParts = [];
@@ -752,7 +765,7 @@ async function gradeWithClaude(exercise, essay, imageData, studentImage, teacher
     contentParts.push({ type: 'text', text: '--- HÌNH ẢNH BÀI LÀM CỦA HỌC SINH (đọc chữ viết từ hình này để chấm) ---' });
     contentParts.push({ type: 'image', source: { type: 'base64', media_type: studentImage.mimeType, data: studentImage.base64 } });
   }
-  contentParts.push({ type: 'text', text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay, teacherNote) });
+  contentParts.push({ type: 'text', text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay, teacherNote, previousResult) });
   const resp = await client.messages.create({
     model, max_tokens: 12000, system: buildSystem(exercise, !!studentImage),
     messages: [{ role: 'user', content: contentParts }],
@@ -819,7 +832,7 @@ const GEMINI_SCHEMA = {
   required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
 };
 
-async function gradeWithGemini(exercise, essay, imageData, studentImage, teacherNote) {
+async function gradeWithGemini(exercise, essay, imageData, studentImage, teacherNote, previousResult) {
   const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
   const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   const parts = [];
@@ -830,7 +843,7 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage, teacher
     parts.push({ text: '--- HÌNH ẢNH BÀI LÀM CỦA HỌC SINH (đọc chữ viết từ hình này để chấm) ---' });
     parts.push({ inline_data: { mime_type: studentImage.mimeType, data: studentImage.base64 } });
   }
-  parts.push({ text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay, teacherNote) });
+  parts.push({ text: buildUserText(exercise, studentImage ? '(học sinh nộp bài bằng ảnh — xem hình ảnh bài làm ở trên)' : essay, teacherNote, previousResult) });
 
   const baseBody = {
     system_instruction: { parts: [{ text: buildSystem(exercise, !!studentImage) }] },
@@ -862,11 +875,11 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage, teacher
   throw lastErr;
 }
 
-async function gradeWriting(exercise, essay, studentImage, teacherNote) {
+async function gradeWriting(exercise, essay, studentImage, teacherNote, previousResult) {
   const p         = provider();
   const imageData = await fetchImageBase64(exercise.image_url);
-  if (p === 'gemini') return gradeWithGemini(exercise, essay, imageData, studentImage || null, teacherNote || null);
-  if (p === 'claude') return gradeWithClaude(exercise, essay, imageData, studentImage || null, teacherNote || null);
+  if (p === 'gemini') return gradeWithGemini(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null);
+  if (p === 'claude') return gradeWithClaude(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null);
   throw new Error('Chưa cấu hình AI');
 }
 
