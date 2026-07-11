@@ -1524,22 +1524,23 @@ function cambridgeTwoPartGrade(program, totalScore, totalMax) {
 
 // Giáo viên lưu chỉnh sửa (không gửi cho học sinh, giữ pending_review)
 // Helper: merge teacher edits (comment + visibility + error_list + bài mẫu đã sửa) vào feedback JSON
-function mergeTeacherEdits(existingFeedback, { teacher_comment, visibility, error_list, suggested_writing } = {}) {
+function mergeTeacherEdits(existingFeedback, { teacher_comment, visibility, error_list, suggested_writing, criteria } = {}) {
   let fb = {};
   try { fb = typeof existingFeedback === 'string' ? JSON.parse(existingFeedback) : (existingFeedback || {}); } catch(e) {}
   if (teacher_comment !== undefined) fb.teacher_comment = teacher_comment;
   if (visibility      !== undefined) fb.visibility      = visibility;
   if (Array.isArray(error_list)) fb.error_list = error_list;
   if (suggested_writing !== undefined) fb.suggested_writing = suggested_writing;
+  if (Array.isArray(criteria)) fb.criteria = criteria;
   return JSON.stringify(fb);
 }
 
 app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, res) => {
   const subId = Number(req.params.id);
-  const { score, max_score, teacher_comment, visibility, error_list, suggested_writing } = req.body || {};
+  const { score, max_score, teacher_comment, visibility, error_list, suggested_writing, criteria } = req.body || {};
   const sub = db.prepare('SELECT id, feedback FROM submissions WHERE id=?').get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
-  const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility, error_list, suggested_writing });
+  const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility, error_list, suggested_writing, criteria });
   db.prepare('UPDATE submissions SET score=?, max_score=?, feedback=?, status=? WHERE id=?')
     .run(score ?? null, max_score ?? null, feedbackJson, 'pending_review', subId);
   res.json({ ok: true });
@@ -1548,14 +1549,14 @@ app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, re
 // Giáo viên xác nhận & gửi kết quả chấm cho học sinh
 app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const subId = Number(req.params.id);
-  const { score, max_score, teacher_comment, visibility, error_list, suggested_writing } = req.body || {};
+  const { score, max_score, teacher_comment, visibility, error_list, suggested_writing, criteria } = req.body || {};
   const sub = db.prepare(`
     SELECT s.*, u.name AS student_name, u.email AS student_email, e.title AS exercise_title
     FROM submissions s JOIN users u ON u.id=s.user_id JOIN exercises e ON e.id=s.exercise_id
     WHERE s.id=?
   `).get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
-  const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility, error_list, suggested_writing });
+  const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility, error_list, suggested_writing, criteria });
   const finalScore    = score    ?? sub.score;
   const finalMaxScore = max_score ?? sub.max_score ?? 5;
   db.prepare('UPDATE submissions SET score=?, max_score=?, feedback=?, status=? WHERE id=?')

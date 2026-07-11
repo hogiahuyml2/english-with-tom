@@ -3315,7 +3315,7 @@ async function doSaveDraft() {
     var r = await fetch('/api/teacher/save-draft/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined, suggested_writing: (_gpAIResult && _gpAIResult.suggested_writing != null) ? _gpAIResult.suggested_writing : undefined })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined, suggested_writing: (_gpAIResult && _gpAIResult.suggested_writing != null) ? _gpAIResult.suggested_writing : undefined, criteria: (_gpAIResult && _gpAIResult.criteria) || undefined })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
@@ -3344,7 +3344,7 @@ async function doSendGrade() {
     var r = await fetch('/api/teacher/send-grade/' + _gpSubId, {
       method: 'POST', credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined, suggested_writing: (_gpAIResult && _gpAIResult.suggested_writing != null) ? _gpAIResult.suggested_writing : undefined })
+      body: JSON.stringify({ score: score !== '' ? Number(score) : undefined, max_score: Number(maxScore), teacher_comment: teacher_comment || undefined, visibility, error_list: (_gpAIResult && _gpAIResult.error_list) || undefined, suggested_writing: (_gpAIResult && _gpAIResult.suggested_writing != null) ? _gpAIResult.suggested_writing : undefined, criteria: (_gpAIResult && _gpAIResult.criteria) || undefined })
     });
     var d = await r.json();
     msgEl.style.display = 'block';
@@ -3361,6 +3361,83 @@ async function doSendGrade() {
   }
 }
 
+/* Tính lại overall_score từ điểm từng tiêu chí, đúng công thức riêng từng kỳ thi
+   - KET/PET/FCE: cộng thẳng các tiêu chí
+   - IELTS: trung bình 4 tiêu chí (cùng thang max), làm tròn 0.5
+   - APTIS full test (4 Part có trọng số riêng): công thức trọng số cố định
+   - Trường hợp khác: mặc định cộng thẳng */
+function recomputeOverallScore(criteria, scaleLabel) {
+  if (!criteria || !criteria.length) return null;
+  var M = null;
+  var m = (scaleLabel || '').match(/\(0[–\-](\d+(\.\d+)?)\)/);
+  if (m) M = parseFloat(m[1]);
+
+  var names = criteria.map(function(c) { return (c.name || '').trim(); });
+  var isAptisFull = criteria.length === 4 && M === 50 &&
+    names.some(function(n){ return /^Part 1/i.test(n); }) &&
+    names.some(function(n){ return /^Part 4/i.test(n); });
+
+  if (isAptisFull) {
+    var weightOf = function(n) {
+      if (/^Part 1/i.test(n)) return 4;
+      if (/^Part 2/i.test(n)) return 2;
+      if (/^Part 3/i.test(n)) return 2;
+      if (/^Part 4/i.test(n)) return 3;
+      return 1;
+    };
+    var total = 0;
+    criteria.forEach(function(c) { total += (Number(c.score) || 0) * weightOf((c.name || '').trim()); });
+    return Math.round(total);
+  }
+
+  var sumScore  = criteria.reduce(function(s, c) { return s + (Number(c.score) || 0); }, 0);
+  var allSameMax = criteria.every(function(c) { return Number(c.max || c.max_score) === Number(criteria[0].max || criteria[0].max_score); });
+  var perMax = Number(criteria[0].max || criteria[0].max_score);
+
+  // Chế độ trung bình: tất cả tiêu chí cùng thang điểm, và thang đó trùng với thang tổng (kiểu IELTS band 0–9)
+  if (allSameMax && M != null && Math.abs(perMax - M) < 0.001 && criteria.length > 1) {
+    var mean = sumScore / criteria.length;
+    return Math.round(mean * 2) / 2;
+  }
+
+  // Mặc định: cộng thẳng các tiêu chí (KET/PET/FCE và các trường hợp còn lại)
+  return sumScore;
+}
+
+/* Giáo viên tự sửa điểm 1 tiêu chí — cập nhật thanh điểm + tính lại điểm tổng */
+function updateCriterionScore(idx, val) {
+  if (!_gpAIResult || !Array.isArray(_gpAIResult.criteria) || !_gpAIResult.criteria[idx]) return;
+  var num = parseFloat(val);
+  _gpAIResult.criteria[idx].score = isNaN(num) ? 0 : num;
+  var c = _gpAIResult.criteria[idx];
+  var denom = c.max || c.max_score;
+  var pct = denom ? Math.round((c.score / denom) * 100) : c.score;
+  var bar = document.getElementById('critBar_' + idx);
+  if (bar) {
+    bar.style.width = Math.min(Math.max(pct, 0), 100) + '%';
+    bar.style.background = pct >= 70 ? 'linear-gradient(90deg,#22c55e,#86efac)' : pct >= 50 ? 'linear-gradient(90deg,#f59e0b,#fde68a)' : 'linear-gradient(90deg,#ef4444,#fca5a5)';
+  }
+  recalcOverallScore();
+}
+
+/* Giáo viên tự sửa nhận xét 1 tiêu chí */
+function updateCriterionComment(idx, val) {
+  if (!_gpAIResult || !Array.isArray(_gpAIResult.criteria) || !_gpAIResult.criteria[idx]) return;
+  _gpAIResult.criteria[idx].comment = val;
+}
+
+/* Tính lại điểm tổng + đồng bộ badge điểm và ô "Điểm chính thức" */
+function recalcOverallScore() {
+  if (!_gpAIResult || !Array.isArray(_gpAIResult.criteria)) return;
+  var newOverall = recomputeOverallScore(_gpAIResult.criteria, _gpAIResult.scale_label);
+  if (newOverall == null) return;
+  _gpAIResult.overall_score = newOverall;
+  var badge = document.getElementById('gpScoreNum');
+  if (badge) badge.textContent = newOverall;
+  var reviewScoreInput = document.getElementById('gpReviewScore');
+  if (reviewScoreInput) reviewScoreInput.value = newOverall;
+}
+
 function syncSummaryBox() {
   var box = document.getElementById('gpSummaryBoxText');
   if (!box) return;
@@ -3375,23 +3452,26 @@ function renderAIResult(result) {
   var scoreNum  = result.overall_score != null ? result.overall_score : '–';
   var scaleText = result.scale_label || '';
   html += '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;">';
-  html += '<div class="gp-score-badge"><span class="score-num">' + scoreNum + '</span><span class="score-label">' + escHtml(scaleText) + '</span></div>';
+  html += '<div class="gp-score-badge"><span class="score-num" id="gpScoreNum">' + scoreNum + '</span><span class="score-label">' + escHtml(scaleText) + '</span></div>';
   html += '<div class="gp-summary-box" id="gpSummaryBoxText" style="flex:1;">' + escHtml(result.summary || '') + '</div>';
   html += '</div>';
 
-  // Criteria table
+  // Criteria table — điểm & nhận xét từng tiêu chí có thể chỉnh sửa trực tiếp, điểm tổng tự tính lại
   if (result.criteria && result.criteria.length) {
-    html += '<div class="gp-section-title" style="margin-bottom:8px;">📊 Phân tích theo tiêu chí</div>';
+    html += '<div class="gp-section-title" style="margin-bottom:8px;">📊 Phân tích theo tiêu chí <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-faint);">— có thể chỉnh sửa điểm &amp; nhận xét</span></div>';
     html += '<table class="crit-table"><thead><tr><th>Tiêu chí</th><th style="width:70px;text-align:right;">Điểm</th></tr></thead><tbody>';
-    result.criteria.forEach(function(c) {
+    result.criteria.forEach(function(c, i) {
       var denom = c.max || c.max_score;
       var pct = denom ? Math.round((c.score / denom) * 100) : c.score;
       var barColor = pct >= 70 ? 'linear-gradient(90deg,#22c55e,#86efac)' : pct >= 50 ? 'linear-gradient(90deg,#f59e0b,#fde68a)' : 'linear-gradient(90deg,#ef4444,#fca5a5)';
       html += '<tr><td>';
       html += '<div style="font-weight:600;">' + escHtml(c.name) + '</div>';
-      html += '<div class="crit-bar-wrap"><div class="crit-bar" style="width:' + Math.min(pct,100) + '%;background:' + barColor + ';"></div></div>';
-      if (c.comment) html += '<div style="font-size:12px;color:var(--text-faint);margin-top:4px;">' + escHtml(c.comment) + '</div>';
-      html += '</td><td style="text-align:right;font-weight:700;white-space:nowrap;">' + c.score + (denom ? '<span style="color:var(--text-faint);font-weight:400;">/' + denom + '</span>' : '') + '</td></tr>';
+      html += '<div class="crit-bar-wrap"><div class="crit-bar" id="critBar_' + i + '" style="width:' + Math.min(pct,100) + '%;background:' + barColor + ';"></div></div>';
+      html += '<textarea class="crit-comment-edit" id="critComment_' + i + '" oninput="updateCriterionComment(' + i + ',this.value)" rows="2" style="width:100%;margin-top:5px;border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:12px;color:var(--text-faint);resize:vertical;font-family:inherit;box-sizing:border-box;line-height:1.5;">' + escHtml(c.comment || '') + '</textarea>';
+      html += '</td><td style="text-align:right;font-weight:700;white-space:nowrap;vertical-align:top;">';
+      html += '<input type="number" step="0.5" min="0" ' + (denom ? 'max="' + denom + '"' : '') + ' id="critScore_' + i + '" value="' + c.score + '" oninput="updateCriterionScore(' + i + ',this.value)" style="width:52px;text-align:right;font-weight:700;border:1px solid var(--border);border-radius:6px;padding:3px 5px;font-size:14px;font-family:inherit;">';
+      if (denom) html += '<span style="color:var(--text-faint);font-weight:400;">/' + denom + '</span>';
+      html += '</td></tr>';
     });
     html += '</tbody></table>';
   }
