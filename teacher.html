@@ -2908,7 +2908,7 @@
             <!-- Teacher comment -->
             <div style="margin-bottom:14px;">
               <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:6px;">💬 Nhận xét của giáo viên</div>
-              <textarea id="gpAIFeedbackEdit" rows="3" style="width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;line-height:1.6;" placeholder="Viết nhận xét cho học sinh..."></textarea>
+              <textarea id="gpAIFeedbackEdit" rows="3" oninput="syncSummaryBox()" style="width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;line-height:1.6;" placeholder="Viết nhận xét cho học sinh..."></textarea>
             </div>
             <!-- Visibility toggles -->
             <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin-bottom:14px;">
@@ -3094,6 +3094,7 @@ function openGradingPanel(subId) {
               document.getElementById('gpReviewScore').value         = sub.score != null ? sub.score : (fb2.overall_score != null ? fb2.overall_score : '');
               document.getElementById('gpReviewMaxLabel').textContent = '/ ' + _gpMaxScore + (sl2 ? '  (' + sl2 + ')' : '');
               document.getElementById('gpAIFeedbackEdit').value      = fb2.teacher_comment || fb2.summary || '';
+              syncSummaryBox();
               setVisibility(fb2.visibility || null);
               document.getElementById('gpReviewBar').style.display   = '';
             }
@@ -3360,6 +3361,13 @@ async function doSendGrade() {
   }
 }
 
+function syncSummaryBox() {
+  var box = document.getElementById('gpSummaryBoxText');
+  if (!box) return;
+  var val = document.getElementById('gpAIFeedbackEdit').value;
+  box.textContent = val || '(chưa có nhận xét)';
+}
+
 function renderAIResult(result) {
   var html = '';
 
@@ -3368,7 +3376,7 @@ function renderAIResult(result) {
   var scaleText = result.scale_label || '';
   html += '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;">';
   html += '<div class="gp-score-badge"><span class="score-num">' + scoreNum + '</span><span class="score-label">' + escHtml(scaleText) + '</span></div>';
-  if (result.summary) html += '<div class="gp-summary-box" style="flex:1;">' + escHtml(result.summary) + '</div>';
+  html += '<div class="gp-summary-box" id="gpSummaryBoxText" style="flex:1;">' + escHtml(result.summary || '') + '</div>';
   html += '</div>';
 
   // Criteria table
