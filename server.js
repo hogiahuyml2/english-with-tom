@@ -759,6 +759,48 @@ async function warmExerciseCacheFromFile() {
   }
 }
 
+// ── Sao lưu dữ liệu tự động — tránh mất dữ liệu khi có lỗi/redeploy ─────────
+// Định kỳ copy nguyên file data.db sang thư mục backups/ (cùng Volume /data,
+// sống sót qua redeploy). Có integrity_check trước mỗi lần lưu — nếu DB đang
+// lỗi thì KHÔNG ghi đè bản lưu tốt trước đó bằng bản lỗi, đồng thời báo động
+// ngay cho admin/giáo viên qua chuông thông báo + email (nếu đã cấu hình).
+const BACKUP_DIR = path.join(DATA_DIR_PATH, 'backups');
+fs.mkdirSync(BACKUP_DIR, { recursive: true });
+const MAX_BACKUPS = 30; // ~30 lần sao lưu gần nhất (mỗi 6 tiếng ≈ 7.5 ngày)
+
+function runBackup(reason) {
+  try {
+    db.exec('PRAGMA wal_checkpoint(FULL);'); // đẩy hết dữ liệu từ WAL vào file chính trước khi copy
+    const check = db.prepare('PRAGMA integrity_check').get();
+    const ok = check && check.integrity_check === 'ok';
+    if (!ok) {
+      console.error('[backup] ⚠️ integrity_check THẤT BẠI — KHÔNG tạo bản sao lưu mới để tránh ghi đè bản tốt trước đó:', check);
+      try {
+        notifyAllStaff('data_integrity_alert', '⚠️ CẢNH BÁO: dữ liệu có dấu hiệu lỗi',
+          'Kiểm tra tính toàn vẹn database thất bại lúc sao lưu tự động. Vui lòng liên hệ kỹ thuật ngay.', null);
+      } catch (e) {}
+      return { ok: false, reason: 'integrity_check_failed', detail: check };
+    }
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const destName = `data-${ts}.db`;
+    const destPath = path.join(BACKUP_DIR, destName);
+    fs.copyFileSync(DB_FILE_PATH, destPath);
+
+    // Dọn bớt bản cũ, chỉ giữ MAX_BACKUPS bản gần nhất
+    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('data-') && f.endsWith('.db')).sort();
+    while (files.length > MAX_BACKUPS) {
+      const old = files.shift();
+      try { fs.unlinkSync(path.join(BACKUP_DIR, old)); } catch (e) {}
+    }
+
+    console.log(`[backup] ✅ Đã sao lưu (${reason || 'định kỳ'}): ${destName} (${files.length <= MAX_BACKUPS ? files.length : MAX_BACKUPS} bản đang giữ)`);
+    return { ok: true, name: destName };
+  } catch (e) {
+    console.error('[backup] Lỗi sao lưu:', e.message);
+    return { ok: false, reason: 'exception', detail: e.message };
+  }
+}
+
 // Check quyền truy cập đề riêng từ RAM (tức thì, không đụng NFS)
 function canAccessPrivate(exId, user) {
   if (!user) return false;
@@ -1636,13 +1678,42 @@ app.get('/api/teacher/stats', requireRole('teacher','admin'), (req, res) => {
   res.json({ studentCount, exerciseCount, pendingCount });
 });
 
-// Admin tải về bản sao database (backup)
+// Admin tải về bản sao database (backup) — bản LIVE hiện tại
 app.get('/api/admin/backup-db', requireRole('admin'), (req, res) => {
   const dbPath = path.join(DATA_DIR, 'data.db');
   const stamp = new Date().toISOString().slice(0,10);
   res.download(dbPath, 'ewt-backup-' + stamp + '.db', (err) => {
     if (err) res.status(500).json({ error: 'Không thể tải file backup.' });
   });
+});
+
+// Danh sách các bản sao lưu tự động (mỗi 6 tiếng, giữ 30 bản gần nhất)
+app.get('/api/admin/backups', requireRole('admin'), (req, res) => {
+  try {
+    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('data-') && f.endsWith('.db'));
+    const list = files.map(f => {
+      const st = fs.statSync(path.join(BACKUP_DIR, f));
+      return { name: f, size: st.size, mtime: st.mtime };
+    }).sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+    res.json({ backups: list });
+  } catch (e) {
+    res.status(500).json({ error: 'Không đọc được danh sách backup: ' + e.message });
+  }
+});
+
+// Tải về 1 bản sao lưu tự động cụ thể theo tên file
+app.get('/api/admin/backups/:name', requireRole('admin'), (req, res) => {
+  const name = req.params.name;
+  if (!/^data-[\w.-]+\.db$/.test(name)) return res.status(400).json({ error: 'Tên file không hợp lệ.' });
+  const p = path.join(BACKUP_DIR, name);
+  if (!fs.existsSync(p)) return res.status(404).json({ error: 'Không tìm thấy bản sao lưu này.' });
+  res.download(p, name);
+});
+
+// Kích hoạt sao lưu ngay lập tức (trước khi làm việc rủi ro)
+app.post('/api/admin/backups/run', requireRole('admin'), (req, res) => {
+  const result = runBackup('admin yêu cầu thủ công');
+  res.json(result);
 });
 
 // ===================== QUẢN LÝ LỚP (GROUPS) =====================
@@ -2170,6 +2241,13 @@ app.listen(port, () => {
     console.warn('⚠️  DATA_DIR chưa set — database nằm trong thư mục app, SẼ MẤT khi Railway redeploy! Hãy tạo Volume trong Railway và set DATA_DIR=/data');
   else
     console.log('✅ DATA_DIR =', DATA_DIR, '— dữ liệu an toàn qua các lần deploy');
+
+  // Sao lưu tự động: chạy 1 lần sau 2 phút (đợi warmup xong), sau đó mỗi 6 tiếng.
+  // Giữ 30 bản gần nhất trong Volume /data/backups — sống sót qua mọi lần redeploy.
+  setTimeout(() => {
+    runBackup('khởi động server');
+    setInterval(() => runBackup('định kỳ 6h'), 6 * 60 * 60 * 1000);
+  }, 2 * 60 * 1000);
 
   // Self-ping mỗi 4 phút để Railway không cho app ngủ (cold start làm trang quay vòng 15-30s)
   if (process.env.PUBLIC_URL) {

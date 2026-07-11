@@ -7,3 +7,6 @@ data.db-*
 
 # Tệp học sinh/giáo viên tải lên — nằm ở Railway volume, không commit
 uploads/
+
+# Bản sao lưu database tự động — nằm ở Railway volume, không commit
+backups/
