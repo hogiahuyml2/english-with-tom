@@ -2895,7 +2895,7 @@
         <div id="gpReviewBar" style="display:none;margin-top:16px;border:1.5px solid #d1fae5;border-radius:14px;overflow:hidden;">
           <!-- Header -->
           <div style="background:#f0fdf4;padding:12px 14px;border-bottom:1px solid #d1fae5;display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:13px;font-weight:700;color:#15803d;">✏️ Xem lại &amp; chỉnh sửa trước khi gửi</span>
+            <span id="gpReviewBarLabel" style="font-size:13px;font-weight:700;color:#15803d;">✏️ Xem lại &amp; chỉnh sửa trước khi gửi</span>
             <button onclick="openRegradeNote()" style="background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:3px 10px;font-size:12px;color:#6b7280;cursor:pointer;">🔄 Chấm lại</button>
           </div>
           <div style="padding:14px;background:#fff;">
@@ -3088,8 +3088,9 @@ function openGradingPanel(subId) {
             document.getElementById('gpAIActions').style.display = 'none';
             document.getElementById('gpAIResult').style.display  = '';
             document.getElementById('gpAIResult').innerHTML = renderAIResult(fb2);
-            // Show review bar if pending — restore all edits
-            if (sub.status === 'pending_review') {
+            // Hiện thanh chỉnh sửa/gửi cho cả bài đang "Chờ xác nhận" LẪN bài "Đã chấm" —
+            // giáo viên có thể phát hiện sai sót SAU khi đã gửi điểm và cần sửa lại.
+            if (sub.status === 'pending_review' || sub.status === 'graded') {
               var sl2 = fb2.scale_label || '';
               document.getElementById('gpReviewScore').value         = sub.score != null ? sub.score : (fb2.overall_score != null ? fb2.overall_score : '');
               document.getElementById('gpReviewMaxLabel').textContent = '/ ' + _gpMaxScore + (sl2 ? '  (' + sl2 + ')' : '');
@@ -3097,6 +3098,10 @@ function openGradingPanel(subId) {
               syncSummaryBox();
               setVisibility(fb2.visibility || null);
               document.getElementById('gpReviewBar').style.display   = '';
+              var reviewHeaderEl = document.getElementById('gpReviewBarLabel');
+              if (reviewHeaderEl) reviewHeaderEl.textContent = sub.status === 'graded'
+                ? '✏️ Bài đã gửi — sửa lại nếu phát hiện sai sót'
+                : '✏️ Xem lại & chỉnh sửa trước khi gửi';
             }
           }
         } catch(e) {}
