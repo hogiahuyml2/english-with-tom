@@ -242,6 +242,7 @@
         <div class="wh-t-row">
           <select id="tLevel"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option></select>
           <input id="tTopic" list="tTopics" placeholder="Tên chủ đề (VD: Weather, Travel...)" maxlength="40">
+          <select id="tKind" style="grid-column:1/-1;"><option value="word">Loại: Từ vựng thường</option><option value="colloc">Loại: Collocation (cụm từ)</option><option value="upgrade">Loại: Nâng cấp từ vựng</option></select>
           <datalist id="tTopics"></datalist>
         </div>
         <textarea id="tText" placeholder="Mỗi dòng một từ, ngăn cách bằng dấu |&#10;từ | loại từ | nghĩa tiếng Việt | câu ví dụ (chứa đúng từ đó) | dịch câu ví dụ&#10;&#10;VD:&#10;umbrella | n | cái ô | Take an umbrella because it may rain. | Hãy mang ô vì trời có thể mưa.&#10;sunny | adj | có nắng | It is sunny and warm today. | Hôm nay trời nắng và ấm."></textarea>
@@ -322,7 +323,7 @@ function speak(text) {
 }
 
 /* ═══════════════════════════ Trạng thái ═══════════════════════════ */
-var S = { me: null, words: [], byId: {}, role: 'student', level: 'KET', topic: '' };
+var S = { me: null, all: [], words: [], colloc: [], upg: [], byId: {}, role: 'student', level: 'KET', topic: '' };
 try { S.level = localStorage.getItem('wh_level') || 'KET'; S.topic = localStorage.getItem('wh_topic') || ''; } catch (e) {}
 var LEVEL_DEF = [
   { id: 'KET', label: 'KET', note: 'A2' }, { id: 'PET', label: 'PET', note: 'B1' },
@@ -341,6 +342,9 @@ var SCENES = { 'Daily Life': 'Ở nhà, cuộc sống thường ngày', 'Food & 
 function topicIcon(t) { return TOPIC_ICON[t] || '📖'; }
 function inLevel(w, lv) { return lv === 'APTIS' ? (w.level === 'PET' || w.level === 'FCE') : w.level === lv; }
 function levelWords() { return S.words.filter(function (w) { return inLevel(w, S.level); }); }
+function levelItems() { return S.all.filter(function (w) { return inLevel(w, S.level); }); }
+function levelKind(list) { var a = list.filter(function (w) { return inLevel(w, S.level); }); var t = S.topic ? a.filter(function (w) { return w.topic === S.topic; }) : []; return t.length >= 4 ? t : a; }
+function setBank(words) { S.all = words; S.words = words.filter(function (w) { return w.kind === 'word'; }); S.colloc = words.filter(function (w) { return w.kind === 'colloc'; }); S.upg = words.filter(function (w) { return w.kind === 'upgrade'; }); S.byId = {}; words.forEach(function (w) { S.byId[w.id] = w; }); }
 function scopeWords() { var lw = levelWords(); return S.topic ? lw.filter(function (w) { return w.topic === S.topic; }) : lw; }
 function prog(id) { return S.me && S.me.progress[id] ? S.me.progress[id] : null; }
 function isDue(id) { var p = prog(id); return !!p && p[1] <= S.me.today; }
@@ -368,7 +372,7 @@ function renderStats() {
 }
 
 function smartCounts() {
-  var lw = levelWords(), due = 0, fresh = 0;
+  var lw = levelItems(), due = 0, fresh = 0;
   lw.forEach(function (w) { if (isDue(w.id)) due++; else if (!prog(w.id)) fresh++; });
   return { due: due, fresh: fresh };
 }
@@ -376,7 +380,7 @@ function renderToday() {
   var m = S.me, t = m.today_stats, c = smartCounts();
   var pct = Math.min(1, t.reviews / t.goal), R = 40, C = 2 * Math.PI * R;
   var line = c.due + c.fresh === 0 ? 'Bạn đã ôn hết từ đến hạn ở cấp này 🎉 — luyện thêm để củng cố nhé!' :
-    (c.due ? '<b>' + c.due + '</b> từ đến hạn ôn' : '') + (c.due && c.fresh ? ' · ' : '') + (c.fresh ? '<b>' + c.fresh + '</b> từ mới chưa gặp' : '');
+    (c.due ? '<b>' + c.due + '</b> mục đến hạn ôn' : '') + (c.due && c.fresh ? ' · ' : '') + (c.fresh ? '<b>' + c.fresh + '</b> mục mới chưa gặp' : '');
   var streakNote = m.doneToday ? '✅ Hôm nay bạn đã giữ chuỗi 🔥' : 'Ôn ít nhất ' + t.streakMin + ' lượt để giữ chuỗi 🔥';
   $('whToday').innerHTML =
     '<div class="wh-title">📅 Hôm nay</div><div class="wh-today">' +
@@ -438,13 +442,16 @@ function renderModes() {
     ['flash', '🃏', 'Flashcard', 'Lật thẻ, tự đánh giá "nhớ / chưa nhớ". Nhẹ nhàng để làm quen từ mới.'],
     ['blitz', '⚡', 'Blitz 60 giây', 'Trả lời thật nhanh — đúng liên tục để lên combo, sai bị trừ giờ!'],
     ['type', '⌨️', 'Gõ từ', 'Nhìn nghĩa tiếng Việt, tự gõ từ tiếng Anh. Cách nhớ chính tả tốt nhất.'],
-    ['situation', '🎭', 'Tình huống', 'Điền từ vào câu đời thực — học từ trong ngữ cảnh, không học vẹt.']
+    ['situation', '🎭', 'Tình huống', 'Điền từ vào câu đời thực — học từ trong ngữ cảnh, không học vẹt.'],
+    ['colloc', '🔗', 'Collocations', 'Học cả cụm từ hay đi cùng nhau (make a decision, heavy traffic...) — nói & viết tự nhiên hơn.'],
+    ['upgrade', '🚀', 'Nâng cấp từ vựng', 'Đổi từ đơn giản thành từ mạnh hơn (big → significant) — ăn điểm Writing/Speaking.'],
+    ['library', '📖', 'Thư viện', 'Xem lại toàn bộ cụm từ & từ nâng cấp của cấp độ này, có phát âm.']
   ];
   $('whModes').innerHTML = M.map(function (m) {
     return '<button class="wh-mode" data-m="' + m[0] + '"><span class="mi">' + m[1] + '</span><span class="mn">' + m[2] + '</span><span class="md">' + m[3] + '</span></button>';
   }).join('');
   Array.prototype.forEach.call($('whModes').querySelectorAll('[data-m]'), function (b) {
-    b.onclick = function () { startMode(b.getAttribute('data-m')); };
+    b.onclick = function () { var m = b.getAttribute('data-m'); if (m === 'library') openLibrary(); else startMode(m); };
   });
 }
 function renderAll() { renderStats(); renderToday(); renderQuests(); renderPickers(); renderModes(); }
@@ -485,6 +492,22 @@ function openBoard() {
     $('lbBody').innerHTML = h;
   }).catch(function (e) { $('lbBody').textContent = e.message; });
 }
+function openLibrary() {
+  var tab = openLibrary.tab || 'colloc';
+  var list = (tab === 'colloc' ? S.colloc : S.upg).filter(function (w) { return inLevel(w, S.level); });
+  var topics = []; list.forEach(function (w) { if (topics.indexOf(w.topic) < 0) topics.push(w.topic); });
+  var h = '<h3>📖 Thư viện · ' + esc(S.level) + '</h3><div class="wh-pick" style="margin:10px 0;"><button class="wh-pill' + (tab === 'colloc' ? ' on' : '') + '" data-lt="colloc">🔗 Collocations (' + S.colloc.filter(function (w) { return inLevel(w, S.level); }).length + ')</button><button class="wh-pill' + (tab === 'upgrade' ? ' on' : '') + '" data-lt="upgrade">🚀 Nâng cấp (' + S.upg.filter(function (w) { return inLevel(w, S.level); }).length + ')</button></div>';
+  if (!list.length) h += '<div class="wh-sub">Cấp độ này chưa có mục nào.</div>';
+  topics.forEach(function (t) {
+    h += '<div style="font-weight:700;font-size:13px;margin:12px 0 4px;">' + topicIcon(t) + ' ' + esc(t) + '</div>';
+    list.filter(function (w) { return w.topic === t; }).forEach(function (w) {
+      h += '<div class="lb-row" style="align-items:flex-start;"><span class="nm"><b>' + esc(w.word) + '</b>' + (w.kind === 'upgrade' ? ' <small>⟵ ' + esc(w.basic) + '</small>' : '') + ' <small>' + esc(w.vi) + '</small><br><small style="font-style:italic;">' + esc(w.ex) + '</small></span><button class="wp-sound" style="width:32px;height:32px;font-size:14px;margin:0;" data-say="' + w.id + '">🔊</button></div>';
+    });
+  });
+  openModal(h, true);
+  Array.prototype.forEach.call($('whModal').querySelectorAll('[data-lt]'), function (b) { b.onclick = function () { openLibrary.tab = b.getAttribute('data-lt'); openLibrary(); }; });
+  Array.prototype.forEach.call($('whModal').querySelectorAll('[data-say]'), function (b) { b.onclick = function () { speak(S.byId[b.getAttribute('data-say')].word); }; });
+}
 function showNewBadges(list) {
   if (!list || !list.length) return;
   list.forEach(function (b, i) {
@@ -511,6 +534,8 @@ function distract(w, key, n, sameLevel, topicFirst) {
   return out;
 }
 function makeQ(w, type) {
+  if (w.kind === 'colloc') type = (w.basic && wordRe(w.basic).test(w.word)) ? 'colloc' : 'mcqWord';
+  else if (w.kind === 'upgrade') type = (w.basic && w.exB && wordRe(w.basic).test(w.exB)) ? 'upgrade' : 'mcqMeaning';
   if (type === 'situation' && (!w.ex || !wordRe(w.word).test(w.ex))) type = 'mcqWord';
   if (type === 'listen' && !ttsOK) type = 'mcqWord';
   return { id: w.id, w: w, type: type };
@@ -544,26 +569,46 @@ function nextQ() {
   var q = G.cur;
   if (q.type === 'teach') return renderTeach(q);
   if (q.type === 'flash') return renderFlash(q);
-  if (q.type === 'mcqMeaning' || q.type === 'mcqWord' || q.type === 'listen' || q.type === 'situation') return renderMcq(q);
+  if (q.type === 'mcqMeaning' || q.type === 'mcqWord' || q.type === 'listen' || q.type === 'situation' || q.type === 'colloc' || q.type === 'upgrade') return renderMcq(q);
   if (q.type === 'type') return renderType(q);
 }
-function tagFor(q) { return { mcqMeaning: '🔤 Chọn nghĩa đúng', mcqWord: '🇬🇧 Chọn từ tiếng Anh', listen: '🎧 Nghe & chọn từ', situation: '🎭 Tình huống', type: '⌨️ Gõ từ tiếng Anh', teach: '🌱 Từ mới', flash: '🃏 Flashcard' }[q.type]; }
+function tagFor(q) { return { colloc: '🔗 Hoàn thành cụm từ', upgrade: '🚀 Nâng cấp từ vựng', mcqMeaning: '🔤 Chọn nghĩa đúng', mcqWord: '🇬🇧 Chọn từ tiếng Anh', listen: '🎧 Nghe & chọn từ', situation: '🎭 Tình huống', type: '⌨️ Gõ từ tiếng Anh', teach: '🌱 Từ mới', flash: '🃏 Flashcard' }[q.type]; }
 
 function renderTeach(q) {
   var w = q.w;
-  $('wpBody').innerHTML = '<div class="wp-q wp-teach"><div class="big"><span class="wp-tag">' + tagFor(q) + '</span><div class="wp-word">' + esc(w.word) + '</div><div class="wp-pos">' + esc(w.pos) + '</div>' +
+  var kindNote = w.kind === 'upgrade' ? '<div class="wp-pos" style="font-style:normal;">Thay cho <b>“' + esc(w.basic) + '”</b> — nghe sang hơn, hợp bài Writing</div>' : (w.kind === 'colloc' ? '<div class="wp-pos" style="font-style:normal;">Cụm từ hay đi cùng nhau — học cả cụm, đừng dịch từng chữ</div>' : '<div class="wp-pos">' + esc(w.pos) + '</div>');
+  $('wpBody').innerHTML = '<div class="wp-q wp-teach"><div class="big"><span class="wp-tag">' + (w.kind === 'upgrade' ? '🚀 Từ nâng cấp mới' : (w.kind === 'colloc' ? '🔗 Cụm từ mới' : tagFor(q))) + '</span><div class="wp-word">' + esc(w.word) + '</div>' + kindNote +
     '<button class="wp-sound" id="qSnd" title="Nghe phát âm">🔊</button><div class="wp-meaning">' + esc(w.vi) + '</div></div>' +
     (w.ex ? '<div class="wp-fb ok" style="margin-top:14px;"><span class="ex" style="font-style:normal;color:var(--text);">' + esc(w.ex) + '</span><span class="ex">' + esc(w.exVi) + '</span></div>' : '') +
     '<button class="wp-next" id="qGo">Đã hiểu — thử nhớ ngay →</button></div>';
   $('qSnd').onclick = function () { speak(w.word); }; $('qGo').onclick = nextQ; speak(w.word);
 }
 
+function kindDistract(w, n) { // đáp án nhiễu cho collocation / nâng cấp
+  var out = [], seen = {};
+  if (w.kind === 'colloc') { seen[w.basic.toLowerCase()] = 1; w.extra.forEach(function (x) { if (!seen[x.toLowerCase()] && out.length < n) { seen[x.toLowerCase()] = 1; out.push(x); } }); }
+  var pool = shuffle((w.kind === 'colloc' ? S.colloc : S.upg).filter(function (x) { return x.id !== w.id; }));
+  if (w.kind === 'upgrade') seen[w.word.toLowerCase()] = 1;
+  pool.sort(function (a, b) { return (b.pos === w.pos ? 1 : 0) - (a.pos === w.pos ? 1 : 0); });
+  for (var i = 0; i < pool.length && out.length < n; i++) { var v = w.kind === 'colloc' ? pool[i].basic : pool[i].word; if (v && !seen[v.toLowerCase()]) { seen[v.toLowerCase()] = 1; out.push(v); } }
+  return out;
+}
 function renderMcq(q) {
-  var w = q.w, key = (q.type === 'mcqMeaning') ? 'vi' : 'word', ds = distract(w, key, 3, true, q.type === 'situation');
-  var opts = shuffle([{ t: w[key], ok: true }].concat(ds.map(function (d) { return { t: d[key], ok: false }; })));
+  var w = q.w, key = (q.type === 'mcqMeaning') ? 'vi' : 'word', opts;
+  if (q.type === 'colloc') opts = shuffle([{ t: w.basic, ok: true }].concat(kindDistract(w, 3).map(function (t) { return { t: t, ok: false }; })));
+  else if (q.type === 'upgrade') opts = shuffle([{ t: w.word, ok: true }].concat(kindDistract(w, 3).map(function (t) { return { t: t, ok: false }; })));
+  else { var ds = distract(w, key, 3, true, q.type === 'situation'); opts = shuffle([{ t: w[key], ok: true }].concat(ds.map(function (d) { return { t: d[key], ok: false }; }))); }
   var body = '<div class="wp-q"><span class="wp-tag">' + tagFor(q) + '</span>';
   if (q.type === 'mcqMeaning') body += '<div class="wp-word">' + esc(w.word) + '</div><div class="wp-pos">' + esc(w.pos) + '</div><button class="wp-sound" id="qSnd">🔊</button>';
   else if (q.type === 'mcqWord') body += '<div class="wp-meaning">' + esc(w.vi) + '</div><div class="wp-pos">' + esc(w.pos) + '</div>';
+  else if (q.type === 'colloc') {
+    var cm = w.word.match(wordRe(w.basic)), ci = cm.index + cm[1].length;
+    body += '<div class="wp-meaning" style="font-size:19px;">' + esc(w.vi) + '</div><div class="wp-scene">Chọn từ còn thiếu để hoàn thành cụm từ</div><div class="wp-sit" style="font-size:25px;font-weight:700;">' + esc(w.word.slice(0, ci)) + '<span class="wp-blank" id="qBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' + esc(w.word.slice(ci + w.basic.length)) + '</div>';
+  }
+  else if (q.type === 'upgrade') {
+    var um = w.exB.match(wordRe(w.basic)), ui = um.index + um[1].length;
+    body += '<div class="wp-scene">Thay phần gạch chân bằng một từ <b>mạnh hơn, trang trọng hơn</b></div><div class="wp-sit">' + esc(w.exB.slice(0, ui)) + '<u id="qBlank" style="text-decoration-color:var(--primary);text-underline-offset:5px;font-weight:700;">' + esc(w.basic) + '</u>' + esc(w.exB.slice(ui + w.basic.length)) + '</div>';
+  }
   else if (q.type === 'listen') body += '<div class="wp-pos" style="margin-bottom:6px;">Bấm loa và chọn từ bạn nghe được</div><button class="wp-sound" id="qSnd" style="width:64px;height:64px;font-size:28px;">🔊</button>';
   else {
     var m = w.ex.match(wordRe(w.word)), idx = m.index + m[1].length;
@@ -582,6 +627,8 @@ function renderMcq(q) {
       Array.prototype.forEach.call(btns, function (x, i) { x.disabled = true; if (opts[i].ok) x.classList.add('ok'); });
       if (!o.ok) b.classList.add('bad');
       if (q.type === 'situation') { var bl = $('qBlank'); bl.textContent = w.word; bl.className = 'wp-blank ' + (o.ok ? 'ok' : 'bad'); }
+      if (q.type === 'colloc') { var cb = $('qBlank'); cb.textContent = w.basic; cb.className = 'wp-blank ' + (o.ok ? 'ok' : 'bad'); }
+      if (q.type === 'upgrade') { var ub = $('qBlank'); ub.textContent = w.word; ub.style.color = o.ok ? 'var(--success)' : '#ef4444'; ub.style.textDecoration = 'none'; }
       grade(q, o.ok);
     };
   });
@@ -638,6 +685,7 @@ function grade(q, ok) {
   var w = q.w;
   var fb = '<div class="wp-fb ' + (ok ? 'ok' : 'bad') + '"><b class="t">' + (ok ? '✅ Chính xác!' : '❌ Chưa đúng') + (firstTry ? '' : ' <span class="wh-sub">(lượt ôn lại — không tính điểm)</span>') + '</b>' +
     '<b>' + esc(w.word) + '</b> <i>' + esc(w.pos) + '</i> — ' + esc(w.vi) + ' <button class="wp-sound" style="width:30px;height:30px;font-size:14px;margin:0 0 0 4px;" id="fbSnd">🔊</button>' +
+    (w.kind === 'upgrade' ? '<span class="ex" style="font-style:normal;">Thay cho “' + esc(w.basic) + '”: <b>' + esc(w.word) + '</b></span>' : '') +
     (w.ex ? '<span class="ex">' + esc(w.ex) + '</span><span class="ex">' + esc(w.exVi) + '</span>' : '') + '</div>' +
     '<button class="wp-next" id="qNext">' + (G.queue.length ? 'Tiếp tục →' : 'Xem kết quả 🎉') + '</button>';
   var holder = $('qFb'); if (holder) holder.innerHTML = fb;
@@ -660,7 +708,7 @@ function pickWeighted(list, n) {
   return out;
 }
 function startSmart() {
-  var lw = levelWords();
+  var lw = levelItems();
   if (!lw.length) { toast('Chưa có từ nào ở cấp này.'); return; }
   var due = lw.filter(function (w) { return isDue(w.id); }).sort(function (a, b) { return box(a.id) - box(b.id); });
   var fresh = shuffle(lw.filter(function (w) { return !prog(w.id); }));
@@ -675,11 +723,16 @@ function startSmart() {
   list.forEach(function (w) {
     var b = box(w.id);
     if (b < 0) { queue.push({ id: w.id, w: w, type: 'teach' }); queue.push(makeQ(w, 'mcqMeaning')); }
-    else queue.push(makeQ(w, typeForBox(b)));
+    else queue.push(makeQ(w, w.kind === 'word' ? typeForBox(b) : 'x'));
   });
   startPlay('smart', queue);
 }
 function startMode(mode) {
+  if (mode === 'colloc' || mode === 'upgrade') {
+    var kp = levelKind(mode === 'colloc' ? S.colloc : S.upg);
+    if (kp.length < 4) { toast('Cấp này chưa đủ mục để chơi (cần ≥ 4).'); return; }
+    return startPlay(mode, pickWeighted(kp, 10).map(function (w) { return makeQ(w, mode); }));
+  }
   var sw = scopeWords();
   if (sw.length < 4) { toast('Cần ít nhất 4 từ trong chủ đề để chơi. Hãy chọn "Tất cả chủ đề".'); return; }
   var n = 10;
@@ -752,9 +805,16 @@ function initTeacher() {
       if (t === 'list') renderTList(); if (t === 'students') loadStudents();
     };
   });
+  var PH = {
+    word: 'Mỗi dòng một từ, ngăn cách bằng dấu |\ntừ | loại từ | nghĩa tiếng Việt | câu ví dụ (chứa đúng từ đó) | dịch câu ví dụ\n\nVD:\numbrella | n | cái ô | Take an umbrella because it may rain. | Hãy mang ô vì trời có thể mưa.',
+    colloc: 'cụm từ | từ cần điền | nghĩa | câu ví dụ (chứa đúng cụm) | dịch | nhiễu1,nhiễu2,nhiễu3 (không bắt buộc)\n\nVD:\nmake a decision | make | đưa ra quyết định | She needs to make a decision by Friday. | Cô ấy cần đưa ra quyết định trước thứ Sáu. | do,give,get',
+    upgrade: 'từ mạnh | từ cơ bản | nghĩa | câu dùng từ mạnh | dịch | câu dùng từ cơ bản\n\nVD:\nsignificant | big | đáng kể | There was a significant increase in sales. | Doanh số đã tăng đáng kể. | There was a big increase in sales.'
+  };
+  $('tKind').onchange = function () { $('tText').placeholder = PH[$('tKind').value]; };
+  $('tText').placeholder = PH.word;
   $('tImportBtn').onclick = function () {
     var btn = $('tImportBtn'); btn.disabled = true;
-    api('POST', '/api/words/import', { level: $('tLevel').value, topic: $('tTopic').value, text: $('tText').value }).then(function (r) {
+    api('POST', '/api/words/import', { level: $('tLevel').value, kind: $('tKind').value, topic: $('tTopic').value, text: $('tText').value }).then(function (r) {
       var m = '✅ Đã thêm ' + r.added + ' từ mới, cập nhật ' + r.updated + ' từ. Kho hiện có ' + r.total + ' từ.';
       if (r.skipped.length) m += '<br>⚠️ Bỏ qua ' + r.skipped.length + ' dòng:<br>' + r.skipped.map(esc).join('<br>');
       $('tMsg').innerHTML = '<div class="wh-msg ' + (r.skipped.length && !r.added && !r.updated ? 'err' : 'ok') + '">' + m + '</div>';
@@ -763,14 +823,14 @@ function initTeacher() {
     }).catch(function (e) { $('tMsg').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; }).then(function () { btn.disabled = false; });
   };
 }
-function reloadWords() { return api('GET', '/api/words').then(function (d) { S.words = d.words; S.byId = {}; S.words.forEach(function (w) { S.byId[w.id] = w; }); renderAll(); }); }
+function reloadWords() { return api('GET', '/api/words').then(function (d) { setBank(d.words); renderAll(); }); }
 function renderTList() {
   var el = $('ttList'), lv = el.getAttribute('data-lv') || 'KET';
   el.setAttribute('data-lv', lv);
-  var rows = S.words.filter(function (w) { return w.level === lv; });
+  var rows = S.all.filter(function (w) { return w.level === lv; });
   el.innerHTML = '<div class="wh-pick">' + ['KET', 'PET', 'FCE', 'IELTS'].map(function (l) { return '<button class="wh-pill' + (l === lv ? ' on' : '') + '" data-l="' + l + '">' + l + '</button>'; }).join('') + '</div>' +
     '<div class="wh-scroll"><table class="wh-table"><thead><tr><th>Từ</th><th>Nghĩa</th><th>Chủ đề</th><th></th></tr></thead><tbody>' +
-    rows.map(function (w) { return '<tr><td><b>' + esc(w.word) + '</b> <i style="color:var(--text-muted)">' + esc(w.pos) + '</i></td><td>' + esc(w.vi) + '</td><td>' + esc(w.topic) + '</td><td><button class="wh-del" data-del="' + w.id + '" title="Xoá">🗑</button></td></tr>'; }).join('') + '</tbody></table></div>';
+    rows.map(function (w) { return '<tr><td><b>' + esc(w.word) + '</b> <i style="color:var(--text-muted)">' + (w.kind === 'colloc' ? '🔗' : (w.kind === 'upgrade' ? '🚀 ← ' + esc(w.basic) : esc(w.pos))) + '</i></td><td>' + esc(w.vi) + '</td><td>' + esc(w.topic) + '</td><td><button class="wh-del" data-del="' + w.id + '" title="Xoá">🗑</button></td></tr>'; }).join('') + '</tbody></table></div>';
   Array.prototype.forEach.call(el.querySelectorAll('[data-l]'), function (b) { b.onclick = function () { el.setAttribute('data-lv', b.getAttribute('data-l')); renderTList(); }; });
   Array.prototype.forEach.call(el.querySelectorAll('[data-del]'), function (b) {
     b.onclick = function () {
@@ -792,7 +852,7 @@ function loadStudents() {
 /* ═══════════════════════════ Khởi động ═══════════════════════════ */
 function boot() {
   Promise.all([api('GET', '/api/words'), api('GET', '/api/word-game/me'), api('GET', '/api/me').catch(function () { return {}; })]).then(function (res) {
-    S.words = res[0].words; S.words.forEach(function (w) { S.byId[w.id] = w; });
+    setBank(res[0].words);
     S.me = res[1]; S.role = (res[2].user && res[2].user.role) || 'student';
     if (!LEVEL_DEF.some(function (l) { return l.id === S.level; })) S.level = 'KET';
     renderAll();

@@ -2,9 +2,11 @@
 // nhiệm vụ ngày, huy hiệu, bảng xếp hạng. Mọi phần thưởng do SERVER tính (client chỉ
 // báo kết quả từng câu) để học sinh không tự cộng điểm bằng cách sửa request.
 const { SEED_WORDS, parseSeed } = require('./vocab-seed');
+const { SEED2 } = require('./vocab-seed2');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
-const MODES = ['flash', 'blitz', 'type', 'situation', 'smart'];
+const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade'];
+const KINDS = ['word', 'colloc', 'upgrade'];
 // Khoảng cách ôn lại (ngày) theo "hộp" 0..5 — đúng với phương pháp Leitner/lặp lại ngắt quãng
 const INTERVALS = [0, 1, 3, 7, 14, 30];
 const DAILY_GOAL = 20;     // mục tiêu: ôn 20 lượt từ/ngày
@@ -12,7 +14,7 @@ const STREAK_MIN = 5;      // chỉ cần 5 lượt là giữ được chuỗi �
 const FREEZE_PRICE = 100;  // xu đổi 1 "khiên giữ chuỗi" 🧊
 const MAX_FREEZES = 2;
 // XP cho mỗi câu đúng theo chế độ (chế độ khó hơn/đòi hỏi nhớ chủ động thì thưởng nhiều hơn; Blitz nhanh nên ít hơn để không "lạm phát")
-const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6 };
+const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6 };
 const MAX_RESULTS = 60;    // tối đa số câu báo lên mỗi phiên
 const DAILY_HITS_CAP = 3;  // 1 từ chỉ được cộng XP tối đa 3 lần đúng/ngày (chống cày 1 từ)
 
@@ -38,6 +40,8 @@ const QUESTS = [
   { id: 'blitz1',     icon: '⚡', text: 'Chơi xong 1 ván Blitz',            goal: 1,  reward: 10, get: (d, m) => (m.blitz && m.blitz.s) || 0 },
   { id: 'type8',      icon: '⌨️', text: 'Gõ đúng 8 từ',                     goal: 8,  reward: 15, get: (d, m) => (m.type && m.type.ok) || 0 },
   { id: 'situation8', icon: '🎭', text: 'Điền đúng 8 câu tình huống',       goal: 8,  reward: 15, get: (d, m) => (m.situation && m.situation.ok) || 0 },
+  { id: 'colloc8',    icon: '🔗', text: 'Chọn đúng 8 cụm từ (Collocations)', goal: 8,  reward: 15, get: (d, m) => (m.colloc && m.colloc.ok) || 0 },
+  { id: 'upgrade5',   icon: '🚀', text: 'Nâng cấp đúng 5 từ',               goal: 5,  reward: 15, get: (d, m) => (m.upgrade && m.upgrade.ok) || 0 },
 ];
 
 function questsFor(uid, day) {
@@ -71,10 +75,11 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   let bank = { list: [], byId: new Map() };
 
   function loadBank() {
-    const rows = db.prepare('SELECT id,level,topic,word,pos,meaning_vi,example_en,example_vi FROM vocab_words ORDER BY id').all();
+    const rows = db.prepare('SELECT id,level,topic,word,pos,meaning_vi,example_en,example_vi,kind,basic,extra,example_basic FROM vocab_words ORDER BY id').all();
     const list = rows.map(r => ({
-      id: Number(r.id), level: r.level, topic: r.topic, word: r.word, pos: r.pos || '',
-      vi: r.meaning_vi, ex: r.example_en || '', exVi: r.example_vi || ''
+      id: Number(r.id), kind: r.kind || 'word', level: r.level, topic: r.topic, word: r.word, pos: r.pos || '',
+      vi: r.meaning_vi, ex: r.example_en || '', exVi: r.example_vi || '',
+      basic: r.basic || '', extra: r.extra ? String(r.extra).split(',').map(s => s.trim()).filter(Boolean) : [], exB: r.example_basic || ''
     }));
     bank = { list, byId: new Map(list.map(w => [w.id, w])) };
   }
@@ -82,13 +87,14 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   function seedBank() {
     try {
       const ins = db.prepare(
-        'INSERT OR IGNORE INTO vocab_words (level,topic,word,pos,meaning_vi,example_en,example_vi,created_at) VALUES (?,?,?,?,?,?,?,?)'
+        'INSERT OR IGNORE INTO vocab_words (level,topic,word,pos,meaning_vi,example_en,example_vi,created_at,kind,basic,extra,example_basic) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
       );
       db.exec('BEGIN');
       let n = 0;
-      for (const w of SEED_WORDS) n += Number(ins.run(w.level, w.topic, w.word, w.pos, w.vi, w.ex, w.exVi, now()).changes || 0);
+      for (const w of SEED_WORDS) n += Number(ins.run(w.level, w.topic, w.word, w.pos, w.vi, w.ex, w.exVi, now(), 'word', null, null, null).changes || 0);
+      for (const w of SEED2) n += Number(ins.run(w.level, w.topic, w.word, w.pos, w.vi, w.ex, w.exVi, now(), w.kind, w.basic || null, w.extra || null, w.exampleBasic || null).changes || 0);
       db.exec('COMMIT');
-      if (n) console.log('[wordgame] Đã nạp ' + n + ' từ khởi đầu.');
+      if (n) console.log('[wordgame] Đã nạp ' + n + ' mục khởi đầu.');
     } catch (e) {
       try { db.exec('ROLLBACK'); } catch (_) {}
       console.error('[wordgame] seed lỗi:', e.message);
@@ -356,35 +362,56 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   });
 
   // ───────────── Dành cho giáo viên/admin ─────────────
-  // Dán danh sách từ: mỗi dòng "từ | loại | nghĩa | ví dụ | dịch ví dụ" (ngăn cách bằng | hoặc Tab)
+  // Dán danh sách: mỗi dòng 1 mục, ngăn cách bằng | hoặc Tab. Định dạng theo loại (kind):
+  //  word    : từ | loại | nghĩa | ví dụ | dịch ví dụ
+  //  colloc  : cụm từ | từ cần điền | nghĩa | ví dụ | dịch ví dụ | nhiễu1,nhiễu2,nhiễu3 (tuỳ chọn)
+  //  upgrade : từ mạnh | từ cơ bản | nghĩa | câu dùng từ mạnh | dịch | câu dùng từ cơ bản
+  function hasWord(text, word) {
+    return new RegExp('(^|[^A-Za-z])' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-z]|$)', 'i').test(text || '');
+  }
   app.post('/api/words/import', requireRole('teacher', 'admin'), (req, res) => {
     const { level, topic, text } = req.body || {};
+    const kind = KINDS.includes((req.body || {}).kind) ? req.body.kind : 'word';
     if (!LEVELS.includes(level)) return res.status(400).json({ error: 'Cấp độ phải là KET, PET, FCE hoặc IELTS.' });
     const topicName = String(topic || '').trim().slice(0, 40);
     if (!topicName) return res.status(400).json({ error: 'Vui lòng nhập tên chủ đề.' });
     const lines = String(text || '').split('\n').map(s => s.trim()).filter(Boolean);
     if (!lines.length) return res.status(400).json({ error: 'Chưa có dòng nào để nhập.' });
-    if (lines.length > 300) return res.status(400).json({ error: 'Mỗi lần nhập tối đa 300 từ.' });
+    if (lines.length > 300) return res.status(400).json({ error: 'Mỗi lần nhập tối đa 300 mục.' });
 
     let added = 0, updated = 0;
     const skipped = [];
     try {
-      const ins = db.prepare(`INSERT INTO vocab_words (level,topic,word,pos,meaning_vi,example_en,example_vi,created_by,created_at)
-                              VALUES (?,?,?,?,?,?,?,?,?)`);
+      const ins = db.prepare(`INSERT INTO vocab_words (level,topic,word,pos,meaning_vi,example_en,example_vi,created_by,created_at,kind,basic,extra,example_basic)
+                              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`);
       const find = db.prepare('SELECT id FROM vocab_words WHERE level=? AND lower(word)=lower(?)');
-      const upd = db.prepare('UPDATE vocab_words SET topic=?, pos=?, meaning_vi=?, example_en=?, example_vi=? WHERE id=?');
+      const upd = db.prepare('UPDATE vocab_words SET topic=?, pos=?, meaning_vi=?, example_en=?, example_vi=?, kind=?, basic=?, extra=?, example_basic=? WHERE id=?');
       db.exec('BEGIN');
       lines.forEach((line, i) => {
-        const parts = line.split(/\t|\|/).map(s => s.trim());
-        const [word, pos, vi, ex, exVi] = parts;
-        if (!word || !vi) { skipped.push('Dòng ' + (i + 1) + ': thiếu từ hoặc nghĩa'); return; }
-        if (word.length > 60 || vi.length > 200 || (ex || '').length > 300) { skipped.push('Dòng ' + (i + 1) + ': quá dài'); return; }
-        if (ex && !new RegExp('(^|[^A-Za-z])' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-z]|$)', 'i').test(ex)) {
-          skipped.push('Dòng ' + (i + 1) + ': câu ví dụ phải chứa đúng từ "' + word + '"'); return;
+        const P = line.split(/\t|\|/).map(s => s.trim());
+        const at = 'Dòng ' + (i + 1) + ': ';
+        let word, pos = '', vi, ex, exVi, basic = null, extra = null, exB = null;
+        if (kind === 'word') {
+          [word, pos, vi, ex, exVi] = P;
+        } else if (kind === 'colloc') {
+          let ds;
+          [word, basic, vi, ex, exVi, ds] = P; pos = 'phr';
+          extra = ds ? ds.split(',').map(s => s.trim()).filter(Boolean).join(',') : null;
+          if (word && basic && !hasWord(word, basic)) { skipped.push(at + 'từ cần điền "' + basic + '" phải nằm trong cụm "' + word + '"'); return; }
+          if (!basic) { skipped.push(at + 'thiếu từ cần điền'); return; }
+          if (!ex) { skipped.push(at + 'cần có câu ví dụ chứa cụm từ'); return; }
+        } else {
+          [word, basic, vi, ex, exVi, exB] = P; pos = 'upgrade';
+          if (!basic || !exB) { skipped.push(at + 'cần từ cơ bản và câu dùng từ cơ bản'); return; }
+          if (!ex) { skipped.push(at + 'cần câu dùng từ mạnh'); return; }
+          if (!hasWord(exB, basic)) { skipped.push(at + 'câu cơ bản phải chứa từ "' + basic + '"'); return; }
         }
+        if (!word || !vi) { skipped.push(at + 'thiếu từ hoặc nghĩa'); return; }
+        if (word.length > 60 || vi.length > 200 || (ex || '').length > 300 || (exB || '').length > 300) { skipped.push(at + 'quá dài'); return; }
+        if (ex && !hasWord(ex, word)) { skipped.push(at + 'câu ví dụ phải chứa đúng "' + word + '"'); return; }
         const ex0 = find.get(level, word);
-        if (ex0) { upd.run(topicName, pos || '', vi, ex || '', exVi || '', ex0.id); updated++; }
-        else { ins.run(level, topicName, word, pos || '', vi, ex || '', exVi || '', req.user.id, now()); added++; }
+        if (ex0) { upd.run(topicName, pos, vi, ex || '', exVi || '', kind, basic, extra, exB, ex0.id); updated++; }
+        else { ins.run(level, topicName, word, pos, vi, ex || '', exVi || '', req.user.id, now(), kind, basic, extra, exB); added++; }
       });
       db.exec('COMMIT');
       loadBank();

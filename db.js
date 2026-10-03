@@ -270,6 +270,14 @@ CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_word_daily_day ON word_daily(day);
 `, 'word game tables');
 
+// Mở rộng kho từ: loại mục (word / colloc / upgrade) + các trường phụ
+safeAlter('PRAGMA table_info(vocab_words)', [
+  ['kind',          "ALTER TABLE vocab_words ADD COLUMN kind TEXT NOT NULL DEFAULT 'word'"],
+  ['basic',         'ALTER TABLE vocab_words ADD COLUMN basic TEXT'],
+  ['extra',         'ALTER TABLE vocab_words ADD COLUMN extra TEXT'],
+  ['example_basic', 'ALTER TABLE vocab_words ADD COLUMN example_basic TEXT'],
+]);
+
 console.log('[DB] Init complete. DB path:', dbPath);
 
 // ===== Tiện ích mật khẩu =====
