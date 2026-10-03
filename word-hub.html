@@ -159,6 +159,20 @@
 .confetti { position: fixed; top: -30px; z-index: 5000; font-size: 22px; pointer-events: none; animation: whFall 2.2s ease-in forwards; }
 @keyframes whFall { to { transform: translateY(110vh) rotate(540deg); opacity: .2; } }
 
+/* hội thoại */
+.dg-list .ws-item { cursor: default; }
+.dg-bubble { display: flex; gap: 10px; margin: 12px 0; align-items: flex-start; }
+.dg-bubble.me { flex-direction: row-reverse; }
+.dg-av { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dg-bubble.me .dg-av { background: var(--gradient); color: #fff; }
+.dg-text { background: var(--bg-soft); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 14px; font-size: 15.5px; line-height: 2; text-align: left; max-width: 88%; }
+.dg-bubble.me .dg-text { background: var(--primary-soft); }
+.dg-sp { font-size: 11px; color: var(--text-muted); font-weight: 700; display: block; line-height: 1.4; margin-bottom: 2px; }
+.dg-vi { display: block; font-size: 12.5px; color: var(--text-muted); font-style: italic; line-height: 1.5; margin-top: 2px; }
+select.dg-sel { font-family: inherit; font-size: 14.5px; font-weight: 600; padding: 3px 6px; border: 2px solid var(--primary); border-radius: 8px; background: var(--surface); color: var(--text); max-width: 150px; }
+select.dg-sel.ok { border-color: var(--success); background: var(--success-soft); color: var(--success); }
+select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); color: #ef4444; }
+.dg-fix { font-size: 12px; color: var(--success); font-weight: 700; margin-left: 4px; }
 /* bộ từ được giao */
 .ws-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
 .ws-item:first-of-type { border-top: none; }
@@ -250,6 +264,7 @@
         <button class="wh-pill on" data-tt="import">➕ Thêm từ</button>
         <button class="wh-pill" data-tt="list">📋 Danh sách từ</button>
         <button class="wh-pill" data-tt="sets">📚 Giao bộ từ</button>
+        <button class="wh-pill" data-tt="dlg">🗣️ Hội thoại</button>
         <button class="wh-pill" data-tt="students">👥 Học sinh</button>
       </div>
       <div id="ttImport">
@@ -266,6 +281,7 @@
       </div>
       <div id="ttList" style="display:none;"></div>
       <div id="ttSets" style="display:none;"></div>
+      <div id="ttDlg" style="display:none;"></div>
       <div id="ttStudents" style="display:none;"></div>
     </div>
   </div>
@@ -460,6 +476,7 @@ function renderModes() {
     ['situation', '🎭', 'Tình huống', 'Điền từ vào câu đời thực — học từ trong ngữ cảnh, không học vẹt.'],
     ['colloc', '🔗', 'Collocations', 'Học cả cụm từ hay đi cùng nhau (make a decision, heavy traffic...) — nói & viết tự nhiên hơn.'],
     ['upgrade', '🚀', 'Nâng cấp từ vựng', 'Đổi từ đơn giản thành từ mạnh hơn (big → significant) — ăn điểm Writing/Speaking.'],
+    ['dialogue', '🗣️', 'Hội thoại', 'Đọc đoạn hội thoại đời thực (nhà hàng, sân bay, phỏng vấn...) và điền nhiều chỗ trống.'],
     ['dictation', '🎧', 'Nghe chép chính tả', ttsOK ? 'Nghe câu tiếng Anh rồi gõ lại — luyện nghe + chính tả, rất hợp thi Listening.' : 'Cần trình duyệt có giọng đọc (Chrome/Safari/Edge) để chơi chế độ này.'],
     ['library', '📖', 'Thư viện', 'Xem lại toàn bộ cụm từ & từ nâng cấp của cấp độ này, có phát âm.']
   ];
@@ -467,7 +484,7 @@ function renderModes() {
     return '<button class="wh-mode" data-m="' + m[0] + '"><span class="mi">' + m[1] + '</span><span class="mn">' + m[2] + '</span><span class="md">' + m[3] + '</span></button>';
   }).join('');
   Array.prototype.forEach.call($('whModes').querySelectorAll('[data-m]'), function (b) {
-    b.onclick = function () { var m = b.getAttribute('data-m'); if (m === 'library') openLibrary(); else startMode(m); };
+    b.onclick = function () { var m = b.getAttribute('data-m'); if (m === 'library') openLibrary(); else if (m === 'dialogue') openDialogues(); else startMode(m); };
   });
 }
 function renderAll() { renderStats(); renderToday(); renderQuests(); renderPickers(); renderModes(); }
@@ -862,8 +879,8 @@ function initTeacher() {
     b.onclick = function () {
       Array.prototype.forEach.call(document.querySelectorAll('[data-tt]'), function (x) { x.classList.toggle('on', x === b); });
       var t = b.getAttribute('data-tt');
-      $('ttImport').style.display = t === 'import' ? '' : 'none'; $('ttList').style.display = t === 'list' ? '' : 'none'; $('ttStudents').style.display = t === 'students' ? '' : 'none'; $('ttSets').style.display = t === 'sets' ? '' : 'none';
-      if (t === 'list') renderTList(); if (t === 'students') loadStudents(); if (t === 'sets') initSetsTab();
+      $('ttImport').style.display = t === 'import' ? '' : 'none'; $('ttList').style.display = t === 'list' ? '' : 'none'; $('ttStudents').style.display = t === 'students' ? '' : 'none'; $('ttSets').style.display = t === 'sets' ? '' : 'none'; $('ttDlg').style.display = t === 'dlg' ? '' : 'none';
+      if (t === 'list') renderTList(); if (t === 'students') loadStudents(); if (t === 'sets') initSetsTab(); if (t === 'dlg') initDlgTab();
     };
   });
   var PH = {
@@ -910,6 +927,86 @@ function loadStudents() {
   }).catch(function (e) { el.innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; });
 }
 
+/* ═══════════════════════════ Hội thoại điền chỗ trống ═══════════════════════════ */
+function parseDlg(script) {
+  return String(script).split('\n').map(function (s) { return s.trim(); }).filter(Boolean).map(function (ln) {
+    var m = ln.match(/^([^:{}|]{1,14}):\s*(.+)$/), parts = m[2].split('||'), body = parts[0].trim(), segs = [], last = 0, mm, re = /\{([^{}]*)\}/g;
+    while ((mm = re.exec(body))) {
+      if (mm.index > last) segs.push({ t: body.slice(last, mm.index) });
+      var opts = mm[1].split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+      segs.push({ opts: opts, answer: opts[0] }); last = mm.index + mm[0].length;
+    }
+    if (last < body.length) segs.push({ t: body.slice(last) });
+    return { sp: m[1].trim(), segs: segs, vi: (parts[1] || '').trim() };
+  });
+}
+function openDialogues() {
+  api('GET', '/api/word-dialogues').then(function (r) {
+    S.dialogues = r.dialogues;
+    var list = r.dialogues.filter(function (d) { return d.level === S.level || (S.level === 'APTIS' && (d.level === 'PET' || d.level === 'FCE')); });
+    var h = '<h3>🗣️ Hội thoại · ' + esc(S.level) + '</h3><div class="wh-sub">Chọn một tình huống, điền đúng tất cả chỗ trống rồi bấm Kiểm tra.</div><div class="dg-list" style="margin-top:10px;">';
+    if (!list.length) h += '<div class="wh-sub" style="padding:12px 0;">Cấp này chưa có hội thoại nào.</div>';
+    list.forEach(function (d) {
+      h += '<div class="ws-item"><div class="ws-main"><b>' + esc(d.title) + '</b>' + (d.best >= d.blanks ? ' ✅' : '') + '<div class="ws-meta">📍 ' + esc(d.scene) + ' · ' + d.blanks + ' chỗ trống' + (d.plays ? ' · tốt nhất ' + d.best + '/' + d.blanks : '') + '</div></div><button class="wh-cta" data-dg="' + d.id + '" style="padding:9px 16px;font-size:14px;">Chơi</button></div>';
+    });
+    openModal(h + '</div>', true);
+    Array.prototype.forEach.call($('whModal').querySelectorAll('[data-dg]'), function (b) {
+      b.onclick = function () { closeModal(); startDialogue(S.dialogues.filter(function (d) { return String(d.id) === b.getAttribute('data-dg'); })[0]); };
+    });
+  }).catch(function (e) { toast(e.message); });
+}
+function startDialogue(d) {
+  var lines = parseDlg(d.script), spk = [], idx = 0;
+  lines.forEach(function (l) { if (spk.indexOf(l.sp) < 0) spk.push(l.sp); });
+  if (G && G.timer) clearInterval(G.timer);
+  G = { mode: 'dialogue', results: [], queue: [], keyHandler: null, locked: false, dlg: d };
+  $('whHub').style.display = 'none'; $('whPlay').style.display = 'block'; $('wpTimer').style.display = 'none'; window.scrollTo(0, 0);
+  $('wpBar').style.width = '0%'; $('wpCount').textContent = d.blanks + ' chỗ trống'; $('wpCombo').textContent = '';
+  var h = '<div class="wp-q" style="text-align:left;"><div style="text-align:center;"><span class="wp-tag">🗣️ Hội thoại</span><div style="font-weight:700;font-size:18px;">' + esc(d.title) + '</div><div class="wp-scene">📍 ' + esc(d.scene) + '</div></div><div id="dgBody">';
+  lines.forEach(function (l, li) {
+    var me = spk.indexOf(l.sp) % 2 === 1;
+    h += '<div class="dg-bubble' + (me ? ' me' : '') + '"><div class="dg-av">' + esc(l.sp.charAt(0).toUpperCase()) + '</div><div class="dg-text"><span class="dg-sp">' + esc(l.sp) + '</span>';
+    l.segs.forEach(function (sg) {
+      if (sg.t != null) h += esc(sg.t);
+      else { var o = shuffle(sg.opts); h += '<select class="dg-sel" data-i="' + (idx++) + '" data-ans="' + esc(sg.answer) + '"><option value="">…</option>' + o.map(function (x) { return '<option>' + esc(x) + '</option>'; }).join('') + '</select>'; }
+    });
+    h += '<span class="dg-vi" style="display:none;">' + esc(l.vi) + '</span></div></div>';
+  });
+  h += '</div><div id="dgFb"></div><button class="wp-next" id="dgChk">Kiểm tra</button></div>';
+  $('wpBody').innerHTML = h;
+  var sels = $('wpBody').querySelectorAll('select.dg-sel');
+  $('dgChk').onclick = function () {
+    var empty = Array.prototype.filter.call(sels, function (s) { return !s.value; }).length;
+    if (empty) { toast('Còn ' + empty + ' chỗ trống chưa chọn.'); return; }
+    var ok = 0;
+    Array.prototype.forEach.call(sels, function (s) {
+      var good = s.value === s.getAttribute('data-ans'); if (good) ok++;
+      s.disabled = true; s.className = 'dg-sel ' + (good ? 'ok' : 'bad');
+      if (!good) { var f = document.createElement('span'); f.className = 'dg-fix'; f.textContent = '→ ' + s.getAttribute('data-ans'); s.parentNode.insertBefore(f, s.nextSibling); }
+    });
+    Array.prototype.forEach.call($('wpBody').querySelectorAll('.dg-vi'), function (v) { if (v.textContent) v.style.display = 'block'; });
+    $('dgChk').style.display = 'none'; beep(ok === sels.length);
+    $('dgFb').innerHTML = '<div class="wp-fb ' + (ok === sels.length ? 'ok' : 'bad') + '" style="margin-top:14px;"><b class="t">' + (ok === sels.length ? '🎉 Hoàn hảo!' : 'Đúng ' + ok + '/' + sels.length + ' chỗ trống') + '</b>Đang lưu kết quả...</div>';
+    api('POST', '/api/word-game/dialogue', { id: d.id, correct: ok }).then(function (r) {
+      S.me = r.me; var x = r.gained;
+      $('dgFb').innerHTML = '<div class="wp-fb ' + (x.perfect ? 'ok' : 'bad') + '" style="margin-top:14px;"><b class="t">' + (x.perfect ? '🎉 Hoàn hảo!' : 'Đúng ' + ok + '/' + sels.length + ' chỗ trống') + '</b>+' + x.xp + ' XP · +' + x.coins + ' 🪙' + (x.streakUp ? ' · 🔥 chuỗi ' + x.streak + ' ngày' : '') + (x.xp === 0 ? '<br><span class="wh-sub">Hội thoại này đã đủ XP hôm nay — thử hội thoại khác nhé.</span>' : '') + '</div>' +
+        '<button class="wp-next" id="dgAgain">Làm lại</button><button class="wp-btn2" id="dgHome">Về trang chính</button>' + (ttsOK ? '<button class="wp-btn2" id="dgSay" style="margin-top:8px;">🔊 Nghe cả hội thoại</button>' : '');
+      $('dgAgain').onclick = function () { startDialogue(d); }; $('dgHome').onclick = function () { stopPlay(); renderAll(); };
+      if ($('dgSay')) $('dgSay').onclick = function () { speakDialogue(lines); };
+      if (x.perfect) confetti(30); showNewBadges(r.newBadges);
+    }).catch(function (e) { $('dgFb').innerHTML += '<div class="wh-msg err">' + esc(e.message) + ' — kết quả chưa được lưu.</div><button class="wp-btn2" id="dgHome2">Về trang chính</button>'; $('dgHome2').onclick = function () { stopPlay(); renderAll(); }; });
+  };
+}
+function speakDialogue(lines) {
+  if (!ttsOK) return;
+  speechSynthesis.cancel();
+  lines.forEach(function (l, i) {
+    var text = l.segs.map(function (sg) { return sg.t != null ? sg.t : sg.answer; }).join('');
+    var u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.9; u.pitch = i % 2 ? 1.25 : 0.9;
+    speechSynthesis.speak(u);
+  });
+}
+
 /* ═══════════════════════════ Bộ từ được giao ═══════════════════════════ */
 function dlLabel(s) {
   if (!s.deadline) return '';
@@ -944,6 +1041,35 @@ function renderSets() {
 }
 function loadSets() {
   return api('GET', '/api/word-sets/mine').then(function (r) { S.sets = r.sets; renderSets(); }).catch(function () {});
+}
+
+/* giáo viên: tạo hội thoại */
+function initDlgTab() {
+  var el = $('ttDlg');
+  if (!el.getAttribute('data-init')) {
+    el.setAttribute('data-init', '1');
+    el.innerHTML = '<div class="wh-t-row"><select id="dLevel"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option></select><input id="dTitle" placeholder="Tên hội thoại (VD: Đặt phòng khách sạn)" maxlength="80"></div>' +
+      '<input id="dScene" placeholder="Bối cảnh (VD: Bạn gọi điện đặt phòng)" maxlength="120" style="margin-bottom:10px;">' +
+      '<textarea id="dScript" style="min-height:190px;" placeholder="Mỗi dòng một lượt nói:  Tên: câu thoại có {đáp án đúng|nhiễu 1|nhiễu 2} || bản dịch\n(đáp án ĐÚNG luôn đứng đầu trong dấu { }, hệ thống tự xáo trộn khi hiển thị)\n\nVD:\nGuest: I would like to {book|cook|look} a room for two nights. || Tôi muốn đặt một phòng hai đêm.\nReceptionist: Certainly. May I have your {name|game|came}? || Vâng ạ. Cho tôi xin tên của bạn?\nGuest: It is Linh. Is {breakfast|breakdown|bridge} included? || Tên tôi là Linh. Có gồm bữa sáng không?"></textarea>' +
+      '<div class="wh-sub" style="margin:6px 0 10px;">Cần 3–16 dòng, 2–12 chỗ trống, mỗi chỗ trống 2–5 lựa chọn. Lưu cùng tên + cấp độ sẽ cập nhật hội thoại cũ.</div>' +
+      '<button class="wh-cta" id="dGo" style="padding:10px 20px;font-size:14px;">💾 Lưu hội thoại</button><div id="dMsg"></div><div class="wh-title" style="margin-top:20px;">Hội thoại hiện có</div><div id="dList"></div>';
+    $('dGo').onclick = function () {
+      var btn = $('dGo'); btn.disabled = true;
+      api('POST', '/api/word-dialogues', { level: $('dLevel').value, title: $('dTitle').value, scene: $('dScene').value, script: $('dScript').value }).then(function (r) {
+        $('dMsg').innerHTML = '<div class="wh-msg ok">✅ Đã ' + (r.updated ? 'cập nhật' : 'lưu') + ' hội thoại (' + r.blanks + ' chỗ trống).</div>'; loadDlgList();
+      }).catch(function (e) { $('dMsg').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; }).then(function () { btn.disabled = false; });
+    };
+  }
+  loadDlgList();
+}
+function loadDlgList() {
+  api('GET', '/api/word-dialogues').then(function (r) {
+    $('dList').innerHTML = '<div class="wh-scroll"><table class="wh-table"><thead><tr><th>Cấp</th><th>Tên</th><th>Chỗ trống</th><th></th></tr></thead><tbody>' +
+      r.dialogues.map(function (d) { return '<tr><td>' + d.level + '</td><td>' + esc(d.title) + '</td><td>' + d.blanks + '</td><td><button class="wh-del" data-deld="' + d.id + '">🗑</button></td></tr>'; }).join('') + '</tbody></table></div>';
+    Array.prototype.forEach.call($('dList').querySelectorAll('[data-deld]'), function (b) {
+      b.onclick = function () { if (!confirm('Xoá hội thoại này?')) return; api('DELETE', '/api/word-dialogues/' + b.getAttribute('data-deld')).then(loadDlgList).catch(function (e) { toast(e.message); }); };
+    });
+  }).catch(function (e) { $('dList').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; });
 }
 
 /* giáo viên: giao bộ từ */

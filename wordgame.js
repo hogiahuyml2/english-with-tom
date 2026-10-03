@@ -3,6 +3,7 @@
 // báo kết quả từng câu) để học sinh không tự cộng điểm bằng cách sửa request.
 const { SEED_WORDS, parseSeed } = require('./vocab-seed');
 const { SEED2 } = require('./vocab-seed2');
+const { SEED_DIALOGUES, parseScript } = require('./vocab-dialogues');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
 const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation'];
@@ -42,6 +43,7 @@ const QUESTS = [
   { id: 'situation8', icon: '🎭', text: 'Điền đúng 8 câu tình huống',       goal: 8,  reward: 15, get: (d, m) => (m.situation && m.situation.ok) || 0 },
   { id: 'colloc8',    icon: '🔗', text: 'Chọn đúng 8 cụm từ (Collocations)', goal: 8,  reward: 15, get: (d, m) => (m.colloc && m.colloc.ok) || 0 },
   { id: 'dict5',      icon: '🎧', text: 'Chép đúng 5 câu chính tả',          goal: 5,  reward: 20, get: (d, m) => (m.dictation && m.dictation.ok) || 0 },
+  { id: 'dialog1',    icon: '🗣️', text: 'Hoàn thành 1 hội thoại điền từ',     goal: 1,  reward: 20, get: (d, m) => (m.dialogue && m.dialogue.s) || 0 },
   { id: 'upgrade5',   icon: '🚀', text: 'Nâng cấp đúng 5 từ',               goal: 5,  reward: 15, get: (d, m) => (m.upgrade && m.upgrade.ok) || 0 },
 ];
 
@@ -68,6 +70,8 @@ const BADGES = [
   { id: 'combo10',  icon: '⚡', name: 'Liên hoàn',         text: '10 câu đúng liên tiếp',            goal: 10,   have: s => s.best_combo },
   { id: 'sess20',   icon: '🏃', name: 'Chăm chỉ',          text: 'Hoàn thành 20 phiên học',          goal: 20,   have: s => s.sessions },
   { id: 'quest10',  icon: '📋', name: 'Thợ săn nhiệm vụ',  text: 'Nhận thưởng 10 nhiệm vụ ngày',     goal: 10,   have: s => s.quests_done },
+  { id: 'dialog1',  icon: '🗣️', name: 'Người giao tiếp',  text: 'Làm đúng hết 1 hội thoại',        goal: 1,    have: s => s.dialogues_done },
+  { id: 'dialog5',  icon: '🎭', name: 'Diễn viên ngôn ngữ', text: 'Làm đúng hết 5 hội thoại',      goal: 5,    have: s => s.dialogues_done },
   { id: 'xp1000',   icon: '💎', name: '1000 XP',           text: 'Đạt 1000 điểm kinh nghiệm',        goal: 1000, have: s => s.xp },
 ];
 
@@ -102,6 +106,15 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     }
   }
 
+  function seedDialogues() {
+    try {
+      const ins = db.prepare('INSERT OR IGNORE INTO word_dialogues (level,title,scene,script,blanks,created_at) VALUES (?,?,?,?,?,?)');
+      let n = 0;
+      for (const d of SEED_DIALOGUES) n += Number(ins.run(d.level, d.title, d.scene, d.script, parseScript(d.script).blanks, now()).changes || 0);
+      if (n) console.log('[wordgame] Đã nạp ' + n + ' hội thoại.');
+    } catch (e) { console.error('[wordgame] seed hội thoại lỗi:', e.message); }
+  }
+  seedDialogues();
   try { seedBank(); loadBank(); console.log('[wordgame] Kho từ: ' + bank.list.length + ' từ.'); }
   catch (e) { console.error('[wordgame] Khởi tạo lỗi:', e.message); }
 
@@ -129,7 +142,8 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   }
 
   function badgeStats(uid, g) {
-    return { xp: g.xp, sessions: g.sessions, best_combo: g.best_combo, best_streak: g.best_streak, quests_done: g.quests_done, learned: learnedCount(uid) };
+    const dd = Number(db.prepare('SELECT COUNT(*) c FROM word_dialog_progress p JOIN word_dialogues d ON d.id=p.dialogue_id WHERE p.user_id=? AND p.best>=d.blanks').get(uid).c);
+    return { xp: g.xp, sessions: g.sessions, best_combo: g.best_combo, best_streak: g.best_streak, quests_done: g.quests_done, learned: learnedCount(uid), dialogues_done: dd };
   }
 
   function statePayload(uid, userName) {
@@ -187,6 +201,53 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     catch (e) { console.error('[wordgame/me]', e.message); res.status(500).json({ error: 'Không tải được tiến độ học.' }); }
   });
 
+  // Ghi phần thưởng của 1 phiên chơi vào bản ghi ngày/chuỗi/xu/huy hiệu (gọi TRONG transaction)
+  function commitReward(uid, day, g, mode, xp, total, okN, newN, bestCombo) {
+    // Cập nhật bản ghi ngày
+    const d = dailyRow(uid, day);
+    const m = parseModes(d.modes);
+    const cur = m[mode] || { n: 0, ok: 0, s: 0 };
+    cur.n += total; cur.ok += okN; cur.s += 1;
+    m[mode] = cur;
+    const nd = {
+      xp: d.xp + xp, reviews: d.reviews + total, new_words: d.new_words + newN,
+      correct: d.correct + okN, sessions: d.sessions + 1,
+      best_combo: Math.max(d.best_combo, bestCombo)
+    };
+    db.prepare(`
+      INSERT INTO word_daily (user_id,day,xp,reviews,new_words,correct,sessions,modes,best_combo,claimed)
+      VALUES (?,?,?,?,?,?,?,?,?,?)
+      ON CONFLICT(user_id,day) DO UPDATE SET
+        xp=excluded.xp, reviews=excluded.reviews, new_words=excluded.new_words, correct=excluded.correct,
+        sessions=excluded.sessions, modes=excluded.modes, best_combo=excluded.best_combo`)
+      .run(uid, day, nd.xp, nd.reviews, nd.new_words, nd.correct, nd.sessions, JSON.stringify(m), nd.best_combo, d.claimed || '');
+
+    // Chuỗi ngày 🔥 — tính khi tổng lượt ôn trong ngày đạt mức tối thiểu
+    let streak = g.streak, bestStreak = g.best_streak, lastDay = g.last_day, freezes = g.freezes;
+    let streakUp = false, usedFreeze = false, streakBonus = 0;
+    if (nd.reviews >= STREAK_MIN && g.last_day !== day) {
+      if (!g.last_day) streak = 1;
+      else {
+        const gap = dayDiff(g.last_day, day);
+        if (gap === 1) streak = g.streak + 1;
+        else if (gap === 2 && g.freezes > 0) { streak = g.streak + 1; freezes = g.freezes - 1; usedFreeze = true; }
+        else streak = 1;
+      }
+      lastDay = day; streakUp = true;
+      bestStreak = Math.max(bestStreak, streak);
+      streakBonus = Math.min(streak, 10) * 2;
+    }
+
+    const coinGain = Math.floor(xp / 5) + streakBonus;
+    db.prepare(`UPDATE word_game SET xp=xp+?, coins=coins+?, streak=?, best_streak=?, last_day=?, freezes=?,
+                total_reviews=total_reviews+?, sessions=sessions+1, best_combo=MAX(best_combo,?) WHERE user_id=?`)
+      .run(xp, coinGain, streak, bestStreak, lastDay, freezes, total, bestCombo, uid);
+
+    const g2 = db.prepare('SELECT * FROM word_game WHERE user_id=?').get(uid);
+    const newBadges = awardBadges(uid, g2);
+    return { coinGain, streakUp, usedFreeze, streakBonus, streak, newBadges };
+  }
+
   // Báo kết quả 1 phiên chơi → server cập nhật SRS, XP, xu, chuỗi ngày, nhiệm vụ, huy hiệu
   app.post('/api/word-game/session', requireAuth, (req, res) => {
     const uid = req.user.id;
@@ -235,53 +296,12 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       if (total >= 5 && okN / total >= 0.8) accBonus = 10;
       xp += comboBonus + accBonus;
 
-      // Cập nhật bản ghi ngày
-      const d = dailyRow(uid, day);
-      const m = parseModes(d.modes);
-      const cur = m[mode] || { n: 0, ok: 0, s: 0 };
-      cur.n += total; cur.ok += okN; cur.s += 1;
-      m[mode] = cur;
-      const nd = {
-        xp: d.xp + xp, reviews: d.reviews + total, new_words: d.new_words + newN,
-        correct: d.correct + okN, sessions: d.sessions + 1,
-        best_combo: Math.max(d.best_combo, bestCombo)
-      };
-      db.prepare(`
-        INSERT INTO word_daily (user_id,day,xp,reviews,new_words,correct,sessions,modes,best_combo,claimed)
-        VALUES (?,?,?,?,?,?,?,?,?,?)
-        ON CONFLICT(user_id,day) DO UPDATE SET
-          xp=excluded.xp, reviews=excluded.reviews, new_words=excluded.new_words, correct=excluded.correct,
-          sessions=excluded.sessions, modes=excluded.modes, best_combo=excluded.best_combo`)
-        .run(uid, day, nd.xp, nd.reviews, nd.new_words, nd.correct, nd.sessions, JSON.stringify(m), nd.best_combo, d.claimed || '');
-
-      // Chuỗi ngày 🔥 — tính khi tổng lượt ôn trong ngày đạt mức tối thiểu
-      let streak = g.streak, bestStreak = g.best_streak, lastDay = g.last_day, freezes = g.freezes;
-      let streakUp = false, usedFreeze = false, streakBonus = 0;
-      if (nd.reviews >= STREAK_MIN && g.last_day !== day) {
-        if (!g.last_day) streak = 1;
-        else {
-          const gap = dayDiff(g.last_day, day);
-          if (gap === 1) streak = g.streak + 1;
-          else if (gap === 2 && g.freezes > 0) { streak = g.streak + 1; freezes = g.freezes - 1; usedFreeze = true; }
-          else streak = 1;
-        }
-        lastDay = day; streakUp = true;
-        bestStreak = Math.max(bestStreak, streak);
-        streakBonus = Math.min(streak, 10) * 2;
-      }
-
-      const coinGain = Math.floor(xp / 5) + streakBonus;
-      db.prepare(`UPDATE word_game SET xp=xp+?, coins=coins+?, streak=?, best_streak=?, last_day=?, freezes=?,
-                  total_reviews=total_reviews+?, sessions=sessions+1, best_combo=MAX(best_combo,?) WHERE user_id=?`)
-        .run(xp, coinGain, streak, bestStreak, lastDay, freezes, total, bestCombo, uid);
-
-      const g2 = db.prepare('SELECT * FROM word_game WHERE user_id=?').get(uid);
-      const newBadges = awardBadges(uid, g2);
+      const rw = commitReward(uid, day, g, mode, xp, total, okN, newN, bestCombo);
       db.exec('COMMIT');
 
       res.json({
-        gained: { xp, coins: coinGain, total, correct: okN, newWords: newN, bestCombo, comboBonus, accBonus, streakUp, usedFreeze, streakBonus, streak },
-        newBadges,
+        gained: { xp, coins: rw.coinGain, total, correct: okN, newWords: newN, bestCombo, comboBonus, accBonus, streakUp: rw.streakUp, usedFreeze: rw.usedFreeze, streakBonus: rw.streakBonus, streak: rw.streak },
+        newBadges: rw.newBadges,
         me: statePayload(uid, req.user.name)
       });
     } catch (e) {
@@ -462,6 +482,77 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     } catch (e) {
       console.error('[wordgame/students]', e.message);
       res.status(500).json({ error: 'Không tải được danh sách.' });
+    }
+  });
+
+  // ───────────── Hội thoại điền nhiều chỗ trống ─────────────
+  app.get('/api/word-dialogues', requireAuth, (req, res) => {
+    try {
+      const rows = db.prepare(`SELECT d.id,d.level,d.title,d.scene,d.script,d.blanks,COALESCE(p.best,0) AS best,COALESCE(p.plays,0) AS plays
+        FROM word_dialogues d LEFT JOIN word_dialog_progress p ON p.dialogue_id=d.id AND p.user_id=? ORDER BY d.id`).all(req.user.id);
+      res.json({ dialogues: rows.map(r => ({ id: r.id, level: r.level, title: r.title, scene: r.scene || '', script: r.script, blanks: r.blanks, best: r.best, plays: r.plays })) });
+    } catch (e) { console.error('[wordgame/dialogues]', e.message); res.status(500).json({ error: 'Không tải được hội thoại.' }); }
+  });
+
+  app.post('/api/word-dialogues', requireRole('teacher', 'admin'), (req, res) => {
+    const { level, title, scene, script } = req.body || {};
+    if (!LEVELS.includes(level)) return res.status(400).json({ error: 'Cấp độ phải là KET, PET, FCE hoặc IELTS.' });
+    const t = String(title || '').trim().slice(0, 80);
+    if (!t) return res.status(400).json({ error: 'Vui lòng đặt tên hội thoại.' });
+    let parsed;
+    try { parsed = parseScript(script); } catch (e) { return res.status(400).json({ error: e.message }); }
+    try {
+      const old = db.prepare('SELECT id FROM word_dialogues WHERE level=? AND title=?').get(level, t);
+      if (old) {
+        db.prepare('UPDATE word_dialogues SET scene=?, script=?, blanks=? WHERE id=?').run(String(scene || '').slice(0, 120), String(script).trim(), parsed.blanks, old.id);
+        return res.json({ ok: true, id: old.id, updated: true, blanks: parsed.blanks });
+      }
+      const r = db.prepare('INSERT INTO word_dialogues (level,title,scene,script,blanks,created_by,created_at) VALUES (?,?,?,?,?,?,?)')
+        .run(level, t, String(scene || '').slice(0, 120), String(script).trim(), parsed.blanks, req.user.id, now());
+      res.json({ ok: true, id: Number(r.lastInsertRowid), updated: false, blanks: parsed.blanks });
+    } catch (e) { console.error('[wordgame/dialogue-save]', e.message); res.status(500).json({ error: 'Không lưu được hội thoại.' }); }
+  });
+
+  app.delete('/api/word-dialogues/:id', requireRole('teacher', 'admin'), (req, res) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id)) return res.status(400).json({ error: 'Mã không hợp lệ.' });
+    try {
+      db.exec('BEGIN');
+      db.prepare('DELETE FROM word_dialog_progress WHERE dialogue_id=?').run(id);
+      const r = db.prepare('DELETE FROM word_dialogues WHERE id=?').run(id);
+      db.exec('COMMIT');
+      res.json({ ok: true, deleted: Number(r.changes || 0) });
+    } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} res.status(500).json({ error: 'Không xoá được.' }); }
+  });
+
+  // Báo kết quả 1 lượt làm hội thoại: 4 XP/chỗ đúng (+10 nếu đúng hết); mỗi hội thoại chỉ tính XP 2 lượt đầu/ngày
+  app.post('/api/word-game/dialogue', requireAuth, (req, res) => {
+    const uid = req.user.id, b = req.body || {};
+    const id = Number(b.id), correct = Number(b.correct);
+    const d = Number.isInteger(id) ? db.prepare('SELECT id,blanks FROM word_dialogues WHERE id=?').get(id) : null;
+    if (!d) return res.status(404).json({ error: 'Không tìm thấy hội thoại.' });
+    if (!Number.isInteger(correct) || correct < 0 || correct > d.blanks) return res.status(400).json({ error: 'Kết quả không hợp lệ.' });
+    const day = vnDay();
+    try {
+      db.exec('BEGIN');
+      const g = ensureGame(uid);
+      const p = db.prepare('SELECT * FROM word_dialog_progress WHERE user_id=? AND dialogue_id=?').get(uid, id) || { best: 0, plays: 0, last_day: null, day_n: 0 };
+      const dayN = p.last_day === day ? p.day_n : 0;
+      const perfect = correct === d.blanks;
+      const xp = dayN < 2 ? correct * 4 + (perfect ? 10 : 0) : 0;
+      const rw = commitReward(uid, day, g, 'dialogue', xp, d.blanks, correct, 0, 0);
+      db.prepare(`INSERT INTO word_dialog_progress (user_id,dialogue_id,best,plays,last_day,day_n) VALUES (?,?,?,?,?,?)
+        ON CONFLICT(user_id,dialogue_id) DO UPDATE SET best=MAX(best,excluded.best), plays=plays+1, last_day=excluded.last_day, day_n=excluded.day_n`)
+        .run(uid, id, correct, 1, day, dayN + 1);
+      const g2 = db.prepare('SELECT * FROM word_game WHERE user_id=?').get(uid);
+      const extra = awardBadges(uid, g2);
+      db.exec('COMMIT');
+      res.json({ gained: { xp, coins: rw.coinGain, total: d.blanks, correct, perfect, streakUp: rw.streakUp, usedFreeze: rw.usedFreeze, streakBonus: rw.streakBonus, streak: rw.streak },
+        newBadges: rw.newBadges.concat(extra), me: statePayload(uid, req.user.name) });
+    } catch (e) {
+      try { db.exec('ROLLBACK'); } catch (_) {}
+      console.error('[wordgame/dialogue]', e.message);
+      res.status(500).json({ error: 'Không lưu được kết quả hội thoại.' });
     }
   });
 

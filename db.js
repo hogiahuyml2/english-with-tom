@@ -281,6 +281,26 @@ CREATE TABLE IF NOT EXISTS word_set_assign (
   reminded INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (set_id, user_id)
 );
+CREATE TABLE IF NOT EXISTS word_dialogues (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  level TEXT NOT NULL,
+  title TEXT NOT NULL,
+  scene TEXT,
+  script TEXT NOT NULL,
+  blanks INTEGER NOT NULL DEFAULT 0,
+  created_by INTEGER,
+  created_at TEXT NOT NULL,
+  UNIQUE(level, title)
+);
+CREATE TABLE IF NOT EXISTS word_dialog_progress (
+  user_id INTEGER NOT NULL,
+  dialogue_id INTEGER NOT NULL,
+  best INTEGER NOT NULL DEFAULT 0,
+  plays INTEGER NOT NULL DEFAULT 0,
+  last_day TEXT,
+  day_n INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, dialogue_id)
+);
 CREATE INDEX IF NOT EXISTS idx_wsa_user ON word_set_assign(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocab_level_topic ON vocab_words(level, topic);
 CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);
