@@ -43,7 +43,7 @@
   ];
   var navItemsAfter = [
     { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
-    { href: 'vocabulary.html', label: 'Học từ vựng', key: 'vocabulary' },
+    { href: 'word-hub.html', label: 'Học từ vựng', key: 'word-hub' },
   ];
 
   function renderLink(i) {

@@ -2224,6 +2224,14 @@ setTimeout(() => {
   setInterval(() => sendDeadlineReminders().catch(console.error), 60 * 60 * 1000);
 }, 30_000);
 
+// ===================== GÓC TỪ VỰNG (kho từ, ôn tập ngắt quãng, XP, chuỗi ngày, nhiệm vụ) =====================
+try {
+  require('./wordgame')(app, { db, requireAuth, requireRole, now });
+} catch (e) {
+  // Lỗi ở tính năng mới không được làm sập cả trang web
+  console.error('[wordgame] Không khởi động được:', e.message);
+}
+
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 

@@ -205,6 +205,71 @@ CREATE INDEX IF NOT EXISTS idx_sessions_user        ON sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_user    ON notifications(user_id, read_at);
 `, 'indexes');
 
+// ── Góc Từ Vựng: kho từ + tiến độ ôn tập ngắt quãng + XP/chuỗi ngày/nhiệm vụ/huy hiệu ──
+// Chỉ THÊM bảng mới (IF NOT EXISTS) — không đụng tới dữ liệu cũ.
+tryExec(`
+CREATE TABLE IF NOT EXISTS vocab_words (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  level TEXT NOT NULL,
+  topic TEXT NOT NULL,
+  word TEXT NOT NULL,
+  pos TEXT,
+  meaning_vi TEXT NOT NULL,
+  example_en TEXT,
+  example_vi TEXT,
+  created_by INTEGER,
+  created_at TEXT NOT NULL,
+  UNIQUE(level, word)
+);
+CREATE TABLE IF NOT EXISTS word_progress (
+  user_id INTEGER NOT NULL,
+  word_id INTEGER NOT NULL,
+  box INTEGER NOT NULL DEFAULT 0,
+  correct INTEGER NOT NULL DEFAULT 0,
+  wrong INTEGER NOT NULL DEFAULT 0,
+  last_seen TEXT,
+  due_day TEXT,
+  hit_day TEXT,
+  hit_n INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, word_id)
+);
+CREATE TABLE IF NOT EXISTS word_game (
+  user_id INTEGER PRIMARY KEY,
+  xp INTEGER NOT NULL DEFAULT 0,
+  coins INTEGER NOT NULL DEFAULT 0,
+  streak INTEGER NOT NULL DEFAULT 0,
+  best_streak INTEGER NOT NULL DEFAULT 0,
+  last_day TEXT,
+  freezes INTEGER NOT NULL DEFAULT 0,
+  total_reviews INTEGER NOT NULL DEFAULT 0,
+  sessions INTEGER NOT NULL DEFAULT 0,
+  best_combo INTEGER NOT NULL DEFAULT 0,
+  quests_done INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS word_daily (
+  user_id INTEGER NOT NULL,
+  day TEXT NOT NULL,
+  xp INTEGER NOT NULL DEFAULT 0,
+  reviews INTEGER NOT NULL DEFAULT 0,
+  new_words INTEGER NOT NULL DEFAULT 0,
+  correct INTEGER NOT NULL DEFAULT 0,
+  sessions INTEGER NOT NULL DEFAULT 0,
+  modes TEXT NOT NULL DEFAULT '{}',
+  best_combo INTEGER NOT NULL DEFAULT 0,
+  claimed TEXT NOT NULL DEFAULT '',
+  PRIMARY KEY (user_id, day)
+);
+CREATE TABLE IF NOT EXISTS word_badges (
+  user_id INTEGER NOT NULL,
+  badge_id TEXT NOT NULL,
+  earned_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, badge_id)
+);
+CREATE INDEX IF NOT EXISTS idx_vocab_level_topic ON vocab_words(level, topic);
+CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_word_daily_day ON word_daily(day);
+`, 'word game tables');
+
 console.log('[DB] Init complete. DB path:', dbPath);
 
 // ===== Tiện ích mật khẩu =====
