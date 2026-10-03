@@ -5,7 +5,7 @@ const { SEED_WORDS, parseSeed } = require('./vocab-seed');
 const { SEED2 } = require('./vocab-seed2');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
-const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade'];
+const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation'];
 const KINDS = ['word', 'colloc', 'upgrade'];
 // Khoảng cách ôn lại (ngày) theo "hộp" 0..5 — đúng với phương pháp Leitner/lặp lại ngắt quãng
 const INTERVALS = [0, 1, 3, 7, 14, 30];
@@ -14,7 +14,7 @@ const STREAK_MIN = 5;      // chỉ cần 5 lượt là giữ được chuỗi �
 const FREEZE_PRICE = 100;  // xu đổi 1 "khiên giữ chuỗi" 🧊
 const MAX_FREEZES = 2;
 // XP cho mỗi câu đúng theo chế độ (chế độ khó hơn/đòi hỏi nhớ chủ động thì thưởng nhiều hơn; Blitz nhanh nên ít hơn để không "lạm phát")
-const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6 };
+const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7 };
 const MAX_RESULTS = 60;    // tối đa số câu báo lên mỗi phiên
 const DAILY_HITS_CAP = 3;  // 1 từ chỉ được cộng XP tối đa 3 lần đúng/ngày (chống cày 1 từ)
 
@@ -41,6 +41,7 @@ const QUESTS = [
   { id: 'type8',      icon: '⌨️', text: 'Gõ đúng 8 từ',                     goal: 8,  reward: 15, get: (d, m) => (m.type && m.type.ok) || 0 },
   { id: 'situation8', icon: '🎭', text: 'Điền đúng 8 câu tình huống',       goal: 8,  reward: 15, get: (d, m) => (m.situation && m.situation.ok) || 0 },
   { id: 'colloc8',    icon: '🔗', text: 'Chọn đúng 8 cụm từ (Collocations)', goal: 8,  reward: 15, get: (d, m) => (m.colloc && m.colloc.ok) || 0 },
+  { id: 'dict5',      icon: '🎧', text: 'Chép đúng 5 câu chính tả',          goal: 5,  reward: 20, get: (d, m) => (m.dictation && m.dictation.ok) || 0 },
   { id: 'upgrade5',   icon: '🚀', text: 'Nâng cấp đúng 5 từ',               goal: 5,  reward: 15, get: (d, m) => (m.upgrade && m.upgrade.ok) || 0 },
 ];
 

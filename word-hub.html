@@ -326,11 +326,11 @@ function beep(ok) {
   } catch (e) {}
 }
 var ttsOK = 'speechSynthesis' in window;
-function speak(text) {
+function speak(text, rate) {
   if (!ttsOK || !text) return;
   try {
     speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.9;
+    var u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = rate || 0.9;
     var v = (speechSynthesis.getVoices() || []).filter(function (x) { return /^en[-_]/i.test(x.lang); })[0];
     if (v) u.voice = v;
     speechSynthesis.speak(u);
@@ -460,6 +460,7 @@ function renderModes() {
     ['situation', '🎭', 'Tình huống', 'Điền từ vào câu đời thực — học từ trong ngữ cảnh, không học vẹt.'],
     ['colloc', '🔗', 'Collocations', 'Học cả cụm từ hay đi cùng nhau (make a decision, heavy traffic...) — nói & viết tự nhiên hơn.'],
     ['upgrade', '🚀', 'Nâng cấp từ vựng', 'Đổi từ đơn giản thành từ mạnh hơn (big → significant) — ăn điểm Writing/Speaking.'],
+    ['dictation', '🎧', 'Nghe chép chính tả', ttsOK ? 'Nghe câu tiếng Anh rồi gõ lại — luyện nghe + chính tả, rất hợp thi Listening.' : 'Cần trình duyệt có giọng đọc (Chrome/Safari/Edge) để chơi chế độ này.'],
     ['library', '📖', 'Thư viện', 'Xem lại toàn bộ cụm từ & từ nâng cấp của cấp độ này, có phát âm.']
   ];
   $('whModes').innerHTML = M.map(function (m) {
@@ -586,8 +587,9 @@ function nextQ() {
   if (q.type === 'flash') return renderFlash(q);
   if (q.type === 'mcqMeaning' || q.type === 'mcqWord' || q.type === 'listen' || q.type === 'situation' || q.type === 'colloc' || q.type === 'upgrade') return renderMcq(q);
   if (q.type === 'type') return renderType(q);
+  if (q.type === 'dictation') return renderDictation(q);
 }
-function tagFor(q) { return { colloc: '🔗 Hoàn thành cụm từ', upgrade: '🚀 Nâng cấp từ vựng', mcqMeaning: '🔤 Chọn nghĩa đúng', mcqWord: '🇬🇧 Chọn từ tiếng Anh', listen: '🎧 Nghe & chọn từ', situation: '🎭 Tình huống', type: '⌨️ Gõ từ tiếng Anh', teach: '🌱 Từ mới', flash: '🃏 Flashcard' }[q.type]; }
+function tagFor(q) { return { dictation: '🎧 Nghe chép chính tả', colloc: '🔗 Hoàn thành cụm từ', upgrade: '🚀 Nâng cấp từ vựng', mcqMeaning: '🔤 Chọn nghĩa đúng', mcqWord: '🇬🇧 Chọn từ tiếng Anh', listen: '🎧 Nghe & chọn từ', situation: '🎭 Tình huống', type: '⌨️ Gõ từ tiếng Anh', teach: '🌱 Từ mới', flash: '🃏 Flashcard' }[q.type]; }
 
 function renderTeach(q) {
   var w = q.w;
@@ -664,6 +666,44 @@ function renderType(q) {
   G.keyHandler = function (e) { if (e.key === 'Enter') { if (!G.locked) check(); else if ($('qNext')) $('qNext').click(); } };
 }
 
+/* ─── Nghe chép chính tả: so khớp từng từ (LCS) ─── */
+function dNorm(t) { return String(t).toLowerCase().replace(/[‘’]/g, "'").replace(/[^a-z0-9']/g, ''); }
+function dictDiff(ref, user) {
+  var R = String(ref).trim().split(/\s+/).filter(Boolean), U = String(user).trim().split(/\s+/).filter(Boolean);
+  var r = R.map(dNorm), u = U.map(dNorm), n = r.length, m = u.length, i, j;
+  var L = []; for (i = 0; i <= n; i++) { L.push([]); for (j = 0; j <= m; j++) L[i].push(0); }
+  for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--) L[i][j] = r[i] === u[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  var rm = [], um = []; i = 0; j = 0;
+  while (i < n && j < m) { if (r[i] === u[j]) { rm[i] = true; um[j] = true; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+  var lcs = L[0][0], errors = (n - lcs) + (m - lcs);
+  return { R: R, U: U, rm: rm, um: um, lcs: lcs, errors: errors, ok: errors === 0 || (n >= 9 && errors <= 2 && lcs >= n - 1), acc: n ? lcs / Math.max(n, m) : 0 };
+}
+function renderDictation(q) {
+  var w = q.w, plays = 0;
+  $('wpBody').innerHTML = '<div class="wp-q"><span class="wp-tag">' + tagFor(q) + '</span><div class="wp-pos" style="margin-bottom:8px;">Nghe câu rồi gõ lại <b>đúng từng từ</b> (không cần dấu câu, không phân biệt hoa/thường)</div>' +
+    '<div style="display:flex;gap:10px;justify-content:center;margin:6px 0 4px;"><button class="wp-sound" id="dPlay" style="width:auto;border-radius:99px;padding:0 20px;font-size:15px;font-weight:700;">🔊 Nghe</button><button class="wp-sound" id="dSlow" style="width:auto;border-radius:99px;padding:0 20px;font-size:15px;font-weight:700;">🐢 Nghe chậm</button></div>' +
+    '<div class="wh-sub" id="dInfo">Có thể nghe lại bao nhiêu lần tuỳ ý</div>' +
+    '<input class="wp-input" id="qIn" autocomplete="off" autocapitalize="off" spellcheck="false" style="font-size:17px;letter-spacing:0;" placeholder="Gõ câu bạn nghe được...">' +
+    '<div style="display:flex;gap:10px;margin-top:12px;"><button class="wp-btn2" id="dHint" style="margin:0;flex:1;">💡 Gợi ý</button><button class="wp-next" id="qChk" style="margin:0;flex:2;">Kiểm tra</button></div><div id="dHintBox" class="wh-sub" style="margin-top:8px;letter-spacing:2px;"></div><div id="qFb"></div></div>';
+  var inp = $('qIn'); inp.focus();
+  function play(rate) { plays++; $('dInfo').textContent = 'Đã nghe ' + plays + ' lần'; speak(w.ex, rate); }
+  $('dPlay').onclick = function () { play(0.9); }; $('dSlow').onclick = function () { play(0.6); };
+  $('dHint').onclick = function () { $('dHintBox').textContent = w.ex.split(/\s+/).map(function (t) { return t.charAt(0) + t.slice(1).replace(/[A-Za-z0-9]/g, '_'); }).join('  '); };
+  setTimeout(function () { if (G && G.cur === q) play(0.9); }, 250);
+  function check() {
+    if (G.locked || !inp.value.trim()) return; G.locked = true;
+    var d = dictDiff(w.ex, inp.value); inp.disabled = true; $('qChk').style.display = 'none'; $('dHint').style.display = 'none';
+    var refHtml = d.R.map(function (t, i) { return d.rm[i] ? '<span>' + esc(t) + '</span>' : '<b style="color:#ef4444;text-decoration:underline;">' + esc(t) + '</b>'; }).join(' ');
+    var usrHtml = d.U.map(function (t, i) { return d.um[i] ? '<span>' + esc(t) + '</span>' : '<s style="color:#ef4444;">' + esc(t) + '</s>'; }).join(' ');
+    var diff = '<div class="wp-fb ' + (d.ok ? 'ok' : 'bad') + '" style="margin-top:14px;"><span class="ex" style="font-style:normal;color:var(--text);"><b>Câu đúng:</b> ' + refHtml + '</span><span class="ex" style="font-style:normal;color:var(--text);margin-top:6px;"><b>Bạn viết:</b> ' + usrHtml + '</span><span class="ex">Đúng ' + d.lcs + '/' + d.R.length + ' từ' + (d.ok && d.errors ? ' (chấp nhận 1 lỗi nhỏ)' : '') + '</span></div>';
+    $('qFb').innerHTML = diff; var holder = document.createElement('div'); $('qFb').appendChild(holder);
+    var keep = $('qFb'); $('qFb').id = 'qFbOld'; holder.id = 'qFb';
+    grade(q, d.ok);
+  }
+  $('qChk').onclick = check;
+  G.keyHandler = function (e) { if (e.key === 'Enter') { if (!G.locked) check(); else if ($('qNext')) $('qNext').click(); } };
+}
+
 function renderFlash(q) {
   var w = q.w;
   $('wpBody').innerHTML = '<div class="wp-flip" id="qFlip"><div class="wp-flip-in">' +
@@ -706,7 +746,7 @@ function grade(q, ok) {
   var holder = $('qFb'); if (holder) holder.innerHTML = fb;
   $('fbSnd').onclick = function () { speak(w.word); };
   if (!ok && firstTry) { // sai → đưa từ vào lại cuối hàng để học lại (không tính điểm lần 2)
-    G.queue.push(makeQ(w, ['mcqMeaning', 'mcqWord'][Math.floor(Math.random() * 2)]));
+    G.queue.push(q.type === 'dictation' ? { id: w.id, w: w, type: 'dictation' } : makeQ(w, ['mcqMeaning', 'mcqWord'][Math.floor(Math.random() * 2)]));
   }
   $('qNext').onclick = nextQ;
 }
@@ -743,6 +783,12 @@ function startSmart(pool) {
   startPlay('smart', queue, { pool: pool || null });
 }
 function startMode(mode) {
+  if (mode === 'dictation') {
+    if (!ttsOK) { toast('Trình duyệt của bạn chưa hỗ trợ giọng đọc.'); return; }
+    var dp = levelItems().filter(function (w) { return w.ex && w.ex.split(/\s+/).length >= 4; });
+    if (dp.length < 4) { toast('Cấp này chưa đủ câu ví dụ để chơi.'); return; }
+    return startPlay('dictation', pickWeighted(dp, 8).map(function (w) { return { id: w.id, w: w, type: 'dictation' }; }));
+  }
   if (mode === 'colloc' || mode === 'upgrade') {
     var kp = levelKind(mode === 'colloc' ? S.colloc : S.upg);
     if (kp.length < 4) { toast('Cấp này chưa đủ mục để chơi (cần ≥ 4).'); return; }
@@ -986,7 +1032,7 @@ function boot() {
 }
 if (ttsOK && speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = function () {};
 boot();
-window.__wh = { S: S, startSmart: startSmart, startMode: startMode }; // phục vụ kiểm thử
+window.__wh = { S: S, startSmart: startSmart, startMode: startMode, dictDiff: dictDiff }; // phục vụ kiểm thử
 })();
 </script>
 </body>
