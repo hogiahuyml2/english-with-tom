@@ -70,7 +70,7 @@ const BADGES = [
   { id: 'xp1000',   icon: '💎', name: '1000 XP',           text: 'Đạt 1000 điểm kinh nghiệm',        goal: 1000, have: s => s.xp },
 ];
 
-module.exports = function registerWordGame(app, { db, requireAuth, requireRole, now }) {
+module.exports = function registerWordGame(app, { db, requireAuth, requireRole, now, notifyUser }) {
   // ───────────── Kho từ (cache RAM — học sinh đọc kho từ không đụng đĩa) ─────────────
   let bank = { list: [], byId: new Map() };
 
@@ -463,6 +463,151 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       res.status(500).json({ error: 'Không tải được danh sách.' });
     }
   });
+
+  // ───────────── Giao bộ từ cho học sinh/lớp ─────────────
+  function isPastDeadline(s) {
+    if (!s) return false;
+    const hasZone = /[+-]\d{2}:?\d{2}$|Z$/i.test(s);
+    return new Date(hasZone ? s : s.replace(' ', 'T') + '+07:00') < new Date();
+  }
+  function parseIds(json) { try { const a = JSON.parse(json); return Array.isArray(a) ? a.map(Number).filter(Number.isInteger) : []; } catch (e) { return []; } }
+  function setStats(uid, ids, today) {
+    const live = ids.filter(id => bank.byId.has(id));
+    if (!live.length) return { total: 0, learned: 0, seen: 0, due: 0 };
+    const q = live.map(() => '?').join(',');
+    const rows = db.prepare(`SELECT box,due_day FROM word_progress WHERE user_id=? AND word_id IN (${q})`).all(uid, ...live);
+    return { total: live.length, learned: rows.filter(r => r.box >= 3).length, seen: rows.length, due: rows.filter(r => (r.due_day || '') <= today).length };
+  }
+
+  // Giáo viên giao 1 bộ từ cho lớp (group) và/hoặc danh sách email học sinh
+  app.post('/api/word-sets', requireRole('teacher', 'admin'), (req, res) => {
+    const b = req.body || {};
+    const title = String(b.title || '').trim().slice(0, 80);
+    if (!title) return res.status(400).json({ error: 'Vui lòng đặt tên cho bộ từ.' });
+    let ids = Array.isArray(b.word_ids) ? b.word_ids.map(Number).filter(n => bank.byId.has(n)) : [];
+    ids = Array.from(new Set(ids));
+    if (!ids.length) return res.status(400).json({ error: 'Chưa chọn từ nào cho bộ từ.' });
+    if (ids.length > 60) return res.status(400).json({ error: 'Mỗi bộ từ tối đa 60 mục.' });
+    const deadline = b.deadline ? String(b.deadline).slice(0, 25) : null;
+    if (deadline && Number.isNaN(new Date(deadline.includes('T') ? deadline : deadline.replace(' ', 'T')).getTime())) return res.status(400).json({ error: 'Hạn nộp không hợp lệ.' });
+    const note = String(b.note || '').trim().slice(0, 300);
+
+    const recipients = new Set();
+    try {
+      for (const gid of (Array.isArray(b.group_ids) ? b.group_ids : []).map(Number).filter(Number.isInteger)) {
+        for (const r of db.prepare('SELECT user_id FROM group_members WHERE group_id=? AND user_id IS NOT NULL').all(gid)) recipients.add(Number(r.user_id));
+      }
+      for (const em of (Array.isArray(b.emails) ? b.emails : []).map(s => String(s).trim().toLowerCase()).filter(Boolean)) {
+        const u = db.prepare("SELECT id FROM users WHERE lower(email)=? AND role='student'").get(em);
+        if (u) recipients.add(Number(u.id));
+      }
+      if (b.all_students) for (const r of db.prepare("SELECT id FROM users WHERE role='student'").all()) recipients.add(Number(r.id));
+    } catch (e) { return res.status(500).json({ error: 'Không đọc được danh sách học sinh.' }); }
+    if (!recipients.size) return res.status(400).json({ error: 'Chưa có học sinh nào nhận bộ từ (chọn lớp hoặc nhập email học sinh đã đăng ký).' });
+
+    try {
+      db.exec('BEGIN');
+      const r = db.prepare('INSERT INTO word_sets (teacher_id,title,word_ids,deadline,note,created_at) VALUES (?,?,?,?,?,?)')
+        .run(req.user.id, title, JSON.stringify(ids), deadline, note || null, now());
+      const setId = Number(r.lastInsertRowid);
+      const ins = db.prepare('INSERT OR IGNORE INTO word_set_assign (set_id,user_id,assigned_at) VALUES (?,?,?)');
+      for (const uid of recipients) ins.run(setId, uid, now());
+      db.exec('COMMIT');
+      const dl = deadline ? ' · hạn ' + deadline.replace('T', ' ') : '';
+      for (const uid of recipients) {
+        try { notifyUser(uid, 'word_set', '📚 Bộ từ mới: ' + title, ids.length + ' mục' + dl, 'word-hub.html?set=' + setId); } catch (e) {}
+      }
+      res.json({ ok: true, id: setId, count: ids.length, recipients: recipients.size });
+    } catch (e) {
+      try { db.exec('ROLLBACK'); } catch (_) {}
+      console.error('[wordgame/sets]', e.message);
+      res.status(500).json({ error: 'Không giao được bộ từ.' });
+    }
+  });
+
+  // Học sinh: các bộ từ được giao cho mình + tiến độ
+  app.get('/api/word-sets/mine', requireAuth, (req, res) => {
+    try {
+      const today = vnDay();
+      const rows = db.prepare(`SELECT s.id,s.title,s.word_ids,s.deadline,s.note,s.created_at,u.name AS teacher
+        FROM word_set_assign a JOIN word_sets s ON s.id=a.set_id LEFT JOIN users u ON u.id=s.teacher_id
+        WHERE a.user_id=? ORDER BY s.id DESC LIMIT 30`).all(req.user.id);
+      res.json({ sets: rows.map(s => {
+        const ids = parseIds(s.word_ids).filter(id => bank.byId.has(id));
+        const st = setStats(req.user.id, ids, today);
+        return { id: s.id, title: s.title, note: s.note || '', deadline: s.deadline || '', overdue: isPastDeadline(s.deadline), teacher: s.teacher || '', ids, ...st };
+      }) });
+    } catch (e) { console.error('[wordgame/mine]', e.message); res.status(500).json({ error: 'Không tải được bộ từ.' }); }
+  });
+
+  // Giáo viên: danh sách bộ từ đã giao + tiến độ từng học sinh (admin thấy tất cả)
+  app.get('/api/word-sets', requireRole('teacher', 'admin'), (req, res) => {
+    try {
+      const today = vnDay();
+      const rows = req.user.role === 'admin'
+        ? db.prepare('SELECT * FROM word_sets ORDER BY id DESC LIMIT 50').all()
+        : db.prepare('SELECT * FROM word_sets WHERE teacher_id=? ORDER BY id DESC LIMIT 50').all(req.user.id);
+      res.json({ sets: rows.map(s => {
+        const ids = parseIds(s.word_ids).filter(id => bank.byId.has(id));
+        const students = db.prepare(`SELECT u.id,u.name,u.email FROM word_set_assign a JOIN users u ON u.id=a.user_id WHERE a.set_id=? ORDER BY u.name`).all(s.id)
+          .map(u => ({ name: u.name, email: u.email, ...setStats(u.id, ids, today) }));
+        return { id: s.id, title: s.title, deadline: s.deadline || '', overdue: isPastDeadline(s.deadline), note: s.note || '', total: ids.length, created: s.created_at, students };
+      }) });
+    } catch (e) { console.error('[wordgame/sets]', e.message); res.status(500).json({ error: 'Không tải được danh sách bộ từ.' }); }
+  });
+
+  app.delete('/api/word-sets/:id', requireRole('teacher', 'admin'), (req, res) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id)) return res.status(400).json({ error: 'Mã không hợp lệ.' });
+    const s = db.prepare('SELECT teacher_id FROM word_sets WHERE id=?').get(id);
+    if (!s) return res.status(404).json({ error: 'Không tìm thấy bộ từ.' });
+    if (req.user.role !== 'admin' && s.teacher_id !== req.user.id) return res.status(403).json({ error: 'Chỉ người giao mới được xoá.' });
+    try {
+      db.exec('BEGIN');
+      db.prepare('DELETE FROM word_set_assign WHERE set_id=?').run(id);
+      db.prepare('DELETE FROM word_sets WHERE id=?').run(id);
+      db.exec('COMMIT');
+      res.json({ ok: true });
+    } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} res.status(500).json({ error: 'Không xoá được.' }); }
+  });
+
+  // ───────────── Nhắc học tự động (chuông + push) ─────────────
+  // 1) Nhắc giữ chuỗi 🔥: từ 19h–22h (giờ VN), nếu hôm qua có học mà hôm nay chưa — mỗi người 1 lần/ngày
+  // 2) Nhắc hạn bộ từ: còn dưới 24 giờ mà chưa thuộc hết — 1 lần
+  function runReminders(force) {
+    const out = { streak: 0, sets: 0 };
+    try {
+      const today = vnDay(), yesterday = vnDay(-1);
+      const hourVN = new Date(Date.now() + 7 * 3600 * 1000).getUTCHours();
+      if (force || (hourVN >= 19 && hourVN < 22)) {
+        const rows = db.prepare(`SELECT g.user_id,g.streak FROM word_game g JOIN users u ON u.id=g.user_id
+          WHERE u.role='student' AND g.streak>=1 AND g.last_day=? AND COALESCE(g.reminded_day,'')<>?`).all(yesterday, today);
+        for (const r of rows) {
+          db.prepare('UPDATE word_game SET reminded_day=? WHERE user_id=?').run(today, r.user_id);
+          notifyUser(r.user_id, 'streak_reminder', '🔥 Chuỗi ' + r.streak + ' ngày sắp đứt!', 'Chỉ cần ôn ' + STREAK_MIN + ' từ hôm nay để giữ chuỗi nhé.', 'word-hub.html');
+          out.streak++;
+        }
+      }
+      const pend = db.prepare(`SELECT a.set_id,a.user_id,s.title,s.word_ids,s.deadline FROM word_set_assign a JOIN word_sets s ON s.id=a.set_id
+        WHERE a.reminded=0 AND s.deadline IS NOT NULL AND s.deadline<>''`).all();
+      for (const p of pend) {
+        const hasZone = /[+-]\d{2}:?\d{2}$|Z$/i.test(p.deadline);
+        const t = new Date(hasZone ? p.deadline : p.deadline.replace(' ', 'T') + '+07:00').getTime();
+        const left = t - Date.now();
+        if (!(left > 0 && left <= 24 * 3600 * 1000)) continue;
+        const st = setStats(p.user_id, parseIds(p.word_ids), today);
+        db.prepare('UPDATE word_set_assign SET reminded=1 WHERE set_id=? AND user_id=?').run(p.set_id, p.user_id);
+        if (st.total && st.learned >= st.total) continue;
+        notifyUser(p.user_id, 'word_set_deadline', '⏰ Sắp hết hạn bộ từ: ' + p.title, 'Bạn đã thuộc ' + st.learned + '/' + st.total + ' mục.', 'word-hub.html?set=' + p.set_id);
+        out.sets++;
+      }
+    } catch (e) { console.error('[wordgame/reminders]', e.message); }
+    return out;
+  }
+  const remTimer = setTimeout(function loop() { runReminders(); setInterval(function () { runReminders(); }, 30 * 60 * 1000).unref(); }, 3 * 60 * 1000);
+  remTimer.unref();
+  // Cho admin chạy thử/kiểm tra thủ công
+  app.post('/api/admin/word-reminders/run', requireRole('admin'), (req, res) => res.json({ ok: true, ...runReminders(req.query.force === '1') }));
 
   // Dùng cho kiểm thử/tool nội bộ
   return { parseSeed, vnDay, addDays, levelOf };

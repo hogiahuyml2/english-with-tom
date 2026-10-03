@@ -2226,7 +2226,7 @@ setTimeout(() => {
 
 // ===================== GÓC TỪ VỰNG (kho từ, ôn tập ngắt quãng, XP, chuỗi ngày, nhiệm vụ) =====================
 try {
-  require('./wordgame')(app, { db, requireAuth, requireRole, now });
+  require('./wordgame')(app, { db, requireAuth, requireRole, now, notifyUser });
 } catch (e) {
   // Lỗi ở tính năng mới không được làm sập cả trang web
   console.error('[wordgame] Không khởi động được:', e.message);

@@ -265,6 +265,23 @@ CREATE TABLE IF NOT EXISTS word_badges (
   earned_at TEXT NOT NULL,
   PRIMARY KEY (user_id, badge_id)
 );
+CREATE TABLE IF NOT EXISTS word_sets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  word_ids TEXT NOT NULL,
+  deadline TEXT,
+  note TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS word_set_assign (
+  set_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  assigned_at TEXT NOT NULL,
+  reminded INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (set_id, user_id)
+);
+CREATE INDEX IF NOT EXISTS idx_wsa_user ON word_set_assign(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocab_level_topic ON vocab_words(level, topic);
 CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_word_daily_day ON word_daily(day);
@@ -276,6 +293,10 @@ safeAlter('PRAGMA table_info(vocab_words)', [
   ['basic',         'ALTER TABLE vocab_words ADD COLUMN basic TEXT'],
   ['extra',         'ALTER TABLE vocab_words ADD COLUMN extra TEXT'],
   ['example_basic', 'ALTER TABLE vocab_words ADD COLUMN example_basic TEXT'],
+]);
+
+safeAlter('PRAGMA table_info(word_game)', [
+  ['reminded_day', 'ALTER TABLE word_game ADD COLUMN reminded_day TEXT'],
 ]);
 
 console.log('[DB] Init complete. DB path:', dbPath);

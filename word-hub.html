@@ -159,9 +159,20 @@
 .confetti { position: fixed; top: -30px; z-index: 5000; font-size: 22px; pointer-events: none; animation: whFall 2.2s ease-in forwards; }
 @keyframes whFall { to { transform: translateY(110vh) rotate(540deg); opacity: .2; } }
 
+/* bộ từ được giao */
+.ws-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.ws-item:first-of-type { border-top: none; }
+.ws-item.hl { background: var(--primary-soft); border-radius: 10px; padding: 12px; }
+.ws-main { flex: 1; min-width: 200px; } .ws-main b { font-size: 14.5px; }
+.ws-meta { font-size: 12px; color: var(--text-muted); margin: 3px 0 6px; }
+.ws-late { color: #ef4444; font-weight: 700; } .ws-soon { color: var(--warning); font-weight: 700; }
+.ws-pick { max-height: 220px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: 10px; padding: 6px 10px; margin: 8px 0; }
+.ws-pick label { display: flex; gap: 8px; align-items: center; font-size: 13px; padding: 3px 0; cursor: pointer; }
+.ws-pick input { width: auto; }
 /* khu giáo viên */
 .wh-teacher textarea, .wh-teacher input, .wh-teacher select { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 9px; font-family: inherit; font-size: 13.5px; background: var(--surface); color: var(--text); }
 .wh-teacher textarea { min-height: 150px; resize: vertical; line-height: 1.55; }
+.wh-teacher input[type="checkbox"] { width: auto; padding: 0; flex-shrink: 0; }
 .wh-tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
 .wh-t-row { display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin-bottom: 10px; }
 @media (max-width: 560px) { .wh-t-row { grid-template-columns: 1fr; } }
@@ -200,6 +211,8 @@
       <div class="wh-card" id="whQuests"></div>
     </div>
 
+    <div class="wh-card" id="whSets" style="margin-bottom:16px;display:none;"></div>
+
     <div class="wh-card" style="margin-bottom:16px;">
       <div class="wh-title">🎮 Chọn cấp độ & chế độ chơi <span class="wh-sub" id="whScopeInfo"></span></div>
       <div class="wh-pick" id="whLevels"></div>
@@ -236,6 +249,7 @@
       <div class="wh-tabs">
         <button class="wh-pill on" data-tt="import">➕ Thêm từ</button>
         <button class="wh-pill" data-tt="list">📋 Danh sách từ</button>
+        <button class="wh-pill" data-tt="sets">📚 Giao bộ từ</button>
         <button class="wh-pill" data-tt="students">👥 Học sinh</button>
       </div>
       <div id="ttImport">
@@ -251,6 +265,7 @@
         <div id="tMsg"></div>
       </div>
       <div id="ttList" style="display:none;"></div>
+      <div id="ttSets" style="display:none;"></div>
       <div id="ttStudents" style="display:none;"></div>
     </div>
   </div>
@@ -707,8 +722,8 @@ function pickWeighted(list, n) {
   }
   return out;
 }
-function startSmart() {
-  var lw = levelItems();
+function startSmart(pool) {
+  var lw = pool || levelItems();
   if (!lw.length) { toast('Chưa có từ nào ở cấp này.'); return; }
   var due = lw.filter(function (w) { return isDue(w.id); }).sort(function (a, b) { return box(a.id) - box(b.id); });
   var fresh = shuffle(lw.filter(function (w) { return !prog(w.id); }));
@@ -725,7 +740,7 @@ function startSmart() {
     if (b < 0) { queue.push({ id: w.id, w: w, type: 'teach' }); queue.push(makeQ(w, 'mcqMeaning')); }
     else queue.push(makeQ(w, w.kind === 'word' ? typeForBox(b) : 'x'));
   });
-  startPlay('smart', queue);
+  startPlay('smart', queue, { pool: pool || null });
 }
 function startMode(mode) {
   if (mode === 'colloc' || mode === 'upgrade') {
@@ -787,7 +802,7 @@ function showResult(g, r) {
     '<div class="res-grid"><div class="res-cell"><b>' + x.correct + '/' + x.total + '</b><span>Đúng</span></div><div class="res-cell"><b>+' + x.xp + '</b><span>XP</span></div><div class="res-cell"><b>+' + x.coins + '</b><span>Xu 🪙</span></div><div class="res-cell"><b>' + x.newWords + '</b><span>Từ mới</span></div></div>' + notes +
     (miss.length ? '<div class="res-miss"><b>Từ cần ôn lại (sẽ được nhắc sớm):</b><ul>' + miss.slice(0, 8).map(function (q) { return '<li><b>' + esc(q.w.word) + '</b> — ' + esc(q.w.vi) + '</li>'; }).join('') + '</ul></div>' : '') +
     '<button class="wp-next" id="rAgain">Chơi tiếp</button><button class="wp-btn2" id="rHome">Về trang chính</button></div>';
-  $('rAgain').onclick = function () { var m = g.mode; stopPlay(); renderAll(); if (m === 'smart') startSmart(); else startMode(m); };
+  $('rAgain').onclick = function () { var m = g.mode; stopPlay(); renderAll(); if (m === 'smart') startSmart(g.opts && g.opts.pool); else startMode(m); };
   $('rHome').onclick = function () { stopPlay(); renderAll(); };
   if (acc >= 70) confetti(34); beep(true); showNewBadges(r.newBadges);
 }
@@ -801,8 +816,8 @@ function initTeacher() {
     b.onclick = function () {
       Array.prototype.forEach.call(document.querySelectorAll('[data-tt]'), function (x) { x.classList.toggle('on', x === b); });
       var t = b.getAttribute('data-tt');
-      $('ttImport').style.display = t === 'import' ? '' : 'none'; $('ttList').style.display = t === 'list' ? '' : 'none'; $('ttStudents').style.display = t === 'students' ? '' : 'none';
-      if (t === 'list') renderTList(); if (t === 'students') loadStudents();
+      $('ttImport').style.display = t === 'import' ? '' : 'none'; $('ttList').style.display = t === 'list' ? '' : 'none'; $('ttStudents').style.display = t === 'students' ? '' : 'none'; $('ttSets').style.display = t === 'sets' ? '' : 'none';
+      if (t === 'list') renderTList(); if (t === 'students') loadStudents(); if (t === 'sets') initSetsTab();
     };
   });
   var PH = {
@@ -849,13 +864,120 @@ function loadStudents() {
   }).catch(function (e) { el.innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; });
 }
 
+/* ═══════════════════════════ Bộ từ được giao ═══════════════════════════ */
+function dlLabel(s) {
+  if (!s.deadline) return '';
+  var d = new Date(s.deadline), left = d - new Date();
+  var p2 = function (n) { return (n < 10 ? '0' : '') + n; }, txt = p2(d.getHours()) + ':' + p2(d.getMinutes()) + ' ngày ' + p2(d.getDate()) + '/' + p2(d.getMonth() + 1);
+  if (s.overdue) return '<span class="ws-late">Quá hạn (' + txt + ')</span>';
+  if (left < 86400000) return '<span class="ws-soon">Hạn: ' + txt + ' — sắp hết!</span>';
+  return 'Hạn: ' + txt;
+}
+function renderSets() {
+  var el = $('whSets'), sets = S.sets || [];
+  if (!sets.length) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  var h = '<div class="wh-title">📚 Bộ từ được giao <span class="wh-sub">giáo viên giao riêng cho bạn/lớp bạn</span></div>';
+  sets.forEach(function (s) {
+    var pct = s.total ? Math.round(s.learned / s.total * 100) : 0, done = s.total && s.learned >= s.total;
+    h += '<div class="ws-item' + (S.focusSet === s.id ? ' hl' : '') + '" id="ws' + s.id + '"><div class="ws-main"><b>' + esc(s.title) + '</b>' + (done ? ' ✅' : '') +
+      '<div class="ws-meta">' + (s.teacher ? 'Từ ' + esc(s.teacher) + ' · ' : '') + s.total + ' mục · ' + dlLabel(s) + (s.note ? '<br>💬 ' + esc(s.note) : '') + '</div>' +
+      '<div class="wh-bar" style="height:8px;"><i style="width:' + pct + '%"></i></div><div class="ws-meta" style="margin:4px 0 0;">Đã thuộc ' + s.learned + '/' + s.total + (s.due ? ' · ' + s.due + ' mục đến hạn ôn' : '') + '</div></div>' +
+      '<button class="wh-cta" data-set="' + s.id + '" style="padding:10px 18px;font-size:14px;">' + (done ? 'Ôn lại' : 'Học ngay') + '</button></div>';
+  });
+  el.innerHTML = h;
+  Array.prototype.forEach.call(el.querySelectorAll('[data-set]'), function (b) {
+    b.onclick = function () {
+      var s = sets.filter(function (x) { return String(x.id) === b.getAttribute('data-set'); })[0];
+      var pool = s.ids.map(function (id) { return S.byId[id]; }).filter(Boolean);
+      if (!pool.length) { toast('Bộ từ này không còn từ nào.'); return; }
+      startSmart(pool);
+    };
+  });
+  if (S.focusSet && $('ws' + S.focusSet)) { $('ws' + S.focusSet).scrollIntoView({ block: 'center' }); S.focusSet = 0; }
+}
+function loadSets() {
+  return api('GET', '/api/word-sets/mine').then(function (r) { S.sets = r.sets; renderSets(); }).catch(function () {});
+}
+
+/* giáo viên: giao bộ từ */
+function initSetsTab() {
+  var el = $('ttSets');
+  if (!el.getAttribute('data-init')) {
+    el.setAttribute('data-init', '1');
+    el.innerHTML =
+      '<div class="wh-t-row"><select id="sLevel"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option></select><input id="sTitle" placeholder="Tên bộ từ (VD: KET tuần 1 — Đồ ăn)" maxlength="80"></div>' +
+      '<div class="wh-t-row"><select id="sKind"><option value="word">Từ vựng</option><option value="colloc">Collocation</option><option value="upgrade">Nâng cấp từ</option></select><select id="sTopic"></select></div>' +
+      '<div class="ws-pick" id="sPick"></div><div class="wh-sub" id="sCount"></div>' +
+      '<div class="wh-t-row" style="margin-top:10px;"><div><div class="wh-sub">Hạn học (tuỳ chọn)</div><input type="datetime-local" id="sDeadline"></div><div><div class="wh-sub">Ghi chú cho học sinh (tuỳ chọn)</div><input id="sNote" maxlength="300" placeholder="VD: Học trước thứ Sáu nhé"></div></div>' +
+      '<div class="wh-sub" style="margin-top:6px;">Giao cho:</div><div class="ws-pick" id="sGroups" style="max-height:130px;">Đang tải danh sách lớp...</div>' +
+      '<textarea id="sEmails" style="min-height:60px;" placeholder="Hoặc nhập email học sinh (mỗi dòng/dấu phẩy một email)"></textarea>' +
+      '<label style="display:flex;gap:8px;align-items:center;margin:8px 0;font-size:13px;"><input type="checkbox" id="sAll" style="width:auto;"> Giao cho TẤT CẢ học sinh trên website</label>' +
+      '<button class="wh-cta" id="sGo" style="padding:10px 20px;font-size:14px;">📨 Giao bộ từ</button><div id="sMsg"></div>' +
+      '<div class="wh-title" style="margin-top:22px;">Bộ từ đã giao</div><div id="sList"><div class="wh-sub">Đang tải...</div></div>';
+    ['sLevel', 'sKind'].forEach(function (id) { $(id).onchange = refreshPick; });
+    $('sTopic').onchange = refreshPick;
+    $('sGo').onclick = submitSet;
+    api('GET', '/api/groups').then(function (r) {
+      $('sGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="sGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="wh-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="wh-sub">Chưa có lớp nào — hãy nhập email học sinh bên dưới.</div>';
+    }).catch(function () { $('sGroups').innerHTML = '<div class="wh-sub">Không tải được danh sách lớp — dùng ô email bên dưới.</div>'; });
+    refreshPick();
+  }
+  loadSetList();
+}
+function pickItems() {
+  var lv = $('sLevel').value, kd = $('sKind').value;
+  return S.all.filter(function (w) { return w.level === lv && w.kind === kd; });
+}
+function refreshPick() {
+  var items = pickItems(), topics = [];
+  items.forEach(function (w) { if (topics.indexOf(w.topic) < 0) topics.push(w.topic); });
+  var cur = $('sTopic').value;
+  $('sTopic').innerHTML = '<option value="">Tất cả chủ đề</option>' + topics.map(function (t) { return '<option' + (t === cur ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('');
+  var topic = $('sTopic').value, list = topic ? items.filter(function (w) { return w.topic === topic; }) : items;
+  $('sPick').innerHTML = '<div style="margin-bottom:4px;"><button class="wh-pill" id="sSelAll" type="button" style="padding:4px 10px;font-size:12px;">Chọn tất cả</button> <button class="wh-pill" id="sSelNone" type="button" style="padding:4px 10px;font-size:12px;">Bỏ chọn</button></div>' +
+    list.map(function (w) { return '<label><input type="checkbox" class="sIt" value="' + w.id + '" checked> <b>' + esc(w.word) + '</b> <span class="wh-sub">' + esc(w.vi) + '</span></label>'; }).join('');
+  $('sSelAll').onclick = function () { Array.prototype.forEach.call(document.querySelectorAll('.sIt'), function (c) { c.checked = true; }); countPick(); };
+  $('sSelNone').onclick = function () { Array.prototype.forEach.call(document.querySelectorAll('.sIt'), function (c) { c.checked = false; }); countPick(); };
+  Array.prototype.forEach.call(document.querySelectorAll('.sIt'), function (c) { c.onchange = countPick; });
+  countPick();
+}
+function countPick() { var n = document.querySelectorAll('.sIt:checked').length; $('sCount').textContent = 'Đã chọn ' + n + ' mục' + (n > 60 ? ' — tối đa 60 mục/bộ, hãy bỏ bớt' : ''); }
+function submitSet() {
+  var ids = Array.prototype.map.call(document.querySelectorAll('.sIt:checked'), function (c) { return parseInt(c.value, 10); });
+  var groups = Array.prototype.map.call(document.querySelectorAll('.sGrp:checked'), function (c) { return parseInt(c.value, 10); });
+  var emails = $('sEmails').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+  var btn = $('sGo'); btn.disabled = true;
+  api('POST', '/api/word-sets', { title: $('sTitle').value, word_ids: ids, group_ids: groups, emails: emails, all_students: $('sAll').checked, deadline: $('sDeadline').value || null, note: $('sNote').value }).then(function (r) {
+    $('sMsg').innerHTML = '<div class="wh-msg ok">✅ Đã giao bộ từ (' + r.count + ' mục) cho ' + r.recipients + ' học sinh — mỗi bạn nhận một thông báo.</div>';
+    $('sTitle').value = ''; $('sEmails').value = ''; $('sNote').value = ''; $('sDeadline').value = '';
+    loadSetList();
+  }).catch(function (e) { $('sMsg').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; }).then(function () { btn.disabled = false; });
+}
+function loadSetList() {
+  api('GET', '/api/word-sets').then(function (r) {
+    var el = $('sList');
+    if (!r.sets.length) { el.innerHTML = '<div class="wh-sub">Chưa giao bộ từ nào.</div>'; return; }
+    el.innerHTML = r.sets.map(function (s) {
+      var rows = s.students.map(function (u) { var p = s.total ? Math.round(u.learned / s.total * 100) : 0; return '<tr><td>' + esc(u.name) + '</td><td>' + u.learned + '/' + s.total + '</td><td><div class="wh-bar" style="height:7px;min-width:70px;"><i style="width:' + p + '%"></i></div></td></tr>'; }).join('');
+      return '<div class="wh-card" style="box-shadow:none;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;"><div><b>' + esc(s.title) + '</b><div class="ws-meta">' + s.total + ' mục · ' + dlLabel(s) + ' · ' + s.students.length + ' học sinh</div></div><button class="wh-del" data-delset="' + s.id + '" title="Xoá bộ từ">🗑</button></div>' +
+        '<table class="wh-table"><thead><tr><th>Học sinh</th><th>Đã thuộc</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    }).join('');
+    Array.prototype.forEach.call(el.querySelectorAll('[data-delset]'), function (b) {
+      b.onclick = function () { if (!confirm('Xoá bộ từ này? Học sinh sẽ không còn thấy nữa (tiến độ học từ vẫn giữ nguyên).')) return; api('DELETE', '/api/word-sets/' + b.getAttribute('data-delset')).then(loadSetList).catch(function (e) { toast(e.message); }); };
+    });
+  }).catch(function (e) { $('sList').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; });
+}
+
 /* ═══════════════════════════ Khởi động ═══════════════════════════ */
 function boot() {
   Promise.all([api('GET', '/api/words'), api('GET', '/api/word-game/me'), api('GET', '/api/me').catch(function () { return {}; })]).then(function (res) {
     setBank(res[0].words);
     S.me = res[1]; S.role = (res[2].user && res[2].user.role) || 'student';
     if (!LEVEL_DEF.some(function (l) { return l.id === S.level; })) S.level = 'KET';
+    var m = /[?&]set=(\d+)/.exec(location.search); if (m) S.focusSet = parseInt(m[1], 10);
     renderAll();
+    loadSets();
     if (S.role === 'teacher' || S.role === 'admin') initTeacher();
   }).catch(function (e) {
     if (e.status === 401) return; // main.js sẽ đưa về trang đăng nhập
