@@ -301,6 +301,12 @@ CREATE TABLE IF NOT EXISTS word_dialog_progress (
   day_n INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (user_id, dialogue_id)
 );
+CREATE TABLE IF NOT EXISTS word_inventory (
+  user_id INTEGER NOT NULL,
+  item_id TEXT NOT NULL,
+  acquired_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, item_id)
+);
 CREATE INDEX IF NOT EXISTS idx_wsa_user ON word_set_assign(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocab_level_topic ON vocab_words(level, topic);
 CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);
@@ -317,6 +323,10 @@ safeAlter('PRAGMA table_info(vocab_words)', [
 
 safeAlter('PRAGMA table_info(word_game)', [
   ['reminded_day', 'ALTER TABLE word_game ADD COLUMN reminded_day TEXT'],
+  ['avatar',       'ALTER TABLE word_game ADD COLUMN avatar TEXT'],
+  ['frame',        'ALTER TABLE word_game ADD COLUMN frame TEXT'],
+  ['boss_wins',    'ALTER TABLE word_game ADD COLUMN boss_wins INTEGER NOT NULL DEFAULT 0'],
+  ['chests',       'ALTER TABLE word_game ADD COLUMN chests INTEGER NOT NULL DEFAULT 0'],
 ]);
 
 console.log('[DB] Init complete. DB path:', dbPath);

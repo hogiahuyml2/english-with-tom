@@ -4,9 +4,10 @@
 const { SEED_WORDS, parseSeed } = require('./vocab-seed');
 const { SEED2 } = require('./vocab-seed2');
 const { SEED_DIALOGUES, parseScript } = require('./vocab-dialogues');
+const crypto = require('crypto');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
-const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation'];
+const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss'];
 const KINDS = ['word', 'colloc', 'upgrade'];
 // Khoảng cách ôn lại (ngày) theo "hộp" 0..5 — đúng với phương pháp Leitner/lặp lại ngắt quãng
 const INTERVALS = [0, 1, 3, 7, 14, 30];
@@ -15,7 +16,26 @@ const STREAK_MIN = 5;      // chỉ cần 5 lượt là giữ được chuỗi �
 const FREEZE_PRICE = 100;  // xu đổi 1 "khiên giữ chuỗi" 🧊
 const MAX_FREEZES = 2;
 // XP cho mỗi câu đúng theo chế độ (chế độ khó hơn/đòi hỏi nhớ chủ động thì thưởng nhiều hơn; Blitz nhanh nên ít hơn để không "lạm phát")
-const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7 };
+const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5 };
+const BOSS_MIN_OK = 6, BOSS_MAX_WRONG = 2, BOSS_BONUS_XP = 20, BOSS_BONUS_COINS = 25; // thắng boss: đúng ≥6 câu và sai ≤2 (3 mạng)
+const CHEST_PRICE = 80;
+
+// ── Danh mục trang trí (mua bằng xu) ──
+const ITEMS = [
+  { id: 'av_fox', kind: 'avatar', icon: '🦊', name: 'Cáo lửa', price: 60 },
+  { id: 'av_panda', kind: 'avatar', icon: '🐼', name: 'Gấu trúc', price: 60 },
+  { id: 'av_lion', kind: 'avatar', icon: '🦁', name: 'Sư tử', price: 90 },
+  { id: 'av_octo', kind: 'avatar', icon: '🐙', name: 'Bạch tuộc', price: 90 },
+  { id: 'av_rocket', kind: 'avatar', icon: '🚀', name: 'Phi hành gia', price: 120 },
+  { id: 'av_robot', kind: 'avatar', icon: '🤖', name: 'Robot', price: 120 },
+  { id: 'av_uni', kind: 'avatar', icon: '🦄', name: 'Kỳ lân', price: 150 },
+  { id: 'av_dragon', kind: 'avatar', icon: '🐲', name: 'Rồng thần', price: 200 },
+  { id: 'fr_gold', kind: 'frame', icon: '🟡', name: 'Viền vàng', price: 100 },
+  { id: 'fr_neon', kind: 'frame', icon: '🔵', name: 'Viền neon', price: 100 },
+  { id: 'fr_fire', kind: 'frame', icon: '🔴', name: 'Viền lửa', price: 160 },
+  { id: 'fr_rainbow', kind: 'frame', icon: '🌈', name: 'Viền cầu vồng', price: 220 },
+];
+const ITEM_BY_ID = new Map(ITEMS.map(i => [i.id, i]));
 const MAX_RESULTS = 60;    // tối đa số câu báo lên mỗi phiên
 const DAILY_HITS_CAP = 3;  // 1 từ chỉ được cộng XP tối đa 3 lần đúng/ngày (chống cày 1 từ)
 
@@ -44,6 +64,7 @@ const QUESTS = [
   { id: 'colloc8',    icon: '🔗', text: 'Chọn đúng 8 cụm từ (Collocations)', goal: 8,  reward: 15, get: (d, m) => (m.colloc && m.colloc.ok) || 0 },
   { id: 'dict5',      icon: '🎧', text: 'Chép đúng 5 câu chính tả',          goal: 5,  reward: 20, get: (d, m) => (m.dictation && m.dictation.ok) || 0 },
   { id: 'dialog1',    icon: '🗣️', text: 'Hoàn thành 1 hội thoại điền từ',     goal: 1,  reward: 20, get: (d, m) => (m.dialogue && m.dialogue.s) || 0 },
+  { id: 'boss1',      icon: '🐉', text: 'Hạ gục 1 Boss',                     goal: 1,  reward: 25, get: (d, m) => (m.boss && m.boss.w) || 0 },
   { id: 'upgrade5',   icon: '🚀', text: 'Nâng cấp đúng 5 từ',               goal: 5,  reward: 15, get: (d, m) => (m.upgrade && m.upgrade.ok) || 0 },
 ];
 
@@ -72,6 +93,9 @@ const BADGES = [
   { id: 'quest10',  icon: '📋', name: 'Thợ săn nhiệm vụ',  text: 'Nhận thưởng 10 nhiệm vụ ngày',     goal: 10,   have: s => s.quests_done },
   { id: 'dialog1',  icon: '🗣️', name: 'Người giao tiếp',  text: 'Làm đúng hết 1 hội thoại',        goal: 1,    have: s => s.dialogues_done },
   { id: 'dialog5',  icon: '🎭', name: 'Diễn viên ngôn ngữ', text: 'Làm đúng hết 5 hội thoại',      goal: 5,    have: s => s.dialogues_done },
+  { id: 'boss1',    icon: '🐉', name: 'Thợ săn Boss',      text: 'Hạ gục 1 Boss',                  goal: 1,    have: s => s.boss_wins },
+  { id: 'boss10',   icon: '👑', name: 'Chúa tể Boss',      text: 'Hạ gục 10 Boss',                 goal: 10,   have: s => s.boss_wins },
+  { id: 'chest10',  icon: '🎁', name: 'Săn kho báu',       text: 'Mở 10 rương',                    goal: 10,   have: s => s.chests },
   { id: 'xp1000',   icon: '💎', name: '1000 XP',           text: 'Đạt 1000 điểm kinh nghiệm',        goal: 1000, have: s => s.xp },
 ];
 
@@ -143,7 +167,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
 
   function badgeStats(uid, g) {
     const dd = Number(db.prepare('SELECT COUNT(*) c FROM word_dialog_progress p JOIN word_dialogues d ON d.id=p.dialogue_id WHERE p.user_id=? AND p.best>=d.blanks').get(uid).c);
-    return { xp: g.xp, sessions: g.sessions, best_combo: g.best_combo, best_streak: g.best_streak, quests_done: g.quests_done, learned: learnedCount(uid), dialogues_done: dd };
+    return { xp: g.xp, sessions: g.sessions, best_combo: g.best_combo, best_streak: g.best_streak, quests_done: g.quests_done, learned: learnedCount(uid), dialogues_done: dd, boss_wins: g.boss_wins || 0, chests: g.chests || 0 };
   }
 
   function statePayload(uid, userName) {
@@ -155,6 +179,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     const lv = levelOf(g.xp);
     const stats = badgeStats(uid, g);
     const got = new Set(db.prepare('SELECT badge_id FROM word_badges WHERE user_id=?').all(uid).map(r => r.badge_id));
+    const owned = new Set(db.prepare('SELECT item_id FROM word_inventory WHERE user_id=?').all(uid).map(r => r.item_id));
     const prog = {};
     for (const r of db.prepare('SELECT word_id,box,due_day,correct,wrong FROM word_progress WHERE user_id=?').all(uid)) {
       prog[r.word_id] = [r.box, r.due_day || '', r.correct, r.wrong];
@@ -175,6 +200,10 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       learned: stats.learned,
       total: bank.list.length,
       progress: prog,
+      avatar: (ITEM_BY_ID.get(g.avatar) || {}).icon || '', avatarId: g.avatar || '', frame: g.frame || '',
+      shop: ITEMS.map(i => ({ id: i.id, kind: i.kind, icon: i.icon, name: i.name, price: i.price, owned: owned.has(i.id) })),
+      chest: { price: CHEST_PRICE, dailyClaimed: claimed.has('chest'), dailyReady: !claimed.has('chest') && questsFor(uid, today).every(q => claimed.has(q.id)), opened: g.chests || 0 },
+      bossWins: g.boss_wins || 0,
     };
   }
 
@@ -291,17 +320,26 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       }
 
       const total = results.length;
+      const bossWin = mode === 'boss' && okN >= BOSS_MIN_OK && (total - okN) <= BOSS_MAX_WRONG;
       let comboBonus = 0, accBonus = 0;
       if (bestCombo >= 10) comboBonus = 10;
       if (total >= 5 && okN / total >= 0.8) accBonus = 10;
-      xp += comboBonus + accBonus;
+      xp += comboBonus + accBonus + (bossWin ? BOSS_BONUS_XP : 0);
 
       const rw = commitReward(uid, day, g, mode, xp, total, okN, newN, bestCombo);
+      let extraBadges = [];
+      if (bossWin) {
+        const dd = dailyRow(uid, day), mm = parseModes(dd.modes);
+        mm.boss = mm.boss || { n: 0, ok: 0, s: 0 }; mm.boss.w = (mm.boss.w || 0) + 1;
+        db.prepare('UPDATE word_daily SET modes=? WHERE user_id=? AND day=?').run(JSON.stringify(mm), uid, day);
+        db.prepare('UPDATE word_game SET boss_wins=boss_wins+1, coins=coins+? WHERE user_id=?').run(BOSS_BONUS_COINS, uid);
+        extraBadges = awardBadges(uid, db.prepare('SELECT * FROM word_game WHERE user_id=?').get(uid));
+      }
       db.exec('COMMIT');
 
       res.json({
-        gained: { xp, coins: rw.coinGain, total, correct: okN, newWords: newN, bestCombo, comboBonus, accBonus, streakUp: rw.streakUp, usedFreeze: rw.usedFreeze, streakBonus: rw.streakBonus, streak: rw.streak },
-        newBadges: rw.newBadges,
+        gained: { xp, coins: rw.coinGain, total, correct: okN, newWords: newN, bestCombo, comboBonus, accBonus, streakUp: rw.streakUp, usedFreeze: rw.usedFreeze, streakBonus: rw.streakBonus, streak: rw.streak, win: bossWin, bossCoins: bossWin ? BOSS_BONUS_COINS : 0 },
+        newBadges: rw.newBadges.concat(extraBadges),
         me: statePayload(uid, req.user.name)
       });
     } catch (e) {
@@ -339,21 +377,93 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     }
   });
 
-  // Đổi xu lấy "khiên giữ chuỗi" 🧊 (cứu chuỗi khi lỡ nghỉ đúng 1 ngày)
+  // Cửa hàng: khiên giữ chuỗi 🧊 (mặc định) hoặc mua trang trí theo mã (avatar/khung)
   app.post('/api/word-game/shop/buy', requireAuth, (req, res) => {
     const uid = req.user.id;
+    const itemId = String((req.body || {}).item || 'freeze');
     try {
       db.exec('BEGIN');
       const g = ensureGame(uid);
-      if (g.freezes >= MAX_FREEZES) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Bạn đang giữ tối đa ' + MAX_FREEZES + ' khiên.' }); }
-      if (g.coins < FREEZE_PRICE) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Chưa đủ xu (cần ' + FREEZE_PRICE + ' 🪙).' }); }
-      db.prepare('UPDATE word_game SET coins=coins-?, freezes=freezes+1 WHERE user_id=?').run(FREEZE_PRICE, uid);
+      if (itemId === 'freeze') {
+        if (g.freezes >= MAX_FREEZES) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Bạn đang giữ tối đa ' + MAX_FREEZES + ' khiên.' }); }
+        if (g.coins < FREEZE_PRICE) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Chưa đủ xu (cần ' + FREEZE_PRICE + ' 🪙).' }); }
+        db.prepare('UPDATE word_game SET coins=coins-?, freezes=freezes+1 WHERE user_id=?').run(FREEZE_PRICE, uid);
+      } else {
+        const it = ITEM_BY_ID.get(itemId);
+        if (!it) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Vật phẩm không tồn tại.' }); }
+        if (db.prepare('SELECT 1 FROM word_inventory WHERE user_id=? AND item_id=?').get(uid, itemId)) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Bạn đã sở hữu vật phẩm này rồi.' }); }
+        if (g.coins < it.price) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Chưa đủ xu (cần ' + it.price + ' 🪙).' }); }
+        db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=?').run(it.price, uid);
+        db.prepare('INSERT INTO word_inventory (user_id,item_id,acquired_at) VALUES (?,?,?)').run(uid, itemId, now());
+      }
       db.exec('COMMIT');
       res.json({ ok: true, me: statePayload(uid, req.user.name) });
     } catch (e) {
       try { db.exec('ROLLBACK'); } catch (_) {}
       console.error('[wordgame/buy]', e.message);
       res.status(500).json({ error: 'Không mua được.' });
+    }
+  });
+
+  // Đeo / bỏ avatar hoặc khung (chỉ đeo được đồ đã sở hữu)
+  app.post('/api/word-game/shop/equip', requireAuth, (req, res) => {
+    const uid = req.user.id, b = req.body || {};
+    const kind = b.kind === 'frame' ? 'frame' : (b.kind === 'avatar' ? 'avatar' : null);
+    if (!kind) return res.status(400).json({ error: 'Loại vật phẩm không hợp lệ.' });
+    try {
+      ensureGame(uid);
+      if (b.id) {
+        const it = ITEM_BY_ID.get(String(b.id));
+        if (!it || it.kind !== kind) return res.status(400).json({ error: 'Vật phẩm không hợp lệ.' });
+        if (!db.prepare('SELECT 1 FROM word_inventory WHERE user_id=? AND item_id=?').get(uid, it.id)) return res.status(403).json({ error: 'Bạn chưa sở hữu vật phẩm này.' });
+        db.prepare('UPDATE word_game SET ' + kind + '=? WHERE user_id=?').run(it.id, uid);
+      } else {
+        db.prepare('UPDATE word_game SET ' + kind + '=NULL WHERE user_id=?').run(uid);
+      }
+      res.json({ ok: true, me: statePayload(uid, req.user.name) });
+    } catch (e) { console.error('[wordgame/equip]', e.message); res.status(500).json({ error: 'Không đổi được.' }); }
+  });
+
+  // Rương thưởng 🎁: miễn phí 1 rương/ngày khi nhận đủ 3 nhiệm vụ; hoặc mua bằng xu
+  function rollChest(uid, g) {
+    const r = crypto.randomInt(0, 100);
+    const ownedSet = new Set(db.prepare('SELECT item_id FROM word_inventory WHERE user_id=?').all(uid).map(x => x.item_id));
+    if (r < 55) return { type: 'coins', amount: crypto.randomInt(20, 61) };
+    if (r < 75) return { type: 'coins', amount: crypto.randomInt(80, 151) };
+    if (r < 85) return g.freezes < MAX_FREEZES ? { type: 'freeze' } : { type: 'coins', amount: 50 };
+    const free = ITEMS.filter(i => !ownedSet.has(i.id));
+    if (!free.length) return { type: 'coins', amount: 100 };
+    return { type: 'item', item: free[crypto.randomInt(0, free.length)] };
+  }
+  app.post('/api/word-game/chest/open', requireAuth, (req, res) => {
+    const uid = req.user.id, source = (req.body || {}).source === 'daily' ? 'daily' : 'buy';
+    const day = vnDay();
+    try {
+      db.exec('BEGIN');
+      const g = ensureGame(uid);
+      if (source === 'daily') {
+        const d = dailyRow(uid, day);
+        const claimed = String(d.claimed || '').split(',').filter(Boolean);
+        if (claimed.includes('chest')) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Hôm nay bạn đã mở rương miễn phí rồi.' }); }
+        if (!questsFor(uid, day).every(q => claimed.includes(q.id))) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Hãy nhận thưởng đủ 3 nhiệm vụ hôm nay để mở rương miễn phí.' }); }
+        claimed.push('chest');
+        db.prepare(`INSERT INTO word_daily (user_id,day,claimed) VALUES (?,?,?) ON CONFLICT(user_id,day) DO UPDATE SET claimed=excluded.claimed`).run(uid, day, claimed.join(','));
+      } else {
+        if (g.coins < CHEST_PRICE) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Chưa đủ xu (cần ' + CHEST_PRICE + ' 🪙).' }); }
+        db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=?').run(CHEST_PRICE, uid);
+      }
+      const reward = rollChest(uid, g);
+      if (reward.type === 'coins') db.prepare('UPDATE word_game SET coins=coins+? WHERE user_id=?').run(reward.amount, uid);
+      else if (reward.type === 'freeze') db.prepare('UPDATE word_game SET freezes=freezes+1 WHERE user_id=?').run(uid);
+      else db.prepare('INSERT OR IGNORE INTO word_inventory (user_id,item_id,acquired_at) VALUES (?,?,?)').run(uid, reward.item.id, now());
+      db.prepare('UPDATE word_game SET chests=chests+1 WHERE user_id=?').run(uid);
+      const newBadges = awardBadges(uid, db.prepare('SELECT * FROM word_game WHERE user_id=?').get(uid));
+      db.exec('COMMIT');
+      res.json({ ok: true, reward: reward.type === 'item' ? { type: 'item', item: { id: reward.item.id, icon: reward.item.icon, name: reward.item.name, kind: reward.item.kind } } : reward, newBadges, me: statePayload(uid, req.user.name) });
+    } catch (e) {
+      try { db.exec('ROLLBACK'); } catch (_) {}
+      console.error('[wordgame/chest]', e.message);
+      res.status(500).json({ error: 'Không mở được rương.' });
     }
   });
 
@@ -366,13 +476,13 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     try {
       const since = vnDay(-6);
       const rows = db.prepare(`
-        SELECT u.id, u.name, SUM(d.xp) AS xp, COALESCE(g.xp,0) AS total_xp, COALESCE(g.streak,0) AS streak, g.last_day AS last_day
+        SELECT u.id, u.name, SUM(d.xp) AS xp, COALESCE(g.xp,0) AS total_xp, COALESCE(g.streak,0) AS streak, g.last_day AS last_day, g.avatar AS avatar
         FROM word_daily d JOIN users u ON u.id=d.user_id LEFT JOIN word_game g ON g.user_id=u.id
         WHERE d.day>=? AND u.role='student'
         GROUP BY u.id HAVING SUM(d.xp)>0 ORDER BY xp DESC, u.id ASC LIMIT 50`).all(since);
       const today = vnDay();
       const board = rows.map((r, i) => ({
-        rank: i + 1, name: givenName(r.name), xp: Number(r.xp), level: levelOf(r.total_xp).level,
+        rank: i + 1, name: givenName(r.name), avatar: (ITEM_BY_ID.get(r.avatar) || {}).icon || '', xp: Number(r.xp), level: levelOf(r.total_xp).level,
         streak: liveStreak({ streak: r.streak, last_day: r.last_day, freezes: 0 }, today), me: r.id === req.user.id
       }));
       res.json({ week: board.slice(0, 10), me: board.find(b => b.me) || null, since });

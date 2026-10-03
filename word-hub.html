@@ -159,6 +159,38 @@
 .confetti { position: fixed; top: -30px; z-index: 5000; font-size: 22px; pointer-events: none; animation: whFall 2.2s ease-in forwards; }
 @keyframes whFall { to { transform: translateY(110vh) rotate(540deg); opacity: .2; } }
 
+/* avatar, khung, rương, boss */
+.wh-avatar { position: relative; }
+.wh-avatar.has-em { background: var(--primary-soft); }
+.wh-avatar .em { font-size: 32px; line-height: 1; }
+.wh-avatar .lvb { position: absolute; right: -6px; bottom: -4px; background: var(--gradient); color: #fff; border-radius: 99px; font-size: 10.5px; padding: 2px 7px; font-weight: 700; font-style: normal; border: 2px solid var(--surface); white-space: nowrap; }
+.fr-gold { box-shadow: 0 0 0 3px #f5c542, 0 0 16px rgba(245,197,66,.75); }
+.fr-neon { box-shadow: 0 0 0 3px #22d3ee, 0 0 18px #22d3ee, 0 0 32px rgba(34,211,238,.5); }
+.fr-fire { box-shadow: 0 0 0 3px #f97316, 0 0 18px #ef4444; animation: whFire 1.2s infinite alternate; }
+@keyframes whFire { to { box-shadow: 0 0 0 3px #fb923c, 0 0 28px #ef4444, 0 0 40px rgba(251,146,60,.5); } }
+.fr-rainbow { border: 4px solid transparent; background: linear-gradient(135deg, #6F58EE, #4F8BF0) padding-box, conic-gradient(#f43f5e, #f59e0b, #84cc16, #06b6d4, #8b5cf6, #f43f5e) border-box; }
+.has-em.fr-rainbow { background: linear-gradient(var(--primary-soft), var(--primary-soft)) padding-box, conic-gradient(#f43f5e, #f59e0b, #84cc16, #06b6d4, #8b5cf6, #f43f5e) border-box; }
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; margin-top: 12px; }
+.shop-it { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 8px; text-align: center; font-size: 12.5px; }
+.shop-it.eq { border-color: var(--primary); background: var(--primary-soft); }
+.shop-it .si { font-size: 34px; display: block; margin-bottom: 4px; } .shop-it b { display: block; font-size: 13px; margin-bottom: 6px; }
+.shop-it button { padding: 6px 10px; border-radius: 8px; border: none; background: var(--gradient); color: #fff; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; }
+.shop-it button.ghost { background: var(--primary-soft); color: var(--text); } .shop-it button:disabled { opacity: .5; cursor: default; }
+.chest-box { text-align: center; padding: 18px 6px; } .chest-box .big { font-size: 78px; display: inline-block; }
+.chest-box .big.shake { animation: whShake .5s infinite; }
+@keyframes whShake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-12deg) scale(1.08); } 75% { transform: rotate(12deg) scale(1.08); } }
+.chest-reward { font-size: 20px; font-weight: 700; margin: 8px 0; }
+.boss-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 14px 18px; margin-bottom: 14px; text-align: center; box-shadow: var(--shadow); }
+.boss-em { font-size: 68px; line-height: 1.1; display: inline-block; transition: transform .15s; }
+.boss-em.hit { animation: whHit .45s; } .boss-em.dead { transform: rotate(80deg) scale(.7); opacity: .4; filter: grayscale(1); }
+@keyframes whHit { 0% { transform: translateX(0); } 20% { transform: translateX(-14px) rotate(-6deg); filter: brightness(2); } 50% { transform: translateX(14px) rotate(6deg); } 100% { transform: translateX(0); } }
+.boss-hpbar { height: 14px; background: var(--border); border-radius: 99px; overflow: hidden; margin: 8px auto 6px; max-width: 360px; }
+.boss-hpbar > i { display: block; height: 100%; background: linear-gradient(90deg, #ef4444, #f97316); transition: width .5s; }
+.boss-row { display: flex; justify-content: space-between; max-width: 360px; margin: 0 auto; font-size: 13px; font-weight: 700; }
+.boss-dmg { position: absolute; font-weight: 700; color: #ef4444; font-size: 22px; animation: whFloat 1s forwards; }
+@keyframes whFloat { to { transform: translateY(-40px); opacity: 0; } }
+.hurt-flash { animation: whHurt .5s; }
+@keyframes whHurt { 0% { box-shadow: inset 0 0 0 0 rgba(239,68,68,0); } 30% { box-shadow: inset 0 0 0 6px rgba(239,68,68,.55); } 100% { box-shadow: inset 0 0 0 0 rgba(239,68,68,0); } }
 /* hội thoại */
 .dg-list .ws-item { cursor: default; }
 .dg-bubble { display: flex; gap: 10px; margin: 12px 0; align-items: flex-start; }
@@ -294,6 +326,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
         <div class="wp-prog"><div class="wh-bar"><i id="wpBar" style="width:0%"></i></div></div>
         <div class="wp-meta"><span id="wpCount"></span><span class="wp-combo" id="wpCombo"></span><span class="wp-timer" id="wpTimer" style="display:none;"></span></div>
       </div>
+      <div id="wpBoss" style="display:none;"></div>
       <div id="wpBody"></div>
     </div>
   </div>
@@ -382,12 +415,13 @@ function isDue(id) { var p = prog(id); return !!p && p[1] <= S.me.today; }
 function box(id) { var p = prog(id); return p ? p[0] : -1; }
 
 /* ═══════════════════════════ Trang chính ═══════════════════════════ */
+function frameCls(f) { return { fr_gold: 'fr-gold', fr_neon: 'fr-neon', fr_fire: 'fr-fire', fr_rainbow: 'fr-rainbow' }[f] || ''; }
 function renderStats() {
   var m = S.me, span = Math.max(1, m.xpNext - m.xpFloor), pct = Math.min(100, Math.round((m.xp - m.xpFloor) / span * 100));
   var gotN = m.badges.filter(function (b) { return b.got; }).length;
   $('whStats').innerHTML =
     '<div class="wh-stats">' +
-      '<div class="wh-avatar"><small>CẤP</small><b>' + m.level + '</b></div>' +
+      (m.avatar ? '<div class="wh-avatar has-em ' + frameCls(m.frame) + '"><span class="em">' + m.avatar + '</span><i class="lvb">Cấp ' + m.level + '</i></div>' : '<div class="wh-avatar ' + frameCls(m.frame) + '"><small>CẤP</small><b>' + m.level + '</b></div>') +
       '<div class="wh-xp"><div class="wh-xp-top"><span>' + esc(m.name || 'Bạn') + '</span><span>' + m.xp + ' / ' + m.xpNext + ' XP</span></div>' +
         '<div class="wh-bar"><i style="width:' + pct + '%"></i></div></div>' +
       '<div class="wh-chips">' +
@@ -432,7 +466,11 @@ function renderQuests() {
       (q.claimed ? '<button class="wh-claim done" disabled>✓ Đã nhận</button>' :
         (q.done ? '<button class="wh-claim" data-q="' + q.id + '">Nhận ' + q.reward + ' 🪙</button>' : '<span class="wh-sub" style="white-space:nowrap;">+' + q.reward + ' 🪙</span>')) + '</div>';
   });
+  var c = S.me.chest;
+  h += '<div style="border-top:1px solid var(--border);margin-top:6px;padding-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="font-size:26px;">🎁</span><div style="flex:1;min-width:150px;font-size:13px;"><b>Rương thưởng hôm nay</b><br><span class="wh-sub">' + (c.dailyClaimed ? '✓ Bạn đã mở rương hôm nay' : (c.dailyReady ? 'Bạn đã nhận đủ 3 nhiệm vụ — mở ngay!' : 'Nhận thưởng đủ 3 nhiệm vụ để mở rương miễn phí')) + '</span></div>' +
+    (c.dailyReady ? '<button class="wh-claim" id="bChest">Mở rương 🎁</button>' : '') + '</div>';
   $('whQuests').innerHTML = h;
+  if ($('bChest')) $('bChest').onclick = function () { openChest('daily'); };
   Array.prototype.forEach.call($('whQuests').querySelectorAll('[data-q]'), function (b) {
     b.onclick = function () {
       b.disabled = true;
@@ -476,6 +514,7 @@ function renderModes() {
     ['situation', '🎭', 'Tình huống', 'Điền từ vào câu đời thực — học từ trong ngữ cảnh, không học vẹt.'],
     ['colloc', '🔗', 'Collocations', 'Học cả cụm từ hay đi cùng nhau (make a decision, heavy traffic...) — nói & viết tự nhiên hơn.'],
     ['upgrade', '🚀', 'Nâng cấp từ vựng', 'Đổi từ đơn giản thành từ mạnh hơn (big → significant) — ăn điểm Writing/Speaking.'],
+    ['boss', '🐉', 'Đánh Boss', 'Trả lời đúng để tấn công, sai mất tim ❤️. Hạ boss nhận thưởng lớn + xu!'],
     ['dialogue', '🗣️', 'Hội thoại', 'Đọc đoạn hội thoại đời thực (nhà hàng, sân bay, phỏng vấn...) và điền nhiều chỗ trống.'],
     ['dictation', '🎧', 'Nghe chép chính tả', ttsOK ? 'Nghe câu tiếng Anh rồi gõ lại — luyện nghe + chính tả, rất hợp thi Listening.' : 'Cần trình duyệt có giọng đọc (Chrome/Safari/Edge) để chơi chế độ này.'],
     ['library', '📖', 'Thư viện', 'Xem lại toàn bộ cụm từ & từ nâng cấp của cấp độ này, có phát âm.']
@@ -505,22 +544,62 @@ function openBadges() {
         (b.got ? '<div style="color:var(--success);font-weight:700;margin-top:4px;">✓ Đã có</div>' : '<div class="wh-bar" style="height:6px;margin-top:6px;"><i style="width:' + Math.round(b.have / b.goal * 100) + '%"></i></div><small>' + b.have + '/' + b.goal + '</small>') + '</div>';
     }).join('') + '</div>', true);
 }
-function openShop() {
-  var m = S.me;
-  openModal('<h3>🛒 Cửa hàng</h3><div class="wh-sub" style="margin-bottom:12px;">Bạn có <b>' + m.coins + ' 🪙</b> · đang giữ <b>' + m.freezes + '/' + m.maxFreezes + '</b> khiên 🧊</div>' +
-    '<div class="wh-card" style="box-shadow:none;"><div style="font-size:34px;">🧊</div><b>Khiên giữ chuỗi</b>' +
-    '<p class="wh-sub" style="margin:6px 0 12px;line-height:1.6;">Lỡ nghỉ đúng <b>1 ngày</b>? Khiên tự động dùng để giữ chuỗi 🔥 của bạn khỏi bị đứt. Mỗi lần dùng hết 1 khiên.</p>' +
-    '<button class="wh-cta" id="buyFreeze" style="padding:10px 18px;font-size:14px;"' + (m.coins < m.freezePrice || m.freezes >= m.maxFreezes ? ' disabled' : '') + '>Mua · ' + m.freezePrice + ' 🪙</button></div>');
-  $('buyFreeze').onclick = function () {
-    api('POST', '/api/word-game/shop/buy', {}).then(function (r) { S.me = r.me; toast('🧊 Đã mua khiên giữ chuỗi!'); beep(true); renderAll(); openShop(); }).catch(function (e) { toast(e.message); });
-  };
+function openShop(tab) {
+  tab = tab || openShop.tab || 'freeze'; openShop.tab = tab;
+  var m = S.me, tabs = [['freeze', '🧊 Khiên'], ['avatar', '🧑‍🚀 Avatar'], ['frame', '🖼️ Khung'], ['chest', '🎁 Rương']];
+  var h = '<h3>🛒 Cửa hàng</h3><div class="wh-sub" style="margin-bottom:10px;">Bạn có <b>' + m.coins + ' 🪙</b> · đang giữ <b>' + m.freezes + '/' + m.maxFreezes + '</b> khiên 🧊</div><div class="wh-pick">' +
+    tabs.map(function (t) { return '<button class="wh-pill' + (tab === t[0] ? ' on' : '') + '" data-st="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>';
+  if (tab === 'freeze') {
+    h += '<div class="wh-card" style="box-shadow:none;"><div style="font-size:34px;">🧊</div><b>Khiên giữ chuỗi</b><p class="wh-sub" style="margin:6px 0 12px;line-height:1.6;">Lỡ nghỉ đúng <b>1 ngày</b>? Khiên tự động dùng để giữ chuỗi 🔥 của bạn khỏi bị đứt. Mỗi lần dùng hết 1 khiên.</p>' +
+      '<button class="wh-cta" id="buyFreeze" style="padding:10px 18px;font-size:14px;"' + (m.coins < m.freezePrice || m.freezes >= m.maxFreezes ? ' disabled' : '') + '>Mua · ' + m.freezePrice + ' 🪙</button></div>';
+  } else if (tab === 'avatar' || tab === 'frame') {
+    h += '<div class="wh-sub">' + (tab === 'avatar' ? 'Avatar hiện cạnh tên bạn trên trang chính và bảng xếp hạng.' : 'Khung viền phát sáng quanh avatar/cấp độ của bạn.') + '</div><div class="shop-grid">' +
+      m.shop.filter(function (i) { return i.kind === tab; }).map(function (i) {
+        var worn = (tab === 'avatar' ? m.avatarId : m.frame) === i.id;
+        return '<div class="shop-it' + (worn ? ' eq' : '') + '"><span class="si">' + i.icon + '</span><b>' + esc(i.name) + '</b>' +
+          (i.owned ? '<button class="' + (worn ? 'ghost' : '') + '" data-eq="' + i.id + '">' + (worn ? 'Đang đeo ✓' : 'Đeo') + '</button>' : '<button data-buy="' + i.id + '"' + (m.coins < i.price ? ' disabled' : '') + '>' + i.price + ' 🪙</button>') + '</div>';
+      }).join('') + '</div>';
+  } else {
+    var c = m.chest;
+    h += '<div class="wh-card chest-box" style="box-shadow:none;"><span class="big">🎁</span><p class="wh-sub" style="margin:8px 0 12px;line-height:1.6;">Có thể nhận: <b>xu 🪙</b>, <b>khiên 🧊</b> hoặc <b>avatar/khung mới</b>.<br>Đã mở ' + c.opened + ' rương.</p>' +
+      (c.dailyReady ? '<button class="wh-cta" id="chDaily" style="padding:10px 18px;font-size:14px;margin-bottom:8px;">🎁 Mở rương miễn phí hôm nay</button><br>' : '<div class="wh-sub" style="margin-bottom:8px;">' + (c.dailyClaimed ? '✓ Đã mở rương miễn phí hôm nay' : 'Nhận đủ 3 nhiệm vụ ngày để có rương miễn phí') + '</div>') +
+      '<button class="wh-cta" id="chBuy" style="padding:10px 18px;font-size:14px;"' + (m.coins < c.price ? ' disabled' : '') + '>Mua rương · ' + c.price + ' 🪙</button></div>';
+  }
+  openModal(h, true);
+  Array.prototype.forEach.call($('whModal').querySelectorAll('[data-st]'), function (b) { b.onclick = function () { openShop(b.getAttribute('data-st')); }; });
+  if ($('buyFreeze')) $('buyFreeze').onclick = function () { shopBuy('freeze', '🧊 Đã mua khiên giữ chuỗi!'); };
+  Array.prototype.forEach.call($('whModal').querySelectorAll('[data-buy]'), function (b) { b.onclick = function () { shopBuy(b.getAttribute('data-buy'), '🛍️ Đã mua!'); }; });
+  Array.prototype.forEach.call($('whModal').querySelectorAll('[data-eq]'), function (b) {
+    b.onclick = function () {
+      var id = b.getAttribute('data-eq'), worn = (tab === 'avatar' ? S.me.avatarId : S.me.frame) === id;
+      api('POST', '/api/word-game/shop/equip', { kind: tab, id: worn ? null : id }).then(function (r) { S.me = r.me; renderStats(); openShop(tab); }).catch(function (e) { toast(e.message); });
+    };
+  });
+  if ($('chDaily')) $('chDaily').onclick = function () { openChest('daily'); };
+  if ($('chBuy')) $('chBuy').onclick = function () { openChest('buy'); };
+}
+function shopBuy(item, msg) {
+  api('POST', '/api/word-game/shop/buy', { item: item }).then(function (r) { S.me = r.me; toast(msg); beep(true); renderAll(); openShop(); }).catch(function (e) { toast(e.message); });
+}
+function openChest(source) {
+  openModal('<div class="chest-box"><span class="big shake" id="chBig">🎁</span><div class="wh-sub">Đang mở rương...</div></div>');
+  api('POST', '/api/word-game/chest/open', { source: source }).then(function (r) {
+    setTimeout(function () {
+      S.me = r.me; var w = r.reward, txt, icon;
+      if (w.type === 'coins') { icon = '🪙'; txt = '+' + w.amount + ' xu'; }
+      else if (w.type === 'freeze') { icon = '🧊'; txt = 'Một khiên giữ chuỗi!'; }
+      else { icon = w.item.icon; txt = (w.item.kind === 'avatar' ? 'Avatar mới: ' : 'Khung mới: ') + w.item.name + '!'; }
+      openModal('<div class="chest-box"><span class="big">' + icon + '</span><div class="chest-reward">' + esc(txt) + '</div><div class="wh-sub">Chúc mừng bạn!</div><button class="wh-cta" id="chOk" style="margin-top:14px;padding:10px 20px;font-size:14px;">Tuyệt vời</button></div>');
+      $('chOk').onclick = function () { closeModal(); renderAll(); }; confetti(40); beep(true); showNewBadges(r.newBadges); renderAll();
+    }, 1100);
+  }).catch(function (e) { closeModal(); toast(e.message); });
 }
 function openBoard() {
   openModal('<h3>🏆 Bảng xếp hạng tuần</h3><div class="wh-sub">Xếp theo XP kiếm được trong 7 ngày gần nhất · chỉ hiện tên gọi</div><div id="lbBody" style="margin-top:12px;">Đang tải...</div>');
   api('GET', '/api/word-game/leaderboard').then(function (r) {
     if (!r.week.length) { $('lbBody').innerHTML = '<div class="wh-sub">Tuần này chưa có ai trên bảng — hãy là người đầu tiên! 🚀</div>'; return; }
     var medal = ['🥇', '🥈', '🥉'];
-    var h = r.week.map(function (x) { return '<div class="lb-row' + (x.me ? ' me' : '') + '"><span class="rk">' + (medal[x.rank - 1] || x.rank) + '</span><span class="nm">' + esc(x.name) + (x.me ? ' (bạn)' : '') + ' <small>Cấp ' + x.level + (x.streak ? ' · 🔥' + x.streak : '') + '</small></span><b>' + x.xp + ' XP</b></div>'; }).join('');
+    var h = r.week.map(function (x) { return '<div class="lb-row' + (x.me ? ' me' : '') + '"><span class="rk">' + (medal[x.rank - 1] || x.rank) + '</span><span class="nm">' + (x.avatar ? x.avatar + ' ' : '') + esc(x.name) + (x.me ? ' (bạn)' : '') + ' <small>Cấp ' + x.level + (x.streak ? ' · 🔥' + x.streak : '') + '</small></span><b>' + x.xp + ' XP</b></div>'; }).join('');
     if (r.me && r.me.rank > 10) h += '<div class="wh-sub" style="text-align:center;margin:8px 0;">• • •</div><div class="lb-row me"><span class="rk">' + r.me.rank + '</span><span class="nm">' + esc(r.me.name) + ' (bạn)</span><b>' + r.me.xp + ' XP</b></div>';
     $('lbBody').innerHTML = h;
   }).catch(function (e) { $('lbBody').textContent = e.message; });
@@ -581,8 +660,10 @@ function typeForBox(b) {
 }
 
 function startPlay(mode, queue, opts) {
-  G = { mode: mode, queue: queue, total: queue.filter(function (q) { return q.type !== 'teach'; }).length, results: [], seen: {}, combo: 0, best: 0, locked: false, opts: opts || {}, answered: 0, shown: 0, timer: null, left: 0 };
+  var BS = BOSSES[S.level] || BOSSES.KET;
+  G = { boss: mode === 'boss' ? { name: BS.n, emoji: BS.e, hp: BS.hp, max: BS.hp, hearts: 3 } : null, mode: mode, queue: queue, total: queue.filter(function (q) { return q.type !== 'teach'; }).length, results: [], seen: {}, combo: 0, best: 0, locked: false, opts: opts || {}, answered: 0, shown: 0, timer: null, left: 0 };
   $('whHub').style.display = 'none'; $('whPlay').style.display = 'block';
+  $('wpBoss').style.display = mode === 'boss' ? 'block' : 'none'; if (mode === 'boss') renderBoss();
   $('wpTimer').style.display = mode === 'blitz' ? '' : 'none';
   window.scrollTo(0, 0);
   if (mode === 'blitz') { G.left = 60; tickTimer(); G.timer = setInterval(function () { G.left -= 0.1; if (G.left <= 0) { G.left = 0; tickTimer(); endPlay(); } else tickTimer(); }, 100); }
@@ -683,6 +764,25 @@ function renderType(q) {
   G.keyHandler = function (e) { if (e.key === 'Enter') { if (!G.locked) check(); else if ($('qNext')) $('qNext').click(); } };
 }
 
+/* ─── Đánh Boss ─── */
+var BOSSES = { KET: { n: 'Rồng Con', e: '🐉', hp: 100 }, PET: { n: 'Kraken', e: '🦑', hp: 110 }, APTIS: { n: 'Quỷ Đá', e: '👹', hp: 120 }, FCE: { n: 'Quỷ Đá', e: '👹', hp: 120 }, IELTS: { n: 'Ma Vương Ngữ Pháp', e: '👾', hp: 130 } };
+function renderBoss(fx, dmg) {
+  var b = G.boss, hearts = '';
+  for (var i = 0; i < 3; i++) hearts += i < b.hearts ? '❤️' : '🖤';
+  $('wpBoss').innerHTML = '<div class="boss-box" style="position:relative;"><div class="boss-em' + (fx === 'hit' ? ' hit' : '') + (b.hp <= 0 ? ' dead' : '') + '">' + b.emoji + '</div>' +
+    (dmg ? '<span class="boss-dmg" style="left:56%;top:24px;">-' + dmg + '</span>' : '') +
+    '<div style="font-weight:700;">' + esc(b.name) + '</div><div class="boss-hpbar"><i style="width:' + Math.round(b.hp / b.max * 100) + '%"></i></div>' +
+    '<div class="boss-row"><span>HP ' + b.hp + '/' + b.max + '</span><span>' + hearts + '</span></div></div>';
+  if (fx === 'hurt') { var st = document.querySelector('.wp-stage'); st.classList.remove('hurt-flash'); void st.offsetWidth; st.classList.add('hurt-flash'); }
+}
+function bossHit(ok) {
+  var b = G.boss, dmg = 0;
+  if (ok) { dmg = 14 + 2 * Math.min(Math.max(G.combo - 1, 0), 5); b.hp = Math.max(0, b.hp - dmg); }
+  else b.hearts--;
+  renderBoss(ok ? 'hit' : 'hurt', dmg);
+  if (b.hp <= 0 || b.hearts <= 0) { G.queue = []; b.over = true; }
+}
+
 /* ─── Nghe chép chính tả: so khớp từng từ (LCS) ─── */
 function dNorm(t) { return String(t).toLowerCase().replace(/[‘’]/g, "'").replace(/[^a-z0-9']/g, ''); }
 function dictDiff(ref, user) {
@@ -748,6 +848,7 @@ function grade(q, ok) {
   G.shown++;
   beep(ok);
   if (firstTry) recordResult(q, ok); else if (ok) { /* làm lại đúng: không tính điểm, chỉ để nhớ */ }
+  if (G.mode === 'boss') bossHit(ok);
   updTop();
   if (G.mode === 'blitz') {
     if (!ok) { G.left = Math.max(0, G.left - 3); tickTimer(); }
@@ -762,7 +863,7 @@ function grade(q, ok) {
     '<button class="wp-next" id="qNext">' + (G.queue.length ? 'Tiếp tục →' : 'Xem kết quả 🎉') + '</button>';
   var holder = $('qFb'); if (holder) holder.innerHTML = fb;
   $('fbSnd').onclick = function () { speak(w.word); };
-  if (!ok && firstTry) { // sai → đưa từ vào lại cuối hàng để học lại (không tính điểm lần 2)
+  if (!ok && firstTry && G.mode !== 'boss') { // sai → đưa từ vào lại cuối hàng để học lại (không tính điểm lần 2)
     G.queue.push(q.type === 'dictation' ? { id: w.id, w: w, type: 'dictation' } : makeQ(w, ['mcqMeaning', 'mcqWord'][Math.floor(Math.random() * 2)]));
   }
   $('qNext').onclick = nextQ;
@@ -800,6 +901,12 @@ function startSmart(pool) {
   startPlay('smart', queue, { pool: pool || null });
 }
 function startMode(mode) {
+  if (mode === 'boss') {
+    var bp = levelItems();
+    if (bp.length < 12) { toast('Cấp này chưa đủ từ để đánh boss.'); return; }
+    var bl = pickWeighted(bp, 14);
+    return startPlay('boss', bl.map(function (w) { return makeQ(w, w.kind === 'word' ? typeForBox(box(w.id)) : 'x'); }));
+  }
   if (mode === 'dictation') {
     if (!ttsOK) { toast('Trình duyệt của bạn chưa hỗ trợ giọng đọc.'); return; }
     var dp = levelItems().filter(function (w) { return w.ex && w.ex.split(/\s+/).length >= 4; });
@@ -832,7 +939,7 @@ $('wpExit').onclick = function () {
   if (G && G.results.length) { if (!confirm('Thoát phiên học? Các câu bạn đã trả lời vẫn được lưu.')) return; endPlay(); }
   else { stopPlay(); }
 };
-function stopPlay() { if (G && G.timer) clearInterval(G.timer); G = null; $('whPlay').style.display = 'none'; $('whHub').style.display = 'block'; }
+function stopPlay() { if (G && G.timer) clearInterval(G.timer); G = null; $('wpBoss').style.display = 'none'; $('whPlay').style.display = 'none'; $('whHub').style.display = 'block'; }
 
 /* ─── Kết thúc & nộp kết quả ─── */
 function endPlay() {
@@ -857,6 +964,10 @@ function showResult(g, r) {
   var title = acc >= 90 ? 'Xuất sắc!' : acc >= 70 ? 'Làm tốt lắm!' : acc >= 50 ? 'Khá ổn, cố thêm nhé!' : 'Đừng nản — lần sau sẽ tốt hơn!';
   var miss = g.results.filter(function (q) { return !q.ok; });
   var notes = '';
+  if (g.mode === 'boss') {
+    if (x.win) { emoji = '🏆'; title = 'Bạn đã hạ gục ' + esc(g.boss.name) + '!'; notes += '<div class="res-note" style="background:var(--success-soft);">🐉 Thưởng hạ boss: +20 XP và +' + x.bossCoins + ' 🪙</div>'; }
+    else { emoji = '💀'; title = esc(g.boss.name) + ' còn mạnh quá — thử lại nhé!'; notes += '<div class="res-note">Cần đúng ít nhất 6 câu và sai không quá 2 câu để hạ boss.</div>'; }
+  }
   if (x.streakUp) notes += '<div class="res-note">🔥 Chuỗi ngày học: <b>' + x.streak + '</b> ngày liên tiếp! (+' + x.streakBonus + ' 🪙)' + (x.usedFreeze ? ' — đã dùng 1 khiên 🧊 để cứu chuỗi' : '') + '</div>';
   if (x.comboBonus) notes += '<div class="res-note">⚡ Thưởng combo ' + x.bestCombo + ' câu liên tiếp: +' + x.comboBonus + ' XP</div>';
   if (x.accBonus) notes += '<div class="res-note">🎯 Thưởng chính xác ≥ 80%: +' + x.accBonus + ' XP</div>';
@@ -960,7 +1071,7 @@ function startDialogue(d) {
   lines.forEach(function (l) { if (spk.indexOf(l.sp) < 0) spk.push(l.sp); });
   if (G && G.timer) clearInterval(G.timer);
   G = { mode: 'dialogue', results: [], queue: [], keyHandler: null, locked: false, dlg: d };
-  $('whHub').style.display = 'none'; $('whPlay').style.display = 'block'; $('wpTimer').style.display = 'none'; window.scrollTo(0, 0);
+  $('whHub').style.display = 'none'; $('whPlay').style.display = 'block'; $('wpTimer').style.display = 'none'; $('wpBoss').style.display = 'none'; window.scrollTo(0, 0);
   $('wpBar').style.width = '0%'; $('wpCount').textContent = d.blanks + ' chỗ trống'; $('wpCombo').textContent = '';
   var h = '<div class="wp-q" style="text-align:left;"><div style="text-align:center;"><span class="wp-tag">🗣️ Hội thoại</span><div style="font-weight:700;font-size:18px;">' + esc(d.title) + '</div><div class="wp-scene">📍 ' + esc(d.scene) + '</div></div><div id="dgBody">';
   lines.forEach(function (l, li) {
