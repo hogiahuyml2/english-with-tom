@@ -717,7 +717,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     } catch (e) {
       try { db.exec('ROLLBACK'); } catch (_) {}
       console.error('[wordgame/import]', e.message);
-      res.status(500).json({ error: 'Không nhập được: ' + e.message });
+      console.error('[wordgame/import]', e.message); res.status(500).json({ error: 'Không nhập được, vui lòng kiểm tra định dạng rồi thử lại.' });
     }
   });
 

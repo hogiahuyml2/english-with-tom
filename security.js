@@ -108,10 +108,33 @@ function install(app, opts) {
 
   // Header an toàn (nhẹ, không phá inline script của trang)
   app.disable('x-powered-by');
+  // CSP: chỉ cho tải script/style/font từ chính web này (+ Google Fonts, Cloudflare Insights), cấm plugin, cấm nhúng web này vào trang lạ,
+  // cấm gửi form ra ngoài → hạn chế rất mạnh hậu quả nếu có lỗi XSS. (Trang vẫn dùng script nội tuyến nên cần 'unsafe-inline'.)
+  const CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https://cloudflareinsights.com; " +
+    "worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'";
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Content-Security-Policy', CSP);
+    res.setHeader('Permissions-Policy', 'camera=(), geolocation=(), payment=(), microphone=(self)');
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    if ((req.headers['x-forwarded-proto'] || req.protocol) === 'https') res.setHeader('Strict-Transport-Security', 'max-age=31536000');
+    next();
+  });
+
+  // Chống CSRF (lớp bổ sung ngoài SameSite=Lax): yêu cầu ghi dữ liệu mà trình duyệt báo nguồn (Origin) là trang khác → từ chối
+  app.use((req, res, next) => {
+    if (!req.path.startsWith('/api/') || req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
+    const origin = req.headers.origin;
+    if (!origin || origin === 'null') return next(); // công cụ/ứng dụng không gửi Origin (cookie SameSite=Lax vẫn bảo vệ)
+    let host = '';
+    try { host = new URL(origin).host.toLowerCase(); } catch (e) { return res.status(403).json({ error: 'Yêu cầu không hợp lệ.' }); }
+    const mine = String(req.headers.host || '').toLowerCase();
+    let pub = ''; try { pub = process.env.PUBLIC_URL ? new URL(process.env.PUBLIC_URL).host.toLowerCase() : ''; } catch (e) {}
+    const ok = host === mine || (pub && host === pub) || /^(www\.)?engwithtom\.online$/.test(host) || /\.up\.railway\.app$/.test(host) || /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host);
+    if (!ok) return res.status(403).json({ error: 'Yêu cầu bị chặn vì đến từ trang web khác.' });
     next();
   });
 

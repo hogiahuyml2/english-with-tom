@@ -10,3 +10,12 @@ uploads/
 
 # Bản sao lưu database tự động — nằm ở Railway volume, không commit
 backups/
+
+# Bí mật — TUYỆT ĐỐI không commit
+.env
+.env.*
+*.pem
+*.key
+secrets*
+credentials*.json
+service-account*.json

@@ -75,14 +75,13 @@ function practiceUrlFor(skill, exerciseId, assigned) {
 const DATA_DIR = process.env.DATA_DIR || __dirname;
 const uploadsDir = path.join(DATA_DIR, 'uploads');
 fs.mkdirSync(uploadsDir, { recursive: true });
-app.use('/uploads', express.static(uploadsDir, { maxAge: '7d' }));
+// File tải lên có thể do người dùng tạo → luôn phục vụ trong "sandbox" (không chạy được script dù là file HTML đội lốt) + không đoán kiểu
+app.use('/uploads', express.static(uploadsDir, { maxAge: '7d', dotfiles: 'ignore', index: false, setHeaders: (res) => { res.setHeader('Content-Security-Policy', "default-src 'none'; sandbox"); res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
 const upload = multer({
   storage: multer.diskStorage({
     destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const ext = (path.extname(file.originalname) || '').slice(0, 8).replace(/[^.a-zA-Z0-9]/g, '');
-      cb(null, crypto.randomBytes(12).toString('hex') + ext);
-    }
+    // Không dùng đuôi file do người dùng khai — đuôi thật được quyết định sau khi kiểm tra "chữ ký" nội dung (xem checkUpload)
+    filename: (req, file, cb) => cb(null, crypto.randomBytes(12).toString('hex') + '.upload')
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // tối đa 20MB
   fileFilter: (req, file, cb) => {
@@ -90,6 +89,30 @@ const upload = multer({
     else cb(new Error('Chỉ chấp nhận tệp ảnh hoặc âm thanh.'));
   }
 });
+
+// Kiểm tra nội dung thật của file (magic bytes) — chặn file HTML/SVG/script đội lốt ảnh hoặc âm thanh
+const UPLOAD_TYPES = [
+  { ext: '.jpg',  kind: 'image', ok: b => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
+  { ext: '.png',  kind: 'image', ok: b => b.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) },
+  { ext: '.gif',  kind: 'image', ok: b => b.slice(0, 4).toString('latin1') === 'GIF8' },
+  { ext: '.webp', kind: 'image', ok: b => b.slice(0, 4).toString('latin1') === 'RIFF' && b.slice(8, 12).toString('latin1') === 'WEBP' },
+  { ext: '.mp3',  kind: 'audio', ok: b => b.slice(0, 3).toString('latin1') === 'ID3' || (b[0] === 0xff && (b[1] & 0xe0) === 0xe0) },
+  { ext: '.wav',  kind: 'audio', ok: b => b.slice(0, 4).toString('latin1') === 'RIFF' && b.slice(8, 12).toString('latin1') === 'WAVE' },
+  { ext: '.ogg',  kind: 'audio', ok: b => b.slice(0, 4).toString('latin1') === 'OggS' },
+  { ext: '.webm', kind: 'audio', ok: b => b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3 },
+  { ext: '.m4a',  kind: 'audio', ok: b => b.slice(4, 8).toString('latin1') === 'ftyp' },
+  { ext: '.flac', kind: 'audio', ok: b => b.slice(0, 4).toString('latin1') === 'fLaC' }
+];
+function checkUpload(file, allowedKinds) {
+  try {
+    const fd = fs.openSync(file.path, 'r'), buf = Buffer.alloc(16); fs.readSync(fd, buf, 0, 16, 0); fs.closeSync(fd);
+    const t = UPLOAD_TYPES.find(x => allowedKinds.includes(x.kind) && x.ok(buf));
+    if (!t) { fs.unlink(file.path, () => {}); return null; }
+    const name = path.basename(file.path, '.upload') + t.ext;
+    fs.renameSync(file.path, path.join(uploadsDir, name));
+    return name;
+  } catch (e) { try { fs.unlinkSync(file.path); } catch (_) {} return null; }
+}
 
 // URL gốc của web (để tạo redirect_uri cho Google, link xác thực email...)
 function baseUrl(req) {
@@ -109,6 +132,12 @@ function isHttps(req) {
 
 // ===== Gửi email qua Brevo (HTTP API, không cần thư viện) =====
 // Làm sạch giá trị biến môi trường: người dùng hay dán thừa dấu cách/xuống dòng/dấu nháy → Brevo từ chối ngầm
+// Escape HTML cho nội dung chèn vào email; làm sạch tên hiển thị (chống XSS lưu trữ: bỏ < > " ` { } \ & ... khỏi tên)
+const htmlEsc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function cleanName(v, fallback) {
+  const s = String(v == null ? '' : v).normalize('NFC').replace(/[\u0000-\u001f\u007f<>"`{}\\&$%^*=|;]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+  return /\p{L}/u.test(s) ? s : (fallback || '');
+}
 const envClean = (v) => String(v || '').trim().replace(/^["']|["']$/g, '').trim();
 const brevoKey = () => envClean(process.env.BREVO_API_KEY);
 const fromEmail = () => envClean(process.env.FROM_EMAIL);
@@ -196,7 +225,7 @@ async function sendVerificationCode(user, code) {
       '<h2 style="color:#fff;margin:0;font-size:22px">English With Tom ✨</h2>' +
     '</div>' +
     '<div style="background:#fff;padding:28px;border-radius:0 0 12px 12px;border:1px solid #e8e6f2">' +
-    '<h3 style="color:#2E2B45;margin-bottom:8px">Xin chào ' + user.name + '! 👋</h3>' +
+    '<h3 style="color:#2E2B45;margin-bottom:8px">Xin chào ' + htmlEsc(user.name) + '! 👋</h3>' +
     '<p style="color:#6B6880">Đây là mã xác thực tài khoản của bạn trên <b>English With Tom</b>:</p>' +
     '<div style="text-align:center;margin:24px 0">' +
       '<div style="display:inline-block;background:linear-gradient(135deg,#6F58EE,#4F8BF0);color:#fff;font-size:38px;font-weight:700;letter-spacing:10px;padding:18px 32px;border-radius:14px;box-shadow:0 8px 24px rgba(111,88,238,.3)">' + code + '</div>' +
@@ -283,6 +312,8 @@ function startSession(res, userId, req) {
 
 // ===================== API XÁC THỰC =====================
 
+// Bật xác thực email bằng OTP khi đăng ký (chỉ hiệu lực khi đã cấu hình email gửi được): đặt biến môi trường REQUIRE_EMAIL_VERIFY=1
+const REQUIRE_VERIFY = process.env.REQUIRE_EMAIL_VERIFY === '1' && emailEnabled();
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
 const str = (v, max) => (typeof v === 'string' ? v : '').slice(0, max);
 function busy(res) { return res.status(503).json({ error: 'Máy chủ đang bận, vui lòng thử lại sau vài giây.' }); }
@@ -290,8 +321,9 @@ function busy(res) { return res.status(503).json({ error: 'Máy chủ đang bậ
 // Đăng ký — CHỈ tạo tài khoản học sinh (giáo viên do admin cấp)
 app.post('/api/register', rlRegister, rlRegAll, async (req, res) => {
   const b = req.body || {};
-  const name = str(b.name, 100).trim(), email = str(b.email, 254).trim(), password = str(b.password, 129);
-  if (!name || !email || !password) return res.status(400).json({ error: 'Vui lòng nhập đủ họ tên, email và mật khẩu.' });
+  const name = cleanName(b.name), email = str(b.email, 254).trim(), password = str(b.password, 129);
+  if (!String(b.name || '').trim() || !email || !password) return res.status(400).json({ error: 'Vui lòng nhập đủ họ tên, email và mật khẩu.' });
+  if (!name) return res.status(400).json({ error: 'Họ tên cần có chữ cái và không chứa ký tự đặc biệt như < > " & .' });
   if (password.length < 6) return res.status(400).json({ error: 'Mật khẩu cần tối thiểu 6 ký tự.' });
   if (password.length > 128) return res.status(400).json({ error: 'Mật khẩu tối đa 128 ký tự.' });
   if (!EMAIL_RE.test(email)) return res.status(400).json({ error: 'Email không hợp lệ.' });
@@ -303,18 +335,30 @@ app.post('/api/register', rlRegister, rlRegAll, async (req, res) => {
   try { hashed = await hashPasswordAsync(password); } catch (e) { return busy(res); }
   let newId;
   try {
-    const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
-      .run(name, mail, hashed, 'student', now());
+    const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,?,?)')
+      .run(name, mail, hashed, 'student', REQUIRE_VERIFY ? 0 : 1, now());
     newId = Number(r.lastInsertRowid);
   } catch (e) { return res.status(409).json({ error: 'Email này đã được đăng ký.' }); }
 
-  db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
+  // Bật REQUIRE_EMAIL_VERIFY=1 (và email đã cấu hình) → bắt buộc xác thực email bằng mã OTP trước khi dùng tài khoản
+  if (REQUIRE_VERIFY) {
+    const code = String(crypto.randomInt(100000, 1000000));
+    db.prepare('UPDATE users SET verify_token=?, verify_token_expiry=? WHERE id=?').run(code, new Date(Date.now() + 15 * 60 * 1000).toISOString(), newId);
+    const sent = await sendVerificationCode({ name, email: mail }, code);
+    return res.json({ needVerify: true, email: mail, mailOk: !!sent.ok });
+  }
+  onStudentActivated(newId, name, mail);
   startSession(res, newId, req);
+  res.json({ needVerify: false });
+});
+
+// Việc làm khi tài khoản học sinh bắt đầu được dùng (sau đăng ký, hoặc sau khi xác thực email nếu bật REQUIRE_EMAIL_VERIFY)
+function onStudentActivated(id, name, mail) {
+  try { db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(id, mail); } catch (e) {}
   // Báo cho giáo viên tối đa 30 học sinh mới/giờ — tránh bị spam đăng ký làm ngập chuông thông báo
   if (security.hit('notify:newstudent', 30, mins(60)).ok)
     notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html?tab=students');
-  res.json({ needVerify: false });
-});
+}
 
 // Đăng nhập — học sinh và giáo viên đều dùng
 // Chống dò mật khẩu: tối đa 8 lần sai / 15 phút cho mỗi cặp (email, IP) và 40 lần sai cho mỗi email (nhiều IP khác nhau).
@@ -335,6 +379,7 @@ app.post('/api/login', rlLogin, async (req, res) => {
     return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng.' });
   }
   security.clearKey(kPair);
+  if (REQUIRE_VERIFY && u.role === 'student' && !u.email_verified) return res.status(403).json({ error: 'Tài khoản chưa xác thực email. Hãy nhập mã OTP đã gửi tới email của bạn.', needVerify: true, email: u.email });
   startSession(res, u.id, req);
   res.json({ user: { id: u.id, name: u.name, email: u.email, role: u.role } });
 });
@@ -363,7 +408,6 @@ function issueResetCredentials(userId) {
     .run(token, exp, resetCodeHash(code, userId), exp, userId);
   return { token, code, exp };
 }
-const htmlEsc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // Bước 1: Gửi email chứa mã OTP + link đặt lại mật khẩu
 app.post('/api/forgot-password', rlForgot, async (req, res) => {
@@ -469,7 +513,7 @@ app.get('/api/ping', (req, res) => {
     db.prepare('SELECT 1').get();
     res.json({ ok: true, t: Date.now(), db: 'ok' });
   } catch(e) {
-    res.status(500).json({ ok: false, t: Date.now(), db: 'error', error: e.message });
+    console.error('[ping]', e.message); res.status(500).json({ ok: false, t: Date.now(), db: 'error' });
   }
 });
 
@@ -586,7 +630,7 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     res.json({ id: Number(r.lastInsertRowid), result });
   } catch (e) {
     console.error('AI grading error', e.message);
-    res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.', detail: String(e.message).slice(0, 400) });
+    res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.' });
   }
 });
 
@@ -688,7 +732,7 @@ app.post('/api/grade-aptis-writing', requireAuth, async (req, res) => {
     res.json({ result });
   } catch (e) {
     console.error('APTIS grading error', e.message);
-    res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.', detail: String(e.message).slice(0, 400) });
+    res.status(500).json({ error: 'Chấm bài tự động thất bại, vui lòng thử lại sau.' });
   }
 });
 
@@ -717,6 +761,7 @@ app.post('/api/verify-code', security.limiter({ name: 'vcode', max: 20, windowMs
   if (a.length !== b2.length || !crypto.timingSafeEqual(a, b2)) return bad();
   if (!u.verify_token_expiry || new Date(u.verify_token_expiry) < new Date()) return bad();
   db.prepare('UPDATE users SET email_verified=1, verify_token=NULL, verify_token_expiry=NULL WHERE id=?').run(u.id);
+  if (u.role === 'student') onStudentActivated(u.id, u.name, u.email);
   startSession(res, u.id, req);
   res.json({ ok: true });
 });
@@ -811,9 +856,9 @@ app.get('/api/auth/google/callback', async (req, res) => {
     let u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
     if (!u) {
       const r2 = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
-        .run(info.name || email, email, 'google-oauth', 'student', now());
+        .run(cleanName(info.name, email.split('@')[0]) || email.split('@')[0], email, 'google-oauth', 'student', now());
       u = { id: Number(r2.lastInsertRowid) };
-      notifyAllStaff('new_student', '🎓 Học sinh mới: ' + (info.name || email), email + ' vừa đăng ký qua Google.', 'teacher.html?tab=students');
+      notifyAllStaff('new_student', '🎓 Học sinh mới: ' + cleanName(info.name, email), email + ' vừa đăng ký qua Google.', 'teacher.html?tab=students');
     } else if (!u.email_verified) {
       db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id);
     }
@@ -1065,26 +1110,29 @@ app.get('/api/exercises/:id', requireAuth, async (req, res) => {
     res.json({ exercise: result });
   } catch (err) {
     console.error('GET /api/exercises/:id error:', err);
-    res.status(500).json({ error: 'Lỗi tải đề.', detail: err.message });
+    res.status(500).json({ error: 'Lỗi tải đề.' });
   }
 });
 
 // Giáo viên/Admin tải ảnh hoặc âm thanh, trả về đường dẫn để gắn vào đề
 app.post('/api/upload', requireRole('teacher', 'admin'), (req, res) => {
   upload.single('file')(req, res, (err) => {
-    if (err) return res.status(400).json({ error: err.message });
+    if (err) return res.status(400).json({ error: 'Tệp không hợp lệ hoặc quá lớn (tối đa 20MB, chỉ ảnh hoặc âm thanh).' });
     if (!req.file) return res.status(400).json({ error: 'Thiếu tệp.' });
-    res.json({ url: '/uploads/' + req.file.filename });
+    const name = checkUpload(req.file, ['image', 'audio']);
+    if (!name) return res.status(400).json({ error: 'Nội dung tệp không phải ảnh (JPG, PNG, GIF, WEBP) hoặc âm thanh (MP3, WAV, OGG, M4A, WEBM) hợp lệ.' });
+    res.json({ url: '/uploads/' + name });
   });
 });
 
 // Học sinh tải BẢN GHI ÂM Speaking của mình (chỉ audio) — dùng khi nộp bài nói
 app.post('/api/upload-recording', requireAuth, (req, res) => {
   upload.single('file')(req, res, (err) => {
-    if (err) return res.status(400).json({ error: err.message });
+    if (err) return res.status(400).json({ error: 'Tệp không hợp lệ hoặc quá lớn (tối đa 20MB).' });
     if (!req.file) return res.status(400).json({ error: 'Thiếu tệp ghi âm.' });
-    if (!/^audio\//.test(req.file.mimetype)) return res.status(400).json({ error: 'Chỉ chấp nhận tệp âm thanh.' });
-    res.json({ url: '/uploads/' + req.file.filename });
+    const name = checkUpload(req.file, ['audio']);
+    if (!name) return res.status(400).json({ error: 'Chỉ chấp nhận tệp âm thanh hợp lệ.' });
+    res.json({ url: '/uploads/' + name });
   });
 });
 
@@ -1390,12 +1438,15 @@ app.get('/api/me/progress', requireAuth, (req, res) => {
 
 // Admin tạo tài khoản giáo viên
 app.post('/api/admin/create-teacher', requireRole('admin'), (req, res) => {
-  const { name, email, password } = req.body || {};
-  if (!name || !email || !password) return res.status(400).json({ error: 'Thiếu thông tin.' });
-  if (db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase()))
+  const b = req.body || {};
+  const name = cleanName(b.name), email = str(b.email, 254).trim().toLowerCase(), password = str(b.password, 129);
+  if (!name || !email || !password) return res.status(400).json({ error: 'Thiếu thông tin (họ tên cần có chữ cái, không chứa ký tự đặc biệt).' });
+  if (!EMAIL_RE.test(email)) return res.status(400).json({ error: 'Email không hợp lệ.' });
+  if (password.length < 8) return res.status(400).json({ error: 'Mật khẩu giáo viên cần tối thiểu 8 ký tự.' });
+  if (db.prepare('SELECT id FROM users WHERE email=?').get(email))
     return res.status(409).json({ error: 'Email đã tồn tại.' });
   const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
-    .run(name, email.toLowerCase(), hashPassword(password), 'teacher', now());
+    .run(name, email, hashPassword(password), 'teacher', now());
   res.json({ id: Number(r.lastInsertRowid) });
 });
 
@@ -1566,7 +1617,7 @@ app.get('/api/my-assignments', requireAuth, (req, res) => {
     res.json({ assignments: rows });
   } catch (err) {
     console.error('my-assignments error:', err);
-    res.status(500).json({ error: 'Lỗi tải bài tập.', detail: err.message });
+    res.status(500).json({ error: 'Lỗi tải bài tập.' });
   }
 });
 
@@ -1688,7 +1739,7 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
     res.json({ ok: true, result, max_score: maxScore });
   } catch (e) {
     console.error('[teacher/ai-grade]', e.message);
-    res.status(500).json({ error: 'Chấm AI thất bại: ' + String(e.message).slice(0, 300) });
+    console.error('[ai-grade]', e.message); res.status(500).json({ error: 'Chấm AI thất bại, vui lòng thử lại sau.' });
   }
 });
 
@@ -1793,7 +1844,7 @@ app.post('/api/teacher/model-answer/:id', requireRole('teacher','admin'), async 
     const hints = await getWritingHints(sub);
     res.json({ hints });
   } catch (e) {
-    res.status(500).json({ error: 'Không thể tạo bài mẫu: ' + String(e.message).slice(0, 200) });
+    console.error('[model-answer]', e.message); res.status(500).json({ error: 'Không thể tạo bài mẫu, vui lòng thử lại sau.' });
   }
 });
 
@@ -1898,7 +1949,7 @@ app.get('/api/admin/backups', requireRole('admin'), (req, res) => {
     }).sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
     res.json({ backups: list });
   } catch (e) {
-    res.status(500).json({ error: 'Không đọc được danh sách backup: ' + e.message });
+    console.error('[backups]', e.message); res.status(500).json({ error: 'Không đọc được danh sách backup.' });
   }
 });
 
@@ -2363,8 +2414,11 @@ app.post('/api/messages/:userId', requireAuth, (req, res) => {
   const other = Number(req.params.userId);
   const { content } = req.body || {};
   if (!other || !content || !content.trim()) return res.status(400).json({ error: 'Thiếu nội dung.' });
-  const otherUser = db.prepare('SELECT id, name FROM users WHERE id=?').get(other);
+  const otherUser = db.prepare('SELECT id, name, role FROM users WHERE id=?').get(other);
   if (!otherUser) return res.status(404).json({ error: 'Người dùng không tồn tại.' });
+  // Học sinh chỉ được nhắn cho giáo viên/quản trị (tránh nhắn tin quấy rối giữa các học sinh)
+  if (req.user.role === 'student' && otherUser.role === 'student') return res.status(403).json({ error: 'Học sinh chỉ có thể nhắn tin cho giáo viên.' });
+  if (String(content).length > 3000) return res.status(400).json({ error: 'Tin nhắn quá dài (tối đa 3000 ký tự).' });
   const r = db.prepare('INSERT INTO messages (sender_id, receiver_id, content, created_at) VALUES (?,?,?,?)')
     .run(me, other, content.trim(), new Date().toISOString());
   const msg = db.prepare('SELECT * FROM messages WHERE id=?').get(r.lastInsertRowid);
@@ -2402,13 +2456,13 @@ async function sendDeadlineReminders() {
       `⏰ Nhắc nhở: Bài tập "${row.title}" sắp đến hạn — English With Tom`,
       `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
         <h2 style="color:#E57C2B">⏰ Nhắc nhở nộp bài</h2>
-        <p>Xin chào <b>${name}</b>,</p>
-        <p>Bài tập <b>${row.title}</b>${row.program ? ` (${row.program})` : ''} của bạn sẽ <b>hết hạn vào ${dline}</b>.</p>
+        <p>Xin chào <b>${htmlEsc(name)}</b>,</p>
+        <p>Bài tập <b>${htmlEsc(row.title)}</b>${row.program ? ` (${htmlEsc(row.program)})` : ''} của bạn sẽ <b>hết hạn vào ${dline}</b>.</p>
         <p>Bạn chưa nộp bài này. Hãy hoàn thành trước khi hết giờ nhé!</p>
         <p style="margin:22px 0">
           <a href="${assignLink}" style="display:inline-block;background:#E57C2B;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Nộp bài ngay</a>
         </p>
-        <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này (${row.student_email}) để xem bài được giao.</p>
+        <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này (${htmlEsc(row.student_email)}) để xem bài được giao.</p>
       </div>`
     ).catch(() => {});
     if (row.student_id) {
@@ -2449,6 +2503,13 @@ try {
 
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
+
+// Làm sạch tên người dùng cũ có ký tự nguy hiểm (< > \" ...) — chạy mỗi lần khởi động, chỉ đụng tới dòng cần sửa
+try {
+  const bad = db.prepare("SELECT id,name,email FROM users WHERE name GLOB '*[<>\"`{}&$|;=*^%]*' OR name GLOB '*\\*'").all();
+  for (const u of bad) { const nn = cleanName(u.name, String(u.email).split('@')[0]); db.prepare('UPDATE users SET name=? WHERE id=?').run(nn, u.id); }
+  if (bad.length) console.log('[security] Đã làm sạch tên của ' + bad.length + ' tài khoản có ký tự đặc biệt.');
+} catch (e) { console.error('[security] làm sạch tên lỗi:', e.message); }
 
 // ===================== XỬ LÝ LỖI CUỐI + CHỐNG SẬP =====================
 app.use(security.errorHandler);

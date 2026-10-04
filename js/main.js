@@ -200,11 +200,12 @@
     .then(function (d) { applyAuth(d.user); })
     .catch(function () { applyAuth(null); }); // chạy trên GitHub Pages (không có API) -> coi như chưa đăng nhập
 
+  function escNameT(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function applyAuth(user) {
     var actions = document.getElementById('navActions');
     if (actions) {
       if (user) {
-        var initials = (user.name || '?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+        var initials = escNameT((user.name || '?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase());
         var teacherLink = (user.role === 'teacher' || user.role === 'admin')
           ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
         var adminLink = (user.role === 'admin')
@@ -216,7 +217,7 @@
           '<a href="chat.html" id="navChatBtn" title="Tin nhắn" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);text-decoration:none;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">💬</a>' +
           '<a href="account.html" title="Tài khoản" class="nav-account" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);text-decoration:none;cursor:pointer;">' +
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;flex-shrink:0;">' + initials + '</span>' +
-            '<span class="nav-account-text">' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
+            '<span class="nav-account-text">' + escNameT(user.name) + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
           '</a>' +
           '<button class="dark-toggle" id="paletteToggle" title="Đổi màu & hiệu ứng giao diện" aria-label="Đổi màu giao diện">🎨</button>' +
           '<button class="dark-toggle" id="darkToggle2" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode">' + (isDark() ? '☀️' : '🌙') + '</button>' +
