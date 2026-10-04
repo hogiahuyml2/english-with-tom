@@ -234,13 +234,30 @@ img.brand-logo {
 .grid-auto { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 
 .course-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 24px; transition: .18s; display: block;
+  --acc: var(--primary); --acc-soft: var(--primary-soft);
+  position: relative; overflow: hidden; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+  padding: 24px 24px 20px; transition: transform .2s, box-shadow .2s, border-color .2s;
 }
-.course-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: transparent; }
+.course-card::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px;
+  background: linear-gradient(90deg, var(--acc), transparent 120%); opacity: .9;
+}
+.course-card::after {
+  content: ""; position: absolute; right: -50px; top: -50px; width: 150px; height: 150px; border-radius: 50%;
+  background: radial-gradient(circle, var(--acc-soft) 0%, transparent 70%); opacity: .8; pointer-events: none;
+}
+.course-card > * { position: relative; z-index: 1; }
+.course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--acc); }
+.course-card:has(.ico-blue) { --acc: #4F7BD6; --acc-soft: var(--blue-soft); }
+.course-card:has(.ico-purple) { --acc: #7B6EF6; --acc-soft: var(--primary-soft); }
+.course-card:has(.ico-teal) { --acc: #2E9E7B; --acc-soft: var(--teal-soft); }
+.course-card:has(.ico-amber) { --acc: #C98A1E; --acc-soft: var(--amber-soft); }
+.course-card:has(.ico-pink) { --acc: #C2557F; --acc-soft: var(--pink-soft); }
 .course-ico {
-  width: 50px; height: 50px; border-radius: 13px; display: grid; place-items: center;
-  font-size: 25px; margin-bottom: 14px;
+  min-width: 54px; height: 54px; padding: 0 14px; width: fit-content; border-radius: 15px; display: grid; place-items: center;
+  font-size: 22px; font-weight: 800; letter-spacing: -.3px; white-space: nowrap; margin-bottom: 14px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.04), 0 6px 14px -8px var(--acc);
 }
 .ico-blue { background: var(--blue-soft); color: #4F7BD6; }
 .ico-purple { background: var(--primary-soft); color: #7B6EF6; }
@@ -248,8 +265,18 @@ img.brand-logo {
 .ico-amber { background: var(--amber-soft); color: #C98A1E; }
 .ico-pink { background: var(--pink-soft); color: #C2557F; }
 .course-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 6px; display:flex; align-items:center; gap:8px;}
-.course-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 14px; }
-.course-meta { display: flex; gap: 14px; font-size: 12.5px; color: var(--text-faint); }
+.course-card p { color: var(--text-muted); font-size: 14px; line-height: 1.55; margin-bottom: 16px; flex: 1; }
+.course-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12.5px; color: var(--text-muted); padding-top: 14px; border-top: 1px dashed var(--border); }
+.course-meta span { background: var(--bg-soft, rgba(0,0,0,.04)); padding: 4px 10px; border-radius: 999px; }
+.course-card .course-meta::after { content: "Vào học →"; margin-left: auto; font-weight: 700; color: var(--acc); opacity: 0; transform: translateX(-6px); transition: .2s; align-self: center; }
+.course-card:hover .course-meta::after { opacity: 1; transform: none; }
+@media (min-width: 861px) {
+  .grid-3 > .course-card:last-child:nth-child(3n+1) { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 22px; }
+  .grid-3 > .course-card:last-child:nth-child(3n+1) .course-ico { margin-bottom: 0; flex: none; }
+  .grid-3 > .course-card:last-child:nth-child(3n+1) h3, .grid-3 > .course-card:last-child:nth-child(3n+1) p { margin-bottom: 0; }
+  .grid-3 > .course-card:last-child:nth-child(3n+1) h3 { flex: none; min-width: 190px; }
+  .grid-3 > .course-card:last-child:nth-child(3n+1) .course-meta { border-top: 0; padding-top: 0; flex: none; }
+}
 .course-meta span { display:flex; align-items:center; gap:5px;}
 .tag {
   display:inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
@@ -258,7 +285,7 @@ img.brand-logo {
 .tag-featured { background: var(--amber-soft); color: var(--warning); }
 
 /* featured card border */
-.course-card.featured { border: 2px solid var(--primary); }
+.course-card.featured { border: 2px solid var(--primary); box-shadow: 0 10px 28px -14px var(--acc); }
 
 /* ===== Page header ===== */
 .page-hero { background: var(--gradient-soft); padding: 44px 0 36px; position: relative; overflow: hidden; }
