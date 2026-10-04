@@ -432,7 +432,7 @@
 /* Hiệu ứng galaxy/stars + bộ chọn bảng màu */
 (function () {
   var s = document.createElement('script');
-  s.src = 'js/galaxy.js?v=3';
+  s.src = 'js/galaxy.js?v=5';
   s.async = true;
   document.head.appendChild(s);
 })();

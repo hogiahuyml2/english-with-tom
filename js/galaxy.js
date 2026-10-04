@@ -12,18 +12,19 @@
     { k: '', n: 'Tím pastel', c: ['#6F58EE', '#4F8BF0'], scene: 'stars' },
     { k: 'galaxy', n: 'Thiên hà', c: ['#5B3FE0', '#E04BC8'], scene: 'stars' },
     { k: 'aurora', n: 'Cực quang', c: ['#0E9F7E', '#4C86EE'], scene: 'aurora' },
-    { k: 'nebula', n: 'Tinh vân', c: ['#D93A78', '#F7A23B'], scene: 'stars' },
-    { k: 'ocean', n: 'Đại dương', c: ['#1D6FE0', '#2CC9B6'], scene: 'bubbles' },
-    { k: 'sunrise', n: 'Bình minh', c: ['#E07A10', '#F5CB5C'], scene: 'fireflies' },
+    { k: 'nebula', n: 'Tinh vân', c: ['#D93A78', '#F7A23B'], scene: 'embers' },
+    { k: 'ocean', n: 'Đại dương', c: ['#1D6FE0', '#2CC9B6'], scene: 'waves' },
+    { k: 'sunrise', n: 'Bình minh', c: ['#E07A10', '#F5CB5C'], scene: 'leaves' },
     { k: 'sakura', n: 'Hoa anh đào', c: ['#E8668B', '#F9B7C9'], scene: 'petals' },
-    { k: 'forest', n: 'Rừng xanh', c: ['#1F8F4E', '#9CCC65'], scene: 'fireflies' },
-    { k: 'candy', n: 'Kẹo ngọt', c: ['#FF5CA8', '#35C6F4'], scene: 'bubbles' },
-    { k: 'midnight', n: 'Đêm xanh vàng', c: ['#1E2A78', '#D4A017'], scene: 'doodle' }
+    { k: 'forest', n: 'Rừng xanh', c: ['#1F8F4E', '#9CCC65'], scene: 'cactus' },
+    { k: 'candy', n: 'Kẹo ngọt', c: ['#FF5CA8', '#35C6F4'], scene: 'confetti' },
+    { k: 'midnight', n: 'Đêm xanh vàng', c: ['#1E2A78', '#D4A017'], scene: 'stars' }
   ];
   var SCENES = [
-    { k: 'stars', n: 'Sao & sao băng', e: '✨' }, { k: 'aurora', n: 'Cực quang', e: '🌌' }, { k: 'bubbles', n: 'Bong bóng', e: '🫧' },
-    { k: 'letters', n: 'Chữ cái bay', e: '🔤' }, { k: 'petals', n: 'Cánh hoa', e: '🌸' }, { k: 'fireflies', n: 'Đom đóm', e: '🪔' },
-    { k: 'snow', n: 'Tuyết rơi', e: '❄️' }, { k: 'doodle', n: 'Đồ dùng học tập', e: '🎒' }
+    { k: 'stars', n: 'Sao & sao băng', e: '✨' }, { k: 'aurora', n: 'Cực quang', e: '🌌' }, { k: 'waves', n: 'Sóng nhỏ', e: '🌊' },
+    { k: 'leaves', n: 'Lá thu rơi', e: '🍂' }, { k: 'embers', n: 'Tia lửa đỏ', e: '🔥' }, { k: 'cactus', n: 'Xương rồng nhỏ', e: '🌵' },
+    { k: 'petals', n: 'Cánh hoa', e: '🌸' }, { k: 'confetti', n: 'Hạt kẹo màu', e: '🍬' }, { k: 'bubbles', n: 'Bong bóng', e: '🫧' },
+    { k: 'fireflies', n: 'Đom đóm', e: '🪔' }, { k: 'snow', n: 'Tuyết rơi', e: '❄️' }, { k: 'letters', n: 'Chữ cái bay', e: '🔤' }
   ];
 
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
@@ -33,6 +34,10 @@
   try { fx = JSON.parse(get('ewt-fx', 'null')); } catch (e) { fx = null; }
   if (!fx || typeof fx !== 'object') fx = { stars: !reduce, trail: !reduce && !coarse, motion: !reduce };
   if (!fx.scene) fx.scene = 'stars';
+  if (!fx.v || fx.v < 2) { // v2: mỗi bảng màu có nền động nhỏ, hợp tông (sóng / lá thu / tia lửa / xương rồng…)
+    var cp = get('ewt-palette', ''), pp = PALETTES.filter(function (x) { return x.k === cp; })[0]; fx.scene = pp ? pp.scene : 'stars'; fx.v = 2;
+    set('ewt-fx', JSON.stringify(fx));
+  }
   function saveFx() { set('ewt-fx', JSON.stringify(fx)); }
 
   function palette() { return root.getAttribute('data-palette') || ''; }
@@ -58,7 +63,7 @@
     '@keyframes fxDrift2{to{transform:translate3d(-8vmax,10vmax,0) scale(.92)}}' +
     'html.fx-stars .hero{background:linear-gradient(180deg,color-mix(in srgb,var(--primary) 9%,transparent),transparent)}' +
     /* trang vào mượt */
-    'html.fx-motion body{animation:fxPage .5s ease both}@keyframes fxPage{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}' +
+    'html.fx-motion body{animation:fxPage .5s ease backwards}@keyframes fxPage{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}' +
     /* thẻ xuất hiện + nghiêng 3D theo con trỏ */
     'html.fx-motion .course-card,html.fx-motion .sc-card,html.fx-motion .stat-card,html.fx-motion .feature,html.fx-motion .card,html.fx-motion .ar-game{animation:fxRise .55s cubic-bezier(.2,.7,.2,1) backwards}' +
     'html.fx-motion .grid>*:nth-child(2){animation-delay:.06s}html.fx-motion .grid>*:nth-child(3){animation-delay:.12s}html.fx-motion .grid>*:nth-child(4){animation-delay:.18s}html.fx-motion .grid>*:nth-child(5){animation-delay:.24s}html.fx-motion .grid>*:nth-child(6){animation-delay:.3s}' +
@@ -226,6 +231,78 @@
         });
       }
     },
+    waves: {
+      init: function () { P = []; var n = Math.round(34 * density()); for (var i = 0; i < n; i++) P.push(newWave(true)); },
+      draw: function (dt, t, dark) {
+        ctx.lineCap = 'round'; ctx.lineWidth = 1.5;
+        P.forEach(function (w, i) {
+          w.x += w.v * dt; w.y += Math.sin(t * 0.7 + w.ph) * 0.12;
+          if (w.x > W + 30) P[i] = newWave(false);
+          var a = w.a * (dark ? 0.62 : 0.5) * (0.6 + 0.4 * Math.sin(t * 0.8 + w.ph));
+          ctx.strokeStyle = 'rgba(' + (w.c ? c2 : c1) + ',' + a + ')'; ctx.beginPath();
+          for (var u = -1; u <= 1.001; u += 0.04) { var X = w.x + u * w.s, Y = w.y + Math.sin(u * 4.4 + t * 1.6 + w.ph) * w.s * 0.13; if (u < -0.99) ctx.moveTo(X, Y); else ctx.lineTo(X, Y); }
+          ctx.stroke();
+        });
+      }
+    },
+    leaves: {
+      init: function () { P = []; var n = Math.round(24 * density()); for (var i = 0; i < n; i++) P.push(newLeaf(true)); },
+      draw: function (dt, t, dark) {
+        P.forEach(function (l, i) {
+          l.y += l.v * dt; l.x += Math.sin(t * l.sw + l.ph) * 0.8 + 5 * dt; l.rot += l.vr * dt;
+          if (l.y > H + 20 || l.x > W + 30) P[i] = newLeaf(false);
+          ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.rot); ctx.scale(1, 0.72 + 0.28 * Math.abs(Math.sin(t * l.sw * 1.4 + l.ph)));
+          ctx.fillStyle = 'rgba(' + l.col + ',' + (dark ? 0.8 : 0.7) + ')'; var s = l.s;
+          ctx.beginPath(); ctx.moveTo(0, -s); ctx.bezierCurveTo(s * 0.9, -s * 0.5, s * 0.9, s * 0.5, 0, s); ctx.bezierCurveTo(-s * 0.9, s * 0.5, -s * 0.9, -s * 0.5, 0, -s); ctx.fill();
+          ctx.strokeStyle = 'rgba(120,60,20,' + (dark ? 0.5 : 0.4) + ')'; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(0, -s); ctx.lineTo(0, s * 1.25); ctx.stroke();
+          ctx.restore();
+        });
+      }
+    },
+    embers: {
+      init: function () { P = []; var n = Math.round(46 * density()); for (var i = 0; i < n; i++) P.push(newEmber(true)); },
+      draw: function (dt, t, dark) {
+        ctx.save(); if (dark) ctx.globalCompositeOperation = 'lighter';
+        P.forEach(function (e, i) {
+          e.y -= e.v * dt; e.x += Math.sin(t * e.sw + e.ph) * 0.5 + e.dx * dt; e.life += dt;
+          if (e.life > e.max || e.y < -10) { P[i] = newEmber(false); return; }
+          var f = 1 - e.life / e.max, fl = 0.6 + 0.4 * Math.sin(t * 9 + e.ph), a = f * fl * (dark ? 0.95 : 0.75), R = e.r * 4;
+          var g = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, R); g.addColorStop(0, 'rgba(' + e.col + ',' + a + ')'); g.addColorStop(0.35, 'rgba(' + e.col + ',' + (a * 0.35) + ')'); g.addColorStop(1, 'rgba(' + e.col + ',0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(e.x, e.y, R, 0, 6.2832); ctx.fill();
+        });
+        ctx.restore();
+      }
+    },
+    cactus: {
+      init: function () { P = []; var n = Math.round(15 * density()); for (var i = 0; i < n; i++) P.push(newCactus(true)); },
+      draw: function (dt, t, dark) {
+        P.forEach(function (c, i) {
+          c.y -= c.v * dt; c.x += Math.sin(t * c.sw + c.ph) * 0.25; if (c.y < -40) { P[i] = newCactus(false); return; }
+          var s = c.s, al = (dark ? 0.8 : 0.62);
+          ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(Math.sin(t * c.sw + c.ph) * 0.16); ctx.globalAlpha = al;
+          // chậu
+          ctx.fillStyle = 'rgb(205,120,80)'; ctx.beginPath(); ctx.moveTo(-s * 0.42, s * 0.5); ctx.lineTo(s * 0.42, s * 0.5); ctx.lineTo(s * 0.32, s * 1.0); ctx.lineTo(-s * 0.32, s * 1.0); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = 'rgb(225,140,95)'; ctx.fillRect(-s * 0.48, s * 0.42, s * 0.96, s * 0.14);
+          // thân + hai nhánh
+          ctx.fillStyle = 'rgb(70,160,100)'; ctx.strokeStyle = 'rgb(70,160,100)'; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-s * 0.17, -s * 0.55, s * 0.34, s * 1.05, s * 0.17) : ctx.rect(-s * 0.17, -s * 0.55, s * 0.34, s * 1.05); ctx.fill();
+          ctx.lineWidth = s * 0.17; ctx.beginPath(); ctx.moveTo(-s * 0.17, s * 0.1); ctx.lineTo(-s * 0.4, s * 0.1); ctx.lineTo(-s * 0.4, -s * 0.2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(s * 0.17, s * 0.22); ctx.lineTo(s * 0.4, s * 0.22); ctx.lineTo(s * 0.4, -s * 0.05); ctx.stroke();
+          ctx.fillStyle = 'rgb(255,120,150)'; ctx.beginPath(); ctx.arc(0, -s * 0.58, s * 0.09, 0, 6.2832); ctx.fill(); // hoa nhỏ trên đỉnh
+          ctx.restore();
+        });
+      }
+    },
+    confetti: {
+      init: function () { P = []; var n = Math.round(40 * density()); for (var i = 0; i < n; i++) P.push(newConfetti(true)); },
+      draw: function (dt, t, dark) {
+        P.forEach(function (c, i) {
+          c.y += c.v * dt; c.x += Math.sin(t * c.sw + c.ph) * 0.5; c.rot += c.vr * dt; if (c.y > H + 10) { P[i] = newConfetti(false); return; }
+          ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot); ctx.fillStyle = 'rgba(' + c.col + ',' + (dark ? 0.85 : 0.7) + ')';
+          ctx.beginPath(); ctx.arc(0, 0, c.s * 0.5, 0, 6.2832); if (c.sq) { ctx.rect(-c.s * 0.5, -c.s * 0.25, c.s, c.s * 0.5); } ctx.fill(); ctx.restore();
+        });
+      }
+    },
     doodle: {
       init: function () { P = []; var n = Math.round(20 * density()); for (var i = 0; i < n; i++) P.push({ x: Math.random() * W, y: Math.random() * H, s: rnd(22, 42), e: pick(EMOJI), v: rnd(6, 18), sw: rnd(0.3, 0.8), ph: Math.random() * 6.28, rot: rnd(-0.4, 0.4), vr: rnd(-0.15, 0.15), a: rnd(0.12, 0.24) }); },
       draw: function (dt, t, dark) {
@@ -238,6 +315,14 @@
       }
     }
   };
+  function newWave(init) { return { x: init ? Math.random() * W : -rnd(20, 80), y: Math.random() * H, s: rnd(12, 26), v: rnd(5, 16), ph: Math.random() * 6.28, c: Math.random() < 0.5 ? 0 : 1, a: rnd(0.45, 0.95) }; }
+  var LEAF_COL = ['226,130,36', '214,170,44', '190,88,40', '165,105,45', '232,150,52'];
+  function newLeaf(init) { return { x: Math.random() * W, y: init ? Math.random() * H : -rnd(10, 60), s: rnd(3.2, 6), v: rnd(20, 44), sw: rnd(0.8, 1.7), ph: Math.random() * 6.28, rot: Math.random() * 6.28, vr: rnd(-1.4, 1.4), col: pick(LEAF_COL) }; }
+  var EMBER_COL = ['255,80,60', '255,120,50', '255,170,70', '235,50,60'];
+  function newEmber(init) { return { x: Math.random() * W, y: init ? Math.random() * H : H + rnd(5, 40), r: rnd(0.7, 1.9), v: rnd(14, 46), sw: rnd(1, 2.6), ph: Math.random() * 6.28, dx: rnd(-6, 8), life: init ? Math.random() * 5 : 0, max: rnd(4, 9), col: pick(EMBER_COL) }; }
+  function newCactus(init) { return { x: Math.random() * W, y: init ? Math.random() * H : H + rnd(20, 80), s: rnd(10, 15), v: rnd(6, 16), sw: rnd(0.4, 0.9), ph: Math.random() * 6.28 }; }
+  var CAND_COL = ['255,92,168', '53,198,244', '255,200,60', '140,110,255', '90,210,150'];
+  function newConfetti(init) { return { x: Math.random() * W, y: init ? Math.random() * H : -rnd(6, 40), s: rnd(3.5, 7), v: rnd(18, 46), sw: rnd(0.5, 1.4), ph: Math.random() * 6.28, rot: Math.random() * 6.28, vr: rnd(-2, 2), col: pick(CAND_COL), sq: Math.random() < 0.5 }; }
   function newBubble(init) { return { x: Math.random() * W, y: init ? Math.random() * H : H + rnd(20, 120), r: rnd(6, 36), v: rnd(12, 42), sw: rnd(0.4, 1.2), ph: Math.random() * 6.28, c: Math.random() < 0.5 ? 0 : 1, a: rnd(0.5, 1) }; }
   function newLetter(init) { return { x: Math.random() * W, y: init ? Math.random() * H : -rnd(20, 80), s: rnd(16, 40), t: pick(LETTERS), v: rnd(14, 40), sw: rnd(0.3, 0.9), ph: Math.random() * 6.28, rot: rnd(-0.5, 0.5), vr: rnd(-0.25, 0.25), c: Math.random() < 0.5 ? 0 : 1, a: rnd(0.08, 0.2) }; }
   function newPetal(init) { return { x: Math.random() * W, y: init ? Math.random() * H : -rnd(10, 60), s: rnd(7, 14), v: rnd(22, 48), sw: rnd(0.8, 1.8), ph: Math.random() * 6.28, rot: Math.random() * 6.28, vr: rnd(-1.2, 1.2) }; }
@@ -272,16 +357,6 @@
   /* ───────── Trang trí trang & hiệu ứng cuộn ───────── */
   var glow = null, io = null;
   function decorate() {
-    // hình nổi ở đầu trang (chỉ tạo 1 lần)
-    var em = ['🔤', '📚', '✏️', '⭐', '🎓', '💡', '🌈'];
-    Array.prototype.forEach.call(document.querySelectorAll('.hero, .page-hero'), function (h) {
-      if (h.querySelector('.fx-deco')) return;
-      for (var i = 0; i < 6; i++) {
-        var d = document.createElement('span'); d.className = 'fx-deco'; d.setAttribute('aria-hidden', 'true'); d.textContent = em[(i + h.offsetHeight) % em.length];
-        d.style.cssText = 'left:' + (6 + i * 16 + Math.random() * 6) + '%;top:' + (8 + (i % 3) * 28 + Math.random() * 10) + '%;font-size:' + (22 + Math.random() * 18) + 'px;animation-delay:' + (-i * 1.3) + 's;animation-duration:' + (6 + i) + 's';
-        h.insertBefore(d, h.firstChild);
-      }
-    });
     // cuộn đến đâu hiện đến đó: chỉ ẩn những phần đang nằm DƯỚI màn hình (phần đã thấy không bị ảnh hưởng)
     if (window.IntersectionObserver && !io) {
       io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('fx-in'); io.unobserve(e.target); } }); }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
