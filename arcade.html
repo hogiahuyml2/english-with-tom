@@ -29,6 +29,22 @@
 .g-frog { background: linear-gradient(135deg, #0f766e, #22c55e); }
 .g-hang { background: linear-gradient(135deg, #0b1d3a, #2563eb 70%, #38bdf8); }
 .g-word { background: linear-gradient(135deg, #7c2d12, #f59e0b); }
+.g-duel { background: linear-gradient(135deg, #7f1d1d, #ef4444 60%, #fb923c); }
+.ar-h2 { font-size: 17px; font-weight: 800; margin: 22px 0 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .ar-h2 small { font-size: 12.5px; font-weight: 500; color: var(--text-muted); }
+.lb-row { display: flex; align-items: center; gap: 10px; padding: 9px 4px; border-top: 1px solid var(--border); font-size: 14px; } .lb-row:first-of-type { border-top: none; }
+.lb-row.me { background: var(--primary-soft); border-radius: 10px; padding: 9px 10px; } .lb-rk { width: 34px; text-align: center; font-weight: 800; font-size: 17px; } .lb-nm { flex: 1; font-weight: 600; } .lb-pt { font-weight: 800; color: var(--primary); }
+.bd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.bd { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 10px; text-align: center; } .bd .i { font-size: 30px; } .bd b { display: block; font-size: 13px; margin-top: 4px; } .bd span { font-size: 11.5px; color: var(--text-muted); display: block; margin-top: 2px; line-height: 1.35; }
+.bd.off { opacity: .55; filter: grayscale(.7); } .bd.on { border-color: var(--warning); background: var(--warning-soft); } .bd .bar { height: 5px; background: var(--border); border-radius: 9px; overflow: hidden; margin-top: 6px; } .bd .bar i { display: block; height: 100%; background: var(--gradient); }
+.du-code { font-size: 46px; font-weight: 800; letter-spacing: 10px; background: rgba(255,255,255,.1); border-radius: 14px; padding: 8px 18px; display: inline-block; margin: 8px 0; user-select: all; }
+.du-box { background: rgba(255,255,255,.07); border-radius: 14px; padding: 16px; margin: 10px 0; text-align: center; }
+.du-input { width: 150px; text-align: center; font-size: 26px; font-weight: 800; letter-spacing: 6px; padding: 8px; border-radius: 12px; border: 2px solid rgba(255,255,255,.3); background: rgba(255,255,255,.1); color: #fff; text-transform: uppercase; font-family: inherit; }
+.du-opt { display: block; width: 100%; text-align: left; padding: 13px 14px; margin: 8px 0; border-radius: 12px; border: 2px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.du-opt:hover:not(:disabled) { border-color: #fbbf24; } .du-opt.ok { background: #16a34a; border-color: #16a34a; } .du-opt.no { background: #dc2626; border-color: #dc2626; } .du-opt:disabled { cursor: default; }
+.du-bar { height: 8px; border-radius: 9px; background: rgba(255,255,255,.15); overflow: hidden; margin: 6px 0 10px; } .du-bar > i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #22c55e, #eab308, #ef4444); transform-origin: left; }
+.du-vs { display: flex; justify-content: space-around; align-items: center; gap: 8px; margin: 10px 0; font-weight: 800; } .du-vs div { flex: 1; background: rgba(255,255,255,.08); border-radius: 12px; padding: 10px 6px; } .du-vs small { display: block; font-weight: 500; opacity: .8; }
+.du-big { font-size: 64px; font-weight: 800; }
+.du-rv { text-align: left; font-size: 13px; margin: 6px 0; } .du-rv div { padding: 4px 0; border-top: 1px solid rgba(255,255,255,.12); }
 .ar-stage { background: #0a0720; border-radius: 16px; padding: 10px; box-shadow: var(--shadow); color: #fff; }
 .ar-hud { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 700; font-size: 14px; padding: 2px 6px 8px; }
 .ar-prompt { text-align: center; padding: 6px 8px 10px; }
@@ -125,6 +141,7 @@ var GAMES = [
   { id: 'blaster', cls: 'g-blast', ic: '🚀', name: 'Thiên thạch', desc: 'Đọc nghĩa, bắn đúng thiên thạch chứa từ tiếng Anh trước khi nó rơi xuống!', tag: '10 từ · 3 mạng' },
   { id: 'frog', cls: 'g-frog', ic: '🐸', name: 'Ếch nhảy sen', desc: 'Giúp chú ếch nhảy qua hồ bằng cách chọn đúng lá sen. Chọn sai là… tõm!', tag: '10 từ · 3 mạng' },
   { id: 'hangman', cls: 'g-hang', ic: '👨‍🚀', name: 'Cứu phi hành gia', desc: 'Đoán từng chữ cái để giữ phi hành gia không trôi vào vũ trụ.', tag: '6 từ · gõ chữ' },
+  { id: 'duel', cls: 'g-duel', ic: '⚔️', name: 'Đấu 1 với 1', desc: 'Tạo phòng, gửi mã cho bạn — cùng thi 10 câu, ai nhanh và đúng hơn thì thắng!', tag: 'Mã phòng' },
   { id: 'wordle', cls: 'g-word', ic: '🔤', name: 'Đoán từ mỗi ngày', desc: 'Mỗi ngày một từ bí mật cho cả lớp. 6 lượt đoán, có gợi ý nghĩa tiếng Việt.', tag: '1 lần / ngày' }
 ];
 function viewHub() {
@@ -134,7 +151,9 @@ function viewHub() {
   h += '<div class="ar-lv"><b style="font-size:13px;">Chọn cấp độ từ:</b>' + ['all', 'KET', 'PET', 'FCE', 'IELTS'].map(function (l) { return '<button class="ar-pill' + (l === LEVEL ? ' on' : '') + '" data-l="' + l + '">' + (l === 'all' ? 'Tất cả' : l) + '</button>'; }).join('') + '</div>';
   h += '<div class="ar-grid">' + GAMES.map(function (g) { return '<button class="ar-game ' + g.cls + '" data-g="' + g.id + '"><span class="tag">' + g.tag + '</span><div class="ic">' + g.ic + '</div><h3>' + g.name + '</h3><p>' + g.desc + '</p></button>'; }).join('') + '</div>';
   h += '<div class="ar-card" style="margin-top:16px;font-size:13.5px;color:var(--text-muted);">💡 Từ nào bạn trả lời đúng sẽ được ôn lại theo lịch (ngày mai, 3 ngày, 1 tuần…), từ sai sẽ được nhắc sớm. Mỗi từ chỉ cộng XP tối đa 3 lần đúng/ngày để công bằng cho mọi bạn.</div>';
+  h += '<div id="arResume"></div><div id="arBoard"></div><div id="arBadges"></div>';
   root.innerHTML = h;
+  loadHubExtras();
   Array.prototype.forEach.call(root.querySelectorAll('[data-l]'), function (b) { b.onclick = function () { LEVEL = b.getAttribute('data-l'); try { localStorage.setItem('ewt-ar-level', LEVEL); } catch (e) {} viewHub(); }; });
   Array.prototype.forEach.call(root.querySelectorAll('[data-g]'), function (b) { b.onclick = function () { startGame(b.getAttribute('data-g')); }; });
   $('arMute').onclick = function () { muted = !muted; try { localStorage.setItem('ewt-ar-mute', muted ? '1' : '0'); } catch (e) {} viewHub(); };
@@ -142,6 +161,7 @@ function viewHub() {
 function startGame(id) {
   stopCur();
   if (id === 'wordle') return gameWordle();
+  if (id === 'duel') return viewDuelLobby();
   var p = id === 'hangman' ? pool(4, 12) : pool();
   if (p.length < 8) { alert('Cấp độ này chưa đủ từ để chơi (cần ít nhất 8 từ). Hãy chọn "Tất cả".'); return; }
   var title = { blaster: '🚀 Thiên thạch', frog: '🐸 Ếch nhảy sen', hangman: '👨‍🚀 Cứu phi hành gia' }[id];
@@ -172,7 +192,7 @@ function showResult(mode, results, r, meta) {
   if (x.comboBonus) notes += '<div class="ar-note">⚡ Thưởng combo ' + x.bestCombo + ' câu liên tiếp: +' + x.comboBonus + ' XP</div>';
   if (x.accBonus) notes += '<div class="ar-note">🎯 Thưởng chính xác ≥ 80%: +' + x.accBonus + ' XP</div>';
   if (x.xp === 0) notes += '<div class="ar-note">ℹ️ Các từ này đã đủ XP trong hôm nay — hãy thử từ khác để tiếp tục kiếm XP.</div>';
-  (r.newBadges || []).forEach(function (b) { notes += '<div class="ar-note" style="background:var(--warning-soft);">🏅 Huy hiệu mới: <b>' + esc(b.icon + ' ' + b.name) + '</b> — ' + esc(b.text) + '</div>'; });
+  (r.newBadges || []).forEach(function (b) { notes += '<div class="ar-note" style="background:#fef3c7;color:#422006;">🏅 Huy hiệu mới: <b>' + esc(b.icon + ' ' + b.name) + '</b> — ' + esc(b.text) + (b.reward ? ' <b>(+' + b.reward + ' 🪙)</b>' : '') + '</div>'; });
   root.innerHTML = '<div class="ar-card ar-res"><div class="e">' + emoji + '</div><h3>' + title + '</h3><div style="color:var(--text-muted);font-size:13px;">Cấp ' + ME.level + ' · ' + ME.xp + ' XP</div>' +
     '<div class="ar-resgrid"><div><b>' + x.correct + '/' + x.total + '</b>Đúng</div><div><b>+' + x.xp + '</b>XP</div><div><b>+' + x.coins + '</b>🪙 Xu</div></div>' + notes +
     (miss.length ? '<div class="ar-miss"><b>Từ cần ôn lại (sẽ được nhắc sớm):</b><ul>' + miss.slice(0, 8).map(function (q) { return '<li><b>' + esc(q.w.word) + '</b> — ' + esc(q.w.vi) + '</li>'; }).join('') + '</ul></div>' : '') +
@@ -529,9 +549,142 @@ function gameWordle() {
   document.addEventListener('keydown', keyFn);
 }
 
+/* ═════════ Bảng xếp hạng tuần + huy hiệu trò chơi + trận đang chơi dở ═════════ */
+function loadHubExtras() {
+  api('GET', '/api/arcade/leaderboard').then(function (r) {
+    var el = $('arBoard'); if (!el) return;
+    var medals = ['🥇', '🥈', '🥉'];
+    var h = '<div class="ar-h2">🏆 Xếp hạng trò chơi tuần này <small>còn ' + r.daysLeft + ' ngày · thưởng top 3: ' + r.prizes.map(function (p, i) { return medals[i] + ' ' + p + ' 🪙'; }).join(' · ') + ' (cần ≥ ' + r.minPoints + ' điểm)</small></div><div class="ar-card" style="padding:8px 14px;">';
+    if (!r.top.length) h += '<div style="padding:12px 0;color:var(--text-muted);font-size:13.5px;">Chưa có ai ghi điểm tuần này — hãy chơi một ván để dẫn đầu! Điểm tuần = XP kiếm được từ các trò chơi.</div>';
+    r.top.forEach(function (x) { h += '<div class="lb-row' + (x.me ? ' me' : '') + '"><div class="lb-rk">' + (x.rank <= 3 ? medals[x.rank - 1] : x.rank) + '</div><div class="lb-nm">' + (x.avatar ? esc(x.avatar) + ' ' : '') + esc(x.name) + (x.me ? ' (bạn)' : '') + '</div><div class="lb-pt">' + x.points + ' điểm</div></div>'; });
+    if (r.me && r.me.rank > 10) h += '<div class="lb-row me"><div class="lb-rk">' + r.me.rank + '</div><div class="lb-nm">Bạn</div><div class="lb-pt">' + r.me.points + ' điểm</div></div>';
+    h += '</div>';
+    if (r.lastWeek.winners.length) h += '<div class="ar-card" style="font-size:13.5px;"><b>Tuần trước:</b> ' + r.lastWeek.winners.map(function (w) { return medals[w.rank - 1] + ' ' + (w.avatar ? esc(w.avatar) + ' ' : '') + esc(w.name) + ' (' + w.points + ' điểm, +' + w.coins + ' 🪙)'; }).join(' · ') + '</div>';
+    el.innerHTML = h;
+  }).catch(function () {});
+  var bg = (ME && ME.badges || []).filter(function (b) { return b.game; });
+  if (bg.length && $('arBadges')) {
+    var got = bg.filter(function (b) { return b.got; }).length;
+    $('arBadges').innerHTML = '<div class="ar-h2">🏅 Huy hiệu trò chơi <small>đã đạt ' + got + '/' + bg.length + ' · mỗi huy hiệu thưởng xu</small></div><div class="bd-grid">' + bg.map(function (b) {
+      return '<div class="bd ' + (b.got ? 'on' : 'off') + '"><div class="i">' + esc(b.icon) + '</div><b>' + esc(b.name) + '</b><span>' + esc(b.text) + '</span>' + (b.got ? '<span style="color:var(--warning);font-weight:700;">✓ Đã đạt · +' + b.reward + ' 🪙</span>' : '<div class="bar"><i style="width:' + Math.round(b.have / b.goal * 100) + '%"></i></div><span>' + b.have + '/' + b.goal + ' · thưởng ' + b.reward + ' 🪙</span>') + '</div>';
+    }).join('') + '</div>';
+  }
+  api('GET', '/api/duel/mine').then(function (r) {
+    if (r.code && $('arResume')) { $('arResume').innerHTML = '<div class="ar-card" style="background:var(--warning-soft);display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;"><b>⚔️ Bạn đang có một trận đấu chưa kết thúc (phòng ' + esc(r.code) + ')</b><button class="ar-btn" id="arResumeBtn" style="margin-left:auto;">Vào lại trận</button></div>'; $('arResumeBtn').onclick = function () { openDuel(r.code); }; }
+  }).catch(function () {});
+}
+
+/* ═════════ Trò chơi 5: ĐẤU 1 VỚI 1 (mã phòng, đồng bộ bằng polling, máy chủ chấm điểm) ═════════ */
+function viewDuelLobby() {
+  stopCur();
+  root.innerHTML = '<div class="ar-stage"><div class="ar-hud"><span>⚔️ Đấu 1 với 1</span><span></span><button class="ar-btn ghost" id="duBack" style="padding:5px 12px;font-size:13px;">← Quay lại</button></div>' +
+    '<div class="du-box"><div style="font-size:42px;">🏟️</div><b style="font-size:17px;">Tạo phòng mới</b><div style="opacity:.8;font-size:13px;margin:6px 0 10px;">Hệ thống chọn 10 câu theo cấp độ <b>' + (LEVEL === 'all' ? 'Tất cả' : LEVEL) + '</b>. Gửi mã phòng cho bạn để cùng thi.</div><button class="ar-btn" id="duCreate">➕ Tạo phòng</button></div>' +
+    '<div class="du-box"><div style="font-size:42px;">🔑</div><b style="font-size:17px;">Vào phòng của bạn bè</b><div style="margin:10px 0;"><input class="du-input" id="duCode" maxlength="5" placeholder="MÃ" autocomplete="off"></div><button class="ar-btn" id="duJoin">Vào phòng</button></div>' +
+    '<div id="duMsg" style="text-align:center;color:#fde68a;min-height:20px;font-size:13.5px;"></div><div style="font-size:12.5px;opacity:.75;text-align:center;padding:4px 10px 8px;">Mỗi câu 15 giây · đúng +100 điểm, trả lời càng nhanh càng được cộng thêm (tối đa +50) · thắng được thưởng thêm XP.</div></div>';
+  $('duBack').onclick = viewHub;
+  var msg = function (t) { $('duMsg').textContent = t; };
+  $('duCreate').onclick = function () {
+    this.disabled = true; var b = this;
+    api('POST', '/api/duel', { level: LEVEL === 'all' ? 'all' : LEVEL }).then(function (r) { openDuel(r.code); }).catch(function (e) { b.disabled = false; if (e.status === 409) { msg(e.message + ' Đang mở lại trận...'); } else msg(e.message); });
+  };
+  $('duJoin').onclick = function () {
+    var c = $('duCode').value.trim().toUpperCase(); if (c.length !== 5) { msg('Mã phòng gồm 5 ký tự.'); return; }
+    api('POST', '/api/duel/join', { code: c }).then(function (r) { openDuel(r.code); }).catch(function (e) { msg(e.message); });
+  };
+  $('duCode').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('duJoin').click(); });
+}
+function openDuel(code) {
+  stopCur();
+  var D = { dead: false, poll: null, feed: null, tick: null, off: 0, phase: '', qs: null, qi: 0, lastAt: 0, locked: false, st: null, sent: false };
+  CUR = { destroy: function () { D.dead = true; clearTimeout(D.poll); clearTimeout(D.feed); clearInterval(D.tick); } };
+  root.innerHTML = '<div class="ar-stage"><div class="ar-hud"><span>⚔️ Phòng <b>' + esc(code) + '</b></span><span id="duHud"></span><button class="ar-btn ghost" id="duLeave" style="padding:5px 12px;font-size:13px;">✕ Rời</button></div><div id="duBody"><div class="ar-prompt">Đang vào phòng...</div></div></div>';
+  $('duLeave').onclick = function () {
+    var st = D.st;
+    if (st && st.status === 'waiting') { api('POST', '/api/duel/' + code + '/cancel').catch(function () {}); }
+    else if (st && st.status === 'playing' && !confirm('Rời trận khi đang đấu sẽ bị tính thua. Bạn chắc chứ?')) return;
+    stopCur(); viewHub();
+  };
+  function body(h) { var b = $('duBody'); if (b) b.innerHTML = h; }
+  function nowS() { return Date.now() + D.off; }
+  function schedule(ms) { clearTimeout(D.poll); if (!D.dead) D.poll = setTimeout(poll, ms); }
+  function poll() {
+    if (D.dead) return;
+    api('GET', '/api/duel/' + code).then(function (st) { D.st = st; D.off = st.now - Date.now(); onState(st); }).catch(function (e) {
+      if (D.dead) return; if (e.status === 404) { body('<div class="ar-prompt">⚠️ ' + esc(e.message) + '<br><button class="ar-btn" id="duHome" style="margin-top:10px;">Về khu trò chơi</button></div>'); $('duHome').onclick = function () { stopCur(); viewHub(); }; return; }
+      schedule(3000);
+    });
+  }
+  function hud(st) { var el = $('duHud'); if (!el || !st.opp) return; el.textContent = '⭐ ' + st.myScore + '  ·  ' + esc(st.opp.name) + ': ' + st.oppAnswered + '/' + st.qCount; }
+  function onState(st) {
+    if (st.status === 'waiting') {
+      if (D.phase !== 'wait') { D.phase = 'wait'; body('<div class="du-box"><div>Gửi mã này cho bạn của mình:</div><div class="du-code" id="duC">' + esc(code) + '</div><div><button class="ar-btn ghost" id="duCopy">📋 Sao chép mã</button></div><div style="margin-top:14px;opacity:.85;">⏳ Đang chờ đối thủ vào phòng...<br><small>Phòng tự đóng sau 10 phút.</small></div></div>'); $('duCopy').onclick = function () { var b = this; try { navigator.clipboard.writeText(code).then(function () { b.textContent = '✓ Đã chép'; }); } catch (e) { b.textContent = 'Hãy chép tay: ' + code; } }; }
+      return schedule(1500);
+    }
+    if (st.status === 'cancelled' || st.status === 'expired') { body('<div class="ar-prompt">Phòng đã ' + (st.status === 'expired' ? 'hết hạn' : 'bị huỷ') + '.<br><button class="ar-btn" id="duHome" style="margin-top:10px;">Về khu trò chơi</button></div>'); $('duHome').onclick = function () { stopCur(); viewHub(); }; return; }
+    if (st.status === 'done') return showResult(st);
+    // đang chơi
+    hud(st);
+    if (!st.started) {
+      if (D.phase !== 'count') { D.phase = 'count'; }
+      clearInterval(D.tick);
+      var draw = function () { var left = Math.max(0, Math.ceil((st.startAt - nowS()) / 1000)); body('<div class="du-vs"><div>' + esc(st.me.avatar + ' ' + st.me.name) + '<small>Bạn</small></div><div style="flex:0;background:none;font-size:28px;">⚔️</div><div>' + esc(st.opp.avatar + ' ' + st.opp.name) + '<small>Đối thủ</small></div></div><div class="du-box"><div>Bắt đầu sau</div><div class="du-big">' + left + '</div></div>'); if (left <= 0) { clearInterval(D.tick); poll(); } };
+      draw(); D.tick = setInterval(draw, 250); return;
+    }
+    if (D.phase !== 'play' && D.phase !== 'wait-opp') { D.phase = 'play'; D.qs = st.questions; D.qi = st.answered; D.lastAt = st.lastQuestionAt; clearInterval(D.tick); }
+    if (D.qi >= st.qCount) { if (D.phase !== 'wait-opp') { D.phase = 'wait-opp'; body('<div class="du-box"><div class="du-big">⏳</div><b>Bạn đã làm xong! Điểm của bạn: ' + st.myScore + '</b><div style="opacity:.85;margin-top:8px;">Đang đợi đối thủ hoàn thành (' + st.oppAnswered + '/' + st.qCount + ')...</div></div>'); } else if ($('duBody')) { var bx = $('duBody').querySelector('.du-box div:last-child'); if (bx) bx.innerHTML = 'Đang đợi đối thủ hoàn thành (' + st.oppAnswered + '/' + st.qCount + ')...'; } return schedule(1500); }
+    if (!D.showing) showQ();
+    schedule(2000);
+  }
+  function showQ() {
+    var i = D.qi, q = D.qs[i], st = D.st; D.showing = true; D.locked = false; D.sent = false;
+    var from = i === 0 ? st.startAt : D.lastAt + 800, rem = Math.max(1500, st.qTimeMs - Math.max(0, nowS() - from));
+    body('<div class="ar-hud" style="padding:0 0 4px;"><span>Câu ' + (i + 1) + '/' + st.qCount + '</span><span>' + esc(st.me.name) + ' ⭐ ' + (D.score != null ? D.score : st.myScore) + '</span></div><div class="du-bar"><i id="duBar" style="transition:transform ' + rem + 'ms linear;"></i></div>' +
+      '<div class="ar-prompt"><div class="big">' + esc(q.prompt) + (q.type === 0 ? ' <button class="ar-snd" id="duSnd">🔊</button>' : '') + '</div><div class="sub">' + esc(q.pos || '') + ' · ' + (q.type === 0 ? 'chọn nghĩa tiếng Việt đúng' : 'chọn từ tiếng Anh đúng') + '</div></div>' +
+      q.opts.map(function (o, k) { return '<button class="du-opt" data-k="' + k + '">' + 'ABCD'[k] + '. ' + esc(o) + '</button>'; }).join(''));
+    requestAnimationFrame(function () { var b = $('duBar'); if (b) b.style.transform = 'scaleX(0)'; });
+    var sb = $('duSnd'); if (sb) { sb.onclick = function () { speak(q.prompt); }; speak(q.prompt); }
+    Array.prototype.forEach.call(document.querySelectorAll('.du-opt'), function (b) { b.onclick = function () { answer(+b.getAttribute('data-k')); }; });
+    clearTimeout(D.qTimer); D.qTimer = setTimeout(function () { answer(-1); }, rem + 300);
+    CUR.destroy = (function (old) { return function () { old(); clearTimeout(D.qTimer); }; })(CUR.destroy);
+  }
+  function answer(choice) {
+    if (D.locked || D.dead) return; D.locked = true; clearTimeout(D.qTimer);
+    var i = D.qi, bar = $('duBar'); if (bar) bar.style.transition = 'none';
+    Array.prototype.forEach.call(document.querySelectorAll('.du-opt'), function (b) { b.disabled = true; });
+    api('POST', '/api/duel/' + code + '/answer', { q: i, choice: choice }).then(function (r) {
+      var btns = document.querySelectorAll('.du-opt');
+      if (btns[r.correct]) btns[r.correct].classList.add('ok');
+      if (choice >= 0 && choice !== r.correct && btns[choice]) btns[choice].classList.add('no');
+      beep(r.ok ? 'ok' : 'bad'); D.score = r.score; D.qi = r.answered; D.lastAt = r.at; D.st.myScore = r.score;
+      var sub = document.querySelector('.ar-prompt .sub'); if (sub) sub.innerHTML = r.ok ? '✅ Đúng! <b>+' + r.pts + '</b> điểm' : (choice < 0 ? '⏰ Hết giờ' : '❌ Chưa đúng');
+      if (r.state) { D.feed = setTimeout(function () { showResult(r.state); }, 900); return; }
+      D.feed = setTimeout(function () { D.showing = false; if (D.qi >= D.st.qCount) { D.phase = ''; poll(); } else showQ(); }, 800);
+    }).catch(function (e) {
+      if (D.dead) return; D.locked = false; D.showing = false; clearTimeout(D.poll); poll();
+    });
+  }
+  function showResult(st) {
+    D.dead = true; clearTimeout(D.poll); clearTimeout(D.qTimer); clearInterval(D.tick);
+    var r = st.result, w = r.winner, rw = r.reward || {};
+    var head = w === 'me' ? '<div class="du-big">🏆</div><h3>Bạn thắng!</h3>' : w === 'opp' ? '<div class="du-big">😢</div><h3>Bạn thua rồi</h3>' : '<div class="du-big">🤝</div><h3>Hoà nhau!</h3>';
+    var why = r.why === 'timeout' ? '<div style="opacity:.8;font-size:13px;">(Trận kết thúc vì một bên bỏ dở)</div>' : '';
+    var note = rw.capped ? '<div class="ar-note">ℹ️ Hôm nay bạn đã đạt giới hạn thưởng đấu 1-1 (5 trận/ngày hoặc 2 trận cùng 1 đối thủ) — trận này vẫn tính thắng/thua nhưng không cộng XP.</div>' : '';
+    var badges = (rw.badges || []).map(function (b) { return '<div class="ar-note" style="background:#fef3c7;color:#422006;">🏅 Huy hiệu mới: <b>' + esc(b.icon + ' ' + b.name) + '</b>' + (b.reward ? ' (+' + b.reward + ' 🪙)' : '') + '</div>'; }).join('');
+    var rv = '<div class="du-rv"><b>Xem lại đáp án:</b>' + r.review.map(function (x, i) { return '<div>' + (i + 1) + '. <b>' + esc(x.prompt) + '</b> → ' + esc(x.answer) + ' &nbsp; ' + (x.ok ? '✅' : '❌') + ' bạn · ' + (x.oppOk ? '✅' : '❌') + ' đối thủ</div>'; }).join('') + '</div>';
+    body('<div class="ar-res" style="color:#fff;">' + head + why + '<div class="du-vs"><div>' + esc(st.me.avatar + ' ' + st.me.name) + '<small>Bạn</small><span style="font-size:26px;">' + r.me.score + '</span><small>' + r.me.correct + '/' + st.qCount + ' đúng</small></div><div style="flex:0;background:none;">VS</div><div>' + esc(st.opp.avatar + ' ' + st.opp.name) + '<small>Đối thủ</small><span style="font-size:26px;">' + r.opp.score + '</span><small>' + r.opp.correct + '/' + st.qCount + ' đúng</small></div></div>' +
+      '<div class="ar-resgrid" style="color:#0f172a;"><div><b>+' + (rw.xp || 0) + '</b>XP</div><div><b>+' + (rw.coins || 0) + '</b>🪙 Xu</div></div>' + note + badges + rv + '<div style="margin-top:12px;"><button class="ar-btn" id="duAgain">⚔️ Đấu trận mới</button> <button class="ar-btn ghost" id="duHome">Về khu trò chơi</button></div></div>');
+    $('duAgain').onclick = function () { stopCur(); refreshMe().then(viewDuelLobby); }; $('duHome').onclick = function () { stopCur(); refreshMe().then(viewHub); };
+    if (w === 'me') { confetti(40); beep('win'); } else beep(w === 'draw' ? 'ok' : 'bad');
+  }
+  poll();
+}
+function refreshMe() { return api('GET', '/api/word-game/me').then(function (m) { ME = m; }).catch(function () {}); }
+
 /* ═════════ Khởi động ═════════ */
 Promise.all([api('GET', '/api/words'), api('GET', '/api/word-game/me')]).then(function (r) {
-  W = r[0].words || []; ME = r[1]; viewHub();
+  W = r[0].words || []; ME = r[1];
+  var m = /[?&]duel=([A-Za-z0-9]{5})/.exec(location.search);
+  if (m) openDuel(m[1].toUpperCase()); else viewHub();
 }).catch(function (e) { root.innerHTML = '<div class="ar-card">⚠️ ' + esc(e.message) + ' — <a href="login.html?next=arcade.html">đăng nhập</a></div>'; });
 })();
 </script>

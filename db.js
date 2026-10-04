@@ -381,6 +381,51 @@ CREATE TABLE IF NOT EXISTS word_wordle (
   PRIMARY KEY (user_id, day)
 )`, 'word_wordle');
 
+// Thống kê trò chơi (huy hiệu), điểm xếp hạng tuần, người thắng tuần và trận đấu 1-1
+tryExec(`
+CREATE TABLE IF NOT EXISTS arcade_stats (
+  user_id INTEGER NOT NULL,
+  mode TEXT NOT NULL,
+  ok INTEGER NOT NULL DEFAULT 0,
+  n INTEGER NOT NULL DEFAULT 0,
+  plays INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, mode)
+);
+CREATE TABLE IF NOT EXISTS arcade_weekly (
+  week TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
+  points INTEGER NOT NULL DEFAULT 0,
+  plays INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (week, user_id)
+);
+CREATE TABLE IF NOT EXISTS arcade_week_winners (
+  week TEXT NOT NULL,
+  rank INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  points INTEGER NOT NULL DEFAULT 0,
+  coins INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (week, rank)
+);
+CREATE TABLE IF NOT EXISTS word_duels (
+  code TEXT PRIMARY KEY,
+  host_id INTEGER NOT NULL,
+  guest_id INTEGER,
+  level TEXT NOT NULL DEFAULT 'all',
+  status TEXT NOT NULL DEFAULT 'waiting',
+  questions TEXT NOT NULL,
+  start_at INTEGER,
+  host_ans TEXT NOT NULL DEFAULT '[]',
+  guest_ans TEXT NOT NULL DEFAULT '[]',
+  winner_id INTEGER,
+  result TEXT,
+  created_at INTEGER NOT NULL,
+  finished_day TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_duel_host ON word_duels(host_id, status);
+CREATE INDEX IF NOT EXISTS idx_duel_guest ON word_duels(guest_id, status);
+CREATE INDEX IF NOT EXISTS idx_arcade_week ON arcade_weekly(week, points);
+`, 'arcade tables');
+
 // Mở rộng kho từ: loại mục (word / colloc / upgrade) + các trường phụ
 safeAlter('PRAGMA table_info(vocab_words)', [
   ['kind',          "ALTER TABLE vocab_words ADD COLUMN kind TEXT NOT NULL DEFAULT 'word'"],

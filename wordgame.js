@@ -8,7 +8,10 @@ const { SEED_DIALOGUES, parseScript } = require('./vocab-dialogues');
 const crypto = require('crypto');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
-const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss', 'blaster', 'frog', 'hangman', 'wordle'];
+const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss', 'blaster', 'frog', 'hangman', 'wordle', 'duel'];
+const ARCADE_MODES = ['blaster', 'frog', 'hangman', 'wordle', 'duel']; // các chế độ tính vào xếp hạng tuần + huy hiệu trò chơi
+const WEEK_PRIZES = [100, 60, 30]; // xu thưởng top 1-2-3 mỗi tuần
+const WEEK_MIN_POINTS = 20;       // cần tối thiểu 20 điểm để được tính giải
 const KINDS = ['word', 'colloc', 'upgrade'];
 // Khoảng cách ôn lại (ngày) theo "hộp" 0..5 — đúng với phương pháp Leitner/lặp lại ngắt quãng
 const INTERVALS = [0, 1, 3, 7, 14, 30];
@@ -17,7 +20,7 @@ const STREAK_MIN = 5;      // chỉ cần 5 lượt là giữ được chuỗi �
 const FREEZE_PRICE = 100;  // xu đổi 1 "khiên giữ chuỗi" 🧊
 const MAX_FREEZES = 2;
 // XP cho mỗi câu đúng theo chế độ (chế độ khó hơn/đòi hỏi nhớ chủ động thì thưởng nhiều hơn; Blitz nhanh nên ít hơn để không "lạm phát")
-const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5, blaster: 4, frog: 4, hangman: 6, wordle: 5 };
+const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5, blaster: 4, frog: 4, hangman: 6, wordle: 5, duel: 4 };
 const BOSS_MIN_OK = 6, BOSS_MAX_WRONG = 2, BOSS_BONUS_XP = 20, BOSS_BONUS_COINS = 25; // thắng boss: đúng ≥6 câu và sai ≤2 (3 mạng)
 const CHEST_PRICE = 80;
 
@@ -47,6 +50,8 @@ function vnDay(offset) {
 function dayNum(day) { return Math.floor(Date.parse(day + 'T00:00:00Z') / 86400000); }
 function addDays(day, n) { return new Date((dayNum(day) + n) * 86400000).toISOString().slice(0, 10); }
 function dayDiff(a, b) { return dayNum(b) - dayNum(a); }
+// Tuần thi đấu: bắt đầu từ thứ Hai (giờ Việt Nam)
+function weekStart(day) { const dow = (new Date(day + 'T00:00:00Z').getUTCDay() + 6) % 7; return addDays(day, -dow); }
 
 function levelOf(xp) {
   const L = Math.floor(Math.sqrt(xp / 40)) + 1;
@@ -98,6 +103,20 @@ const BADGES = [
   { id: 'boss10',   icon: '👑', name: 'Chúa tể Boss',      text: 'Hạ gục 10 Boss',                 goal: 10,   have: s => s.boss_wins },
   { id: 'chest10',  icon: '🎁', name: 'Săn kho báu',       text: 'Mở 10 rương',                    goal: 10,   have: s => s.chests },
   { id: 'xp1000',   icon: '💎', name: '1000 XP',           text: 'Đạt 1000 điểm kinh nghiệm',        goal: 1000, have: s => s.xp },
+  // ── Huy hiệu trò chơi (có xu thưởng khi đạt) ──
+  { id: 'blast50',  game: true, reward: 20,  icon: '🚀', name: 'Thợ săn thiên thạch', text: 'Bắn đúng 50 thiên thạch',            goal: 50,  have: s => s.arc.blaster.ok },
+  { id: 'blast200', game: true, reward: 60,  icon: '🌌', name: 'Thuyền trưởng thiên hà', text: 'Bắn đúng 200 thiên thạch',        goal: 200, have: s => s.arc.blaster.ok },
+  { id: 'frog30',   game: true, reward: 20,  icon: '🐸', name: 'Ếch nhảy giỏi',       text: 'Nhảy đúng 30 lá sen',                goal: 30,  have: s => s.arc.frog.ok },
+  { id: 'frog100',  game: true, reward: 60,  icon: '🪷', name: 'Vua ao sen',           text: 'Nhảy đúng 100 lá sen',               goal: 100, have: s => s.arc.frog.ok },
+  { id: 'hang10',   game: true, reward: 20,  icon: '👨‍🚀', name: 'Người giải cứu',      text: 'Cứu thành công 10 phi hành gia',     goal: 10,  have: s => s.arc.hangman.ok },
+  { id: 'hang30',   game: true, reward: 60,  icon: '🛰️', name: 'Đội cứu hộ vũ trụ',    text: 'Cứu thành công 30 phi hành gia',     goal: 30,  have: s => s.arc.hangman.ok },
+  { id: 'wordle3',  game: true, reward: 20,  icon: '🔍', name: 'Thám tử chữ',          text: 'Thắng Đoán từ mỗi ngày 3 lần',       goal: 3,   have: s => s.wordle_wins },
+  { id: 'wordle30', game: true, reward: 100, icon: '🧠', name: 'Bậc thầy đoán chữ',    text: 'Thắng Đoán từ mỗi ngày 30 lần',      goal: 30,  have: s => s.wordle_wins },
+  { id: 'wstreak7', game: true, reward: 80,  icon: '🔥', name: 'Chuỗi thắng 7 ngày',   text: 'Thắng Đoán từ 7 ngày liên tiếp',     goal: 7,   have: s => s.wordle_streak },
+  { id: 'duel1',    game: true, reward: 20,  icon: '⚔️', name: 'Tân binh đấu trường',  text: 'Thắng 1 trận đấu 1-1',               goal: 1,   have: s => s.duel_wins },
+  { id: 'duel10',   game: true, reward: 100, icon: '🥋', name: 'Võ sĩ từ vựng',        text: 'Thắng 10 trận đấu 1-1',              goal: 10,  have: s => s.duel_wins },
+  { id: 'weekwin',  game: true, reward: 100, icon: '🏆', name: 'Nhà vô địch tuần',     text: 'Đứng nhất bảng xếp hạng trò chơi tuần', goal: 1, have: s => s.week_wins },
+  { id: 'allgames', game: true, reward: 30,  icon: '🎮', name: 'Tay chơi toàn năng',   text: 'Chơi đủ 4 trò: Thiên thạch, Ếch, Phi hành gia, Đoán từ', goal: 4, have: s => ['blaster', 'frog', 'hangman', 'wordle'].filter(m => s.arc[m].plays > 0).length },
 ];
 
 module.exports = function registerWordGame(app, { db, requireAuth, requireRole, now, notifyUser }) {
@@ -168,7 +187,17 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
 
   function badgeStats(uid, g) {
     const dd = Number(db.prepare('SELECT COUNT(*) c FROM word_dialog_progress p JOIN word_dialogues d ON d.id=p.dialogue_id WHERE p.user_id=? AND p.best>=d.blanks').get(uid).c);
-    return { xp: g.xp, sessions: g.sessions, best_combo: g.best_combo, best_streak: g.best_streak, quests_done: g.quests_done, learned: learnedCount(uid), dialogues_done: dd, boss_wins: g.boss_wins || 0, chests: g.chests || 0 };
+    const arc = {}; for (const m of ARCADE_MODES) arc[m] = { ok: 0, n: 0, plays: 0 };
+    for (const r of db.prepare('SELECT mode,ok,n,plays FROM arcade_stats WHERE user_id=?').all(uid)) if (arc[r.mode]) arc[r.mode] = { ok: Number(r.ok), n: Number(r.n), plays: Number(r.plays) };
+    const wdays = db.prepare('SELECT day FROM word_wordle WHERE user_id=? AND win=1 ORDER BY day').all(uid).map(r => r.day);
+    let wbest = 0, run = 0, prev = null;
+    for (const d of wdays) { run = prev && dayDiff(prev, d) === 1 ? run + 1 : 1; prev = d; if (run > wbest) wbest = run; }
+    return {
+      xp: g.xp, sessions: g.sessions, best_combo: g.best_combo, best_streak: g.best_streak, quests_done: g.quests_done, learned: learnedCount(uid), dialogues_done: dd, boss_wins: g.boss_wins || 0, chests: g.chests || 0,
+      arc, wordle_wins: wdays.length, wordle_streak: wbest,
+      duel_wins: Number(db.prepare('SELECT COUNT(*) c FROM word_duels WHERE winner_id=?').get(uid).c),
+      week_wins: Number(db.prepare('SELECT COUNT(*) c FROM arcade_week_winners WHERE user_id=? AND rank=1').get(uid).c)
+    };
   }
 
   function statePayload(uid, userName) {
@@ -197,7 +226,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
         const n = Math.min(q.goal, Number(q.get(d, m)) || 0);
         return { id: q.id, icon: q.icon, text: q.text, goal: q.goal, reward: q.reward, n, done: n >= q.goal, claimed: claimed.has(q.id) };
       }),
-      badges: BADGES.map(b => ({ id: b.id, icon: b.icon, name: b.name, text: b.text, goal: b.goal, have: Math.min(b.goal, b.have(stats)), got: got.has(b.id) })),
+      badges: BADGES.map(b => ({ id: b.id, icon: b.icon, name: b.name, text: b.text, goal: b.goal, have: Math.min(b.goal, b.have(stats)), got: got.has(b.id), game: !!b.game, reward: b.reward || 0 })),
       learned: stats.learned,
       total: bank.list.length,
       progress: prog,
@@ -215,7 +244,8 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     for (const b of BADGES) {
       if (!got.has(b.id) && b.have(stats) >= b.goal) {
         db.prepare('INSERT OR IGNORE INTO word_badges (user_id,badge_id,earned_at) VALUES (?,?,?)').run(uid, b.id, now());
-        fresh.push({ id: b.id, icon: b.icon, name: b.name, text: b.text });
+        if (b.reward) db.prepare('UPDATE word_game SET coins=coins+? WHERE user_id=?').run(b.reward, uid);
+        fresh.push({ id: b.id, icon: b.icon, name: b.name, text: b.text, reward: b.reward || 0 });
       }
     }
     return fresh;
@@ -323,6 +353,13 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       xp += comboBonus + accBonus + (bossWin ? BOSS_BONUS_XP : 0) + (bonusXp || 0);
 
       const rw = commitReward(uid, day, g, mode, xp, total, okN, newN, bestCombo);
+      if (ARCADE_MODES.includes(mode)) {
+        db.prepare(`INSERT INTO arcade_stats (user_id,mode,ok,n,plays) VALUES (?,?,?,?,1)
+          ON CONFLICT(user_id,mode) DO UPDATE SET ok=ok+excluded.ok, n=n+excluded.n, plays=plays+1`).run(uid, mode, okN, total);
+        db.prepare(`INSERT INTO arcade_weekly (week,user_id,points,plays) VALUES (?,?,?,1)
+          ON CONFLICT(week,user_id) DO UPDATE SET points=points+excluded.points, plays=plays+1`).run(weekStart(day), uid, xp);
+        rw.newBadges = rw.newBadges.concat(awardBadges(uid, db.prepare('SELECT * FROM word_game WHERE user_id=?').get(uid)));
+      }
       let extraBadges = [];
       if (bossWin) {
         const dd = dailyRow(uid, day), mm = parseModes(dd.modes);
@@ -347,7 +384,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   // Báo kết quả 1 phiên chơi → server cập nhật SRS, XP, xu, chuỗi ngày, nhiệm vụ, huy hiệu
   app.post('/api/word-game/session', requireAuth, (req, res) => {
     const body = req.body || {};
-    const mode = MODES.includes(body.mode) && body.mode !== 'wordle' ? body.mode : null; // wordle chỉ được tính qua máy chủ
+    const mode = MODES.includes(body.mode) && body.mode !== 'wordle' && body.mode !== 'duel' ? body.mode : null; // wordle & duel chỉ được tính qua máy chủ
     let results = Array.isArray(body.results) ? body.results.slice(0, MAX_RESULTS) : [];
     results = results.filter(r => r && Number.isInteger(r.id) && bank.byId.has(r.id));
     if (!mode || !results.length) return res.status(400).json({ error: 'Dữ liệu phiên chơi không hợp lệ.' });
@@ -432,6 +469,52 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       }
       res.json(wordleState(uid, day, reward ? { reward } : {}));
     } catch (e) { console.error('[wordle/guess]', e.message); res.status(500).json({ error: 'Không xử lý được lượt đoán.' }); }
+  });
+
+  // ───────────── Bảng xếp hạng trò chơi theo TUẦN + thưởng xu top 3 ─────────────
+  // Điểm tuần = XP kiếm được từ các trò chơi (Thiên thạch, Ếch, Phi hành gia, Đoán từ, Đấu 1-1).
+  // XP đã bị giới hạn theo từ/ngày nên khó "cày" — công bằng cho mọi học sinh.
+  function settleWeeks() {
+    try {
+      const cur = weekStart(vnDay());
+      const weeks = db.prepare('SELECT DISTINCT week FROM arcade_weekly WHERE week<? ORDER BY week DESC LIMIT 6').all(cur).map(r => r.week);
+      for (const wk of weeks) {
+        if (db.prepare('SELECT 1 FROM arcade_week_winners WHERE week=? AND rank=0').get(wk)) continue;
+        const top = db.prepare(`SELECT w.user_id, w.points FROM arcade_weekly w JOIN users u ON u.id=w.user_id
+          WHERE w.week=? AND u.role='student' AND w.points>=? ORDER BY w.points DESC, w.user_id ASC LIMIT 3`).all(wk, WEEK_MIN_POINTS);
+        try {
+          db.exec('BEGIN');
+          db.prepare('INSERT INTO arcade_week_winners (week,rank,user_id,points,coins) VALUES (?,0,0,0,0)').run(wk);
+          top.forEach((r, i) => {
+            ensureGame(r.user_id);
+            db.prepare('INSERT INTO arcade_week_winners (week,rank,user_id,points,coins) VALUES (?,?,?,?,?)').run(wk, i + 1, r.user_id, r.points, WEEK_PRIZES[i]);
+            db.prepare('UPDATE word_game SET coins=coins+? WHERE user_id=?').run(WEEK_PRIZES[i], r.user_id);
+          });
+          db.exec('COMMIT');
+        } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; }
+        const medals = ['🥇', '🥈', '🥉'];
+        top.forEach((r, i) => {
+          try { notifyUser(r.user_id, 'arcade_week', medals[i] + ' Bạn đạt hạng ' + (i + 1) + ' bảng xếp hạng trò chơi tuần!', '+' + WEEK_PRIZES[i] + ' xu đã được cộng vào ví. Chúc mừng!', 'arcade.html'); } catch (e) {}
+          try { awardBadges(r.user_id, db.prepare('SELECT * FROM word_game WHERE user_id=?').get(r.user_id)); } catch (e) {}
+        });
+        if (top.length) console.log('[arcade] Chốt tuần ' + wk + ': ' + top.map(r => r.user_id + '=' + r.points).join(', '));
+      }
+    } catch (e) { console.error('[arcade/settle]', e.message); }
+  }
+  setTimeout(function () { settleWeeks(); setInterval(settleWeeks, 60 * 60 * 1000).unref(); }, 45 * 1000).unref();
+
+  app.get('/api/arcade/leaderboard', requireAuth, (req, res) => {
+    try {
+      settleWeeks();
+      const today = vnDay(), wk = weekStart(today);
+      const rows = db.prepare(`SELECT u.id, u.name, w.points, w.plays, g.avatar AS avatar FROM arcade_weekly w JOIN users u ON u.id=w.user_id LEFT JOIN word_game g ON g.user_id=u.id
+        WHERE w.week=? AND u.role='student' AND w.points>0 ORDER BY w.points DESC, u.id ASC LIMIT 100`).all(wk);
+      const board = rows.map((r, i) => ({ rank: i + 1, name: givenName(r.name), avatar: (ITEM_BY_ID.get(r.avatar) || {}).icon || '', points: Number(r.points), plays: Number(r.plays), me: r.id === req.user.id }));
+      const prevWk = addDays(wk, -7);
+      const last = db.prepare(`SELECT x.rank, x.points, x.coins, u.name, g.avatar AS avatar FROM arcade_week_winners x JOIN users u ON u.id=x.user_id LEFT JOIN word_game g ON g.user_id=u.id
+        WHERE x.week=? AND x.rank>0 ORDER BY x.rank`).all(prevWk).map(r => ({ rank: r.rank, name: givenName(r.name), avatar: (ITEM_BY_ID.get(r.avatar) || {}).icon || '', points: r.points, coins: r.coins }));
+      res.json({ weekStart: wk, weekEnd: addDays(wk, 6), daysLeft: 7 - dayDiff(wk, today), prizes: WEEK_PRIZES, minPoints: WEEK_MIN_POINTS, top: board.slice(0, 10), me: board.find(b => b.me) || null, lastWeek: { start: prevWk, winners: last } });
+    } catch (e) { console.error('[arcade/leaderboard]', e.message); res.status(500).json({ error: 'Không tải được bảng xếp hạng.' }); }
   });
 
   app.post('/api/word-game/quest/claim', requireAuth, (req, res) => {
@@ -894,6 +977,11 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   remTimer.unref();
   // Cho admin chạy thử/kiểm tra thủ công
   app.post('/api/admin/word-reminders/run', requireRole('admin'), (req, res) => res.json({ ok: true, ...runReminders(req.query.force === '1') }));
+
+  // Đấu 1 với 1 bằng mã phòng
+  try {
+    require('./duel')(app, { db, requireAuth, now, getBank: () => bank, recordSession, vnDay, givenName, ITEM_BY_ID, LEVELS, notifyUser });
+  } catch (e) { console.error('[duel] Không khởi động được:', e.message); }
 
   // Dùng cho kiểm thử/tool nội bộ
   return { parseSeed, vnDay, addDays, levelOf };
