@@ -1417,14 +1417,16 @@ function toClaudeSchema(sc) {
   return out;
 }
 
-async function generateJSON({ system, user, schema, maxTokens, temperature }) {
+async function generateJSON({ system, user, schema, maxTokens, temperature, files }) {
+  // files: [{ mime, data(base64) }] — ảnh hoặc PDF để AI đọc (Gemini inlineData / Claude image|document)
+  const fileList = Array.isArray(files) ? files : [];
   const p = provider();
   if (p === 'gemini') {
     const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const baseBody = {
       system_instruction: { parts: [{ text: system }] },
-      contents: [{ role: 'user', parts: [{ text: user }] }],
+      contents: [{ role: 'user', parts: [...fileList.map(f => ({ inlineData: { mimeType: f.mime, data: f.data } })), { text: user }] }],
       generationConfig: { responseMimeType: 'application/json', responseSchema: toGeminiSchema(schema), temperature: temperature == null ? 0.2 : temperature }
     };
     const attempts = [maxTokens || 8192, Math.min(6000, maxTokens || 6000)];
@@ -1444,7 +1446,9 @@ async function generateJSON({ system, user, schema, maxTokens, temperature }) {
     const model  = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
     const resp = await client.messages.create({
       model, max_tokens: maxTokens || 8000, system,
-      messages: [{ role: 'user', content: [{ type: 'text', text: user }] }],
+      messages: [{ role: 'user', content: [...fileList.map(f => f.mime === 'application/pdf'
+        ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: f.data } }
+        : { type: 'image', source: { type: 'base64', media_type: f.mime, data: f.data } }), { type: 'text', text: user }] }],
       output_config: { format: { type: 'json_schema', schema: toClaudeSchema(schema) } }
     });
     const block = resp.content.find(b => b.type === 'text');

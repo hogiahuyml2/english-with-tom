@@ -355,6 +355,20 @@ CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_word_daily_day ON word_daily(day);
 `, 'word game tables');
 
+// Thời gian học của học sinh theo từng bộ từ (cộng dồn theo ngày, giờ Việt Nam)
+tryExec(`
+CREATE TABLE IF NOT EXISTS lesson_time (
+  set_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  day TEXT NOT NULL,
+  seconds INTEGER NOT NULL DEFAULT 0,
+  opens INTEGER NOT NULL DEFAULT 0,
+  last_at TEXT,
+  PRIMARY KEY (set_id, user_id, day)
+);
+CREATE INDEX IF NOT EXISTS idx_lesson_time_user ON lesson_time(user_id);
+`, 'lesson_time');
+
 // Mở rộng kho từ: loại mục (word / colloc / upgrade) + các trường phụ
 safeAlter('PRAGMA table_info(vocab_words)', [
   ['kind',          "ALTER TABLE vocab_words ADD COLUMN kind TEXT NOT NULL DEFAULT 'word'"],

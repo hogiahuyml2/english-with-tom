@@ -31,6 +31,14 @@
 .lv-table { width: 100%; border-collapse: collapse; font-size: 13px; } .lv-table th { text-align: left; color: var(--text-muted); font-size: 11.5px; text-transform: uppercase; padding: 6px 8px; } .lv-table td { padding: 8px; border-top: 1px solid var(--border); vertical-align: top; }
 .lv-scroll { overflow-x: auto; }
 
+/* ── nhập bằng ảnh/file + chọn học sinh + báo cáo ── */
+.lv-drop { border: 2px dashed var(--border); border-radius: 14px; padding: 18px 14px; text-align: center; cursor: pointer; background: var(--bg-soft); transition: border-color .2s, background .2s; }
+.lv-drop:hover, .lv-drop.over { border-color: var(--primary); background: var(--primary-soft); }
+.lv-or { text-align: center; font-size: 12.5px; color: var(--text-muted); margin: 10px 0 2px; }
+.lv-stu { max-height: 230px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: 10px; padding: 4px 10px; background: var(--surface); }
+.lv-stu label { display: flex; gap: 8px; align-items: center; padding: 5px 0; font-size: 13.5px; border-top: 1px solid var(--border); } .lv-stu label:first-child { border-top: none; }
+.lv-stu input[type=checkbox] { width: auto; flex-shrink: 0; }
+.lv-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; } .lv-kpi > div { background: var(--bg-soft); border-radius: 12px; padding: 10px 12px; } .lv-kpi b { display: block; font-size: 22px; } .lv-kpi span { font-size: 12px; color: var(--text-muted); }
 /* ── tạo bộ từ (giáo viên) ── */
 .lv-form input, .lv-form textarea, .lv-form select { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 9px; font-family: inherit; font-size: 13.5px; background: var(--surface); color: var(--text); }
 .lv-form input[type=checkbox], .lv-form input[type=radio] { width: auto; padding: 0; flex-shrink: 0; }
@@ -116,11 +124,11 @@ function qs(k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(location.searc
 function viewList() {
   $('lvHeroTitle').textContent = '📘 Bộ từ theo bài học';
   if (ME.role === 'student') return viewStudentList();
-  root.innerHTML = '<div class="lv-card"><div class="lv-title" style="margin-bottom:12px;"><button class="lv-pill on" data-t="create">➕ Tạo bộ từ mới</button><button class="lv-pill" data-t="mine">📋 Bộ từ đã giao & kết quả</button></div><div id="lvTab"></div></div>';
+  root.innerHTML = '<div class="lv-card"><div class="lv-title" style="margin-bottom:12px;"><button class="lv-pill on" data-t="create">➕ Tạo bộ từ mới</button><button class="lv-pill" data-t="mine">📋 Bộ từ đã giao & kết quả</button><button class="lv-pill" data-t="report">📈 Báo cáo học sinh</button></div><div id="lvTab"></div></div>';
   Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (b) {
     b.onclick = function () {
       Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (x) { x.classList.toggle('on', x === b); });
-      if (b.getAttribute('data-t') === 'create') viewCreate(); else viewTeacherSets();
+      var t = b.getAttribute('data-t'); if (t === 'create') viewCreate(); else if (t === 'report') viewReport(); else viewTeacherSets();
     };
   });
   viewCreate();
@@ -143,11 +151,68 @@ function viewCreate() {
   D = { cards: [], questions: [] };
   $('lvTab').innerHTML =
     '<div class="lv-form"><label class="f">Tên bài học / bộ từ</label><input id="cTitle" maxlength="80" placeholder="VD: Unit 5 — Feelings & Plans">' +
+    '<label class="f">📷 Nhập nhanh bằng ảnh hoặc file</label>' +
+    '<div class="lv-drop" id="cDrop"><div style="font-size:30px;">📷 📄</div><b>Thả ảnh / file vào đây, hoặc bấm để chọn</b><div class="lv-sub" style="margin-top:4px;">Ảnh chụp danh sách từ (JPG, PNG), PDF, Word (.docx), Excel (.xlsx), CSV, TXT. Trên điện thoại: bấm để chụp ảnh trực tiếp.</div><input type="file" id="cFile" accept="image/*,.pdf,.docx,.xlsx,.csv,.tsv,.txt" hidden></div>' +
+    '<label style="display:flex;gap:8px;align-items:center;margin:8px 0 0;font-size:13px;"><input type="checkbox" id="cAuto" checked style="width:auto;"> Tự tạo thẻ + 10 câu hỏi ngay sau khi đọc xong</label><div id="cImpMsg"></div>' +
+    '<div class="lv-or">— hoặc gõ / dán trực tiếp —</div>' +
     '<label class="f">Danh sách từ (mỗi dòng một từ) — gồm <b>từ</b> và <b>từ loại</b></label>' +
     '<textarea id="cText" rows="8" placeholder="reluctant | adj&#10;accommodation | n&#10;run out of | phr v&#10;schedule | v&#10;&#10;Cũng nhận: reluctant (adj) · reluctant, adj · reluctant - adj · dán từ Excel (Tab)\nTối đa 30 từ mỗi lần. Từ loại: n, v, adj, adv, prep, conj, pron, det, phr v, idiom, phr"></textarea>' +
     '<div class="lv-sub" style="margin:6px 0 12px;">✨ Bấm nút dưới đây: hệ thống tự tạo <b>phiên âm IPA, nghĩa tiếng Anh đơn giản, nghĩa tiếng Việt, ví dụ thực tế</b> cho từng từ, rồi gợi ý <b>10 câu trắc nghiệm A–D</b>. Mọi nội dung đều được kiểm tra chéo và hiện sẵn để bạn xem lại, sửa trước khi giao.</div>' +
     '<button class="lv-btn" id="cGo">✨ Tạo tự động</button><div id="cMsg"></div></div><div id="cReview" class="lv-form" style="margin-top:16px;"></div>';
   $('cGo').onclick = genAll;
+  bindImport();
+}
+/* ── Nhập bằng ảnh / file: đọc tự động → điền vào ô danh sách → (tuỳ chọn) tạo thẻ ngay ── */
+var restWords = [];
+function bindImport() {
+  var drop = $('cDrop'), inp = $('cFile');
+  drop.onclick = function () { inp.click(); };
+  inp.onchange = function () { if (inp.files && inp.files[0]) importFile(inp.files[0]); inp.value = ''; };
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) importFile(f); });
+}
+function prepImage(file) {
+  return new Promise(function (resolve) {
+    if (!/^image\//.test(file.type) || file.size < 1200 * 1024) return resolve({ blob: file, name: file.name });
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var sc = Math.min(1, 1800 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      c.toBlob(function (b) { resolve(b ? { blob: b, name: 'photo.jpg' } : { blob: file, name: file.name }); }, 'image/jpeg', 0.85);
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); resolve({ blob: file, name: file.name }); };
+    img.src = url;
+  });
+}
+function impMsg(kind, html) { $('cImpMsg').innerHTML = html ? '<div class="lv-msg ' + kind + '">' + html + '</div>' : ''; }
+function importFile(file) {
+  if (file.size > 25 * 1024 * 1024) { impMsg('err', 'File quá lớn (tối đa 8MB sau khi nén). Hãy chụp/cắt ảnh nhỏ hơn.'); return; }
+  impMsg('warn', '⏳ Đang đọc "' + esc(file.name) + '"... ảnh/PDF có thể mất 10–30 giây.');
+  $('cReview').innerHTML = ''; $('cMsg').innerHTML = '';
+  prepImage(file).then(function (p) {
+    var fd = new FormData(); fd.append('file', p.blob, p.name);
+    return fetch('/api/lesson-vocab/extract', { method: 'POST', credentials: 'same-origin', body: fd });
+  }).then(function (r) {
+    return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'Không đọc được file.'); return d; });
+  }).then(onExtracted).catch(function (e) { impMsg('err', esc(e.message)); });
+}
+function onExtracted(d) {
+  $('cText').value = d.words.map(function (w) { return w.word + ' | ' + w.pos; }).join('\n');
+  restWords = d.rest || [];
+  var guessed = d.words.filter(function (w) { return w.guessed; }).map(function (w) { return w.word + ' (' + w.pos + ')'; });
+  var unsure = d.words.filter(function (w) { return w.uncertain; }).map(function (w) { return w.word; });
+  var h = '✅ Đã đọc được <b>' + (d.words.length + restWords.length) + '</b> từ' + (d.via === 'ai' ? ' bằng AI' : ' từ file') + ' — đã điền vào ô danh sách bên dưới.';
+  if (guessed.length) h += '<br>⚠️ <b>Từ loại do AI đoán</b> (ảnh/file không ghi) — hãy kiểm tra: ' + guessed.map(esc).join(', ');
+  if (unsure.length) h += '<br>⚠️ <b>Chữ khó đọc</b>, có thể sai chính tả: ' + unsure.map(esc).join(', ');
+  if (d.needPos && d.needPos.length) h += '<br>⚠️ Chưa xác định được từ loại, đã bỏ qua (hãy tự thêm vào danh sách): ' + d.needPos.map(esc).join(', ');
+  if (d.skipped && d.skipped.length) h += '<br>⚠️ Bỏ qua mục không phải từ tiếng Anh: ' + d.skipped.map(esc).join(', ');
+  if (d.notes) h += '<br>📝 ' + esc(d.notes);
+  if (restWords.length) h += '<br>📦 Còn <b>' + restWords.length + '</b> từ nữa (mỗi bộ tối đa 30 từ). Danh sách còn lại để bạn tạo bộ tiếp theo: <textarea readonly rows="3" style="margin-top:6px;" onclick="this.select()">' + esc(restWords.map(function (w) { return w.word + ' | ' + w.pos; }).join('\n')) + '</textarea>';
+  impMsg(d.notes || guessed.length || unsure.length ? 'warn' : 'ok', h);
+  if ($('cAuto').checked && d.words.length >= 4) { if (!$('cTitle').value.trim()) $('cTitle').focus(); genAll(); }
+  else if (d.words.length < 4) impMsg('warn', h + '<br>Cần ít nhất 4 từ để tạo câu hỏi 4 đáp án — hãy bổ sung thêm vào ô danh sách.');
 }
 function setMsg(kind, html) { $('cMsg').innerHTML = html ? '<div class="lv-msg ' + kind + '">' + html + '</div>' : ''; }
 function genAll() {
@@ -196,13 +261,13 @@ function renderReview() {
     h += '<div class="lv-flags" id="qf' + i + '">' + flagHtml(q) + '</div><div class="lv-actions"><button class="lv-btn sm ghost" data-regq="' + i + '">🔄 Tạo lại câu này</button>' + (q.flags && q.flags.length ? '<button class="lv-btn sm line" data-okq="' + i + '">✓ Tôi đã kiểm tra câu này</button>' : '') + '</div></div>';
   });
   h += '</div>';
-  h += '<div class="lv-card lv-form"><div class="lv-title">📨 Giao cho học sinh</div><label class="f">Giao cho lớp</label><div class="lv-pick" id="gGroups">Đang tải lớp...</div><label class="f">Hoặc email học sinh (mỗi dòng/dấu phẩy một email)</label><textarea id="gEmails" rows="2"></textarea>' +
+  h += '<div class="lv-card lv-form"><div class="lv-title">📨 Giao cho học sinh</div><label class="f">Giao cho lớp</label><div class="lv-pick" id="gGroups">Đang tải lớp...</div><label class="f">Hoặc chọn từng học sinh (chỉ định đích danh)</label>' + stuPickerHtml('gStu') + '<label class="f">Hoặc email học sinh (mỗi dòng/dấu phẩy một email)</label><textarea id="gEmails" rows="2"></textarea>' +
     '<label style="display:flex;gap:8px;align-items:center;margin:8px 0;font-size:13px;"><input type="checkbox" id="gAll"> Giao cho TẤT CẢ học sinh trên website</label>' +
     '<div class="lv-grid2"><div><label class="f">Hạn hoàn thành (tuỳ chọn)</label><input type="datetime-local" id="gDeadline"></div><div><label class="f">Ghi chú cho học sinh (tuỳ chọn)</label><input id="gNote" maxlength="300"></div></div>' +
     '<label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 10px;font-size:13.5px;font-weight:600;"><input type="checkbox" id="gSure" style="margin-top:3px;"> <span>Tôi đã xem lại toàn bộ thẻ từ và 10 câu hỏi (phiên âm, nghĩa, ví dụ, đáp án đúng) — nội dung tự động có thể sai nên cần giáo viên xác nhận.</span></label>' +
     '<button class="lv-btn" id="gGo" disabled>📨 Giao bộ từ</button><div id="gMsg"></div></div>';
   $('cReview').innerHTML = h;
-  bindReview(); loadGroups(); refreshGate();
+  bindReview(); loadGroups(); bindStuPicker('gStu'); refreshGate();
 }
 function refreshGate() {
   var u = unresolved(), b = $('rvBanner'); if (!b) return;
@@ -268,6 +333,27 @@ function bindReview() {
   $('gSure').onchange = refreshGate;
   $('gGo').onclick = publish;
 }
+/* ── Chọn học sinh cụ thể (có tìm kiếm) ── */
+var STU = null, PICK = {};
+function stuPickerHtml(id) {
+  return '<div><input type="search" id="' + id + 'Q" placeholder="🔍 Tìm học sinh theo tên hoặc email" style="margin-bottom:6px;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;"><button type="button" class="lv-btn sm ghost" id="' + id + 'All">☑ Chọn tất cả đang hiện</button><button type="button" class="lv-btn sm ghost" id="' + id + 'Clr">✕ Bỏ chọn</button><span class="lv-sub" id="' + id + 'N"></span></div><div class="lv-stu" id="' + id + '">Đang tải học sinh...</div></div>';
+}
+function bindStuPicker(id) {
+  PICK[id] = {};
+  var draw = function () {
+    var q = ($(id + 'Q').value || '').toLowerCase().trim();
+    var list = (STU || []).filter(function (u) { return !q || (u.name + ' ' + u.email).toLowerCase().indexOf(q) >= 0; });
+    $(id).innerHTML = list.length ? list.map(function (u) { return '<label><input type="checkbox" data-u="' + u.id + '"' + (PICK[id][u.id] ? ' checked' : '') + '> <span>' + esc(u.name) + ' <span class="lv-sub">' + esc(u.email) + '</span></span></label>'; }).join('') : '<div class="lv-sub" style="padding:8px 0;">Không có học sinh phù hợp.</div>';
+    var n = Object.keys(PICK[id]).length; $(id + 'N').textContent = n ? 'Đã chọn ' + n + ' học sinh' : '';
+    Array.prototype.forEach.call($(id).querySelectorAll('input[data-u]'), function (c) { c.onchange = function () { if (c.checked) PICK[id][c.getAttribute('data-u')] = 1; else delete PICK[id][c.getAttribute('data-u')]; draw2(); }; });
+  };
+  var draw2 = function () { var n = Object.keys(PICK[id]).length; $(id + 'N').textContent = n ? 'Đã chọn ' + n + ' học sinh' : ''; };
+  $(id + 'Q').oninput = draw;
+  $(id + 'All').onclick = function () { Array.prototype.forEach.call($(id).querySelectorAll('input[data-u]'), function (c) { PICK[id][c.getAttribute('data-u')] = 1; c.checked = true; }); draw2(); };
+  $(id + 'Clr').onclick = function () { PICK[id] = {}; draw(); };
+  (STU ? Promise.resolve() : api('GET', '/api/lesson-vocab/students').then(function (r) { STU = r.students || []; })).then(draw).catch(function () { $(id).innerHTML = '<div class="lv-sub">Không tải được danh sách học sinh — dùng ô email.</div>'; });
+}
+function pickedIds(id) { return Object.keys(PICK[id] || {}).map(Number); }
 function loadGroups() {
   api('GET', '/api/groups').then(function (r) {
     $('gGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="gGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="lv-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="lv-sub">Chưa có lớp — hãy nhập email học sinh bên dưới.</div>';
@@ -281,6 +367,7 @@ function publish() {
     questions: D.questions.map(function (q) { return { target: q.target, stem: q.stem, options: q.options, answer_index: q.answer_index }; }),
     group_ids: Array.prototype.map.call(document.querySelectorAll('.gGrp:checked'), function (c) { return +c.value; }),
     emails: $('gEmails').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean),
+    user_ids: pickedIds('gStu'),
     all_students: $('gAll').checked, deadline: $('gDeadline').value || null, note: $('gNote').value
   };
   api('POST', '/api/lesson-vocab', payload).then(function (r) {
@@ -306,11 +393,60 @@ function viewResults(id) {
   $('lvHeroTitle').textContent = '📊 Kết quả bộ từ';
   $('lvHeroSub').textContent = 'Theo dõi học sinh đã học, điểm luyện tập và những câu cả lớp hay sai.';
   api('GET', '/api/lesson-vocab/' + id + '/results').then(function (r) {
-    var h = '<div class="lv-card"><div class="lv-title">📊 ' + esc(r.title) + '</div><div class="lv-scroll"><table class="lv-table"><thead><tr><th>Học sinh</th><th>Số lần gửi</th><th>Cao nhất</th><th>Lần gửi gần nhất</th><th>Câu sai (lần gần nhất)</th></tr></thead><tbody>' +
-      r.students.map(function (s) { return '<tr><td><b>' + esc(s.name) + '</b><div class="lv-sub">' + esc(s.email) + '</div></td><td>' + (s.attempts || '<span class="lv-sub">chưa gửi</span>') + '</td><td>' + (s.best != null ? s.best + '/' + r.total : '—') + '</td><td>' + (s.last ? s.last.score + '/' + s.last.total + '<div class="lv-sub">' + fmtDl(s.last.at) + '</div>' : '—') + '</td><td>' + (s.missed.length ? s.missed.join(', ') : (s.last ? '✓ không sai câu nào' : '—')) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+    var h = '<div class="lv-card"><div class="lv-title">📊 ' + esc(r.title) + '</div><div class="lv-scroll"><table class="lv-table"><thead><tr><th>Học sinh</th><th>Thời gian học</th><th>Số lần gửi</th><th>Cao nhất</th><th>Lần gửi gần nhất</th><th>Câu sai (lần gần nhất)</th></tr></thead><tbody>' +
+      r.students.map(function (s) { return '<tr><td><b>' + esc(s.name) + '</b><div class="lv-sub">' + esc(s.email) + '</div></td><td>' + (s.opens || s.seconds ? '<b>' + fmtDur(s.seconds) + '</b><div class="lv-sub">' + s.studyDays + ' ngày · mở ' + s.opens + ' lần' + (s.lastStudy ? '<br>gần nhất ' + fmtDl(s.lastStudy) : '') + '</div>' : '<span class="lv-sub">chưa mở bài</span>') + '</td><td>' + (s.attempts || '<span class="lv-sub">chưa gửi</span>') + '</td><td>' + (s.best != null ? s.best + '/' + r.total : '—') + '</td><td>' + (s.last ? s.last.score + '/' + s.last.total + '<div class="lv-sub">' + fmtDl(s.last.at) + '</div>' : '—') + '</td><td>' + (s.missed.length ? s.missed.join(', ') : (s.last ? '✓ không sai câu nào' : '—')) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
     if (r.hardest.length) h += '<div class="lv-card"><div class="lv-title">🎯 Câu học sinh làm sai nhiều nhất</div>' + r.hardest.map(function (q) { return '<div class="lv-list-item"><div class="main"><b>Câu ' + q.n + '</b> · từ <b>' + esc(q.target) + '</b><div class="lv-sub">' + esc(q.stem) + '</div></div><b>' + q.wrong + '/' + q.of + ' bạn sai</b></div>'; }).join('') + '</div>';
+    h += '<div class="lv-card lv-form"><div class="lv-title">➕ Giao thêm cho học sinh khác</div>' + stuPickerHtml('aStu') + '<button class="lv-btn" id="aGo" style="margin-top:10px;">📨 Giao thêm</button><div id="aMsg"></div></div>';
     root.innerHTML = '<div style="margin-bottom:12px;"><a class="lv-btn sm ghost" href="lesson-vocab.html" style="text-decoration:none;">← Quay lại</a> <a class="lv-btn sm ghost" href="lesson-vocab.html?id=' + id + '" style="text-decoration:none;">👁 Xem như học sinh</a></div>' + h;
+    bindStuPicker('aStu');
+    $('aGo').onclick = function () {
+      var ids = pickedIds('aStu'); if (!ids.length) { $('aMsg').innerHTML = '<div class="lv-msg err">Hãy chọn ít nhất một học sinh.</div>'; return; }
+      var b = $('aGo'); b.disabled = true;
+      api('POST', '/api/lesson-vocab/' + id + '/assign', { user_ids: ids }).then(function (r2) { $('aMsg').innerHTML = '<div class="lv-msg ok">✅ Đã giao thêm cho ' + r2.added + ' học sinh' + (r2.already ? ' (' + r2.already + ' bạn đã có sẵn)' : '') + '.</div>'; setTimeout(function () { viewResults(id); }, 1500); })
+        .catch(function (e) { $('aMsg').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; b.disabled = false; });
+    };
   }).catch(function (e) { root.innerHTML = '<div class="lv-card"><div class="lv-msg err">' + esc(e.message) + '</div></div>'; });
+}
+
+/* ═════════════ BÁO CÁO: ĐIỂM + THỜI GIAN HỌC ═════════════ */
+function fmtDur(sec) {
+  sec = Math.round(sec || 0); if (sec <= 0) return '0 phút';
+  if (sec < 60) return sec + ' giây';
+  var m = Math.round(sec / 60); if (m < 60) return m + ' phút';
+  var h = Math.floor(m / 60); return h + ' giờ ' + (m % 60 ? (m % 60) + ' phút' : '');
+}
+var REP = null;
+function viewReport(days) {
+  days = days || 30;
+  $('lvTab').innerHTML = '<div class="lv-sub">Đang tải báo cáo...</div>';
+  api('GET', '/api/lesson-vocab/report?days=' + days).then(function (r) {
+    REP = r;
+    var tot = r.students.reduce(function (a, s) { a.sec += s.seconds; a.done += s.done; a.asg += s.assigned; if (s.avgPct != null) { a.p += s.avgPct; a.pn++; } if (s.seconds > 0) a.active++; return a; }, { sec: 0, done: 0, asg: 0, p: 0, pn: 0, active: 0 });
+    var h = '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;"><b>Khoảng thời gian:</b>' +
+      [7, 30, 90].map(function (d) { return '<button class="lv-pill' + (d === r.days ? ' on' : '') + '" data-d="' + d + '">' + d + ' ngày qua</button>'; }).join('') +
+      '<span style="flex:1"></span><button class="lv-btn sm ghost" id="repCsv">⬇️ Tải bảng CSV</button></div>';
+    h += '<div class="lv-kpi"><div><b>' + r.students.length + '</b><span>học sinh được giao</span></div><div><b>' + tot.active + '</b><span>đã học trong ' + r.days + ' ngày</span></div><div><b>' + fmtDur(tot.sec) + '</b><span>tổng thời gian học</span></div><div><b>' + (tot.pn ? Math.round(tot.p / tot.pn) + '%' : '—') + '</b><span>điểm luyện tập trung bình</span></div><div><b>' + tot.done + '/' + tot.asg + '</b><span>lượt bài đã nộp</span></div></div>';
+    if (!r.students.length) { $('lvTab').innerHTML = h + '<div class="lv-sub" style="padding:10px 0;">Chưa có học sinh nào được giao bộ từ.</div>'; bindRep(); return; }
+    h += '<div class="lv-scroll"><table class="lv-table"><thead><tr><th>Học sinh</th><th>Đã nộp / được giao</th><th>Điểm TB</th><th>Thời gian học</th><th>Số ngày học</th><th>Hoạt động gần nhất</th></tr></thead><tbody>' +
+      r.students.map(function (s) {
+        var warn = s.seconds === 0 && s.done === 0 ? ' style="background:var(--warning-soft)"' : '';
+        return '<tr' + warn + '><td><b>' + esc(s.name) + '</b><div class="lv-sub">' + esc(s.email) + '</div></td><td>' + s.done + '/' + s.assigned + '</td><td>' + (s.avgPct != null ? s.avgPct + '%' : '—') + '</td><td>' + (s.seconds ? fmtDur(s.seconds) : '<span class="lv-sub">chưa học</span>') + '</td><td>' + s.activeDays + '</td><td>' + (s.last ? fmtDl(s.last) : '<span class="lv-sub">—</span>') + '</td></tr>';
+      }).join('') + '</tbody></table></div><div class="lv-sub" style="margin-top:6px;">Dòng nền vàng = học sinh chưa mở bài và chưa nộp kết quả nào. Thời gian chỉ tính khi học sinh đang mở bài và có thao tác.</div>';
+    h += '<div class="lv-title" style="margin-top:20px;">📚 Theo từng bộ từ</div><div class="lv-scroll"><table class="lv-table"><thead><tr><th>Bộ từ</th><th>Đã nộp / được giao</th><th>Điểm TB</th><th>Tổng thời gian</th><th></th></tr></thead><tbody>' +
+      r.sets.map(function (x) { return '<tr><td><b>' + esc(x.title) + '</b></td><td>' + x.done + '/' + x.assigned + '</td><td>' + (x.avgPct != null ? x.avgPct + '%' : '—') + '</td><td>' + fmtDur(x.seconds) + '</td><td><a class="lv-btn sm" style="text-decoration:none;" href="lesson-vocab.html?id=' + x.id + '&tab=results">Chi tiết</a></td></tr>'; }).join('') + '</tbody></table></div>';
+    $('lvTab').innerHTML = h; bindRep();
+  }).catch(function (e) { $('lvTab').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; });
+}
+function bindRep() {
+  Array.prototype.forEach.call($('lvTab').querySelectorAll('[data-d]'), function (b) { b.onclick = function () { viewReport(+b.getAttribute('data-d')); }; });
+  var c = $('repCsv'); if (!c) return;
+  c.onclick = function () {
+    if (!REP) return;
+    var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+    var rows = [['Học sinh', 'Email', 'Số bộ được giao', 'Số bộ đã nộp', 'Điểm TB (%)', 'Thời gian học (phút)', 'Số ngày học', 'Hoạt động gần nhất']].concat(REP.students.map(function (s) { return [s.name, s.email, s.assigned, s.done, s.avgPct == null ? '' : s.avgPct, Math.round(s.seconds / 60), s.activeDays, s.last || '']; }));
+    var csv = '﻿' + rows.map(function (r) { return r.map(q).join(','); }).join('\r\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'bao-cao-bo-tu-' + REP.days + 'ngay.csv'; document.body.appendChild(a); a.click(); a.remove();
+  };
 }
 
 /* ═════════════ HỌC SINH: HỌC THẺ + LUYỆN TẬP ═════════════ */
@@ -321,7 +457,31 @@ function viewStudy(id) {
     $('lvHeroTitle').textContent = '📘 ' + d.title;
     $('lvHeroSub').textContent = (d.teacher ? 'Giáo viên ' + d.teacher + ' · ' : '') + d.cards.length + ' từ + 10 câu luyện tập' + (d.deadline ? ' · Hạn: ' + fmtDl(d.deadline) : '');
     renderStudy();
+    if (!d.owner) startTimeTracker(d.id);
   }).catch(function (e) { root.innerHTML = '<div class="lv-card"><div class="lv-msg err">' + esc(e.message) + '</div><p style="margin-top:10px;"><a href="lesson-vocab.html">← Danh sách bộ từ</a></p></div>'; });
+}
+/* ── Đo thời gian học: chỉ tính khi tab đang mở VÀ có thao tác trong 45 giây gần nhất ── */
+var TT = null;
+function startTimeTracker(setId) {
+  if (TT) return;
+  TT = { id: setId, pending: 0, lastAct: Date.now(), first: true };
+  var act = function () { TT.lastAct = Date.now(); };
+  ['click', 'keydown', 'touchstart', 'scroll', 'pointermove'].forEach(function (ev) { window.addEventListener(ev, act, { passive: true }); });
+  var flush = function (beacon) {
+    if (!TT.pending && !TT.first) return;
+    var body = JSON.stringify({ seconds: TT.pending, open: TT.first });
+    var url = '/api/lesson-vocab/' + TT.id + '/time';
+    TT.pending = 0; TT.first = false;
+    if (beacon && navigator.sendBeacon) { try { navigator.sendBeacon(url, new Blob([body], { type: 'application/json' })); return; } catch (e) {} }
+    fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+  };
+  setInterval(function () {
+    if (document.visibilityState === 'visible' && Date.now() - TT.lastAct < 45000) TT.pending += 5;
+    if (TT.pending >= 30) flush(false);
+  }, 5000);
+  flush(false); // ghi nhận lượt mở bài
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(true); });
+  window.addEventListener('pagehide', function () { flush(true); });
 }
 function renderStudy() {
   var back = '<div style="margin-bottom:12px;"><a class="lv-btn sm ghost" href="' + (S.owner ? 'lesson-vocab.html' : 'lesson-vocab.html') + '" style="text-decoration:none;">← Danh sách</a>' + (S.owner ? ' <a class="lv-btn sm ghost" href="lesson-vocab.html?id=' + S.id + '&tab=results" style="text-decoration:none;">📊 Kết quả</a>' : '') + '</div>';

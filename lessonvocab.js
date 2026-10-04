@@ -5,6 +5,8 @@
 //   2) Chấm chéo: AI lần 2 làm "giám khảo độc lập" giải từng câu hỏi mà KHÔNG biết đáp án; lệch đáp án hoặc có >1 đáp án hợp lý → gắn cờ
 //   3) Giáo viên bắt buộc xem lại toàn bộ (có thể sửa từng ô) và tick xác nhận mới giao được
 const crypto = require('crypto');
+const zlib = require('zlib');
+const multer = require('multer');
 
 const MAX_PARSE = 30;      // tối đa số từ mỗi lần tạo
 const MAX_CARDS = 40;      // tối đa số thẻ trong 1 bộ
@@ -28,7 +30,8 @@ function reEsc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function normPos(p) { const k = String(p || '').trim().toLowerCase().replace(/\./g, '').replace(/\s+/g, ' '); return POS_MAP[k] || ''; }
 
 // ── Đọc danh sách giáo viên dán: hỗ trợ "từ | loại", "từ, loại", "từ (loại)", "từ - loại", Tab ──
-function parseWords(text) {
+function parseWords(text, max) {
+  max = max || MAX_PARSE;
   const lines = String(text || '').split('\n').map(s => s.trim()).filter(Boolean);
   const words = [], errors = [], seen = new Set();
   lines.forEach((raw, i) => {
@@ -52,8 +55,8 @@ function parseWords(text) {
     seen.add(key);
     words.push({ word: w, pos });
   });
-  if (words.length > MAX_PARSE) errors.push('Mỗi lần tối đa ' + MAX_PARSE + ' từ — hãy chia thành nhiều bộ nhỏ.');
-  return { words: words.slice(0, MAX_PARSE), errors };
+  if (words.length > max) errors.push('Mỗi lần tối đa ' + max + ' từ — hãy chia thành nhiều bộ nhỏ.');
+  return { words: words.slice(0, max), errors };
 }
 
 // ── Kiểm tra thẻ từ (luật cứng) ──
@@ -128,6 +131,105 @@ function buildQuestion(raw, target) {
   return { q: { target: target.word, stem, options, answer_index: answerIndex }, flags };
 }
 
+// ── Đọc nội dung file giáo viên tải lên: .txt .csv .tsv .docx .xlsx (không cần thư viện) ──
+const MAX_UNZIP = 8 * 1024 * 1024;
+function zipEntries(buf) {
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 66000); i--) if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('File không phải định dạng Word/Excel hợp lệ.');
+  const count = Math.min(buf.readUInt16LE(eocd + 10), 3000);
+  let p = buf.readUInt32LE(eocd + 16);
+  const map = new Map();
+  for (let n = 0; n < count && p + 46 <= buf.length; n++) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) break;
+    const method = buf.readUInt16LE(p + 10), csize = buf.readUInt32LE(p + 20), usize = buf.readUInt32LE(p + 24);
+    const nlen = buf.readUInt16LE(p + 28), elen = buf.readUInt16LE(p + 30), clen = buf.readUInt16LE(p + 32), off = buf.readUInt32LE(p + 42);
+    map.set(buf.toString('utf8', p + 46, p + 46 + nlen), { method, csize, usize, off });
+    p += 46 + nlen + elen + clen;
+  }
+  return map;
+}
+function zipRead(buf, e) {
+  if (!e || e.usize > MAX_UNZIP) throw new Error('File quá lớn hoặc không đọc được.');
+  const nlen = buf.readUInt16LE(e.off + 26), elen = buf.readUInt16LE(e.off + 28);
+  const start = e.off + 30 + nlen + elen;
+  const data = buf.subarray(start, start + e.csize);
+  if (e.method === 0) return data;
+  if (e.method === 8) return zlib.inflateRawSync(data, { maxOutputLength: MAX_UNZIP });
+  throw new Error('Kiểu nén của file không được hỗ trợ.');
+}
+function xmlText(x) {
+  return String(x).replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (m, d) => String.fromCodePoint(Math.min(+d, 0x10ffff)))
+    .replace(/&#x([0-9a-f]+);/gi, (m, h) => String.fromCodePoint(Math.min(parseInt(h, 16), 0x10ffff)))
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+}
+function docxToText(buf) {
+  const z = zipEntries(buf);
+  let xml = zipRead(buf, z.get('word/document.xml')).toString('utf8');
+  xml = xml.replace(/<\/w:p>\s*<\/w:tc>/g, '</w:tc>').replace(/<\/w:tc>/g, '\t').replace(/<\/w:tr>/g, '\n').replace(/<\/w:p>/g, '\n')
+    .replace(/<w:tab\/>/g, '\t').replace(/<w:br\/>/g, '\n');
+  return xmlText(xml);
+}
+function colIndex(ref) { let n = 0; for (const ch of String(ref).replace(/[^A-Za-z]/g, '').toUpperCase()) n = n * 26 + (ch.charCodeAt(0) - 64); return Math.max(0, n - 1); }
+function xlsxToText(buf) {
+  const z = zipEntries(buf);
+  const shared = [];
+  if (z.has('xl/sharedStrings.xml')) {
+    const sx = zipRead(buf, z.get('xl/sharedStrings.xml')).toString('utf8');
+    for (const m of sx.matchAll(/<si[^>]*>([\s\S]*?)<\/si>/g)) shared.push(xmlText((m[1].match(/<t[^>]*>[\s\S]*?<\/t>/g) || []).join('')));
+  }
+  const sheetName = z.has('xl/worksheets/sheet1.xml') ? 'xl/worksheets/sheet1.xml' : [...z.keys()].find(k => /^xl\/worksheets\/sheet\d+\.xml$/.test(k));
+  if (!sheetName) throw new Error('Không tìm thấy trang tính trong file Excel.');
+  const sh = zipRead(buf, z.get(sheetName)).toString('utf8');
+  const lines = [];
+  for (const row of sh.matchAll(/<row[^>]*>([\s\S]*?)<\/row>/g)) {
+    const cells = [];
+    for (const c of row[1].matchAll(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g)) {
+      const attrs = c[1], inner = c[2] || '';
+      const ref = (attrs.match(/\br="([A-Za-z]+\d*)"/) || [])[1] || '', t = (attrs.match(/\bt="(\w+)"/) || [])[1] || '';
+      let val = '';
+      if (t === 's') val = shared[parseInt((inner.match(/<v>(\d+)<\/v>/) || [])[1], 10)] || '';
+      else if (t === 'inlineStr') val = xmlText(inner);
+      else val = xmlText((inner.match(/<v>([\s\S]*?)<\/v>/) || [])[1] || '');
+      cells[colIndex(ref)] = String(val).replace(/[\t\n\r]+/g, ' ').trim();
+    }
+    if (cells.some(Boolean)) lines.push(Array.from(cells, x => x || '').join('\t'));
+    if (lines.length > 600) break;
+  }
+  return lines.join('\n');
+}
+function sniffKind(buf, name) {
+  const ext = (String(name || '').match(/\.([A-Za-z0-9]+)$/) || [])[1];
+  const e = (ext || '').toLowerCase();
+  if (buf.length > 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return { kind: 'image', mime: 'image/jpeg' };
+  if (buf.length > 8 && buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return { kind: 'image', mime: 'image/png' };
+  if (buf.length > 12 && buf.toString('ascii', 0, 4) === 'RIFF' && buf.toString('ascii', 8, 12) === 'WEBP') return { kind: 'image', mime: 'image/webp' };
+  if (buf.length > 4 && buf.toString('ascii', 0, 4) === '%PDF') return { kind: 'pdf', mime: 'application/pdf' };
+  if (buf.length > 4 && buf.readUInt32LE(0) === 0x04034b50) {
+    if (e === 'docx') return { kind: 'docx' };
+    if (e === 'xlsx') return { kind: 'xlsx' };
+    return { kind: 'zip' };
+  }
+  if (['txt', 'csv', 'tsv', 'md'].includes(e)) return { kind: 'text' };
+  return { kind: 'unknown' };
+}
+function normExtracted(items) {
+  const out = [], seen = new Set(), needPos = [], skipped = [];
+  for (const it of (Array.isArray(items) ? items : [])) {
+    let w = String(it && it.word || '').replace(/^\s*(?:\d+[.)]|[-•*])\s*/, '').replace(/[\s.,;:!?]+$/, '').replace(/\s+/g, ' ').trim();
+    if (!w) continue;
+    if (!WORD_RE.test(w)) { skipped.push(w.slice(0, 30)); continue; }
+    const pos = normPos(it.pos);
+    if (!pos) { needPos.push(w); continue; }
+    const key = w.toLowerCase() + '|' + pos;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ word: w, pos, guessed: !!it.guessed, uncertain: !!it.uncertain });
+    if (out.length >= 150) break;
+  }
+  return { words: out, needPos, skipped };
+}
+
 // ── Gọi AI (thật hoặc giả lập khi kiểm thử cục bộ) ──
 const SYS_CARDS = `You are an experienced ESL lexicographer preparing vocabulary cards for Vietnamese learners (CEFR A2–C1).
 For EACH input item return exactly one card, in the SAME ORDER, keeping "word" and "pos" EXACTLY as given.
@@ -147,6 +249,15 @@ Rules: exactly ONE option can be correct; the sentence must give enough context 
 const SYS_VERIFY = `You are an independent English exam checker. For each numbered question, choose the single best option (A, B, C or D) to fill the blank.
 Set "ambiguous" to true if a second option could ALSO fit grammatically and logically, or if no option fits well, or if the stem has an error. Put a short Vietnamese note (max 20 words) in "note" when ambiguous is true, otherwise "".`;
 
+const SYS_EXTRACT = `You read a PHOTO, SCAN or DOCUMENT of an English vocabulary list used by a teacher (textbook word list, handwritten notes, whiteboard, table, worksheet) and extract the vocabulary items to study.
+Rules:
+- Return every English vocabulary item: single words, phrasal verbs, idioms and short collocations (max 4 words). Keep the order of the source. Use lowercase unless it is a proper noun.
+- IGNORE: Vietnamese or other translations, IPA/phonetics, example sentences, page numbers, headings, unit titles, exercise instructions, numbering.
+- "pos": the part of speech printed next to the item if present, written as one of: n, v, adj, adv, prep, conj, pron, det, phr v, idiom, phr. If the source does NOT show it, choose the most common part of speech of the item in a learner's word list and set "guessed" to true.
+- "uncertain": true when the handwriting/print is hard to read or you are not sure of the exact spelling. NEVER invent words you cannot read — skip them instead.
+- If a source line lists several words, return each separately. Do not return duplicates.
+- "notes": at most one short sentence IN VIETNAMESE about quality problems (blurry image, cut-off text, items skipped), otherwise "".`;
+const SCHEMA_EXTRACT = { type: 'object', properties: { items: { type: 'array', items: { type: 'object', properties: { word: { type: 'string' }, pos: { type: 'string' }, guessed: { type: 'boolean' }, uncertain: { type: 'boolean' } }, required: ['word', 'pos', 'guessed', 'uncertain'] } }, notes: { type: 'string' } }, required: ['items', 'notes'] };
 const SCHEMA_CARDS = { type: 'object', properties: { cards: { type: 'array', items: { type: 'object', properties: {
   word: { type: 'string' }, pos: { type: 'string' }, ipa: { type: 'string' }, simple: { type: 'string' }, vi: { type: 'string' }, example: { type: 'string' }, issue: { type: 'string' } },
   required: ['word', 'pos', 'ipa', 'simple', 'vi', 'example', 'issue'] } } }, required: ['cards'] };
@@ -191,6 +302,15 @@ function mockAI(kind, payload) {
       return { n: it.n, choice: 'ABCD'[wrong ? (idx + 1) % 4 : Math.max(idx, 0)], ambiguous: !!wrong, note: wrong ? 'Có thể có hơn một đáp án phù hợp.' : '' };
     }) };
   }
+  if (kind === 'extract') {
+    if (payload.text) return { items: payload.text.split('\n').map(l => ({ word: l.split(/[|\t,]/)[0].trim(), pos: 'n', guessed: true, uncertain: false })).filter(x => x.word), notes: '' };
+    return { items: [
+      { word: 'reluctant', pos: 'adj', guessed: false, uncertain: false }, { word: 'accommodation', pos: 'n', guessed: false, uncertain: false },
+      { word: 'run out of', pos: 'phr v', guessed: false, uncertain: false }, { word: 'schedule', pos: 'v', guessed: true, uncertain: false },
+      { word: 'enthusiastic', pos: 'adj', guessed: true, uncertain: true }, { word: 'mystery', pos: '', guessed: true, uncertain: false },
+      { word: 'bad@word', pos: 'n', guessed: false, uncertain: false }, { word: 'schedule', pos: 'v', guessed: false, uncertain: false }
+    ], notes: 'Ảnh hơi mờ ở góc dưới.' };
+  }
   throw new Error('mock: unknown kind');
 }
 
@@ -201,6 +321,7 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
 
   async function callAI(kind, payload) {
     if (MOCK) return mockAI(kind, payload);
+    if (kind === 'extract') return ai.generateJSON({ system: SYS_EXTRACT, user: payload.user, schema: SCHEMA_EXTRACT, maxTokens: 5000, temperature: 0, files: payload.files });
     if (kind === 'cards') {
       const user = 'Create vocabulary cards for these items (JSON):\n' + JSON.stringify(payload.words);
       return ai.generateJSON({ system: SYS_CARDS, user, schema: SCHEMA_CARDS, maxTokens: 8000 });
@@ -411,6 +532,9 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
       const u = db.prepare("SELECT id FROM users WHERE lower(email)=? AND role='student'").get(em);
       if (u) set.add(Number(u.id));
     }
+    for (const uid of (Array.isArray(b.user_ids) ? b.user_ids : []).map(Number).filter(Number.isInteger).slice(0, 2000)) {
+      if (db.prepare("SELECT 1 FROM users WHERE id=? AND role='student'").get(uid)) set.add(uid);
+    }
     if (b.all_students) for (const r of db.prepare("SELECT id FROM users WHERE role='student'").all()) set.add(Number(r.id));
     return set;
   }
@@ -443,6 +567,142 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
       console.error('[lesson-vocab/create]', e.message);
       res.status(500).json({ error: 'Không giao được bộ từ.' });
     }
+  });
+
+
+  // ───────────── Đọc danh sách từ từ ẢNH / PDF / FILE (txt, csv, docx, xlsx) ─────────────
+  const memUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024, files: 1 } });
+  const MAX_EXTRACT_SHOW = MAX_PARSE;
+  app.post('/api/lesson-vocab/extract', requireRole('teacher', 'admin'), (req, res) => {
+    memUpload.single('file')(req, res, async (err) => {
+      if (err) return res.status(400).json({ error: err.code === 'LIMIT_FILE_SIZE' ? 'File quá lớn (tối đa 8MB). Hãy chụp/cắt nhỏ ảnh hơn.' : 'Không nhận được file.' });
+      if (!req.file || !req.file.buffer || !req.file.buffer.length) return res.status(400).json({ error: 'Chưa chọn file.' });
+      const buf = req.file.buffer;
+      const fk = sniffKind(buf, req.file.originalname);
+      try {
+        let text = null, files = null, source;
+        if (fk.kind === 'image' || fk.kind === 'pdf') { files = [{ mime: fk.mime, data: buf.toString('base64') }]; source = fk.kind; }
+        else if (fk.kind === 'text') { text = buf.toString('utf8').replace(/^﻿/, ''); source = 'text'; }
+        else if (fk.kind === 'docx') { text = docxToText(buf); source = 'docx'; }
+        else if (fk.kind === 'xlsx') { text = xlsxToText(buf); source = 'xlsx'; }
+        else return res.status(400).json({ error: 'Chỉ nhận ảnh (JPG, PNG, WEBP), PDF, Word (.docx), Excel (.xlsx), .csv hoặc .txt.' });
+        if (text !== null) {
+          text = text.replace(/\r/g, '').slice(0, 20000);
+          if (!text.trim()) return res.status(400).json({ error: 'File không có nội dung chữ để đọc.' });
+        }
+
+        let items = null, notes = '', via = 'ai';
+        // Văn bản đã đúng dạng "từ | loại" → đọc thẳng, không tốn lượt AI
+        if (text !== null) {
+          const lines = text.split('\n').map(x => x.trim()).filter(Boolean);
+          const local = parseWords(text, 150);
+          if (local.words.length && local.words.length >= Math.ceil(lines.length * 0.8)) { items = local.words.map(w => ({ ...w, guessed: false, uncertain: false })); via = 'local'; }
+        }
+        if (!items) {
+          if (!aiReady()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng (chưa liên kết tài khoản AI) nên chưa đọc được file này.' });
+          if (!aiAllowed(req.user.id)) return res.status(429).json({ error: 'Bạn đã dùng AI nhiều trong 1 giờ qua, vui lòng thử lại sau ít phút.' });
+          const user = files ? 'Extract the vocabulary list from the attached ' + (fk.kind === 'pdf' ? 'document' : 'image') + '.' : 'Extract the vocabulary list from this document text (columns are separated by tabs):\n' + text;
+          const r = await callAI('extract', { user, files, text });
+          items = Array.isArray(r && r.items) ? r.items : [];
+          notes = String(r && r.notes || '').slice(0, 200);
+        }
+        const n = normExtracted(items);
+        if (!n.words.length) return res.status(422).json({ error: 'Không đọc được từ vựng nào' + (notes ? ' — ' + notes : '. Hãy thử ảnh rõ nét hơn, chụp thẳng và đủ sáng.'), needPos: n.needPos });
+        res.json({
+          ok: true, via, source, notes,
+          words: n.words.slice(0, MAX_EXTRACT_SHOW), rest: n.words.slice(MAX_EXTRACT_SHOW),
+          needPos: n.needPos.slice(0, 20), skipped: n.skipped.slice(0, 20)
+        });
+      } catch (e) {
+        console.error('[lesson-vocab/extract]', e.message);
+        res.status(500).json({ error: 'Không đọc được file: ' + String(e.message).slice(0, 160) });
+      }
+    });
+  });
+
+  // Danh sách học sinh để giáo viên tick chọn người nhận
+  app.get('/api/lesson-vocab/students', requireRole('teacher', 'admin'), (req, res) => {
+    try {
+      res.json({ students: db.prepare("SELECT id,name,email FROM users WHERE role='student' ORDER BY name COLLATE NOCASE LIMIT 1500").all().map(u => ({ id: Number(u.id), name: u.name, email: u.email })) });
+    } catch (e) { res.status(500).json({ error: 'Không tải được danh sách học sinh.' }); }
+  });
+
+  // Giao thêm bộ từ đã có cho học sinh khác
+  app.post('/api/lesson-vocab/:id/assign', requireRole('teacher', 'admin'), (req, res) => {
+    const id = Number(req.params.id), set = loadSet(id);
+    if (!set) return res.status(404).json({ error: 'Không tìm thấy bộ từ.' });
+    if (!isOwnerOrAdmin(req.user, set)) return res.status(403).json({ error: 'Chỉ giáo viên giao bộ từ mới giao thêm được.' });
+    const rec = collectRecipients(req.body || {});
+    if (!rec.size) return res.status(400).json({ error: 'Chưa chọn học sinh nào.' });
+    let added = 0;
+    const ins = db.prepare('INSERT OR IGNORE INTO lesson_assign (set_id,user_id,assigned_at) VALUES (?,?,?)');
+    const cards = JSON.parse(set.cards);
+    for (const uid of rec) {
+      if (Number(ins.run(id, uid, now()).changes || 0)) {
+        added++;
+        try { notifyUser(uid, 'lesson_vocab', '📘 Bộ từ mới: ' + set.title, cards.length + ' từ + 10 câu luyện tập' + (set.deadline ? ' · hạn ' + String(set.deadline).replace('T', ' ') : ''), 'lesson-vocab.html?id=' + id); } catch (e) {}
+      }
+    }
+    res.json({ ok: true, added, already: rec.size - added });
+  });
+
+  // ───────────── Thời gian học (học sinh gửi nhịp "đang học" mỗi ~30 giây) ─────────────
+  const lastBeat = new Map(); // "uid:set" -> thời điểm nhịp trước (chống cộng khống thời gian)
+  const vnDay = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
+  app.post('/api/lesson-vocab/:id/time', requireAuth, (req, res) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || !db.prepare('SELECT 1 FROM lesson_assign WHERE set_id=? AND user_id=?').get(id, req.user.id)) return res.json({ ok: true, counted: 0 });
+    const b = req.body || {};
+    let sec = Math.round(Number(b.seconds));
+    const open = b.open === true;
+    if (!(sec >= 0)) return res.status(400).json({ error: 'Dữ liệu không hợp lệ.' });
+    sec = Math.min(sec, 60);
+    const key = req.user.id + ':' + id, t = Date.now(), prev = lastBeat.get(key);
+    // Không cộng nhiều hơn thời gian thực đã trôi qua kể từ nhịp trước (+5s dung sai)
+    if (prev) sec = Math.min(sec, Math.floor((t - prev) / 1000) + 5); else sec = Math.min(sec, 35);
+    lastBeat.set(key, t);
+    if (lastBeat.size > 5000) { for (const [k, v] of lastBeat) if (t - v > 3600e3) lastBeat.delete(k); }
+    if (sec <= 0 && !open) return res.json({ ok: true, counted: 0 });
+    try {
+      db.prepare(`INSERT INTO lesson_time (set_id,user_id,day,seconds,opens,last_at) VALUES (?,?,?,?,?,?)
+        ON CONFLICT(set_id,user_id,day) DO UPDATE SET seconds=MIN(seconds+excluded.seconds, 14400), opens=opens+excluded.opens, last_at=excluded.last_at`)
+        .run(id, req.user.id, vnDay(), Math.max(0, sec), open ? 1 : 0, now());
+      res.json({ ok: true, counted: Math.max(0, sec) });
+    } catch (e) { console.error('[lesson-vocab/time]', e.message); res.status(500).json({ error: 'Không ghi được thời gian học.' }); }
+  });
+
+  // ───────────── Báo cáo tổng hợp: điểm + thời gian học theo học sinh ─────────────
+  app.get('/api/lesson-vocab/report', requireRole('teacher', 'admin'), (req, res) => {
+    try {
+      const days = Math.min(365, Math.max(1, parseInt(req.query.days, 10) || 30));
+      const since = new Date(Date.now() + 7 * 3600e3 - days * 86400e3).toISOString().slice(0, 10);
+      const sets = req.user.role === 'admin' ? db.prepare('SELECT id,title,questions FROM lesson_sets').all() : db.prepare('SELECT id,title,questions FROM lesson_sets WHERE teacher_id=?').all(req.user.id);
+      const setIds = sets.map(x => x.id);
+      if (!setIds.length) return res.json({ days, students: [], sets: [] });
+      const inList = setIds.join(',');
+      const assigns = db.prepare('SELECT a.set_id, a.user_id FROM lesson_assign a WHERE a.set_id IN (' + inList + ')').all();
+      const results = db.prepare('SELECT set_id,user_id,MAX(score*1.0/total) best, COUNT(*) n, MAX(created_at) last FROM lesson_results WHERE set_id IN (' + inList + ') GROUP BY set_id,user_id').all();
+      const times = db.prepare('SELECT set_id,user_id,SUM(seconds) sec, COUNT(CASE WHEN seconds>0 THEN 1 END) days, MAX(last_at) last FROM lesson_time WHERE set_id IN (' + inList + ') AND day>=? GROUP BY set_id,user_id').all(since);
+      const users = new Map(db.prepare('SELECT id,name,email FROM users').all().map(u => [Number(u.id), u]));
+      const resMap = new Map(results.map(r => [r.set_id + ':' + r.user_id, r]));
+      const timeMap = new Map(times.map(r => [r.set_id + ':' + r.user_id, r]));
+      const st = new Map();
+      const setAgg = new Map(sets.map(x => [x.id, { id: x.id, title: x.title, assigned: 0, done: 0, pctSum: 0, seconds: 0 }]));
+      for (const a of assigns) {
+        const u = users.get(Number(a.user_id)); if (!u) continue;
+        let s0 = st.get(a.user_id);
+        if (!s0) { s0 = { id: Number(a.user_id), name: u.name, email: u.email, assigned: 0, done: 0, pctSum: 0, seconds: 0, dayCount: 0, last: null }; st.set(a.user_id, s0); }
+        const r = resMap.get(a.set_id + ':' + a.user_id), tm = timeMap.get(a.set_id + ':' + a.user_id), sa = setAgg.get(a.set_id);
+        s0.assigned++; sa.assigned++;
+        if (r) { s0.done++; s0.pctSum += r.best * 100; sa.done++; sa.pctSum += r.best * 100; if (!s0.last || r.last > s0.last) s0.last = r.last; }
+        if (tm) { s0.seconds += Number(tm.sec || 0); s0.dayCount = Math.max(s0.dayCount, Number(tm.days || 0)); sa.seconds += Number(tm.sec || 0); if (tm.last && (!s0.last || tm.last > s0.last)) s0.last = tm.last; }
+      }
+      res.json({
+        days,
+        students: [...st.values()].map(x => ({ id: x.id, name: x.name, email: x.email, assigned: x.assigned, done: x.done, avgPct: x.done ? Math.round(x.pctSum / x.done) : null, seconds: x.seconds, activeDays: x.dayCount, last: x.last })).sort((a, b) => a.name.localeCompare(b.name, 'vi')),
+        sets: [...setAgg.values()].filter(x => x.assigned).map(x => ({ id: x.id, title: x.title, assigned: x.assigned, done: x.done, avgPct: x.done ? Math.round(x.pctSum / x.done) : null, seconds: x.seconds })).sort((a, b) => b.id - a.id)
+      });
+    } catch (e) { console.error('[lesson-vocab/report]', e.message); res.status(500).json({ error: 'Không tải được báo cáo.' }); }
   });
 
   // ───────────── Xem / làm bài ─────────────
@@ -514,7 +774,8 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
           const a = JSON.parse(last.answers); latestN++;
           questions.forEach((q, i) => { if (a[i] !== q.answer_index) { wrongCount[i]++; missed.push(i + 1); } });
         }
-        return { name: u.name, email: u.email, attempts: rs.length, best: rs.length ? Math.max(...rs.map(r => r.score)) : null, last: last ? { score: last.score, total: last.total, at: last.created_at } : null, missed };
+        const tm = db.prepare('SELECT COALESCE(SUM(seconds),0) sec, COUNT(CASE WHEN seconds>0 THEN 1 END) days, COALESCE(SUM(opens),0) opens, MAX(last_at) lastAt FROM lesson_time WHERE set_id=? AND user_id=?').get(id, u.id);
+        return { id: u.id, seconds: Number(tm.sec || 0), studyDays: Number(tm.days || 0), opens: Number(tm.opens || 0), lastStudy: tm.lastAt || null, name: u.name, email: u.email, attempts: rs.length, best: rs.length ? Math.max(...rs.map(r => r.score)) : null, last: last ? { score: last.score, total: last.total, at: last.created_at } : null, missed };
       });
       res.json({ title: set.title, total: questions.length, students, hardest: questions.map((q, i) => ({ n: i + 1, target: q.target, stem: q.stem, wrong: wrongCount[i], of: latestN })).filter(x => x.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 5) });
     } catch (e) { console.error('[lesson-vocab/results]', e.message); res.status(500).json({ error: 'Không tải được kết quả.' }); }

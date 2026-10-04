@@ -259,7 +259,7 @@ const rlWrite    = security.limiter({ name: 'write',  max: 400, windowMs: mins(1
 const onlyPost = (mw) => (req, res, next) => (req.method === 'POST' ? mw(req, res, next) : next());
 app.use('/api', (req, res, next) => (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) ? rlWrite(req, res, next) : next()));
 app.use(['/api/grade-writing', '/api/grade-aptis-writing', '/api/writing-hints', '/api/writing-vocab'], onlyPost(rlAiStudent));
-app.use(['/api/teacher/ai-grade', '/api/teacher/model-answer', '/api/lesson-vocab/ai-cards', '/api/lesson-vocab/ai-questions'], onlyPost(rlAiTeacher));
+app.use(['/api/teacher/ai-grade', '/api/teacher/model-answer', '/api/lesson-vocab/ai-cards', '/api/lesson-vocab/ai-questions', '/api/lesson-vocab/extract'], onlyPost(rlAiTeacher));
 app.use(['/api/upload', '/api/upload-recording'], onlyPost(rlUpload));
 
 function requireAuth(req, res, next) {
