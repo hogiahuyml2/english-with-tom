@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiếng Anh phổ thông (Lớp 6–12) — English With Tom</title>
+<meta name="description" content="Ngữ pháp tiếng Anh phổ thông lớp 6–12: bài giảng ngắn gọn, ví dụ song ngữ, lỗi thường gặp và bài luyện tập có đáp án giải thích.">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=18">
+<style>
+.sc-wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px 40px; }
+.sc-hero { text-align: center; padding: 34px 0 18px; }
+.sc-hero h1 { font-size: 30px; margin: 0 0 8px; }
+.sc-hero p { color: var(--text-muted); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+.sc-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: center; margin: 18px 0; }
+.sc-pill { padding: 8px 16px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-size: 13.5px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.sc-pill.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.sc-search { width: 100%; max-width: 360px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; }
+.sc-stats { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); }
+.sc-stats b { color: var(--text); }
+.sc-grade { margin: 26px 0 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sc-grade h2 { margin: 0; font-size: 20px; }
+.sc-grade .sp { flex: 1; }
+.sc-testbtn { padding: 7px 14px; border-radius: 10px; border: 2px solid var(--primary); color: var(--primary); font-weight: 700; font-size: 13px; text-decoration: none; background: transparent; }
+.sc-testbtn:hover { background: var(--primary-soft); }
+.sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.sc-card { display: block; text-decoration: none; color: inherit; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); transition: transform .15s, border-color .15s; position: relative; }
+.sc-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+.sc-card .ico { font-size: 28px; }
+.sc-card h3 { margin: 6px 0 2px; font-size: 16px; }
+.sc-card .sub { font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; }
+.sc-card p { font-size: 13px; line-height: 1.5; margin: 0 0 10px; color: var(--text); }
+.sc-lv { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); }
+.sc-lv.l2 { background: var(--warning-soft); color: var(--warning); } .sc-lv.l3 { background: rgba(239,68,68,.12); color: #ef4444; }
+.sc-done { position: absolute; top: 12px; right: 12px; font-size: 12px; font-weight: 700; color: var(--success); background: var(--success-soft); padding: 2px 9px; border-radius: 99px; }
+.sc-bar { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 10px; } .sc-bar > i { display: block; height: 100%; background: var(--gradient); }
+.sc-empty { text-align: center; color: var(--text-muted); padding: 40px 0; }
+</style>
+</head>
+<body data-page="school">
+<div id="site-header"></div>
+<main class="sc-wrap">
+  <div class="sc-hero">
+    <h1>📚 Tiếng Anh phổ thông</h1>
+    <p>Ngữ pháp chương trình tiếng Anh lớp 6 – 12: giải thích dễ hiểu bằng tiếng Việt, ví dụ song ngữ, lỗi sai thường gặp và bài luyện tập có giải thích từng đáp án.</p>
+  </div>
+  <div class="sc-stats" id="stats"></div>
+  <div class="sc-tools">
+    <div id="gradePills" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"></div>
+    <input class="sc-search" id="q" type="search" placeholder="🔍 Tìm chủ điểm (vd: câu điều kiện, bị động…)">
+  </div>
+  <div id="list"></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/main.js?v=21"></script>
+<script src="data/school/index.js?v=1"></script>
+<script>
+(function () {
+  var IDX = window.SCHOOL_INDEX || [];
+  var grade = 0, q = '';
+  function prog() { try { return JSON.parse(localStorage.getItem('ewt-school-progress') || '{}'); } catch (e) { return {}; } }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd'); }
+  var pills = document.getElementById('gradePills');
+  pills.innerHTML = [0, 6, 7, 8, 9, 10, 11, 12].map(function (g) { return '<button class="sc-pill' + (g === grade ? ' on' : '') + '" data-g="' + g + '">' + (g ? 'Lớp ' + g : 'Tất cả') + '</button>'; }).join('');
+  pills.onclick = function (e) { var b = e.target.closest('[data-g]'); if (!b) return; grade = +b.dataset.g; Array.prototype.forEach.call(pills.children, function (x) { x.classList.toggle('on', +x.dataset.g === grade); }); render(); };
+  document.getElementById('q').oninput = function () { q = norm(this.value.trim()); render(); };
+  function lvCls(l) { return l === 'Cơ bản' ? '' : l === 'Trung bình' ? ' l2' : ' l3'; }
+  function render() {
+    var P = prog(), box = document.getElementById('list');
+    var items = IDX.filter(function (l) { return (!grade || l.grade === grade) && (!q || norm(l.title + ' ' + l.sub + ' ' + l.summary).indexOf(q) >= 0); });
+    var done = IDX.filter(function (l) { return P[l.id] && P[l.id].best >= 70; }).length;
+    document.getElementById('stats').innerHTML = '<span>📖 <b>' + IDX.length + '</b> bài học</span><span>✅ Đã thành thạo (≥70%): <b>' + done + '</b></span><span>📝 <b>' + IDX.reduce(function (s, l) { return s + (l.q || 0); }, 0) + '</b> câu luyện tập</span>';
+    if (!items.length) { box.innerHTML = '<div class="sc-empty">Không tìm thấy chủ điểm phù hợp.</div>'; return; }
+    var byG = {}; items.forEach(function (l) { (byG[l.grade] = byG[l.grade] || []).push(l); });
+    box.innerHTML = Object.keys(byG).map(Number).sort(function (a, b) { return a - b; }).map(function (g) {
+      return '<div class="sc-grade"><h2>Lớp ' + g + '</h2><span class="sp"></span><a class="sc-testbtn" href="school-lesson.html?test=' + g + '">📝 Kiểm tra tổng hợp lớp ' + g + '</a></div><div class="sc-grid">' +
+        byG[g].map(function (l) {
+          var p = P[l.id], pct = p ? p.best : 0;
+          return '<a class="sc-card" href="school-lesson.html?id=' + encodeURIComponent(l.id) + '">' + (p && p.best >= 70 ? '<span class="sc-done">✓ ' + p.best + '%</span>' : p ? '<span class="sc-done" style="color:var(--warning);background:var(--warning-soft)">' + p.best + '%</span>' : '') +
+            '<div class="ico">' + esc(l.icon) + '</div><h3>' + esc(l.title) + '</h3><div class="sub">' + esc(l.sub) + '</div><p>' + esc(l.summary) + '</p>' +
+            '<span class="sc-lv' + lvCls(l.level) + '">' + esc(l.level) + '</span> <span class="sc-lv" style="background:transparent;color:var(--text-muted)">' + l.q + ' câu luyện tập</span>' +
+            '<div class="sc-bar"><i style="width:' + pct + '%"></i></div></a>';
+        }).join('') + '</div>';
+    }).join('');
+  }
+  render();
+})();
+</script>
+</body>
+</html>

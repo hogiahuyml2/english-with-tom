@@ -40,6 +40,7 @@
     { href: 'fce.html', label: 'FCE', key: 'fce' },
     { href: 'ielts.html', label: 'IELTS', key: 'ielts' },
     { href: 'aptis.html', label: 'APTIS', key: 'aptis' },
+    { href: 'school.html', label: 'Tiếng Anh phổ thông', key: 'school' },
   ];
   var navItemsAfter = [
     { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
@@ -84,7 +85,7 @@
           '<p>Nền tảng luyện thi KET, PET, FCE, APTIS và IELTS với hệ thống chấm điểm tự động.</p>' +
         '</div>' +
         '<div><h4>Chương trình</h4>' +
-          '<a href="ket.html">KET</a><a href="pet.html">PET</a><a href="fce.html">FCE</a><a href="aptis.html">APTIS</a><a href="ielts.html">IELTS</a>' +
+          '<a href="ket.html">KET</a><a href="pet.html">PET</a><a href="fce.html">FCE</a><a href="aptis.html">APTIS</a><a href="ielts.html">IELTS</a><a href="school.html">Tiếng Anh phổ thông</a>' +
         '</div>' +
         '<div><h4>Tài khoản</h4>' +
           '<a href="login.html">Đăng nhập</a><a href="dashboard.html">Tiến trình học</a><a href="exercises.html">Ngân hàng đề</a><a href="assigned.html">Bài tập được giao</a>' +
