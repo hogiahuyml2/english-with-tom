@@ -45,9 +45,26 @@ setInterval(() => sweep(false), 60 * 1000).unref();
 // Railway (và mọi reverse proxy) THÊM IP kết nối vào CUỐI X-Forwarded-For. Phần đứng trước là do khách tự
 // khai và có thể giả mạo → luôn lấy phần tử tính từ bên phải (PROXY_HOPS = số proxy tin cậy, mặc định 1).
 const HOPS = Math.max(1, parseInt(process.env.PROXY_HOPS || '1', 10) || 1);
+// Khi bật Cloudflare, chuỗi là: khách → Cloudflare → Railway → app, nên phần tử ngoài cùng bên phải là IP của Cloudflare.
+// Nhận biết bằng dải IP công bố của Cloudflare rồi bỏ qua nó để lấy IP khách thật (không phụ thuộc cấu hình thủ công).
+const CF_V4 = ['173.245.48.0/20','103.21.244.0/22','103.22.200.0/22','103.31.4.0/22','141.101.64.0/18','108.162.192.0/18','190.93.240.0/20','188.114.96.0/20','197.234.240.0/22','198.41.128.0/17','162.158.0.0/15','104.16.0.0/13','104.24.0.0/14','172.64.0.0/13','131.0.72.0/22'];
+const CF_V6 = ['2400:cb00:', '2606:4700:', '2803:f800:', '2405:b500:', '2405:8100:', '2c0f:f248:', '2a06:98c'];
+const ip4n = (ip) => { const p = ip.split('.').map(Number); return p.length === 4 && p.every(x => x >= 0 && x < 256) ? (((p[0] * 256 + p[1]) * 256 + p[2]) * 256 + p[3]) : null; };
+const CF_V4_RANGES = CF_V4.map(c => { const [b, m] = c.split('/'); const size = Math.pow(2, 32 - Number(m)); const start = ip4n(b); return [start, start + size - 1]; });
+function isCloudflareIp(ip) {
+  const v = ip.replace(/^::ffff:/, '');
+  if (v.includes(':')) { const l = v.toLowerCase(); return CF_V6.some(pre => l.startsWith(pre)); }
+  const n = ip4n(v);
+  return n !== null && CF_V4_RANGES.some(([a, b]) => n >= a && n <= b);
+}
 function clientIp(req) {
   const xff = String(req.headers['x-forwarded-for'] || '').split(',').map(s => s.trim()).filter(Boolean);
-  if (xff.length) return xff[Math.max(0, xff.length - HOPS)].slice(0, 64);
+  if (xff.length) {
+    let i = Math.max(0, xff.length - HOPS);
+    // Bỏ qua các địa chỉ Cloudflare ở cuối chuỗi (tối đa 2 lớp) — IP khách thật nằm ngay trước đó
+    for (let k = 0; k < 2 && i > 0 && isCloudflareIp(xff[i]); k++) i--;
+    return xff[i].slice(0, 64);
+  }
   return (req.socket && req.socket.remoteAddress) || 'unknown';
 }
 
@@ -183,4 +200,4 @@ function hardenServer(server) {
   server.setTimeout(0);
 }
 
-module.exports = { install, limiter, hit, peek, clearKey, clientIp, errorHandler, hardenServer, isPublicPath, overloaded, express };
+module.exports = { isCloudflareIp, install, limiter, hit, peek, clearKey, clientIp, errorHandler, hardenServer, isPublicPath, overloaded, express };
