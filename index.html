@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=21">
+<link rel="stylesheet" href="css/style.css?v=22">
 </head>
 <body data-page="home">
 <div id="site-header"></div>
@@ -22,7 +22,7 @@
     <h1>Tự tin chinh phục các kỳ thi quốc tế <br><span class="grad">qua việc luyện tập thường xuyên</span></h1>
     <p>Làm bài thực chiến, nhận chấm điểm & nhận xét chi tiết từ hệ thống tự động và giáo viên — dành riêng cho IELTS, KET, PET, FCE và APTIS.</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="login.html#register">Bắt đầu miễn phí</a>
+      <a class="btn btn-primary" id="heroCta" href="login.html#register">Bắt đầu miễn phí</a>
       <a class="btn" href="exercises.html">Ngân hàng đề</a>
       <a class="btn" href="dashboard.html">Xem tiến trình học</a>
     </div>
@@ -90,6 +90,23 @@
   </div>
 </section>
 
+<section class="section" style="padding-top:8px;">
+  <div class="container">
+    <div class="promo-grid">
+      <a class="promo promo-test" href="placement.html">
+        <div class="promo-ico">🎯</div>
+        <div class="promo-body"><span class="promo-tag">Mới</span><h3>Kiểm tra đầu vào miễn phí</h3><p>Làm bài 60 phút (Ngữ pháp, Từ vựng, Đọc, Nghe, Viết) để biết trình độ CEFR A1–B2 và nhận lộ trình học ưu tiên kỹ năng yếu.</p></div>
+        <span class="promo-go">Làm bài →</span>
+      </a>
+      <a class="promo promo-game" href="arcade.html">
+        <div class="promo-ico">🎮</div>
+        <div class="promo-body"><span class="promo-tag">Học mà chơi</span><h3>Trò chơi từ vựng theo chủ đề</h3><p>Đua xe, cứu công chúa, bong bóng chữ, thủ môn bắt bóng… chọn chủ đề thể thao, môi trường, giáo dục và chơi để nhớ từ lâu hơn.</p></div>
+        <span class="promo-go">Chơi ngay →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="section section-alt">
   <div class="container">
     <div class="section-head">
@@ -107,7 +124,7 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section" id="ctaReg">
   <div class="container">
     <div class="card galaxy-card" style="background:var(--gradient-soft); border:none; text-align:center; padding:44px;">
       <h2 style="font-size:26px; margin-bottom:10px;">Sẵn sàng chinh phục chứng chỉ của bạn?</h2>
@@ -119,5 +136,13 @@
 
 <div id="site-footer"></div>
 <script src="js/main.js?v=28"></script>
+<script>
+// Người đã đăng nhập: bỏ lời mời đăng ký, đưa nút chính tới trang học
+fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  if (!d || !(d.user || d.id || d.email)) return;
+  var b = document.getElementById('heroCta'); if (b) { b.textContent = 'Vào học ngay'; b.setAttribute('href', 'dashboard.html'); }
+  var c = document.getElementById('ctaReg'); if (c) c.style.display = 'none';
+}).catch(function () {});
+</script>
 </body>
 </html>
