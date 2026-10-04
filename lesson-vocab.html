@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bộ từ theo bài học — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=18">
+<style>
+.lv-wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+.lv-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.lv-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.lv-sub { font-size: 12.5px; color: var(--text-muted); font-weight: 500; }
+.lv-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 11px; border: none; background: var(--gradient); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: var(--shadow); }
+.lv-btn:disabled { opacity: .5; cursor: default; }
+.lv-btn.ghost { background: var(--primary-soft); color: var(--text); box-shadow: none; }
+.lv-btn.line { background: transparent; border: 2px solid var(--primary); color: var(--primary); box-shadow: none; }
+.lv-btn.sm { padding: 6px 12px; font-size: 12.5px; border-radius: 9px; }
+.lv-pill { padding: 8px 15px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.lv-pill.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.lv-msg { margin-top: 10px; font-size: 13px; padding: 9px 12px; border-radius: 9px; }
+.lv-msg.ok { background: var(--success-soft); color: var(--success); } .lv-msg.err { background: rgba(239,68,68,.12); color: #ef4444; } .lv-msg.warn { background: var(--warning-soft); color: var(--warning); }
+.lv-bar { height: 9px; background: var(--border); border-radius: 99px; overflow: hidden; } .lv-bar > i { display: block; height: 100%; background: var(--gradient); border-radius: 99px; transition: width .4s; }
+.lv-list-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); flex-wrap: wrap; } .lv-list-item:first-of-type { border-top: none; }
+.lv-list-item .main { flex: 1; min-width: 200px; }
+.lv-table { width: 100%; border-collapse: collapse; font-size: 13px; } .lv-table th { text-align: left; color: var(--text-muted); font-size: 11.5px; text-transform: uppercase; padding: 6px 8px; } .lv-table td { padding: 8px; border-top: 1px solid var(--border); vertical-align: top; }
+.lv-scroll { overflow-x: auto; }
+
+/* ── tạo bộ từ (giáo viên) ── */
+.lv-form input, .lv-form textarea, .lv-form select { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 9px; font-family: inherit; font-size: 13.5px; background: var(--surface); color: var(--text); }
+.lv-form input[type=checkbox], .lv-form input[type=radio] { width: auto; padding: 0; flex-shrink: 0; }
+.lv-form textarea { resize: vertical; line-height: 1.5; }
+.lv-form label.f { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin: 10px 0 4px; }
+.lv-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 620px) { .lv-grid2 { grid-template-columns: 1fr; } }
+.lv-grid3 { display: grid; grid-template-columns: 1.2fr .6fr 1.2fr; gap: 10px; } @media (max-width: 620px) { .lv-grid3 { grid-template-columns: 1fr; } }
+.lv-item { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 12px; background: var(--bg-soft); }
+.lv-item.flagged { border-color: #f59e0b; } .lv-item.checked { border-color: var(--success); }
+.lv-flags { margin-top: 8px; } .lv-flag { font-size: 12.5px; color: var(--warning); padding: 3px 0; line-height: 1.5; } .lv-item.checked .lv-flag { opacity: .45; text-decoration: line-through; }
+.lv-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.lv-opt { display: flex; gap: 8px; align-items: center; margin-top: 6px; } .lv-opt b { width: 18px; font-size: 13px; }
+.lv-banner { padding: 12px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; margin-bottom: 14px; }
+.lv-banner.warn { background: var(--warning-soft); color: var(--warning); } .lv-banner.ok { background: var(--success-soft); color: var(--success); }
+.lv-pick { max-height: 150px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: 10px; padding: 6px 10px; } .lv-pick label { display: flex; gap: 8px; align-items: center; font-size: 13px; padding: 3px 0; cursor: pointer; }
+
+/* ── học sinh: thẻ + luyện tập ── */
+.lv-stage { max-width: 640px; margin: 0 auto; }
+.lv-flip { perspective: 1000px; cursor: pointer; margin: 6px 0 14px; }
+.lv-flip-in { position: relative; min-height: 300px; transition: transform .5s; transform-style: preserve-3d; }
+.lv-flip.on .lv-flip-in { transform: rotateY(180deg); }
+.lv-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-radius: 18px; border: 1.5px solid var(--border); background: var(--surface); box-shadow: var(--shadow); text-align: center; overflow-y: auto; }
+.lv-face.back { transform: rotateY(180deg); background: var(--primary-soft); }
+.lv-word { font-size: 34px; font-weight: 700; word-break: break-word; } .lv-pos { font-size: 13px; color: var(--text-muted); font-style: italic; margin: 3px 0; } .lv-ipa { font-size: 20px; color: var(--primary); font-weight: 600; margin: 4px 0 8px; }
+.lv-snd { background: var(--primary-soft); border: none; border-radius: 99px; width: 42px; height: 42px; font-size: 18px; cursor: pointer; color: var(--text); } .lv-snd.sm { width: 32px; height: 32px; font-size: 14px; }
+.lv-def { font-size: 15px; line-height: 1.6; margin: 4px 0; } .lv-vi { font-size: 22px; font-weight: 700; margin: 6px 0; } .lv-ex { font-size: 14.5px; line-height: 1.65; margin-top: 8px; padding: 10px 12px; background: var(--surface); border-radius: 10px; text-align: left; width: 100%; }
+.lv-ex mark { background: rgba(123,110,246,.25); color: inherit; border-radius: 4px; padding: 0 3px; font-weight: 700; }
+.lv-nav { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.lv-q { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); }
+.lv-stem { font-size: 19px; line-height: 1.7; font-weight: 500; margin: 8px 0 14px; } .lv-blank { display: inline-block; min-width: 90px; border-bottom: 3px solid var(--primary); text-align: center; color: var(--primary); font-weight: 700; margin: 0 3px; } .lv-blank.ok { color: var(--success); border-color: var(--success); } .lv-blank.bad { color: #ef4444; border-color: #ef4444; }
+.lv-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 520px) { .lv-opts { grid-template-columns: 1fr; } }
+.lv-ans { padding: 13px 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; font-size: 15.5px; font-weight: 600; cursor: pointer; font-family: inherit; text-align: left; display: flex; gap: 10px; align-items: center; }
+.lv-ans b { width: 24px; height: 24px; border-radius: 50%; background: var(--primary-soft); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.lv-ans:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .lv-ans.ok { border-color: var(--success); background: var(--success-soft); color: var(--success); } .lv-ans.bad { border-color: #ef4444; background: rgba(239,68,68,.12); color: #ef4444; } .lv-ans:disabled { cursor: default; }
+.lv-fb { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6; } .lv-fb.ok { background: var(--success-soft); } .lv-fb.bad { background: rgba(239,68,68,.1); }
+.lv-score { text-align: center; padding: 10px 0; } .lv-score .big { font-size: 54px; font-weight: 700; } .lv-rev { text-align: left; font-size: 13.5px; } .lv-rev div { padding: 8px 0; border-top: 1px solid var(--border); line-height: 1.55; }
+</style>
+</head>
+<body data-page="lesson-vocab" data-guard="auth">
+<div id="site-header"></div>
+
+<section class="page-hero" style="padding:24px 0 20px;">
+  <div class="container">
+    <div class="crumb"><a href="word-hub.html">Học từ vựng</a> › Bộ từ theo bài học</div>
+    <h1 style="font-size:26px;" id="lvHeroTitle">📘 Bộ từ theo bài học</h1>
+    <p style="font-size:14px;" id="lvHeroSub">Học thẻ từ vựng giáo viên giao, luyện 10 câu trắc nghiệm rồi gửi kết quả cho giáo viên.</p>
+  </div>
+</section>
+
+<section class="section" style="padding:20px 0 60px;">
+<div class="lv-wrap" id="lvRoot"><div class="lv-card">Đang tải...</div></div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/main.js?v=20"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function reEsc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function api(method, url, body) {
+  return fetch(url, { method: method, credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined })
+    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi kết nối'); e.status = r.status; e.data = d; throw e; } return d; }); });
+}
+function toast(msg) { var t = document.createElement('div'); t.style.cssText = 'position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#2e2b45;color:#fff;padding:11px 20px;border-radius:99px;font-weight:600;font-size:14px;z-index:4000;box-shadow:0 8px 28px rgba(0,0,0,.3)'; t.textContent = msg; document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600); }
+var ttsOK = 'speechSynthesis' in window;
+function speak(t, rate) { if (!ttsOK || !t) return; try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-GB'; u.rate = rate || 0.9; speechSynthesis.speak(u); } catch (e) {} }
+function hl(sentence, word) {
+  var out = esc(sentence);
+  word.split(/[\s-]+/).filter(Boolean).forEach(function (p) {
+    var stem = p.length >= 5 ? p.slice(0, p.length - 1) : p;
+    out = out.replace(new RegExp('(^|[^A-Za-z])(' + reEsc(stem) + '[A-Za-z]*)', 'i'), '$1<mark>$2</mark>');
+  });
+  return out;
+}
+function fmtDl(s) { if (!s) return ''; var d = new Date(s); if (isNaN(d)) return s; var p = function (n) { return (n < 10 ? '0' : '') + n; }; return p(d.getHours()) + ':' + p(d.getMinutes()) + ' ngày ' + p(d.getDate()) + '/' + p(d.getMonth() + 1); }
+var ME = { role: 'student' };
+var root = $('lvRoot');
+function qs(k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(location.search); return m ? decodeURIComponent(m[1]) : ''; }
+
+/* ═════════════ DANH SÁCH ═════════════ */
+function viewList() {
+  $('lvHeroTitle').textContent = '📘 Bộ từ theo bài học';
+  if (ME.role === 'student') return viewStudentList();
+  root.innerHTML = '<div class="lv-card"><div class="lv-title" style="margin-bottom:12px;"><button class="lv-pill on" data-t="create">➕ Tạo bộ từ mới</button><button class="lv-pill" data-t="mine">📋 Bộ từ đã giao & kết quả</button></div><div id="lvTab"></div></div>';
+  Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (b) {
+    b.onclick = function () {
+      Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (x) { x.classList.toggle('on', x === b); });
+      if (b.getAttribute('data-t') === 'create') viewCreate(); else viewTeacherSets();
+    };
+  });
+  viewCreate();
+}
+function viewStudentList() {
+  api('GET', '/api/lesson-vocab/mine').then(function (r) {
+    var h = '<div class="lv-card"><div class="lv-title">📘 Bộ từ giáo viên giao cho bạn</div>';
+    if (!r.sets.length) h += '<div class="lv-sub" style="padding:10px 0;">Chưa có bộ từ nào được giao. Khi giáo viên giao bài, bạn sẽ nhận thông báo 🔔.</div>';
+    r.sets.forEach(function (s) {
+      h += '<div class="lv-list-item"><div class="main"><b>' + esc(s.title) + '</b><div class="lv-sub">' + (s.teacher ? 'Từ ' + esc(s.teacher) + ' · ' : '') + s.words + ' từ + 10 câu luyện tập' + (s.deadline ? ' · Hạn: ' + fmtDl(s.deadline) : '') + '</div>' +
+        '<div class="lv-sub">' + (s.sent ? '✅ Đã gửi ' + s.sent + ' lần · điểm cao nhất ' + s.best + '/10' : 'Chưa gửi kết quả') + '</div></div><a class="lv-btn" href="lesson-vocab.html?id=' + s.id + '" style="text-decoration:none;">' + (s.sent ? 'Ôn lại' : 'Học ngay') + '</a></div>';
+    });
+    root.innerHTML = h + '</div>';
+  }).catch(function (e) { root.innerHTML = '<div class="lv-card"><div class="lv-msg err">' + esc(e.message) + '</div></div>'; });
+}
+
+/* ═════════════ GIÁO VIÊN: TẠO BỘ TỪ ═════════════ */
+var D = { cards: [], questions: [] };
+function viewCreate() {
+  D = { cards: [], questions: [] };
+  $('lvTab').innerHTML =
+    '<div class="lv-form"><label class="f">Tên bài học / bộ từ</label><input id="cTitle" maxlength="80" placeholder="VD: Unit 5 — Feelings & Plans">' +
+    '<label class="f">Danh sách từ (mỗi dòng một từ) — gồm <b>từ</b> và <b>từ loại</b></label>' +
+    '<textarea id="cText" rows="8" placeholder="reluctant | adj&#10;accommodation | n&#10;run out of | phr v&#10;schedule | v&#10;&#10;Cũng nhận: reluctant (adj) · reluctant, adj · reluctant - adj · dán từ Excel (Tab)\nTối đa 30 từ mỗi lần. Từ loại: n, v, adj, adv, prep, conj, pron, det, phr v, idiom, phr"></textarea>' +
+    '<div class="lv-sub" style="margin:6px 0 12px;">✨ Bấm nút dưới đây: hệ thống tự tạo <b>phiên âm IPA, nghĩa tiếng Anh đơn giản, nghĩa tiếng Việt, ví dụ thực tế</b> cho từng từ, rồi gợi ý <b>10 câu trắc nghiệm A–D</b>. Mọi nội dung đều được kiểm tra chéo và hiện sẵn để bạn xem lại, sửa trước khi giao.</div>' +
+    '<button class="lv-btn" id="cGo">✨ Tạo tự động</button><div id="cMsg"></div></div><div id="cReview" class="lv-form" style="margin-top:16px;"></div>';
+  $('cGo').onclick = genAll;
+}
+function setMsg(kind, html) { $('cMsg').innerHTML = html ? '<div class="lv-msg ' + kind + '">' + html + '</div>' : ''; }
+function genAll() {
+  var text = $('cText').value;
+  if (!text.trim()) { setMsg('err', 'Hãy nhập danh sách từ.'); return; }
+  var btn = $('cGo'); btn.disabled = true; $('cReview').innerHTML = '';
+  setMsg('warn', '⏳ Bước 1/2: đang tạo thẻ từ (phiên âm, nghĩa, ví dụ)... có thể mất 20–60 giây.');
+  api('POST', '/api/lesson-vocab/ai-cards', { text: text }).then(function (r) {
+    D.cards = r.cards.map(function (c) { c._ok = false; return c; });
+    var pe = r.parseErrors && r.parseErrors.length ? '<br>⚠️ Bỏ qua ' + r.parseErrors.length + ' dòng: ' + r.parseErrors.map(esc).join(' · ') : '';
+    if (D.cards.length < 4) { setMsg('err', 'Cần ít nhất 4 từ hợp lệ để tạo câu hỏi 4 đáp án.' + pe); btn.disabled = false; return; }
+    setMsg('warn', '⏳ Bước 2/2: đang tạo 10 câu trắc nghiệm và chấm chéo bằng AI độc lập...' + pe);
+    return genQuestions().then(function () { setMsg('ok', '✅ Đã tạo xong. Hãy xem lại bên dưới (nội dung có ⚠️ cần bạn kiểm tra kỹ).' + pe); renderReview(); });
+  }).catch(function (e) { setMsg('err', esc(e.message) + ' — bạn có thể bấm tạo lại.'); }).then(function () { btn.disabled = false; });
+}
+function cleanCardsForAI() { return D.cards.map(function (c) { return { word: c.word, pos: c.pos, simple: c.simple, vi: c.vi, example: c.example }; }); }
+function genQuestions() {
+  return api('POST', '/api/lesson-vocab/ai-questions', { cards: cleanCardsForAI() }).then(function (r) {
+    D.questions = r.questions.map(function (q) { q._ok = false; return q; });
+    D.missing = r.missing || 0;
+  });
+}
+
+/* ── màn duyệt nội dung ── */
+function unresolved() {
+  var n = 0; D.cards.forEach(function (c) { if (c.flags && c.flags.length && !c._ok) n++; });
+  D.questions.forEach(function (q) { if (q.flags && q.flags.length && !q._ok) n++; });
+  return n;
+}
+function flagHtml(it) { return (it.flags || []).map(function (f) { return '<div class="lv-flag">⚠️ ' + esc(f.msg) + '</div>'; }).join(''); }
+function renderReview() {
+  var h = '<div id="rvBanner"></div>';
+  h += '<div class="lv-card"><div class="lv-title">📇 Thẻ từ vựng (' + D.cards.length + ') <span class="lv-sub">sửa trực tiếp vào ô nếu cần</span></div>';
+  D.cards.forEach(function (c, i) {
+    h += '<div class="lv-item" id="ci' + i + '"><div class="lv-grid3"><div><label class="f">Từ</label><input data-c="' + i + '" data-k="word" value="' + esc(c.word) + '"></div><div><label class="f">Loại</label><input data-c="' + i + '" data-k="pos" value="' + esc(c.pos) + '"></div><div><label class="f">Phiên âm IPA' + (c.ipaRef ? ' <span class="lv-sub">(từ điển: ' + esc(c.ipaRef) + ')</span>' : '') + '</label><input data-c="' + i + '" data-k="ipa" value="' + esc(c.ipa) + '"></div></div>' +
+      '<div class="lv-grid2"><div><label class="f">Nghĩa tiếng Anh đơn giản</label><textarea rows="2" data-c="' + i + '" data-k="simple">' + esc(c.simple) + '</textarea></div><div><label class="f">Nghĩa tiếng Việt</label><textarea rows="2" data-c="' + i + '" data-k="vi">' + esc(c.vi) + '</textarea></div></div>' +
+      '<label class="f">Ví dụ trong ngữ cảnh thực tế</label><textarea rows="2" data-c="' + i + '" data-k="example">' + esc(c.example) + '</textarea>' +
+      '<div class="lv-flags" id="cf' + i + '">' + flagHtml(c) + '</div><div class="lv-actions"><button class="lv-btn sm ghost" data-regc="' + i + '">🔄 Tạo lại thẻ này</button>' + (c.flags && c.flags.length ? '<button class="lv-btn sm line" data-okc="' + i + '">✓ Tôi đã kiểm tra mục này</button>' : '') + '<button class="lv-btn sm ghost" data-delc="' + i + '">🗑 Xoá từ</button></div></div>';
+  });
+  h += '<div class="lv-form"><label class="f">Thêm từ mới vào bộ (mỗi dòng: từ | loại)</label><textarea id="addText" rows="2"></textarea><div class="lv-actions"><button class="lv-btn sm ghost" id="addGo">➕ Tạo thẻ cho từ mới</button></div><div id="addMsg"></div></div></div>';
+  h += '<div class="lv-card"><div class="lv-title">📝 10 câu trắc nghiệm A–D <span class="lv-sub">chọn ⚪ trước đáp án đúng</span> <button class="lv-btn sm ghost" id="regAll" style="margin-left:auto;">🔄 Tạo lại 10 câu</button></div>';
+  if (D.questions.length !== 10) h += '<div class="lv-banner warn">Hiện có ' + D.questions.length + '/10 câu — hãy bấm "Tạo lại 10 câu" hoặc tạo lại từng câu.</div>';
+  D.questions.forEach(function (q, i) {
+    h += '<div class="lv-item" id="qi' + i + '"><div class="lv-sub">Câu ' + (i + 1) + ' · từ mục tiêu: <b>' + esc(q.target) + '</b></div><textarea rows="2" data-q="' + i + '" data-k="stem">' + esc(q.stem) + '</textarea>';
+    for (var k = 0; k < 4; k++) h += '<div class="lv-opt"><input type="radio" name="qa' + i + '" data-qa="' + i + '" value="' + k + '"' + (q.answer_index === k ? ' checked' : '') + '><b>' + 'ABCD'.charAt(k) + '</b><input data-q="' + i + '" data-o="' + k + '" value="' + esc(q.options[k]) + '"></div>';
+    h += '<div class="lv-flags" id="qf' + i + '">' + flagHtml(q) + '</div><div class="lv-actions"><button class="lv-btn sm ghost" data-regq="' + i + '">🔄 Tạo lại câu này</button>' + (q.flags && q.flags.length ? '<button class="lv-btn sm line" data-okq="' + i + '">✓ Tôi đã kiểm tra câu này</button>' : '') + '</div></div>';
+  });
+  h += '</div>';
+  h += '<div class="lv-card lv-form"><div class="lv-title">📨 Giao cho học sinh</div><label class="f">Giao cho lớp</label><div class="lv-pick" id="gGroups">Đang tải lớp...</div><label class="f">Hoặc email học sinh (mỗi dòng/dấu phẩy một email)</label><textarea id="gEmails" rows="2"></textarea>' +
+    '<label style="display:flex;gap:8px;align-items:center;margin:8px 0;font-size:13px;"><input type="checkbox" id="gAll"> Giao cho TẤT CẢ học sinh trên website</label>' +
+    '<div class="lv-grid2"><div><label class="f">Hạn hoàn thành (tuỳ chọn)</label><input type="datetime-local" id="gDeadline"></div><div><label class="f">Ghi chú cho học sinh (tuỳ chọn)</label><input id="gNote" maxlength="300"></div></div>' +
+    '<label style="display:flex;gap:8px;align-items:flex-start;margin:14px 0 10px;font-size:13.5px;font-weight:600;"><input type="checkbox" id="gSure" style="margin-top:3px;"> <span>Tôi đã xem lại toàn bộ thẻ từ và 10 câu hỏi (phiên âm, nghĩa, ví dụ, đáp án đúng) — nội dung tự động có thể sai nên cần giáo viên xác nhận.</span></label>' +
+    '<button class="lv-btn" id="gGo" disabled>📨 Giao bộ từ</button><div id="gMsg"></div></div>';
+  $('cReview').innerHTML = h;
+  bindReview(); loadGroups(); refreshGate();
+}
+function refreshGate() {
+  var u = unresolved(), b = $('rvBanner'); if (!b) return;
+  b.innerHTML = u ? '<div class="lv-banner warn">⚠️ Còn <b>' + u + '</b> mục có cảnh báo chưa kiểm tra. Hãy xem, sửa nếu cần rồi bấm "✓ Tôi đã kiểm tra".</div>' : '<div class="lv-banner ok">✅ Không còn cảnh báo chưa xử lý. Hãy đọc lướt lần cuối rồi tick xác nhận ở cuối trang để giao bài.</div>';
+  var ok = !u && D.cards.length >= 4 && D.questions.length === 10 && $('gSure') && $('gSure').checked;
+  if ($('gGo')) $('gGo').disabled = !ok;
+}
+function markItem(kind, i) {
+  var it = kind === 'c' ? D.cards[i] : D.questions[i]; it._ok = true;
+  var box = $((kind === 'c' ? 'ci' : 'qi') + i); if (box) { box.classList.remove('flagged'); box.classList.add('checked'); }
+  var okb = box && box.querySelector('[data-ok' + kind + ']'); if (okb) okb.style.display = 'none';
+  refreshGate();
+}
+function bindReview() {
+  D.cards.forEach(function (c, i) { var b = $('ci' + i); if (c.flags && c.flags.length) b.classList.add('flagged'); });
+  D.questions.forEach(function (q, i) { var b = $('qi' + i); if (q.flags && q.flags.length) b.classList.add('flagged'); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-c]'), function (el) {
+    el.oninput = function () { var i = +el.getAttribute('data-c'); D.cards[i][el.getAttribute('data-k')] = el.value; if (D.cards[i].flags && D.cards[i].flags.length) markItem('c', i); };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-q][data-k]'), function (el) {
+    el.oninput = function () { var i = +el.getAttribute('data-q'); D.questions[i][el.getAttribute('data-k')] = el.value; if (D.questions[i].flags && D.questions[i].flags.length) markItem('q', i); };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-q][data-o]'), function (el) {
+    el.oninput = function () { var i = +el.getAttribute('data-q'); D.questions[i].options[+el.getAttribute('data-o')] = el.value; if (D.questions[i].flags && D.questions[i].flags.length) markItem('q', i); };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-qa]'), function (el) {
+    el.onchange = function () { var i = +el.getAttribute('data-qa'); D.questions[i].answer_index = +el.value; if (D.questions[i].flags && D.questions[i].flags.length) markItem('q', i); };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-okc]'), function (b) { b.onclick = function () { markItem('c', +b.getAttribute('data-okc')); }; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-okq]'), function (b) { b.onclick = function () { markItem('q', +b.getAttribute('data-okq')); }; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-delc]'), function (b) {
+    b.onclick = function () {
+      var i = +b.getAttribute('data-delc'); if (D.cards.length <= 4) { toast('Bộ từ cần ít nhất 4 từ.'); return; }
+      var w = D.cards[i].word; D.cards.splice(i, 1);
+      D.questions.forEach(function (q) { if (String(q.target).toLowerCase() === w.toLowerCase()) { q.flags = (q.flags || []).concat([{ msg: 'Từ mục tiêu "' + w + '" đã bị xoá khỏi bộ — hãy tạo lại câu này.' }]); q._ok = false; } });
+      renderReview();
+    };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-regc]'), function (b) {
+    b.onclick = function () {
+      var i = +b.getAttribute('data-regc'), c = D.cards[i]; b.disabled = true; b.textContent = '⏳ Đang tạo...';
+      api('POST', '/api/lesson-vocab/ai-cards', { words: [{ word: c.word, pos: c.pos }] }).then(function (r) { r.cards[0]._ok = false; D.cards[i] = r.cards[0]; renderReview(); }).catch(function (e) { toast(e.message); b.disabled = false; b.textContent = '🔄 Tạo lại thẻ này'; });
+    };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-regq]'), function (b) {
+    b.onclick = function () {
+      var i = +b.getAttribute('data-regq'), q = D.questions[i]; b.disabled = true; b.textContent = '⏳ Đang tạo...';
+      api('POST', '/api/lesson-vocab/ai-questions', { cards: cleanCardsForAI(), only: [q.target] }).then(function (r) {
+        if (!r.questions.length) { toast('AI chưa tạo được câu mới, hãy thử lại.'); b.disabled = false; b.textContent = '🔄 Tạo lại câu này'; return; }
+        r.questions[0]._ok = false; D.questions[i] = r.questions[0]; renderReview();
+      }).catch(function (e) { toast(e.message); b.disabled = false; b.textContent = '🔄 Tạo lại câu này'; });
+    };
+  });
+  $('regAll').onclick = function () { var b = $('regAll'); b.disabled = true; b.textContent = '⏳ Đang tạo...'; genQuestions().then(renderReview).catch(function (e) { toast(e.message); b.disabled = false; b.textContent = '🔄 Tạo lại 10 câu'; }); };
+  $('addGo').onclick = function () {
+    var b = $('addGo'); b.disabled = true; $('addMsg').innerHTML = '<div class="lv-msg warn">⏳ Đang tạo...</div>';
+    api('POST', '/api/lesson-vocab/ai-cards', { text: $('addText').value }).then(function (r) {
+      var have = {}; D.cards.forEach(function (c) { have[c.word.toLowerCase()] = 1; });
+      r.cards.forEach(function (c) { if (!have[c.word.toLowerCase()] && D.cards.length < 40) { c._ok = false; D.cards.push(c); } });
+      renderReview(); toast('Đã thêm thẻ. Hãy bấm "Tạo lại 10 câu" nếu muốn câu hỏi bao gồm từ mới.');
+    }).catch(function (e) { $('addMsg').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; b.disabled = false; });
+  };
+  $('gSure').onchange = refreshGate;
+  $('gGo').onclick = publish;
+}
+function loadGroups() {
+  api('GET', '/api/groups').then(function (r) {
+    $('gGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="gGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="lv-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="lv-sub">Chưa có lớp — hãy nhập email học sinh bên dưới.</div>';
+  }).catch(function () { $('gGroups').innerHTML = '<div class="lv-sub">Không tải được danh sách lớp — dùng ô email.</div>'; });
+}
+function publish() {
+  var btn = $('gGo'); btn.disabled = true; $('gMsg').innerHTML = '';
+  var payload = {
+    title: $('cTitle').value, reviewed: $('gSure').checked,
+    cards: D.cards.map(function (c) { return { word: c.word, pos: c.pos, ipa: c.ipa, simple: c.simple, vi: c.vi, example: c.example }; }),
+    questions: D.questions.map(function (q) { return { target: q.target, stem: q.stem, options: q.options, answer_index: q.answer_index }; }),
+    group_ids: Array.prototype.map.call(document.querySelectorAll('.gGrp:checked'), function (c) { return +c.value; }),
+    emails: $('gEmails').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean),
+    all_students: $('gAll').checked, deadline: $('gDeadline').value || null, note: $('gNote').value
+  };
+  api('POST', '/api/lesson-vocab', payload).then(function (r) {
+    $('gMsg').innerHTML = '<div class="lv-msg ok">✅ Đã giao bộ từ cho ' + r.recipients + ' học sinh — mỗi bạn nhận một thông báo. <a href="lesson-vocab.html?id=' + r.id + '&tab=results">Xem kết quả</a> khi học sinh gửi bài.</div>';
+  }).catch(function (e) { $('gMsg').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; btn.disabled = false; });
+}
+
+/* ═════════════ GIÁO VIÊN: BỘ ĐÃ GIAO + KẾT QUẢ ═════════════ */
+function viewTeacherSets() {
+  $('lvTab').innerHTML = '<div class="lv-sub">Đang tải...</div>';
+  api('GET', '/api/lesson-vocab').then(function (r) {
+    if (!r.sets.length) { $('lvTab').innerHTML = '<div class="lv-sub">Chưa giao bộ từ nào.</div>'; return; }
+    $('lvTab').innerHTML = r.sets.map(function (s) {
+      return '<div class="lv-list-item"><div class="main"><b>' + esc(s.title) + '</b><div class="lv-sub">' + s.words + ' từ · giao cho ' + s.assigned + ' học sinh · đã gửi kết quả: ' + s.submitted + '/' + s.assigned + (s.avg != null ? ' · điểm cao nhất trung bình ' + s.avg + '/10' : '') + (s.deadline ? ' · hạn ' + fmtDl(s.deadline) : '') + '</div></div>' +
+        '<a class="lv-btn sm" style="text-decoration:none;" href="lesson-vocab.html?id=' + s.id + '&tab=results">📊 Kết quả</a><a class="lv-btn sm ghost" style="text-decoration:none;" href="lesson-vocab.html?id=' + s.id + '">👁 Xem như học sinh</a><button class="lv-btn sm ghost" data-del="' + s.id + '">🗑</button></div>';
+    }).join('');
+    Array.prototype.forEach.call($('lvTab').querySelectorAll('[data-del]'), function (b) {
+      b.onclick = function () { if (!confirm('Xoá bộ từ này và toàn bộ kết quả học sinh đã gửi?')) return; api('DELETE', '/api/lesson-vocab/' + b.getAttribute('data-del')).then(viewTeacherSets).catch(function (e) { toast(e.message); }); };
+    });
+  }).catch(function (e) { $('lvTab').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; });
+}
+function viewResults(id) {
+  $('lvHeroTitle').textContent = '📊 Kết quả bộ từ';
+  $('lvHeroSub').textContent = 'Theo dõi học sinh đã học, điểm luyện tập và những câu cả lớp hay sai.';
+  api('GET', '/api/lesson-vocab/' + id + '/results').then(function (r) {
+    var h = '<div class="lv-card"><div class="lv-title">📊 ' + esc(r.title) + '</div><div class="lv-scroll"><table class="lv-table"><thead><tr><th>Học sinh</th><th>Số lần gửi</th><th>Cao nhất</th><th>Lần gửi gần nhất</th><th>Câu sai (lần gần nhất)</th></tr></thead><tbody>' +
+      r.students.map(function (s) { return '<tr><td><b>' + esc(s.name) + '</b><div class="lv-sub">' + esc(s.email) + '</div></td><td>' + (s.attempts || '<span class="lv-sub">chưa gửi</span>') + '</td><td>' + (s.best != null ? s.best + '/' + r.total : '—') + '</td><td>' + (s.last ? s.last.score + '/' + s.last.total + '<div class="lv-sub">' + fmtDl(s.last.at) + '</div>' : '—') + '</td><td>' + (s.missed.length ? s.missed.join(', ') : (s.last ? '✓ không sai câu nào' : '—')) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+    if (r.hardest.length) h += '<div class="lv-card"><div class="lv-title">🎯 Câu học sinh làm sai nhiều nhất</div>' + r.hardest.map(function (q) { return '<div class="lv-list-item"><div class="main"><b>Câu ' + q.n + '</b> · từ <b>' + esc(q.target) + '</b><div class="lv-sub">' + esc(q.stem) + '</div></div><b>' + q.wrong + '/' + q.of + ' bạn sai</b></div>'; }).join('') + '</div>';
+    root.innerHTML = '<div style="margin-bottom:12px;"><a class="lv-btn sm ghost" href="lesson-vocab.html" style="text-decoration:none;">← Quay lại</a> <a class="lv-btn sm ghost" href="lesson-vocab.html?id=' + id + '" style="text-decoration:none;">👁 Xem như học sinh</a></div>' + h;
+  }).catch(function (e) { root.innerHTML = '<div class="lv-card"><div class="lv-msg err">' + esc(e.message) + '</div></div>'; });
+}
+
+/* ═════════════ HỌC SINH: HỌC THẺ + LUYỆN TẬP ═════════════ */
+var S = null, cardIdx = 0, seen = {}, flipped = false, P = null;
+function viewStudy(id) {
+  api('GET', '/api/lesson-vocab/' + id).then(function (d) {
+    S = d; cardIdx = 0; seen = {}; flipped = false; P = null;
+    $('lvHeroTitle').textContent = '📘 ' + d.title;
+    $('lvHeroSub').textContent = (d.teacher ? 'Giáo viên ' + d.teacher + ' · ' : '') + d.cards.length + ' từ + 10 câu luyện tập' + (d.deadline ? ' · Hạn: ' + fmtDl(d.deadline) : '');
+    renderStudy();
+  }).catch(function (e) { root.innerHTML = '<div class="lv-card"><div class="lv-msg err">' + esc(e.message) + '</div><p style="margin-top:10px;"><a href="lesson-vocab.html">← Danh sách bộ từ</a></p></div>'; });
+}
+function renderStudy() {
+  var back = '<div style="margin-bottom:12px;"><a class="lv-btn sm ghost" href="' + (S.owner ? 'lesson-vocab.html' : 'lesson-vocab.html') + '" style="text-decoration:none;">← Danh sách</a>' + (S.owner ? ' <a class="lv-btn sm ghost" href="lesson-vocab.html?id=' + S.id + '&tab=results" style="text-decoration:none;">📊 Kết quả</a>' : '') + '</div>';
+  var h = back + (S.note ? '<div class="lv-msg warn" style="margin:0 0 12px;">💬 ' + esc(S.note) + '</div>' : '') +
+    '<div class="lv-card"><div class="lv-title">1️⃣ Học thẻ từ vựng <span class="lv-sub" id="lvSeen"></span></div><div class="lv-stage"><div id="lvCard"></div></div></div>' +
+    '<div class="lv-card" id="lvPracticeBox"><div class="lv-title">2️⃣ Luyện tập 10 câu trắc nghiệm</div><div id="lvPractice"></div></div>';
+  root.innerHTML = h; renderCard(); renderPracticeIntro();
+}
+function renderCard() {
+  var c = S.cards[cardIdx]; seen[cardIdx] = 1; var n = Object.keys(seen).length;
+  $('lvSeen').textContent = 'đã xem ' + n + '/' + S.cards.length + ' thẻ';
+  $('lvCard').innerHTML = '<div class="lv-flip' + (flipped ? ' on' : '') + '" id="lvFlip"><div class="lv-flip-in"><div class="lv-face"><div class="lv-word">' + esc(c.word) + '</div><div class="lv-pos">' + esc(c.pos) + '</div><div class="lv-ipa">' + esc(c.ipa) + '</div><button class="lv-snd" id="lvSnd" title="Nghe phát âm">🔊</button><div class="lv-sub" style="margin-top:10px;">Bấm thẻ để xem nghĩa</div></div>' +
+    '<div class="lv-face back"><div class="lv-pos" style="font-style:normal;"><b>' + esc(c.word) + '</b> · ' + esc(c.pos) + ' · ' + esc(c.ipa) + '</div><div class="lv-def">' + esc(c.simple) + '</div><div class="lv-vi">' + esc(c.vi) + '</div><div class="lv-ex">' + hl(c.example, c.word) + ' <button class="lv-snd sm" id="lvSnd2" title="Nghe câu ví dụ">🔊</button></div></div></div></div>' +
+    '<div class="lv-nav"><button class="lv-btn ghost" id="lvPrev"' + (cardIdx === 0 ? ' disabled' : '') + '>← Trước</button><span class="lv-sub">' + (cardIdx + 1) + ' / ' + S.cards.length + '</span><button class="lv-btn" id="lvNext"' + (cardIdx === S.cards.length - 1 ? ' disabled' : '') + '>Sau →</button></div>';
+  $('lvFlip').onclick = function (e) { if (e.target.id === 'lvSnd' || e.target.id === 'lvSnd2') return; flipped = !flipped; $('lvFlip').classList.toggle('on', flipped); };
+  $('lvSnd').onclick = function (e) { e.stopPropagation(); speak(c.word); };
+  $('lvSnd2').onclick = function (e) { e.stopPropagation(); speak(c.example); };
+  $('lvPrev').onclick = function () { cardIdx--; flipped = false; renderCard(); };
+  $('lvNext').onclick = function () { cardIdx++; flipped = false; renderCard(); };
+  if (!c._spoke && ttsOK) { c._spoke = 1; }
+}
+document.addEventListener('keydown', function (e) {
+  if (!S || /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) return;
+  if (P && P.active && !P.done) { var k = 'abcd1234'.indexOf(e.key.toLowerCase()); if (k >= 0 && !P.locked) { var b = document.querySelectorAll('.lv-ans')[k % 4]; if (b) b.click(); } else if ((e.key === 'Enter' || e.key === ' ') && P.locked && $('lvNextQ')) { e.preventDefault(); $('lvNextQ').click(); } return; }
+  if ($('lvFlip')) { if (e.key === ' ') { e.preventDefault(); $('lvFlip').click(); } else if (e.key === 'ArrowRight' && !$('lvNext').disabled) $('lvNext').click(); else if (e.key === 'ArrowLeft' && !$('lvPrev').disabled) $('lvPrev').click(); }
+});
+
+function renderPracticeIntro() {
+  var last = S.attempts && S.attempts[0];
+  $('lvPractice').innerHTML = '<div class="lv-sub" style="margin-bottom:12px;">Điền từ thích hợp vào chỗ trống, mỗi câu có 4 đáp án A, B, C, D (phím A–D hoặc 1–4). ' + (last ? 'Lần gửi gần nhất: <b>' + last.score + '/' + last.total + '</b>.' : '') + '</div><button class="lv-btn" id="lvStartP">▶ Bắt đầu luyện tập</button>';
+  $('lvStartP').onclick = startPractice;
+}
+function startPractice() { P = { i: 0, ans: [], active: true, locked: false, done: false, sent: false }; renderQ(); $('lvPracticeBox').scrollIntoView({ block: 'start' }); }
+function renderQ() {
+  var q = S.questions[P.i], parts = q.stem.split('_____');
+  $('lvPractice').innerHTML = '<div class="lv-q"><div class="lv-sub">Câu ' + (P.i + 1) + ' / ' + S.questions.length + '</div><div class="lv-bar" style="margin:6px 0 12px;"><i style="width:' + Math.round(P.i / S.questions.length * 100) + '%"></i></div>' +
+    '<div class="lv-stem">' + esc(parts[0]) + '<span class="lv-blank" id="lvBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' + esc(parts[1] || '') + '</div><div class="lv-opts">' +
+    q.options.map(function (o, k) { return '<button class="lv-ans" data-k="' + k + '"><b>' + 'ABCD'.charAt(k) + '</b>' + esc(o) + '</button>'; }).join('') + '</div><div id="lvFb"></div></div>';
+  P.locked = false;
+  Array.prototype.forEach.call($('lvPractice').querySelectorAll('.lv-ans'), function (b) {
+    b.onclick = function () {
+      if (P.locked) return; P.locked = true; var k = +b.getAttribute('data-k'), ok = k === q.answer_index; P.ans[P.i] = k;
+      Array.prototype.forEach.call($('lvPractice').querySelectorAll('.lv-ans'), function (x, j) { x.disabled = true; if (j === q.answer_index) x.classList.add('ok'); });
+      if (!ok) b.classList.add('bad');
+      var bl = $('lvBlank'); bl.textContent = q.options[q.answer_index]; bl.className = 'lv-blank ' + (ok ? 'ok' : 'bad');
+      var card = S.cards.filter(function (c) { return c.word.toLowerCase() === String(q.target).toLowerCase(); })[0];
+      $('lvFb').innerHTML = '<div class="lv-fb ' + (ok ? 'ok' : 'bad') + '"><b>' + (ok ? '✅ Chính xác!' : '❌ Chưa đúng — đáp án đúng là ' + 'ABCD'.charAt(q.answer_index) + '. ' + esc(q.options[q.answer_index])) + '</b><br>' + esc(q.stem.replace('_____', q.options[q.answer_index])) +
+        (card ? '<br><span class="lv-sub"><b>' + esc(card.word) + '</b> ' + esc(card.ipa) + ' — ' + esc(card.vi) + '</span>' : '') + '</div><button class="lv-btn" id="lvNextQ" style="width:100%;justify-content:center;margin-top:12px;">' + (P.i === S.questions.length - 1 ? 'Xem kết quả 🎉' : 'Câu tiếp theo →') + '</button>';
+      $('lvNextQ').onclick = function () { if (P.i === S.questions.length - 1) { P.done = true; renderResult(); } else { P.i++; renderQ(); } };
+    };
+  });
+}
+function renderResult() {
+  var score = S.questions.reduce(function (s, q, i) { return s + (P.ans[i] === q.answer_index ? 1 : 0); }, 0);
+  P.score = score;
+  $('lvPractice').innerHTML = '<div class="lv-q"><div class="lv-score"><div style="font-size:40px;">' + (score >= 9 ? '🏆' : score >= 7 ? '🎉' : score >= 5 ? '👍' : '💪') + '</div><div class="big">' + score + '/' + S.questions.length + '</div><div class="lv-sub">' + (score >= 9 ? 'Xuất sắc!' : score >= 7 ? 'Làm tốt lắm!' : score >= 5 ? 'Khá ổn, ôn thêm các câu sai nhé!' : 'Hãy xem lại thẻ từ rồi luyện lại nhé!') + '</div></div>' +
+    '<div class="lv-actions" style="justify-content:center;margin:10px 0;"><button class="lv-btn" id="lvSend">📨 Gửi kết quả cho giáo viên</button><button class="lv-btn line" id="lvAgain">↺ Luyện lại</button></div><div id="lvSendMsg"></div>' +
+    '<div class="lv-rev"><b>Xem lại từng câu:</b>' + S.questions.map(function (q, i) { var ok = P.ans[i] === q.answer_index; return '<div>' + (ok ? '✅' : '❌') + ' <b>' + (i + 1) + '.</b> ' + esc(q.stem.replace('_____', '[' + q.options[q.answer_index] + ']')) + (ok ? '' : '<br><span class="lv-sub">Bạn chọn: ' + (P.ans[i] == null ? '(bỏ trống)' : esc(q.options[P.ans[i]])) + '</span>') + '</div>'; }).join('') + '</div></div>';
+  $('lvAgain').onclick = startPractice;
+  $('lvSend').onclick = function () {
+    if (S.owner && !confirm('Bạn đang xem như giáo viên. Vẫn gửi kết quả thử?')) return;
+    var b = $('lvSend'); b.disabled = true;
+    api('POST', '/api/lesson-vocab/' + S.id + '/submit', { answers: S.questions.map(function (q, i) { return P.ans[i] == null ? null : P.ans[i]; }) }).then(function (r) {
+      $('lvSendMsg').innerHTML = '<div class="lv-msg ok">✅ Đã gửi kết quả <b>' + r.score + '/' + r.total + '</b> cho giáo viên (lần gửi thứ ' + r.attempt + '). Bạn vẫn có thể luyện lại và gửi lần nữa.</div>'; b.textContent = '✓ Đã gửi'; b.disabled = true; setTimeout(function () { b.textContent = '📨 Gửi lại kết quả mới'; b.disabled = false; }, 400);
+    }).catch(function (e) { $('lvSendMsg').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; b.disabled = false; });
+  };
+}
+
+/* ═════════════ KHỞI ĐỘNG ═════════════ */
+api('GET', '/api/me').then(function (r) { ME = r.user || ME; }).catch(function () {}).then(function () {
+  var id = parseInt(qs('id'), 10);
+  if (id && qs('tab') === 'results') return viewResults(id);
+  if (id) return viewStudy(id);
+  viewList();
+});
+window.__lv = { get D() { return D; }, get S() { return S; } };
+})();
+</script>
+</body>
+</html>

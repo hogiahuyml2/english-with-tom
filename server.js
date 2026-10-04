@@ -2232,6 +2232,13 @@ try {
   console.error('[wordgame] Không khởi động được:', e.message);
 }
 
+// ===================== BỘ TỪ THEO BÀI HỌC (AI tạo thẻ từ + 10 câu trắc nghiệm, giáo viên duyệt rồi giao) =====================
+try {
+  require('./lessonvocab')(app, { db, requireAuth, requireRole, now, notifyUser, ai: require('./ai') });
+} catch (e) {
+  console.error('[lesson-vocab] Không khởi động được:', e.message);
+}
+
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 

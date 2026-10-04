@@ -307,6 +307,33 @@ CREATE TABLE IF NOT EXISTS word_inventory (
   acquired_at TEXT NOT NULL,
   PRIMARY KEY (user_id, item_id)
 );
+CREATE TABLE IF NOT EXISTS lesson_sets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  cards TEXT NOT NULL,
+  questions TEXT NOT NULL,
+  deadline TEXT,
+  note TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS lesson_assign (
+  set_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  assigned_at TEXT NOT NULL,
+  PRIMARY KEY (set_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS lesson_results (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  set_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  score INTEGER NOT NULL,
+  total INTEGER NOT NULL,
+  answers TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_lesson_assign_user ON lesson_assign(user_id);
+CREATE INDEX IF NOT EXISTS idx_lesson_results_set ON lesson_results(set_id, user_id);
 CREATE INDEX IF NOT EXISTS idx_wsa_user ON word_set_assign(user_id);
 CREATE INDEX IF NOT EXISTS idx_vocab_level_topic ON vocab_words(level, topic);
 CREATE INDEX IF NOT EXISTS idx_word_progress_user ON word_progress(user_id);

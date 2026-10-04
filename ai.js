@@ -1396,4 +1396,62 @@ async function getVocabSuggestions(exercise) {
   throw new Error('Chưa cấu hình AI');
 }
 
-module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider };
+// ============================================================
+// generateJSON — gọi AI (Gemini/Claude đã liên kết) lấy JSON có cấu trúc, dùng cho tính năng khác
+// schema: JSON Schema dạng chữ thường (type: 'object' | 'array' | 'string' | 'integer' | 'boolean'...)
+// ============================================================
+function toGeminiSchema(sc) {
+  if (!sc || typeof sc !== 'object') return sc;
+  const out = { type: String(sc.type || 'object').toUpperCase() };
+  if (sc.properties) { out.properties = {}; for (const k of Object.keys(sc.properties)) out.properties[k] = toGeminiSchema(sc.properties[k]); }
+  if (sc.items) out.items = toGeminiSchema(sc.items);
+  if (sc.required) out.required = sc.required;
+  if (sc.enum) out.enum = sc.enum;
+  return out;
+}
+function toClaudeSchema(sc) {
+  if (!sc || typeof sc !== 'object') return sc;
+  const out = { ...sc };
+  if (sc.properties) { out.properties = {}; for (const k of Object.keys(sc.properties)) out.properties[k] = toClaudeSchema(sc.properties[k]); out.additionalProperties = false; out.required = sc.required || Object.keys(sc.properties); }
+  if (sc.items) out.items = toClaudeSchema(sc.items);
+  return out;
+}
+
+async function generateJSON({ system, user, schema, maxTokens, temperature }) {
+  const p = provider();
+  if (p === 'gemini') {
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    const baseBody = {
+      system_instruction: { parts: [{ text: system }] },
+      contents: [{ role: 'user', parts: [{ text: user }] }],
+      generationConfig: { responseMimeType: 'application/json', responseSchema: toGeminiSchema(schema), temperature: temperature == null ? 0.2 : temperature }
+    };
+    const attempts = [maxTokens || 8192, Math.min(6000, maxTokens || 6000)];
+    let lastErr;
+    for (let i = 0; i < attempts.length; i++) {
+      try {
+        return await rateLimitedGeminiCall(() => callGemini(url, null, {
+          ...baseBody,
+          generationConfig: { ...baseBody.generationConfig, maxOutputTokens: attempts[i], thinkingConfig: { thinkingBudget: 0 } }
+        }, 75000));
+      } catch (e) { lastErr = e; if (i < attempts.length - 1) console.warn('[AI] generateJSON attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...'); }
+    }
+    throw lastErr;
+  }
+  if (p === 'claude') {
+    const client = new Anthropic();
+    const model  = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const resp = await client.messages.create({
+      model, max_tokens: maxTokens || 8000, system,
+      messages: [{ role: 'user', content: [{ type: 'text', text: user }] }],
+      output_config: { format: { type: 'json_schema', schema: toClaudeSchema(schema) } }
+    });
+    const block = resp.content.find(b => b.type === 'text');
+    if (!block || !block.text) throw new Error('Claude: phản hồi rỗng');
+    try { return JSON.parse(block.text); } catch (e) { throw new Error('Claude JSON parse thất bại: ' + e.message); }
+  }
+  throw new Error('Chưa cấu hình AI');
+}
+
+module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider, generateJSON, toGeminiSchema, toClaudeSchema };

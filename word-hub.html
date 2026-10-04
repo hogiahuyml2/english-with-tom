@@ -257,6 +257,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
       <div class="wh-card" id="whQuests"></div>
     </div>
 
+    <div class="wh-card" id="whLesson" style="margin-bottom:16px;display:none;"></div>
     <div class="wh-card" id="whSets" style="margin-bottom:16px;display:none;"></div>
 
     <div class="wh-card" style="margin-bottom:16px;">
@@ -273,6 +274,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
         <a class="wh-link" href="game-flip.html"><span>🃏</span>Lật thẻ nhớ<small>Tìm cặp giống nhau</small></a>
         <a class="wh-link" href="game-match.html"><span>🎯</span>Ghép ảnh – Từ<small>Nối hình với chữ</small></a>
         <a class="wh-link" href="game-spell.html"><span>🔤</span>Đánh vần từ<small>Xếp chữ cái đúng thứ tự</small></a>
+        <a class="wh-link" href="lesson-vocab.html"><span>📘</span>Bộ từ theo bài học<small>Thẻ + 10 câu do giáo viên giao</small></a>
         <a class="wh-link" href="sentence-practice.html"><span>✍️</span>Luyện viết câu<small>Từ → câu hoàn chỉnh</small></a>
       </div>
     </div>
@@ -291,7 +293,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
     </div>
 
     <div class="wh-card wh-teacher" id="whTeacher" style="display:none;">
-      <div class="wh-title">👩‍🏫 Dành cho giáo viên — quản lý kho từ & theo dõi học sinh</div>
+      <div class="wh-title">👩‍🏫 Dành cho giáo viên — quản lý kho từ & theo dõi học sinh <a class="wh-cta" href="lesson-vocab.html" style="padding:7px 14px;font-size:13px;text-decoration:none;margin-left:auto;">📘 Tạo bộ từ theo bài học (AI)</a></div>
       <div class="wh-tabs">
         <button class="wh-pill on" data-tt="import">➕ Thêm từ</button>
         <button class="wh-pill" data-tt="list">📋 Danh sách từ</button>
@@ -1150,6 +1152,16 @@ function renderSets() {
   });
   if (S.focusSet && $('ws' + S.focusSet)) { $('ws' + S.focusSet).scrollIntoView({ block: 'center' }); S.focusSet = 0; }
 }
+function loadLesson() {
+  api('GET', '/api/lesson-vocab/mine').then(function (r) {
+    var el = $('whLesson');
+    if (!r.sets.length) { el.style.display = 'none'; return; }
+    el.style.display = '';
+    el.innerHTML = '<div class="wh-title">📘 Bộ từ theo bài học <span class="wh-sub">thẻ từ + 10 câu trắc nghiệm do giáo viên giao</span></div>' + r.sets.slice(0, 5).map(function (s) {
+      return '<div class="ws-item"><div class="ws-main"><b>' + esc(s.title) + '</b>' + (s.sent ? ' ✅' : '') + '<div class="ws-meta">' + (s.teacher ? 'Từ ' + esc(s.teacher) + ' · ' : '') + s.words + ' từ' + (s.sent ? ' · điểm cao nhất ' + s.best + '/10' : ' · chưa gửi kết quả') + '</div></div><a class="wh-cta" href="lesson-vocab.html?id=' + s.id + '" style="padding:9px 16px;font-size:14px;text-decoration:none;">' + (s.sent ? 'Ôn lại' : 'Học ngay') + '</a></div>';
+    }).join('') + (r.sets.length > 5 ? '<div class="wh-sub" style="padding-top:8px;"><a href="lesson-vocab.html">Xem tất cả ' + r.sets.length + ' bộ →</a></div>' : '');
+  }).catch(function () {});
+}
 function loadSets() {
   return api('GET', '/api/word-sets/mine').then(function (r) { S.sets = r.sets; renderSets(); }).catch(function () {});
 }
@@ -1260,7 +1272,7 @@ function boot() {
     if (!LEVEL_DEF.some(function (l) { return l.id === S.level; })) S.level = 'KET';
     var m = /[?&]set=(\d+)/.exec(location.search); if (m) S.focusSet = parseInt(m[1], 10);
     renderAll();
-    loadSets();
+    loadSets(); loadLesson();
     if (S.role === 'teacher' || S.role === 'admin') initTeacher();
   }).catch(function (e) {
     if (e.status === 401) return; // main.js sẽ đưa về trang đăng nhập
