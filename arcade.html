@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khu trò chơi — English With Tom</title>
+<title>Trò chơi từ vựng — English With Tom</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6F58EE">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
@@ -84,12 +84,12 @@
 <body data-page="arcade" data-guard="auth">
 <div id="site-header"></div>
 <section class="page-hero" style="padding: 26px 0 14px;">
-  <div class="container"><h1 style="font-size:26px;">🎮 Khu trò chơi</h1>
+  <div class="container"><div class="crumb"><a href="word-hub.html">Luyện từ</a> › Trò chơi</div><h1 style="font-size:26px;">🎮 Trò chơi từ vựng</h1>
   <p style="font-size:14px;">Vừa chơi vừa học từ vựng: mỗi ván đều tính XP, xu, chuỗi ngày và nhiệm vụ như các chế độ học khác.</p></div>
 </section>
 <div class="ar-wrap" id="arRoot"><div class="ar-card">Đang tải...</div></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=23"></script>
+<script src="js/main.js?v=24"></script>
 <script>
 (function () {
 'use strict';
@@ -147,10 +147,11 @@ var GAMES = [
 function viewHub() {
   stopCur();
   var me = ME || {};
-  var h = '<div class="ar-stats"><span class="ar-chip">⭐ Cấp ' + (me.level || 1) + ' · ' + (me.xp || 0) + ' XP</span><span class="ar-chip">🪙 ' + (me.coins || 0) + '</span><span class="ar-chip">🔥 ' + (me.streak || 0) + ' ngày</span><a class="ar-chip" href="word-hub.html" style="text-decoration:none;">📚 Góc Từ Vựng</a><button class="ar-pill" id="arMute">' + (muted ? '🔇 Âm thanh: tắt' : '🔊 Âm thanh: bật') + '</button></div>';
+  var h = '<div class="ar-stats"><span class="ar-chip">⭐ Cấp ' + (me.level || 1) + ' · ' + (me.xp || 0) + ' XP</span><span class="ar-chip">🪙 ' + (me.coins || 0) + '</span><span class="ar-chip">🔥 ' + (me.streak || 0) + ' ngày</span><a class="ar-chip" href="word-hub.html" style="text-decoration:none;">📚 Học & ôn từ</a><button class="ar-pill" id="arMute">' + (muted ? '🔇 Âm thanh: tắt' : '🔊 Âm thanh: bật') + '</button></div>';
   h += '<div class="ar-lv"><b style="font-size:13px;">Chọn cấp độ từ:</b>' + ['all', 'KET', 'PET', 'FCE', 'IELTS'].map(function (l) { return '<button class="ar-pill' + (l === LEVEL ? ' on' : '') + '" data-l="' + l + '">' + (l === 'all' ? 'Tất cả' : l) + '</button>'; }).join('') + '</div>';
   h += '<div class="ar-grid">' + GAMES.map(function (g) { return '<button class="ar-game ' + g.cls + '" data-g="' + g.id + '"><span class="tag">' + g.tag + '</span><div class="ic">' + g.ic + '</div><h3>' + g.name + '</h3><p>' + g.desc + '</p></button>'; }).join('') + '</div>';
   h += '<div class="ar-card" style="margin-top:16px;font-size:13.5px;color:var(--text-muted);">💡 Từ nào bạn trả lời đúng sẽ được ôn lại theo lịch (ngày mai, 3 ngày, 1 tuần…), từ sai sẽ được nhắc sớm. Mỗi từ chỉ cộng XP tối đa 3 lần đúng/ngày để công bằng cho mọi bạn.</div>';
+  h += '<div class="ar-h2">🖼️ Game hình ảnh <small>nhìn hình đoán từ — vui cho cả bạn nhỏ</small></div><div class="ar-grid">' + [['game-spell.html', '🔤', 'Đánh vần từ', 'Nhìn ảnh, điền chữ còn thiếu để hoàn thành từ đúng.', '#fbbf24,#b45309'], ['game-match.html', '🎯', 'Ghép ảnh – Từ', 'Nối ảnh với từ vựng tương ứng.', '#34d399,#047857'], ['game-flip.html', '🃏', 'Lật thẻ nhớ', 'Lật thẻ tìm cặp ảnh và từ trùng nhau.', '#818cf8,#4338ca']].map(function (g) { return '<a class="ar-game" style="background:linear-gradient(135deg,' + g[4] + ');text-decoration:none;min-height:120px;" href="' + g[0] + '"><div class="ic" style="font-size:34px;">' + g[1] + '</div><h3>' + g[2] + '</h3><p>' + g[3] + '</p></a>'; }).join('') + '</div>';
   h += '<div id="arResume"></div><div id="arBoard"></div><div id="arBadges"></div>';
   root.innerHTML = h;
   loadHubExtras();

@@ -46,13 +46,20 @@
     { href: 'school.html', label: 'Tiếng Anh phổ thông', key: 'school' },
   ];
   var navItemsAfter = [
-    { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
-    { href: 'word-hub.html', label: 'Học từ vựng', key: 'word-hub' },
-    { href: 'arcade.html', label: '🎮 Trò chơi', key: 'arcade' },
+    { href: 'word-hub.html', label: 'Luyện từ', key: 'vocab' },
   ];
+  // "Luyện từ" gom tất cả: học & ôn từ, flashcard, trò chơi, luyện câu, bộ từ của thầy — dùng chung 1 mục menu + 1 thanh tab
+  var VOCAB_TABS = [
+    { href: 'word-hub.html', label: '📚 Học & ôn từ', pages: ['word-hub'] },
+    { href: 'vocabulary.html', label: '🃏 Flashcard chủ đề', pages: ['vocabulary'] },
+    { href: 'arcade.html', label: '🎮 Trò chơi', pages: ['arcade'] },
+    { href: 'practice.html', label: '✍️ Luyện câu', pages: ['practice'] },
+    { href: 'lesson-vocab.html', label: '📘 Bộ từ của thầy', pages: ['lesson-vocab'] }
+  ];
+  var inVocab = VOCAB_TABS.some(function (t) { return t.pages.indexOf(page) >= 0; });
 
   function renderLink(i) {
-    var active = i.key === page ? ' class="active"' : '';
+    var active = (i.key === page || (i.key === 'vocab' && inVocab)) ? ' class="active"' : '';
     var idAttr = i.id ? ' id="' + i.id + '"' : '';
     return '<a href="' + i.href + '"' + active + idAttr + ' style="position:relative">' + (i.icon || '') + i.label + '</a>';
   }
@@ -121,6 +128,18 @@
   var f = document.getElementById('site-footer');
   if (h) h.outerHTML = header;
   if (f) f.outerHTML = footer;
+
+  // Thanh tab "Luyện từ" dưới header (chỉ ở các trang thuộc nhóm này)
+  if (inVocab) {
+    var st = document.createElement('style');
+    st.textContent = '.vt-bar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:74px;z-index:90}.vt-in{display:flex;gap:6px;overflow-x:auto;padding:8px 20px;scrollbar-width:none}.vt-in::-webkit-scrollbar{display:none}.vt-tab{flex-shrink:0;padding:8px 15px;border-radius:99px;font-size:13.5px;font-weight:700;color:var(--text-muted);border:1.5px solid transparent;white-space:nowrap}.vt-tab:hover{background:var(--primary-soft);color:var(--text)}.vt-tab.on{background:var(--gradient);color:#fff}';
+    document.head.appendChild(st);
+    var bar = document.createElement('div');
+    bar.className = 'vt-bar';
+    bar.innerHTML = '<div class="container vt-in">' + VOCAB_TABS.map(function (t) { return '<a class="vt-tab' + (t.pages.indexOf(page) >= 0 ? ' on' : '') + '" href="' + t.href + '">' + t.label + '</a>'; }).join('') + '</div>';
+    var hd = document.querySelector('.site-header');
+    if (hd && hd.parentNode) hd.parentNode.insertBefore(bar, hd.nextSibling);
+  }
 
   var toggle = document.getElementById('menuToggle');
   if (toggle) toggle.addEventListener('click', function () {
