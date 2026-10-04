@@ -1,0 +1,120 @@
+'use strict';
+const { notice, cloze, fill, passage, listen } = require('./lib');
+const S = (p) => 'Cambridge B1 Preliminary for Schools Trainer · Test 6 · ' + p;
+
+module.exports = [
+  // Reading P1 — key: C B C B A
+  notice('pet6-r1-1', 'B1', "Erica,\nI've just read that novel you lent me – really enjoyed it, so I'm feeling sad I've finally finished it! Just wondering if you've got ideas for anything else I might like as much.\nKatie", null,
+    ["Katie is upset that Erica hasn't returned the book she's borrowed.", 'Katie disagrees with Erica about a book they\'ve both just read.', 'Katie wants some suggestions about what she could read next.'], 'C', S('Reading P1 Q1')),
+  notice('pet6-r1-2', 'B1', 'PLEASE DO NOT LEAVE BICYCLES HERE!\nENTRANCE IN USE NIGHT AND DAY\nCYCLE PARK BEHIND BUILDING', null,
+    ['This entrance is only for use by cyclists who need to enter the building.', 'You will prevent people entering and leaving if your bicycle is left here.', 'There is somewhere you can leave your bicycle opposite this building.'], 'B', S('Reading P1 Q2')),
+  notice('pet6-r1-3', 'B1', "New Message\nFrom: Mr Davidson\nTo: Students\n\nThanks for attending the film show yesterday, and the director's interesting talk. The questions you asked him, and the lively discussion in class afterwards, showed you'd really thought about the film.", 'Why is Mr Davidson contacting students?',
+    ['to give his opinion of the film they watched together', 'to suggest that they should spend another lesson talking about the film', 'to congratulate them on the way they took part in a film event'], 'C', S('Reading P1 Q3')),
+  notice('pet6-r1-4', 'B1', 'UNDER-16s SAILING CLUB\nNow taking new members\nLimited spaces available\nClub meets every Saturday – come along!\nFees: weekly or monthly', null,
+    ['Young people have the chance to learn some new watersports at this club.', "You don't need to pay for several sessions in advance at this club.", 'To become a member at this club, apply by Saturday at the latest.'], 'B', S('Reading P1 Q4')),
+  notice('pet6-r1-5', 'B1', 'Latest news!\nDespite previous difficulties between members, pop band Melt has just announced a concert tour later in the year.\nTickets on sale from ticket agents soon!\nWatch this website for details.', null,
+    ['To attend a Melt tour concert, check the site regularly to find out more.', "You'll soon be able to buy tickets for Melt's concerts on this website.", "Melt have just started touring again even though they've had problems in the band."], 'A', S('Reading P1 Q5')),
+
+  // Reading P3 — key: B A C B D
+  passage('pet6-r3', 'B1', 'Whale-watching trip (by Jack Madison, 15)',
+`A while ago, my friend Olivia was telling me about a whale-watching trip she'd been on, in Canada. I wanted to tell her I was about to do the same thing, off the north coast of the UK, where my grandparents live. Whales had recently appeared there again, and my grandparents were convinced we'd see some – so I was sure my trip would be as good as Olivia's! But then I saw some reviews of the trip my dad had booked for us, when no-one had seen any whales at all. So, in the end, I decided not to tell Olivia anything about my trip, in case it wasn't successful!
+
+Anyway, Dad and I set off on our trip – which was Dad's idea – and it was fantastic! Travelling out to sea on the tour boat with our guide, we soon reached the spot where whales often appeared. Then we waited – and nothing happened. I was sure this wouldn't last, though. People kept calling out they'd seen one, which was exciting – but then it turned out they were wrong. Then finally I saw something move under the water – a minke whale! So I felt like a hero for the rest of the trip!
+
+The whale was a wonderful sight, with its huge back not far from the boat. Our guide said it was around five tonnes in weight and around 10 metres long. Yet, despite its size, it swam alongside us at speed, and with little effort. We waited to see if more appeared, and some time later, we saw three more some distance away, that kept diving under the water and coming up again. Then just after I'd filmed them, they disappeared.
+
+Although the water's less deep around the coast, larger whale species appear in the area with minke whales, feeding on fish. But minkes are curious creatures, so they're more likely to approach tourist boats – which was why we were successful! Then later, up on the cliffs, we looked out to sea, searching for signs of whales. Sometimes seabirds diving into the water means whales are around, as they're stealing the whales' meal. We were unlucky, sadly – but we'll be back!`,
+    [["Jack wasn't keen to mention his whale-watching trip to Olivia because", ['he thought her trip sounded a lot more exciting.', "he'd read some negative reports about where he was going.", "he wasn't sure if his dad had definitely arranged it.", "he didn't know whether she was very interested in whales."], 'B'],
+     ['On board the whale-watching boat, Jack', ['was proud to be the first person to see a whale.', 'began to worry that they might all be disappointed.', 'tried not to get excited when anyone saw something.', "was glad he'd persuaded his dad to come with him."], 'A'],
+     ['When Jack saw the minke whale, he was', ['surprised at how close it came to the boat.', 'amazed that it was so much bigger than he\'d imagined.', 'impressed that it moved through the water so easily.', 'delighted to see it had arrived with several others.'], 'C'],
+     ['Jack suggests minke whales appeared in the same area as the boat because', ['they knew there were plenty of fish there.', 'they were attracted by the arrival of the visitors.', "they didn't have to compete for food with seabirds.", 'they preferred how deep the water was there.'], 'B'],
+     ['What would Jack text to his grandparents about the whales?', ["I'll send you my video of the group of whales – they only appeared briefly, so they weren't as interesting as the first one we saw.", "Dad said he'd really wanted to go to Canada to watch whales, like my friend Olivia – but now we're really happy we came here.", "I must take you up to the cliffs to look for whales – we've seen them every time we've been there, so far.", "You were so sure our whale-watching trip would be a success, while I still had doubts – but you were right."], 'D']],
+    S('Reading P3 Q11–15')),
+
+  // Reading P5 — key: C D B C A D
+  cloze('pet6-r5-21', 'vocab', 'B1', "Do you always have a piece of fruit for your lunch? If you do, it's probably an apple! Apples have grown in western Europe for hundreds of years. So it would be easy to ____ that's where they came from originally.", ['consider', 'wonder', 'imagine', 'expect'], 'C', S('Reading P5 Q21')),
+  cloze('pet6-r5-22', 'vocab', 'B1', 'In fact, though, the fruit we know today has been on an extraordinary ____ over the centuries.', ['distance', 'travel', 'course', 'journey'], 'D', S('Reading P5 Q22')),
+  cloze('pet6-r5-23', 'vocab', 'B1', 'Research suggests modern apples originally came all the way from Kazakhstan in Asia, and ____ up in Europe partly because of people carrying goods along the famous Silk Road.', ['reached', 'ended', 'set', 'kept'], 'B', S('Reading P5 Q23')),
+  cloze('pet6-r5-24', 'vocab', 'B1', 'Carrying goods along the Silk Road helped to spread apples in both ____.', ['routes', 'ways', 'directions', 'paths'], 'C', S('Reading P5 Q24')),
+  cloze('pet6-r5-25', 'vocab', 'B1', "People ____ down their apples after they'd finished eating them, and the seeds entered the ground and produced new types of apple trees.", ['threw', 'dropped', 'fell', 'let'], 'A', S('Reading P5 Q25')),
+  cloze('pet6-r5-26', 'vocab', 'B1', 'Farmers were then able to start developing a much ____ range of apples.', ['longer', 'deeper', 'higher', 'broader'], 'D', S('Reading P5 Q26')),
+
+  // Reading P6 — key: an · no · from · every/each · spite · my
+  fill('pet6-r6-27', 'B1', "I actually swam one length of the swimming pool! I know it doesn't seem like ____ achievement, because swimming is something that everyone seems to learn really easily.", 'an', S('Reading P6 Q27')),
+  fill('pet6-r6-28', 'B1', "But there was just ____ way I could manage it. And it wasn't as if I hadn't tried.", 'no', S('Reading P6 Q28')),
+  fill('pet6-r6-29', 'B1', 'Apart ____ the lessons I had at school, I also went swimming with Dad all week.', 'from', S('Reading P6 Q29')),
+  fill('pet6-r6-30', 'B1', 'Apart from the lessons I had at school, I also went swimming with Dad ____ week.', ['every', 'each'], S('Reading P6 Q30')),
+  fill('pet6-r6-31', 'B1', "But in ____ of all the practice I was getting, I still wasn't able to swim.", 'spite', S('Reading P6 Q31')),
+  fill('pet6-r6-32', 'B1', "I suddenly realised – he wasn't holding me! I was swimming on ____ own, without help!", 'my', S('Reading P6 Q32')),
+
+  // Listening P2 — key: A B C A C B
+  listen('pet6-l2-8', 'B1', 'You will hear two friends talking about working with other students in class.',
+    [['M', 'That class was fun. I like working in groups like that.'],
+     ['F', "I guess it means there are five of you to set up the experiment, so you can get it done in half the time. How much I enjoy it, though, depends very much on who I'm asked to work with. I usually don't get along so well with at least one of the others, which kind of spoils things."],
+     ['M', 'I suppose it does.'],
+     ['F', "But at least you can solve problems and work out what's happening better if there are five minds thinking about it."]],
+    [['The girl thinks that working with other students in class', ['is more useful for the lesson.', 'takes longer than working alone.', 'makes classes more fun.'], 'A']], S('Listening P2 Q8')),
+  listen('pet6-l2-9', 'B1', 'You will hear two friends talking about a school trip to a museum.',
+    [['M', 'That was a great museum.'],
+     ['F', "If I went again, though, I'd suggest not bothering with that room with those old pots."],
+     ['M', 'I liked them – they really helped me to imagine what life was like back then. You seemed to enjoy the shop though – you were in there for ages.'],
+     ['F', 'I wish I\'d taken more money.'],
+     ['M', 'It gives us a good reason to come back – there was this amazing puzzle of some ancient ruins I really wanted.'],
+     ['F', "It was a long way to come to see a museum of that size, though."],
+     ['M', "Yes, I imagined it'd be much bigger."]],
+    [['The friends agree that', ['the exhibitions were all interesting.', 'there were nice things in the shop.', 'it was too large to see in one visit.'], 'B']], S('Listening P2 Q9')),
+  listen('pet6-l2-10', 'B1', 'You will hear two friends talking about a football match.',
+    [['M', 'I really enjoyed that. I came so close to getting the ball in the net a few times, too.'],
+     ['F', 'If you all play as well as that in every game, you should start actually beating some of the other teams.'],
+     ['M', "I hope so. We've all trained really hard this season, and our new coach has made a big difference. I think I probably played better than usual because Mum and Dad could both get here for once. I'm always really cheerful when they do."],
+     ['F', "Well I'm sure they enjoyed it as much as I did."],
+     ['M', 'I hope so.']],
+    [['The boy is feeling happy because', ['his team won.', 'he scored a goal.', 'his parents came to watch.'], 'C']], S('Listening P2 Q10')),
+  listen('pet6-l2-11', 'B1', "You will hear two friends talking about a poem they've read.",
+    [['F', 'What did you think of that poem we read in the literature class?'],
+     ['M', "It always takes me a while to work out what old poems like that are about, but that's what I like about them."],
+     ['F', "Me too. It'd be a shame if you understood everything after you'd only read it once."],
+     ['M', "I can't help wondering why the poet made it so long, though."],
+     ['F', "I'm sure it'd be possible to say the same thing in half as many words."],
+     ['M', 'It would, and without changing the message of what he wants to say.'],
+     ['F', 'Absolutely!']],
+    [['They think the poem would be better if', ['it was shorter.', 'it had a clearer meaning.', 'the sections were in a different order.'], 'A']], S('Listening P2 Q11')),
+  listen('pet6-l2-12', 'B1', 'You will hear a boy asking a girl about an essay he has written.',
+    [['M', 'So what do you think of my essay?'],
+     ['F', "I think it's OK. The teacher will definitely be surprised by what you chose to write about, but in a good way – it's certainly original."],
+     ['M', "So you think it's ready to hand in then?"],
+     ['F', "If I were you, I'd look at the way it's written. You've included plenty of information about the topic and some good examples to support what you're saying, but it's written a bit like a list at the moment. You need to see if you can get it to flow more, so it sounds more natural."],
+     ['M', "I'll try!"]],
+    [['The girl thinks the boy should', ['add more detail.', 'change the subject.', 'improve the style.'], 'C']], S('Listening P2 Q12')),
+  listen('pet6-l2-13', 'B1', 'You will hear two friends talking about a video game.',
+    [['M', 'You know that video game you lent me?'],
+     ['F', 'Yes, have you got it with you?'],
+     ['M', "I haven't actually. I put it in my bag last night to bring to school today, but I think my brother saw it and probably wanted to play it, too. I think he took it out and it'll be in his bedroom somewhere now."],
+     ['F', 'Oh dear!'],
+     ['M', "He didn't know I said I'd give it back to you today. I'm sure he'd be extremely grateful if we could keep it for a couple of extra days."],
+     ['F', "That's OK, no problem."]],
+    [['Why is the boy talking to the girl about the video game?', ['to apologise', 'to make a request', 'to thank her'], 'B']], S('Listening P2 Q13')),
+
+  // Listening P4 — key: A C A B B C
+  listen('pet6-l4', 'B1', 'You will hear an interview with a young woman called Lin, who makes online videos about environmental issues.',
+    [['M', "Lin, you're what's called a vlogger – you put videos that you've made online for people to watch, in your case about environmental issues. How did you learn to do that?"],
+     ['F', "One of my old school friends was already a vlogger, but her videos were about travel, so she wasn't really at home enough to help. I'm still at university and my department was running these sessions for helping people become vloggers, so I went along to those. There's so much stuff about it online, but I just found it confusing."],
+     ['M', 'Why did you choose to focus on environmental issues?'],
+     ['F', "It's just something that I've believed is important for ages and think too little is being done, so I wanted to help. It's not connected to what I'm studying at university, so it wasn't like I got advice from any of my classmates. There were already plenty of people uploading videos about these issues, which was really helpful."],
+     ['M', 'How did you feel when your videos first became successful?'],
+     ['F', "I was expecting to only have a few people watching regularly for years. I couldn't believe how wrong I was about this, even though I knew that many people felt strongly about the subject. Making videos for one person or a hundred thousand is the same process, so having such a big following didn't worry me as much as I thought."],
+     ['M', 'How often should people upload videos if they want to become successful?'],
+     ['F', "If you're putting videos online daily, then people will soon become bored. It'll also be hard for you to keep coming up with new ideas. If you're uploading them so rarely that people never get interested in the first place, say once a month, that's not going to work either, so aiming for weekly is probably frequent enough."],
+     ['M', "What's your latest video about?"],
+     ['F', "I've just finished a series encouraging more people to use buses and trains rather than their cars, but I'll be moving on to how and why the world is becoming warmer in the next few videos. The most popular ones so far gave people ideas on how to re-use things they usually throw away, like glass and plastic."],
+     ['M', "Apart from vlogging, is there anything else you'd like to try?"],
+     ['F', "I still love what I do, especially finding out more about environmental topics for new videos, but it's only one way of telling the public about these things. Moving into TV would greatly increase the audience, which of course means more people would then be talking about these important issues."],
+     ['M', 'Thanks, Lin!']],
+    [['How did Lin learn how to start putting videos online?', ['She did a short course.', 'She used information online.', 'She asked someone she knew.'], 'A'],
+     ['Why did Lin choose to focus on the environment?', ['A teacher recommended this topic.', 'There were so few online videos about it.', "She'd been interested in it for a long time."], 'C'],
+     ['How did Lin feel when her online videos first became successful?', ['surprised it happened so quickly', 'anxious about being seen by so many people', 'certain that she would get even more followers'], 'A'],
+     ['Lin says that to become successful, people should put videos online', ['every day.', 'once a week.', 'once a month.'], 'B'],
+     ["Lin's latest video is about", ['climate change.', 'public transport.', 'recycling.'], 'B'],
+     ["Why does Lin think it's important for her to try new things?", ['to stop herself becoming bored', 'to learn more about the subject', 'to create discussion about the topic'], 'C']],
+    S('Listening P4 Q20–25')),
+];

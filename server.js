@@ -2501,6 +2501,13 @@ try {
   console.error('[mcq] Không khởi động được:', e.message);
 }
 
+// ===================== KIỂM TRA ĐẦU VÀO (đề cố định cấu trúc, rút ngẫu nhiên từ ngân hàng Cambridge; quy đổi CEFR; lộ trình học) =====================
+try {
+  require('./placement')(app, { db, requireAuth, requireRole, now, notifyUser, ai: require('./ai') });
+} catch (e) {
+  console.error('[placement] Không khởi động được:', e.message);
+}
+
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 

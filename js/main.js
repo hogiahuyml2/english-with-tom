@@ -36,6 +36,7 @@
     { href: 'index.html', label: 'Trang chủ', key: 'home', icon: homeIcon },
     { href: 'dashboard.html', label: 'Tiến trình', key: 'dashboard' },
     { href: 'assigned.html', label: 'Bài tập được giao', key: 'assigned' },
+    { href: 'placement.html', label: 'Kiểm tra đầu vào', key: 'placement' },
   ];
   var programItems = [
     { href: 'ket.html', label: 'KET', key: 'ket' },

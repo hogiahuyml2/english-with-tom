@@ -419,6 +419,7 @@
 
     <!-- Verify banner -->
     <div id="verifyBanner" style="display:none;"></div>
+    <div id="plBanner" style="display:none;"></div>
 
     <!-- Stat cards -->
     <div class="stat-grid">
@@ -557,7 +558,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=25"></script>
+<script src="js/main.js?v=26"></script>
 <script>
 var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
 var G_allSubs = [];
@@ -972,6 +973,16 @@ async function loadProgress() {
   document.getElementById('pfName').textContent = u.name;
   document.getElementById('pfRole').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
   document.getElementById('pfAvatar').textContent = (u.name||'?').trim().split(/\s+/).pop().charAt(0).toUpperCase();
+
+  if (u.role === 'student') {
+    fetch('/api/placement/status',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(st){
+      if (!st) return; var pb = document.getElementById('plBanner'); var h = (st.history||[])[0];
+      pb.className = 'note'; pb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px;background:var(--primary-soft);border-color:transparent;color:var(--text)';
+      if (st.attempt) pb.innerHTML = '<span>🎯 Bạn đang làm dở Bài kiểm tra đầu vào.</span><a class="btn btn-sm btn-primary" href="placement.html">Làm tiếp</a>';
+      else if (h) pb.innerHTML = '<span>🎯 Trình độ gần nhất của bạn: <b>' + h.level + '</b> (' + h.score + '/100) — xem lộ trình học ưu tiên kỹ năng yếu.</span><a class="btn btn-sm" href="placement.html?result=' + h.id + '">Xem kết quả</a>';
+      else pb.innerHTML = '<span>🎯 Chưa biết trình độ của mình? Làm Bài kiểm tra đầu vào (~' + st.blueprint.totalMinutes + ' phút) để nhận lộ trình học riêng.</span><a class="btn btn-sm btn-primary" href="placement.html">Làm bài ngay</a>';
+    }).catch(function(){});
+  }
 
   if (!u.email_verified) {
     var vb = document.getElementById('verifyBanner');

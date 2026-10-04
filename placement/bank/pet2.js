@@ -1,0 +1,120 @@
+'use strict';
+const { notice, cloze, fill, passage, listen } = require('./lib');
+const S = (p) => 'Cambridge B1 Preliminary for Schools Trainer · Test 2 · ' + p;
+
+module.exports = [
+  // Reading P1 — key: C A B C A
+  notice('pet2-r1-1', 'B1', 'HEAVY SNOW EXPECTED OVERNIGHT\nTRAIN AND BUS DELAYS POSSIBLE\nCHECK WEBSITES REGULARLY – SOME SCHOOLS AND OFFICES MAY BE CLOSED TOMORROW', null,
+    ['The bad weather will make a lot of public transport late tomorrow.', 'Snow that is falling will cause a number of problems tomorrow.', 'Students should watch for announcements in case they are unable to attend classes tomorrow.'], 'C', S('Reading P1 Q1')),
+  notice('pet2-r1-2', 'B1', "Have you got books you've already read? Bring them to our Book Exchange on Friday – other students might enjoy them!\nMrs Jones", 'What is Mrs Jones asking students to do?',
+    ['share books they no longer want with their schoolmates', "find out from other students which books they've enjoyed", 'bring in a good book to talk about on Friday'], 'A', S('Reading P1 Q2')),
+  notice('pet2-r1-3', 'B1', "Billy,\nHave you got Joanna's number? I'm supposed to meet her at the cinema in 10 minutes, but Dad's driving me into town and we're in a huge traffic jam!\nThanks!\nSophie", null,
+    ['Sophie wants Billy to contact Joanna and warn her about traffic problems in town.', "Sophie needs to let Joanna know that she's probably going to be late.", "Sophie's not sure when she's supposed to meet Joanna to see a film."], 'B', S('Reading P1 Q3')),
+  notice('pet2-r1-4', 'B1', "New Message\nFrom: Coach\nTo: Rugby club\n\nJust wanted to thank players in Saturday's match, and people who supported them. Remember, the other side were league winners, so all wasn't bad – but next time let's beat them!", 'What is the coach doing?',
+    ['congratulating the team on their most recent win', "letting the team's fans know the positive effect of their support", 'encouraging the team to play even better in a future match'], 'C', S('Reading P1 Q4')),
+  notice('pet2-r1-5', 'B1', 'Café Menu\nSee below for our regular dishes – or for today\'s specials go inside to see the board by the counter!', null,
+    ["We have more food available, apart from what's written on the menu.", 'To decide what to eat, you must go and look at the board inside.', 'Speak to someone at the counter when you want to order your food.'], 'A', S('Reading P1 Q5')),
+
+  // Reading P3 — key: C A B D A
+  passage('pet2-r3', 'B1', 'Coasteering',
+`Lily Carter had no idea what present she wanted for her 14th birthday. But she'd always been keen on challenging sports, especially to do with water, like surfing and sailing. So when her parents heard about an activity called coasteering – exploring rocks along the coast by climbing and swimming – they thought Lily would love it. They found a course offered at an activity centre called Porthdean, just along the coast from the family home, which was perfect. So after checking it was led by experienced instructors, they signed her up.
+
+Lily had seen a TV show about coasteering, and was interested in doing it, although she'd thought only adults could take part. But then she discovered that on courses at Porthdean, there'd also be people her age jumping from rocks into the sea, and also exploring caves – which she was never normally allowed to do, so she really wanted to go. But she still asked her dad to go along too and, although he wondered whether he'd like coasteering himself, he knew how much Lily wanted someone to accompany her, so he agreed.
+
+Lily and her dad drove to Porthdean, where they attended a session with their instructors to learn basic safety and techniques and be given helmets and special wetsuits to keep the cold out. The group they joined was quite small, which meant they got lots of individual attention. Says Lily, 'The entire trip was awesome – although the water was freezing! But our instructors encouraged the whole group so much, we were ready to try absolutely all the challenges, even stuff we hadn't expected at all, like jumping off high cliffs! I must admit, the one I jumped off wasn't that high, but Dad went much higher!'
+
+'Anyway, Dad and I hadn't realised how hard it would be physically, so we were glad we were fit,' explains Lily. 'Even so, afterwards, we actually felt like we'd done loads of hard exercise in the gym! But I'll keep the memories of that trip forever, I reckon. And the instructors are going to put a video of it onto the website, so my friends will see it. They'd never believe me otherwise!'`,
+    [["Why did Lily's parents choose Porthdean for her coasteering present?", ['It offered various courses in her favourite watersport.', 'The instructors there were highly recommended.', "It wasn't too far away from where they lived.", 'She had already tried some activities there.'], 'C'],
+     ['How did Lily feel about the coasteering course?', ["pleased that it included something she'd always wanted to try", 'excited about doing the experience all on her own', 'keen to find out more about what it involved', 'interested to see whether she was the only teenager'], 'A'],
+     ['Lily particularly liked her instructors because they made sure everyone', ['was comfortable with the kit they were given.', 'felt confident about the new things they would attempt.', 'got the same amount of attention.', 'knew all the activities they would take part in.'], 'B'],
+     ['Lily says that after the course, she was', ["happy she'd shared something so exciting with her dad.", "sorry she hadn't worked at getting fitter before she went.", 'proud that her friends all thought she\'d done well.', 'surprised at how exhausted she was by the activities.'], 'D'],
+     ['What would Lily text to a friend while she was away on the course?', ["I don't think Dad was sure before he came that he'd enjoy it – but actually, he's been braver than me!", "I wanted to do the coasteering course, and mentioned it to my parents before my birthday. But I never expected they'd let me go!", "Our session before the activities was great, although I really didn't think I'd need a wetsuit for the cold – and I was right!", "Going into caves was amazing. I'd love to explore them by myself when we're next at the beach – I'm sure my parents will let me!"], 'A']],
+    S('Reading P3 Q11–15')),
+
+  // Reading P5 — key: D A C B A D
+  cloze('pet2-r5-21', 'grammar', 'B1', 'Many people think sheep aren\'t very intelligent creatures. But in fact, ____ to new research, they may be cleverer than we think.', ['regarding', 'following', 'resulting', 'according'], 'D', S('Reading P5 Q21')),
+  cloze('pet2-r5-22', 'vocab', 'B1', 'Recognising faces is an important human social ____.', ['skill', 'talent', 'knowledge', 'method'], 'A', S('Reading P5 Q22')),
+  cloze('pet2-r5-23', 'vocab', 'B1', 'Sheep are also social animals that can recognise other sheep as well as ____ humans.', ['ordinary', 'usual', 'familiar', 'frequent'], 'C', S('Reading P5 Q23')),
+  cloze('pet2-r5-24', 'vocab', 'B1', 'Training involved getting the sheep to ____ decisions about the photos they saw.', ['set', 'make', 'have', 'do'], 'B', S('Reading P5 Q24')),
+  cloze('pet2-r5-25', 'vocab', 'B1', 'At one end of a room, they would see two different photographs, and would receive a ____ of food for approaching the photograph of the celebrity.', ['reward', 'benefit', 'tip', 'goal'], 'A', S('Reading P5 Q25')),
+  cloze('pet2-r5-26', 'vocab', 'B1', "Over time, the sheep learned to ____ getting food with the celebrity's photograph.", ['attach', 'join', 'add', 'connect'], 'D', S('Reading P5 Q26')),
+
+  // Reading P6 — key: have/had · they · took · There · by · no
+  fill('pet2-r6-27', 'B1', 'The aim was to display the work that the fashion students ____ recently been involved in all year here at the college.', ['have', 'had'], S('Reading P6 Q27')),
+  fill('pet2-r6-28', 'B1', 'The aim was to show parents and friends the results. And it was clear to us that ____ were impressed by it.', 'they', S('Reading P6 Q28')),
+  fill('pet2-r6-29', 'B1', 'The models that ____ part in the show were actually the students themselves, wearing their own clothes designs.', 'took', S('Reading P6 Q29')),
+  fill('pet2-r6-30', 'B1', '____ were some amazingly creative clothes on show, such as a dress made of recycled materials.', 'there', S('Reading P6 Q30')),
+  fill('pet2-r6-31', 'B1', 'The scenery, created ____ the students in the Art Department, was really spectacular too.', 'by', S('Reading P6 Q31')),
+  fill('pet2-r6-32', 'B1', "There's absolutely ____ doubt in my mind that all these students are extremely talented.", 'no', S('Reading P6 Q32')),
+
+  // Listening P2 — key: A C C B A C
+  listen('pet2-l2-8', 'B1', 'You will hear two friends talking about a music performance.',
+    [['F', 'I enjoyed that.'],
+     ['M', "Me, too. I don't think either of them played a wrong note in the whole performance."],
+     ['F', "I think I heard a few – perhaps they hadn't had enough time to play together before the concert."],
+     ['M', "Maybe. I still wish they'd played a little longer, though – maybe a few more songs."],
+     ['F', "I thought it was about right as it was. That kind of music sounds so much better in a smaller place – I don't know why they chose to have it there."],
+     ['M', 'The two guitars are too quiet for somewhere that size.']],
+    [['The friends agree that', ['the concert hall was too big.', 'the performance was too short.', 'the musicians needed more practice.'], 'A']], S('Listening P2 Q8')),
+  listen('pet2-l2-9', 'B1', 'You will hear two friends talking about a play they have seen recently.',
+    [['F', 'That was an amazing play.'],
+     ['M', 'It was. Over half the people watching were school students like us.'],
+     ['F', "I guess that's not so unusual for an afternoon performance. Most adults are working then."],
+     ['M', "I wonder what it's like being an actor. They must have to practise so hard."],
+     ['F', 'The ones in this play certainly had. I found it difficult to believe how realistic they managed to make all of the characters.'],
+     ['M', "Yes, and I couldn't predict what would happen at the end."],
+     ['F', 'I studied this play in literature classes last year, so I already knew what was going to happen.']],
+    [['What surprised the girl about the play?', ['how young the audience was', 'how unusual the ending was', 'how good the acting was'], 'C']], S('Listening P2 Q9')),
+  listen('pet2-l2-10', 'B1', 'You will hear a boy telling a friend about an art course he went on.',
+    [['F', 'How was the art course?'],
+     ['M', 'Fantastic – I learned so much.'],
+     ['F', 'So what was the best bit?'],
+     ['M', "There were so many, but if I could only choose one, I think it'd be how the teacher got us to practise techniques in a number of different ways. I thought I'd spend most of the time drawing or painting, but we did so many other activities, all of which were quite useful for developing our skills."],
+     ['F', 'Sounds good.'],
+     ['M', "And I never knew there were so many jokes about artists! Our teacher seemed to know them all, which was great fun."]],
+    [['What did the boy enjoy most about it?', ['the strong focus on drawing and painting', "the teacher's sense of humour", 'the variety of practice activities'], 'C']], S('Listening P2 Q10')),
+  listen('pet2-l2-11', 'B1', 'You will hear two friends talking about getting to school.',
+    [['M', 'Are you walking to school with us tomorrow?'],
+     ['F', "I might go on my own, actually. I don't want to be late."],
+     ['M', "But you'll enjoy it more if you come with us."],
+     ['F', "It's often no different to walking by myself because you all walk slowly along with your headphones on."],
+     ['M', 'We show each other things on our phones, too.'],
+     ['F', "That's true, which is great in our free time, but not when it means arriving half an hour later than I would if I was by myself. At least you're polite enough to move out of the way for other people on the pavement, though."]],
+    [['The girl thinks that walking to school with her friends', ['is a good way to be sociable.', 'takes longer than walking alone.', 'causes problems for other pedestrians.'], 'B']], S('Listening P2 Q11')),
+  listen('pet2-l2-12', 'B1', 'You will hear a boy talking to a friend about his new house.',
+    [['F', "How's your new house?"],
+     ['M', "I like it. The colours aren't what I'd ever choose, but my mum says we can easily fix that. My bedroom's much bigger than the one at the old house, which annoyed my brother as his is quite small – like the rest of the house."],
+     ['F', 'I thought people usually moved to be somewhere bigger...'],
+     ['M', "Sure, but where it is is important, too, and the new one's much closer to my parents' work and to school, too. I can walk there in five minutes, which means I get to stay longer in bed in the morning."]],
+    [['How does the boy feel about it?', ['pleased with its location', 'amazed at how big it is', "satisfied with how it's decorated"], 'A']], S('Listening P2 Q12')),
+  listen('pet2-l2-13', 'B1', 'You will hear a girl talking about a day out with her family.',
+    [['M', 'How was your weekend?'],
+     ['F', 'Good, thanks. We went for a day out by the river.'],
+     ['M', "The river near here? It's easy to walk to, but it's not like there's lots to do there."],
+     ['F', "I know. That's why we went somewhere else, about an hour away in the car. It's dangerous for swimming because the river's really deep and wide there, but we've never found a better place to sit and eat. I know you'd probably prefer somewhere which has lots of activities, but it's really peaceful, so we just sit on the grass, enjoy our food and relax."],
+     ['M', 'Sounds nice.']],
+    [["Why did the girl's family choose to go to the river?", ['There are many things to do.', "It's close to where they live.", "It's a good place for a picnic."], 'C']], S('Listening P2 Q13')),
+
+  // Listening P4 — key: C B A A C A
+  listen('pet2-l4', 'B1', 'You will hear an interview with a 15-year-old boy called Callum, who runs a successful book review website for teenagers.',
+    [['F', 'Callum, you have a popular book review website. How did you learn about setting up a website?'],
+     ['M', "I first learned to write computer programs when I was eleven. I created instructions in class to control a little robot. My mum works in IT though, and she showed me how to use similar skills to create my own pages online. There are hundreds of websites about this too, but I found them quite confusing."],
+     ['F', 'Why did you decide to set up a book review website?'],
+     ['M', "I'd seen an article about teenagers not reading enough and was wondering about possible solutions to this. My best friend's into video games and writes reviews for various websites. These sites seem to encourage teenagers to play more games, so I thought it must be possible to do the same with reading. It's nice to see teenagers exchanging opinions about literature, rather than video games!"],
+     ['F', 'How did you feel when your site first went online?'],
+     ['M', "I was nervous, of course, but I couldn't believe how well it worked. But even when a site looks as good as mine did, you can never be sure that people will like it. And if it ends up not being popular, there's no way you'll achieve what you've set out to do with the site."],
+     ['F', "You have school, your website and a social life – what's a typical day like?"],
+     ['M', "You'd think I'd never have a chance to relax, wouldn't you, but it's rarely that busy. I certainly don't have many opportunities to get bored, as everything I do throughout each day is so different. I make a plan each evening for what I want to achieve the next day, which I usually stick to."],
+     ['F', "What would you like to be doing when you're 18?"],
+     ['M', "Many website designers have ambitions to join one of the huge technology businesses based in the USA. I want to stay close to my family in Canada, though. I've thought about studying computer science. However, I learn better by doing than by studying, so I'd prefer to have my own web design company than go to college."],
+     ['F', 'Tell us about your new website...'],
+     ['M', "I wanted to create something about music. When I looked online, I found very little on how music supports people through difficult times and how sharing stories about this benefits others, so that's what I've done. There are so many sites for uploading your own songs, or for finding out how to play guitar, or whatever, but I wanted something different."],
+     ['F', 'Thank you, Callum!']],
+    [['How did Callum learn about setting up a website?', ['through lessons at school', 'by using information online', 'a family member taught him'], 'C'],
+     ['Why did Callum decide to set up a book review website?', ["to develop teenagers' writing skills", 'to encourage teenagers to read more', 'to create an online discussion among teenagers'], 'B'],
+     ['How did Callum feel when his site first went online?', ['pleased with its quality', 'certain it would be popular', 'positive it would achieve its aims'], 'A'],
+     ['What does Callum say about a typical day?', ["It's usually full of variety.", "It's always extremely busy.", "It's impossible to predict what will happen."], 'A'],
+     ["When Callum is eighteen he'd like to", ['work for a big company.', 'study for a degree.', 'run a business.'], 'C'],
+     ["What is Callum's new website for?", ['using music to help people', 'presenting new music', 'learning how to play music'], 'A']],
+    S('Listening P4 Q20–25')),
+];

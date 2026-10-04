@@ -507,6 +507,36 @@ function verifyPassword(password, stored) {
   } catch { return false; }
 }
 
+// Kiểm tra đầu vào (placement): trạng thái từng câu trong ngân hàng + các lượt làm bài
+tryExec(`
+CREATE TABLE IF NOT EXISTS placement_items (
+  id TEXT PRIMARY KEY,
+  enabled INTEGER NOT NULL DEFAULT 1,
+  reviewed INTEGER NOT NULL DEFAULT 0,
+  note TEXT,
+  lv_override TEXT,
+  key_override TEXT,
+  shown INTEGER NOT NULL DEFAULT 0,
+  correct INTEGER NOT NULL DEFAULT 0,
+  updated_at TEXT
+);
+CREATE TABLE IF NOT EXISTS placement_attempts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'in_progress',
+  created_at INTEGER NOT NULL,
+  finished_at INTEGER,
+  form TEXT NOT NULL,
+  answers TEXT NOT NULL DEFAULT '{}',
+  sec_state TEXT NOT NULL DEFAULT '{}',
+  plays TEXT NOT NULL DEFAULT '{}',
+  writing TEXT NOT NULL DEFAULT '{}',
+  result TEXT,
+  voided INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_placement_att_user ON placement_attempts(user_id, id);
+`, 'placement tables');
+
 // Bản bất đồng bộ — scrypt chạy ở thread phụ, KHÔNG chặn vòng lặp sự kiện (bản Sync mất ~60ms mỗi lần,
 // bị gọi dồn dập sẽ làm cả website đứng). Có hạn mức hàng đợi để không bị dồn ứ.
 let _hashQueue = 0;
