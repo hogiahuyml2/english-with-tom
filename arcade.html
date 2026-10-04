@@ -24,7 +24,7 @@
 .ar-game:hover { transform: translateY(-4px) rotate(-.4deg); }
 .ar-game .ic { font-size: 44px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,.3)); }
 .ar-game h3 { font-size: 18px; margin: 8px 0 4px; } .ar-game p { font-size: 12.5px; opacity: .92; line-height: 1.45; }
-.ar-game .tag { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,.22); padding: 3px 9px; border-radius: 99px; }
+.ar-game .tag { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 700; color: #fff; background: rgba(255,255,255,.22); padding: 3px 9px; border-radius: 99px; }
 .g-blast { background: linear-gradient(135deg, #1b1b4b, #5b3fe0 60%, #a24bf0); }
 .g-frog { background: linear-gradient(135deg, #0f766e, #22c55e); }
 .g-hang { background: linear-gradient(135deg, #0b1d3a, #2563eb 70%, #38bdf8); }
@@ -77,6 +77,31 @@
 .wd-k { min-width: 30px; height: 42px; padding: 0 6px; border-radius: 8px; border: none; background: rgba(255,255,255,.18); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; text-transform: uppercase; }
 .wd-k.g { background: #16a34a; } .wd-k.y { background: #ca8a04; } .wd-k.x { background: #1e293b; opacity: .7; } .wd-k.wide { min-width: 54px; }
 @media (max-width: 420px) { .wd-t { width: 40px; height: 40px; font-size: 21px; } .wd-k { min-width: 26px; padding: 0 4px; } .hg-l { width: 28px; } .hg-k { width: 32px; } }
+
+.g-race { background: linear-gradient(135deg, #7f1d1d, #ef4444 55%, #fbbf24); }
+.g-prin { background: linear-gradient(135deg, #581c87, #c026d3 60%, #f9a8d4); }
+.g-bubb { background: linear-gradient(135deg, #075985, #0ea5e9 60%, #67e8f9); }
+.g-keep { background: linear-gradient(135deg, #14532d, #16a34a 60%, #a3e635); }
+.ar-sec { font-size: 13px; font-weight: 800; color: var(--text-muted); margin: 18px 0 8px; letter-spacing: .3px; text-transform: uppercase; }
+.th-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.th-card { position: relative; border: 2px solid var(--border); background: var(--surface); border-radius: 16px; padding: 14px 10px; text-align: center; cursor: pointer; font-family: inherit; color: var(--text); transition: transform .15s, border-color .15s, box-shadow .15s; }
+.th-card:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-hover); }
+.th-card .e { font-size: 34px; line-height: 1.1; } .th-card b { display: block; font-size: 14px; margin-top: 6px; } .th-card small { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.th-card:disabled { opacity: .5; cursor: not-allowed; filter: grayscale(.6); }
+.th-card.all { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--gradient); color: #fff; border: none; } .th-card.all small { color: rgba(255,255,255,.85); margin: 0; }
+.ax-opts { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 10px; }
+.ax-opt { display: flex; align-items: center; gap: 10px; text-align: left; padding: 12px 12px; border-radius: 12px; border: 2px solid rgba(255,255,255,.22); background: rgba(255,255,255,.09); color: #fff; font-family: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer; min-height: 50px; transition: transform .12s, background .12s, border-color .12s; }
+.ax-opt .k { flex: none; width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,.18); display: grid; place-items: center; font-size: 12.5px; }
+.ax-opt:hover:not(:disabled) { border-color: #fbbf24; transform: translateY(-2px); }
+.ax-opt.ok { background: #16a34a; border-color: #16a34a; } .ax-opt.no { background: #dc2626; border-color: #dc2626; } .ax-opt.dim { opacity: .45; } .ax-opt:disabled { cursor: default; }
+.ax-time { height: 7px; border-radius: 9px; background: rgba(255,255,255,.15); overflow: hidden; margin: 8px 0 0; } .ax-time > i { display: block; height: 100%; width: 100%; background: #22c55e; transition: width .12s linear, background .3s; }
+.ax-gap { line-height: 1.4; } .ax-blank { display: inline-block; min-width: 76px; border-bottom: 3px solid #fbbf24; color: #fbbf24; text-align: center; }
+.ax-typebox { margin-top: 10px; }
+.ax-in { width: 100%; padding: 14px 16px; border-radius: 14px; border: 2.5px solid rgba(255,255,255,.35); background: rgba(255,255,255,.1); color: #fff; font-size: 20px; font-weight: 700; font-family: inherit; text-align: center; outline: none; }
+.ax-in:focus { border-color: #67e8f9; background: rgba(255,255,255,.14); } .ax-in.bad { border-color: #ef4444; animation: wdShake .3s; } .ax-in::placeholder { color: rgba(255,255,255,.5); font-weight: 500; font-size: 15px; }
+.ax-hint { font-size: 12.5px; opacity: .7; text-align: center; margin-top: 6px; }
+.ax-theme { display: inline-block; margin-left: 6px; padding: 2px 9px; border-radius: 99px; background: rgba(255,255,255,.16); font-size: 12px; }
+@media (max-width: 520px) { .ax-opts { grid-template-columns: 1fr; } .th-grid { grid-template-columns: repeat(2, 1fr); } }
 @keyframes cfFall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
 .cf { position: fixed; top: -20px; z-index: 600; font-size: 22px; pointer-events: none; animation: cfFall 2.4s ease-in forwards; }
 </style>
@@ -90,6 +115,7 @@
 <div class="ar-wrap" id="arRoot"><div class="ar-card">Đang tải...</div></div>
 <div id="site-footer"></div>
 <script src="js/main.js?v=28"></script>
+<script src="js/arcade-games.js?v=7"></script>
 <script>
 (function () {
 'use strict';
@@ -136,11 +162,77 @@ function pickWeighted(list, n) {
 }
 function stopCur() { if (CUR && CUR.destroy) { try { CUR.destroy(); } catch (e) {} } CUR = null; }
 
+/* ═════════ Chủ đề cho các trò mới ═════════ */
+var THEMES = [
+  { id: 'environment', ic: '🌍', name: 'Môi trường', topics: ['Environment', 'Nature'] },
+  { id: 'education', ic: '🎓', name: 'Giáo dục', topics: ['Education', 'School'] },
+  { id: 'sports', ic: '⚽', name: 'Thể thao', topics: ['Sports', 'Health & Fitness'] },
+  { id: 'travel', ic: '✈️', name: 'Du lịch', topics: ['Travel', 'Travel & Transport', 'Weather & Places'] },
+  { id: 'food', ic: '🍜', name: 'Ẩm thực', topics: ['Food & Drink'] },
+  { id: 'health', ic: '🩺', name: 'Sức khoẻ', topics: ['Health', 'Health & Fitness'] },
+  { id: 'tech', ic: '💻', name: 'Công nghệ & Khoa học', topics: ['Technology', 'Science', 'Media'] },
+  { id: 'family', ic: '👨‍👩‍👧', name: 'Gia đình & Bạn bè', topics: ['Family', 'Relationships', 'Social Life', 'Feelings', 'Daily Life'] },
+  { id: 'shopping', ic: '🛍️', name: 'Mua sắm & Tiền bạc', topics: ['Shopping', 'Business', 'Work & Economy'] },
+  { id: 'work', ic: '💼', name: 'Công việc', topics: ['Work & Jobs', 'Work & Economy'] },
+  { id: 'arts', ic: '🎨', name: 'Giải trí & Nghệ thuật', topics: ['Entertainment', 'Arts & Culture', 'Free Time', 'Lifestyle'] },
+  { id: 'society', ic: '🏛️', name: 'Xã hội', topics: ['Society', 'Government', 'Globalisation'] }
+];
+var THEME_ID = 'all'; try { THEME_ID = localStorage.getItem('ewt-ar-theme') || 'all'; } catch (e) {}
+function themeById(id) { for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i]; return { id: 'all', ic: '🌈', name: 'Tất cả chủ đề', topics: null }; }
+function inTheme(w, th) { return w.kind === 'word' && w.vi && (!th.topics || th.topics.indexOf(w.topic) >= 0); }
+function themeWords(th, level) { return W.filter(function (w) { return inTheme(w, th) && (level === 'all' || w.level === level); }); }
+// Chọn n từ: ưu tiên từ CHƯA xuất hiện trong ~120 từ gần nhất của trò này (mỗi lượt chơi ra câu mới), rồi mới tới từ yếu / đến hạn ôn
+function seenKey(game) { return 'ewt-ar-seen-' + game; }
+function pickWords(game, list, n, post) {
+  var seen = {}; try { (JSON.parse(localStorage.getItem(seenKey(game)) || '[]') || []).forEach(function (id) { seen[id] = 1; }); } catch (e) {}
+  var base = post ? post(shuffle(list)) : shuffle(list);
+  var fresh = base.filter(function (w) { return !seen[w.id]; });
+  var src = fresh.length >= n ? fresh : fresh.concat(shuffle(base.filter(function (w) { return seen[w.id]; })));
+  var out = pickWeighted(src, n);
+  try { var arr = (JSON.parse(localStorage.getItem(seenKey(game)) || '[]') || []).concat(out.map(function (w) { return w.id; })); localStorage.setItem(seenKey(game), JSON.stringify(arr.slice(-120))); } catch (e) {}
+  return out;
+}
+var MIN_WORDS = { racing: 10, princess: 8, bubble: 10, keeper: 10 };
+function readyPool(gameId, th) {
+  var need = MIN_WORDS[gameId] || 10, note = '';
+  var p = themeWords(th, LEVEL);
+  if (LEVEL !== 'all' && p.length < need + 2) { p = themeWords(th, 'all'); note = 'Cấp độ ' + LEVEL + ' chưa đủ từ cho chủ đề này nên đã dùng mọi cấp độ.'; }
+  if (gameId === 'keeper') p = p.filter(function (w) { return window.ARXGAMES.gapable(w); });
+  return { list: p, note: note, ok: p.length >= need + 2 };
+}
+var X = { api: api, esc: esc, shuffle: shuffle, beep: beep, speak: speak, confetti: confetti, makeCanvas: makeCanvas, loop: loop, heartsStr: heartsStr, pickWords: pickWords, allWords: function () { return W; } };
+var NEWG = { racing: '🏎️ Đua xe', princess: '👸 Cứu công chúa', bubble: '🫧 Bong bóng chữ', keeper: '🧤 Thủ môn' };
+function viewThemePick(gameId) {
+  stopCur(); var g = GAMES.filter(function (x) { return x.id === gameId; })[0];
+  var h = '<div class="ar-card"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><div style="font-size:34px;">' + g.ic + '</div><div style="flex:1;min-width:200px;"><b style="font-size:18px;">' + esc(g.name) + '</b><div style="font-size:13px;color:var(--text-muted);">' + esc(g.desc) + '</div></div><button class="ar-btn ghost" id="thBack" style="padding:7px 14px;">← Quay lại</button></div></div>';
+  h += '<div class="ar-sec">Chọn chủ đề để chơi <small style="text-transform:none;font-weight:500;">· mỗi ván ra câu mới, tránh lặp lại các từ vừa chơi</small></div><div class="th-grid">';
+  var all = { id: 'all', ic: '🌈', name: 'Tất cả chủ đề', topics: null }, ra = readyPool(gameId, all);
+  h += '<button class="th-card all" data-t="all"' + (ra.ok ? '' : ' disabled') + '><span class="e">🌈</span><span><b style="margin:0;">Tất cả chủ đề (ngẫu nhiên)</b><small>' + ra.list.length + ' từ</small></span></button>';
+  THEMES.forEach(function (t) { var r = readyPool(gameId, t); h += '<button class="th-card" data-t="' + t.id + '"' + (r.ok ? '' : ' disabled title="Chưa đủ từ — thầy cô có thể thêm từ ở Góc Từ Vựng"') + '><span class="e">' + t.ic + '</span><b>' + t.name + '</b><small>' + r.list.length + ' từ' + (r.ok ? '' : ' · chưa đủ') + '</small></button>'; });
+  h += '</div><div class="ar-card" style="margin-top:14px;font-size:13px;color:var(--text-muted);">Cấp độ từ đang chọn: <b>' + (LEVEL === 'all' ? 'Tất cả' : LEVEL) + '</b> (đổi ở trang khu trò chơi). Điểm XP vẫn được tính như các trò khác.</div>';
+  root.innerHTML = h;
+  $('thBack').onclick = viewHub;
+  Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (b) { b.onclick = function () { THEME_ID = b.getAttribute('data-t'); try { localStorage.setItem('ewt-ar-theme', THEME_ID); } catch (e) {} runNew(gameId, themeById(THEME_ID)); }; });
+}
+function runNew(gameId, th) {
+  stopCur(); var rp = readyPool(gameId, th);
+  if (!rp.ok) { alert('Chủ đề này chưa đủ từ để chơi. Hãy chọn chủ đề khác.'); return viewThemePick(gameId); }
+  root.innerHTML = '<div class="ar-stage"><div class="ar-hud"><span>' + NEWG[gameId] + '<span class="ax-theme">' + th.ic + ' ' + esc(th.name) + '</span></span><span id="arHud"></span><button class="ar-btn ghost" id="arExit" style="padding:5px 12px;font-size:13px;">✕ Thoát</button></div>' + (rp.note ? '<div class="ar-note" style="margin:0 0 8px;">' + esc(rp.note) + '</div>' : '') + '<div id="arBox"></div></div>';
+  var finished = false;
+  $('arExit').onclick = function () { if (!finished && !confirm('Thoát ván chơi? Kết quả chưa nộp sẽ không được tính.')) return; stopCur(); viewThemePick(gameId); };
+  var done = function (results, meta) { finished = true; stopCur(); submit(gameId, results, meta); };
+  CUR = window.ARXGAMES[gameId](X, rp.list, $('arBox'), $('arHud'), done, { theme: th });
+}
+
 /* ═════════ Trang chủ khu trò chơi ═════════ */
 var GAMES = [
   { id: 'blaster', cls: 'g-blast', ic: '🚀', name: 'Thiên thạch', desc: 'Đọc nghĩa, bắn đúng thiên thạch chứa từ tiếng Anh trước khi nó rơi xuống!', tag: '10 từ · 3 mạng' },
   { id: 'frog', cls: 'g-frog', ic: '🐸', name: 'Ếch nhảy sen', desc: 'Giúp chú ếch nhảy qua hồ bằng cách chọn đúng lá sen. Chọn sai là… tõm!', tag: '10 từ · 3 mạng' },
   { id: 'hangman', cls: 'g-hang', ic: '👨‍🚀', name: 'Cứu phi hành gia', desc: 'Đoán từng chữ cái để giữ phi hành gia không trôi vào vũ trụ.', tag: '6 từ · gõ chữ' },
+  { id: 'racing', cls: 'g-race', ic: '🏎️', name: 'Đua xe vượt chướng ngại', desc: 'Trả lời đúng để xe tăng tốc và nhảy qua chướng ngại vật. Sai hoặc chậm là… rầm!', tag: '10 câu · 3 mạng', theme: true },
+  { id: 'princess', cls: 'g-prin', ic: '👸', name: 'Cứu công chúa', desc: 'Chọn đúng cánh cửa ở mỗi ngã ba để hiệp sĩ tìm đường tới lâu đài. Chọn sai là dính bẫy!', tag: '8 ngã ba · 3 mạng', theme: true },
+  { id: 'bubble', cls: 'g-bubb', ic: '🫧', name: 'Bong bóng chữ', desc: 'Bong bóng chứa nghĩa tiếng Việt rơi xuống — gõ từ tiếng Anh để đánh vỡ. 3 bong bóng chạm đáy là thua!', tag: 'Gõ chữ · 3 mạng', theme: true },
+  { id: 'keeper', cls: 'g-keep', ic: '🧤', name: 'Thủ môn bắt bóng', desc: 'Chọn từ đúng điền vào chỗ trống của câu để thủ môn cản phá cú sút. Để lọt 3 bàn là thua.', tag: '10 cú sút · điền từ', theme: true },
   { id: 'duel', cls: 'g-duel', ic: '⚔️', name: 'Đấu 1 với 1', desc: 'Tạo phòng, gửi mã cho bạn — cùng thi 10 câu, ai nhanh và đúng hơn thì thắng!', tag: 'Mã phòng' },
   { id: 'wordle', cls: 'g-word', ic: '🔤', name: 'Đoán từ mỗi ngày', desc: 'Mỗi ngày một từ bí mật cho cả lớp. 6 lượt đoán, có gợi ý nghĩa tiếng Việt.', tag: '1 lần / ngày' }
 ];
@@ -161,6 +253,7 @@ function viewHub() {
 }
 function startGame(id) {
   stopCur();
+  if (NEWG[id]) return viewThemePick(id);
   if (id === 'wordle') return gameWordle();
   if (id === 'duel') return viewDuelLobby();
   var p = id === 'hangman' ? pool(4, 12) : pool();

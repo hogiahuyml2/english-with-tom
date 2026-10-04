@@ -3,13 +3,14 @@
 // báo kết quả từng câu) để học sinh không tự cộng điểm bằng cách sửa request.
 const { SEED_WORDS, parseSeed } = require('./vocab-seed');
 const { SEED2 } = require('./vocab-seed2');
+const { SEED3 } = require('./vocab-seed3');
 const { applyFixes } = require('./vocab-fixes');
 const { SEED_DIALOGUES, parseScript } = require('./vocab-dialogues');
 const crypto = require('crypto');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
-const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss', 'blaster', 'frog', 'hangman', 'wordle', 'duel'];
-const ARCADE_MODES = ['blaster', 'frog', 'hangman', 'wordle', 'duel']; // các chế độ tính vào xếp hạng tuần + huy hiệu trò chơi
+const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss', 'blaster', 'frog', 'hangman', 'wordle', 'duel', 'racing', 'princess', 'bubble', 'keeper'];
+const ARCADE_MODES = ['blaster', 'frog', 'hangman', 'wordle', 'duel', 'racing', 'princess', 'bubble', 'keeper']; // các chế độ tính vào xếp hạng tuần + huy hiệu trò chơi
 const WEEK_PRIZES = [100, 60, 30]; // xu thưởng top 1-2-3 mỗi tuần
 const WEEK_MIN_POINTS = 20;       // cần tối thiểu 20 điểm để được tính giải
 const KINDS = ['word', 'colloc', 'upgrade'];
@@ -20,7 +21,7 @@ const STREAK_MIN = 5;      // chỉ cần 5 lượt là giữ được chuỗi �
 const FREEZE_PRICE = 100;  // xu đổi 1 "khiên giữ chuỗi" 🧊
 const MAX_FREEZES = 2;
 // XP cho mỗi câu đúng theo chế độ (chế độ khó hơn/đòi hỏi nhớ chủ động thì thưởng nhiều hơn; Blitz nhanh nên ít hơn để không "lạm phát")
-const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5, blaster: 4, frog: 4, hangman: 6, wordle: 5, duel: 4 };
+const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5, blaster: 4, frog: 4, hangman: 6, wordle: 5, duel: 4, racing: 4, princess: 5, bubble: 6, keeper: 5 };
 const BOSS_MIN_OK = 6, BOSS_MAX_WRONG = 2, BOSS_BONUS_XP = 20, BOSS_BONUS_COINS = 25; // thắng boss: đúng ≥6 câu và sai ≤2 (3 mạng)
 const CHEST_PRICE = 80;
 
@@ -110,6 +111,14 @@ const BADGES = [
   { id: 'frog100',  game: true, reward: 60,  icon: '🪷', name: 'Vua ao sen',           text: 'Nhảy đúng 100 lá sen',               goal: 100, have: s => s.arc.frog.ok },
   { id: 'hang10',   game: true, reward: 20,  icon: '👨‍🚀', name: 'Người giải cứu',      text: 'Cứu thành công 10 phi hành gia',     goal: 10,  have: s => s.arc.hangman.ok },
   { id: 'hang30',   game: true, reward: 60,  icon: '🛰️', name: 'Đội cứu hộ vũ trụ',    text: 'Cứu thành công 30 phi hành gia',     goal: 30,  have: s => s.arc.hangman.ok },
+  { id: 'race30',   game: true, reward: 20,  icon: '🏎️', name: 'Tay đua trẻ',          text: 'Vượt đúng 30 chướng ngại vật',       goal: 30,  have: s => s.arc.racing.ok },
+  { id: 'race100',  game: true, reward: 60,  icon: '🏁', name: 'Nhà vô địch đường đua', text: 'Vượt đúng 100 chướng ngại vật',      goal: 100, have: s => s.arc.racing.ok },
+  { id: 'prin20',   game: true, reward: 20,  icon: '👸', name: 'Hiệp sĩ dũng cảm',     text: 'Chọn đúng 20 cánh cửa trên đường cứu công chúa', goal: 20, have: s => s.arc.princess.ok },
+  { id: 'prin100',  game: true, reward: 60,  icon: '🏰', name: 'Người hùng lâu đài',    text: 'Chọn đúng 100 cánh cửa cứu công chúa', goal: 100, have: s => s.arc.princess.ok },
+  { id: 'bubb30',   game: true, reward: 20,  icon: '🫧', name: 'Thợ săn bong bóng',     text: 'Đánh vỡ đúng 30 bong bóng',          goal: 30,  have: s => s.arc.bubble.ok },
+  { id: 'bubb150',  game: true, reward: 60,  icon: '💎', name: 'Bậc thầy bong bóng',    text: 'Đánh vỡ đúng 150 bong bóng',         goal: 150, have: s => s.arc.bubble.ok },
+  { id: 'keep20',   game: true, reward: 20,  icon: '🧤', name: 'Thủ môn xuất sắc',      text: 'Cản phá đúng 20 cú sút',             goal: 20,  have: s => s.arc.keeper.ok },
+  { id: 'keep100',  game: true, reward: 60,  icon: '🥅', name: 'Bức tường thép',        text: 'Cản phá đúng 100 cú sút',            goal: 100, have: s => s.arc.keeper.ok },
   { id: 'wordle3',  game: true, reward: 20,  icon: '🔍', name: 'Thám tử chữ',          text: 'Thắng Đoán từ mỗi ngày 3 lần',       goal: 3,   have: s => s.wordle_wins },
   { id: 'wordle30', game: true, reward: 100, icon: '🧠', name: 'Bậc thầy đoán chữ',    text: 'Thắng Đoán từ mỗi ngày 30 lần',      goal: 30,  have: s => s.wordle_wins },
   { id: 'wstreak7', game: true, reward: 80,  icon: '🔥', name: 'Chuỗi thắng 7 ngày',   text: 'Thắng Đoán từ 7 ngày liên tiếp',     goal: 7,   have: s => s.wordle_streak },
@@ -141,6 +150,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       db.exec('BEGIN');
       let n = 0;
       for (const w of SEED_WORDS) n += Number(ins.run(w.level, w.topic, w.word, w.pos, w.vi, w.ex, w.exVi, now(), 'word', null, null, null).changes || 0);
+      for (const w of SEED3) n += Number(ins.run(w.level, w.topic, w.word, w.pos, w.vi, w.ex, w.exVi, now(), 'word', null, null, null).changes || 0);
       for (const w of SEED2) n += Number(ins.run(w.level, w.topic, w.word, w.pos, w.vi, w.ex, w.exVi, now(), w.kind, w.basic || null, w.extra || null, w.exampleBasic || null).changes || 0);
       db.exec('COMMIT');
       if (n) console.log('[wordgame] Đã nạp ' + n + ' mục khởi đầu.');
