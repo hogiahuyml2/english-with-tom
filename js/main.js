@@ -22,6 +22,9 @@
   if (saved === 'dark' || (!saved && prefersDark)) {
     document.documentElement.setAttribute('data-theme', 'dark');
   }
+  // Bảng màu người dùng chọn (xem js/galaxy.js)
+  var pal = localStorage.getItem('ewt-palette');
+  if (pal && /^[a-z]+$/.test(pal)) document.documentElement.setAttribute('data-palette', pal);
 })();
 
 (function () {
@@ -70,6 +73,7 @@
       '</a>' +
       '<nav class="nav-links" id="navLinks">' + links + '</nav>' +
       '<div class="nav-actions" id="navActions">' +
+        '<button class="dark-toggle" id="paletteToggle" title="Đổi màu & hiệu ứng giao diện" aria-label="Đổi màu giao diện">🎨</button>' +
         '<button class="dark-toggle" id="darkToggle" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode"></button>' +
         '<a class="btn btn-sm" href="login.html">Đăng nhập</a>' +
         '<a class="btn btn-primary btn-sm" href="login.html#register">Đăng ký</a>' +
@@ -187,6 +191,7 @@
             '<span style="width:30px;height:30px;border-radius:50%;background:var(--gradient);color:#fff;display:inline-grid;place-items:center;font-weight:600;flex-shrink:0;">' + initials + '</span>' +
             '<span class="nav-account-text">' + user.name + '<br><small style="color:var(--text-faint);">' + (roleLabel[user.role] || user.role) + '</small></span>' +
           '</a>' +
+          '<button class="dark-toggle" id="paletteToggle" title="Đổi màu & hiệu ứng giao diện" aria-label="Đổi màu giao diện">🎨</button>' +
           '<button class="dark-toggle" id="darkToggle2" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode">' + (isDark() ? '☀️' : '🌙') + '</button>' +
           '<button class="btn btn-sm" id="logoutBtn">Đăng xuất</button>' +
           '<button class="menu-toggle" id="menuToggle2" aria-label="Menu">☰</button>';
@@ -393,4 +398,12 @@
       localStorage.setItem('ewt-pwa-dismissed', Date.now());
     };
   }
+})();
+
+/* Hiệu ứng galaxy/stars + bộ chọn bảng màu */
+(function () {
+  var s = document.createElement('script');
+  s.src = 'js/galaxy.js?v=1';
+  s.async = true;
+  document.head.appendChild(s);
 })();

@@ -33,7 +33,7 @@
 
 body {
   font-family: var(--font);
-  background: linear-gradient(150deg, #ece8ff 0%, #e4effe 40%, #f0e8ff 100%) fixed;
+  background: var(--body-bg, linear-gradient(150deg, #ece8ff 0%, #e4effe 40%, #f0e8ff 100%)) fixed;
   color: var(--text);
   line-height: 1.6;
   font-size: 15px;
@@ -1001,3 +1001,38 @@ img.brand-logo {
 .theme-transitioning *::after {
   transition: background-color .25s ease, border-color .25s ease, color .15s ease !important;
 }
+
+/* ===================== BẢNG MÀU (data-palette) — do JS đặt trên <html>, lưu ewt-palette ===================== */
+:root { --body-bg: linear-gradient(150deg, #ece8ff 0%, #e4effe 40%, #f0e8ff 100%); --header-bg: rgba(255,255,255,0.85); --star-rgb: 123,110,246; }
+[data-theme="dark"] { --body-bg: linear-gradient(150deg, #0c0b18 0%, #0e1525 40%, #130c1e 100%); --header-bg: rgba(15,13,28,.88); --star-rgb: 215,205,255; }
+body, [data-theme="dark"] body { background: var(--body-bg) fixed; }
+.site-header, [data-theme="dark"] .site-header { background: var(--header-bg); }
+
+/* Thiên hà */
+:root[data-palette="galaxy"]{--primary:#6B46F0;--primary-2:#B445EE;--primary-soft:#EFE9FF;--bg-soft:#F7F3FF;--border:#E6DEFA;--text:#281F4A;--gradient:linear-gradient(135deg,#5B3FE0 0%,#A24BF0 55%,#E04BC8 100%);--gradient-soft:linear-gradient(135deg,#C9B6F8 0%,#E6B8F2 100%);--shadow:0 4px 20px rgba(107,70,240,.10);--shadow-hover:0 8px 28px rgba(107,70,240,.20);--body-bg:linear-gradient(150deg,#ebe3ff 0%,#f3e6ff 50%,#e6e9ff 100%);--star-rgb:123,92,255}
+:root[data-theme="dark"][data-palette="galaxy"]{--primary:#b9a3ff;--primary-2:#e08cff;--primary-soft:#2a1f56;--surface:#151032;--bg-soft:#1c1642;--border:#2e2560;--text:#ece8ff;--text-muted:#a79fd6;--gradient:linear-gradient(135deg,#7c5cff 0%,#b64cf5 55%,#ec4cc0 100%);--gradient-soft:linear-gradient(135deg,#2a1f5a 0%,#3a1f5e 100%);--header-bg:rgba(14,10,36,.82);--body-bg:radial-gradient(1100px 600px at 12% -8%,rgba(124,58,237,.38),transparent 60%),radial-gradient(900px 520px at 92% 8%,rgba(236,72,153,.22),transparent 60%),radial-gradient(800px 600px at 50% 110%,rgba(56,189,248,.14),transparent 60%),linear-gradient(180deg,#06041a,#0a0724);--star-rgb:220,205,255}
+[data-theme="dark"][data-palette="galaxy"] .site-footer{background:#0f0a26}
+
+/* Cực quang */
+:root[data-palette="aurora"]{--primary:#0FA37F;--primary-2:#3BB4E8;--primary-soft:#DDF6EE;--bg-soft:#F0FBF7;--border:#D5EEE6;--text:#153A33;--gradient:linear-gradient(135deg,#0E9F7E 0%,#28B5C9 55%,#4C86EE 100%);--gradient-soft:linear-gradient(135deg,#A8E6D2 0%,#A8D8F2 100%);--shadow:0 4px 20px rgba(15,163,127,.10);--shadow-hover:0 8px 28px rgba(15,163,127,.20);--body-bg:linear-gradient(150deg,#dcf7ee 0%,#dff1fb 45%,#e9f6e6 100%);--star-rgb:15,163,127}
+:root[data-theme="dark"][data-palette="aurora"]{--primary:#5eead0;--primary-2:#6ec6ff;--primary-soft:#0f3b3a;--surface:#0d1f26;--bg-soft:#12303a;--border:#1b4047;--text:#e0f7f2;--text-muted:#8cc0b8;--gradient:linear-gradient(135deg,#14b8a6 0%,#22b8cf 55%,#4c8dff 100%);--gradient-soft:linear-gradient(135deg,#0f3b3a 0%,#10305a 100%);--header-bg:rgba(5,16,18,.84);--body-bg:radial-gradient(1000px 520px at 15% -5%,rgba(20,184,166,.32),transparent 60%),radial-gradient(900px 500px at 85% 5%,rgba(74,222,128,.18),transparent 60%),radial-gradient(800px 600px at 60% 110%,rgba(59,130,246,.18),transparent 60%),linear-gradient(180deg,#041012,#06181c);--star-rgb:170,255,235}
+[data-theme="dark"][data-palette="aurora"] .site-footer{background:#071418}
+
+/* Tinh vân */
+:root[data-palette="nebula"]{--primary:#E0457B;--primary-2:#F5883B;--primary-soft:#FDE7EF;--bg-soft:#FFF3F6;--border:#F3DDE4;--text:#3E1F2C;--gradient:linear-gradient(135deg,#D93A78 0%,#F0605D 55%,#F7A23B 100%);--gradient-soft:linear-gradient(135deg,#F7BCD0 0%,#FBD3B0 100%);--shadow:0 4px 20px rgba(224,69,123,.10);--shadow-hover:0 8px 28px rgba(224,69,123,.20);--body-bg:linear-gradient(150deg,#ffe6ee 0%,#ffeede 50%,#ffe3f3 100%);--star-rgb:224,69,123}
+:root[data-theme="dark"][data-palette="nebula"]{--primary:#ff8fb4;--primary-2:#ffb27a;--primary-soft:#4a1830;--surface:#231019;--bg-soft:#321626;--border:#4a2237;--text:#ffe9f0;--text-muted:#cf9db1;--gradient:linear-gradient(135deg,#ec407a 0%,#f2604f 55%,#f59e0b 100%);--gradient-soft:linear-gradient(135deg,#4a1830 0%,#4a2a14 100%);--header-bg:rgba(24,8,16,.84);--body-bg:radial-gradient(1000px 560px at 10% -8%,rgba(236,64,122,.34),transparent 60%),radial-gradient(900px 520px at 92% 6%,rgba(245,158,11,.2),transparent 60%),radial-gradient(800px 600px at 50% 112%,rgba(168,85,247,.2),transparent 60%),linear-gradient(180deg,#12060c,#1a0912);--star-rgb:255,205,225}
+[data-theme="dark"][data-palette="nebula"] .site-footer{background:#16070e}
+
+/* Đại dương */
+:root[data-palette="ocean"]{--primary:#1F7AE0;--primary-2:#12B5D6;--primary-soft:#E0EEFE;--bg-soft:#F1F7FF;--border:#D9E6F7;--text:#14304F;--gradient:linear-gradient(135deg,#1D6FE0 0%,#12A8D8 55%,#2CC9B6 100%);--gradient-soft:linear-gradient(135deg,#B5D3F7 0%,#B2E8F1 100%);--shadow:0 4px 20px rgba(31,122,224,.10);--shadow-hover:0 8px 28px rgba(31,122,224,.20);--body-bg:linear-gradient(150deg,#dcebff 0%,#dcf6fb 50%,#e6efff 100%);--star-rgb:31,122,224}
+:root[data-theme="dark"][data-palette="ocean"]{--primary:#6cb4ff;--primary-2:#4fd8ef;--primary-soft:#0f2d52;--surface:#0b1a2e;--bg-soft:#10243f;--border:#1b3a5e;--text:#e3f0ff;--text-muted:#8fb0d4;--gradient:linear-gradient(135deg,#2f80ed 0%,#1bb5d8 55%,#22c5ad 100%);--gradient-soft:linear-gradient(135deg,#0f2d52 0%,#0e3a4a 100%);--header-bg:rgba(4,11,22,.84);--body-bg:radial-gradient(1000px 560px at 12% -8%,rgba(47,128,237,.34),transparent 60%),radial-gradient(900px 500px at 90% 8%,rgba(34,211,238,.2),transparent 60%),linear-gradient(180deg,#030a15,#06142a);--star-rgb:190,230,255}
+[data-theme="dark"][data-palette="ocean"] .site-footer{background:#060f1c}
+
+/* Bình minh */
+:root[data-palette="sunrise"]{--primary:#D98A0B;--primary-2:#F2A93B;--primary-soft:#FCEFD2;--bg-soft:#FFF8EA;--border:#F1E3C5;--text:#3D2A0C;--gradient:linear-gradient(135deg,#E07A10 0%,#F2A93B 55%,#F5CB5C 100%);--gradient-soft:linear-gradient(135deg,#F8D9A0 0%,#FBE7B0 100%);--shadow:0 4px 20px rgba(217,138,11,.10);--shadow-hover:0 8px 28px rgba(217,138,11,.20);--body-bg:linear-gradient(150deg,#fff0d6 0%,#ffe9d6 50%,#fff6dd 100%);--star-rgb:217,138,11}
+:root[data-theme="dark"][data-palette="sunrise"]{--primary:#ffc65c;--primary-2:#ffa94d;--primary-soft:#4a3208;--surface:#1f160a;--bg-soft:#2c1f0c;--border:#483314;--text:#fff2dc;--text-muted:#cfb27a;--gradient:linear-gradient(135deg,#f59e0b 0%,#f97316 55%,#ef4444 100%);--gradient-soft:linear-gradient(135deg,#4a3208 0%,#4a2410 100%);--header-bg:rgba(20,13,4,.84);--body-bg:radial-gradient(1000px 560px at 10% -8%,rgba(245,158,11,.3),transparent 60%),radial-gradient(900px 520px at 92% 6%,rgba(239,68,68,.18),transparent 60%),linear-gradient(180deg,#100a03,#190f05);--star-rgb:255,225,170}
+[data-theme="dark"][data-palette="sunrise"] .site-footer{background:#120c04}
+
+/* nút chọn màu */
+.pal-pop { position: fixed; z-index: 400; width: 300px; max-width: calc(100vw - 24px); background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-hover); padding: 14px; }
+
