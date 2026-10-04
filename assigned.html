@@ -37,6 +37,8 @@
       <div class="stat-card"><div class="label">Đã có điểm</div><div class="value" style="color:var(--success)" id="cntDone">–</div></div>
     </div>
 
+    <div id="mcqCard"></div>
+
     <!-- Filter Bar -->
     <div class="fbar" id="assignedFilter" style="display:none;">
       <div class="fbar-row">
@@ -70,6 +72,18 @@
 <script src="js/editor.js"></script>
 <script src="js/main.js?v=24"></script>
 <script>
+  // Đề trắc nghiệm được giao (làm online có đếm ngược) — hiển thị ngay trên đầu trang bài tập
+  (function () {
+    fetch('/api/mcq/mine', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      var el = document.getElementById('mcqCard'); if (!d || !d.tests || !d.tests.length || !el) return;
+      var lab = { 'new': ['Chưa làm', 'var(--warning)'], in_progress: ['Đang làm dở', '#ef4444'], done: ['Đã nộp', 'var(--success)'], expired: ['Quá hạn', '#ef4444'] };
+      var todo = d.tests.filter(function (t) { return t.status === 'new' || t.status === 'in_progress'; }).length;
+      var esc2 = function (x) { return String(x || '').replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); };
+      el.innerHTML = '<div class="card" style="margin-bottom:24px;"><div class="card-head" style="margin-bottom:10px;"><h3>📝 Đề trắc nghiệm được giao' + (todo ? ' <span style="background:#ef4444;color:#fff;border-radius:99px;padding:1px 9px;font-size:12px;">' + todo + ' cần làm</span>' : '') + '</h3><a class="btn btn-sm" href="mcq.html">Xem tất cả</a></div>' +
+        d.tests.slice(0, 5).map(function (t) { var b = lab[t.status] || lab['new'];
+          return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;"><div style="flex:1;min-width:180px;"><b>' + esc2(t.title) + '</b> <span style="font-size:11.5px;font-weight:700;color:' + b[1] + ';">' + b[0] + '</span><div style="font-size:12.5px;color:var(--text-muted);">' + t.questions + ' câu · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn giờ') + (t.status === 'done' ? ' · Điểm ' + t.score + '/' + t.total : '') + '</div></div><a class="btn btn-sm btn-primary" href="mcq.html?id=' + t.id + '">' + (t.status === 'done' ? 'Xem kết quả' : t.status === 'in_progress' ? 'Tiếp tục' : 'Làm bài') + '</a></div>'; }).join('') + '</div>';
+    }).catch(function () {});
+  })();
   function fmtDate(iso){
     if (!iso) return '';
     try {

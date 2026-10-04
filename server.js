@@ -2440,6 +2440,13 @@ try {
   console.error('[lesson-vocab] Không khởi động được:', e.message);
 }
 
+// ===================== ĐỀ TRẮC NGHIỆM (tải file Word → giao → làm bài có đếm giờ) =====================
+try {
+  require('./mcq')(app, { db, requireAuth, requireRole, now, notifyUser });
+} catch (e) {
+  console.error('[mcq] Không khởi động được:', e.message);
+}
+
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 

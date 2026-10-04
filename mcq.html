@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đề trắc nghiệm — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=19">
+<style>
+.mq-wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 50px; }
+.mq-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.mq-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mq-sub { font-size: 12.5px; color: var(--text-muted); }
+.mq-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 11px; border: none; background: var(--gradient); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: var(--shadow); text-decoration: none; }
+.mq-btn:disabled { opacity: .5; cursor: default; } .mq-btn.ghost { background: var(--primary-soft); color: var(--text); box-shadow: none; } .mq-btn.line { background: transparent; border: 2px solid var(--primary); color: var(--primary); box-shadow: none; } .mq-btn.sm { padding: 6px 12px; font-size: 12.5px; border-radius: 9px; } .mq-btn.danger { background: #ef4444; }
+.mq-pill { padding: 8px 15px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-size: 13.5px; font-weight: 700; cursor: pointer; font-family: inherit; } .mq-pill.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.mq-msg { margin-top: 10px; font-size: 13.5px; padding: 10px 12px; border-radius: 10px; line-height: 1.55; } .mq-msg.ok { background: var(--success-soft); color: var(--success); } .mq-msg.err { background: rgba(239,68,68,.12); color: #ef4444; } .mq-msg.warn { background: var(--warning-soft); color: var(--warning); }
+.mq-form input[type=text], .mq-form input[type=number], .mq-form input[type=datetime-local], .mq-form input[type=search], .mq-form textarea, .mq-form select { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 9px; font-family: inherit; font-size: 13.5px; background: var(--surface); color: var(--text); }
+.mq-form textarea { resize: vertical; line-height: 1.5; } .mq-form label.f { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin: 10px 0 4px; }
+.mq-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .mq-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; } @media (max-width: 620px) { .mq-grid2, .mq-grid3 { grid-template-columns: 1fr; } }
+.mq-chk { display: flex; gap: 8px; align-items: center; font-size: 13.5px; margin: 6px 0; } .mq-chk input { width: auto; flex-shrink: 0; }
+.mq-rules { background: var(--primary-soft); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; line-height: 1.65; }
+.mq-rules h4 { margin: 10px 0 4px; font-size: 14px; } .mq-rules h4:first-child { margin-top: 0; } .mq-rules ul { margin: 4px 0 4px 18px; } .mq-rules code, .mq-ex { background: var(--surface); border-radius: 8px; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+.mq-ex { display: block; padding: 10px 12px; margin: 6px 0; white-space: pre-wrap; line-height: 1.6; } .mq-ex b.r { color: #ef4444; }
+.mq-drop { border: 2px dashed var(--border); border-radius: 14px; padding: 22px 14px; text-align: center; cursor: pointer; background: var(--bg-soft); } .mq-drop:hover, .mq-drop.over { border-color: var(--primary); background: var(--primary-soft); }
+.mq-q { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin: 10px 0; background: var(--surface); } .mq-q.bad { border-color: #ef4444; background: rgba(239,68,68,.05); }
+.mq-q .opt { display: flex; gap: 8px; align-items: center; margin: 5px 0; } .mq-q .opt input[type=text] { flex: 1; } .mq-q .opt input[type=radio] { width: auto; flex-shrink: 0; }
+.mq-list-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); flex-wrap: wrap; } .mq-list-item:first-of-type { border-top: none; } .mq-list-item .main { flex: 1; min-width: 200px; }
+.mq-badge { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); } .mq-badge.g { background: var(--success-soft); color: var(--success); } .mq-badge.w { background: var(--warning-soft); color: var(--warning); } .mq-badge.r { background: rgba(239,68,68,.12); color: #ef4444; }
+.mq-table { width: 100%; border-collapse: collapse; font-size: 13px; } .mq-table th { text-align: left; color: var(--text-muted); font-size: 11.5px; text-transform: uppercase; padding: 6px 8px; } .mq-table td { padding: 8px; border-top: 1px solid var(--border); vertical-align: top; } .mq-scroll { overflow-x: auto; }
+.mq-stu { max-height: 220px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: 10px; padding: 4px 10px; background: var(--surface); } .mq-stu label { display: flex; gap: 8px; align-items: center; padding: 5px 0; font-size: 13.5px; border-top: 1px solid var(--border); } .mq-stu label:first-child { border-top: none; } .mq-stu input { width: auto; flex-shrink: 0; }
+.mq-sw { position: relative; width: 44px; height: 24px; border-radius: 99px; border: none; background: var(--border); cursor: pointer; flex-shrink: 0; } .mq-sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .2s; } .mq-sw.on { background: var(--gradient); } .mq-sw.on::after { transform: translateX(20px); }
+/* ── màn làm bài ── */
+.tk-bar { position: sticky; top: 74px; z-index: 80; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-shadow: var(--shadow); margin-bottom: 12px; }
+.tk-timer { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; padding: 2px 12px; border-radius: 10px; background: var(--primary-soft); } .tk-timer.low { background: var(--warning-soft); color: var(--warning); } .tk-timer.crit { background: rgba(239,68,68,.15); color: #ef4444; animation: tkBlink 1s infinite; } @keyframes tkBlink { 50% { opacity: .5; } }
+.tk-q { background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); user-select: none; -webkit-user-select: none; }
+.tk-stem { font-size: 18px; line-height: 1.65; font-weight: 600; margin-bottom: 14px; white-space: pre-wrap; }
+.tk-opt { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; padding: 13px 14px; margin: 8px 0; border: 2px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-size: 15.5px; cursor: pointer; font-family: inherit; }
+.tk-opt:hover { border-color: var(--primary); } .tk-opt.sel { border-color: var(--primary); background: var(--primary-soft); } .tk-opt .l { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: grid; place-items: center; font-weight: 800; flex-shrink: 0; font-size: 13px; } .tk-opt.sel .l { background: var(--gradient); color: #fff; }
+.tk-opt.ok { border-color: var(--success); background: var(--success-soft); } .tk-opt.no { border-color: #ef4444; background: rgba(239,68,68,.1); } .tk-opt.pick .l { outline: 3px solid var(--primary); }
+.tk-nav { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; } .tk-n { height: 38px; border-radius: 9px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-weight: 700; cursor: pointer; font-family: inherit; position: relative; } .tk-n.done { background: var(--success-soft); border-color: var(--success); } .tk-n.cur { outline: 3px solid var(--primary); } .tk-n.flag::after { content: "🚩"; position: absolute; top: -6px; right: -4px; font-size: 11px; }
+.tk-ov { position: fixed; inset: 0; background: rgba(8,6,24,.82); z-index: 500; display: grid; place-items: center; padding: 20px; } .tk-ov > div { background: var(--surface); border-radius: 18px; padding: 24px; max-width: 440px; text-align: center; }
+.mq-score { text-align: center; padding: 14px 0; } .mq-score .big { font-size: 56px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.rv { border-top: 1px solid var(--border); padding: 14px 0; } .rv .qt { font-weight: 700; margin-bottom: 6px; white-space: pre-wrap; } .rv .ex { background: var(--bg-soft); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; margin-top: 6px; }
+@media print { .tk-q, .tk-nav { display: none !important; } }
+</style>
+</head>
+<body data-page="assigned" data-guard="auth">
+<div id="site-header"></div>
+<section class="page-hero" style="padding:24px 0 16px;">
+  <div class="container"><div class="crumb"><a href="assigned.html">Bài tập được giao</a> › Đề trắc nghiệm</div>
+  <h1 style="font-size:26px;" id="mqHero">📝 Đề trắc nghiệm</h1><p style="font-size:14px;" id="mqSub"></p></div>
+</section>
+<div class="mq-wrap" id="mqRoot"><div class="mq-card">Đang tải...</div></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=24"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+var root = $('mqRoot'), ME = { role: 'student' };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function api(method, url, body) {
+  return fetch(url, { method: method, credentials: 'same-origin', headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined })
+    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi kết nối'); e.status = r.status; e.data = d; throw e; } return d; }); });
+}
+function qs(k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(location.search); return m ? decodeURIComponent(m[1]) : ''; }
+function fmtDl(s) { if (!s) return ''; var d = new Date(s); if (isNaN(d)) return s; var p = function (n) { return (n < 10 ? '0' : '') + n; }; return p(d.getHours()) + ':' + p(d.getMinutes()) + ' ngày ' + p(d.getDate()) + '/' + p(d.getMonth() + 1); }
+function fmtDur(ms) { if (ms == null) return '—'; var s = Math.round(ms / 1000); if (s < 60) return s + ' giây'; var m = Math.floor(s / 60); return m + ' phút' + (s % 60 ? ' ' + (s % 60) + ' giây' : ''); }
+function msg(id, kind, h) { var el = $(id); if (el) el.innerHTML = h ? '<div class="mq-msg ' + kind + '">' + h + '</div>' : ''; }
+var LET = 'ABCDE';
+
+/* ═══════════════════ HỌC SINH: DANH SÁCH ═══════════════════ */
+function viewStudentList() {
+  $('mqHero').textContent = '📝 Đề trắc nghiệm được giao'; $('mqSub').textContent = 'Làm bài có đếm ngược thời gian. Bài sẽ tự nộp khi hết giờ.';
+  api('GET', '/api/mcq/mine').then(function (r) {
+    var h = '<div class="mq-card"><div class="mq-title">📝 Đề của bạn</div>';
+    if (!r.tests.length) h += '<div class="mq-sub" style="padding:10px 0;">Chưa có đề nào được giao. Khi giáo viên giao đề, bạn sẽ nhận thông báo 🔔 và đề hiện ở đây (và trong trang Bài tập được giao).</div>';
+    var lab = { new: ['Chưa làm', 'w'], in_progress: ['Đang làm dở', 'r'], done: ['Đã nộp', 'g'], expired: ['Quá hạn', 'r'] };
+    r.tests.forEach(function (t) {
+      var b = lab[t.status] || lab.new;
+      h += '<div class="mq-list-item"><div class="main"><b>' + esc(t.title) + '</b> <span class="mq-badge ' + b[1] + '">' + b[0] + '</span><div class="mq-sub">' + t.questions + ' câu · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn thời gian') + (t.deadline ? ' · hạn ' + fmtDl(t.deadline) : '') + (t.teacher ? ' · ' + esc(t.teacher) : '') + '</div>' +
+        (t.status === 'done' ? '<div class="mq-sub"><b>Điểm: ' + t.score + '/' + t.total + '</b></div>' : '') + '</div>' +
+        '<a class="mq-btn' + (t.status === 'expired' ? ' ghost' : '') + '" href="mcq.html?id=' + t.id + '">' + (t.status === 'done' ? 'Xem kết quả' : t.status === 'in_progress' ? 'Tiếp tục làm' : t.status === 'expired' ? 'Xem' : 'Làm bài') + '</a></div>';
+    });
+    root.innerHTML = h + '</div>';
+  }).catch(function (e) { root.innerHTML = '<div class="mq-card"><div class="mq-msg err">' + esc(e.message) + '</div></div>'; });
+}
+
+/* ═══════════════════ HỌC SINH: TRANG GIỚI THIỆU ═══════════════════ */
+function viewIntro(id) {
+  api('GET', '/api/mcq/' + id + '/info').then(function (d) {
+    $('mqHero').textContent = '📝 ' + d.title; $('mqSub').textContent = (d.teacher ? 'Giáo viên ' + d.teacher + ' · ' : '') + d.total + ' câu';
+    var back = '<div style="margin-bottom:12px;"><a class="mq-btn sm ghost" href="mcq.html">← Danh sách đề</a></div>';
+    if (d.owner) { root.innerHTML = back + '<div class="mq-card"><div class="mq-msg warn">Bạn là người tạo đề này. Hãy vào <a href="mcq.html?id=' + d.id + '&tab=results">trang kết quả</a> để quản lý.</div></div>'; return; }
+    if (d.status === 'done') return viewResult(d.id, d);
+    var rules = '<ul style="margin:6px 0 0 18px;line-height:1.8;font-size:14px;"><li>Số câu: <b>' + d.total + '</b> · Thời gian: <b>' + (d.duration ? d.duration + ' phút' : 'không giới hạn') + '</b>' + (d.duration ? ' (đồng hồ chạy ngay khi bấm "Bắt đầu" và <b>không dừng</b> kể cả khi bạn thoát ra)' : '') + '.</li>' +
+      '<li>Mỗi câu chỉ có <b>1 đáp án đúng</b>. Bạn có thể đổi đáp án, đánh dấu 🚩 câu cần xem lại và quay lại câu trước.</li>' +
+      '<li>Bài của bạn được <b>tự động lưu</b>. Hết giờ, hệ thống <b>tự nộp</b> những gì bạn đã chọn.</li>' +
+      '<li><b>Không chuyển tab, không mở ứng dụng khác</b> trong lúc làm bài. Hệ thống ghi nhận mỗi lần bạn rời khỏi trang' + (d.maxLeaves ? ' — nếu rời quá <b>' + d.maxLeaves + ' lần</b> bài sẽ <b>tự động nộp</b>' : '') + ' và giáo viên sẽ thấy số lần rời trang.</li>' +
+      '<li>Không sao chép/dán, không chụp màn hình chia sẻ đề.</li></ul>';
+    root.innerHTML = back + '<div class="mq-card"><div class="mq-title">📋 Trước khi bắt đầu</div>' + (d.note ? '<div class="mq-msg warn" style="margin:0 0 10px;">💬 ' + esc(d.note) + '</div>' : '') + rules +
+      (d.deadline ? '<div class="mq-sub" style="margin-top:10px;">Hạn làm bài: <b>' + fmtDl(d.deadline) + '</b></div>' : '') +
+      '<div style="margin-top:16px;"><button class="mq-btn" id="mqStart">' + (d.status === 'in_progress' ? '▶️ Tiếp tục làm bài' : '🚀 Bắt đầu làm bài') + '</button></div><div id="mqIntroMsg"></div></div>';
+    $('mqStart').onclick = function () {
+      var b = this; b.disabled = true;
+      try { var el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen().catch(function () {}); } catch (e) {}
+      api('POST', '/api/mcq/' + id + '/start').then(function (st) { startTest(id, d, st); }).catch(function (e) { b.disabled = false; msg('mqIntroMsg', 'err', esc(e.message)); });
+    };
+  }).catch(function (e) { root.innerHTML = '<div class="mq-card"><div class="mq-msg err">' + esc(e.message) + '</div><p style="margin-top:10px;"><a href="mcq.html">← Danh sách đề</a></p></div>'; });
+}
+
+/* ═══════════════════ HỌC SINH: LÀM BÀI ═══════════════════ */
+var T = null;
+function startTest(id, info, st) {
+  T = { id: id, aid: st.attemptId, title: st.title, qs: st.questions, ans: st.answers.map(function (x) { return x == null ? null : x; }), cur: 0, flags: {}, endsAt: st.endsAt, off: st.serverNow - Date.now(), maxLeaves: st.maxLeaves, leaves: st.leaves, away: false, done: false, saveT: null, timer: null, submitting: false };
+  var first = 0; for (var i = 0; i < T.qs.length; i++) { if (T.ans[i] == null) { first = i; break; } } T.cur = first;
+  $('mqHero').textContent = '📝 ' + st.title; $('mqSub').textContent = 'Đang làm bài — không rời khỏi trang này';
+  renderTest(); bindGuards(); tick(); T.timer = setInterval(tick, 500);
+}
+function remaining() { return T.endsAt ? T.endsAt - (Date.now() + T.off) : null; }
+function tick() {
+  if (!T || T.done) return; var r = remaining(), el = $('tkTimer'); if (!el) return;
+  if (r == null) { el.textContent = '∞'; return; }
+  var s = Math.max(0, Math.ceil(r / 1000)), m = Math.floor(s / 60), p = function (n) { return (n < 10 ? '0' : '') + n; };
+  el.textContent = (m >= 60 ? Math.floor(m / 60) + ':' + p(m % 60) : p(m)) + ':' + p(s % 60);
+  el.className = 'tk-timer' + (s <= 60 ? ' crit' : s <= 300 ? ' low' : '');
+  if (r <= 0) submitNow('time');
+}
+function answeredN() { return T.ans.filter(function (x) { return x != null; }).length; }
+function renderTest() {
+  var q = T.qs[T.cur], n = T.qs.length;
+  var nav = T.qs.map(function (_, i) { return '<button class="tk-n' + (T.ans[i] != null ? ' done' : '') + (i === T.cur ? ' cur' : '') + (T.flags[i] ? ' flag' : '') + '" data-i="' + i + '">' + (i + 1) + '</button>'; }).join('');
+  root.innerHTML = '<div class="tk-bar"><div class="tk-timer" id="tkTimer">--:--</div><div style="flex:1;min-width:140px;"><b>' + esc(T.title) + '</b><div class="mq-sub" id="tkProg">Đã trả lời ' + answeredN() + '/' + n + (T.maxLeaves ? ' · Rời trang: ' + T.leaves + '/' + T.maxLeaves : '') + '</div></div><button class="mq-btn" id="tkSubmit">📤 Nộp bài</button></div>' +
+    '<div class="tk-q" id="tkQ"><div class="mq-sub" style="margin-bottom:6px;">Câu ' + (T.cur + 1) + '/' + n + '</div><div class="tk-stem">' + esc(q.q) + '</div>' +
+    q.opts.map(function (o, k) { return '<button class="tk-opt' + (T.ans[T.cur] === k ? ' sel' : '') + '" data-k="' + k + '"><span class="l">' + LET[k] + '</span><span>' + esc(o) + '</span></button>'; }).join('') +
+    '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;"><button class="mq-btn ghost" id="tkPrev"' + (T.cur === 0 ? ' disabled' : '') + '>← Câu trước</button><button class="mq-btn ghost" id="tkFlag">' + (T.flags[T.cur] ? '🚩 Bỏ đánh dấu' : '🏳️ Đánh dấu xem lại') + '</button><button class="mq-btn" id="tkNext"' + (T.cur === n - 1 ? ' disabled' : '') + ' style="margin-left:auto;">Câu sau →</button></div></div>' +
+    '<div class="mq-card" style="margin-top:14px;"><div class="mq-title">🧭 Danh sách câu <span class="mq-sub">xanh = đã trả lời · 🚩 = đánh dấu</span></div><div class="tk-nav">' + nav + '</div></div><div id="tkMsg"></div>';
+  Array.prototype.forEach.call(root.querySelectorAll('.tk-opt'), function (b) { b.onclick = function () { T.ans[T.cur] = +b.getAttribute('data-k'); scheduleSave(); renderTest(); tick(); }; });
+  Array.prototype.forEach.call(root.querySelectorAll('.tk-n'), function (b) { b.onclick = function () { T.cur = +b.getAttribute('data-i'); renderTest(); tick(); window.scrollTo(0, 0); }; });
+  $('tkPrev').onclick = function () { T.cur--; renderTest(); tick(); }; $('tkNext').onclick = function () { T.cur++; renderTest(); tick(); };
+  $('tkFlag').onclick = function () { T.flags[T.cur] = !T.flags[T.cur]; renderTest(); tick(); };
+  $('tkSubmit').onclick = confirmSubmit;
+}
+function scheduleSave() { clearTimeout(T.saveT); T.saveT = setTimeout(saveNow, 700); }
+function saveNow() {
+  if (!T || T.done) return;
+  api('POST', '/api/mcq/attempt/' + T.aid + '/save', { answers: T.ans }).then(function (r) { if (r.status === 'done') finishFromServer(); }).catch(function () {});
+}
+function confirmSubmit() {
+  var un = T.ans.length - answeredN(), fl = Object.keys(T.flags).filter(function (k) { return T.flags[k]; }).length;
+  var ov = document.createElement('div'); ov.className = 'tk-ov';
+  ov.innerHTML = '<div><div style="font-size:42px;">📤</div><h3 style="margin:6px 0;">Nộp bài?</h3><p style="font-size:14px;line-height:1.6;">' + (un ? '⚠️ Bạn còn <b>' + un + '</b> câu chưa trả lời.<br>' : 'Bạn đã trả lời tất cả các câu.<br>') + (fl ? '🚩 Còn ' + fl + ' câu đang đánh dấu xem lại.<br>' : '') + 'Sau khi nộp bạn <b>không thể sửa</b>.</p><div style="display:flex;gap:10px;justify-content:center;margin-top:14px;"><button class="mq-btn ghost" id="ovNo">Làm tiếp</button><button class="mq-btn" id="ovYes">Nộp bài</button></div></div>';
+  document.body.appendChild(ov); $('ovNo').onclick = function () { ov.remove(); }; $('ovYes').onclick = function () { ov.remove(); submitNow('manual'); };
+}
+function submitNow(why) {
+  if (!T || T.done || T.submitting) return; T.submitting = true; clearTimeout(T.saveT);
+  var b = $('tkSubmit'); if (b) { b.disabled = true; b.textContent = 'Đang nộp...'; }
+  api('POST', '/api/mcq/attempt/' + T.aid + '/submit', { answers: T.ans }).then(function (r) { finishTest(r); }).catch(function (e) {
+    T.submitting = false; if (b) { b.disabled = false; b.textContent = '📤 Nộp bài'; }
+    msg('tkMsg', 'err', 'Chưa nộp được: ' + esc(e.message) + ' — hãy kiểm tra mạng rồi bấm "Nộp bài" lại. Bài làm của bạn đã được lưu.');
+    if (why === 'time') setTimeout(function () { submitNow('time'); }, 4000);
+  });
+}
+function finishFromServer() { api('GET', '/api/mcq/attempt/' + T.aid).then(finishTest).catch(function () {}); }
+function finishTest(r) {
+  if (!T || T.done) return; T.done = true; clearInterval(T.timer); unbindGuards();
+  var id = T.id; T = null;
+  try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {}
+  api('GET', '/api/mcq/' + id + '/info').then(function (info) { viewResult(id, info, r); });
+}
+
+/* ── Giám sát: rời tab / mất focus, chặn sao chép ── */
+var G = null;
+function bindGuards() {
+  G = {};
+  var leave = function (kind) {
+    if (!T || T.done || T.away) return; T.away = true;
+    var body = JSON.stringify({ state: 'hidden', kind: kind });
+    fetch('/api/mcq/attempt/' + T.aid + '/leave', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.leaves != null) T.leaves = d.leaves; if (d.status === 'done') { T.away = false; finishFromServer(); }
+    }).catch(function () {});
+  };
+  var back = function () {
+    if (!T || T.done || !T.away) return; if (document.visibilityState !== 'visible') return; T.away = false;
+    api('POST', '/api/mcq/attempt/' + T.aid + '/leave', { state: 'visible' }).then(function (d) {
+      if (d.status === 'done') return finishFromServer(); if (d.leaves != null) T.leaves = d.leaves;
+      var left = T.maxLeaves ? Math.max(0, T.maxLeaves - T.leaves) : null, ov = document.createElement('div'); ov.className = 'tk-ov';
+      ov.innerHTML = '<div><div style="font-size:46px;">⚠️</div><h3 style="margin:6px 0;">Bạn vừa rời khỏi bài làm</h3><p style="font-size:14px;line-height:1.6;">Đây là lần rời thứ <b>' + T.leaves + '</b>' + (T.maxLeaves ? '/' + T.maxLeaves : '') + '. Giáo viên sẽ thấy số lần này.' + (left != null ? '<br>' + (left > 0 ? 'Bạn chỉ còn <b>' + left + '</b> lần nữa, sau đó bài sẽ <b>tự động nộp</b>.' : '<b>Lần rời tiếp theo bài sẽ tự động nộp!</b>') : '') + '</p><button class="mq-btn" id="ovOk" style="margin-top:12px;">Tôi đã hiểu, tiếp tục làm bài</button></div>';
+      document.body.appendChild(ov); $('ovOk').onclick = function () { ov.remove(); }; renderTestProg();
+    }).catch(function () {});
+  };
+  G.vis = function () { if (document.visibilityState === 'hidden') leave('tab'); else back(); };
+  G.blur = function () { setTimeout(function () { if (T && !T.done && !document.hasFocus() && document.visibilityState === 'visible') leave('blur'); }, 400); };
+  G.focus = function () { setTimeout(back, 100); };
+  G.unload = function (e) { if (T && !T.done) { e.preventDefault(); e.returnValue = ''; } };
+  G.block = function (e) { if (T && !T.done) e.preventDefault(); };
+  G.key = function (e) { if (!T || T.done) return; var k = String(e.key || '').toLowerCase(); if ((e.ctrlKey || e.metaKey) && ['c', 'v', 'x', 'p', 's', 'u', 'a'].indexOf(k) >= 0) e.preventDefault(); if (k === 'printscreen') { try { navigator.clipboard.writeText(''); } catch (x) {} } };
+  document.addEventListener('visibilitychange', G.vis); window.addEventListener('blur', G.blur); window.addEventListener('focus', G.focus); window.addEventListener('beforeunload', G.unload);
+  ['contextmenu', 'copy', 'cut', 'paste', 'selectstart', 'dragstart'].forEach(function (ev) { document.addEventListener(ev, G.block); }); document.addEventListener('keydown', G.key);
+}
+function renderTestProg() { var el = $('tkProg'); if (el && T) el.textContent = 'Đã trả lời ' + answeredN() + '/' + T.qs.length + (T.maxLeaves ? ' · Rời trang: ' + T.leaves + '/' + T.maxLeaves : ''); }
+function unbindGuards() {
+  if (!G) return; document.removeEventListener('visibilitychange', G.vis); window.removeEventListener('blur', G.blur); window.removeEventListener('focus', G.focus); window.removeEventListener('beforeunload', G.unload);
+  ['contextmenu', 'copy', 'cut', 'paste', 'selectstart', 'dragstart'].forEach(function (ev) { document.removeEventListener(ev, G.block); }); document.removeEventListener('keydown', G.key); G = null;
+}
+
+/* ═══════════════════ HỌC SINH: KẾT QUẢ + ĐÁP ÁN ═══════════════════ */
+function reviewHtml(rv) {
+  return rv.map(function (x) {
+    return '<div class="rv"><div class="qt">Câu ' + x.n + '. ' + esc(x.q) + ' ' + (x.ok ? '<span class="mq-badge g">✔ Đúng</span>' : '<span class="mq-badge r">' + (x.chosen < 0 ? '✖ Chưa trả lời' : '✖ Sai') + '</span>') + '</div>' +
+      x.opts.map(function (o, k) { return '<div class="tk-opt' + (k === x.correct ? ' ok' : (k === x.chosen ? ' no' : '')) + (k === x.chosen ? ' pick' : '') + '" style="cursor:default;"><span class="l">' + LET[k] + '</span><span>' + esc(o) + (k === x.correct ? ' <b>✔ Đáp án đúng</b>' : '') + (k === x.chosen ? ' <b>(đã chọn)</b>' : '') + '</span></div>'; }).join('') +
+      (x.exp ? '<div class="ex">💡 ' + esc(x.exp) + '</div>' : '') + '</div>';
+  }).join('');
+}
+function viewResult(id, info, res) {
+  var show = function (r) {
+    $('mqHero').textContent = '📝 ' + info.title; $('mqSub').textContent = 'Kết quả bài làm';
+    var pct = r.percent, emoji = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '👍' : '💪';
+    var auto = r.autoSubmit === 'time' ? '<div class="mq-msg warn">⏰ Bài được tự động nộp vì hết giờ.</div>' : r.autoSubmit === 'leave' ? '<div class="mq-msg warn">⚠️ Bài được tự động nộp vì bạn rời khỏi trang quá số lần cho phép.</div>' : '';
+    var h = '<div style="margin-bottom:12px;"><a class="mq-btn sm ghost" href="mcq.html">← Danh sách đề</a></div><div class="mq-card mq-score"><div style="font-size:48px;">' + emoji + '</div><div class="big">' + r.score + '/' + r.total + '</div><div style="font-size:18px;font-weight:800;">' + pct + '% · Điểm ' + (Math.round(r.score / r.total * 100) / 10).toFixed(1) + '/10</div>' +
+      '<div class="mq-sub" style="margin-top:6px;">Thời gian làm: ' + fmtDur(r.usedMs) + (r.leaves ? ' · Số lần rời trang: ' + r.leaves : '') + '</div>' + auto + '</div>';
+    if (r.review) {
+      h += '<div class="mq-card"><div class="mq-title">✅ Đáp án & giải thích <button class="mq-btn sm line" id="rvToggle" style="margin-left:auto;">🙈 Ẩn đáp án</button></div><div id="rvBox">' + reviewHtml(r.review) + '</div></div>';
+    } else {
+      h += '<div class="mq-card"><div class="mq-title">🔒 Đáp án</div><div class="mq-sub" style="margin-bottom:10px;">Giáo viên chưa mở đáp án cho đề này. Khi giáo viên mở, bạn bấm nút bên dưới để xem đáp án và giải thích.</div><button class="mq-btn ghost" id="rvRefresh">🔄 Kiểm tra lại</button></div>';
+    }
+    root.innerHTML = h;
+    var tg = $('rvToggle'); if (tg) tg.onclick = function () { var b = $('rvBox'), hid = b.style.display === 'none'; b.style.display = hid ? '' : 'none'; tg.textContent = hid ? '🙈 Ẩn đáp án' : '👁 Hiện đáp án'; };
+    var rf = $('rvRefresh'); if (rf) rf.onclick = function () { api('GET', '/api/mcq/attempt/' + r.attemptId).then(show).catch(function (e) { alert(e.message); }); };
+  };
+  if (res) return show(res);
+  if (info.result) return show(info.result);
+  root.innerHTML = '<div class="mq-card">Không có dữ liệu.</div>';
+}
+
+/* ═══════════════════ GIÁO VIÊN ═══════════════════ */
+var STU = null, PICK = {};
+function stuPicker(id) {
+  return '<input type="search" id="' + id + 'Q" placeholder="🔍 Tìm học sinh theo tên hoặc email" style="margin-bottom:6px;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;"><button type="button" class="mq-btn sm ghost" id="' + id + 'All">☑ Chọn tất cả đang hiện</button><button type="button" class="mq-btn sm ghost" id="' + id + 'Clr">✕ Bỏ chọn</button><span class="mq-sub" id="' + id + 'N"></span></div><div class="mq-stu" id="' + id + '">Đang tải học sinh...</div>';
+}
+function bindPicker(id) {
+  PICK[id] = {};
+  var cnt = function () { var n = Object.keys(PICK[id]).length; $(id + 'N').textContent = n ? 'Đã chọn ' + n + ' học sinh' : ''; };
+  var draw = function () {
+    var q = ($(id + 'Q').value || '').toLowerCase().trim(), list = (STU || []).filter(function (u) { return !q || (u.name + ' ' + u.email).toLowerCase().indexOf(q) >= 0; });
+    $(id).innerHTML = list.length ? list.map(function (u) { return '<label><input type="checkbox" data-u="' + u.id + '"' + (PICK[id][u.id] ? ' checked' : '') + '> <span>' + esc(u.name) + ' <span class="mq-sub">' + esc(u.email) + '</span></span></label>'; }).join('') : '<div class="mq-sub" style="padding:8px 0;">Không có học sinh phù hợp.</div>';
+    Array.prototype.forEach.call($(id).querySelectorAll('input[data-u]'), function (c) { c.onchange = function () { if (c.checked) PICK[id][c.getAttribute('data-u')] = 1; else delete PICK[id][c.getAttribute('data-u')]; cnt(); }; }); cnt();
+  };
+  $(id + 'Q').oninput = draw;
+  $(id + 'All').onclick = function () { Array.prototype.forEach.call($(id).querySelectorAll('input[data-u]'), function (c) { PICK[id][c.getAttribute('data-u')] = 1; c.checked = true; }); cnt(); };
+  $(id + 'Clr').onclick = function () { PICK[id] = {}; draw(); };
+  (STU ? Promise.resolve() : api('GET', '/api/lesson-vocab/students').then(function (r) { STU = r.students || []; })).then(draw).catch(function () { $(id).innerHTML = '<div class="mq-sub">Không tải được danh sách — dùng ô email.</div>'; });
+}
+function picked(id) { return Object.keys(PICK[id] || {}).map(Number); }
+
+function viewTeacher() {
+  $('mqHero').textContent = '📝 Đề trắc nghiệm'; $('mqSub').textContent = 'Tải file Word có câu hỏi + đáp án → giao cho học sinh làm online, có đếm ngược và theo dõi chuyển tab.';
+  root.innerHTML = '<div class="mq-card"><div class="mq-title" style="margin-bottom:12px;"><button class="mq-pill on" data-t="create">➕ Tạo đề từ file Word</button><button class="mq-pill" data-t="list">📋 Đề đã giao & kết quả</button></div><div id="mqTab"></div></div>';
+  Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (b) {
+    b.onclick = function () { Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (x) { x.classList.toggle('on', x === b); }); if (b.getAttribute('data-t') === 'create') viewCreate(); else viewTeacherList(); };
+  });
+  viewCreate();
+}
+var D = { questions: [], title: '', fileName: '' };
+function rulesHtml() {
+  return '<details class="mq-rules" open><summary style="cursor:pointer;font-weight:800;font-size:14.5px;">📌 QUY ĐỊNH FILE WORD — thầy/cô vui lòng làm theo để hệ thống đọc đúng 100%</summary>' +
+    '<h4>1. Định dạng file</h4><ul><li>File Word <b>.docx</b> (không dùng .doc cũ — nếu có, mở bằng Word → <i>Lưu thành (Save As)</i> → chọn <i>Word Document (.docx)</i>).</li><li>Tối đa <b>200 câu</b>/đề, file ≤ 8MB. <b>Không có hình ảnh</b> trong câu hỏi (hình sẽ bị bỏ qua — hãy mô tả bằng chữ). Mỗi đề chỉ <b>1 đáp án đúng</b>/câu.</li></ul>' +
+    '<h4>2. Cách ghi câu hỏi</h4><ul><li>Mỗi câu bắt đầu bằng <b>số thứ tự gõ trực tiếp</b>: <code>Câu 1.</code> hoặc <code>1.</code> hoặc <code>Question 1:</code>.</li><li>Mỗi phương án <b>một dòng</b>, bắt đầu bằng chữ cái gõ trực tiếp: <code>A.</code> <code>B.</code> <code>C.</code> <code>D.</code> (tối đa E). Cũng nhận các phương án nằm chung 1 dòng: <code>A. go   B. goes   C. going   D. went</code>.</li><li>Nên <b>gõ tay</b> "Câu 1." và "A." thay vì dùng nút đánh số tự động của Word (hệ thống vẫn thử đọc được nhưng gõ tay chính xác hơn).</li><li>Câu hỏi có thể dài nhiều dòng (đoạn văn ngắn) — các dòng nằm giữa số câu và phương án A sẽ được gộp vào đề.</li></ul>' +
+    '<h4>3. Cách ghi ĐÁP ÁN — chọn 1 trong 2 cách (hoặc dùng cả hai)</h4>' +
+    '<b>Cách 1 — KHUNG ĐÁP ÁN:</b><ul><li>Cuối file, một dòng chữ <code>ĐÁP ÁN</code> rồi các đáp án theo số câu, ví dụ:</li></ul><span class="mq-ex">ĐÁP ÁN\n1. B    2. C    3. A    4. D    5. B</span><ul><li>Hoặc dạng <b>bảng</b> (hàng trên là số câu, hàng dưới là đáp án), hoặc ghi <b>ngay dưới từng câu</b> một dòng: <code>Đáp án: C</code>.</li></ul>' +
+    '<b>Cách 2 — IN ĐỎ đáp án đúng:</b><ul><li>Tô <b style="color:#ef4444">màu đỏ</b> (Font color: Red) cho <b>dòng phương án đúng</b>, ví dụ:</li></ul><span class="mq-ex">Câu 1. She ___ to school every day.\nA. go\n<b class="r">B. goes</b>\nC. going\nD. went</span><ul><li>Chỉ <b>1 phương án</b> in đỏ mỗi câu. Không tô đỏ phần câu hỏi hay các phương án khác.</li></ul>' +
+    '<h4>4. Giải thích (tuỳ chọn)</h4><ul><li>Thêm dòng <code>Giải thích: ...</code> ngay dưới đáp án — học sinh sẽ thấy khi thầy/cô cho hiện đáp án.</li></ul>' +
+    '<h4>5. Sau khi tải lên</h4><ul><li>Hệ thống hiện <b>bản xem trước</b> toàn bộ câu hỏi + đáp án đã nhận. Câu nào lỗi sẽ viền đỏ và nói rõ lý do — thầy/cô sửa ngay trên màn hình rồi mới giao.</li></ul>' +
+    '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"><a class="mq-btn sm" href="/api/mcq/sample/key" style="text-decoration:none;">⬇️ Tải file mẫu 1 (khung đáp án)</a><a class="mq-btn sm" href="/api/mcq/sample/red" style="text-decoration:none;">⬇️ Tải file mẫu 2 (đáp án in đỏ)</a></div></details>';
+}
+function viewCreate() {
+  D = { questions: [], title: '', fileName: '' };
+  $('mqTab').innerHTML = rulesHtml() + '<div class="mq-form" style="margin-top:14px;"><label class="f">📄 Tải file Word (.docx)</label>' +
+    '<div class="mq-drop" id="mqDrop"><div style="font-size:34px;">📄</div><b>Thả file .docx vào đây hoặc bấm để chọn</b><div class="mq-sub" style="margin-top:4px;">Chỉ nhận file Word .docx theo đúng quy định ở trên</div><input type="file" id="mqFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden></div><div id="mqParseMsg"></div></div><div id="mqReview"></div>';
+  var drop = $('mqDrop'), inp = $('mqFile');
+  drop.onclick = function () { inp.click(); }; inp.onchange = function () { if (inp.files[0]) parseFile(inp.files[0]); inp.value = ''; };
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files[0]; if (f) parseFile(f); });
+}
+function parseFile(file) {
+  msg('mqParseMsg', 'warn', '⏳ Đang đọc "' + esc(file.name) + '"...'); $('mqReview').innerHTML = '';
+  var fd = new FormData(); fd.append('file', file, file.name);
+  fetch('/api/mcq/parse', { method: 'POST', credentials: 'same-origin', body: fd }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'Không đọc được file.'); return d; }); }).then(function (d) {
+    D.questions = d.questions.map(function (q) { return { q: q.q, opts: q.opts.slice(), ans: q.ans, exp: q.exp || '' }; }); D.title = d.title; D.fileName = file.name;
+    var modeTxt = { key: 'khung/bảng đáp án', red: 'chữ đỏ', mixed: 'chữ đỏ + bảng đáp án', none: '' }[d.mode] || '';
+    var h = '✅ Đã đọc được <b>' + d.questions.length + '</b> câu' + (modeTxt ? ' (nhận đáp án theo <b>' + modeTxt + '</b>)' : '') + '.';
+    if (d.errors.length) h += '<br>❌ <b>' + d.errors.length + ' lỗi cần sửa:</b><ul style="margin:4px 0 0 18px;">' + d.errors.slice(0, 15).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + (d.errors.length > 15 ? '<li>... và ' + (d.errors.length - 15) + ' lỗi khác</li>' : '') + '</ul>';
+    if (d.warnings.length) h += '<br>⚠️ <b>Lưu ý:</b><ul style="margin:4px 0 0 18px;">' + d.warnings.slice(0, 10).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>';
+    msg('mqParseMsg', d.errors.length ? 'err' : (d.warnings.length ? 'warn' : 'ok'), h);
+    if (d.questions.length) renderReviewT(); else $('mqReview').innerHTML = '';
+  }).catch(function (e) { msg('mqParseMsg', 'err', esc(e.message)); });
+}
+function qValid(q) { return q.q.trim() && q.opts.length >= 2 && q.opts.every(function (o) { return String(o).trim(); }) && Number.isInteger(q.ans) && q.ans >= 0 && q.ans < q.opts.length; }
+function renderReviewT() {
+  var h = '<div class="mq-title" style="margin-top:18px;">🔎 Xem trước & kiểm tra <span class="mq-sub">chấm tròn = đáp án đúng · sửa trực tiếp nếu cần</span></div><div id="rtBanner"></div>';
+  D.questions.forEach(function (q, i) {
+    h += '<div class="mq-q" id="rq' + i + '"><div class="mq-sub">Câu ' + (i + 1) + '</div><textarea rows="2" data-i="' + i + '" data-f="q">' + esc(q.q) + '</textarea>' +
+      q.opts.map(function (o, k) { return '<div class="opt"><input type="radio" name="ra' + i + '" data-i="' + i + '" data-r="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b><input type="text" data-i="' + i + '" data-o="' + k + '" value="' + esc(o) + '"></div>'; }).join('') +
+      '<input type="text" data-i="' + i + '" data-f="exp" value="' + esc(q.exp) + '" placeholder="Giải thích (không bắt buộc)" style="margin-top:6px;"><div style="text-align:right;margin-top:6px;"><button class="mq-btn sm ghost" data-del="' + i + '">🗑 Xoá câu này</button></div></div>';
+  });
+  h += '<div class="mq-card mq-form" style="margin-top:16px;"><div class="mq-title">⚙️ Cài đặt bài làm</div>' +
+    '<label class="f">Tên đề</label><input type="text" id="sTitle" maxlength="100" value="' + esc(D.title) + '">' +
+    '<div class="mq-grid3"><div><label class="f">Thời gian làm bài (phút)</label><input type="number" id="sDur" min="0" max="300" value="30"><div class="mq-sub">0 = không giới hạn</div></div><div><label class="f">Cho phép rời trang tối đa (lần)</label><input type="number" id="sLeave" min="0" max="20" value="3"><div class="mq-sub">Vượt quá → tự nộp. 0 = chỉ ghi nhận, không tự nộp</div></div><div><label class="f">Hạn bắt đầu làm bài (tuỳ chọn)</label><input type="datetime-local" id="sDl"></div></div>' +
+    '<label class="mq-chk"><input type="checkbox" id="sShQ" checked> Xáo trộn thứ tự câu hỏi (mỗi học sinh một thứ tự khác nhau)</label><label class="mq-chk"><input type="checkbox" id="sShO" checked> Xáo trộn thứ tự đáp án A/B/C/D</label>' +
+    '<label class="mq-chk"><input type="checkbox" id="sReveal"> Cho học sinh <b>xem đáp án & giải thích</b> sau khi nộp (có thể bật/tắt lại bất cứ lúc nào)</label><label class="f">Ghi chú cho học sinh (tuỳ chọn)</label><input type="text" id="sNote" maxlength="400"></div>' +
+    '<div class="mq-card mq-form"><div class="mq-title">📨 Giao cho học sinh</div><label class="f">Giao cho lớp</label><div class="mq-stu" id="gGroups">Đang tải lớp...</div><label class="f">Hoặc chọn từng học sinh</label>' + stuPicker('gStu') + '<label class="f">Hoặc email học sinh (mỗi dòng/dấu phẩy một email)</label><textarea id="gEmails" rows="2"></textarea><label class="mq-chk"><input type="checkbox" id="gAll"> Giao cho TẤT CẢ học sinh</label>' +
+    '<button class="mq-btn" id="gGo" style="margin-top:10px;">📨 Giao đề</button><div id="gMsg"></div></div>';
+  $('mqReview').innerHTML = h;
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('textarea[data-f],input[data-f]'), function (el) { el.oninput = function () { D.questions[+el.getAttribute('data-i')][el.getAttribute('data-f')] = el.value; checkBanner(); }; });
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('input[data-o]'), function (el) { el.oninput = function () { D.questions[+el.getAttribute('data-i')].opts[+el.getAttribute('data-o')] = el.value; checkBanner(); }; });
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('input[data-r]'), function (el) { el.onchange = function () { D.questions[+el.getAttribute('data-i')].ans = +el.getAttribute('data-r'); checkBanner(); }; });
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('[data-del]'), function (b) { b.onclick = function () { D.questions.splice(+b.getAttribute('data-del'), 1); renderReviewT(); }; });
+  api('GET', '/api/groups').then(function (r) { $('gGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="gGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="mq-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="mq-sub" style="padding:6px 0;">Chưa có lớp.</div>'; }).catch(function () { $('gGroups').innerHTML = '<div class="mq-sub">Không tải được lớp.</div>'; });
+  bindPicker('gStu'); $('gGo').onclick = publish; checkBanner();
+}
+function checkBanner() {
+  var bad = []; D.questions.forEach(function (q, i) { var ok = qValid(q); var el = $('rq' + i); if (el) el.classList.toggle('bad', !ok); if (!ok) bad.push(i + 1); });
+  var b = $('rtBanner'); if (b) b.innerHTML = bad.length ? '<div class="mq-msg err">❌ Còn <b>' + bad.length + '</b> câu cần sửa (viền đỏ): câu ' + bad.slice(0, 20).join(', ') + '. Hãy chọn đáp án đúng (chấm tròn) và điền đủ nội dung.</div>' : '<div class="mq-msg ok">✅ Tất cả ' + D.questions.length + ' câu đều hợp lệ — thầy/cô xem lại lần cuối rồi giao đề ở cuối trang.</div>';
+  var g = $('gGo'); if (g) g.disabled = !!bad.length || !D.questions.length;
+}
+function publish() {
+  var b = $('gGo'); b.disabled = true; msg('gMsg', '', '');
+  var body = { title: $('sTitle').value, duration_min: +$('sDur').value || 0, max_leaves: +$('sLeave').value || 0, shuffle_q: $('sShQ').checked, shuffle_o: $('sShO').checked, reveal: $('sReveal').checked, deadline: $('sDl').value || null, note: $('sNote').value, source_name: D.fileName,
+    questions: D.questions.map(function (q) { return { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp }; }),
+    group_ids: Array.prototype.map.call(document.querySelectorAll('.gGrp:checked'), function (c) { return +c.value; }), user_ids: picked('gStu'), emails: $('gEmails').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean), all_students: $('gAll').checked };
+  api('POST', '/api/mcq', body).then(function (r) { msg('gMsg', 'ok', '✅ Đã giao đề cho <b>' + r.recipients + '</b> học sinh — mỗi bạn nhận một thông báo 🔔 và thấy đề trong "Bài tập được giao". <a href="mcq.html?id=' + r.id + '&tab=results">Xem kết quả</a> khi học sinh làm bài.'); }).catch(function (e) { msg('gMsg', 'err', esc(e.message)); b.disabled = false; });
+}
+
+function viewTeacherList() {
+  $('mqTab').innerHTML = '<div class="mq-sub">Đang tải...</div>';
+  api('GET', '/api/mcq').then(function (r) {
+    if (!r.tests.length) { $('mqTab').innerHTML = '<div class="mq-sub" style="padding:10px 0;">Chưa có đề nào. Hãy tạo đề đầu tiên ở tab "Tạo đề từ file Word".</div>'; return; }
+    $('mqTab').innerHTML = r.tests.map(function (t) {
+      return '<div class="mq-list-item"><div class="main"><b>' + esc(t.title) + '</b><div class="mq-sub">' + t.questions + ' câu · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn giờ') + ' · rời tab tối đa ' + (t.maxLeaves || '∞') + (t.deadline ? ' · hạn ' + fmtDl(t.deadline) : '') + '</div><div class="mq-sub">Giao ' + t.assigned + ' · đã nộp ' + t.done + (t.avg != null ? ' · điểm TB ' + t.avg + '%' : '') + '</div></div>' +
+        '<label class="mq-sub" style="display:flex;gap:8px;align-items:center;" title="Học sinh chỉ thấy đáp án khi bật">Hiện đáp án <button class="mq-sw' + (t.reveal ? ' on' : '') + '" data-rv="' + t.id + '" aria-label="Hiện đáp án"></button></label>' +
+        '<a class="mq-btn sm" style="text-decoration:none;" href="mcq.html?id=' + t.id + '&tab=results">📊 Kết quả</a><button class="mq-btn sm ghost" data-del="' + t.id + '">🗑</button></div>';
+    }).join('');
+    Array.prototype.forEach.call($('mqTab').querySelectorAll('[data-rv]'), function (b) { b.onclick = function () { var on = !b.classList.contains('on'); api('PATCH', '/api/mcq/' + b.getAttribute('data-rv'), { reveal: on }).then(function () { b.classList.toggle('on', on); }).catch(function (e) { alert(e.message); }); }; });
+    Array.prototype.forEach.call($('mqTab').querySelectorAll('[data-del]'), function (b) { b.onclick = function () { if (!confirm('Xoá đề này và toàn bộ bài làm của học sinh?')) return; api('DELETE', '/api/mcq/' + b.getAttribute('data-del')).then(viewTeacherList).catch(function (e) { alert(e.message); }); }; });
+  }).catch(function (e) { $('mqTab').innerHTML = '<div class="mq-msg err">' + esc(e.message) + '</div>'; });
+}
+
+function viewResults(id) {
+  $('mqHero').textContent = '📊 Kết quả đề trắc nghiệm';
+  api('GET', '/api/mcq/' + id + '/results').then(function (r) {
+    var T0 = r.test, st = { new: ['Chưa làm', 'w'], in_progress: ['Đang làm', 'r'], done: ['Đã nộp', 'g'] };
+    var h = '<div style="margin-bottom:12px;"><a class="mq-btn sm ghost" href="mcq.html" style="text-decoration:none;">← Quay lại</a></div><div class="mq-card"><div class="mq-title">📊 ' + esc(T0.title) + ' <span class="mq-sub">' + T0.total + ' câu · ' + (T0.duration ? T0.duration + ' phút' : 'không giới hạn giờ') + '</span></div>' +
+      '<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px;"><label style="display:flex;gap:8px;align-items:center;font-weight:700;font-size:13.5px;">Cho học sinh xem đáp án <button class="mq-sw' + (T0.reveal ? ' on' : '') + '" id="rsRv"></button></label><span class="mq-sub" id="rsRvTxt">' + (T0.reveal ? 'Học sinh ĐANG thấy đáp án sau khi nộp.' : 'Đáp án đang ẨN — học sinh chỉ thấy điểm.') + '</span></div>' +
+      '<div class="mq-scroll"><table class="mq-table"><thead><tr><th>Học sinh</th><th>Trạng thái</th><th>Điểm</th><th>Thời gian</th><th>Rời trang</th><th></th></tr></thead><tbody>' +
+      r.students.map(function (s) {
+        var b = st[s.status] || st.new, flag = s.leaves ? '<span class="mq-badge ' + (T0.maxLeaves && s.leaves > T0.maxLeaves ? 'r' : 'w') + '">' + s.leaves + ' lần · ' + fmtDur(s.awayMs) + '</span>' : '<span class="mq-sub">0</span>';
+        return '<tr><td><b>' + esc(s.name) + '</b><div class="mq-sub">' + esc(s.email) + '</div></td><td><span class="mq-badge ' + b[1] + '">' + b[0] + '</span>' + (s.auto === 'time' ? '<div class="mq-sub">⏰ hết giờ</div>' : s.auto === 'leave' ? '<div class="mq-sub">⚠️ rời tab quá số lần</div>' : '') + '</td><td>' + (s.score != null ? '<b>' + s.score + '/' + s.total + '</b> (' + s.percent + '%)' : '—') + '</td><td>' + (s.usedMs != null ? fmtDur(s.usedMs) : '—') + '</td><td>' + flag + '</td><td style="white-space:nowrap;">' + (s.status === 'done' ? '<button class="mq-btn sm ghost" data-view="' + s.id + '">Xem bài</button> ' : '') + (s.status !== 'new' ? '<button class="mq-btn sm ghost" data-reset="' + s.id + '" title="Cho học sinh làm lại">↩ Làm lại</button>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table></div></div>';
+    if (r.hardest.length) h += '<div class="mq-card"><div class="mq-title">🎯 Câu học sinh sai nhiều nhất</div>' + r.hardest.map(function (q) { return '<div class="mq-list-item"><div class="main"><b>Câu ' + q.n + '</b><div class="mq-sub">' + esc(q.q) + '</div></div><b>' + q.wrong + '/' + q.of + ' bạn sai</b></div>'; }).join('') + '</div>';
+    h += '<div class="mq-card"><div class="mq-title">🛠 Sửa đáp án đúng <span class="mq-sub">(nếu phát hiện sai — hệ thống tự chấm lại tất cả bài đã nộp)</span></div><button class="mq-btn ghost" id="rsFix">Mở danh sách câu hỏi</button><div id="rsFixBox"></div></div>';
+    h += '<div class="mq-card mq-form"><div class="mq-title">➕ Giao thêm cho học sinh khác</div>' + stuPicker('aStu') + '<button class="mq-btn" id="aGo" style="margin-top:10px;">📨 Giao thêm</button><div id="aMsg"></div></div><div id="rsDetail"></div>';
+    root.innerHTML = h; bindPicker('aStu');
+    $('rsRv').onclick = function () { var on = !$('rsRv').classList.contains('on'); api('PATCH', '/api/mcq/' + id, { reveal: on }).then(function () { $('rsRv').classList.toggle('on', on); $('rsRvTxt').textContent = on ? 'Học sinh ĐANG thấy đáp án sau khi nộp.' : 'Đáp án đang ẨN — học sinh chỉ thấy điểm.'; }).catch(function (e) { alert(e.message); }); };
+    Array.prototype.forEach.call(root.querySelectorAll('[data-reset]'), function (b) { b.onclick = function () { if (!confirm('Huỷ bài làm hiện tại của học sinh này để họ làm lại từ đầu?')) return; api('POST', '/api/mcq/' + id + '/reset', { user_id: +b.getAttribute('data-reset') }).then(function () { viewResults(id); }).catch(function (e) { alert(e.message); }); }; });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-view]'), function (b) { b.onclick = function () { api('GET', '/api/mcq/' + id + '/attempt/' + b.getAttribute('data-view')).then(function (d) { $('rsDetail').innerHTML = '<div class="mq-card"><div class="mq-title">👁 Bài làm của ' + esc(d.student.name) + ' — ' + d.score + '/' + d.total + (d.leaveLog.length ? ' <span class="mq-badge w">rời trang ' + d.leaveLog.length + ' lần</span>' : '') + '</div>' + (d.leaveLog.length ? '<div class="mq-sub" style="margin-bottom:8px;">' + d.leaveLog.map(function (l) { return fmtDl(new Date(l.at).toISOString()) + ' (' + (l.kind === 'blur' ? 'mất focus' : 'chuyển tab') + (l.away ? ', ' + fmtDur(l.away) : '') + ')'; }).join(' · ') + '</div>' : '') + reviewHtml(d.review) + '</div>'; $('rsDetail').scrollIntoView({ behavior: 'smooth' }); }).catch(function (e) { alert(e.message); }); }; });
+    $('aGo').onclick = function () { var ids = picked('aStu'); if (!ids.length) { msg('aMsg', 'err', 'Hãy chọn ít nhất một học sinh.'); return; } api('POST', '/api/mcq/' + id + '/assign', { user_ids: ids }).then(function (x) { msg('aMsg', 'ok', '✅ Đã giao thêm cho ' + x.added + ' học sinh' + (x.already ? ' (' + x.already + ' bạn đã có)' : '') + '.'); setTimeout(function () { viewResults(id); }, 1400); }).catch(function (e) { msg('aMsg', 'err', esc(e.message)); }); };
+    $('rsFix').onclick = function () {
+      api('GET', '/api/mcq/' + id + '/full').then(function (f) {
+        $('rsFixBox').innerHTML = '<div style="margin-top:10px;">' + f.questions.map(function (q, i) { return '<div class="mq-q"><div class="mq-sub">Câu ' + (i + 1) + '</div><div style="font-weight:600;white-space:pre-wrap;">' + esc(q.q) + '</div>' + q.opts.map(function (o, k) { return '<label class="opt" style="cursor:pointer;"><input type="radio" name="fx' + i + '" data-i="' + i + '" data-k="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b> ' + esc(o) + '</label>'; }).join('') + '</div>'; }).join('') + '</div><div id="fxMsg"></div>';
+        Array.prototype.forEach.call($('rsFixBox').querySelectorAll('input[data-k]'), function (el) { el.onchange = function () { api('PATCH', '/api/mcq/' + id, { fix: [{ i: +el.getAttribute('data-i'), ans: +el.getAttribute('data-k') }] }).then(function (x) { msg('fxMsg', 'ok', '✅ Đã lưu đáp án mới' + (x.regraded ? ' và chấm lại ' + x.regraded + ' bài đã nộp' : '') + '.'); }).catch(function (e) { msg('fxMsg', 'err', esc(e.message)); }); }; });
+      }).catch(function (e) { alert(e.message); });
+    };
+  }).catch(function (e) { root.innerHTML = '<div class="mq-card"><div class="mq-msg err">' + esc(e.message) + '</div></div>'; });
+}
+
+/* ═══════════════════ Khởi động ═══════════════════ */
+api('GET', '/api/me').then(function (r) { ME = r.user || ME; }).catch(function () {}).then(function () {
+  var id = parseInt(qs('id'), 10), isT = ME.role === 'teacher' || ME.role === 'admin';
+  if (isT) { if (id && qs('tab') === 'results') return viewResults(id); return viewTeacher(); }
+  if (id) return viewIntro(id);
+  viewStudentList();
+});
+})();
+</script>
+</body>
+</html>

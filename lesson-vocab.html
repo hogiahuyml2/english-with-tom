@@ -82,7 +82,7 @@
 
 <section class="page-hero" style="padding:24px 0 20px;">
   <div class="container">
-    <div class="crumb"><a href="word-hub.html">Luyện từ</a> › Bộ từ theo bài học</div>
+    <div class="crumb"><a href="word-hub.html">Luyện từ</a> › Bộ từ được giao</div>
     <h1 style="font-size:26px;" id="lvHeroTitle">📘 Bộ từ theo bài học</h1>
     <p style="font-size:14px;" id="lvHeroSub">Học thẻ từ vựng giáo viên giao, luyện 10 câu trắc nghiệm rồi gửi kết quả cho giáo viên.</p>
   </div>
@@ -123,7 +123,7 @@ function qs(k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(location.searc
 /* ═════════════ DANH SÁCH ═════════════ */
 function viewList() {
   $('lvHeroTitle').textContent = '📘 Bộ từ theo bài học';
-  if (ME.role === 'student') return viewStudentList();
+  if (ME.role === 'student') { $('lvHeroTitle').textContent = '📘 Bộ từ được giao'; return viewStudentList(); }
   root.innerHTML = '<div class="lv-card"><div class="lv-title" style="margin-bottom:12px;"><button class="lv-pill on" data-t="create">➕ Tạo bộ từ mới</button><button class="lv-pill" data-t="mine">📋 Bộ từ đã giao & kết quả</button><button class="lv-pill" data-t="report">📈 Báo cáo học sinh</button></div><div id="lvTab"></div></div>';
   Array.prototype.forEach.call(root.querySelectorAll('[data-t]'), function (b) {
     b.onclick = function () {
@@ -135,7 +135,7 @@ function viewList() {
 }
 function viewStudentList() {
   api('GET', '/api/lesson-vocab/mine').then(function (r) {
-    var h = '<div class="lv-card"><div class="lv-title">📘 Bộ từ giáo viên giao cho bạn</div>';
+    var h = '<div class="lv-card"><div class="lv-title">📘 Bộ từ được giao cho bạn</div>';
     if (!r.sets.length) h += '<div class="lv-sub" style="padding:10px 0;">Chưa có bộ từ nào được giao. Khi giáo viên giao bài, bạn sẽ nhận thông báo 🔔.</div>';
     r.sets.forEach(function (s) {
       h += '<div class="lv-list-item"><div class="main"><b>' + esc(s.title) + '</b><div class="lv-sub">' + (s.teacher ? 'Từ ' + esc(s.teacher) + ' · ' : '') + s.words + ' từ + 10 câu luyện tập' + (s.deadline ? ' · Hạn: ' + fmtDl(s.deadline) : '') + '</div>' +

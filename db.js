@@ -426,6 +426,52 @@ CREATE INDEX IF NOT EXISTS idx_duel_guest ON word_duels(guest_id, status);
 CREATE INDEX IF NOT EXISTS idx_arcade_week ON arcade_weekly(week, points);
 `, 'arcade tables');
 
+// Đề trắc nghiệm (giáo viên tải file Word → giao cho học sinh làm có đếm ngược, theo dõi chuyển tab)
+tryExec(`
+CREATE TABLE IF NOT EXISTS mcq_tests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  note TEXT,
+  questions TEXT NOT NULL,
+  duration_min INTEGER NOT NULL DEFAULT 0,
+  max_leaves INTEGER NOT NULL DEFAULT 3,
+  shuffle_q INTEGER NOT NULL DEFAULT 1,
+  shuffle_o INTEGER NOT NULL DEFAULT 1,
+  reveal INTEGER NOT NULL DEFAULT 0,
+  deadline TEXT,
+  source_name TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS mcq_assign (
+  test_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  assigned_at TEXT NOT NULL,
+  PRIMARY KEY (test_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS mcq_attempts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  test_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'in_progress',
+  started_at INTEGER NOT NULL,
+  ends_at INTEGER NOT NULL DEFAULT 0,
+  finished_at INTEGER,
+  perm TEXT NOT NULL,
+  answers TEXT NOT NULL DEFAULT '[]',
+  score INTEGER,
+  total INTEGER,
+  leaves INTEGER NOT NULL DEFAULT 0,
+  leave_log TEXT NOT NULL DEFAULT '[]',
+  away_ms INTEGER NOT NULL DEFAULT 0,
+  last_leave_at INTEGER,
+  auto_submit TEXT,
+  voided INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_mcq_assign_user ON mcq_assign(user_id);
+CREATE INDEX IF NOT EXISTS idx_mcq_att ON mcq_attempts(test_id, user_id);
+`, 'mcq tables');
+
 // Mở rộng kho từ: loại mục (word / colloc / upgrade) + các trường phụ
 safeAlter('PRAGMA table_info(vocab_words)', [
   ['kind',          "ALTER TABLE vocab_words ADD COLUMN kind TEXT NOT NULL DEFAULT 'word'"],

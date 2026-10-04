@@ -48,13 +48,13 @@
   var navItemsAfter = [
     { href: 'word-hub.html', label: 'Luyện từ', key: 'vocab' },
   ];
-  // "Luyện từ" gom tất cả: học & ôn từ, flashcard, trò chơi, luyện câu, bộ từ của thầy — dùng chung 1 mục menu + 1 thanh tab
+  // "Luyện từ" gom tất cả: học & ôn từ, flashcard, trò chơi, luyện câu, bộ từ được giao — dùng chung 1 mục menu + 1 thanh tab
   var VOCAB_TABS = [
     { href: 'word-hub.html', label: '📚 Học & ôn từ', pages: ['word-hub'] },
     { href: 'vocabulary.html', label: '🃏 Flashcard chủ đề', pages: ['vocabulary'] },
     { href: 'arcade.html', label: '🎮 Trò chơi', pages: ['arcade'] },
     { href: 'practice.html', label: '✍️ Luyện câu', pages: ['practice'] },
-    { href: 'lesson-vocab.html', label: '📘 Bộ từ của thầy', pages: ['lesson-vocab'] }
+    { href: 'lesson-vocab.html', label: '📘 Bộ từ được giao', pages: ['lesson-vocab'] }
   ];
   var inVocab = VOCAB_TABS.some(function (t) { return t.pages.indexOf(page) >= 0; });
 
@@ -139,6 +139,13 @@
     bar.innerHTML = '<div class="container vt-in">' + VOCAB_TABS.map(function (t) { return '<a class="vt-tab' + (t.pages.indexOf(page) >= 0 ? ' on' : '') + '" href="' + t.href + '">' + t.label + '</a>'; }).join('') + '</div>';
     var hd = document.querySelector('.site-header');
     if (hd && hd.parentNode) hd.parentNode.insertBefore(bar, hd.nextSibling);
+    // Chấm đỏ số bộ từ mới được giao mà bạn chưa gửi kết quả
+    fetch('/api/lesson-vocab/mine', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d || !d.sets) return;
+      var n = d.sets.filter(function (x) { return !x.sent; }).length;
+      var tab = bar.querySelector('a[href="lesson-vocab.html"]');
+      if (n && tab) tab.insertAdjacentHTML('beforeend', ' <span style="background:#ef4444;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;">' + n + '</span>');
+    }).catch(function () {});
   }
 
   var toggle = document.getElementById('menuToggle');
