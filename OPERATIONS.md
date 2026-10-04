@@ -337,6 +337,9 @@ Database (danh sách học sinh, bài làm, đề bài) được lưu trong **Ra
 
 ### Email xác thực / quên mật khẩu không gửi được
 
+**Cách nhanh nhất:** đăng nhập admin → trang **Quản trị** → thẻ **📧 Gửi email**. Trang tự kiểm tra kết nối Brevo, hiện nguyên nhân bằng tiếng Việt và có nút **Gửi email thử**. Lỗi hay gặp nhất: Brevo chặn IP máy chủ (Brevo → Security → Authorised IPs → tắt chặn IP) hoặc FROM_EMAIL chưa được xác minh ở Senders.
+Khi email không tới, bấm **🔑 Cấp mã** cạnh tên học sinh (mục Người dùng) để lấy mã OTP đặt lại mật khẩu, gửi cho học sinh qua Zalo.
+
 1. Vào https://app.brevo.com → kiểm tra còn quota email không (miễn phí 300 email/ngày)
 2. Kiểm tra biến `BREVO_API_KEY` và `FROM_EMAIL` trong Railway
 3. Kiểm tra email `hogiahuyml2@gmail.com` đã được verify trong Brevo chưa

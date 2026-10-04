@@ -168,7 +168,22 @@ safeAlter('PRAGMA table_info(users)', [
   ['reset_token',       'ALTER TABLE users ADD COLUMN reset_token TEXT'],
   ['reset_token_expiry','ALTER TABLE users ADD COLUMN reset_token_expiry TEXT'],
   ['verify_token_expiry','ALTER TABLE users ADD COLUMN verify_token_expiry TEXT'],
+  ['reset_code_hash',   'ALTER TABLE users ADD COLUMN reset_code_hash TEXT'],
+  ['reset_code_expiry', 'ALTER TABLE users ADD COLUMN reset_code_expiry TEXT'],
+  ['reset_code_tries',  'ALTER TABLE users ADD COLUMN reset_code_tries INTEGER NOT NULL DEFAULT 0'],
 ]);
+
+// Nhật ký gửi email — để quản trị viên biết vì sao email lỗi (hết hạn mức, sai khóa API, chưa xác minh người gửi...)
+tryExec(`
+CREATE TABLE IF NOT EXISTS email_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  to_email TEXT,
+  subject TEXT,
+  ok INTEGER NOT NULL DEFAULT 0,
+  status INTEGER,
+  detail TEXT,
+  created_at TEXT NOT NULL
+)`, 'email_log');
 
 safeAlter('PRAGMA table_info(submissions)', [
   ['feedback', 'ALTER TABLE submissions ADD COLUMN feedback TEXT'],
@@ -375,6 +390,32 @@ function verifyPassword(password, stored) {
   } catch { return false; }
 }
 
+// Bản bất đồng bộ — scrypt chạy ở thread phụ, KHÔNG chặn vòng lặp sự kiện (bản Sync mất ~60ms mỗi lần,
+// bị gọi dồn dập sẽ làm cả website đứng). Có hạn mức hàng đợi để không bị dồn ứ.
+let _hashQueue = 0;
+const HASH_QUEUE_MAX = 64;
+function scryptAsync(password, salt) {
+  if (_hashQueue >= HASH_QUEUE_MAX) {
+    const e = new Error('busy'); e.code = 'BUSY'; return Promise.reject(e);
+  }
+  _hashQueue++;
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(String(password), salt, 64, (err, key) => { _hashQueue--; err ? reject(err) : resolve(key); });
+  });
+}
+async function hashPasswordAsync(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const key = await scryptAsync(password, salt);
+  return salt + ':' + key.toString('hex');
+}
+async function verifyPasswordAsync(password, stored) {
+  try {
+    const [salt, hash] = String(stored).split(':');
+    const key = await scryptAsync(password, salt);
+    return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), key);
+  } catch (e) { if (e && e.code === 'BUSY') throw e; return false; }
+}
+
 function now() { return new Date().toISOString(); }
 
-module.exports = { db, hashPassword, verifyPassword, now };
+module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };

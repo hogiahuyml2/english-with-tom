@@ -6,7 +6,8 @@ const fs = require('fs');
 const multer = require('multer');
 const webpush = require('web-push');
 const initSqlJs = require('sql.js');
-const { db, hashPassword, verifyPassword, now } = require('./db');
+const { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now } = require('./db');
+const security = require('./security');
 const { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider } = require('./ai');
 
 // ===== Web Push VAPID =====
@@ -35,7 +36,9 @@ async function sendPushToUser(userId, title, body, url) {
 
 const app = express();
 app.set('trust proxy', true); // chạy sau proxy của Railway (để lấy đúng https)
-app.use(express.json());
+security.install(app);          // chống DoS: giới hạn tần suất, cấm tạm, xả tải, chỉ phục vụ file công khai
+app.use(express.static(__dirname)); // file tĩnh phục vụ TRƯỚC (đã lọc ở security.install) — không tốn truy vấn phiên
+app.use(express.json({ limit: '100kb' }));
 
 // ===== Thông báo trong ứng dụng (chuông 🔔) — dành cho giáo viên/admin =====
 // Tạo bản ghi + gửi kèm push (nếu người dùng đã đăng ký push). Không throw —
@@ -90,8 +93,13 @@ const upload = multer({
 
 // URL gốc của web (để tạo redirect_uri cho Google, link xác thực email...)
 function baseUrl(req) {
-  const proto = req.headers['x-forwarded-proto'] || req.protocol;
-  return process.env.PUBLIC_URL || (proto + '://' + req.get('host'));
+  if (process.env.PUBLIC_URL) return process.env.PUBLIC_URL.replace(/\/+$/, '');
+  // Không tin header Host do khách gửi (kẻ xấu có thể làm link đặt lại mật khẩu trỏ về trang giả) — chỉ nhận tên miền của mình
+  const host = String(req.get('host') || '').toLowerCase();
+  const ok = /^(www\.)?engwithtom\.online$/.test(host) || /\.up\.railway\.app$/.test(host) || /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host);
+  if (!ok) return 'https://www.engwithtom.online';
+  const proto = /^localhost|^127\./.test(host) ? 'http' : 'https';
+  return proto + '://' + host;
 }
 
 // Detect HTTPS — cần để set Secure flag trên cookie
@@ -100,7 +108,11 @@ function isHttps(req) {
 }
 
 // ===== Gửi email qua Brevo (HTTP API, không cần thư viện) =====
-function emailEnabled() { return !!process.env.BREVO_API_KEY && !!process.env.FROM_EMAIL; }
+// Làm sạch giá trị biến môi trường: người dùng hay dán thừa dấu cách/xuống dòng/dấu nháy → Brevo từ chối ngầm
+const envClean = (v) => String(v || '').trim().replace(/^["']|["']$/g, '').trim();
+const brevoKey = () => envClean(process.env.BREVO_API_KEY);
+const fromEmail = () => envClean(process.env.FROM_EMAIL);
+function emailEnabled() { return !!brevoKey() && !!fromEmail(); }
 
 function fmtDeadline(iso) {
   if (!iso) return '';
@@ -112,26 +124,69 @@ function fmtDeadline(iso) {
   } catch { return iso; }
 }
 
+// Gợi ý nguyên nhân bằng tiếng Việt từ mã lỗi Brevo (hiển thị cho quản trị viên)
+function explainBrevoError(status, detail) {
+  const d = String(detail || '').toLowerCase();
+  if (/unrecognised ip|unrecognized ip|ip address/.test(d))
+    return 'Brevo chặn vì địa chỉ IP của máy chủ chưa được cho phép. Vào Brevo → Security → Authorised IPs → TẮT chế độ chặn IP (Railway đổi IP liên tục).';
+  if (status === 401 || /invalid.*key|api-key|key not found/.test(d))
+    return 'Khóa BREVO_API_KEY sai hoặc đã bị thu hồi. Tạo khóa mới ở Brevo → SMTP & API → API Keys rồi cập nhật trong Railway.';
+  if (/sender/.test(d))
+    return 'Người gửi (FROM_EMAIL) chưa được xác minh trong Brevo. Vào Brevo → Senders & IP → thêm và xác minh đúng địa chỉ email này.';
+  if (status === 402 || status === 429 || /limit|quota|credit/.test(d))
+    return 'Đã hết hạn mức gửi email (gói miễn phí 300 email/ngày) hoặc bị giới hạn tạm thời. Chờ sang ngày mới hoặc nâng gói.';
+  if (status === 403 || /account|suspend|block/.test(d))
+    return 'Tài khoản Brevo bị tạm khóa hoặc chưa kích hoạt gửi email giao dịch. Đăng nhập Brevo kiểm tra thông báo từ Brevo.';
+  if (!status) return 'Không kết nối được tới Brevo (mạng/hết thời gian chờ): ' + String(detail || '');
+  return 'Brevo trả về lỗi ' + status + '.';
+}
+
+let _mailLogN = 0;
+function logEmail(to, subject, ok, status, detail) {
+  try {
+    db.prepare('INSERT INTO email_log (to_email,subject,ok,status,detail,created_at) VALUES (?,?,?,?,?,?)')
+      .run(String(to || '').slice(0, 120), String(subject || '').slice(0, 160), ok ? 1 : 0, status || null, String(detail || '').slice(0, 500), now());
+    if (++_mailLogN % 50 === 0) db.exec('DELETE FROM email_log WHERE id < (SELECT MAX(id) - 500 FROM email_log)');
+  } catch (e) { /* nhật ký không được làm hỏng luồng chính */ }
+}
+
+// Báo cho giáo viên/admin (chuông 🔔) khi email lỗi — tối đa 1 lần mỗi giờ để không spam
+let _lastMailAlert = 0;
+function alertEmailFailure(status, detail) {
+  if (Date.now() - _lastMailAlert < 60 * 60 * 1000) return;
+  _lastMailAlert = Date.now();
+  try { notifyAllStaff('email_failed', '⚠️ Gửi email đang bị lỗi', explainBrevoError(status, detail), 'admin.html'); } catch (e) {}
+}
+
 async function sendBrevoEmail(to, subject, htmlContent) {
   if (!emailEnabled()) return { ok: false, detail: 'Email chưa cấu hình' };
-  try {
-    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({
-        sender: { name: process.env.SENDER_NAME || 'English With Tom', email: process.env.FROM_EMAIL },
-        to: [{ email: to.email, name: to.name }],
-        subject, htmlContent
-      })
-    });
-    if (r.ok) return { ok: true };
-    const detail = await r.text();
-    console.error('Brevo error', r.status, detail);
-    return { ok: false, status: r.status, detail };
-  } catch (e) {
-    console.error('Brevo exception', e.message);
-    return { ok: false, detail: e.message };
+  let last = { ok: false, detail: 'unknown' };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: { 'api-key': brevoKey(), 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({
+          sender: { name: envClean(process.env.SENDER_NAME) || 'English With Tom', email: fromEmail() },
+          to: [{ email: to.email, name: to.name }],
+          subject, htmlContent
+        }),
+        signal: AbortSignal.timeout(12000) // không để một lần gửi mail treo mãi
+      });
+      if (r.ok) { logEmail(to.email, subject, true, r.status, ''); return { ok: true }; }
+      const detail = (await r.text()).slice(0, 500);
+      console.error('Brevo error', r.status, detail);
+      last = { ok: false, status: r.status, detail };
+      if (r.status < 500 && r.status !== 429) break; // lỗi cấu hình: gửi lại cũng vô ích
+    } catch (e) {
+      console.error('Brevo exception', e.message);
+      last = { ok: false, detail: e.message };
+    }
+    await new Promise(res => setTimeout(res, 700));
   }
+  logEmail(to.email, subject, false, last.status, last.detail);
+  alertEmailFailure(last.status, last.detail);
+  return last;
 }
 
 async function sendVerificationCode(user, code) {
@@ -166,18 +221,46 @@ function parseCookies(req) {
 }
 
 // ===== Middleware: gắn người dùng hiện tại vào req.user =====
+// Bộ nhớ đệm phiên 20 giây: mỗi request không phải truy vấn DB 2 lần (giảm tải rất nhiều khi bị dồn request)
+const _sessCache = new Map(); // token -> { user, exp }
+const SESS_TTL = 20 * 1000;
+function dropSessionCache(token) { if (token) _sessCache.delete(token); }
+function dropUserSessionCache(userId) { for (const [k, v] of _sessCache) if (v.user && v.user.id === userId) _sessCache.delete(k); }
+setInterval(() => { const t = Date.now(); for (const [k, v] of _sessCache) if (v.exp <= t) _sessCache.delete(k); }, 60 * 1000).unref();
 app.use((req, res, next) => {
   try {
     const token = parseCookies(req).ewt_session;
-    if (token) {
+    if (token && /^[a-f0-9]{48}$/.test(token)) {
+      const c = _sessCache.get(token);
+      if (c && c.exp > Date.now()) { req.user = c.user; return next(); }
       const s = db.prepare('SELECT user_id FROM sessions WHERE token=?').get(token);
-      if (s) req.user = db.prepare('SELECT id,name,email,role,email_verified FROM users WHERE id=?').get(s.user_id);
+      if (s) {
+        req.user = db.prepare('SELECT id,name,email,role,email_verified FROM users WHERE id=?').get(s.user_id);
+        if (req.user && _sessCache.size < 5000) _sessCache.set(token, { user: req.user, exp: Date.now() + SESS_TTL });
+      }
     }
   } catch (e) {
     console.error('Auth middleware error:', e.message);
   }
   next();
 });
+
+// ===== Giới hạn tần suất theo route (chống dò mật khẩu, spam email, đốt hạn mức AI, tải file ồ ạt) =====
+const mins = (n) => n * 60 * 1000;
+const rlLogin    = security.limiter({ name: 'login',    max: 120, windowMs: mins(10) });   // theo IP (cả lớp học chung 1 IP vẫn đủ)
+const rlRegister = security.limiter({ name: 'register', max: 30,  windowMs: mins(60) });
+const rlRegAll   = security.limiter({ name: 'registerAll', max: 300, windowMs: mins(60), by: () => 'all' });
+const rlForgot   = security.limiter({ name: 'forgot',   max: 12,  windowMs: mins(15) });
+const rlReset    = security.limiter({ name: 'reset',    max: 40,  windowMs: mins(15) });
+const rlAiStudent = security.limiter({ name: 'aiS', max: 40,  windowMs: mins(60), by: 'user', message: 'Bạn đã dùng AI quá nhiều trong 1 giờ. Vui lòng thử lại sau.' });
+const rlAiTeacher = security.limiter({ name: 'aiT', max: 200, windowMs: mins(60), by: 'user', message: 'Đã đạt giới hạn AI trong 1 giờ. Vui lòng thử lại sau.' });
+const rlUpload   = security.limiter({ name: 'upload', max: 80,  windowMs: mins(60), by: 'user', message: 'Bạn tải tệp lên quá nhiều. Vui lòng thử lại sau.' });
+const rlWrite    = security.limiter({ name: 'write',  max: 400, windowMs: mins(1),  by: 'user' }); // mọi thao tác ghi của 1 tài khoản
+const onlyPost = (mw) => (req, res, next) => (req.method === 'POST' ? mw(req, res, next) : next());
+app.use('/api', (req, res, next) => (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) ? rlWrite(req, res, next) : next()));
+app.use(['/api/grade-writing', '/api/grade-aptis-writing', '/api/writing-hints', '/api/writing-vocab'], onlyPost(rlAiStudent));
+app.use(['/api/teacher/ai-grade', '/api/teacher/model-answer', '/api/lesson-vocab/ai-cards', '/api/lesson-vocab/ai-questions'], onlyPost(rlAiTeacher));
+app.use(['/api/upload', '/api/upload-recording'], onlyPost(rlUpload));
 
 function requireAuth(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
@@ -200,38 +283,65 @@ function startSession(res, userId, req) {
 
 // ===================== API XÁC THỰC =====================
 
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+const str = (v, max) => (typeof v === 'string' ? v : '').slice(0, max);
+function busy(res) { return res.status(503).json({ error: 'Máy chủ đang bận, vui lòng thử lại sau vài giây.' }); }
+
 // Đăng ký — CHỈ tạo tài khoản học sinh (giáo viên do admin cấp)
-app.post('/api/register', async (req, res) => {
-  const { name, email, password } = req.body || {};
+app.post('/api/register', rlRegister, rlRegAll, async (req, res) => {
+  const b = req.body || {};
+  const name = str(b.name, 100).trim(), email = str(b.email, 254).trim(), password = str(b.password, 129);
   if (!name || !email || !password) return res.status(400).json({ error: 'Vui lòng nhập đủ họ tên, email và mật khẩu.' });
   if (password.length < 6) return res.status(400).json({ error: 'Mật khẩu cần tối thiểu 6 ký tự.' });
+  if (password.length > 128) return res.status(400).json({ error: 'Mật khẩu tối đa 128 ký tự.' });
+  if (!EMAIL_RE.test(email)) return res.status(400).json({ error: 'Email không hợp lệ.' });
   const mail = email.toLowerCase();
   if (db.prepare('SELECT id FROM users WHERE email=?').get(mail))
     return res.status(409).json({ error: 'Email này đã được đăng ký.' });
 
-  const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
-    .run(name, mail, hashPassword(password), 'student', now());
-  const newId = Number(r.lastInsertRowid);
+  let hashed;
+  try { hashed = await hashPasswordAsync(password); } catch (e) { return busy(res); }
+  let newId;
+  try {
+    const r = db.prepare('INSERT INTO users (name,email,pass,role,email_verified,created_at) VALUES (?,?,?,?,1,?)')
+      .run(name, mail, hashed, 'student', now());
+    newId = Number(r.lastInsertRowid);
+  } catch (e) { return res.status(409).json({ error: 'Email này đã được đăng ký.' }); }
 
   db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(newId, mail);
   startSession(res, newId, req);
-  notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html?tab=students');
+  // Báo cho giáo viên tối đa 30 học sinh mới/giờ — tránh bị spam đăng ký làm ngập chuông thông báo
+  if (security.hit('notify:newstudent', 30, mins(60)).ok)
+    notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html?tab=students');
   res.json({ needVerify: false });
 });
 
 // Đăng nhập — học sinh và giáo viên đều dùng
-app.post('/api/login', (req, res) => {
-  const { email, password } = req.body || {};
-  const u = db.prepare('SELECT * FROM users WHERE email=?').get((email || '').toLowerCase());
-  if (!u || !verifyPassword(password || '', u.pass))
+// Chống dò mật khẩu: tối đa 8 lần sai / 15 phút cho mỗi cặp (email, IP) và 40 lần sai cho mỗi email (nhiều IP khác nhau).
+app.post('/api/login', rlLogin, async (req, res) => {
+  const email = str((req.body || {}).email, 254).trim().toLowerCase();
+  const password = str((req.body || {}).password, 129);
+  if (!email || !password) return res.status(400).json({ error: 'Vui lòng nhập email và mật khẩu.' });
+  const kPair = 'fail:' + email + '|' + req.clientIp, kEmail = 'failE:' + email;
+  if (security.peek(kPair) >= 8 || security.peek(kEmail) >= 40)
+    return res.status(429).json({ error: 'Bạn đã nhập sai quá nhiều lần. Vui lòng đợi 15 phút hoặc dùng "Quên mật khẩu".' });
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
+  let ok = false;
+  if (u && password.length <= 128) {
+    try { ok = await verifyPasswordAsync(password, u.pass); } catch (e) { return busy(res); }
+  }
+  if (!ok) {
+    security.hit(kPair, 1e9, mins(15)); security.hit(kEmail, 1e9, mins(15));
     return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng.' });
+  }
+  security.clearKey(kPair);
   startSession(res, u.id, req);
   res.json({ user: { id: u.id, name: u.name, email: u.email, role: u.role } });
 });
 
 app.post('/api/logout', (req, res) => {
   const token = parseCookies(req).ewt_session;
-  if (token) db.prepare('DELETE FROM sessions WHERE token=?').run(token);
+  if (token) { db.prepare('DELETE FROM sessions WHERE token=?').run(token); dropSessionCache(token); }
   res.setHeader('Set-Cookie', 'ewt_session=; HttpOnly; Path=/; Max-Age=0');
   res.json({ ok: true });
 });
@@ -239,59 +349,109 @@ app.post('/api/logout', (req, res) => {
 app.get('/api/me', (req, res) => res.json({ user: req.user || null }));
 
 // ===== QUÊN MẬT KHẨU =====
+// Email gồm CẢ mã OTP 6 số lẫn nút bấm (link). Người dùng chọn 1 trong 2. Hiệu lực 30 phút, nhập sai mã tối đa 5 lần.
+const RESET_MINUTES = 30;
+const sha256 = (x) => crypto.createHash('sha256').update(x).digest('hex');
+const resetCodeHash = (code, userId) => sha256(String(code).trim() + ':' + userId + ':' + (process.env.RESET_PEPPER || 'ewt'));
 
-// Bước 1: Gửi email chứa link reset
-app.post('/api/forgot-password', async (req, res) => {
-  const { email } = req.body || {};
+// Tạo link + mã OTP mới cho 1 tài khoản (dùng cho email và cho nút "Cấp mã" của giáo viên/admin)
+function issueResetCredentials(userId) {
+  const token = crypto.randomBytes(24).toString('hex');
+  const code = String(crypto.randomInt(100000, 1000000));
+  const exp = new Date(Date.now() + RESET_MINUTES * 60 * 1000).toISOString();
+  db.prepare('UPDATE users SET reset_token=?, reset_token_expiry=?, reset_code_hash=?, reset_code_expiry=?, reset_code_tries=0 WHERE id=?')
+    .run(token, exp, resetCodeHash(code, userId), exp, userId);
+  return { token, code, exp };
+}
+const htmlEsc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Bước 1: Gửi email chứa mã OTP + link đặt lại mật khẩu
+app.post('/api/forgot-password', rlForgot, async (req, res) => {
+  const email = str((req.body || {}).email, 254).trim().toLowerCase();
   if (!email) return res.status(400).json({ error: 'Vui lòng nhập email.' });
-  if (!emailEnabled()) return res.status(400).json({ error: 'Tính năng đặt lại mật khẩu yêu cầu cấu hình email. Vui lòng liên hệ quản trị viên.' });
+  if (!EMAIL_RE.test(email)) return res.status(400).json({ error: 'Email không hợp lệ.' });
+  if (!emailEnabled()) return res.status(503).json({ error: 'Chưa gửi được email đặt lại mật khẩu. Vui lòng nhờ thầy Tom cấp mã đặt lại mật khẩu cho bạn.' });
 
-  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email.toLowerCase());
+  // Mỗi email chỉ nhận tối đa 3 email/15 phút (chống dùng web để spam hộp thư người khác, chống cạn hạn mức Brevo)
+  if (!security.hit('forgotEmail:' + email, 3, mins(15)).ok) return res.json({ ok: true });
+  if (!security.hit('forgotAll', 150, mins(60)).ok) return res.status(429).json({ error: 'Hệ thống đang nhận quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.' });
+
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
   // Luôn trả ok để không lộ thông tin tài khoản có tồn tại hay không
   if (!u || u.pass === 'google-oauth') return res.json({ ok: true });
 
-  const token = crypto.randomBytes(24).toString('hex');
-  const expiry = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // hết hạn sau 1 giờ
-  db.prepare('UPDATE users SET reset_token=?, reset_token_expiry=? WHERE id=?').run(token, expiry, u.id);
-
+  const { token, code } = issueResetCredentials(u.id);
   const link = baseUrl(req) + '/reset-password.html?token=' + token;
   const html =
-    '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6">' +
+    '<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.6;max-width:480px">' +
     '<h2 style="color:#6F58EE">Đặt lại mật khẩu 🔑</h2>' +
-    '<p>Bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu cho tài khoản <b>' + u.email + '</b> trên English With Tom.</p>' +
-    '<p style="margin:22px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Đặt lại mật khẩu</a></p>' +
-    '<p style="font-size:13px;color:#888">Link có hiệu lực trong <b>1 giờ</b>. Sau đó bạn cần yêu cầu lại.</p>' +
-    '<p style="font-size:13px;color:#888">Nếu bạn không yêu cầu điều này, hãy bỏ qua email này — tài khoản của bạn vẫn an toàn.</p>' +
+    '<p>Bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu cho tài khoản <b>' + htmlEsc(u.email) + '</b> trên English With Tom.</p>' +
+    '<p style="margin:18px 0 6px">Mã xác nhận (OTP) của bạn:</p>' +
+    '<div style="text-align:center;margin:8px 0 18px"><span style="display:inline-block;background:#6F58EE;color:#fff;font-size:34px;font-weight:700;letter-spacing:9px;padding:14px 26px;border-radius:12px">' + code + '</span></div>' +
+    '<p style="margin:6px 0">Hoặc bấm nút bên dưới:</p>' +
+    '<p style="margin:16px 0"><a href="' + link + '" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Đặt lại mật khẩu</a></p>' +
+    '<p style="font-size:13px;color:#888">Mã và link có hiệu lực trong <b>' + RESET_MINUTES + ' phút</b>. Tuyệt đối không chia sẻ mã này cho ai.</p>' +
+    '<p style="font-size:13px;color:#888">Nếu bạn không yêu cầu điều này, hãy bỏ qua email — tài khoản của bạn vẫn an toàn.</p>' +
     '</div>';
-  await sendBrevoEmail({ email: u.email, name: u.name }, 'Đặt lại mật khẩu — English With Tom', html);
+  await sendBrevoEmail({ email: u.email, name: u.name }, 'Mã đặt lại mật khẩu — English With Tom', html);
   res.json({ ok: true });
 });
 
-// Bước 2: Xác thực token và đặt mật khẩu mới
-app.post('/api/reset-password', (req, res) => {
-  const { token, newPassword } = req.body || {};
-  if (!token || !newPassword) return res.status(400).json({ error: 'Thiếu thông tin.' });
+// Bước 2: đặt mật khẩu mới — bằng link {token} HOẶC bằng mã OTP {email, code}
+app.post('/api/reset-password', rlReset, async (req, res) => {
+  const b = req.body || {};
+  const token = str(b.token, 100).trim(), code = str(b.code, 12).replace(/\s/g, ''), email = str(b.email, 254).trim().toLowerCase();
+  const newPassword = str(b.newPassword, 129);
+  if ((!token && !(email && code)) || !newPassword) return res.status(400).json({ error: 'Thiếu thông tin.' });
   if (newPassword.length < 6) return res.status(400).json({ error: 'Mật khẩu mới cần tối thiểu 6 ký tự.' });
+  if (newPassword.length > 128) return res.status(400).json({ error: 'Mật khẩu tối đa 128 ký tự.' });
 
-  const u = db.prepare('SELECT * FROM users WHERE reset_token=?').get(token);
-  if (!u) return res.status(400).json({ error: 'Link đặt lại mật khẩu không hợp lệ hoặc đã được dùng.' });
-  if (new Date(u.reset_token_expiry) < new Date())
-    return res.status(400).json({ error: 'Link đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới.' });
+  let u;
+  if (token) {
+    u = db.prepare('SELECT * FROM users WHERE reset_token=?').get(token);
+    if (!u) return res.status(400).json({ error: 'Link đặt lại mật khẩu không hợp lệ hoặc đã được dùng.' });
+    if (!u.reset_token_expiry || new Date(u.reset_token_expiry) < new Date())
+      return res.status(400).json({ error: 'Link đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới.' });
+  } else {
+    if (!/^\d{6}$/.test(code)) return res.status(400).json({ error: 'Mã OTP gồm 6 chữ số.' });
+    u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
+    if (!u || !u.reset_code_hash) return res.status(400).json({ error: 'Mã không đúng hoặc đã hết hạn. Hãy yêu cầu mã mới.' });
+    if (!u.reset_code_expiry || new Date(u.reset_code_expiry) < new Date())
+      return res.status(400).json({ error: 'Mã đã hết hạn. Vui lòng yêu cầu mã mới.' });
+    if ((u.reset_code_tries || 0) >= 5) {
+      db.prepare('UPDATE users SET reset_code_hash=NULL, reset_code_expiry=NULL, reset_token=NULL, reset_token_expiry=NULL WHERE id=?').run(u.id);
+      return res.status(400).json({ error: 'Bạn đã nhập sai quá 5 lần. Vui lòng yêu cầu mã mới.' });
+    }
+    const good = crypto.timingSafeEqual(Buffer.from(resetCodeHash(code, u.id)), Buffer.from(u.reset_code_hash));
+    if (!good) {
+      db.prepare('UPDATE users SET reset_code_tries=reset_code_tries+1 WHERE id=?').run(u.id);
+      const left = 4 - (u.reset_code_tries || 0);
+      return res.status(400).json({ error: left > 0 ? 'Mã không đúng. Bạn còn ' + left + ' lần thử.' : 'Mã không đúng. Hãy yêu cầu mã mới.' });
+    }
+  }
 
-  db.prepare('UPDATE users SET pass=?, reset_token=NULL, reset_token_expiry=NULL WHERE id=?')
-    .run(hashPassword(newPassword), u.id);
+  let hashed;
+  try { hashed = await hashPasswordAsync(newPassword); } catch (e) { return busy(res); }
+  db.prepare('UPDATE users SET pass=?, reset_token=NULL, reset_token_expiry=NULL, reset_code_hash=NULL, reset_code_expiry=NULL, reset_code_tries=0 WHERE id=?')
+    .run(hashed, u.id);
+  // Đăng xuất mọi thiết bị đang dùng mật khẩu cũ
+  db.prepare('DELETE FROM sessions WHERE user_id=?').run(u.id);
+  dropUserSessionCache(u.id);
   res.json({ ok: true });
 });
 
 // Đổi mật khẩu (cho người đang đăng nhập)
-app.post('/api/me/change-password', requireAuth, (req, res) => {
-  const { currentPassword, newPassword } = req.body || {};
+app.post('/api/me/change-password', requireAuth, security.limiter({ name: 'chpw', max: 10, windowMs: mins(15), by: 'user' }), async (req, res) => {
+  const currentPassword = str((req.body || {}).currentPassword, 129), newPassword = str((req.body || {}).newPassword, 129);
   if (!newPassword || newPassword.length < 6)
     return res.status(400).json({ error: 'Mật khẩu mới cần tối thiểu 6 ký tự.' });
+  if (newPassword.length > 128) return res.status(400).json({ error: 'Mật khẩu tối đa 128 ký tự.' });
   const u = db.prepare('SELECT * FROM users WHERE id=?').get(req.user.id);
-  if (!verifyPassword(currentPassword || '', u.pass))
-    return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng.' });
-  db.prepare('UPDATE users SET pass=? WHERE id=?').run(hashPassword(newPassword), req.user.id);
+  let okPw, hashed;
+  try { okPw = await verifyPasswordAsync(currentPassword, u.pass); } catch (e) { return busy(res); }
+  if (!okPw) return res.status(400).json({ error: 'Mật khẩu hiện tại không đúng.' });
+  try { hashed = await hashPasswordAsync(newPassword); } catch (e) { return busy(res); }
+  db.prepare('UPDATE users SET pass=? WHERE id=?').run(hashed, req.user.id);
   res.json({ ok: true });
 });
 
@@ -320,7 +480,6 @@ app.get('/api/health', (req, res) => {
     exercises: _exById.size,       // số đề đã nạp vào RAM
     assigned: _assignedSet.size,
     submitted: _submittedSet.size,
-    dbFile: DB_FILE_PATH,
     t: Date.now()
   });
 });
@@ -536,7 +695,7 @@ app.post('/api/grade-aptis-writing', requireAuth, async (req, res) => {
 // ===================== XÁC THỰC EMAIL =====================
 
 // Người dùng bấm link trong email
-app.get('/api/verify-email', (req, res) => {
+app.get('/api/verify-email', rlReset, (req, res) => {
   const { token } = req.query;
   if (!token) return res.redirect('/login.html?error=' + encodeURIComponent('Link xác thực không hợp lệ.'));
   const u = db.prepare('SELECT id FROM users WHERE verify_token=?').get(token);
@@ -545,34 +704,32 @@ app.get('/api/verify-email', (req, res) => {
   res.redirect('/login.html?verified=1');
 });
 
-// Xác thực bằng mã OTP (6 chữ số) — không cần đăng nhập
-app.post('/api/verify-code', (req, res) => {
-  const { email, code } = req.body || {};
+// Xác thực email bằng mã OTP (6 chữ số) — chỉ dành cho tài khoản CHƯA xác thực.
+// (Tài khoản đã xác thực KHÔNG được tạo phiên từ đây — trước kia lỗ hổng này cho phép đăng nhập chỉ bằng email.)
+app.post('/api/verify-code', security.limiter({ name: 'vcode', max: 20, windowMs: mins(15) }), (req, res) => {
+  const email = str((req.body || {}).email, 254).trim().toLowerCase(), code = str((req.body || {}).code, 12).trim();
   if (!email || !code) return res.status(400).json({ error: 'Thiếu thông tin xác thực.' });
-  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email.toLowerCase());
-  if (!u) return res.status(400).json({ error: 'Email không tồn tại.' });
-  if (u.email_verified) {
-    startSession(res, u.id, req);
-    return res.json({ ok: true });
-  }
-  if (u.verify_token !== String(code).trim())
-    return res.status(400).json({ error: 'Mã xác thực không đúng. Vui lòng kiểm tra lại.' });
-  if (u.verify_token_expiry && new Date(u.verify_token_expiry) < new Date())
-    return res.status(400).json({ error: 'Mã đã hết hạn. Bấm "Gửi lại" để nhận mã mới.' });
+  if (!security.hit('vcodeE:' + email, 6, mins(15)).ok) return res.status(429).json({ error: 'Nhập sai quá nhiều lần. Vui lòng đợi 15 phút.' });
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
+  const bad = () => res.status(400).json({ error: 'Mã xác thực không đúng hoặc đã hết hạn.' });
+  if (!u || u.email_verified || !u.verify_token || !/^\d{6}$/.test(code)) return bad();
+  const a = Buffer.from(String(u.verify_token)), b2 = Buffer.from(code);
+  if (a.length !== b2.length || !crypto.timingSafeEqual(a, b2)) return bad();
+  if (!u.verify_token_expiry || new Date(u.verify_token_expiry) < new Date()) return bad();
   db.prepare('UPDATE users SET email_verified=1, verify_token=NULL, verify_token_expiry=NULL WHERE id=?').run(u.id);
   startSession(res, u.id, req);
   res.json({ ok: true });
 });
 
-// Gửi lại mã OTP — không cần đăng nhập (dùng khi đăng ký hoặc login bị chặn)
-app.post('/api/resend-verify-code', async (req, res) => {
-  const { email } = req.body || {};
+// Gửi lại mã OTP xác thực email (tài khoản cũ chưa xác thực)
+app.post('/api/resend-verify-code', security.limiter({ name: 'rvcode', max: 10, windowMs: mins(15) }), async (req, res) => {
+  const email = str((req.body || {}).email, 254).trim().toLowerCase();
   if (!email) return res.status(400).json({ error: 'Vui lòng nhập email.' });
-  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email.toLowerCase());
-  if (!u) return res.status(400).json({ error: 'Email không tồn tại.' });
-  if (u.email_verified) return res.json({ ok: true, already: true });
-  if (!emailEnabled()) return res.status(400).json({ error: 'Hệ thống email chưa được cấu hình.' });
-  const code = String(Math.floor(100000 + Math.random() * 900000));
+  if (!emailEnabled()) return res.status(503).json({ error: 'Hệ thống email chưa được cấu hình.' });
+  if (!security.hit('rvcodeE:' + email, 3, mins(15)).ok) return res.json({ ok: true });
+  const u = db.prepare('SELECT * FROM users WHERE email=?').get(email);
+  if (!u || u.email_verified) return res.json({ ok: true }); // không lộ tài khoản có tồn tại hay không
+  const code = String(crypto.randomInt(100000, 1000000));
   const expiry = new Date(Date.now() + 15 * 60 * 1000).toISOString();
   db.prepare('UPDATE users SET verify_token=?, verify_token_expiry=? WHERE id=?').run(code, expiry, u.id);
   const result = await sendVerificationCode({ name: u.name, email: u.email }, code);
@@ -585,12 +742,12 @@ app.post('/api/me/resend-verification', requireAuth, async (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE id=?').get(req.user.id);
   if (u.email_verified) return res.json({ ok: true, already: true });
   if (!emailEnabled()) return res.status(400).json({ error: 'Hệ thống email chưa được cấu hình.' });
-  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const code = String(crypto.randomInt(100000, 1000000));
   const expiry = new Date(Date.now() + 15 * 60 * 1000).toISOString();
   db.prepare('UPDATE users SET verify_token=?, verify_token_expiry=? WHERE id=?').run(code, expiry, u.id);
   const result = await sendVerificationCode({ name: u.name, email: u.email }, code);
   return result.ok ? res.json({ ok: true })
-    : res.status(500).json({ error: 'Gửi email thất bại.', status: result.status, detail: result.detail });
+    : res.status(500).json({ error: 'Gửi email thất bại. Vui lòng thử lại sau.' });
 });
 
 // ===================== ĐĂNG NHẬP GOOGLE (OAuth 2.0) =====================
@@ -1679,6 +1836,50 @@ app.get('/api/teacher/stats', requireRole('teacher','admin'), (req, res) => {
 });
 
 // Admin tải về bản sao database (backup) — bản LIVE hiện tại
+// ===== Quản trị email: xem nhật ký + gửi thử + cấp mã đặt lại mật khẩu khi email không tới =====
+app.get('/api/admin/email-status', requireRole('admin'), async (req, res) => {
+  const out = { configured: emailEnabled(), from: fromEmail() || null, keyLength: brevoKey().length, account: null, hint: '', log: [] };
+  try { out.log = db.prepare('SELECT id,to_email,subject,ok,status,detail,created_at FROM email_log ORDER BY id DESC LIMIT 20').all(); } catch (e) {}
+  if (out.configured) {
+    try {
+      const r = await fetch('https://api.brevo.com/v3/account', { headers: { 'api-key': brevoKey(), accept: 'application/json' }, signal: AbortSignal.timeout(10000) });
+      const txt = await r.text();
+      if (r.ok) {
+        let j = {}; try { j = JSON.parse(txt); } catch (e) {}
+        const credits = (j.plan || []).map(p => ({ type: p.type, credits: p.credits }));
+        out.account = { ok: true, email: j.email || null, plan: credits };
+      } else {
+        out.account = { ok: false, status: r.status, detail: txt.slice(0, 300) };
+        out.hint = explainBrevoError(r.status, txt);
+      }
+    } catch (e) { out.account = { ok: false, detail: e.message }; out.hint = explainBrevoError(0, e.message); }
+  } else {
+    out.hint = 'Chưa có BREVO_API_KEY hoặc FROM_EMAIL trong Railway → Variables.';
+  }
+  const lastFail = out.log.find(l => !l.ok);
+  if (!out.hint && lastFail && out.log[0] && !out.log[0].ok) out.hint = explainBrevoError(lastFail.status, lastFail.detail);
+  res.json(out);
+});
+
+app.post('/api/admin/email-test', requireRole('admin'), security.limiter({ name: 'mailtest', max: 6, windowMs: mins(10), by: 'user' }), async (req, res) => {
+  const to = str((req.body || {}).to, 254).trim().toLowerCase() || req.user.email;
+  if (!EMAIL_RE.test(to)) return res.status(400).json({ error: 'Email nhận thử không hợp lệ.' });
+  const r = await sendBrevoEmail({ email: to, name: 'Quản trị' }, 'Email thử — English With Tom',
+    '<div style="font-family:sans-serif;font-size:15px">✅ Nếu bạn đọc được email này, hệ thống gửi email của English With Tom đang hoạt động bình thường.</div>');
+  res.json(r.ok ? { ok: true, to } : { ok: false, status: r.status || null, detail: r.detail || '', hint: explainBrevoError(r.status, r.detail) });
+});
+
+// Cấp mã OTP đặt lại mật khẩu thủ công (khi email không tới) — gửi cho học sinh qua Zalo/nhắn tin
+app.post('/api/admin/users/:id/reset-code', requireRole('admin', 'teacher'), security.limiter({ name: 'rcode', max: 30, windowMs: mins(60), by: 'user' }), (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const u = db.prepare('SELECT id,name,email,role,pass FROM users WHERE id=?').get(id);
+  if (!u) return res.status(404).json({ error: 'Không tìm thấy người dùng.' });
+  if (req.user.role === 'teacher' && u.role !== 'student') return res.status(403).json({ error: 'Giáo viên chỉ cấp mã cho học sinh.' });
+  if (u.pass === 'google-oauth') return res.status(400).json({ error: 'Tài khoản này đăng nhập bằng Google, không có mật khẩu để đặt lại.' });
+  const c = issueResetCredentials(u.id);
+  res.json({ ok: true, name: u.name, email: u.email, code: c.code, link: baseUrl(req) + '/reset-password.html?token=' + c.token, minutes: RESET_MINUTES });
+});
+
 app.get('/api/admin/backup-db', requireRole('admin'), (req, res) => {
   const dbPath = path.join(DATA_DIR, 'data.db');
   const stamp = new Date().toISOString().slice(0,10);
@@ -2242,8 +2443,24 @@ try {
 // ===================== TĨNH =====================
 app.use(express.static(__dirname));
 
+// ===================== XỬ LÝ LỖI CUỐI + CHỐNG SẬP =====================
+app.use(security.errorHandler);
+// Một lỗi bất ngờ ở bất kỳ request nào cũng KHÔNG được làm sập cả website
+process.on('uncaughtException', (e) => console.error('[uncaughtException]', e && e.stack || e));
+process.on('unhandledRejection', (e) => console.error('[unhandledRejection]', e && e.stack || e));
+
+// Lần chạy đầu sau bản vá bảo mật: đăng xuất toàn bộ phiên cũ một lần (phòng khi có phiên bị chiếm bằng lỗ hổng đã vá)
+try {
+  const marker = path.join(DATA_DIR, '.sessions_purged_v1');
+  if (!fs.existsSync(marker)) {
+    const n = db.prepare('DELETE FROM sessions').run().changes;
+    fs.writeFileSync(marker, new Date().toISOString());
+    console.log('[security] Đã đăng xuất ' + n + ' phiên cũ (một lần, sau khi vá lỗ hổng xác thực).');
+  }
+} catch (e) { console.error('[security] purge phiên lỗi:', e.message); }
+
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const httpServer = app.listen(port, () => {
   console.log('English With Tom đang chạy tại cổng ' + port);
   // Đọc DB file vào RAM qua sql.js (async, không block event loop dù NFS chậm).
   // Server đã lắng nghe port rồi → Railway health check pass → warmup chạy nền.
@@ -2273,3 +2490,4 @@ app.listen(port, () => {
     console.log('🔔 Keep-alive ping mỗi 4 phút →', pingUrl);
   }
 });
+security.hardenServer(httpServer);

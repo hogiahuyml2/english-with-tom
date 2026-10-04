@@ -34,6 +34,18 @@
     </div>
 
     <!-- Sao lưu & bảo trì -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-head"><h3>📧 Gửi email (quên mật khẩu, nhắc hạn)</h3></div>
+      <div id="mailStatus" style="font-size:14px;color:var(--text-muted);">Đang kiểm tra…</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <input type="email" id="mailTo" placeholder="Email nhận thử (để trống = email của bạn)" style="flex:1;min-width:220px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;">
+        <button class="btn btn-primary" id="mailTestBtn">Gửi email thử</button>
+        <button class="btn" id="mailRefreshBtn">↻ Kiểm tra lại</button>
+      </div>
+      <div id="mailTestOut" style="margin-top:10px;font-size:13.5px;"></div>
+      <div id="mailLog" style="margin-top:12px;overflow-x:auto;"></div>
+    </div>
+
     <div class="card">
       <div class="card-head"><h3>💾 Sao lưu dữ liệu</h3></div>
       <p style="font-size:14px; color:var(--text-muted); margin-bottom:14px;">Tải về bản sao toàn bộ database (người dùng, bài làm, đề thi). Nên backup định kỳ trước mỗi lần cập nhật lớn.</p>
@@ -143,6 +155,8 @@
       var verified = u.email_verified ? '<span class="badge badge-done">✓</span>' : '<span class="badge badge-todo">chưa</span>';
       var del = isSelf ? '<span style="color:var(--text-faint);font-size:12px;">(bạn)</span>'
         : '<button class="btn btn-sm delUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button>';
+      var rc = isSelf ? '' : '<button class="btn btn-sm rcUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" title="Cấp mã OTP đặt lại mật khẩu">🔑 Cấp mã</button> ';
+      del = rc + del;
       return '<tr>'+chk+'<td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+del+'</td></tr>';
     }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">Chưa có người dùng.</td></tr>';
 
@@ -150,6 +164,14 @@
       s.onchange = async function(){
         var r = await api('/api/admin/users/'+s.getAttribute('data-id')+'/role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role:s.value})});
         if (!r.ok) { alert(r.data.error||'Lỗi'); loadUsers(); }
+      };
+    });
+    document.querySelectorAll('.rcUser').forEach(function(b){
+      b.onclick = async function(){
+        var r = await api('/api/admin/users/'+b.getAttribute('data-id')+'/reset-code', {method:'POST'});
+        if (!r.ok) { alert(r.data.error||'Lỗi'); return; }
+        var d = r.data;
+        prompt('Mã OTP đặt lại mật khẩu cho "'+d.name+'" (hiệu lực '+d.minutes+' phút).\nGửi mã này cho học sinh; học sinh vào trang Quên mật khẩu → nhập email → bấm "Gửi mã" rồi nhập MÃ NÀY thay cho mã trong email.\nHoặc gửi link bên dưới:', d.code + '   |   ' + d.link);
       };
     });
     document.querySelectorAll('.delUser').forEach(function(b){
@@ -333,6 +355,33 @@
     var m = await api('/api/me'); me = m.data.user;
     loadUsers(); loadExercises(); loadBackupList();
   })();
+
+  /* ===== Email: trạng thái + gửi thử + nhật ký ===== */
+  async function loadMail(){
+    var el = document.getElementById('mailStatus');
+    var r = await api('/api/admin/email-status');
+    var d = r.data || {};
+    var h = '';
+    if (!d.configured) h += '<div style="color:var(--danger);font-weight:600;">❌ Chưa cấu hình email</div>';
+    else if (d.account && d.account.ok) h += '<div style="color:var(--success);font-weight:600;">✅ Kết nối Brevo bình thường ('+esc(d.from||'')+')</div>';
+    else h += '<div style="color:var(--danger);font-weight:600;">❌ Brevo đang từ chối: '+esc((d.account&&(d.account.detail||d.account.status))||'')+'</div>';
+    if (d.hint) h += '<div style="margin-top:6px;padding:10px 12px;background:var(--warning-soft);color:var(--warning);border-radius:8px;">💡 '+esc(d.hint)+'</div>';
+    el.innerHTML = h;
+    var log = d.log || [];
+    document.getElementById('mailLog').innerHTML = log.length ? '<table class="table" style="min-width:520px;font-size:12.5px;"><thead><tr><th>Lúc</th><th>Tới</th><th>Kết quả</th></tr></thead><tbody>'+log.map(function(l){
+      return '<tr><td>'+esc((l.created_at||'').replace('T',' ').slice(0,16))+'</td><td>'+esc(l.to_email)+'</td><td>'+(l.ok?'✅ Đã gửi':'❌ '+esc(l.status||'')+' '+esc((l.detail||'').slice(0,90)))+'</td></tr>';
+    }).join('')+'</tbody></table>' : '<div style="color:var(--text-faint);font-size:13px;">Chưa có email nào được gửi.</div>';
+  }
+  document.getElementById('mailRefreshBtn').onclick = loadMail;
+  document.getElementById('mailTestBtn').onclick = async function(){
+    var b = this, out = document.getElementById('mailTestOut'); b.disabled = true; out.textContent = 'Đang gửi…';
+    var r = await api('/api/admin/email-test', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({to: document.getElementById('mailTo').value.trim()})});
+    b.disabled = false;
+    if (r.data && r.data.ok) out.innerHTML = '<span style="color:var(--success)">✅ Đã gửi tới '+esc(r.data.to)+'. Kiểm tra hộp thư (cả Spam).</span>';
+    else out.innerHTML = '<span style="color:var(--danger)">❌ '+esc((r.data&&(r.data.hint||r.data.error))||'Gửi thất bại')+'</span>' + (r.data&&r.data.detail ? '<div style="color:var(--text-faint);margin-top:4px;">Chi tiết: '+esc(r.data.detail)+'</div>' : '');
+    loadMail();
+  };
+  loadMail();
 </script>
 </body>
 </html>
