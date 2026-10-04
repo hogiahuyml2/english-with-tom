@@ -8,7 +8,7 @@ const { SEED_DIALOGUES, parseScript } = require('./vocab-dialogues');
 const crypto = require('crypto');
 
 const LEVELS = ['KET', 'PET', 'FCE', 'IELTS'];
-const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss'];
+const MODES = ['flash', 'blitz', 'type', 'situation', 'smart', 'colloc', 'upgrade', 'dictation', 'boss', 'blaster', 'frog', 'hangman', 'wordle'];
 const KINDS = ['word', 'colloc', 'upgrade'];
 // Khoảng cách ôn lại (ngày) theo "hộp" 0..5 — đúng với phương pháp Leitner/lặp lại ngắt quãng
 const INTERVALS = [0, 1, 3, 7, 14, 30];
@@ -17,7 +17,7 @@ const STREAK_MIN = 5;      // chỉ cần 5 lượt là giữ được chuỗi �
 const FREEZE_PRICE = 100;  // xu đổi 1 "khiên giữ chuỗi" 🧊
 const MAX_FREEZES = 2;
 // XP cho mỗi câu đúng theo chế độ (chế độ khó hơn/đòi hỏi nhớ chủ động thì thưởng nhiều hơn; Blitz nhanh nên ít hơn để không "lạm phát")
-const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5 };
+const XP_BASE = { flash: 2, blitz: 3, smart: 5, situation: 5, type: 6, colloc: 5, upgrade: 6, dictation: 7, boss: 5, blaster: 4, frog: 4, hangman: 6, wordle: 5 };
 const BOSS_MIN_OK = 6, BOSS_MAX_WRONG = 2, BOSS_BONUS_XP = 20, BOSS_BONUS_COINS = 25; // thắng boss: đúng ≥6 câu và sai ≤2 (3 mạng)
 const CHEST_PRICE = 80;
 
@@ -279,14 +279,9 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
   }
 
   // Báo kết quả 1 phiên chơi → server cập nhật SRS, XP, xu, chuỗi ngày, nhiệm vụ, huy hiệu
-  app.post('/api/word-game/session', requireAuth, (req, res) => {
-    const uid = req.user.id;
-    const body = req.body || {};
-    const mode = MODES.includes(body.mode) ? body.mode : null;
-    let results = Array.isArray(body.results) ? body.results.slice(0, MAX_RESULTS) : [];
-    results = results.filter(r => r && Number.isInteger(r.id) && bank.byId.has(r.id));
-    if (!mode || !results.length) return res.status(400).json({ error: 'Dữ liệu phiên chơi không hợp lệ.' });
-
+  // Ghi kết quả 1 phiên chơi (dùng chung cho mọi chế độ, kể cả các trò chơi đồ hoạ và Đoán từ mỗi ngày).
+  // Trả về payload cho client; ném lỗi nếu không lưu được (transaction tự rollback).
+  function recordSession(uid, name, mode, results, bonusXp) {
     const day = vnDay();
     try {
       db.exec('BEGIN');
@@ -325,7 +320,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       let comboBonus = 0, accBonus = 0;
       if (bestCombo >= 10) comboBonus = 10;
       if (total >= 5 && okN / total >= 0.8) accBonus = 10;
-      xp += comboBonus + accBonus + (bossWin ? BOSS_BONUS_XP : 0);
+      xp += comboBonus + accBonus + (bossWin ? BOSS_BONUS_XP : 0) + (bonusXp || 0);
 
       const rw = commitReward(uid, day, g, mode, xp, total, okN, newN, bestCombo);
       let extraBadges = [];
@@ -338,19 +333,107 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       }
       db.exec('COMMIT');
 
-      res.json({
+      return {
         gained: { xp, coins: rw.coinGain, total, correct: okN, newWords: newN, bestCombo, comboBonus, accBonus, streakUp: rw.streakUp, usedFreeze: rw.usedFreeze, streakBonus: rw.streakBonus, streak: rw.streak, win: bossWin, bossCoins: bossWin ? BOSS_BONUS_COINS : 0 },
         newBadges: rw.newBadges.concat(extraBadges),
-        me: statePayload(uid, req.user.name)
-      });
+        me: statePayload(uid, name)
+      };
     } catch (e) {
       try { db.exec('ROLLBACK'); } catch (_) {}
+      throw e;
+    }
+  }
+
+  // Báo kết quả 1 phiên chơi → server cập nhật SRS, XP, xu, chuỗi ngày, nhiệm vụ, huy hiệu
+  app.post('/api/word-game/session', requireAuth, (req, res) => {
+    const body = req.body || {};
+    const mode = MODES.includes(body.mode) && body.mode !== 'wordle' ? body.mode : null; // wordle chỉ được tính qua máy chủ
+    let results = Array.isArray(body.results) ? body.results.slice(0, MAX_RESULTS) : [];
+    results = results.filter(r => r && Number.isInteger(r.id) && bank.byId.has(r.id));
+    if (!mode || !results.length) return res.status(400).json({ error: 'Dữ liệu phiên chơi không hợp lệ.' });
+    try { res.json(recordSession(req.user.id, req.user.name, mode, results, 0)); }
+    catch (e) {
       console.error('[wordgame/session]', e.message);
       res.status(500).json({ error: 'Không lưu được kết quả phiên học.' });
     }
   });
 
-  // Nhận thưởng nhiệm vụ ngày
+  // ───────────── Đoán từ mỗi ngày (kiểu Wordle, có gợi ý nghĩa tiếng Việt) ─────────────
+  // Đáp án chỉ nằm ở máy chủ; client gửi từng lượt đoán và nhận lại màu từng ô → không thể "soi" đáp án.
+  const WORDLE_TRIES = 6;
+  const WORDLE_XP = [0, 50, 42, 34, 26, 18, 10]; // thưởng theo số lượt đoán đúng
+  function wordleEligible() { return bank.list.filter(w => w.kind === 'word' && /^[A-Za-z]{4,8}$/.test(w.word)); }
+  function wordlePick(day) {
+    const el = wordleEligible();
+    if (!el.length) return null;
+    const h = crypto.createHash('sha256').update('ewt-wordle:' + day).digest().readUInt32BE(0);
+    return el[h % el.length];
+  }
+  function wordlePattern(guess, answer) {
+    const g = guess.toLowerCase(), a = answer.toLowerCase(), n = a.length, res = new Array(n).fill('x'), left = {};
+    for (let i = 0; i < n; i++) { if (g[i] === a[i]) res[i] = 'g'; else left[a[i]] = (left[a[i]] || 0) + 1; }
+    for (let i = 0; i < n; i++) if (res[i] === 'x' && left[g[i]] > 0) { res[i] = 'y'; left[g[i]]--; }
+    return res.join('');
+  }
+  function wordleStreak(uid, day) {
+    const rows = db.prepare('SELECT day,win FROM word_wordle WHERE user_id=? AND done=1 ORDER BY day DESC LIMIT 60').all(uid);
+    let streak = 0, want = day;
+    const map = new Map(rows.map(r => [r.day, r.win]));
+    if (!map.has(want)) want = addDays(day, -1); // hôm nay chưa chơi xong thì tính từ hôm qua
+    while (map.get(want) === 1) { streak++; want = addDays(want, -1); }
+    return streak;
+  }
+  function wordleState(uid, day, extra) {
+    const row = db.prepare('SELECT * FROM word_wordle WHERE user_id=? AND day=?').get(uid, day);
+    if (!row) return null;
+    const w = bank.byId.get(Number(row.word_id));
+    const guesses = JSON.parse(row.guesses || '[]');
+    const done = !!row.done;
+    return Object.assign({
+      day, len: w.word.length, tries: WORDLE_TRIES, guesses, done, win: !!row.win,
+      hint: { vi: w.vi, pos: w.pos, level: w.level, topic: w.topic },
+      answer: done ? { word: w.word, vi: w.vi, ex: w.ex, exVi: w.exVi } : null,
+      streak: wordleStreak(uid, day)
+    }, extra || {});
+  }
+  app.get('/api/word-game/wordle', requireAuth, (req, res) => {
+    try {
+      const day = vnDay();
+      let row = db.prepare('SELECT * FROM word_wordle WHERE user_id=? AND day=?').get(req.user.id, day);
+      if (!row) {
+        const w = wordlePick(day);
+        if (!w) return res.status(503).json({ error: 'Kho từ chưa đủ từ để chơi.' });
+        db.prepare('INSERT OR IGNORE INTO word_wordle (user_id,day,word_id,guesses,done,win) VALUES (?,?,?,?,0,0)').run(req.user.id, day, w.id, '[]');
+      }
+      res.json(wordleState(req.user.id, day));
+    } catch (e) { console.error('[wordle/get]', e.message); res.status(500).json({ error: 'Không tải được trò chơi.' }); }
+  });
+  app.post('/api/word-game/wordle/guess', requireAuth, (req, res) => {
+    try {
+      const uid = req.user.id, day = vnDay();
+      const row = db.prepare('SELECT * FROM word_wordle WHERE user_id=? AND day=?').get(uid, day);
+      if (!row) return res.status(400).json({ error: 'Hãy mở trò chơi trước.' });
+      if (row.done) return res.status(400).json({ error: 'Hôm nay bạn đã chơi xong rồi. Mai quay lại nhé!' });
+      const w = bank.byId.get(Number(row.word_id));
+      const guess = String((req.body || {}).guess || '').trim().toLowerCase();
+      if (!/^[a-z]+$/.test(guess) || guess.length !== w.word.length) return res.status(400).json({ error: 'Từ cần có đúng ' + w.word.length + ' chữ cái.' });
+      const guesses = JSON.parse(row.guesses || '[]');
+      if (guesses.length >= WORDLE_TRIES) return res.status(400).json({ error: 'Đã hết lượt đoán.' });
+      if (guesses.some(x => x.g === guess)) return res.status(400).json({ error: 'Bạn đã đoán từ này rồi.' });
+      const pattern = wordlePattern(guess, w.word);
+      guesses.push({ g: guess, p: pattern });
+      const win = pattern === 'g'.repeat(w.word.length);
+      const done = win || guesses.length >= WORDLE_TRIES;
+      db.prepare('UPDATE word_wordle SET guesses=?, done=?, win=? WHERE user_id=? AND day=?').run(JSON.stringify(guesses), done ? 1 : 0, win ? 1 : 0, uid, day);
+      let reward = null;
+      if (done) {
+        try { reward = recordSession(uid, req.user.name, 'wordle', [{ id: w.id, ok: win }], win ? WORDLE_XP[guesses.length] : 0); }
+        catch (e) { console.error('[wordle/reward]', e.message); }
+      }
+      res.json(wordleState(uid, day, reward ? { reward } : {}));
+    } catch (e) { console.error('[wordle/guess]', e.message); res.status(500).json({ error: 'Không xử lý được lượt đoán.' }); }
+  });
+
   app.post('/api/word-game/quest/claim', requireAuth, (req, res) => {
     const uid = req.user.id;
     const id = String((req.body || {}).id || '');

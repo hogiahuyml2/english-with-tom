@@ -369,6 +369,18 @@ CREATE TABLE IF NOT EXISTS lesson_time (
 CREATE INDEX IF NOT EXISTS idx_lesson_time_user ON lesson_time(user_id);
 `, 'lesson_time');
 
+// Đoán từ mỗi ngày (kiểu Wordle): mỗi học sinh 1 dòng/ngày
+tryExec(`
+CREATE TABLE IF NOT EXISTS word_wordle (
+  user_id INTEGER NOT NULL,
+  day TEXT NOT NULL,
+  word_id INTEGER NOT NULL,
+  guesses TEXT NOT NULL DEFAULT '[]',
+  done INTEGER NOT NULL DEFAULT 0,
+  win INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, day)
+)`, 'word_wordle');
+
 // Mở rộng kho từ: loại mục (word / colloc / upgrade) + các trường phụ
 safeAlter('PRAGMA table_info(vocab_words)', [
   ['kind',          "ALTER TABLE vocab_words ADD COLUMN kind TEXT NOT NULL DEFAULT 'word'"],

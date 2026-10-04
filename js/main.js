@@ -48,6 +48,7 @@
   var navItemsAfter = [
     { href: 'practice.html', label: 'Luyện tập', key: 'practice' },
     { href: 'word-hub.html', label: 'Học từ vựng', key: 'word-hub' },
+    { href: 'arcade.html', label: '🎮 Trò chơi', key: 'arcade' },
   ];
 
   function renderLink(i) {
