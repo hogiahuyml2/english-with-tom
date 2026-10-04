@@ -131,7 +131,7 @@
     ex: [['She can speak three languages.', 'Cô ấy nói được ba thứ tiếng.'], ['You should see a doctor.', 'Bạn nên đi khám bác sĩ.'], ["You mustn't use your phone in class.", 'Bạn không được dùng điện thoại trong lớp.'], ["You don't have to wear a tie.", 'Bạn không cần phải đeo cà vạt.'], ['Can I borrow your pen, please?', 'Cho mình mượn bút của bạn được không?'], ['We have to get up early on school days.', 'Chúng mình phải dậy sớm vào những ngày đi học.'], ['It might snow tonight.', 'Tối nay có thể có tuyết.'], ['He should not stay up so late.', 'Cậu ấy không nên thức khuya như vậy.']],
     mis: [['She musts finish it.', 'She must finish it.', 'Động từ khuyết thiếu không thêm s.'], ['You should to study harder.', 'You should study harder.', 'Sau should không có to.'], ["You mustn't wear a uniform on Sunday. (không cần mặc)", "You don't have to wear a uniform on Sunday.", 'Không cần thiết → don\'t have to.'], ['Do you can swim?', 'Can you swim?', 'can tự đảo lên đầu câu, không dùng do.']],
     quiz: [
-      ['You ___ drink more water. It is good for your health.', ['can', 'should', 'mustn\'t', 'might not'], 1, 'Lời khuyên → should.'],
+      ['You ___ drink more water. It is good for your health.', ['can\'t', 'should', 'mustn\'t', 'might not'], 1, 'Lời khuyên → should.'],
       ['Students ___ run in the corridor. It is dangerous.', ["don't have to", "mustn't", "can", "should to"], 1, 'Cấm đoán → mustn\'t.'],
       ['Tomorrow is Sunday. We ___ go to school.', ["mustn't", "don't have to", "must", "can't to"], 1, 'Không cần thiết → don\'t have to.'],
       ['___ I use your dictionary, please?', ['Must', 'Should', 'Can', 'Do'], 2, 'Xin phép → Can I ...?'],
@@ -164,7 +164,7 @@
       ['He is ___ late for class. He is very punctual.', ['always', 'never', 'often', 'usually'], 1, 'very punctual → never late.'],
       ['My brother drives very ___.', ['careful', 'carefully', 'care', 'carefulness'], 1, 'Bổ nghĩa động từ → trạng từ carefully.'],
       ['She sings ___. Everybody loves her voice.', ['good', 'well', 'goodly', 'best'], 1, 'good → trạng từ well.'],
-      ['We ___ eat out. We usually cook at home.', ['often', 'rarely', 'always', 'usually'], 1, 'usually cook at home → rarely eat out.'],
+      ['We ___ eat out. We always cook at home.', ['often', 'rarely', 'always', 'usually'], 1, 'always cook at home → rarely eat out (hiếm khi ăn ngoài).'],
       ['The students are working ___ for the exam.', ['hardly', 'hard', 'harder', 'hardy'], 1, 'work hard = làm việc chăm chỉ.'],
       ['How ___ do you visit your grandparents? — Once a month.', ['long', 'far', 'often', 'much'], 2, 'Once a month → hỏi tần suất: How often.'],
       ['He can ___ swim across the river.', ['easy', 'easily', 'ease', 'easier'], 1, 'Bổ nghĩa cho động từ swim → trạng từ easily.']

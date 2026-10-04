@@ -26,7 +26,7 @@
       ['She ___ in this city since 2018.', ['lives', 'lived', 'has lived', 'is living'], 2, 'since 2018 → hiện tại hoàn thành: has lived.'],
       ['I have never ___ a kangaroo.', ['saw', 'seen', 'see', 'seeing'], 1, 'have never + V3: seen.'],
       ['We have been friends ___ ten years.', ['since', 'for', 'ago', 'in'], 1, 'ten years là khoảng thời gian → for.'],
-      ['Have you done your homework ___?', ['already', 'yet', 'ago', 'last night'], 1, 'Câu hỏi: yet đứng cuối câu.'],
+      ['Have you done your homework ___?', ['since', 'yet', 'ago', 'last night'], 1, 'Câu hỏi hiện tại hoàn thành, hỏi "đã … chưa" → yet đứng cuối câu.'],
       ['I ___ my keys. I cannot open the door.', ['lose', 'lost', 'have lost', 'am losing'], 2, 'Kết quả ở hiện tại (không mở được cửa) → have lost.'],
       ['They ___ to London last year.', ['have gone', 'went', 'have been', 'go'], 1, 'last year là mốc quá khứ → quá khứ đơn: went.'],
       ['This is the first time she ___ sushi.', ['eats', 'ate', 'has eaten', 'is eating'], 2, 'This is the first time + hiện tại hoàn thành.'],
@@ -58,7 +58,7 @@
       ['When the teacher came in, the students ___.', ['talk', 'were talking', 'was talking', 'talks'], 1, 'students số nhiều → were talking.'],
       ['He ___ asleep when I called him.', ['is', 'were', 'was', 'be'], 2, 'He → was (asleep là tính từ, dùng to be).'],
       ['She broke her arm while she ___ a bike.', ['rode', 'was riding', 'were riding', 'rides'], 1, 'while + quá khứ tiếp diễn.'],
-      ['At this time yesterday we ___ at the beach.', ['was lying', 'lay', 'were lying', 'are lying'], 2, 'we → were lying.']
+      ['At this time yesterday we ___ at the beach.', ['was lying', 'lie', 'were lying', 'are lying'], 2, 'we → were lying.']
     ]
   });
 
@@ -164,9 +164,9 @@
     ex: [['"I am tired," she said. → She said (that) she was tired.', 'Cô ấy nói cô ấy mệt.'], ['"I will help you," he said. → He said he would help me.', 'Anh ấy nói anh ấy sẽ giúp mình.'], ['"We live in Hue," they said. → They said they lived in Hue.', 'Họ nói họ sống ở Huế.'], ['"I can swim," Tom told me. → Tom told me he could swim.', 'Tom bảo mình rằng cậu ấy biết bơi.'], ['"I am going to Da Nang tomorrow," she said. → She said she was going to Da Nang the next day.', 'Cô ấy nói hôm sau cô ấy sẽ đi Đà Nẵng.'], ['"I visited my aunt yesterday," he said. → He said he had visited his aunt the day before.', 'Anh ấy nói hôm trước anh ấy đã thăm dì.'], ['"I must go now," she said. → She said she had to go then.', 'Cô ấy nói lúc đó cô ấy phải đi.'], ['The teacher said that the Earth goes around the Sun.', 'Cô giáo nói rằng Trái Đất quay quanh Mặt Trời.']],
     mis: [['She said me that she was tired.', 'She told me that she was tired. / She said that she was tired.', 'say không có tân ngữ; tell + O.'], ['He told that he was busy.', 'He said that he was busy. / He told me that he was busy.', 'tell cần có tân ngữ.'], ['She said she will come tomorrow.', 'She said she would come the next day.', 'Lùi thì: will → would; tomorrow → the next day.'], ['He said me he lived in Hue.', 'He told me he lived in Hue.', 'tell + O.']],
     quiz: [
-      ['"I am hungry," Tom said. → Tom said that he ___ hungry.', ['is', 'was', 'were', 'will be'], 1, 'am/is → was.'],
-      ['"We will visit you," they said. → They said they ___ visit me.', ['will', 'would', 'can', 'did'], 1, 'will → would.'],
-      ['"I can swim," she said. → She said she ___ swim.', ['can', 'could', 'may', 'would'], 1, 'can → could.'],
+      ['"I am hungry," Tom said. → Tom said that he ___ hungry. (lùi thì)', ['is', 'was', 'were', 'will be'], 1, 'am/is → was.'],
+      ['"We will visit you," they said. → They said they ___ visit me. (lùi thì)', ['will', 'would', 'can', 'did'], 1, 'will → would.'],
+      ['"I can swim," she said. → She said she ___ swim. (lùi thì)', ['can', 'could', 'may', 'would'], 1, 'can → could.'],
       ['"I am leaving tomorrow," he said. → He said he was leaving ___.', ['tomorrow', 'the next day', 'yesterday', 'today'], 1, 'tomorrow → the next day.'],
       ['She ___ me that she was busy.', ['said', 'told', 'spoke', 'talked'], 1, 'tell + O + that.'],
       ['"I live here," he said. → He said that he lived ___.', ['here', 'there', 'now', 'this'], 1, 'here → there.'],

@@ -42,11 +42,11 @@ You: Thank you. I would like to {order|borrow|invite|practise} a chicken sandwic
 Waiter: Would you like anything to drink? || Quý khách muốn uống gì không ạ?
 You: A glass of water, please. I am very {hungry|crowded|cloudy|tidy}! || Một ly nước ạ. Tôi đói quá!
 Waiter: Here is your food. Enjoy your meal! || Món của quý khách đây. Chúc ngon miệng!
-You: It is {delicious|boring|expensive|busy}. Can I have the {bill|passport|luggage|timetable}, please? || Ngon quá. Cho tôi xin hóa đơn nhé?
+You: It is {delicious|boring|crowded|busy}. Can I have the {bill|passport|luggage|timetable}, please? || Ngon quá. Cho tôi xin hóa đơn nhé?
 ` },
   { level: 'KET', title: 'Ở cửa hàng quần áo', scene: 'Bạn mua một chiếc áo khoác', script: `
 Shop assistant: Hello! Can I help you? || Chào bạn! Tôi giúp gì được cho bạn?
-You: Yes, I like this jacket. Can I {try on|wake up|borrow|invite} it? || Vâng, tôi thích cái áo này. Tôi mặc thử được không?
+You: Yes, I like this jacket. Can I {try on|wake up|practise|invite} it? || Vâng, tôi thích cái áo này. Tôi mặc thử được không?
 Shop assistant: Of course. What {size|receipt|weather|hobby} are you? || Tất nhiên rồi. Bạn mặc cỡ nào?
 You: Medium, please. How much is it? || Cỡ vừa ạ. Cái này giá bao nhiêu?
 Shop assistant: It is twenty dollars, and today there is a {discount|journey|delay|headache} of ten percent. || Hai mươi đô, và hôm nay giảm giá mười phần trăm.
@@ -80,13 +80,13 @@ Sales: And every {customer|journalist|immigrant|generation} will be happier. || 
 ` },
   { level: 'FCE', title: 'Trò chuyện về môi trường', scene: 'Hai người bạn nói về biến đổi khí hậu', script: `
 Anna: Did you read about the {drought|heritage|masterpiece|exhibition} in the south? || Bạn đọc về đợt hạn hán ở miền nam chưa?
-Ben: Yes, it destroyed the crops. We need {sustainable|convenient|delighted|generous} ways to produce food. || Rồi, nó phá hủy mùa màng. Ta cần cách sản xuất lương thực bền vững.
-Anna: I agree. Many animals may become {extinct|jealous|nervous|embarrassed} too. || Mình đồng ý. Nhiều loài vật cũng có thể tuyệt chủng.
+Ben: Yes, it destroyed the crops. We need {sustainable|jealous|delighted|generous} ways to produce food. || Rồi, nó phá hủy mùa màng. Ta cần cách sản xuất lương thực bền vững.
+Anna: I agree. Many animals may become {extinct|relieved|nervous|embarrassed} too. || Mình đồng ý. Nhiều loài vật cũng có thể tuyệt chủng.
 Ben: We should {conserve|celebrate|apologise|subscribe} water and energy. || Ta nên tiết kiệm nước và năng lượng.
 Anna: Governments must act on {climate|routine|gossip|audience} change. || Chính phủ phải hành động vì biến đổi khí hậu.
 ` },
   { level: 'IELTS', title: 'Speaking Part 3: Giáo dục', scene: 'Giám khảo hỏi bạn về giáo dục', script: `
-Examiner: Some people think education should be {compulsory|flexible|obsolete|preventive} until eighteen. What do you think? || Có người cho rằng giáo dục nên bắt buộc đến mười tám tuổi. Bạn nghĩ sao?
+Examiner: Some people think education should be {compulsory|multinational|obsolete|preventive} until eighteen. What do you think? || Có người cho rằng giáo dục nên bắt buộc đến mười tám tuổi. Bạn nghĩ sao?
 You: I agree. A strong {curriculum|landfill|obesity|inflation} gives students useful skills. || Tôi đồng ý. Một chương trình giảng dạy tốt mang lại kỹ năng hữu ích.
 Examiner: Is {tuition|erosion|emission|stereotype} too high nowadays? || Học phí ngày nay có quá cao không?
 You: In many countries, yes. The government should give more {subsidy|legislation|policy|tax} to families. || Ở nhiều nước thì có. Chính phủ nên trợ cấp nhiều hơn cho các gia đình.
@@ -96,7 +96,7 @@ You: It is essential for the {workforce|biodiversity|landfill|nutrition}. || Nó
   { level: 'IELTS', title: 'Speaking Part 3: Công nghệ & việc làm', scene: 'Giám khảo hỏi về tác động của công nghệ', script: `
 Examiner: How will {automation|obesity|erosion|deforestation} change the job market? || Tự động hóa sẽ thay đổi thị trường việc làm thế nào?
 You: Many routine jobs may become {obsolete|renewable|compulsory|vocational}, but new jobs will appear. || Nhiều việc lặp đi lặp lại có thể trở nên lỗi thời, nhưng sẽ có việc mới.
-Examiner: Is {privacy|epidemic|literacy|inflation} a worry for you? || Quyền riêng tư có làm bạn lo lắng không?
+Examiner: Is online {privacy|erosion|obesity|landfill} a worry for you? || Quyền riêng tư có làm bạn lo lắng không?
 You: Yes. Governments should {regulate|import|enrol|outsource} how companies use personal data. || Có. Chính phủ nên quản lý cách các công ty dùng dữ liệu cá nhân.
 Examiner: Will {innovation|inequality|urbanisation|diversity} solve these problems? || Sự đổi mới có giải quyết được những vấn đề này không?
 You: Not alone. We also need good {policy|erosion|emission|obesity}. || Không chỉ riêng nó. Ta cũng cần chính sách tốt.

@@ -23,9 +23,9 @@
       ['By the time I got to the airport, the plane ___.', ['took off', 'had taken off', 'has taken off', 'was taken off'], 1, 'by the time + quá khứ đơn → quá khứ hoàn thành.'],
       ['It is the first time she ___ abroad.', ['travels', 'travelled', 'has travelled', 'will travel'], 2, 'It is the first time + hiện tại hoàn thành.'],
       ['She ___ here since she was ten.', ['lives', 'lived', 'has lived', 'is living'], 2, 'since + quá khứ đơn → has lived.'],
-      ['This time next week, we ___ on the beach.', ['lie', 'will be lying', 'will lie', 'have lain'], 1, 'This time next week → tương lai tiếp diễn.'],
+      ['This time next week, we ___ on the beach.', ['lie', 'will be lying', 'would lie', 'have lain'], 1, 'This time next week → tương lai tiếp diễn.'],
       ['I ___ for you since 7 o\'clock.', ['wait', 'am waiting', 'have been waiting', 'will wait'], 2, 'since 7 o\'clock → hiện tại hoàn thành tiếp diễn.'],
-      ['When I came, she ___ the piano.', ['played', 'was playing', 'has played', 'plays'], 1, 'Hành động đang diễn ra lúc "tôi đến" → quá khứ tiếp diễn.']
+      ['When I came, she ___ the piano. (lúc tôi đến cô ấy đang chơi dở)', ['played', 'was playing', 'has played', 'plays'], 1, 'Hành động đang diễn ra lúc "tôi đến" → quá khứ tiếp diễn.']
     ]
   });
 
@@ -42,7 +42,7 @@
       ] }
     ],
     ex: [['The beauty of the city attracts many tourists.', 'Vẻ đẹp của thành phố thu hút nhiều du khách.'], ['She sings beautifully.', 'Cô ấy hát rất hay.'], ['This is an extremely difficult question.', 'Đây là một câu hỏi cực kỳ khó.'], ['His carelessness caused the accident.', 'Sự bất cẩn của anh ấy gây ra tai nạn.'], ['It is impossible to finish it in an hour.', 'Không thể hoàn thành nó trong một giờ.'], ['The teacher gave us helpful advice.', 'Thầy giáo cho chúng mình lời khuyên hữu ích.'], ['Pollution is a serious problem.', 'Ô nhiễm là một vấn đề nghiêm trọng.'], ['The new law will widen the gap between rich and poor.', 'Luật mới sẽ nới rộng khoảng cách giàu nghèo.']],
-    mis: [['He drives careful.', 'He drives carefully.', 'Bổ nghĩa cho động từ → trạng từ.'], ['She is a beauty girl.', 'She is a beautiful girl.', 'Trước danh từ cần tính từ.'], ['It is a possible task.', 'It is an impossible task. (nếu nghĩa là không thể làm được)', 'Chú ý tiền tố phủ định im- trước p.'], ['The educate system is good.', 'The education system is good.', 'Cần danh từ bổ nghĩa (education system).']],
+    mis: [['He drives careful.', 'He drives carefully.', 'Bổ nghĩa cho động từ → trạng từ.'], ['She is a beauty girl.', 'She is a beautiful girl.', 'Trước danh từ cần tính từ.'], ['He is a very care driver.', 'He is a very careful driver.', 'Trước danh từ cần tính từ: careful.'], ['The educate system is good.', 'The education system is good.', 'Cần danh từ bổ nghĩa (education system).']],
     quiz: [
       ['The ___ of the project made everyone happy. (succeed)', ['success', 'successful', 'successfully', 'succeeding'], 0, 'Sau the và trước of → danh từ: success.'],
       ['She spoke ___ to the audience. (confidence)', ['confident', 'confidently', 'confidence', 'confide'], 1, 'Bổ nghĩa cho động từ spoke → trạng từ confidently.'],
@@ -156,8 +156,8 @@
       ['She gave me (A) some (B) good (C) advices (D) yesterday. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'advice là danh từ không đếm được, không thêm s: "some good advice".', 1],
       ['(A) Despite of (B) the heavy rain, (C) we (D) went out. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 0, 'Đúng là "Despite" hoặc "In spite of", không có "Despite of".', 1],
       ['We (A) talked (B) about the plan (C) and discussed (D) about the schedule. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 3, 'discuss không đi với about: "discussed the schedule".', 1],
-      ['She is (A) the most (B) tallest (C) girl (D) in my class. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 1, 'Không dùng cùng lúc most và -est: "the tallest girl".', 1],
-      ["I'm (A) looking forward (B) to (C) meet (D) you soon. — Tìm lỗi sai.", ['A', 'B', 'C', 'D'], 3, 'look forward to + V-ing: "meeting".', 1]
+      ['My brother (A) is (B) very good (C) in (D) mathematics. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'Tính từ good đi với giới từ at: "good at mathematics".', 1],
+      ["I'm (A) looking forward (B) to (C) meet (D) you soon. — Tìm lỗi sai.", ['A', 'B', 'C', 'D'], 2, 'look forward to + V-ing: "meeting" (phần (C) meet là phần sai).', 1]
     ]
   });
 })();

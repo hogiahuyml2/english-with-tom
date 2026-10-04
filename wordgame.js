@@ -3,6 +3,7 @@
 // báo kết quả từng câu) để học sinh không tự cộng điểm bằng cách sửa request.
 const { SEED_WORDS, parseSeed } = require('./vocab-seed');
 const { SEED2 } = require('./vocab-seed2');
+const { applyFixes } = require('./vocab-fixes');
 const { SEED_DIALOGUES, parseScript } = require('./vocab-dialogues');
 const crypto = require('crypto');
 
@@ -139,7 +140,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     } catch (e) { console.error('[wordgame] seed hội thoại lỗi:', e.message); }
   }
   seedDialogues();
-  try { seedBank(); loadBank(); console.log('[wordgame] Kho từ: ' + bank.list.length + ' từ.'); }
+  try { seedBank(); applyFixes(db, console.log); loadBank(); console.log('[wordgame] Kho từ: ' + bank.list.length + ' từ.'); }
   catch (e) { console.error('[wordgame] Khởi tạo lỗi:', e.message); }
 
   // ───────────── Trạng thái người chơi ─────────────

@@ -42,13 +42,13 @@
       { h: '2. Câu ước ở hiện tại (wish)', b: [
         { f: ['S + wish + S + V2/V-ed / were  (ước điều không có thật ở hiện tại)', 'S + wish + S + would/could + V  (ước điều gì thay đổi / than phiền)'] },
         { ul: ['**I wish I had a bike.** (nhưng thực tế mình không có)', '**I wish I were taller.**', '**I wish I could swim.**', '**I wish it would stop raining.**'] },
-        { warn: 'Sau **wish** và **if** (loại 2) không dùng **will/would** trong mệnh đề mong ước/điều kiện: **If I would have time** là sai.' }
+        { warn: 'Trong mệnh đề **if** của loại 2 không dùng **would**: **If I would have time** là sai (phải là **If I had time**). Với **wish**, **would** chỉ dùng để than phiền hoặc mong một sự việc thay đổi (**I wish it would stop raining**), không dùng cho điều mong ước về chính bản thân mình.' }
       ] }
     ],
     ex: [['If I were you, I would study harder.', 'Nếu mình là bạn, mình sẽ học chăm hơn.'], ['If I had a million dollars, I would travel around the world.', 'Nếu có một triệu đô, mình sẽ đi du lịch vòng quanh thế giới.'], ['If she lived near here, we could meet every day.', 'Nếu cô ấy sống gần đây, chúng mình có thể gặp nhau mỗi ngày.'], ['What would you do if you won the lottery?', 'Bạn sẽ làm gì nếu trúng xổ số?'], ['I wish I had a bike.', 'Ước gì mình có một chiếc xe đạp.'], ['I wish I were taller.', 'Ước gì mình cao hơn.'], ['She wishes she could play the guitar.', 'Cô ấy ước gì mình biết chơi guitar.'], ['I wish it would stop raining.', 'Ước gì trời tạnh mưa.']],
     mis: [['If I would have money, I would buy a car.', 'If I had money, I would buy a car.', 'Mệnh đề if loại 2 dùng quá khứ đơn, không dùng would.'], ['If he studies harder, he would pass. (nói điều không có thật)', 'If he studied harder, he would pass.', 'Loại 2: quá khứ đơn + would.'], ['I wish I can fly.', 'I wish I could fly.', 'Sau wish lùi thì: can → could.'], ['I wish it stops raining.', 'I wish it would stop raining.', 'Mong sự thay đổi / than phiền → would + V.']],
     quiz: [
-      ['If I ___ a bird, I would fly to you.', ['am', 'was', 'were', 'would be'], 2, 'Điều không có thật: If I were ...'],
+      ['If I ___ a bird, I would fly to you.', ['am', 'be', 'were', 'would be'], 2, 'Điều không có thật: If I were ...'],
       ['If she ___ more time, she would learn another language.', ['has', 'had', 'will have', 'would have'], 1, 'Loại 2: If + quá khứ đơn.'],
       ['What ___ you do if you saw a ghost?', ['will', 'would', 'did', 'are'], 1, 'Loại 2: mệnh đề chính dùng would.'],
       ['I wish I ___ speak French.', ['can', 'could', 'will', 'am able'], 1, 'Wish ở hiện tại: could.'],
@@ -80,14 +80,14 @@
     ex: [['"Do you like pizza?" → She asked me if I liked pizza.', 'Cô ấy hỏi mình có thích pizza không.'], ['"Where do you live?" → He asked me where I lived.', 'Anh ấy hỏi mình sống ở đâu.'], ['"What are you doing?" → She asked what I was doing.', 'Cô ấy hỏi mình đang làm gì.'], ['"Have you finished?" → He asked whether I had finished.', 'Anh ấy hỏi mình đã xong chưa.'], ['"Open the window," the teacher said. → The teacher told us to open the window.', 'Cô giáo bảo chúng mình mở cửa sổ.'], ['"Don\'t touch it," he said. → He told me not to touch it.', 'Anh ấy bảo mình đừng chạm vào nó.'], ['"Please help me," Lan said. → Lan asked me to help her.', 'Lan nhờ mình giúp cô ấy.'], ['"When will you come back?" → She asked when I would come back.', 'Cô ấy hỏi khi nào mình quay lại.']],
     mis: [['She asked me where did I live.', 'She asked me where I lived.', 'Tường thuật câu hỏi không đảo trợ động từ.'], ['He asked me do I like tea.', 'He asked me if I liked tea.', 'Yes/No question → if/whether + S + V.'], ['She told me don\'t be late.', 'She told me not to be late.', 'Mệnh lệnh phủ định: not to V.'], ['He asked if was I tired.', 'He asked if I was tired.', 'Không đảo ngữ.']],
     quiz: [
-      ['"Where do you live?" → She asked me where ___.', ['do I live', 'I lived', 'I live', 'did I live'], 1, 'Không đảo, lùi thì: I lived.'],
+      ['"Where do you live?" → She asked me where ___.', ['do I live', 'I lived', 'live I', 'did I live'], 1, 'Không đảo, lùi thì: I lived.'],
       ['"Are you tired?" → He asked me ___ tired.', ['that I was', 'if I was', 'was I', 'if was I'], 1, 'Yes/No question → if + S + V.'],
       ['"Close the door," she said. → She told me ___ the door.', ['close', 'closing', 'to close', 'that I close'], 2, 'told + O + to V.'],
       ['"Don\'t talk in class," the teacher said. → The teacher told us ___ in class.', ["don't talk", 'not to talk', 'to not talking', 'no talk'], 1, 'not to V.'],
-      ['"What is your name?" → He asked me ___.', ['what my name is', 'what was my name', 'what my name was', 'what is my name'], 2, 'Lùi thì và không đảo: what my name was.'],
+      ['"What is your name?" → He asked me ___.', ['what my name were', 'what was my name', 'what my name was', 'what is my name'], 2, 'Lùi thì và không đảo: what my name was.'],
       ['"Will you come to my party?" → She asked me ___ to her party.', ['will I come', 'if I would come', 'that I would come', 'did I come'], 1, 'will → would; Yes/No question → if.'],
       ['"Please lend me your pen," he said. → He asked me ___ him my pen.', ['lend', 'to lend', 'lending', 'if lend'], 1, 'asked + O + to V.'],
-      ['"How old are you?" → She asked me how old ___.', ['I was', 'was I', 'am I', 'I am'], 0, 'Lùi thì, không đảo: how old I was.']
+      ['"How old are you?" → She asked me how old ___.', ['I was', 'was I', 'am I', 'I were'], 0, 'Lùi thì, không đảo: how old I was.']
     ]
   });
 
@@ -164,7 +164,7 @@
       ] }
     ],
     ex: [['I study hard to pass the exam.', 'Mình học chăm để đỗ kỳ thi.'], ['He ran quickly in order not to be late.', 'Cậu ấy chạy nhanh để không bị muộn.'], ['She speaks slowly so that everyone can understand.', 'Cô ấy nói chậm để mọi người đều hiểu.'], ['The test was so difficult that nobody passed.', 'Bài kiểm tra khó đến mức không ai đỗ.'], ['It was such a hot day that we stayed inside.', 'Đó là một ngày nóng đến mức chúng mình ở trong nhà.'], ['She is too young to drive a car.', 'Cô bé còn quá nhỏ để lái xe.'], ['He is tall enough to play basketball.', 'Cậu ấy đủ cao để chơi bóng rổ.'], ['Although it rained heavily, we went out.', 'Mặc dù trời mưa to, chúng mình vẫn ra ngoài.']],
-    mis: [['Despite he was tired, he kept working.', 'Although he was tired, he kept working. / Despite being tired, he kept working.', 'despite + N/V-ing; although + mệnh đề.'], ['It was so a nice day that we went out.', 'It was such a nice day that we went out.', 'such + a/an + adj + N.'], ['She is enough tall to join the team.', 'She is tall enough to join the team.', 'adj + enough.'], ['Although it rained, but we went out.', 'Although it rained, we went out.', 'Không dùng although và but cùng lúc.'], ['I study hard in order that I will pass.', 'I study hard so that I can pass.', 'so that + can/will; dùng can/could khi nói chung.']],
+    mis: [['Despite he was tired, he kept working.', 'Although he was tired, he kept working. / Despite being tired, he kept working.', 'despite + N/V-ing; although + mệnh đề.'], ['It was so a nice day that we went out.', 'It was such a nice day that we went out.', 'such + a/an + adj + N.'], ['She is enough tall to join the team.', 'She is tall enough to join the team.', 'adj + enough.'], ['Although it rained, but we went out.', 'Although it rained, we went out.', 'Không dùng although và but cùng lúc.'], ['He studies hard so that to pass the exam.', 'He studies hard so that he can pass the exam. / He studies hard to pass the exam.', 'so that + S + can/will + V (có mệnh đề); không dùng so that + to V.']],
     quiz: [
       ['I got up early ___ catch the first bus.', ['for', 'so that', 'in order to', 'because'], 2, 'in order to + V chỉ mục đích.'],
       ['It was ___ a good film that I watched it twice.', ['so', 'such', 'too', 'very'], 1, 'such + a + adj + N + that.'],

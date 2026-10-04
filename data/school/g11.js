@@ -78,7 +78,7 @@
       ['She ___ her hair cut every month.', ['has', 'makes', 'lets', 'gets to'], 0, 'have + O + V3 (nhờ cắt tóc).'],
       ['The teacher made the students ___ the text again.', ['to read', 'reading', 'read', 'reads'], 2, 'make + O + V(bare).'],
       ['He suggested ___ to the cinema.', ['to go', 'going', 'me to go', 'for going'], 1, 'suggest + V-ing.'],
-      ['She looks as if she ___ a ghost.', ['saw', 'had seen', 'sees', 'would see'], 1, 'as if + had V3 (điều không có thật trong quá khứ).'],
+      ['She looked as if she ___ a ghost.', ['seeing', 'had seen', 'sees', 'would see'], 1, 'Nhìn như thể vừa thấy ma (việc xảy ra trước đó) → as if + had V3.'],
       ['We ___ our house painted last week.', ['made', 'let', 'had', 'got to'], 2, 'had our house painted.']
     ]
   });

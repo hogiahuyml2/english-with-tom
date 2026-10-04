@@ -19,12 +19,12 @@
     mis: [['I have seen him yesterday.', 'I saw him yesterday.', 'yesterday → quá khứ đơn.'], ['I will call you when I will arrive.', 'I will call you when I arrive.', 'Mệnh đề thời gian dùng hiện tại đơn cho tương lai.'], ['When I arrived, they already left.', 'When I arrived, they had already left.', 'Việc xảy ra trước một mốc quá khứ → quá khứ hoàn thành.'], ['He is knowing the answer.', 'He knows the answer.', 'know là động từ chỉ trạng thái.']],
     quiz: [
       ['Look! The children ___ in the garden.', ['play', 'are playing', 'have played', 'played'], 1, 'Look! → hiện tại tiếp diễn.'],
-      ['I ___ my keys. Can you help me find them?', ['lost', 'have lost', 'was losing', 'lose'], 1, 'Kết quả ở hiện tại → hiện tại hoàn thành.'],
+      ['I ___ my keys three times this month.', ['lost', 'have lost', 'was losing', 'lose'], 1, 'this month là khoảng thời gian chưa kết thúc → hiện tại hoàn thành: have lost.'],
       ['By the time I got to the station, the train ___.', ['left', 'has left', 'had left', 'was leaving'], 2, 'Việc xảy ra trước mốc quá khứ → quá khứ hoàn thành.'],
-      ['I ___ you as soon as I get there.', ['will call', 'would call', 'called', 'am calling'], 0, 'Tương lai (as soon as + hiện tại đơn): will call.'],
+      ['I ___ you as soon as I get there.', ['will call', 'would call', 'called', 'have called'], 0, 'Tương lai (as soon as + hiện tại đơn): will call.'],
       ['She ___ English for five years.', ['studies', 'is studying', 'has been studying', 'studied'], 2, 'for five years + còn tiếp diễn → has been studying.'],
       ['He ___ his leg while he was playing football yesterday.', ['breaks', 'broke', 'has broken', 'was breaking'], 1, 'yesterday → quá khứ đơn.'],
-      ['We ___ to the beach next week.', ['go', 'are going', 'went', 'have gone'], 1, 'Kế hoạch → are going.'],
+      ['We ___ to the beach next week.', ['did go', 'are going', 'went', 'have gone'], 1, 'next week → tương lai; kế hoạch → are going.'],
       ['Mr Lee ___ in Hue since he was a child.', ['lives', 'lived', 'has lived', 'is living'], 2, 'since + mốc thời gian → has lived.']
     ]
   });
@@ -47,8 +47,8 @@
     ex: [['When I arrived, the film had already started.', 'Khi mình đến, bộ phim đã bắt đầu rồi.'], ['After she had finished her homework, she watched TV.', 'Sau khi làm xong bài tập, cô ấy xem TV.'], ["I couldn't enter because I had lost my key.", 'Mình không vào được vì đã làm mất chìa khóa.'], ['By the time he came, we had eaten everything.', 'Khi anh ấy đến thì chúng mình đã ăn hết rồi.'], ['No sooner had we arrived than it began to rain.', 'Chúng mình vừa đến thì trời bắt đầu mưa.'], ['I have been learning English for six years.', 'Mình đã học tiếng Anh được sáu năm.'], ['Why are you so tired? Have you been working all day?', 'Sao bạn mệt vậy? Bạn làm việc cả ngày à?'], ['She has known him since they were children.', 'Cô ấy biết anh ấy từ khi họ còn nhỏ.']],
     mis: [['When I arrived, the film already started.', 'When I arrived, the film had already started.', 'Việc xảy ra trước mốc quá khứ → had + V3.'], ['After he finished, he had gone home.', 'After he had finished, he went home.', 'Hành động xảy ra trước dùng had + V3.'], ['I have been knowing him for years.', 'I have known him for years.', 'know là động từ chỉ trạng thái.'], ['No sooner he had arrived than it rained.', 'No sooner had he arrived than it rained.', 'Đảo ngữ sau No sooner.']],
     quiz: [
-      ['When I got home, my mother ___ dinner.', ['already cooked', 'had already cooked', 'has already cooked', 'was already cook'], 1, 'Nấu xong trước khi mình về → had already cooked.'],
-      ['She was sad because she ___ her phone.', ['lost', 'had lost', 'has lost', 'was losing'], 1, 'Việc mất điện thoại xảy ra trước nỗi buồn → had lost.'],
+      ['When I got home, my mother ___ dinner.', ['would already cook', 'had already cooked', 'has already cooked', 'was already cook'], 1, 'Nấu xong trước khi mình về → had already cooked.'],
+      ['She told me that she ___ the film twice before.', ['saw', 'had seen', 'has seen', 'was seeing'], 1, 'Việc xem phim xảy ra trước thời điểm nói trong quá khứ (twice before) → had seen.'],
       ['After they ___ dinner, they went for a walk.', ['had finished', 'have finished', 'finish', 'were finishing'], 0, 'Hành động xảy ra trước: had finished.'],
       ['I ___ for you for an hour. Where have you been?', ['wait', 'waited', 'have been waiting', 'am waiting'], 2, 'for an hour + kéo dài đến hiện tại → have been waiting.'],
       ['No sooner ___ the house than it began to rain.', ['he left', 'had he left', 'he had left', 'did he left'], 1, 'No sooner + đảo ngữ: had he left.'],

@@ -7,7 +7,7 @@ colloc|KET|Everyday Verbs|do homework|phr|làm bài tập về nhà|I do homewor
 colloc|KET|Everyday Verbs|take a photo|phr|chụp ảnh|Can you take a photo of us, please?|Bạn chụp giúp chúng tôi một tấm ảnh được không?|take|make,do,paint|
 colloc|KET|Everyday Verbs|make a mistake|phr|mắc lỗi|Everyone can make a mistake sometimes.|Ai cũng có lúc mắc lỗi.|make|do,take,have|
 colloc|KET|Everyday Verbs|play football|phr|chơi bóng đá|They play football every Sunday.|Họ chơi bóng đá vào mỗi Chủ nhật.|play|do,go,make|
-colloc|KET|Everyday Verbs|go shopping|phr|đi mua sắm|We go shopping on Saturdays.|Chúng tôi đi mua sắm vào các ngày thứ Bảy.|go|do,play,make|
+colloc|KET|Everyday Verbs|go shopping|phr|đi mua sắm|We go shopping on Saturdays.|Chúng tôi đi mua sắm vào các ngày thứ Bảy.|go|have,play,make|
 colloc|KET|Everyday Verbs|ride a bike|phr|đi xe đạp|My brother can ride a bike very fast.|Anh trai tôi có thể đi xe đạp rất nhanh.|ride|drive,fly,sail|
 colloc|KET|Everyday Verbs|take a shower|phr|tắm vòi sen|I take a shower every morning.|Tôi tắm vòi sen mỗi sáng.|take|make,do,play|
 colloc|KET|Everyday Verbs|do the dishes|phr|rửa bát|Who will do the dishes tonight?|Tối nay ai sẽ rửa bát?|do|make,take,play|
@@ -20,19 +20,19 @@ colloc|PET|Life Choices|keep a secret|phr|giữ bí mật|Can you keep a secret?
 colloc|PET|Life Choices|break a promise|phr|thất hứa|He never wants to break a promise.|Anh ấy không bao giờ muốn thất hứa.|break|tear,cut,crush|
 colloc|PET|Life Choices|catch a cold|phr|bị cảm lạnh|If you go out in the rain, you may catch a cold.|Nếu ra ngoài trời mưa, bạn có thể bị cảm lạnh.|catch|hold,take,make|
 colloc|PET|Life Choices|earn money|phr|kiếm tiền|She works at a café to earn money.|Cô ấy làm ở quán cà phê để kiếm tiền.|earn|spend,waste,lend|
-colloc|PET|Life Choices|waste time|phr|lãng phí thời gian|Don't waste time on silly games.|Đừng lãng phí thời gian vào những trò chơi vớ vẩn.|waste|spend,save,pass|
+colloc|PET|Life Choices|waste time|phr|lãng phí thời gian|Don't waste time on silly games.|Đừng lãng phí thời gian vào những trò chơi vớ vẩn.|waste|save,win,keep|
 colloc|PET|Life Choices|heavy traffic|phr|giao thông đông đúc|We were late because of heavy traffic.|Chúng tôi đến muộn vì kẹt xe.|heavy|strong,big,hard|
 colloc|PET|Life Choices|strong coffee|phr|cà phê đậm|I can't sleep after drinking strong coffee.|Tôi không ngủ được sau khi uống cà phê đậm.|strong|heavy,hard,big|
 colloc|PET|Life Choices|fast food|phr|đồ ăn nhanh|Fast food is cheap but not very healthy.|Đồ ăn nhanh rẻ nhưng không tốt cho sức khỏe lắm.|fast|quick,rapid,speedy|
 colloc|PET|Life Choices|do research|phr|nghiên cứu, tìm hiểu|You should do research before buying a laptop.|Bạn nên tìm hiểu kỹ trước khi mua máy tính xách tay.|do|make,take,have|
 colloc|PET|Life Choices|give advice|phr|cho lời khuyên|My grandfather likes to give advice.|Ông tôi thích cho lời khuyên.|give|make,tell,say|
-colloc|FCE|Work & Society|raise awareness|phr|nâng cao nhận thức|The campaign aims to raise awareness of plastic pollution.|Chiến dịch nhằm nâng cao nhận thức về ô nhiễm nhựa.|raise|rise,lift,grow|
+colloc|FCE|Work & Society|raise awareness|phr|nâng cao nhận thức|The campaign aims to raise awareness of plastic pollution.|Chiến dịch nhằm nâng cao nhận thức về ô nhiễm nhựa.|raise|rise,push,carry|
 colloc|FCE|Work & Society|meet a deadline|phr|kịp hạn chót|It was hard to meet a deadline with so little time.|Rất khó để kịp hạn chót khi có quá ít thời gian.|meet|touch,catch,follow|
-colloc|FCE|Work & Society|reach an agreement|phr|đạt được thỏa thuận|The two companies finally reach an agreement.|Hai công ty cuối cùng đã đạt được thỏa thuận.|reach|arrive,come,go|
+colloc|FCE|Work & Society|reach an agreement|phr|đạt được thỏa thuận|The two companies hope to reach an agreement soon.|Hai công ty hy vọng sớm đạt được thỏa thuận.|reach|arrive,come,go|
 colloc|FCE|Work & Society|take responsibility|phr|chịu trách nhiệm|Managers must take responsibility for their decisions.|Các quản lý phải chịu trách nhiệm về quyết định của mình.|take|make,do,give|
 colloc|FCE|Work & Society|pose a threat|phr|gây ra mối đe dọa|Plastic bags pose a threat to sea animals.|Túi nhựa gây ra mối đe dọa cho động vật biển.|pose|put,place,set|
 colloc|FCE|Work & Society|gain experience|phr|tích lũy kinh nghiệm|Interns gain experience while they work.|Thực tập sinh tích lũy kinh nghiệm trong lúc làm việc.|gain|win,earn,take|
-colloc|FCE|Work & Society|come to a conclusion|phr|đi đến kết luận|After a long talk, we come to a conclusion.|Sau cuộc trò chuyện dài, chúng tôi đi đến kết luận.|come|go,fall,run|
+colloc|FCE|Work & Society|come to a conclusion|phr|đi đến kết luận|Let us talk until we come to a conclusion.|Hãy trao đổi cho đến khi chúng ta đi đến kết luận.|come|go,fall,run|
 colloc|FCE|Work & Society|draw attention|phr|thu hút sự chú ý|The bright poster will draw attention to the event.|Tấm áp phích sáng màu sẽ thu hút sự chú ý đến sự kiện.|draw|pull,carry,push|
 colloc|FCE|Work & Society|launch a product|phr|tung ra sản phẩm|The company plans to launch a product next spring.|Công ty dự định tung ra một sản phẩm vào mùa xuân tới.|launch|throw,drop,send|
 colloc|FCE|Work & Society|cast doubt|phr|làm dấy lên nghi ngờ|The new evidence may cast doubt on his story.|Bằng chứng mới có thể làm dấy lên nghi ngờ về câu chuyện của anh ta.|cast|pour,drop,hold|
@@ -41,7 +41,7 @@ colloc|FCE|Work & Society|deeply grateful|phr|vô cùng biết ơn|I am deeply g
 colloc|IELTS|Academic Writing|conduct research|phr|tiến hành nghiên cứu|Scientists conduct research in many fields.|Các nhà khoa học tiến hành nghiên cứu trong nhiều lĩnh vực.|conduct|lead,hold,play|
 colloc|IELTS|Academic Writing|play a role|phr|đóng vai trò|Education can play a role in reducing crime.|Giáo dục có thể đóng vai trò trong việc giảm tội phạm.|play|do,make,give|
 colloc|IELTS|Academic Writing|tackle a problem|phr|giải quyết một vấn đề|Governments must tackle a problem like air pollution.|Chính phủ phải giải quyết những vấn đề như ô nhiễm không khí.|tackle|catch,hold,fight|
-colloc|IELTS|Academic Writing|make a contribution|phr|đóng góp|Volunteers make a contribution to the local community.|Các tình nguyện viên đóng góp cho cộng đồng địa phương.|make|do,give,put|
+colloc|IELTS|Academic Writing|make a contribution|phr|đóng góp|Volunteers make a contribution to the local community.|Các tình nguyện viên đóng góp cho cộng đồng địa phương.|make|do,take,put|
 colloc|IELTS|Academic Writing|draw a conclusion|phr|rút ra kết luận|It is difficult to draw a conclusion from one study.|Rất khó để rút ra kết luận chỉ từ một nghiên cứu.|draw|make,take,give|
 colloc|IELTS|Academic Writing|lift a ban|phr|dỡ bỏ lệnh cấm|The government decided to lift a ban on imports.|Chính phủ quyết định dỡ bỏ lệnh cấm nhập khẩu.|lift|raise,carry,hold|
 colloc|IELTS|Academic Writing|run a business|phr|điều hành một doanh nghiệp|It is not easy to run a business alone.|Điều hành một doanh nghiệp một mình không dễ.|run|do,make,hold|

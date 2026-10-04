@@ -9,13 +9,13 @@ KET|Daily Life|neighbour|n|hàng xóm|My neighbour has a very friendly dog.|Hàn
 KET|Daily Life|tidy|v|dọn dẹp cho gọn|Please tidy your room before dinner.|Hãy dọn phòng của con trước bữa tối.
 KET|Daily Life|busy|adj|bận rộn|I can't talk now because I am busy.|Bây giờ tôi không nói chuyện được vì tôi đang bận.
 KET|Daily Life|borrow|v|mượn|Can I borrow your pen, please?|Cho mình mượn cây bút của bạn được không?
-KET|Daily Life|usually|adv|thường xuyên|We usually have dinner at seven.|Chúng tôi thường ăn tối lúc bảy giờ.
+KET|Daily Life|usually|adv|thường|We usually have dinner at seven.|Chúng tôi thường ăn tối lúc bảy giờ.
 KET|Food & Drink|menu|n|thực đơn|Could we see the menu, please?|Cho chúng tôi xem thực đơn được không?
 KET|Food & Drink|order|v|gọi món|I would like to order a chicken sandwich.|Tôi muốn gọi một cái bánh sandwich gà.
 KET|Food & Drink|delicious|adj|ngon|The soup was absolutely delicious.|Món súp ngon tuyệt.
 KET|Food & Drink|bill|n|hóa đơn|Can we have the bill, please?|Cho chúng tôi xin hóa đơn nhé?
 KET|Food & Drink|hungry|adj|đói|I am very hungry after the football match.|Tôi rất đói sau trận bóng đá.
-KET|Food & Drink|vegetable|n|rau củ|You should eat a vegetable with every meal.|Bạn nên ăn rau củ trong mỗi bữa ăn.
+KET|Food & Drink|vegetable|n|rau củ|Try to eat at least one vegetable with every meal.|Hãy cố gắng ăn ít nhất một loại rau củ trong mỗi bữa ăn.
 KET|Travel|ticket|n|vé|I bought a ticket for the train to Hue.|Tôi đã mua một vé tàu đi Huế.
 KET|Travel|luggage|n|hành lý|Please keep your luggage with you at all times.|Vui lòng luôn mang theo hành lý bên mình.
 KET|Travel|passport|n|hộ chiếu|Don't forget your passport at the airport.|Đừng quên hộ chiếu của bạn ở sân bay.
@@ -117,7 +117,7 @@ FCE|Society|unemployment|n|tình trạng thất nghiệp|Unemployment is rising 
 FCE|Society|tradition|n|truyền thống|Making banh chung is an old Vietnamese tradition.|Gói bánh chưng là một truyền thống lâu đời của người Việt.
 FCE|Society|generation|n|thế hệ|The older generation often worries about young people.|Thế hệ lớn tuổi thường lo lắng cho giới trẻ.
 FCE|Society|poverty|n|sự nghèo đói|The charity works to reduce poverty.|Tổ chức từ thiện này nỗ lực giảm nghèo.
-FCE|Society|immigrant|n|người nhập cư|Every immigrant works hard to build a new life.|Mỗi người nhập cư đều làm việc chăm chỉ để xây dựng cuộc sống mới.
+FCE|Society|immigrant|n|người nhập cư|The immigrant family worked hard to build a new life.|Gia đình nhập cư ấy đã làm việc chăm chỉ để xây dựng cuộc sống mới.
 FCE|Business|customer|n|khách hàng|The customer complained about the late delivery.|Khách hàng phàn nàn về việc giao hàng trễ.
 FCE|Business|profit|n|lợi nhuận|The company made a huge profit this year.|Công ty đã thu được lợi nhuận khổng lồ trong năm nay.
 FCE|Business|negotiate|v|đàm phán|They tried to negotiate a better price.|Họ cố gắng đàm phán một mức giá tốt hơn.
