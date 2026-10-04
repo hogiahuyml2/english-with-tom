@@ -1,362 +1,314 @@
 {
- "ket1-l4-16": {
-  "hash": "dd7526581917",
-  "sec": 25.1,
-  "bytes": 84598
+ "l-a1c1p1-1": {
+  "sec": 25.4,
+  "bytes": 106229
  },
- "ket1-l4-17": {
-  "hash": "3c84a86dc15f",
-  "sec": 27.8,
-  "bytes": 102787
+ "l-a1c1p1-2": {
+  "sec": 29.4,
+  "bytes": 123709
  },
- "ket1-l4-18": {
-  "hash": "dc6b48d8e683",
-  "sec": 20.4,
-  "bytes": 77239
+ "l-a1c1p1-3": {
+  "sec": 32.4,
+  "bytes": 137098
  },
- "ket1-l4-19": {
-  "hash": "c0894071d360",
-  "sec": 23.6,
-  "bytes": 81141
+ "l-a1c1p1-4": {
+  "sec": 21.3,
+  "bytes": 90344
  },
- "ket1-l4-20": {
-  "hash": "74004330ec70",
-  "sec": 23.5,
-  "bytes": 78662
+ "l-a1c1p1-5": {
+  "sec": 30.4,
+  "bytes": 128415
  },
- "ket2-l4-16": {
-  "hash": "a8f4bb25689e",
-  "sec": 23.8,
-  "bytes": 81276
+ "l-a1c1p2-1": {
+  "sec": 24.4,
+  "bytes": 102972
  },
- "ket2-l4-17": {
-  "hash": "e2d2e210de24",
-  "sec": 17.5,
-  "bytes": 66381
+ "l-a1c1p2-2": {
+  "sec": 28.8,
+  "bytes": 120857
  },
- "ket2-l4-18": {
-  "hash": "00a82bc08491",
-  "sec": 22.6,
-  "bytes": 77171
+ "l-a1c1p2-3": {
+  "sec": 20.5,
+  "bytes": 85940
  },
- "ket2-l4-19": {
-  "hash": "7d625b5e2fea",
+ "l-a1c1p2-4": {
+  "sec": 21.9,
+  "bytes": 92538
+ },
+ "l-a1c1p2-5": {
+  "sec": 27.7,
+  "bytes": 116402
+ },
+ "l-a1c1p3-1": {
+  "sec": 18.6,
+  "bytes": 78650
+ },
+ "l-a1c1p3-2": {
+  "sec": 23.0,
+  "bytes": 96059
+ },
+ "l-a1c1p3-3": {
+  "sec": 26.8,
+  "bytes": 112218
+ },
+ "l-a1c1p3-4": {
+  "sec": 28.6,
+  "bytes": 120579
+ },
+ "l-a1c1p3-5": {
+  "sec": 28.5,
+  "bytes": 119377
+ },
+ "l-a1c2p1-1": {
+  "sec": 23.7,
+  "bytes": 99885
+ },
+ "l-a1c2p1-2": {
+  "sec": 18.7,
+  "bytes": 77871
+ },
+ "l-a1c2p1-3": {
+  "sec": 29.6,
+  "bytes": 124068
+ },
+ "l-a1c2p1-4": {
   "sec": 22.7,
-  "bytes": 81636
+  "bytes": 95097
  },
- "ket2-l4-20": {
-  "hash": "49aab5d91c18",
-  "sec": 23.5,
-  "bytes": 84414
+ "l-a1c2p1-5": {
+  "sec": 25.6,
+  "bytes": 107587
  },
- "ket3-l4-16": {
-  "hash": "12994926d4e8",
-  "sec": 23.4,
-  "bytes": 81264
+ "l-ket10p1-1": {
+  "sec": 54.1,
+  "bytes": 214650
  },
- "ket3-l4-17": {
-  "hash": "f341eb1b096e",
-  "sec": 25.3,
-  "bytes": 88727
+ "l-ket10p1-2": {
+  "sec": 63.3,
+  "bytes": 251243
  },
- "ket3-l4-18": {
-  "hash": "dddec634d3bf",
-  "sec": 21.5,
-  "bytes": 74459
+ "l-ket10p1-3": {
+  "sec": 61.0,
+  "bytes": 238159
  },
- "ket3-l4-19": {
-  "hash": "a8a0abe14c95",
-  "sec": 19.2,
-  "bytes": 71846
+ "l-ket10p1-4": {
+  "sec": 60.3,
+  "bytes": 237594
  },
- "ket3-l4-20": {
-  "hash": "f1ed31af135d",
-  "sec": 20.3,
-  "bytes": 76772
+ "l-ket10p1-5": {
+  "sec": 52.5,
+  "bytes": 209134
  },
- "ket4-l4-16": {
-  "hash": "2f541a5cc57f",
-  "sec": 25.5,
-  "bytes": 85864
+ "l-ket11p1-1": {
+  "sec": 73.5,
+  "bytes": 296335
  },
- "ket4-l4-17": {
-  "hash": "991444e69ef4",
-  "sec": 23.9,
-  "bytes": 82290
+ "l-ket11p1-2": {
+  "sec": 60.3,
+  "bytes": 238052
  },
- "ket4-l4-18": {
-  "hash": "72f2b0c13186",
-  "sec": 18.6,
-  "bytes": 70299
+ "l-ket11p1-3": {
+  "sec": 75.9,
+  "bytes": 302962
  },
- "ket4-l4-19": {
-  "hash": "015cbaf05cc2",
-  "sec": 22.7,
-  "bytes": 79526
+ "l-ket11p1-4": {
+  "sec": 58.8,
+  "bytes": 232445
  },
- "ket4-l4-20": {
-  "hash": "72858d230816",
-  "sec": 22.4,
-  "bytes": 84323
+ "l-ket11p1-5": {
+  "sec": 60.8,
+  "bytes": 238879
  },
- "ket5-l4-16": {
-  "hash": "0e423eaae9a3",
-  "sec": 26.2,
-  "bytes": 89649
+ "l-ket12p1-1": {
+  "sec": 68.3,
+  "bytes": 270300
  },
- "ket5-l4-17": {
-  "hash": "d6abe8083741",
-  "sec": 21.1,
-  "bytes": 79562
+ "l-ket12p1-2": {
+  "sec": 66.8,
+  "bytes": 269968
  },
- "ket5-l4-18": {
-  "hash": "c68b22d58dd4",
-  "sec": 21.5,
-  "bytes": 75013
+ "l-ket12p1-3": {
+  "sec": 56.0,
+  "bytes": 219846
  },
- "ket5-l4-19": {
-  "hash": "7f4e61f0787d",
-  "sec": 20.1,
-  "bytes": 68944
+ "l-ket12p1-4": {
+  "sec": 56.9,
+  "bytes": 225980
  },
- "ket5-l4-20": {
-  "hash": "402c73c5b879",
-  "sec": 22.9,
-  "bytes": 78916
+ "l-ket12p1-5": {
+  "sec": 75.3,
+  "bytes": 295939
  },
- "ket6-l4-16": {
-  "hash": "d1068e03c7de",
-  "sec": 18.6,
-  "bytes": 69346
+ "l-ket10p4-1": {
+  "sec": 91.2,
+  "bytes": 363570
  },
- "ket6-l4-17": {
-  "hash": "58165117cd66",
-  "sec": 22.5,
-  "bytes": 81313
+ "l-ket10p4-2": {
+  "sec": 70.5,
+  "bytes": 280866
  },
- "ket6-l4-18": {
-  "hash": "e468dac1097c",
-  "sec": 18.6,
-  "bytes": 71064
+ "l-ket10p4-3": {
+  "sec": 75.2,
+  "bytes": 299391
  },
- "ket6-l4-19": {
-  "hash": "a8182dbd2c53",
-  "sec": 20.6,
-  "bytes": 70637
+ "l-ket10p4-4": {
+  "sec": 69.6,
+  "bytes": 278470
  },
- "ket6-l4-20": {
-  "hash": "15c6878bf119",
-  "sec": 23.6,
-  "bytes": 85306
+ "l-ket10p4-5": {
+  "sec": 67.3,
+  "bytes": 267744
  },
- "pet1-l2-8": {
-  "hash": "d537a77e0e07",
-  "sec": 31.9,
-  "bytes": 116915
+ "l-ket11p4-1": {
+  "sec": 62.4,
+  "bytes": 247782
  },
- "pet1-l2-9": {
-  "hash": "353e319082b8",
-  "sec": 35.8,
-  "bytes": 126756
+ "l-ket11p4-2": {
+  "sec": 61.4,
+  "bytes": 243326
  },
- "pet1-l2-10": {
-  "hash": "47b07b39ea9a",
-  "sec": 36.9,
-  "bytes": 131339
+ "l-ket11p4-3": {
+  "sec": 72.4,
+  "bytes": 286480
  },
- "pet1-l2-11": {
-  "hash": "0fa247d0bf4e",
-  "sec": 34.1,
-  "bytes": 120605
+ "l-ket11p4-4": {
+  "sec": 65.7,
+  "bytes": 259392
  },
- "pet1-l2-12": {
-  "hash": "9ec1209d6068",
-  "sec": 37.3,
-  "bytes": 133502
+ "l-ket11p4-5": {
+  "sec": 57.2,
+  "bytes": 225032
  },
- "pet1-l2-13": {
-  "hash": "1b00f15667d6",
-  "sec": 32,
-  "bytes": 120677
+ "l-pet10p2-1": {
+  "sec": 83.3,
+  "bytes": 327338
  },
- "pet1-l4": {
-  "hash": "ec80261e1305",
-  "sec": 146.7,
-  "bytes": 513954
+ "l-pet10p2-2": {
+  "sec": 80.4,
+  "bytes": 322284
  },
- "pet2-l2-8": {
-  "hash": "b4ee406d8db1",
-  "sec": 33.5,
-  "bytes": 121474
+ "l-pet10p2-3": {
+  "sec": 82.9,
+  "bytes": 328756
  },
- "pet2-l2-9": {
-  "hash": "67f659d6115a",
-  "sec": 38.7,
-  "bytes": 135451
+ "l-pet10p2-4": {
+  "sec": 82.3,
+  "bytes": 327133
  },
- "pet2-l2-10": {
-  "hash": "b7a51be425e9",
-  "sec": 34.3,
-  "bytes": 126842
+ "l-pet10p2-5": {
+  "sec": 79.2,
+  "bytes": 314248
  },
- "pet2-l2-11": {
-  "hash": "ae672bb2d665",
-  "sec": 35.3,
-  "bytes": 124783
+ "l-pet10p2-6": {
+  "sec": 83.9,
+  "bytes": 334475
  },
- "pet2-l2-12": {
-  "hash": "0f4d57c14f7b",
-  "sec": 33.2,
-  "bytes": 124650
+ "l-pet12p2-1": {
+  "sec": 77.9,
+  "bytes": 307575
  },
- "pet2-l2-13": {
-  "hash": "ac4e8fd1b98c",
-  "sec": 37,
-  "bytes": 131495
+ "l-pet12p2-2": {
+  "sec": 78.4,
+  "bytes": 310611
  },
- "pet2-l4": {
-  "hash": "47e41d1599e4",
-  "sec": 147.1,
-  "bytes": 526867
+ "l-pet12p2-3": {
+  "sec": 73.7,
+  "bytes": 290748
  },
- "pet3-l2-8": {
-  "hash": "c1ab82bdf4b1",
-  "sec": 35.8,
-  "bytes": 128569
+ "l-pet12p2-4": {
+  "sec": 84.3,
+  "bytes": 335542
  },
- "pet3-l2-9": {
-  "hash": "3aa1fffc6487",
-  "sec": 31.5,
-  "bytes": 115106
+ "l-pet12p2-5": {
+  "sec": 93.7,
+  "bytes": 374681
  },
- "pet3-l2-10": {
-  "hash": "3700f161f9cc",
-  "sec": 35.9,
-  "bytes": 130864
+ "l-pet13p2-1": {
+  "sec": 77.7,
+  "bytes": 303996
  },
- "pet3-l2-11": {
-  "hash": "a31ceffcc86c",
-  "sec": 33.4,
-  "bytes": 117940
+ "l-pet13p2-2": {
+  "sec": 73.1,
+  "bytes": 287653
  },
- "pet3-l2-12": {
-  "hash": "8b5c1cabaa45",
-  "sec": 32.6,
-  "bytes": 115171
+ "l-pet13p2-3": {
+  "sec": 70.6,
+  "bytes": 277144
  },
- "pet3-l2-13": {
-  "hash": "eb4b8996aa6c",
-  "sec": 38.2,
-  "bytes": 136332
+ "l-pet13p2-4": {
+  "sec": 70.6,
+  "bytes": 281438
  },
- "pet3-l4": {
-  "hash": "eb545b6613f6",
-  "sec": 151.7,
-  "bytes": 530405
+ "l-pet13p2-5": {
+  "sec": 70.6,
+  "bytes": 277008
  },
- "pet4-l2-8": {
-  "hash": "e68a16a71f78",
-  "sec": 36,
-  "bytes": 127184
+ "l-pet13p2-6": {
+  "sec": 73.7,
+  "bytes": 289473
  },
- "pet4-l2-9": {
-  "hash": "b84d16634afa",
-  "sec": 37.6,
-  "bytes": 132586
+ "l-fce12p1-1": {
+  "sec": 72.5,
+  "bytes": 299069
  },
- "pet4-l2-10": {
-  "hash": "c0e320f2415a",
-  "sec": 35.3,
-  "bytes": 127195
+ "l-fce12p1-2": {
+  "sec": 63.9,
+  "bytes": 263091
  },
- "pet4-l2-11": {
-  "hash": "1d06c4882dbc",
-  "sec": 39.9,
-  "bytes": 139005
+ "l-fce12p1-3": {
+  "sec": 56.3,
+  "bytes": 225527
  },
- "pet4-l2-12": {
-  "hash": "f974756976ac",
-  "sec": 33,
-  "bytes": 123368
+ "l-fce12p1-4": {
+  "sec": 52.8,
+  "bytes": 211086
  },
- "pet4-l2-13": {
-  "hash": "7495d8e1f9fc",
-  "sec": 34.2,
-  "bytes": 120993
+ "l-fce12p1-5": {
+  "sec": 73.7,
+  "bytes": 299041
  },
- "pet4-l4": {
-  "hash": "0035ff51a74f",
-  "sec": 143.9,
-  "bytes": 515990
+ "l-fce12p1-6": {
+  "sec": 56.7,
+  "bytes": 229444
  },
- "pet5-l2-8": {
-  "hash": "c4bb94f81305",
-  "sec": 34.7,
-  "bytes": 125435
+ "l-fce12p1-7": {
+  "sec": 72.2,
+  "bytes": 293332
  },
- "pet5-l2-9": {
-  "hash": "260b09c8da43",
-  "sec": 38,
-  "bytes": 133000
+ "l-fce12p1-8": {
+  "sec": 63.1,
+  "bytes": 247560
  },
- "pet5-l2-10": {
-  "hash": "b40a97d62d9e",
-  "sec": 36.8,
-  "bytes": 131184
+ "l-fce14p1-1": {
+  "sec": 64.5,
+  "bytes": 266545
  },
- "pet5-l2-11": {
-  "hash": "e61ad8bf0e0e",
-  "sec": 33.9,
-  "bytes": 126454
+ "l-fce14p1-2": {
+  "sec": 66.5,
+  "bytes": 269377
  },
- "pet5-l2-12": {
-  "hash": "87d2301ed2b9",
-  "sec": 38,
-  "bytes": 134593
+ "l-fce14p1-3": {
+  "sec": 73.4,
+  "bytes": 297410
  },
- "pet5-l2-13": {
-  "hash": "b4d2e88e3549",
-  "sec": 32.9,
-  "bytes": 123028
+ "l-fce14p1-4": {
+  "sec": 85.2,
+  "bytes": 345033
  },
- "pet5-l4": {
-  "hash": "1941fac6080f",
-  "sec": 155.1,
-  "bytes": 543858
+ "l-fce14p1-5": {
+  "sec": 67.1,
+  "bytes": 275382
  },
- "pet6-l2-8": {
-  "hash": "ae292cbac6b6",
-  "sec": 32.3,
-  "bytes": 113927
+ "l-fce14p1-6": {
+  "sec": 66.3,
+  "bytes": 271608
  },
- "pet6-l2-9": {
-  "hash": "d4e6ff8d4e19",
-  "sec": 33.1,
-  "bytes": 119123
+ "l-fce14p1-7": {
+  "sec": 67.6,
+  "bytes": 275002
  },
- "pet6-l2-10": {
-  "hash": "613363a05fda",
-  "sec": 33.1,
-  "bytes": 119040
- },
- "pet6-l2-11": {
-  "hash": "74786ce68b21",
-  "sec": 32.8,
-  "bytes": 116273
- },
- "pet6-l2-12": {
-  "hash": "552b911bb5f9",
-  "sec": 34.8,
-  "bytes": 122826
- },
- "pet6-l2-13": {
-  "hash": "411633518694",
-  "sec": 30.9,
-  "bytes": 110929
- },
- "pet6-l4": {
-  "hash": "0c401aeb6a39",
-  "sec": 157.9,
-  "bytes": 556788
+ "l-fce14p1-8": {
+  "sec": 78.1,
+  "bytes": 312468
  }
 }

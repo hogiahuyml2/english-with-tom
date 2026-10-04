@@ -6,16 +6,16 @@ const crypto = require('crypto');
 const BLUEPRINT = {
   version: 1,
   sections: [
-    { key: 'grammar', title: 'Ngữ pháp', icon: '🧩', minutes: 8, kind: 'single', sk: 'grammar', picks: { A1: 3, A2: 3, B1: 4, B2: 5 },
-      intro: 'Chọn đáp án đúng hoặc gõ MỘT từ vào chỗ trống. Các câu đi từ dễ đến khó.' },
-    { key: 'vocab', title: 'Từ vựng', icon: '📖', minutes: 6, kind: 'single', sk: 'vocab', picks: { A2: 2, B1: 3, B2: 4, C1: 3 },
+    { key: 'grammar', title: 'Ngữ pháp', icon: '🧩', minutes: 8, kind: 'single', sk: 'grammar', mcqOnly: true, picks: { A1: 4, A2: 4, B1: 4, B2: 4 },
+      intro: 'Chọn đáp án đúng nhất cho chỗ trống. Các câu đi từ dễ đến khó.' },
+    { key: 'vocab', title: 'Từ vựng', icon: '📖', minutes: 6, kind: 'single', sk: 'vocab', picks: { A1: 3, A2: 3, B1: 3, B2: 3 },
       intro: 'Chọn từ phù hợp nhất cho chỗ trống, hoặc tạo từ đúng từ chữ HOA cho sẵn.' },
-    { key: 'reading', title: 'Đọc hiểu', icon: '👀', minutes: 18, kind: 'reading',
-      parts: [{ kind: 'single', sk: 'reading', picks: { A1: 1, A2: 1, B1: 1 } }, { kind: 'passage', lv: 'A2' }, { kind: 'passage', lv: 'B1' }, { kind: 'passage', lv: 'B2' }],
+    { key: 'reading', title: 'Đọc hiểu', icon: '👀', minutes: 19, kind: 'reading',
+      parts: [{ kind: 'single', sk: 'reading', picks: { A1: 3, A2: 2 } }, { kind: 'passage', lv: 'A2' }, { kind: 'passage', lv: 'B1' }, { kind: 'passage', lv: 'B2' }],
       intro: 'Đọc thông báo ngắn và 3 bài đọc, rồi trả lời câu hỏi.' },
-    { key: 'listening', title: 'Nghe hiểu', icon: '🎧', minutes: 14, kind: 'listening',
-      parts: [{ kind: 'listen-single', lv: 'A2', n: 3 }, { kind: 'listen-single', lv: 'B1', n: 3 }, { kind: 'listen-group', lv: 'B1', n: 1 }],
-      intro: 'Mỗi đoạn nghe tối đa 2 lần. Hãy bật loa hoặc đeo tai nghe trước khi bắt đầu.' },
+    { key: 'listening', title: 'Nghe hiểu', icon: '🎧', minutes: 16, kind: 'listening',
+      parts: [{ kind: 'listen-single', lv: 'A1', n: 3 }, { kind: 'listen-single', lv: 'A2', n: 3 }, { kind: 'listen-single', lv: 'B1', n: 3 }, { kind: 'listen-single', lv: 'B2', n: 3 }],
+      intro: 'Mỗi đoạn nghe là bản ghi gốc của kỳ thi Cambridge. Hãy bật loa hoặc đeo tai nghe trước khi bắt đầu.' },
     { key: 'writing', title: 'Viết ngắn', icon: '✍️', minutes: 12, kind: 'writing', tasks: [{ task: 1, lv: 'A2' }, { task: 2, lv: 'B1' }],
       intro: 'Viết 2 đoạn ngắn: Bài 1 (email ≥ 25 từ) và Bài 2 (bài viết khoảng 80–100 từ, không bắt buộc nhưng nên thử).' },
   ],
@@ -51,7 +51,7 @@ function estimate(obs, prior) {
 // ───────────── Rút đề từ ngân hàng ─────────────
 const rint = (n) => crypto.randomInt(0, n);
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rint(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-const groupOf = (id) => String(id).replace(/-\d+$/, '').replace(/-(8|9|10|11|12|13)$/, '');
+const groupOf = (id) => /^(tb|th)-/.test(id) ? String(id) : String(id).replace(/-\d+$/, '').replace(/-(8|9|10|11|12|13)$/, '');
 const words = (s) => String(s).toLowerCase().match(/[a-z']{4,}/g) || [];
 function answerWord(it) { return (it.type === 'fill' ? it.accept[0] : it.opts[it.a]).toLowerCase(); }
 
@@ -94,10 +94,11 @@ function buildForm(bank, seenIds) {
     if (sec.kind === 'single') {
       for (const lv of LEVELS) {
         const n = (sec.picks || {})[lv]; if (!n) continue;
-        const pool = by((i) => (i.type === 'mcq' || i.type === 'fill') && i.sk === sec.sk && i.lv === lv);
+        const okType = (i) => i.type === 'mcq' || (!sec.mcqOnly && i.type === 'fill');
+        const pool = by((i) => okType(i) && i.sk === sec.sk && i.lv === lv);
         let got = pickN(pool, n, ctx);
         if (got.length < n) { // thiếu câu ở bậc này → lấy bù từ bậc kề (ưu tiên bậc thấp hơn) để giữ nguyên số câu
-          const alt = by((i) => (i.type === 'mcq' || i.type === 'fill') && i.sk === sec.sk && Math.abs(LV_B[i.lv] - LV_B[lv]) === 1 && !ctx.usedIds.has(i.id));
+          const alt = by((i) => okType(i) && i.sk === sec.sk && Math.abs(LV_B[i.lv] - LV_B[lv]) === 1 && !ctx.usedIds.has(i.id));
           got = got.concat(pickN(alt, n - got.length, ctx));
         }
         for (const it of got) out.units.push({ id: it.id, lv, kind: 'single' });
@@ -131,7 +132,8 @@ function questionsOf(bankItem) {
 function addPerms(form, byId) {
   for (const s of form.sections) for (const u of s.units) {
     const it = byId.get(u.id); if (!it) continue;
-    u.perm = questionsOf(it).map((q) => (q.kind === 'mcq' ? shuffle(Array.from({ length: q.opts }, (_, i) => i)) : null));
+    // câu hỏi có hình (A/B/C nằm trong ảnh) thì giữ nguyên thứ tự
+    u.perm = questionsOf(it).map((q) => (q.kind === 'mcq' ? (it.img ? Array.from({ length: q.opts }, (_, i) => i) : shuffle(Array.from({ length: q.opts }, (_, i) => i))) : null));
   }
   return form;
 }

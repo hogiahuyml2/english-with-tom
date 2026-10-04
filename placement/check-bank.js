@@ -34,8 +34,10 @@ for (const it of bank.all) {
     if ((it.text || '').split(/\s+/).length < 80) meh(id, 'bài đọc ngắn (<80 từ)'); if (!it.qs.length) bad(id, 'bài đọc không có câu hỏi');
     it.qs.forEach((q, i) => checkOpts(q, 'câu ' + (i + 1)));
   } else if (it.type === 'listen') {
-    if (!it.script || !it.script.length) bad(id, 'thiếu lời thoại'); else for (const [spk, t] of it.script) { if (!['M', 'M2', 'F', 'F2'].includes(spk)) bad(id, 'người nói lạ ' + spk); if (!String(t).trim()) bad(id, 'lời rỗng'); }
+    if (!it.script || !it.script.length) bad(id, 'thiếu lời thoại'); else for (const [, t] of it.script) { if (!String(t).trim()) bad(id, 'lời rỗng'); }
     it.qs.forEach((q, i) => checkOpts(q, 'câu ' + (i + 1)));
+    if (it.img && !fs.existsSync(path.join(__dirname, 'img', id + '.jpg'))) bad(id, 'thiếu file hình');
+    if (!it.plays || ![1, 2].includes(it.plays)) bad(id, 'thiếu số lượt nghe');
     if (!it.spare && !manifest[id]) bad(id, 'chưa có file âm thanh');
     if (!it.spare && manifest[id] && (manifest[id].sec < 8 || manifest[id].sec > 400)) meh(id, 'độ dài âm thanh bất thường ' + manifest[id].sec + 's');
   } else if (it.type === 'writing') {

@@ -1,0 +1,3672 @@
+[
+{
+"id": "l-a1c1p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What does Daisy want for supper?"
+],
+[
+"GIRL",
+"I’m hungry Mum."
+],
+[
+"WOMAN",
+"What would you like for supper Daisy, a burger?"
+],
+[
+"GIRL",
+"No, I had a burger at school today. Can I have some pasta?"
+],
+[
+"WOMAN",
+"Yes, with some juice and bread?"
+],
+[
+"GIRL",
+"I’m thirsty but I don’t want any bread."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What does Daisy want for supper?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 1",
+"key": "official"
+},
+{
+"id": "l-a1c1p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What did Sally get for her birthday?"
+],
+[
+"GIRL",
+"It was Sally’s birthday last week."
+],
+[
+"WOMAN",
+"Oh, what did her parents give her?"
+],
+[
+"GIRL",
+"I don’t know."
+],
+[
+"WOMAN",
+"She wanted a guitar or a computer."
+],
+[
+"GIRL",
+"Well they didn’t give her those. Oh yes, I know. They gave her a new camera."
+],
+[
+"WOMAN",
+"She’ll like that. She loves taking photos."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What did Sally get for her birthday?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 2",
+"key": "official"
+},
+{
+"id": "l-a1c1p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where did Peter go at the weekend?"
+],
+[
+"WOMAN",
+"Where did your friend Peter go at the weekend?"
+],
+[
+"GIRL",
+"Well, he wanted to go and watch a basketball game."
+],
+[
+"WOMAN",
+"So did he go?"
+],
+[
+"GIRL",
+"No, he couldn’t. His mum wanted to go to the mountains for the weekend and his dad wanted to go to the sea."
+],
+[
+"WOMAN",
+"Did he go to the sea then?"
+],
+[
+"GIRL",
+"No, his dad had to work but he went with his mum to the mountains."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Where did Peter go at the weekend?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 3",
+"key": "official"
+},
+{
+"id": "l-a1c1p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What was the matter with Marry?"
+],
+[
+"GIRL",
+"Mary couldn’t come to school today."
+],
+[
+"WOMAN",
+"What was the matter with her? Did she have a stomach ache?"
+],
+[
+"GIRL",
+"No, she had a temperature."
+],
+[
+"WOMAN",
+"Was she in bed?"
+],
+[
+"GIRL",
+"No, she sat on the sofa in the living room."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What was the matter with Marry?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 4",
+"key": "official"
+},
+{
+"id": "l-a1c1p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What fruit has Fred got in his garden?"
+],
+[
+"GIRL",
+"Mum, Fred’s parents have got a new house in the country. It’s very big."
+],
+[
+"WOMAN",
+"That’s good. Has it got a garden?"
+],
+[
+"GIRL",
+"Yes, it has, and there’s a lot of fruit."
+],
+[
+"WOMAN",
+"Oh. Does it have coconuts or bananas?"
+],
+[
+"GIRL",
+"No, but it’s got a lot of pineapples."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What fruit has Fred got in his garden?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 5",
+"key": "official"
+},
+{
+"id": "l-a1c1p2-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Which one is Pat’s mother?"
+],
+[
+"BOY",
+"Is your mother here Pat?"
+],
+[
+"GIRL",
+"Yes, she’s in the garden with my aunts."
+],
+[
+"BOY",
+"Has your mother got straight hair?"
+],
+[
+"GIRL",
+"No, her hair is curly."
+],
+[
+"BOY",
+"Oh, is she the one in the red dress?"
+],
+[
+"GIRL",
+"No, she’s wearing trousers today."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Which one is Pat’s mother?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 1",
+"key": "official"
+},
+{
+"id": "l-a1c1p2-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What does Pat want to buy?"
+],
+[
+"BOY",
+"Where are you going to go now, Pat?"
+],
+[
+"GIRL",
+"I’m going shopping."
+],
+[
+"BOY",
+"What do you want to buy?"
+],
+[
+"GIRL",
+"It’s my birthday on Sunday and I want something new to wear at my party."
+],
+[
+"BOY",
+"Do you want some new trousers?"
+],
+[
+"GIRL",
+"No, I’d like a skirt because my Mum gave me a beautiful blue sweater."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What does Pat want to buy?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 2",
+"key": "official"
+},
+{
+"id": "l-a1c1p2-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What was the weather like here yesterday?"
+],
+[
+"BOY",
+"We went to the mountains yesterday and it rained. What was the weather like here Pat?"
+],
+[
+"GIRL",
+"It was a beautiful day."
+],
+[
+"BOY",
+"Was it sunny?"
+],
+[
+"GIRL",
+"It was sunny. It wasn’t cloudy at all."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What was the weather like here yesterday?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 3",
+"key": "official"
+},
+{
+"id": "l-a1c1p2-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where’s Peter?"
+],
+[
+"BOY",
+"Where’s your brother, Pat?"
+],
+[
+"GIRL",
+"Peter? I think he’s playing outside."
+],
+[
+"BOY",
+"Is he in the garden?"
+],
+[
+"GIRL",
+"No, he isn’t."
+],
+[
+"BOY",
+"He isn’t on the balcony."
+],
+[
+"GIRL",
+"I know. He went to the playground with his friends."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Where’s Peter?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 4",
+"key": "official"
+},
+{
+"id": "l-a1c1p2-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What will they take on the picnic?"
+],
+[
+"BOY",
+"What do you want to eat on our picnic tomorrow, Pat?"
+],
+[
+"GIRL",
+"Something we can eat with our hands."
+],
+[
+"BOY",
+"What about sandwiches?"
+],
+[
+"GIRL",
+"No, we always take sandwiches. Can we take burgers?"
+],
+[
+"BOY",
+"I don’t like cold burgers. Shall we take sausages?"
+],
+[
+"GIRL",
+"OK."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What will they take on the picnic?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 5",
+"key": "official"
+},
+{
+"id": "l-a1c1p3-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What sport does Ben’s brother do?"
+],
+[
+"GIRL",
+"What sport does your brother do, Ben?"
+],
+[
+"BOY",
+"He plays basketball every weekend."
+],
+[
+"GIRL",
+"Does he like swimming or tennis?"
+],
+[
+"BOY",
+"No, he doesn’t."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What sport does Ben’s brother do?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 1",
+"key": "official"
+},
+{
+"id": "l-a1c1p3-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where does Ben’s brother work?"
+],
+[
+"GIRL",
+"Where does your brother work Ben?"
+],
+[
+"BOY",
+"Here in the town."
+],
+[
+"GIRL",
+"Yes, but where? In a school?"
+],
+[
+"BOY",
+"No, he works in the zoo."
+],
+[
+"GIRL",
+"Where’s that?"
+],
+[
+"BOY",
+"It’s near the library."
+],
+[
+"GIRL",
+"Oh, yes."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Where does Ben’s brother work?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 2",
+"key": "official"
+},
+{
+"id": "l-a1c1p3-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"How did Ben go to his grandparents’ house?"
+],
+[
+"GIRL",
+"Did you see your grandparents at the weekend Ben?"
+],
+[
+"BOY",
+"Yes, we did. I was very happy."
+],
+[
+"GIRL",
+"Did you go by bus?"
+],
+[
+"BOY",
+"No, the bus is very slow. We flew there."
+],
+[
+"GIRL",
+"Oh, did you?"
+],
+[
+"BOY",
+"Yes, it’s quicker than the train."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "How did Ben go to his grandparents’ house?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 3",
+"key": "official"
+},
+{
+"id": "l-a1c1p3-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What can Ben give his sister for her birthday?"
+],
+[
+"BOY",
+"It’s my sister’s birthday on Saturday. What can I give her, Daisy?"
+],
+[
+"GIRL",
+"Does she like dolls?"
+],
+[
+"BOY",
+"No, she doesn’t."
+],
+[
+"GIRL",
+"What about a dress?"
+],
+[
+"BOY",
+"She never wears dresses. She likes playing football with me."
+],
+[
+"GIRL",
+"You can give her a ball then."
+],
+[
+"BOY",
+"Oh yes!"
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What can Ben give his sister for her birthday?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 4",
+"key": "official"
+},
+{
+"id": "l-a1c1p3-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What’s Ben’s sister’s favourite food?"
+],
+[
+"BOY",
+"Do you want to come to my sister’s birthday party, Daisy?"
+],
+[
+"GIRL",
+"Thanks. Have you got a birthday cake?"
+],
+[
+"BOY",
+"Yes, but my sister doesn’t like cake."
+],
+[
+"GIRL",
+"What’s her favourite food, burgers?"
+],
+[
+"BOY",
+"She likes bananas best. She sometimes eats ten every day!"
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What’s Ben’s sister’s favourite food?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-1 · câu 5",
+"key": "official"
+},
+{
+"id": "l-a1c2p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What did Jill have for lunch?"
+],
+[
+"MAN",
+"Did you have a good lunch, Jill?"
+],
+[
+"GIRL",
+"Yes, it was OK."
+],
+[
+"MAN",
+"What did you have?"
+],
+[
+"GIRL",
+"I had some soup."
+],
+[
+"MAN",
+"Only soup?"
+],
+[
+"GIRL",
+"No. I had an apple after the soup."
+],
+[
+"MAN",
+"Oh. I had some sandwiches and a cake."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What did Jill have for lunch?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-2 · câu 1",
+"key": "official"
+},
+{
+"id": "l-a1c2p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where does Bill live?"
+],
+[
+"WOMAN",
+"Where do you live, Bill?"
+],
+[
+"BOY",
+"I like next to the playground and a shop."
+],
+[
+"WOMAN",
+"A toy shop."
+],
+[
+"BOY",
+"No, a bookshop."
+],
+[
+"WOMAN",
+"Do you like reading?"
+],
+[
+"BOY",
+"Yes, I do."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Where does Bill live?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-2 · câu 2",
+"key": "official"
+},
+{
+"id": "l-a1c2p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What did Jim’s grandmother give him for his birthday?"
+],
+[
+"WOMAN",
+"Was it your birthday last week, Jim?"
+],
+[
+"BOY",
+"Yes, it was."
+],
+[
+"WOMAN",
+"Did you get any presents?"
+],
+[
+"BOY",
+"Yes, I did. I got a new bike from my grandmother, some CDs and a sweater."
+],
+[
+"WOMAN",
+"Did your parents give you the CDs?"
+],
+[
+"BOY",
+"No, they gave me the sweater."
+],
+[
+"WOMAN",
+"And who gave you the CDs?"
+],
+[
+"BOY",
+"My grandfather."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "What did Jim’s grandmother give him for his birthday?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-2 · câu 3",
+"key": "official"
+},
+{
+"id": "l-a1c2p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where is Mary going?"
+],
+[
+"MAN",
+"Are you going to town, Mary?"
+],
+[
+"GIRL",
+"Yes, I am."
+],
+[
+"MAN",
+"Are you going to the library?"
+],
+[
+"GIRL",
+"No, I’m going to the cinema."
+],
+[
+"MAN",
+"The ABC Cinema?"
+],
+[
+"GIRL",
+"No, the Park Cinema."
+],
+[
+"MAN",
+"Oh, enjoy the film!"
+],
+[
+"GIRL",
+"Thanks."
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Where is Mary going?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-2 · câu 4",
+"key": "official"
+},
+{
+"id": "l-a1c2p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A1",
+"fam": "A1",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Which is Daisy’s new pet?"
+],
+[
+"GIRL",
+"I got a new pet yesterday."
+],
+[
+"MAN",
+"Another dog?"
+],
+[
+"GIRL",
+"No, my Dad didn’t want another dog."
+],
+[
+"MAN",
+"So, what did you get?"
+],
+[
+"GIRL",
+"I wanted a rabbit but the shop didn’t have any."
+],
+[
+"MAN",
+"So, what did you get?"
+],
+[
+"GIRL",
+"A parrot!"
+]
+],
+"img": true,
+"plays": 2,
+"qs": [
+{
+"q": "Which is Daisy’s new pet?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "A1 (Starters/Movers style) Listening · practice-listening-test-for-a1-listening-for-conversations-test-2 · câu 5",
+"key": "official"
+},
+{
+"id": "l-ket10p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Who is Jenny’s brother?"
+],
+[
+"Man",
+"I hear your brother got the job, Jenny."
+],
+[
+"Jenny",
+"Yes. It’s only part-time because he's still at school."
+],
+[
+"Man",
+"Let’s go and order some coffee from him after basketball practice!"
+],
+[
+"Jenny",
+"Good idea! And after that, we can go to the shoe shop on the corner. I need some smart shoes for my new job."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "Who is Jenny's brother?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 1",
+"key": "official"
+},
+{
+"id": "l-ket10p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What will they have for dinner?"
+],
+[
+"Woman",
+"You aren't making sandwiches again for dinner, are you? We need to eat better than that!"
+],
+[
+"Man",
+"I know, but I'm a terrible cook!"
+],
+[
+"Woman",
+"Well, there’s some fish in the fridge, we've got beans and potatoes ..."
+],
+[
+"Man",
+"Oh, and here's a tin of tomato soup."
+],
+[
+"Woman",
+"No, I’m going to cook us a meal, and we can have the soup tomorrow."
+],
+[
+"Man",
+"Great."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "What will they have for dinner?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 2",
+"key": "official"
+},
+{
+"id": "l-ket10p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where is Carla's tent?"
+],
+[
+"Man",
+"Have you put your tent up yet, Carla?"
+],
+[
+"Carla",
+"Yes! It's a really beautiful campsite."
+],
+[
+"Man",
+"It is. My tent is next to Max’s. We're over there, by the river so we can go fishing early in the morning."
+],
+[
+"Carla",
+"Lucky you! I couldn't find any spaces there or under the trees, so I'm next to Emma by the lake."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "Where is Carla's tent?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 3",
+"key": "official"
+},
+{
+"id": "l-ket10p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What is Louis writing to his friend?"
+],
+[
+"Mel",
+"You look busy, Louis. Are you writing a letter to your grandparents?"
+],
+[
+"Louis",
+"Oh, hi, Mel! No, nothing like that. I'm just writing to a friend in Singapore."
+],
+[
+"Mel",
+"Isn't it easier to email him?"
+],
+[
+"Louis",
+"Yes, but I found this cool magazine and I know he'll like it. This is just a note to put in the envelope when I send it."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "What is Louis writing to his friend?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 4",
+"key": "official"
+},
+{
+"id": "l-ket10p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What did Tom forget to bring to his last exam?"
+],
+[
+"Girl",
+"Are you ready for the exam, Tom? I hope you've remembered to bring your pen. Not like the last exam!"
+],
+[
+"Tom",
+"Don't worry. Here it is, and I've also got a ruler and a pencil. I've left my calculator in my bag."
+],
+[
+"Girl",
+"So did I. What a pity we can't use one for this exam!"
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "What did Tom forget to bring to his last exam?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 5",
+"key": "official"
+},
+{
+"id": "l-ket11p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What will they buy Timmy for his birthday?"
+],
+[
+"Man",
+"Timmy's birthday is next week! Shall we get him those football boots he wants?"
+],
+[
+"Woman",
+"He's also asking for jeans ... and a shirt."
+],
+[
+"Man",
+"He can't have everything! What about asking your parents to give him the boots?"
+],
+[
+"Woman",
+"OK, so we could get the jeans and a shirt."
+],
+[
+"Man",
+"Just the jeans. There’re quite expensive. He can wait for the shirt."
+],
+[
+"Woman",
+"OK."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "What will they buy Timmy for his birthday?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 1",
+"key": "official"
+},
+{
+"id": "l-ket11p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What time will they meet?"
+],
+[
+"Ted",
+"Would you like to meet for a coffee later?"
+],
+[
+"Ella",
+"OK. What about eleven?"
+],
+[
+"Ted",
+"Eleven? My doctor's appointment is at ten. That should take about thirty minutes."
+],
+[
+"Ella",
+"Well, if you come out at half past ten, you've got half an hour to get to the cafe."
+],
+[
+"Ted",
+"OK, that should be fine."
+],
+[
+"Ella",
+"Great. See you then. Usual place."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "What time will they meet?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 2",
+"key": "official"
+},
+{
+"id": "l-ket11p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where will they go skiing?"
+],
+[
+"Man",
+"... France has lots of places for skiing"
+],
+[
+"Woman",
+"France? Again! We were there last year. What about a change. Italy? Or Poland? I hear that's cheap."
+],
+[
+"Man",
+"But France has the best skiing. And I want to use my French."
+],
+[
+"Woman",
+"If you let me choose the hotel, then OK. If not, then I say Italy."
+],
+[
+"Man",
+"Agreed. You can choose where we stay."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "Where will they go skiing?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 3",
+"key": "official"
+},
+{
+"id": "l-ket11p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"How will the friends travel?"
+],
+[
+"Man",
+"Shall we get a taxi?"
+],
+[
+"Woman",
+"The last time I tried that I waited for half an hour."
+],
+[
+"Man",
+"Let's take the car then."
+],
+[
+"Woman",
+"It's difficult to park in town. Let's jump on a bus."
+],
+[
+"Man",
+"But there aren't many around at this time of day."
+],
+[
+"Woman",
+"So what about driving after all? We just have to hope we find a space."
+],
+[
+"Man",
+"Fine."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "How will the friends travel?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 4",
+"key": "official"
+},
+{
+"id": "l-ket11p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"How much will the woman pay for the bicycle?"
+],
+[
+"Woman",
+"How much do you want for the bicycle?"
+],
+[
+"Man",
+"Fifty pounds."
+],
+[
+"Woman",
+"I'm sorry, that’s too expensive. Will you take forty?"
+],
+[
+"Man",
+"I won't sell it if I can't get fifty pounds for it."
+],
+[
+"Woman",
+"I can't afford fifty. Forty-five pounds is my last offer."
+],
+[
+"Man",
+"That's no good."
+],
+[
+"Woman",
+"OK, you win! But forty-five pounds would be fairer. Now give me the bike."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "How much will the woman pay for the bicycle?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 5",
+"key": "official"
+},
+{
+"id": "l-ket12p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where were the sunglasses the last time Mark saw them?"
+],
+[
+"Woman",
+"Mark, have you seen my sunglasses?"
+],
+[
+"Mark",
+"You had them on Saturday at the beach. They were in your backpack."
+],
+[
+"Woman",
+"I've looked. They aren't there."
+],
+[
+"Mark",
+"What about on your desk? You often put things there."
+],
+[
+"Woman",
+"Good idea. I'll look now."
+],
+[
+"Mark",
+"Oh, and look on the bookcase, too. Maybe you put them there with your keys."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "Where were the sunglasses the last time Mark saw them?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-12-with-answers-and-audioscripts · câu 1",
+"key": "official"
+},
+{
+"id": "l-ket12p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Where did the man see the ad for the concert?"
+],
+[
+"Man",
+"Hey, Sandy, are you going to the concert in the park this year?"
+],
+[
+"Sandy",
+"I haven't heard anything about a concert!"
+],
+[
+"Man",
+"That's strange. Tina usually puts ads about local events on the noticeboard."
+],
+[
+"Sandy",
+"I'd love to go. Where can we get tickets?"
+],
+[
+"Man",
+"The ad in the newspaper this morning said we can get them online."
+],
+[
+"Sandy",
+"Great. I can't wait."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "Where did the man see the ad for the concert?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-12-with-answers-and-audioscripts · câu 2",
+"key": "official"
+},
+{
+"id": "l-ket12p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"Who is Simon?"
+],
+[
+"Woman",
+"Thanks for coming to the party, David."
+],
+[
+"David",
+"It's nice to be here!"
+],
+[
+"Woman",
+"Come and meet my brother Simon. He's over there."
+],
+[
+"David",
+"Is he the guy with the dark hair and the blue jacket?"
+],
+[
+"Woman",
+"No, that's my cousin Max. My brother is the one with the dark hair and shirt talking to the tall man with the glasses."
+],
+[
+"David",
+"I'll go and say hi."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "Who is Simon?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-12-with-answers-and-audioscripts · câu 3",
+"key": "official"
+},
+{
+"id": "l-ket12p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"What job does the woman want help with?"
+],
+[
+"Man",
+"Tanya, do you need any help? I can wash the dirty dishes for you."
+],
+[
+"Tanya",
+"Don't worry. I've already put them in the dishwasher."
+],
+[
+"Man",
+"How about if I cut up those vegetables next to the cooker?"
+],
+[
+"Tanya",
+"Ah, great, that would be a big help. Thank you! And the kids can put away the dishes when they come out of the dishwasher."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "What job does the woman want help with?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-12-with-answers-and-audioscripts · câu 4",
+"key": "official"
+},
+{
+"id": "l-ket12p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn hình đúng.",
+"script": [
+[
+"",
+"When might the next bus arrive?"
+],
+[
+"Woman",
+"Excuse me, what time is the next bus?"
+],
+[
+"Man",
+"It usually comes at twenty-five past three, but the buses are running about twenty minutes late today."
+],
+[
+"Woman",
+"Really? So it will be here at quarter to four ... I need to be at the dentist at four."
+],
+[
+"Man",
+"Maybe you should take a taxi."
+],
+[
+"Woman",
+"I will. It takes about half an hour to get to the dentist by bus."
+]
+],
+"img": true,
+"plays": 1,
+"qs": [
+{
+"q": "When might the next bus arrive?",
+"opts": [
+"A",
+"B",
+"C"
+],
+"a": 2
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-12-with-answers-and-audioscripts · câu 5",
+"key": "official"
+},
+{
+"id": "l-ket10p4-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about an accident. What did Matt break?"
+],
+[
+"Woman",
+"Hey, Matt! What happened to you?!"
+],
+[
+"Matt",
+"I had a silly accident in the park. I wanted to show my little sister how to play rugby. I was running with the ball when a dog ran in front of me. I fell over him, he bit my leg, I crashed into a tree, banged my head, and broke my arm."
+],
+[
+"Woman",
+"How terrible!"
+],
+[
+"Matt",
+"Actually, it was funny. As I said, it was a silly accident."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about an accident. What did Matt break?",
+"opts": [
+"his arm",
+"his head",
+"his leg"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 16",
+"key": "official"
+},
+{
+"id": "l-ket10p4-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two people talking about some keys. Where did the man leave them?"
+],
+[
+"Woman",
+"Come on, Mark. We’re going to be late!"
+],
+[
+"Mark",
+"I can't find the car keys. They aren’t in the hall."
+],
+[
+"Woman",
+"Have you looked under the sofa? You took your coat off in here last night. Maybe they fell out of your pocket."
+],
+[
+"Mark",
+"I'll look now."
+],
+[
+"Woman",
+"Oh, don’t bother. Here they are, next to the fridge. You probably put them here when you got the milk out for breakfast."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two people talking about some keys. Where did the man leave them?",
+"opts": [
+"in the hall",
+"in the kitchen",
+"in the living room"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 17",
+"key": "official"
+},
+{
+"id": "l-ket10p4-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking in a restaurant. What does the woman decide to eat?"
+],
+[
+"Man",
+"I haven't been to this restaurant before. It looks nice. What are you going to have?"
+],
+[
+"Woman",
+"I'm not sure. Maybe a salad."
+],
+[
+"Man",
+"I'm too hungry for a salad, but the pizzas look amazing!"
+],
+[
+"Woman",
+"Yes, they do, and the cheeseburgers look delicious, but I think I'll go with my first idea. I’d like a glass of lemonade, too."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking in a restaurant. What does the woman decide to eat?",
+"opts": [
+"a cheeseburger",
+"a salad",
+"a pizza"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 18",
+"key": "official"
+},
+{
+"id": "l-ket10p4-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a man talking to a friend about his grandparents. What are they doing this weekend?"
+],
+[
+"Woman",
+"So, what are you doing this weekend?"
+],
+[
+"Man",
+"Visiting my grandparents. They’re having a party."
+],
+[
+"Woman",
+"That's nice. Is it someone's birthday?"
+],
+[
+"Man",
+"No, Grandad was 72 in October. This is to meet their new neighbours. They moved to a new house last weekend."
+],
+[
+"Woman",
+"Did you help them move?"
+],
+[
+"Man",
+"Yes, and my brother and sister helped too."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a man talking a friend about his grandparents. What are they doing this weekend?",
+"opts": [
+"They are having a birthday party.",
+"They are meeting their new neighbours.",
+"They are moving to a new house."
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 19",
+"key": "official"
+},
+{
+"id": "l-ket10p4-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a woman talking to a friend about going to the airport. How will she get there?"
+],
+[
+"Woman",
+"My flight is at eight, but the first bus comes at six. It takes more than an hour, so that’s too late.... I’d love to book one, but it's expensive, and anyway, there will be a lot of traffic on the road at that hour.... Yes, you’re right. I’ll ask Dad to drive me to the railway station. He won’t be happy, though."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a woman talking to a friend about going to the airport. How will she get there?",
+"opts": [
+"by bus",
+"by taxi",
+"by train"
+],
+"a": 2
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-10-with-answers-and-audioscripts · câu 20",
+"key": "official"
+},
+{
+"id": "l-ket11p4-1",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a woman talking to a friend about an experience. Where did she go?"
+],
+[
+"Woman",
+"It was fantastic! Really! And the story was so exciting. We were close to the stage so we had a great view. The costumes were amazing. I've never been to one before. It’s quite hard to follow what’s going on because there’s only singing, so you have to pay attention."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a woman talking to a friend about an experience. Where did she go?",
+"opts": [
+"to a film",
+"to a play",
+"to an opera"
+],
+"a": 2
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 16",
+"key": "official"
+},
+{
+"id": "l-ket11p4-2",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a man and a woman talking. Where has the man been?"
+],
+[
+"Woman",
+"Oh, you're back. Did you have a good time?"
+],
+[
+"Man",
+"Well, Barney fell into the water and got wet, so then he wanted to come home."
+],
+[
+"Woman",
+"Is he OK? How did that happen?"
+],
+[
+"Man",
+"He wasn't careful! I told him he was too close to the water. And we didn't catch anything either."
+],
+[
+"Woman",
+"Oh, that's a pity."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a man and a woman talking. Where has the man been?",
+"opts": [
+"fishing",
+"sailing",
+"swimming"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 17",
+"key": "official"
+},
+{
+"id": "l-ket11p4-3",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"What will they have for breakfast?"
+],
+[
+"Woman",
+"Do you want some cereal for breakfast?"
+],
+[
+"Man",
+"Cereal? We need something to keep us going all day. We can’t stop for lunch. What about some eggs, toast and mushrooms?"
+],
+[
+"Woman",
+"Eggs, then, with toast. Mushrooms take too long, and we need to leave soon."
+],
+[
+"Man",
+"OK, but I'm having a big cooked breakfast tomorrow with eggs, mushrooms, toast and cereal."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "What will they have for breakfast?",
+"opts": [
+"cereal, eggs and toast",
+"eggs and toast",
+"toast"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 18",
+"key": "official"
+},
+{
+"id": "l-ket11p4-4",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking. What did Karen want to buy?"
+],
+[
+"Man",
+"Did you get everything you wanted, Karen?"
+],
+[
+"Karen",
+"Nearly. I couldn't find a blouse I liked. I tried on one or two."
+],
+[
+"Man",
+"Did you try that shop we saw yesterday? Next to the book shop?"
+],
+[
+"Karen",
+"Yes, I did, but they didn't have anything I liked. So I bought a book instead. Then we had a nice lunch - bread and soup."
+],
+[
+"Man",
+"Good."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking. What did Karen want to buy?",
+"opts": [
+"clothes",
+"food",
+"books"
+],
+"a": 0
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 19",
+"key": "official"
+},
+{
+"id": "l-ket11p4-5",
+"type": "listen",
+"sk": "listening",
+"lv": "A2",
+"fam": "KET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking. What new piece of furniture has David got?"
+],
+[
+"Woman",
+"Oh, that's nice, David."
+],
+[
+"David",
+"Do you like it?"
+],
+[
+"Woman",
+"It goes really well in this room."
+],
+[
+"David",
+"Well, it'll be useful when I invite lots of people to my new flat. We can all sit down together."
+],
+[
+"Woman",
+"You can have dinner parties!"
+],
+[
+"David",
+"It's big enough for six people. I just need more chairs now."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking. What new piece of furniture has David got?",
+"opts": [
+"a sofa",
+"a table",
+"an armchair"
+],
+"a": 1
+}
+],
+"src": "KET (A2 Key) Listening · practice-ket-a2-listening-test-11-with-answers-and-audioscripts · câu 20",
+"key": "official"
+},
+{
+"id": "l-pet10p2-1",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about a trip to the theatre."
+],
+[
+"Man",
+"So, are you ready for the theatre this evening? I can't wait."
+],
+[
+"Woman",
+"Yes, I'm really excited too. It's been a while since I went to the theatre. Don't forget your student ID, will you? They always ask to see it before they give you the student discount."
+],
+[
+"Man",
+"OK. I'll remind the others in case they forget. I'll text them in a minute."
+],
+[
+"Woman",
+"And it's only offered to full-time students, remember. Some of our friends are only part time."
+],
+[
+"Man",
+"OK, it's only Tahira who is full time so I'll let her know."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about a trip to the theatre. What does the woman say about it?",
+"opts": [
+"The theatre offers cheaper entry to some students.",
+"It's not always necessary to show student ID.",
+"She is a part-time student."
+],
+"a": 0
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-10-with-answers-and-audioscripts · câu 8",
+"key": "official"
+},
+{
+"id": "l-pet10p2-2",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about the man’s job."
+],
+[
+"Man",
+"I’m going to that employment event in town tomorrow."
+],
+[
+"Woman",
+"Really? Are you looking for a new job? I always thought you enjoyed it where you work."
+],
+[
+"Man",
+"Well, I'm thinking of having a change of career. I've been working as an accountant for years now and I feel like doing something different. I've got a few friends who are teachers and they think I'd enjoy doing something like that. It would mean a lower salary but that's OK. So, I'm just going to find out about the qualifications I need."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about the man's job. The man",
+"opts": [
+"is looking for work as an accountant.",
+"is prepared to earn less money.",
+"knows what qualifications he needs."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-10-with-answers-and-audioscripts · câu 9",
+"key": "official"
+},
+{
+"id": "l-pet10p2-3",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a husband and wife talking about breakfast."
+],
+[
+"Man",
+"OK, my turn to make breakfast, I think. What would you like?"
+],
+[
+"Woman",
+"I'd love a bowl of cereal, but the last time I looked in the cupboard we'd run out. Did you get any when you went shopping?"
+],
+[
+"Man",
+"No, I forgot to put that on the list. Sorry. How about some ham and cheese?"
+],
+[
+"Woman",
+"Yes, that would be nice. We could use some of that nice bread you bought. And can I have coffee for a change instead of tea?"
+],
+[
+"Man",
+"OK. Oh, I’m feeling quite hungry now!"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a husband and wife talking about breakfast. What does the wife say?",
+"opts": [
+"There isn't any cereal left.",
+"They need to buy bread.",
+"She would like to have the same drink as usual."
+],
+"a": 0
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-10-with-answers-and-audioscripts · câu 10",
+"key": "official"
+},
+{
+"id": "l-pet10p2-4",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about buying a bed."
+],
+[
+"Man",
+"I need to get a new bed for my flat. Is there anywhere you can recommend?"
+],
+[
+"Woman",
+"The furniture store in town has some and they're good quality."
+],
+[
+"Man",
+"Really? I might go there later. I was thinking of looking online but it’s difficult to tell how comfortable they'd be if you can't try them out first."
+],
+[
+"Woman",
+"Well, you might find a bargain that way. You could try one out in the shop and then order the same one online if you find one that costs less than the shop."
+],
+[
+"Man",
+"Good idea. I might do that."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about buying a bed. The woman thinks the ones online",
+"opts": [
+"are better quality.",
+"might be cheaper.",
+"cost less in the furniture store."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-10-with-answers-and-audioscripts · câu 11",
+"key": "official"
+},
+{
+"id": "l-pet10p2-5",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about going for a walk."
+],
+[
+"Woman",
+"I feel like getting outside in the country today and having a fast walk. Do you fancy joining me?"
+],
+[
+"Man",
+"I'm not sure. We might need to take our umbrellas. The weather forecast says there's going to be heavy rain."
+],
+[
+"Woman",
+"I know I've just checked. But it's not expected until later this afternoon so I'll just take my jacket. Anyway, a bit of rain won't hurt you. And the fresh air will be good for us."
+],
+[
+"Man",
+"Yes, I suppose so. And I've got nothing to do today so let's go now, shall we?"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about going for a walk. What do they both agree about?",
+"opts": [
+"The need to take an umbrella.",
+"The walk will be a healthy thing to do.",
+"They need to check the weather forecast."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-10-with-answers-and-audioscripts · câu 12",
+"key": "official"
+},
+{
+"id": "l-pet10p2-6",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about a passport photograph."
+],
+[
+"Woman",
+"I need to get a new passport before we go on holiday. Where can I get my photograph taken?"
+],
+[
+"Man",
+"There's a machine in the pharmacy round the corner but I think it’s out of order. I saw someone asking one of the shop assistants for help last week."
+],
+[
+"Woman",
+"That's a pity. I might have to go into town."
+],
+[
+"Man",
+"There are a lot of places in town. I know you can get it done in the post office. That one probably works OK, and if you want one that's open in the evening you could try the machine at the train station."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about a passport photograph. What does the man say?",
+"opts": [
+"The shop assistants are really helpful.",
+"The post office is open in the evening.",
+"The nearest machine doesn't work."
+],
+"a": 2
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-10-with-answers-and-audioscripts · câu 13",
+"key": "official"
+},
+{
+"id": "l-pet12p2-1",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a wife and her husband talking about housework."
+],
+[
+"Woman",
+"Have you seen how untidy the living room is? The children have left it in a mess again."
+],
+[
+"Man",
+"I know. To be fair, they've done a lot more around the house since we spoke to them last week."
+],
+[
+"Woman",
+"They started well, but I think we need to have another talk with them. We're both so busy trying to organise work and home. And I'd love to get some outside help but I'm not sure about your idea of getting a cleaner."
+],
+[
+"Man",
+"OK, I'll have another talk with them later."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a wife and her husband talking about housework. The woman thinks",
+"opts": [
+"the husband could be more organised.",
+"they should get the children to do more.",
+"they should employ a cleaner."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-12-with-answers-and-audioscripts · câu 8",
+"key": "official"
+},
+{
+"id": "l-pet12p2-2",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about a university."
+],
+[
+"Man",
+"So I hear you’ve decided on Melchester University. Is that right?"
+],
+[
+"Woman",
+"Yes. I've looked at a few now and I think that’s the best for me."
+],
+[
+"Man",
+"You were saying there are better ones for your subject area but I've been told it's still good."
+],
+[
+"Woman",
+"I know, I’m happy with the course. I’ve now got to organise my accommodation."
+],
+[
+"Man",
+"I’ve heard rent isn't too expensive there so you may be able to find somewhere nice. Once you've made some friends at university, you'll be able to share a place."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about a university. What does the man think about the woman’s choice?",
+"opts": [
+"She has picked the best university for her subject.",
+"She already has friends at the university.",
+"Accommodation might not cost a lot."
+],
+"a": 2
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-12-with-answers-and-audioscripts · câu 9",
+"key": "official"
+},
+{
+"id": "l-pet12p2-3",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about the weather."
+],
+[
+"Man",
+"I'm really enjoying this sunny weather we’ve had lately, aren't you?"
+],
+[
+"Woman",
+"I know. It’s lovely to wake up to a blue sky every morning, isn’t it? It makes a change from all the rain we had last month."
+],
+[
+"Man",
+"So, what are your plans for today?"
+],
+[
+"Woman",
+"I want to do some exercise if I can. I might go the gym as it’s a bit cooler there. It’s too warm to go running. I can’t remember it being this warm before. I’m certainly not complaining though!"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about the weather. The woman says",
+"opts": [
+"she prefers it when it’s cooler.",
+"the weather has been hotter than usual.",
+"they need it to rain."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-12-with-answers-and-audioscripts · câu 10",
+"key": "official"
+},
+{
+"id": "l-pet12p2-4",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about a journey to work."
+],
+[
+"Man",
+"Getting to work in the morning seems to take longer each day. I was half an hour late this morning."
+],
+[
+"Woman",
+"Are you still driving in?"
+],
+[
+"Man",
+"Yes, but I might stop using the car. The traffic is so bad early in the morning. It's a shame as I like using the car but it's just one traffic jam after another. There's no way I'm cycling in - it's too dangerous."
+],
+[
+"Woman",
+"What about getting the train?"
+],
+[
+"Man",
+"I might do that. I know there were always delays in the past, but I've heard the service has improved."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about a journey to work. What does the man say?",
+"opts": [
+"The trains aren't reliable.",
+"He enjoys driving his car.",
+"He's thinking of using his bicycle."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-12-with-answers-and-audioscripts · câu 11",
+"key": "official"
+},
+{
+"id": "l-pet12p2-5",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about the local swimming pool."
+],
+[
+"Woman",
+"I haven't seen you at the swimming pool for a while. Have you stopped going?"
+],
+[
+"Man",
+"Yes, I haven't been recently, although last time I went there weren't too many people. We've been quite busy at work lately and I get home feeling really tired. That's no excuse though. I could always go at the weekend I suppose."
+],
+[
+"Woman",
+"You should. It sounds like a swim is just what you need."
+],
+[
+"Man",
+"I thought the changing rooms were clean and tidy, but I think they need better security. I didn't feel confident leaving my things in the locker, and after that I stopped going."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about the local swimming pool. The man doesn't use it because",
+"opts": [
+"it gets too crowded.",
+"he doesn't have time.",
+"the changing rooms aren't safe."
+],
+"a": 2
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-12-with-answers-and-audioscripts · câu 12",
+"key": "official"
+},
+{
+"id": "l-pet13p2-1",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a man talking to his wife about a podcast."
+],
+[
+"Man",
+"I downloaded a really interesting podcast yesterday about history."
+],
+[
+"Woman",
+"Really? Do you think Jennifer would find it useful for her exams?"
+],
+[
+"Man",
+"I'm not sure it covers the subjects she's studying but the presenter is that guy on TV she loves, so that might interest her."
+],
+[
+"Woman",
+"Does it cost anything?"
+],
+[
+"Man",
+"You can download the podcast for nothing. There's a course he offers that you need to pay for. But she might not want that if the topic is different. Let's see what she thinks of the podcast first."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a man talking to his wife about a podcast. The man thinks",
+"opts": [
+"their daughter wouldn't enjoy it.",
+"it would be useful for their daughter's studies.",
+"it's free."
+],
+"a": 2
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-13-with-answers-and-audioscripts · câu 8",
+"key": "official"
+},
+{
+"id": "l-pet13p2-2",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about a new mobile phone."
+],
+[
+"Man",
+"So, are you enjoying your new phone? It certainly looks fantastic."
+],
+[
+"Woman",
+"It's OK. It certainly cost enough! I'm not sure it's a big improvement on the previous one, to be honest."
+],
+[
+"Man",
+"Why did you get a new one then?"
+],
+[
+"Woman",
+"Well, I was getting these emails encouraging me to get the latest model. The other one had a little bit of damage to the screen, which didn't look very nice. But it worked and I could do all the things I needed to do with it. Oh well, never mind!"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about a new mobile phone. The woman says",
+"opts": [
+"it's not much better than her last one.",
+"it doesn't seem to be working properly.",
+"the screen is damaged."
+],
+"a": 0
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-13-with-answers-and-audioscripts · câu 9",
+"key": "official"
+},
+{
+"id": "l-pet13p2-3",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear a woman talking to her husband about washing clothes."
+],
+[
+"Woman",
+"There's something wrong with the washing machine. It seems to go on forever!"
+],
+[
+"Man",
+"Not again' We've had problems with it ever since we bought it."
+],
+[
+"Woman",
+"So, what should we do? We need to do the washing. Shall we get someone to have a look at it?"
+],
+[
+"Man",
+"I don't think it's worth it. We've had people out before and they're never cheap. I know we only bought it a couple of years ago but maybe it's time to think about getting a new one. Shall we have a look online?"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear a woman talking to her husband about washing clothes. The man says the washing machine",
+"opts": [
+"could be fixed quite cheaply.",
+"has never worked properly.",
+"doesn't need replacing."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-13-with-answers-and-audioscripts · câu 10",
+"key": "official"
+},
+{
+"id": "l-pet13p2-4",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about living in the countryside."
+],
+[
+"Man",
+"I've been watching that programme on TV about moving to the countryside."
+],
+[
+"Woman",
+"That one about people who don't want to live in the city anymore? I like having lots of people around me. Being on my own somewhere in the countryside wouldn't suit me."
+],
+[
+"Man",
+"True, but if you have a car it doesn't take long to get what you need. That wouldn't bother me. I know people think it's good for your health but not if you're unhappy living there."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about living in the countryside. What does the woman say?",
+"opts": [
+"It would be good for her health.",
+"It's difficult to do your shopping.",
+"It can feel lonely."
+],
+"a": 2
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-13-with-answers-and-audioscripts · câu 11",
+"key": "official"
+},
+{
+"id": "l-pet13p2-5",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about travelling by plane."
+],
+[
+"Man",
+"I've been thinking about the number of flights I take a year. It’s not good for the environment."
+],
+[
+"Woman",
+"I know. It’s a worry, isn't it?"
+],
+[
+"Man",
+"It's more expensive to travel by train than to fly on some short journeys. No wonder people choose to go by plane."
+],
+[
+"Woman",
+"I don't think putting the price up would be very popular, do you?"
+],
+[
+"Man",
+"I certainly wouldn't like it. I think we should avoid travelling abroad for our holidays. That would probably make a difference."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about travelling by plane. The man thinks",
+"opts": [
+"we should take more holidays at home.",
+"flights are too expensive.",
+"flying is faster than going by train."
+],
+"a": 0
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-13-with-answers-and-audioscripts · câu 12",
+"key": "official"
+},
+{
+"id": "l-pet13p2-6",
+"type": "listen",
+"sk": "listening",
+"lv": "B1",
+"fam": "PET",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You will hear two friends talking about a local businesswoman."
+],
+[
+"Woman",
+"I was reading about Emily Wainwright, the local businesswoman of the year."
+],
+[
+"Man",
+"Mmm, she sounds like an interesting person, doesn’t she? That new shop she has in town is doing really well. It’s always busy when I go past."
+],
+[
+"Woman",
+"She seems to be popular with other businesspeople too."
+],
+[
+"Man",
+"I know. Her new business partner was on the radio the other day. He was explaining that she always recommends other local companies to customers and helps other women who are thinking of starting their own business."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You will hear two friends talking about a local businesswoman. What does the man say about her?",
+"opts": [
+"She is looking for a business partner.",
+"She supports local businesses.",
+"She is thinking of opening a new shop."
+],
+"a": 1
+}
+],
+"src": "PET (B1 Preliminary) Listening · practice-pet-b1-listening-test-13-with-answers-and-audioscripts · câu 13",
+"key": "official"
+},
+{
+"id": "l-fce12p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You are at a college lecture when you hear this student interrupting the lecturer."
+],
+[
+"",
+"L = Lecturer     S = Student"
+],
+[
+"L",
+"... which was highly controversial anyway and of course if you consider the implications of this new law ... uh ... yes?"
+],
+[
+"S",
+"Excuse me. I'm sorry to interrupt. You said something very important about the core laws and I was just wondering ..."
+],
+[
+"L",
+"Actually, they were the corn laws - you know the agricultural plant."
+],
+[
+"S",
+"Oh, sorry ... I missed some of what you said, it was very fast. Could you possibly go back over this?"
+],
+[
+"L",
+"Well, no. You'll find all of that in my book. Price fifteen ninety-nine at the college book shop. Now, where was I?"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You are at a college lecture when you hear this student interrupting the lecturer. What does the student want the lecturer to do?",
+"opts": [
+"repeat a particular word.",
+"explain something.",
+"repeat an important point"
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 1",
+"key": "official"
+},
+{
+"id": "l-fce12p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You hear this politician being interviewed on TV."
+],
+[
+"",
+"No doubt, all of you listening are worried about taxes and so you should be. The Christian Democratic Alliance have said nothing about their plans to alter the tax brackets and these are changes that will go straight to the pockets of hardworking people like yourselves, and we all know where the Social Liberal Democrats stand on this issue. They'll be taxing everything in sight. However, we in the L.D.P. believe in a fairer approach to administering the national economy."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You hear this politician being interviewed on TV. What is his political party called?",
+"opts": [
+"Social Liberal Democrats.",
+"Liberal Democratic Party.",
+"Christian Democratic Alliance."
+],
+"a": 1
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 2",
+"key": "official"
+},
+{
+"id": "l-fce12p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You overhear a hotel receptionist speaking on the telephone with a customer."
+],
+[
+"",
+"Hello, Half-Way Hotel. Can I help you? ... Yes, we take bookings ... um ... er ... well, actually, I'm very sorry, but I don't think we'll be able to manage that. I suggest you try ringing the Spa Hotel in Tunbridge Wells. They have over twice the number of rooms we have and offer very much the same facilities and standards, although you will end up paying rather more."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You overhear a hotel receptionist speaking on the telephone with a customer. Why is the hotel unable to provide the customer with rooms?",
+"opts": [
+"there aren't enough rooms.",
+"the facilities are inadequate.",
+"the customer wants better service."
+],
+"a": 0
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 3",
+"key": "official"
+},
+{
+"id": "l-fce12p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You overhear this woman talking to her child in a shop."
+],
+[
+"",
+"... and now we're just dying to see the next episode to see if they really ... Kylie! Put that down! It doesn't belong to you. I said, put it down! How many times have I told you not to touch things that don't belong to you? Now, where were we?"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You overhear this woman talking to her child in a shop. She is",
+"opts": [
+"warning the child about something.",
+"explaining something to the child.",
+"telling the child off."
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 4",
+"key": "official"
+},
+{
+"id": "l-fce12p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You overhear this woman talking about a problem she had with a CD player."
+],
+[
+"",
+"Anyway, the cd was in the machine. I couldn't get it out, I couldn't play it and I was worried because I wasn't sure if it was still under guaran tee. I was also furious because it was Angie's favourite album. So, I took the whole machine along to Luntham's service counter expecting to hear the worst, and they were wonderful. Said they'd been getting quite a lot of the same complaint about that model, and he fixed it right there in front of me, and I didn't have to pay a penny. Not like some shops I could mention."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You overhear this woman talking about a problem she had with a CD player. Now the woman is",
+"opts": [
+"angry.",
+"worried.",
+"satisfied."
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 5",
+"key": "official"
+},
+{
+"id": "l-fce12p1-6",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You are at a pay phone in a hotel when you hear this man ordering a taxi to take him home."
+],
+[
+"",
+"Yes, hello ... I'd like a taxi ... Yes, just one taxi ... The name is Carter ... Yes, I'm at the Half-Way Hotel ... I’d like to go to Radleigh Road number two-six-nine ... How soon can you send a cab? ... OK then, that's fine. I'll be waiting outside the main entrance. Thank you."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You are at a pay phone in a hotel when you hear this man ordering a taxi to take him home. Where does the man live?",
+"opts": [
+"269 Radleigh Road.",
+"69 Rudleigh Road.",
+"the Half-way Hotel."
+],
+"a": 0
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 6",
+"key": "official"
+},
+{
+"id": "l-fce12p1-7",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You are on a train when you overhear this man talking about the prices of railway tickets."
+],
+[
+"",
+"That station-master was really helpful, wasn't he? I mean, he didn't have to tell me about the young person's travel card. I've just saved three pounds off the full price. This ticket would have cost me nine pounds fifty but with the card it's only six fifty, which is, in fact, a lot less than I paid last year and that was before the fares increased. It was seven fifty then. Mind you, I did also have to pay ten pounds to buy the card, but it's going to be very useful over the next few months what with travelling to Scotland ... FADE"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You are on a train when you overhear this man talking about the prices of railway tickets. How much has he just paid?",
+"opts": [
+"£6.50.",
+"£16.50.",
+"£5.60."
+],
+"a": 1
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 7",
+"key": "official"
+},
+{
+"id": "l-fce12p1-8",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You hear this man on the radio introducing a song."
+],
+[
+"",
+"And that, of course, was the latest single from the Vegetables and that is currently at number nine in the charts after six weeks in the top 10. And still at number one for the seventh successive week, the song that everyone loved when they first heard it, but I think we're all ready for a new number one, aren't we? Well, if you're not, here it is again, 'Husky Lady' from Rap It Up."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You hear this man on the radio introducing a song. The man",
+"opts": [
+"likes the song very much.",
+"never liked the song.",
+"is less keen on the song now."
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-12-with-answers-and-audioscripts · câu 8",
+"key": "official"
+},
+{
+"id": "l-fce14p1-1",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You switch on the radio and hear this exchange in progress."
+],
+[
+"",
+"P = Presenter     R = Roger"
+],
+[
+"P",
+"Okay Roger, ... Now, this man was born in South Western Australia in 1946. He came to London in the sixties and made a name for himself in the West End before moving into film and television. His stage appearances include 'Prospero' in Shakespeare's 'Tempest' and 'Clive' in 'Where did you last see your trousers?' His first film appearance ..."
+],
+[
+"R",
+"Is it Oliver Fulcher?"
+],
+[
+"P",
+"Sorry Roger, I can't give you a point for that. It was in fact Barney Fulcher. Now Muriel, this man ..."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You switch on the radio and hear this exchange in progress. What are you listening to?",
+"opts": [
+"a phone-in programme.",
+"a talent contest.",
+"a general knowledge quiz."
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 1",
+"key": "official"
+},
+{
+"id": "l-fce14p1-2",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You overhear this man talking about a restaurant."
+],
+[
+"",
+"Well, I hadn't been to Willard's for about four years and it came as something of a shock to find the place under new management. It really isn't the same any more but I suppose you could say it's changed with the times. After all, it's still good value ... but you do have to wait longer for everything and there isn't the same selection as before - especially the desserts - but I'd imagine it will remain quite competitive, especially in this part of town."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You overhear this man talking about a restaurant. In his opinion, the restaurant",
+"opts": [
+"has improved.",
+"isn't as good as it used to be.",
+"is too expensive."
+],
+"a": 1
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 2",
+"key": "official"
+},
+{
+"id": "l-fce14p1-3",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"Listen to a woman interviewing a man on a TV chat show."
+],
+[
+"",
+"L = Lucy     R = Roddy"
+],
+[
+"L",
+"So Roddy ... How are you shaping up to life on the outside?"
+],
+[
+"R",
+"Well, Lucy not all the guys are as lucky as me - I mean, being a celebrity ... I get a different deal."
+],
+[
+"L",
+"Do you mean with the film they're making about your life?"
+],
+[
+"R",
+"Well, yeah, ... you see, the day I got out, Sam Beesly, the famous detective writer came up to see me with this contract ... yeah for my story ... Well, yeah, I suppose if I'd actually killed somebody ... they wouldn't have been so keen to make a movie about my exploits and the bank of England."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "Listen to a woman interviewing a man on a TV chat show. What is the man?",
+"opts": [
+"a famous criminal.",
+"a detective.",
+"a crime writer."
+],
+"a": 0
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 3",
+"key": "official"
+},
+{
+"id": "l-fce14p1-4",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You are travelling by train when you overhear this exchange."
+],
+[
+"",
+"W = Woman     M = Man"
+],
+[
+"M",
+"That really is the most incredible coincidence. I mean it must have been ... oh ... fifty years now. Let's see. Ah yes, it was the winter of '47. I distinctly remember your good father playing in the school yard."
+],
+[
+"W",
+"So you were his form master that year?"
+],
+[
+"M",
+"No, no, no arithmetic and geometry ... we taught proper subjects in those days ..."
+],
+[
+"W",
+"So, how did you know that I was his daughter?"
+],
+[
+"M",
+"It's the shape of your ears ... (turning to his friend) his father had them, too ... very distinctive ears ..."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You are travelling by train when you overhear this exchange. The woman",
+"opts": [
+"has never met the man before.",
+"is a good friend of the man.",
+"is a distant relative."
+],
+"a": 0
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 4",
+"key": "official"
+},
+{
+"id": "l-fce14p1-5",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"Listen to this teacher giving a lesson."
+],
+[
+"",
+"If you open your books to page 62, you will see two contrasting maps of the region. The first one dates back to the 1950's when this part of the world was underdeveloped and mainly agricultural, but if you now look at the second one, there has been a marked shift in population from the countryside to the cities, accompanied by rapid industrialisation and centralisation of services. So, what effect do you think this has had on the agriculture of this region? Yes, Jaswinda?"
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "Listen to this teacher giving a lesson. What is the teacher's subject?",
+"opts": [
+"politics.",
+"literature.",
+"geography."
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 5",
+"key": "official"
+},
+{
+"id": "l-fce14p1-6",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You hear this announcement being made in a railway station."
+],
+[
+"",
+"Ladies and gentlemen, this is an announcement for all passengers awaiting the arrival of the 7:15 train for London, Victoria. This service is now running about 7 minutes late and will now depart at 7:22 from platform 3 as advertised. We apologise for any inconvenience this may cause. The late departure from Three Bridges Central was due to the cancellation of a connecting service."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You hear this announcement being made in a railway station. The 7:15 train to London",
+"opts": [
+"has been cancelled.",
+"will leave from a different platform.",
+"has been delayed."
+],
+"a": 2
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 6",
+"key": "official"
+},
+{
+"id": "l-fce14p1-7",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You overhear this man answering a telephone in a record shop."
+],
+[
+"",
+"Good morning, Spinster Records ... Yes, we do have some discs of 'Valhalla' ... Ah, but ... no, that's a very new release and it hasn't reached us yet ... but we should be getting it in the next fortnight ... Would you like me to reserve a copy for you? ... Yes, I know it was advertised on television but the distributor ... Well, I'm sorry, too ... Well, you'll just have to do that, won't you ... Goodbye."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You overhear this man answering a telephone in a record shop. The man is",
+"opts": [
+"polite.",
+"impatient.",
+"bored."
+],
+"a": 1
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 7",
+"key": "official"
+},
+{
+"id": "l-fce14p1-8",
+"type": "listen",
+"sk": "listening",
+"lv": "B2",
+"fam": "FCE",
+"intro": "Nghe và chọn đáp án đúng.",
+"script": [
+[
+"",
+"You are staying in the home of a British family when you hear this exchange between the husband and wife."
+],
+[
+"",
+"M = Man     W = Woman"
+],
+[
+"M",
+"Morning dear. Did you sleep well?"
+],
+[
+"W",
+"No, I didn't, and you know very well why not."
+],
+[
+"M",
+"Well, there's nothing more I can do about it. I've already fitted new windows in our room."
+],
+[
+"W",
+"Well, you'll just have to go straight to the source of the trouble."
+],
+[
+"M",
+"Look dear, they're students, they wouldn't understand."
+],
+[
+"W",
+"Well, if you don't go round there and talk to them, ... I will. They're sending me to an early grave, that's what they're doing. And if they think they can have another..."
+]
+],
+"img": false,
+"plays": 1,
+"qs": [
+{
+"q": "You are staying in the home of a British family when you hear this exchange between the husband and wife. What does the wife want her husband to do?",
+"opts": [
+"make less noise at night.",
+"complain to the neighbours.",
+"fit new windows in another room."
+],
+"a": 1
+}
+],
+"src": "FCE (B2 First) Listening · practice-fce-b2-listening-test-14-with-answers-and-audioscripts · câu 8",
+"key": "official"
+}
+]

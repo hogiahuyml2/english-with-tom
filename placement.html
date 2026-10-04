@@ -164,7 +164,7 @@ function renderIntro() {
     '<div class="pl-card"><h3 style="margin-bottom:10px;">Bài kiểm tra gồm 5 phần · khoảng ' + bp.totalMinutes + ' phút</h3><div class="pl-steps">' + steps + '</div>' +
     '<ul class="pl-list"><li>Mỗi phần có <b>đồng hồ đếm ngược riêng</b>; hết giờ hệ thống tự nộp phần đó. Nộp xong không quay lại sửa được.</li>' +
     '<li>Câu hỏi đi từ <b>dễ đến khó</b> — không sao nếu gặp câu chưa biết, hãy đoán rồi làm tiếp (không trừ điểm câu sai).</li>' +
-    '<li>Phần Nghe: bật loa hoặc đeo tai nghe, mỗi đoạn nghe tối đa <b>' + st.maxPlays + ' lần</b>.</li>' +
+    '<li>Phần Nghe: bật loa hoặc đeo tai nghe, mỗi đoạn là <b>bản ghi gốc của Cambridge</b>, chỉ phát theo số lượt hiển thị (đa số bản ghi đã gồm cả phần phát lại).</li>' +
     '<li>Làm một mình, <b>không dùng từ điển hay dịch</b> để kết quả đúng với trình độ thật. Mỗi lần làm, câu hỏi được rút khác nhau từ ngân hàng đề.</li>' +
     '<li>Có thể nghỉ giữa các phần (đồng hồ chỉ chạy khi bạn đang làm một phần).</li></ul>' +
     '<div style="margin-top:18px" class="pl-noprint">' + cta + staffLink + '</div><div id="plErr"></div></div>' +
@@ -184,9 +184,9 @@ function renderLobby() {
   if (!next) { return finishFlow(); }
   var bp = S.status.blueprint.sections.filter(function (s) { return s.key === next.key; })[0];
   var extra = '';
-  if (next.key === 'listening') extra = '<div class="pl-card" style="background:var(--bg-soft)"><b>🔊 Kiểm tra âm thanh trước khi bắt đầu</b><p class="pl-small pl-muted" style="margin:6px 0 10px">Bấm nút để nghe thử âm báo. Nếu không nghe thấy, hãy tăng âm lượng hoặc cắm tai nghe. Khi bạn bấm "Bắt đầu", đồng hồ phần Nghe sẽ chạy.</p><button class="pl-btn ghost sm" id="plBeep">▶ Nghe thử</button></div>';
+  if (next.key === 'listening') extra = '<div class="pl-card" style="background:var(--bg-soft)"><b>🔊 Kiểm tra âm thanh trước khi bắt đầu</b><p class="pl-small pl-muted" style="margin:6px 0 10px">Bấm nút để nghe thử âm báo. Nếu không nghe thấy, hãy tăng âm lượng hoặc cắm tai nghe. Khi bạn bấm "Bắt đầu", đồng hồ phần Nghe sẽ chạy.</p><button class="pl-btn ghost sm" id="plBeep">▶ Nghe thử</button></div><div class="pl-card" style="background:var(--bg-soft)"><b>📌 Lưu ý bản quyền</b><p class="pl-small pl-muted" style="margin:6px 0 0">Âm thanh được lấy từ các bộ đề của Cambridge, chỉ dùng cho mục đích học tập phi lợi nhuận — không buôn bán và không thu lợi cá nhân.</p></div>';
   if (next.key === 'writing') extra = '<div class="pl-card" style="background:var(--bg-soft)"><b>✍️ Mẹo viết</b><ul class="pl-list"><li>Bài 1: viết email đủ <b>3 ý</b> được hỏi, ít nhất 25 từ.</li><li>Bài 2: khoảng 80–100 từ; có mở bài, 2–3 ý có ví dụ, kết bài ngắn.</li><li>Viết xong đọc lại để sửa lỗi chính tả và dấu câu.</li></ul></div>';
-  root.innerHTML = progressBar() + '<div class="pl-card" style="text-align:center;padding:30px 20px"><div style="font-size:48px">' + next.icon + '</div><h2 style="margin:6px 0">Phần ' + (S.att.sections.indexOf(next) + 1) + '/5 · ' + esc(next.title) + '</h2><p class="pl-muted">' + esc(bp.intro) + '</p><p style="margin:12px 0;font-size:15px"><b>' + (next.key === 'writing' ? '2 bài viết' : next.questions + ' câu') + '</b> · thời gian <b>' + next.minutes + ' phút</b></p><button class="pl-btn big" id="plGo">Bắt đầu phần ' + esc(next.title) + ' →</button><div id="plErr"></div></div>' + extra;
+  root.innerHTML = progressBar() + '<div class="pl-card" style="text-align:center;padding:30px 20px"><div style="font-size:48px">' + next.icon + '</div><h2 style="margin:6px 0">Phần ' + (S.att.sections.indexOf(next) + 1) + '/5 · ' + esc(next.title) + '</h2><p class="pl-muted">' + esc(bp.intro) + '</p><p style="margin:12px 0;font-size:15px"><b>' + (next.key === 'writing' ? '2 bài viết' : next.questions + ' câu') + '</b> · thời gian <b>' + next.minutes + ' phút</b></p>' + (next.key === 'listening' ? '<p class="pl-small" style="margin:0 auto 14px;max-width:520px;padding:10px 12px;border-radius:10px;background:var(--bg-soft)">📌 <b>Lưu ý:</b> Âm thanh được lấy từ các bộ đề của Cambridge, chỉ dùng cho mục đích học tập phi lợi nhuận — không buôn bán và không thu lợi cá nhân.</p>' : '') + '<button class="pl-btn big" id="plGo">Bắt đầu phần ' + esc(next.title) + ' →</button><div id="plErr"></div></div>' + extra;
   $('plGo').onclick = function () { var b = $('plGo'); b.disabled = true; api('POST', '/api/placement/attempt/' + S.att.id + '/section/' + next.key + '/start').then(function (r) { startRunner(r.section); }).catch(function (e) { b.disabled = false; $('plErr').innerHTML = '<div class="pl-msg err">' + esc(e.message) + '</div>'; }); };
   var bp2 = $('plBeep'); if (bp2) bp2.onclick = beep;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -248,7 +248,8 @@ function stemHtml(u, q, withInput, qi) {
 }
 function mcqHtml(u, qi) {
   var q = u.questions[qi], sel = S.ans[u.id][qi];
-  return '<div class="pl-opts" role="radiogroup">' + q.opts.map(function (o, oi) { return '<button class="pl-opt' + (sel === oi ? ' sel' : '') + '" role="radio" aria-checked="' + (sel === oi) + '" data-q="' + qi + '" data-o="' + oi + '"><span class="l">' + LETTERS[oi] + '</span><span>' + esc(o) + '</span></button>'; }).join('') + '</div>';
+  var pic = !!u.img;
+  return '<div class="pl-opts" role="radiogroup"' + (pic ? ' style="display:flex;gap:10px"' : '') + '>' + q.opts.map(function (o, oi) { return '<button class="pl-opt' + (sel === oi ? ' sel' : '') + '" role="radio" aria-checked="' + (sel === oi) + '" data-q="' + qi + '" data-o="' + oi + '"' + (pic ? ' style="flex:1;justify-content:center"' : '') + '><span class="l">' + LETTERS[oi] + '</span>' + (pic ? '' : '<span>' + esc(o) + '</span>') + '</button>'; }).join('') + '</div>';
 }
 function renderUnit(u, offset) {
   var h = '';
@@ -272,8 +273,9 @@ function renderUnit(u, offset) {
   var st = S.play[u.id] != null ? S.play[u.id] : (u.maxPlays - (u.playsUsed || 0)); S.play[u.id] = st;
   h += '<div class="pl-q"><span class="pl-tag">🎧 Nghe</span><div class="pl-instr" style="margin:0 0 10px;font-size:14px">' + esc(u.intro) + '</div>';
   h += '<div class="pl-aud" id="plAud"><button class="pl-play" id="plPlay" aria-label="Phát"' + (st <= 0 ? ' disabled' : '') + '>▶</button><div class="pl-wave"><div class="pl-bars">' + new Array(14).join('<i></i>') + '</div><div class="tr"><i id="plAudBar"></i></div><div class="pl-small pl-muted" style="margin-top:6px"><span id="plAudT">' + (u.seconds ? '0:00 / ' + mmss(u.seconds) : '') + '</span></div></div><span class="pl-chip' + (st === 1 ? ' warn' : st <= 0 ? ' zero' : '') + '" id="plLeft">' + (st > 0 ? 'Còn ' + st + ' lượt nghe' : 'Hết lượt nghe') + '</span></div>';
-  h += '<div class="pl-instr" style="margin-bottom:6px">Bạn có thể đọc câu hỏi trước khi bấm nghe. Mỗi lần bấm ▶ tính 1 lượt, nghe liền một mạch.</div>';
-  u.questions.forEach(function (q, qi) { h += '<div class="pl-qn"><span class="no">' + (offset + qi + 1) + '</span><div class="pl-stem" style="font-size:16.5px">' + esc(q.q) + '</div></div>' + mcqHtml(u, qi); });
+  h += '<div class="pl-instr" style="margin-bottom:6px">' + (u.maxPlays === 1 ? 'Bản ghi này <b>đã gồm cả phần phát lại</b> nên chỉ phát 1 lần, nghe liền một mạch.' : 'Bạn có thể đọc câu hỏi trước khi bấm nghe. Mỗi lần bấm ▶ tính 1 lượt, nghe liền một mạch.') + '</div>';
+  u.questions.forEach(function (q, qi) { h += '<div class="pl-qn"><span class="no">' + (offset + qi + 1) + '</span><div class="pl-stem" style="font-size:16.5px">' + esc(q.q) + '</div></div>' + (u.img ? '<img src="/api/placement/img/' + S.att.id + '/' + encodeURIComponent(u.id) + '" alt="Ba hình A, B, C" style="max-width:100%;border-radius:10px;margin:6px 0 10px;display:block">' : '') + mcqHtml(u, qi); });
+  h += '<div class="pl-small pl-muted" style="margin-top:10px">' + 'Âm thanh được lấy từ các bộ đề của Cambridge, chỉ dùng cho mục đích học tập phi lợi nhuận — không buôn bán và không thu lợi cá nhân.' + '</div>';
   return h + '</div>';
 }
 function wc(t) { return (String(t).trim().match(/\S+/g) || []).length; }

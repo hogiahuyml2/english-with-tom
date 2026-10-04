@@ -9,6 +9,7 @@ const E = require('./placement/engine');
 const GRACE_MS = 15 * 1000;
 const COOLDOWN_DAYS = 7;
 const AUDIO_DIR = path.join(__dirname, 'placement', 'audio');
+const IMG_DIR = path.join(__dirname, 'placement', 'img');
 const J = (s, d) => { try { const v = JSON.parse(s); return v == null ? d : v; } catch (e) { return d; } };
 const SEC_ORDER = E.BLUEPRINT.sections.map((s) => s.key);
 const SEC = Object.fromEntries(E.BLUEPRINT.sections.map((s) => [s.key, s]));
@@ -225,7 +226,7 @@ Write all feedback in VIETNAMESE (short, kind, concrete, max 2 sentences each). 
       v.title = it.title; v.text = it.text;
       v.questions = it.qs.map((q, i) => ({ q: q.q, type: 'mcq', opts: u.perm[i].map((oi) => q.opts[oi]) }));
     } else if (it.type === 'listen') {
-      v.intro = it.intro; v.audio = true; v.maxPlays = E.MAX_PLAYS; v.playsUsed = (a.plays[it.id] || 0); v.seconds = manifest[it.id] ? manifest[it.id].sec : null;
+      v.intro = it.intro; v.audio = true; v.img = !!it.img; v.maxPlays = it.plays || E.MAX_PLAYS; v.playsUsed = (a.plays[it.id] || 0); v.seconds = manifest[it.id] ? manifest[it.id].sec : null;
       v.questions = it.qs.map((q, i) => ({ q: q.q, type: 'mcq', opts: u.perm[i].map((oi) => q.opts[oi]) }));
     } else if (it.type === 'writing') {
       v.prompt = it.prompt; v.minWords = it.minWords; v.task = it.task; v.questions = [{ type: 'text' }];
@@ -341,10 +342,11 @@ Write all feedback in VIETNAMESE (short, kind, concrete, max 2 sentences each). 
     const clip = String((req.body || {}).clip || '');
     const lf = secForm(a, 'listening'); if (!lf || !lf.units.some((u) => u.id === clip)) return res.status(404).json({ error: 'Đoạn nghe không hợp lệ.' });
     sweep(a); if (secStatus(a, 'listening') !== 'active') return res.status(409).json({ error: 'Phần Nghe chưa bắt đầu hoặc đã kết thúc.' });
+    const maxP = (itemById(clip) || {}).plays || E.MAX_PLAYS;
     const used = a.plays[clip] || 0;
-    if (used >= E.MAX_PLAYS) return res.status(429).json({ error: 'Đã hết lượt nghe đoạn này.', left: 0 });
+    if (used >= maxP) return res.status(429).json({ error: 'Đã hết lượt nghe đoạn này.', left: 0 });
     a.plays[clip] = used + 1; save(a, ['plays']);
-    res.json({ ok: true, left: E.MAX_PLAYS - a.plays[clip] });
+    res.json({ ok: true, left: maxP - a.plays[clip] });
   });
 
   // Âm thanh: chỉ phát cho chủ bài trong lúc phần Nghe đang mở (hỗ trợ Range cho Safari/iOS)
@@ -421,6 +423,22 @@ Write all feedback in VIETNAMESE (short, kind, concrete, max 2 sentences each). 
     res.setHeader('Content-Type', 'audio/mp4'); res.setHeader('Content-Length', stat.size); res.setHeader('Cache-Control', 'private, no-store');
     fs.createReadStream(file).pipe(res);
   });
+
+  // Hình minh hoạ câu nghe (chỉ cho chủ bài khi phần Nghe đang mở; giáo viên xem trong trang quản lý)
+  function sendImg(res, clip) {
+    if (!/^[a-z0-9-]+$/i.test(clip)) return res.status(404).end();
+    const file = path.join(IMG_DIR, clip + '.jpg'); let stat; try { stat = fs.statSync(file); } catch (e) { return res.status(404).end(); }
+    res.setHeader('Content-Type', 'image/jpeg'); res.setHeader('Content-Length', stat.size); res.setHeader('Cache-Control', 'private, max-age=600');
+    fs.createReadStream(file).pipe(res);
+  }
+  app.get('/api/placement/img/:id/:clip', requireAuth, (req, res) => {
+    const a = loadAttempt(req.params.id); if (!a || a.user_id !== req.user.id) return res.status(404).end();
+    const clip = String(req.params.clip || '');
+    const lf = secForm(a, 'listening'); if (!lf || !lf.units.some((u) => u.id === clip)) return res.status(404).end();
+    const st = a.sec.listening; if (!st || !st.started || st.submitted) return res.status(403).end();
+    sendImg(res, clip);
+  });
+  app.get('/api/placement/admin/img/:clip', requireAuth, staff, (req, res) => { const clip = String(req.params.clip || ''); if (!bank.byId.has(clip)) return res.status(404).end(); sendImg(res, clip); });
 
   // Ngân hàng đề
   const preview = (it) => (it.text || it.title || it.intro || it.prompt || '').replace(/\s+/g, ' ').slice(0, 110);
