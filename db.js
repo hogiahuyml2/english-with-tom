@@ -216,6 +216,24 @@ CREATE TABLE IF NOT EXISTS group_assignments (
 
 // Lớp cho học sinh tự chọn trong Hồ sơ (self_join) + nguồn thêm thành viên (teacher | self | invite)
 tryExec(`
+CREATE TABLE IF NOT EXISTS notebook_state (
+  user_id INTEGER NOT NULL,
+  key TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open',
+  tries INTEGER NOT NULL DEFAULT 0,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, key)
+);
+CREATE TABLE IF NOT EXISTS achievements (
+  user_id INTEGER NOT NULL,
+  key TEXT NOT NULL,
+  tier INTEGER NOT NULL,
+  unlocked_at TEXT NOT NULL,
+  seen INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, key, tier)
+);
+`, 'notebook + achievements');
+tryExec(`
 CREATE TABLE IF NOT EXISTS dictation_runs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,

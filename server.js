@@ -2287,6 +2287,8 @@ app.put('/api/me/class', requireAuth, (req, res) => {
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
 });
 require('./avatar')(app, { db, requireAuth, now });
+require('./notebook')(app, { db, requireAuth, now });
+require('./achievements')(app, { db, requireAuth, now });
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });

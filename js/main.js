@@ -199,7 +199,7 @@
   var roleLabel = { student: 'Học sinh', teacher: 'Giáo viên', admin: 'Quản trị' };
   fetch('/api/me', { credentials: 'same-origin' })
     .then(function (r) { return r.ok ? r.json() : { user: null }; })
-    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); if (d.user && d.avatar) showHeaderAvatar(d.avatar); })
+    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); if (d.user && d.avatar) showHeaderAvatar(d.avatar); if (d.user && d.user.role === 'student') achCheck(); })
     .catch(function () { applyAuth(null); }); // chạy trên GitHub Pages (không có API) -> coi như chưa đăng nhập
 
 
@@ -281,7 +281,7 @@
     var h = '<button type="button" class="js-palette">🎨 Màu &amp; hiệu ứng</button><button type="button" id="mtDark">' + (isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối') + '</button>';
     if (user && (user.role === 'teacher' || user.role === 'admin')) h += '<a href="teacher.html">👨‍🏫 Khu vực giáo viên</a>';
     if (user && user.role === 'admin') h += '<a href="admin.html">⚙️ Quản trị</a>';
-    if (user) h += '<a href="chat.html">💬 Tin nhắn</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
+    if (user) h += '<a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
     else h += '<a href="login.html">Đăng nhập</a><a href="login.html#register" style="background:var(--gradient);color:#fff;border-color:transparent">Đăng ký</a>';
     box.innerHTML = h;
     var d = document.getElementById('mtDark'); if (d) d.onclick = function () { applyTheme(!isDark()); d.innerHTML = isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối'; };
@@ -289,6 +289,23 @@
   }
   fillTools(null);
 
+
+
+  /* ===== Thông báo thành tích mới (huy hiệu) — kiểm tra nhẹ, tối đa 1 lần / 90 giây ===== */
+  function achCheck() {
+    if (/achievements\.html|login\.html/.test(location.pathname) || document.documentElement.classList.contains('ewtg-on')) return;
+    try { var last = +sessionStorage.getItem('ewtAchT') || 0; if (Date.now() - last < 90000) return; sessionStorage.setItem('ewtAchT', String(Date.now())); } catch (e) {}
+    fetch('/api/achievements/new', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d || !d.items || !d.items.length) return;
+      var sig = d.items.map(function (i) { return i.id + i.tier; }).join(',');
+      try { if (sessionStorage.getItem('ewtAchShown') === sig) return; sessionStorage.setItem('ewtAchShown', sig); } catch (e) {}
+      var top = d.items[d.items.length - 1], extra = d.items.length > 1 ? ' và ' + (d.items.length - 1) + ' huy hiệu khác' : '';
+      var st = document.getElementById('achToastCss'); if (!st) { st = document.createElement('style'); st.id = 'achToastCss'; st.textContent = '@keyframes achIn{from{opacity:0;transform:translateY(30px) scale(.92)}to{opacity:1;transform:none}}#achToast{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:9500;max-width:min(360px,calc(100vw - 32px));display:flex;gap:12px;align-items:center;background:var(--surface,#fff);color:var(--text,#2E2B45);border:2px solid #fbbf24;border-radius:18px;padding:12px 16px;box-shadow:0 14px 34px rgba(0,0,0,.22);text-decoration:none;animation:achIn .5s cubic-bezier(.2,.9,.3,1.3) both}#achToast .i{font-size:34px;line-height:1}#achToast b{display:block;font-size:14.5px}#achToast span{font-size:12.5px;color:var(--text-muted,#6B6880)}@media (prefers-reduced-motion:reduce){#achToast{animation:none}}'; document.head.appendChild(st); }
+      var el = document.createElement('a'); el.id = 'achToast'; el.href = 'achievements.html';
+      el.innerHTML = '<div class="i">' + top.icon + '</div><div><b>🏅 Huy hiệu mới: ' + top.name + '!</b><span>' + (top.coins ? '+' + top.coins + ' xu 🪙' : '') + (top.item ? ' · ' + top.item : '') + extra + ' — bấm để xem</span></div>';
+      document.body.appendChild(el); setTimeout(function () { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 450); }, 9000);
+    }).catch(function () {});
+  }
 
   /* ===== Nhân vật (avatar): nạp thư viện vẽ khi cần, gắn vào thanh menu ===== */
   var _avLoading = null;

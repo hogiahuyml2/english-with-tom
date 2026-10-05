@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sổ lỗi sai — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.nb-wrap { max-width: 860px; margin: 0 auto; padding: 14px 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.nb-h1 { font-size: 26px; margin: 4px 0 6px; } .nb-sub { color: var(--text-muted); font-size: 14.5px; line-height: 1.65; margin: 0 0 14px; }
+.nb-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; } .nb-stat { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 12px; text-align: center; } .nb-stat b { display: block; font-size: 24px; } .nb-stat span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.nb-stat.hot b { color: #dc2626; } .nb-stat.ok b { color: var(--success); }
+.nb-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px; scrollbar-width: none; } .nb-tabs::-webkit-scrollbar { display: none; }
+.nb-tab { flex: none; padding: 10px 15px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; min-height: 44px; white-space: nowrap; } .nb-tab.on { background: var(--gradient); color: #fff; border-color: transparent; } .nb-tab b { margin-left: 4px; }
+.nb-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow); transition: opacity .4s, transform .4s, border-color .2s; } .nb-card.gone { opacity: 0; transform: translateX(30px) scale(.97); } .nb-card.shake { animation: nbShake .4s; border-color: #ef4444; } .nb-card.win { border-color: #16a34a; background: rgba(22,163,74,.05); }
+@keyframes nbShake { 0%, 100% { transform: none; } 20% { transform: translateX(-7px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+.nb-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; font-size: 12.5px; color: var(--text-muted); } .nb-chip { background: var(--primary-soft); color: var(--primary); border-radius: 99px; padding: 2px 10px; font-weight: 700; font-size: 12px; }
+.nb-q { font-size: 16px; font-weight: 700; line-height: 1.55; margin-bottom: 10px; }
+.nb-opt { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; padding: 12px 14px; margin-bottom: 8px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: 500 15px/1.45 inherit; font-family: inherit; cursor: pointer; min-height: 48px; } .nb-opt:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .nb-opt b { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--bg-soft); display: grid; place-items: center; font-size: 13px; }
+.nb-opt.was { border-color: #fca5a5; background: rgba(239,68,68,.06); } .nb-opt.bad { border-color: #ef4444; background: rgba(239,68,68,.1); } .nb-opt.good { border-color: #16a34a; background: rgba(22,163,74,.12); font-weight: 700; } .nb-opt:disabled { cursor: default; }
+.nb-msg { font-size: 13.5px; line-height: 1.6; margin-top: 6px; } .nb-msg.bad { color: #dc2626; font-weight: 700; } .nb-msg.good { color: #166534; }
+.nb-exp { background: var(--success-soft); border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.65; margin-top: 8px; }
+.nb-act { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; } .nb-btn { flex: 1 1 140px; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: 800 14.5px inherit; font-family: inherit; cursor: pointer; min-height: 46px; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; } .nb-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; } .nb-btn.ok { background: #16a34a; color: #fff; border-color: transparent; }
+.nb-wrong { font-size: 17px; line-height: 1.7; text-decoration: line-through; color: #b91c1c; background: rgba(239,68,68,.08); border-radius: 10px; padding: 8px 12px; } .nb-right { font-size: 17px; line-height: 1.7; color: #166534; background: rgba(22,163,74,.1); border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-weight: 700; }
+.nb-word { font-size: 24px; font-weight: 800; } .nb-word small { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-left: 6px; }
+.nb-empty { text-align: center; color: var(--text-muted); padding: 44px 12px; font-size: 15px; line-height: 1.7; } .nb-empty .big { font-size: 52px; display: block; margin-bottom: 6px; }
+.nb-note { font-size: 12.5px; color: var(--text-muted); background: var(--bg-soft); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; line-height: 1.6; }
+@media (max-width: 520px) { .nb-h1 { font-size: 22px; } .nb-stat b { font-size: 20px; } .nb-btn { flex-basis: 100%; } }
+</style>
+</head>
+<body data-page="notebook" data-guard="auth">
+<div id="site-header"></div>
+<main class="nb-wrap" id="root"><div class="nb-empty">⏳ Đang tổng hợp các câu bạn cần ôn…</div></main>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script>
+(function () {
+'use strict';
+var root = document.getElementById('root'), D = null, TAB = 'quiz', LET = 'ABCDEFGH', SHOWN = {};
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function api(url, body) { return fetch(url, { method: body ? 'POST' : 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi ' + r.status); return d; }); }); }
+function load() { return api('/api/notebook').then(function (d) { D = d; render(); }).catch(function (e) { root.innerHTML = '<div class="nb-empty">' + esc(e.message) + '</div>'; }); }
+
+function head() {
+  var c = D.counts, total = c.quiz + c.writing + c.words + c.dict;
+  var h = '<h1 class="nb-h1">📒 Sổ lỗi sai</h1><p class="nb-sub">Mọi câu bạn làm sai ở bài trắc nghiệm, bài Writing, từ vựng và chép chính tả được gom về đây. Làm lại cho tới khi nắm chắc — câu nào đúng sẽ chuyển sang “Đã nắm” và biến mất khỏi danh sách cần ôn.</p>';
+  h += '<div class="nb-stats"><div class="nb-stat' + (total ? ' hot' : ' ok') + '"><b>' + total + '</b><span>cần ôn</span></div><div class="nb-stat ok"><b>' + D.stats.week + '</b><span>nắm được tuần này</span></div><div class="nb-stat"><b>' + D.stats.mastered + '</b><span>tổng đã nắm</span></div></div>';
+  var T = [['quiz', '📝 Trắc nghiệm', c.quiz], ['writing', '✍️ Writing', c.writing], ['words', '🔤 Từ vựng', c.words], ['dict', '🎧 Chép chính tả', c.dict], ['done', '✅ Đã nắm', c.mastered]];
+  h += '<div class="nb-tabs">' + T.map(function (t) { return '<button class="nb-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '<b>' + t[2] + '</b></button>'; }).join('') + '</div>';
+  return h;
+}
+function empty(icon, t) { return '<div class="nb-empty"><span class="big">' + icon + '</span>' + t + '</div>'; }
+
+function quizCard(it) {
+  var h = '<div class="nb-card" id="c-' + esc(it.key) + '" data-key="' + esc(it.key) + '"><div class="nb-meta"><span class="nb-chip">' + esc(it.tag) + '</span><span>' + esc(it.src) + '</span></div><div class="nb-q">' + esc(it.q) + '</div>';
+  h += it.options.map(function (o, i) { return '<button class="nb-opt' + (i === it.picked ? ' was' : '') + '" data-pick="' + i + '"><b>' + LET[i] + '</b><span>' + esc(o) + '</span></button>'; }).join('');
+  h += '<div class="nb-msg" id="m-' + esc(it.key) + '">' + (it.picked >= 0 ? 'Lần trước bạn chọn <b>' + LET[it.picked] + '</b> (chưa đúng). Hãy chọn lại nhé!' : 'Lần trước bạn chưa trả lời câu này. Hãy thử nhé!') + '</div>';
+  if (it.reveal) h += '<div class="nb-act"><button class="nb-btn" data-reveal="1">👁 Xem đáp án &amp; giải thích</button></div>';
+  return h + '</div>';
+}
+function writingCard(it) {
+  return '<div class="nb-card" data-key="' + esc(it.key) + '"><div class="nb-meta"><span class="nb-chip">' + esc(it.tag) + '</span><span>' + esc(it.src) + '</span></div><div class="nb-wrong">' + esc(it.wrong) + '</div><div id="r-' + esc(it.key) + '"><div class="nb-msg">Bạn thử nhớ cách sửa đúng, rồi bấm xem đáp án nhé.</div><div class="nb-act"><button class="nb-btn pri" data-show="1">💡 Hiện cách sửa đúng</button></div></div></div>';
+}
+function wordCard(it) {
+  return '<div class="nb-card" data-key="' + esc(it.key) + '"><div class="nb-meta"><span class="nb-chip">Sai ' + it.wrong + ' lần</span></div><div class="nb-word">' + esc(it.word) + '<small>' + esc(it.pos) + '</small></div><div id="r-' + esc(it.key) + '"><div class="nb-act"><button class="nb-btn pri" data-showw="1">👀 Hiện nghĩa</button></div></div></div>';
+}
+function render() {
+  var h = head(), L;
+  if (TAB === 'quiz') {
+    h += '<div class="nb-note">Chọn đáp án bạn cho là đúng. Hệ thống chỉ báo “đúng / chưa đúng” — khi bạn tìm ra đáp án đúng, câu đó được tính là <b>đã nắm</b>.</div>';
+    h += D.quiz.length ? D.quiz.map(quizCard).join('') : empty('🎉', 'Không còn câu trắc nghiệm nào cần ôn.<br>Làm thêm bài ở mục “Bài tập được giao” hoặc “Chương trình”.');
+  } else if (TAB === 'writing') {
+    h += D.writing.length ? '<div class="nb-note">Đây là các lỗi giáo viên / AI đã chỉ ra trong bài Writing của bạn. Hãy tự sửa trong đầu trước, rồi mới xem đáp án.</div>' + D.writing.map(writingCard).join('') : empty('✍️', 'Chưa có lỗi Writing nào trong sổ.<br>Lỗi sẽ hiện ở đây khi giáo viên chấm xong và cho phép bạn xem danh sách lỗi.');
+  } else if (TAB === 'words') {
+    h += D.words.length ? '<div class="nb-note">Các từ bạn hay trả lời sai ở mục Luyện từ. <a href="word-hub.html" style="color:var(--primary);font-weight:700">Ôn trong Luyện từ →</a></div>' + D.words.map(wordCard).join('') : empty('🔤', 'Bạn chưa có từ nào hay sai. Tuyệt vời!<br><a href="word-hub.html" style="color:var(--primary);font-weight:700">Học thêm từ mới →</a>');
+  } else if (TAB === 'dict') {
+    h += D.dict.length ? '<div class="nb-note">Các câu chép chính tả bạn làm dưới 85%. Luyện lại để lên điểm cao hơn — câu đạt từ 85% sẽ tự rời khỏi danh sách này.</div><div class="nb-act" style="margin:0 0 12px"><a class="nb-btn pri" href="dictation.html?retry=1">🎧 Luyện lại ' + Math.min(10, D.dict.length) + ' câu thấp điểm nhất</a></div>' + D.dict.map(function (x) { return '<div class="nb-card"><div class="nb-meta"><span class="nb-chip">' + esc(x.lv) + '</span><span>Điểm cao nhất: <b>' + x.best + '%</b> · đã luyện ' + x.times + ' lần</span></div><div class="nb-q" style="font-weight:600">' + esc(x.text) + '</div></div>'; }).join('') : empty('🎧', 'Không có câu chép chính tả nào dưới 85%.<br><a href="dictation.html" style="color:var(--primary);font-weight:700">Luyện thêm →</a>');
+  } else {
+    var any = D.done.quiz.length + D.done.writing.length + D.done.words.length;
+    h += any ? '<div class="nb-note">Những câu bạn đã nắm. Bấm “Mở lại” nếu muốn ôn thêm.</div>' + D.done.quiz.map(function (x) { return doneRow(x.key, x.q, x.tag); }).join('') + D.done.writing.map(function (x) { return doneRow(x.key, x.wrong + ' → ' + x.right, x.tag); }).join('') + D.done.words.map(function (x) { return doneRow(x.key, x.word + ' — ' + x.meaning, 'Từ vựng'); }).join('') : empty('✅', 'Chưa có câu nào được đánh dấu đã nắm.');
+  }
+  root.innerHTML = h;
+}
+function doneRow(key, text, tag) { return '<div class="nb-card" data-key="' + esc(key) + '"><div class="nb-meta"><span class="nb-chip">' + esc(tag) + '</span></div><div class="nb-q" style="font-weight:600;font-size:15px">' + esc(text) + '</div><div class="nb-act"><button class="nb-btn" data-reopen="1">↺ Mở lại</button></div></div>'; }
+function dropCard(card, listKey, key) {
+  card.classList.add('win'); setTimeout(function () { card.classList.add('gone'); setTimeout(function () { var i = D[listKey].findIndex(function (x) { return x.key === key; }); if (i >= 0) { D[listKey].splice(i, 1); } var cnt = { quiz: 'quiz', writing: 'writing', words: 'words' }[listKey]; D.counts[cnt]--; D.counts.mastered++; D.stats.week++; D.stats.mastered++; render(); }, 380); }, 900);
+}
+
+root.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); render(); return; }
+  var card = t.closest('.nb-card'), key = card && card.getAttribute('data-key');
+  if ((el = t.closest('[data-pick]'))) {
+    if (el.disabled) return; var pick = Number(el.getAttribute('data-pick')); var it = D.quiz.filter(function (x) { return x.key === key; })[0];
+    card.querySelectorAll('.nb-opt').forEach(function (b) { b.disabled = true; });
+    api('/api/notebook/check', { key: key, pick: pick }).then(function (r) {
+      var msg = card.querySelector('.nb-msg');
+      if (r.correct) {
+        card.querySelectorAll('.nb-opt').forEach(function (b) { b.classList.remove('was'); }); el.classList.add('good'); msg.className = 'nb-msg good'; msg.innerHTML = '🎉 <b>Chính xác!</b> Câu này đã được tính là đã nắm.' + (r.exp ? '<div class="nb-exp">💡 ' + esc(r.exp) + '</div>' : '');
+        dropCard(card, 'quiz', key);
+      } else {
+        el.classList.add('bad'); card.classList.add('shake'); setTimeout(function () { card.classList.remove('shake'); card.querySelectorAll('.nb-opt').forEach(function (b) { if (!b.classList.contains('bad')) b.disabled = false; }); }, 450);
+        msg.className = 'nb-msg bad'; msg.textContent = 'Chưa đúng — đọc kỹ câu hỏi và thử đáp án khác nhé!';
+      }
+    }).catch(function (er) { card.querySelectorAll('.nb-opt').forEach(function (b) { b.disabled = false; }); var m = card.querySelector('.nb-msg'); m.className = 'nb-msg bad'; m.textContent = er.message; });
+    return;
+  }
+  if ((el = t.closest('[data-reveal]'))) {
+    var q = D.quiz.filter(function (x) { return x.key === key; })[0]; if (!q || !q.reveal) return;
+    card.querySelectorAll('.nb-opt').forEach(function (b, i) { b.disabled = true; if (i === q.reveal.answer) b.classList.add('good'); });
+    var m2 = card.querySelector('.nb-msg'); m2.className = 'nb-msg good'; m2.innerHTML = 'Đáp án đúng: <b>' + LET[q.reveal.answer] + '</b>' + (q.reveal.exp ? '<div class="nb-exp">💡 ' + esc(q.reveal.exp) + '</div>' : '');
+    el.outerHTML = '<button class="nb-btn ok" data-mark="quiz">✓ Mình đã hiểu</button>'; return;
+  }
+  if ((el = t.closest('[data-show]'))) {
+    var w = D.writing.filter(function (x) { return x.key === key; })[0]; if (!w) return;
+    document.getElementById('r-' + key).innerHTML = '<div class="nb-right">✅ ' + esc(w.right) + '</div>' + (w.why ? '<div class="nb-exp">💡 ' + esc(w.why) + '</div>' : '') + (w.rule ? '<div class="nb-msg">📌 Quy tắc: <b>' + esc(w.rule) + '</b></div>' : '') + '<div class="nb-act"><button class="nb-btn ok" data-mark="writing">✓ Đã nhớ</button><button class="nb-btn" data-skip="1">Để sau</button></div>'; return;
+  }
+  if ((el = t.closest('[data-showw]'))) {
+    var wd = D.words.filter(function (x) { return x.key === key; })[0]; if (!wd) return;
+    document.getElementById('r-' + key).innerHTML = '<div class="nb-right">' + esc(wd.meaning) + '</div>' + (wd.example ? '<div class="nb-msg"><i>' + esc(wd.example) + '</i></div>' : '') + '<div class="nb-act"><button class="nb-btn ok" data-mark="words">✓ Đã nhớ</button><button class="nb-btn" data-skip="1">Để sau</button></div>'; return;
+  }
+  if ((el = t.closest('[data-mark]'))) {
+    var lk = el.getAttribute('data-mark'); el.disabled = true;
+    api('/api/notebook/mark', { key: key, done: true }).then(function () { dropCard(card, lk, key); }).catch(function () { el.disabled = false; }); return;
+  }
+  if ((el = t.closest('[data-skip]'))) { render(); return; }
+  if ((el = t.closest('[data-reopen]'))) { api('/api/notebook/mark', { key: key, done: false }).then(load); }
+});
+load();
+})();
+</script>
+</body>
+</html>

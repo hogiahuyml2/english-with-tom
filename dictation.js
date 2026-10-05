@@ -47,9 +47,15 @@ module.exports = function (app, { db, requireAuth, now }) {
     const mode = b.mode === 'listen' ? 'listen' : 'dictate';
     const n = Math.max(8, Math.min(10, parseInt(b.n, 10) || 10));
     if (db.prepare('SELECT COUNT(*) AS c FROM dictation_runs WHERE user_id=? AND created_at>?').get(req.user.id, new Date(Date.now() - 3600e3).toISOString()).c >= 60) return res.status(429).json({ error: 'Bạn bắt đầu quá nhiều lượt trong 1 giờ. Hãy nghỉ một chút rồi luyện tiếp nhé.' });
+    const seen = new Map(db.prepare('SELECT item_id, times, best, last_at FROM dictation_seen WHERE user_id=?').all(req.user.id).map((r) => [r.item_id, r]));
+    let items;
+    if (b.retry) { // "Luyện lại câu sai": các câu chép chính tả điểm thấp của chính học sinh (lấy từ Sổ lỗi sai)
+      const low = db.prepare('SELECT item_id FROM dictation_seen WHERE user_id=? AND times>0 AND best IS NOT NULL AND best<85 ORDER BY best ASC, last_at ASC LIMIT 10').all(req.user.id).map((r) => byId.get(r.item_id)).filter(Boolean);
+      if (!low.length) return res.status(400).json({ error: 'Bạn chưa có câu chép chính tả nào cần luyện lại. Giỏi quá! 🎉' });
+      items = shuffle(low);
+    } else {
     let pool = bank.filter((x) => (lv === 'all' || x.lv === lv) && (kind === 'any' || x.kind === kind));
     if (pool.length < 4) return res.status(400).json({ error: 'Cấp độ / loại câu này chưa đủ câu để luyện. Hãy chọn “Cả hai loại” hoặc cấp độ khác.' });
-    const seen = new Map(db.prepare('SELECT item_id, times, best, last_at FROM dictation_seen WHERE user_id=?').all(req.user.id).map((r) => [r.item_id, r]));
     // 3 nhóm ưu tiên: (1) câu CHƯA TỪNG hiện ra, (2) câu từng hiện ra nhưng chưa làm (bỏ dở), (3) câu đã làm — điểm thấp trước, rồi lâu chưa luyện
     const fresh = shuffle(pool.filter((x) => !seen.has(x.id)));
     const shownOnly = shuffle(pool.filter((x) => seen.has(x.id) && !seen.get(x.id).times)).sort((a, c) => String(seen.get(a.id).last_at).localeCompare(String(seen.get(c.id).last_at)));
@@ -61,7 +67,8 @@ module.exports = function (app, { db, requireAuth, now }) {
     for (const cap of [2, 99]) { // lần 1: tối đa 2 câu / đoạn nghe (đa dạng); lần 2: lấp chỗ còn thiếu
       for (const x of order) { if (pick.length >= n) break; if (pick.includes(x)) continue; const c = clipOf(x.id); if ((per[c] || 0) >= cap) continue; pick.push(x); per[c] = (per[c] || 0) + 1; }
     }
-    const items = shuffle(pick.slice(0, Math.min(n, pick.length)));
+    items = shuffle(pick.slice(0, Math.min(n, pick.length)));
+    }
     const showT = now(), ins = db.prepare('INSERT OR IGNORE INTO dictation_seen (user_id,item_id,times,best,last_at) VALUES (?,?,0,NULL,?)'), upd = db.prepare('UPDATE dictation_seen SET last_at=? WHERE user_id=? AND item_id=? AND times=0');
     for (const x of items) { ins.run(req.user.id, x.id, showT); upd.run(showT, req.user.id, x.id); } // đánh dấu "đã hiện" để lượt sau ưu tiên câu khác
     const r = db.prepare('INSERT INTO dictation_runs (user_id,level,kind,mode,items,created_at) VALUES (?,?,?,?,?,?)')

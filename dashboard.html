@@ -427,16 +427,20 @@
         <h2 id="pfName">Đang tải...</h2>
         <div class="sub" id="pfRole"></div>
       </div>
-      <a href="avatar.html" class="btn" style="margin-left:auto;">🎭 Nhân vật</a>
+      <a href="notebook.html" class="btn" style="margin-left:auto;">📒 Sổ lỗi sai</a>
+      <a href="achievements.html" class="btn">🏅 Thành tích</a>
+      <a href="avatar.html" class="btn">🎭 Nhân vật</a>
       <a href="account.html" class="btn">⚙️ Cài đặt tài khoản</a>
     </div>
 
     <!-- Verify banner -->
     <div id="verifyBanner" style="display:none;"></div>
     <div id="avBanner" style="display:none;"></div>
+    <div id="nbBanner" style="display:none;"></div>
     <div id="clBanner" style="display:none;"></div>
     <div id="plBanner" style="display:none;"></div>
     <div id="lbCard" style="display:none;"></div>
+    <div id="achCard" style="display:none;"></div>
     <div id="ewtInstallMount"></div>
 
     <!-- Stat cards -->
@@ -576,7 +580,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=33"></script>
+<script src="js/main.js?v=34"></script>
 <script>
 var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
 var G_allSubs = [];
@@ -1002,6 +1006,23 @@ async function loadProgress() {
         : '<span>🏫 Bạn học lớp nào của thầy/cô? Chọn lớp để nhận bài tập theo lớp (bỏ qua nếu bạn tự học).</span><a class="btn btn-sm btn-primary" href="account.html">Chọn lớp</a>';
     }).catch(function(){});
 
+
+    fetch('/api/notebook/count',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if (!d || !d.open) return; var nb = document.getElementById('nbBanner'); nb.className = 'note';
+      nb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;background:var(--warning-soft);border-color:transparent;color:var(--text)';
+      nb.innerHTML = '<span>📒 Bạn có <b>' + d.open + ' câu</b> cần ôn trong <b>Sổ lỗi sai</b>. Ôn lại để nắm chắc nhé!</span><a class="btn btn-sm btn-primary" href="notebook.html">Ôn ngay</a>';
+    }).catch(function(){});
+    fetch('/api/achievements',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if (!d || !d.items) return; var box = document.getElementById('achCard');
+      function draw() {
+        var B = window.EWTBadges; if (!B) return;
+        var got = d.items.filter(function(i){return i.tier>0;}).sort(function(a,b){ return b.tier - a.tier; }).slice(0, 6);
+        box.className = 'lb-card'; box.style.display = '';
+        box.innerHTML = '<div class="lb-head"><h3>🏅 Thành tích · ' + d.summary.got + '/' + d.summary.total + '</h3><a class="btn btn-sm" href="achievements.html">Xem tất cả</a></div>' +
+          (got.length ? '<div style="display:flex;gap:6px;flex-wrap:wrap">' + got.map(function(i){ var a = B.find(i.id); return '<div title="' + a.name + '" style="width:64px">' + B.render(a, i.tier, 64) + '</div>'; }).join('') + '</div>' : '<div class="lb-note">Chưa có huy hiệu nào — làm bài, ôn từ, chép chính tả để mở khoá huy hiệu đầu tiên và nhận xu 🪙 nhé!</div>');
+      }
+      if (window.EWTBadges) draw(); else { var sc = document.createElement('script'); sc.src = 'js/badges.js?v=1'; sc.onload = draw; document.head.appendChild(sc); }
+    }).catch(function(){});
     if (window.ewtInstallCard) ewtInstallCard(document.getElementById('ewtInstallMount'));
     var lbMetric = 'avg';
     function lbLoad() {

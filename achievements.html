@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Thành tích — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.ac-wrap { max-width: 1000px; margin: 0 auto; padding: 14px 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.ac-h1 { font-size: 26px; margin: 4px 0 6px; } .ac-sub { color: var(--text-muted); font-size: 14.5px; line-height: 1.65; margin: 0 0 14px; }
+.ac-top { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; background: var(--surface); border: 1.5px solid var(--border); border-radius: 20px; padding: 14px 18px; box-shadow: var(--shadow); margin-bottom: 14px; position: relative; overflow: hidden; }
+.ac-top:before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316, #ec4899, #8b5cf6); }
+.ac-ring { position: relative; width: 78px; height: 78px; flex: none; } .ac-ring svg { width: 78px; height: 78px; transform: rotate(-90deg); } .ac-ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 17px; }
+.ac-top .t { flex: 1; min-width: 180px; } .ac-top .t b { font-size: 18px; display: block; } .ac-top .t span { font-size: 13.5px; color: var(--text-muted); }
+.ac-coin { background: var(--warning-soft); color: #92400e; border-radius: 99px; padding: 6px 14px; font-weight: 800; font-size: 14px; text-decoration: none; }
+.ac-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; } .ac-tab { padding: 9px 15px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 42px; } .ac-tab.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.ac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.ac-card { position: relative; background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; box-shadow: var(--shadow); } .ac-card.got { border-color: #fcd34d; background: linear-gradient(180deg, rgba(253,224,71,.12), var(--surface) 60%); } .ac-card.max { border-color: #f59e0b; }
+.ac-new { position: absolute; top: -8px; right: 12px; background: #ef4444; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 10px; border-radius: 99px; animation: acPulse 1.4s ease-in-out infinite; } @keyframes acPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.ac-badge { flex: none; width: 84px; } .ac-badge svg { width: 84px; height: auto; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,.18)); }
+.ac-body { flex: 1; min-width: 0; } .ac-body h3 { margin: 0 0 2px; font-size: 16px; } .ac-body p { margin: 0 0 8px; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.ac-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; } .ac-bar i { display: block; height: 100%; background: var(--gradient); border-radius: 99px; } .ac-pr { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-muted); margin: 4px 0 8px; font-weight: 600; }
+.ac-tiers { display: flex; flex-direction: column; gap: 4px; } .ac-t { display: flex; gap: 6px; align-items: baseline; font-size: 12.5px; line-height: 1.45; color: var(--text-muted); } .ac-t.on { color: var(--text); font-weight: 700; } .ac-t i { font-style: normal; flex: none; width: 18px; } .ac-t small { color: var(--text-faint); font-weight: 600; }
+.ac-go { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--primary); text-decoration: none; }
+.ac-ov { position: fixed; inset: 0; z-index: 9999; background: rgba(15,23,42,.8); display: grid; place-items: center; padding: 16px; animation: acFade .25s ease both; } @keyframes acFade { from { opacity: 0; } to { opacity: 1; } }
+.ac-pop { position: relative; max-width: 420px; width: 100%; background: var(--surface); color: var(--text); border-radius: 26px; padding: 26px 22px 22px; text-align: center; overflow: hidden; animation: acPop .55s cubic-bezier(.2,.9,.3,1.3) both; } @keyframes acPop { from { transform: scale(.6) translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.ac-rays { position: absolute; left: 50%; top: 150px; width: 460px; height: 460px; margin: -230px 0 0 -230px; background: repeating-conic-gradient(rgba(253,224,71,.28) 0 10deg, transparent 10deg 20deg); border-radius: 50%; animation: acSpin 14s linear infinite; mask-image: radial-gradient(circle, #000 20%, transparent 68%); -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 68%); } @keyframes acSpin { to { transform: rotate(360deg); } }
+.ac-pop > * { position: relative; } .ac-pop .big svg { width: 150px; height: auto; animation: acBob 2.4s ease-in-out infinite; filter: drop-shadow(0 10px 18px rgba(0,0,0,.3)); } @keyframes acBob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+.ac-pop h2 { margin: 8px 0 4px; font-size: 22px; } .ac-pop p { margin: 0 0 6px; color: var(--text-muted); font-size: 14.5px; line-height: 1.6; } .ac-gift { display: inline-block; margin: 8px 0 12px; background: var(--warning-soft); color: #92400e; border-radius: 14px; padding: 8px 14px; font-weight: 800; font-size: 14.5px; }
+.ac-pop .row { display: flex; gap: 8px; flex-wrap: wrap; } .ac-pop .row a, .ac-pop .row button { flex: 1 1 140px; border-radius: 12px; padding: 13px 14px; font: 800 15px inherit; font-family: inherit; cursor: pointer; text-decoration: none; min-height: 48px; border: 2px solid var(--border); background: var(--surface); color: var(--text); display: inline-flex; align-items: center; justify-content: center; } .ac-pop .row .pri { background: var(--gradient); color: #fff; border-color: transparent; }
+.ac-conf { position: absolute; top: -10px; width: 9px; height: 14px; opacity: 0; animation: acConf 2.6s ease-out forwards; } @keyframes acConf { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(440px) rotate(540deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ac-pop, .ac-rays, .ac-pop .big svg, .ac-conf, .ac-new { animation: none !important; } .ac-conf { display: none; } }
+@media (max-width: 520px) { .ac-h1 { font-size: 22px; } .ac-grid { grid-template-columns: 1fr; } .ac-badge { width: 72px; } .ac-badge svg { width: 72px; } }
+</style>
+</head>
+<body data-page="achievements" data-guard="auth">
+<div id="site-header"></div>
+<main class="ac-wrap" id="root"><div style="text-align:center;color:var(--text-muted);padding:40px">⏳ Đang tải thành tích…</div></main>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script src="js/badges.js?v=1"></script>
+<script>
+(function () {
+'use strict';
+var B = window.EWTBadges, root = document.getElementById('root'), D = null, TAB = 'all';
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function api(url, body) { return fetch(url, { method: body ? 'POST' : 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(function (r) { return r.json().catch(function () { return {}; }); }); }
+function fd(t) { try { return new Date(t).toLocaleDateString('vi-VN'); } catch (e) { return ''; } }
+
+function render() {
+  var s = D.summary, pct = s.total ? s.got / s.total : 0, C = 2 * Math.PI * 34;
+  var h = '<h1 class="ac-h1">🏅 Thành tích</h1><p class="ac-sub">Học đều, làm bài tốt, ôn lại lỗi sai… bạn sẽ tự động mở khoá huy hiệu. Mỗi huy hiệu có 3 bậc <b>Đồng · Bạc · Vàng</b>, mở khoá bậc nào là nhận ngay <b>xu 🪙</b> và đôi khi cả <b>đồ cho nhân vật</b>.</p>';
+  h += '<div class="ac-top"><div class="ac-ring"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" stroke-width="8"/><circle cx="40" cy="40" r="34" fill="none" stroke="#f59e0b" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + (C * pct).toFixed(1) + ' ' + C.toFixed(1) + '"/></svg><b>' + s.got + '/' + s.total + '</b></div><div class="t"><b>Đã mở khoá ' + s.got + ' / ' + s.total + ' bậc huy hiệu</b><span>Tiếp tục học để thu thập đủ bộ nhé!</span></div><a class="ac-coin" href="avatar.html" title="Dùng xu để mở khoá đồ cho nhân vật">🪙 ' + D.coins + ' xu</a><a class="ac-coin" style="background:var(--primary-soft);color:var(--primary)" href="avatar.html">🎭 Nhân vật</a></div>';
+  var T = [['all', 'Tất cả'], ['got', '✅ Đã mở'], ['near', '🔥 Sắp đạt'], ['todo', '🔒 Chưa mở']];
+  h += '<div class="ac-tabs">' + T.map(function (t) { return '<button class="ac-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div><div class="ac-grid">';
+  var shown = 0;
+  D.items.forEach(function (it) {
+    var a = B.find(it.id); if (!a) return; var n = a.tiers.length, frac = it.next ? Math.min(1, it.value / it.next) : 1;
+    if (TAB === 'got' && !it.tier) return; if (TAB === 'todo' && it.tier) return; if (TAB === 'near' && !(it.next && frac >= 0.5)) return; shown++;
+    var cur = it.next ? B.textOf(a, it.tier) : 'Bạn đã đạt bậc cao nhất! 🎉';
+    h += '<div class="ac-card' + (it.tier ? ' got' : '') + (it.tier === n ? ' max' : '') + '">' + (it.unseen ? '<span class="ac-new">MỚI!</span>' : '') + '<div class="ac-badge">' + B.render(a, it.tier, 84) + '</div><div class="ac-body"><h3>' + esc(a.name) + '</h3><p>' + esc(cur) + '</p>' +
+      (it.next ? '<div class="ac-bar"><i style="width:' + Math.round(frac * 100) + '%"></i></div><div class="ac-pr"><span>' + it.value + ' / ' + it.next + (a.unit ? ' ' + a.unit : '') + '</span><span>' + Math.round(frac * 100) + '%</span></div>' : '') +
+      '<div class="ac-tiers">' + it.tiers.map(function (t, i) { var rw = t.reward, gift = (rw.coins ? '+' + rw.coins + '🪙' : '') + (rw.item_name ? ' · ' + rw.item_name : ''); return '<div class="ac-t' + (t.at ? ' on' : '') + '"><i>' + (t.at ? '✅' : '🔒') + '</i><span>' + B.TIER_NAME[B.look(n, i)] + ': ' + esc(a.tiers[i]) + (a.unit ? ' ' + a.unit : '') + ' <small>' + (gift ? '🎁 ' + esc(gift) : '') + (t.at ? ' · ' + fd(t.at) : '') + '</small></span></div>'; }).join('') + '</div>' +
+      (it.next ? '<a class="ac-go" href="' + a.link + '">' + esc(a.how) + ' →</a>' : '') + '</div></div>';
+  });
+  h += '</div>' + (shown ? '' : '<div style="text-align:center;color:var(--text-muted);padding:30px">Chưa có huy hiệu nào trong mục này.</div>');
+  root.innerHTML = h;
+}
+
+/* ───── ăn mừng khi có huy hiệu mới ───── */
+function celebrate(list, done) {
+  if (!list.length) { done && done(); return; }
+  var x = list.shift(), a = B.find(x.id); if (!a) { celebrate(list, done); return; }
+  var tn = B.TIER_NAME[B.look(x.tiers, x.tier - 1)], ov = document.createElement('div'); ov.className = 'ac-ov';
+  var colors = ['#f59e0b', '#ef4444', '#3b82f6', '#22c55e', '#a855f7', '#ec4899'], conf = '';
+  for (var i = 0; i < 26; i++) conf += '<span class="ac-conf" style="left:' + Math.round(Math.random() * 100) + '%;background:' + colors[i % 6] + ';animation-delay:' + (Math.random() * 0.8).toFixed(2) + 's"></span>';
+  var gift = (x.coins ? '+' + x.coins + ' xu 🪙' : '') + (x.item ? (x.coins ? ' và ' : '') + 'món “' + esc(x.item) + '” cho nhân vật 🎭' : '');
+  ov.innerHTML = '<div class="ac-pop" role="dialog" aria-label="Huy hiệu mới">' + conf + '<div class="ac-rays"></div><div class="big">' + B.render(a, x.tier, 150) + '</div><h2>Huy hiệu ' + esc(a.name) + ' — bậc ' + tn + '!</h2><p>' + esc(x.text) + '. Chúc mừng bạn! 🎉</p>' + (gift ? '<div class="ac-gift">🎁 Quà: ' + gift + '</div>' : '') + '<div class="row">' + (x.item ? '<a class="pri" href="avatar.html">🎭 Mặc thử ngay</a>' : '') + '<button class="' + (x.item ? '' : 'pri') + '" id="acOk">Tuyệt vời!</button></div></div>';
+  document.body.appendChild(ov);
+  ov.querySelector('#acOk').onclick = function () { ov.remove(); celebrate(list, done); };
+}
+
+api('/api/achievements').then(function (d) {
+  D = d; render();
+  return api('/api/achievements/new');
+}).then(function (r) {
+  var list = (r && r.items) || [];
+  if (list.length) celebrate(list.slice(0, 8), function () { api('/api/achievements/seen', {}).then(function () { return api('/api/achievements'); }).then(function (d2) { D = d2; render(); }); });
+}).catch(function () { if (!D) root.innerHTML = '<div style="text-align:center;padding:40px">Không tải được thành tích.</div>'; });
+document.addEventListener('click', function (e) { var t = e.target.closest('[data-tab]'); if (t && D) { TAB = t.getAttribute('data-tab'); render(); } });
+})();
+</script>
+</body>
+</html>

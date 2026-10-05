@@ -52,7 +52,7 @@
 <div id="site-header"></div>
 <main class="dc-wrap" id="root"><div class="dc-empty">⏳ Đang tải…</div></main>
 <div id="site-footer"></div>
-<script src="js/main.js?v=33"></script>
+<script src="js/main.js?v=34"></script>
 <script>
 (function () {
 'use strict';
@@ -193,7 +193,8 @@ function finish(early) {
   }).catch(function (e) { setup(e.message); });
 }
 function setupThenStart() { root.innerHTML = '<div class="dc-empty">⏳ Đang chọn câu mới…</div>'; api('/api/dictation/run', { lv: SEL.lv, kind: SEL.kind, mode: SEL.mode, n: 10 }).then(function (r) { RUN = r; RUN.res = {}; I = 0; show(); }).catch(function (e) { META = null; setup(e.message); }); }
-setup();
+if (/[?&]retry=1/.test(location.search)) { root.innerHTML = '<div class="dc-empty">⏳ Đang lấy các câu bạn cần luyện lại…</div>'; api('/api/dictation/run', { retry: true, mode: 'dictate', n: 10 }).then(function (r) { RUN = r; RUN.res = {}; I = 0; show(); }).catch(function (e) { setup(e.message); }); }
+else setup();
 })();
 </script>
 </body>
