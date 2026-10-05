@@ -97,6 +97,12 @@ const relabel = {
   'ket1-r1-3': 'A1', 'ket2-r1-1': 'A1', 'ket2-r1-3': 'A1', 'ket3-r1-5': 'A1', 'ket5-r1-4': 'A1', 'ket6-r1-1': 'A1',
 };
 
+// Câu bị loại sau khi rà soát (có hơn 1 đáp án hợp lý → không đủ độ tin cậy). Giữ trong ngân hàng để tham khảo, KHÔNG dùng để ra đề.
+const retire = {
+  'fce-sushi-6': 'add / place / spread đều hợp lý trong ngữ cảnh',
+  'fce-dog-1': '"become" và "turn into" đều đúng ngữ pháp',
+};
+
 function apply(items) {
   const byId = new Map(items.map((i) => [i.id, i]));
   for (const [id, wrong] of Object.entries(convert)) {
@@ -106,6 +112,7 @@ function apply(items) {
     it.type = 'mcq'; it.opts = opts; it.a = 0; it.q = 'Choose the word or phrase that best fills the gap.'; delete it.accept; it.converted = true;
   }
   for (const [id, lv] of Object.entries(relabel)) { const it = byId.get(id); if (!it) throw new Error('relabel: không thấy ' + id); it.lv = lv; }
+  for (const id of Object.keys(retire)) { const it = byId.get(id); if (it) { it.retired = true; it.spare = true; it.note = retire[id]; } }
   // câu điền từ ngữ pháp chưa chuyển → dự phòng (đề ngữ pháp chỉ dùng trắc nghiệm)
   for (const it of items) if (it.type === 'fill' && it.sk === 'grammar') it.spare = true;
   return items.concat(extra);

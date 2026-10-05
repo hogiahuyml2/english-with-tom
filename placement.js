@@ -42,7 +42,7 @@ module.exports = function registerPlacement(app, { db, requireAuth, requireRole,
     if (!force && _active && Date.now() - _activeAt < 20000) return _active;
     const rows = itemRows(); const list = [];
     for (const it of bank.all) {
-      const row = rows.get(it.id); if (!row || !row.enabled) continue;
+      const row = rows.get(it.id); if (!row || !row.enabled || it.retired) continue;
       if (it.type === 'listen' && !manifest[it.id]) continue; // chưa có file âm thanh → không dùng
       list.push(withOverrides(it, row));
     }
