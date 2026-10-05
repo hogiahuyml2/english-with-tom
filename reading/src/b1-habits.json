@@ -1,0 +1,217 @@
+{
+ "id": "b1-habits",
+ "level": "B1",
+ "title": "Make a Habit of Learning English",
+ "topic": "Study skills",
+ "words": 480,
+ "minutes": 7,
+ "source": {
+  "name": "VOA Learning English — Make a Habit of Learning English",
+  "url": "https://learningenglish.voanews.com/a/make-a-habit-of-learning-english/5637443.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Since the beginning of the coronavirus crisis, many people have had to change their habits, or usual ways of doing things.",
+  "Some people who used to go to school now study at home. Some of them have been trying to get in the habit of learning and studying on their own.",
+  "Habits are regular ways of dealing with your environment. You generally do not pay attention to them.",
+  "Habits take many forms – eating, exercising, even studying. You may not realize it, but habits make up many of the actions that you do every day.",
+  "In the book Atomic Habits , James Clear describes a four-step process by which habits are made. These steps are cue, craving, response, and reward.",
+  "The cue tells your brain to begin a behavior. The craving is what makes you want to do something. The response is the actual habit that you perform. The response, in turn, gives you a reward. “Rewards are the end goal of every habit,” Clear writes.",
+  "Consider this example. Maybe you have the habit of often checking social media. The cue might be a feeling of boredom while you are near your computer or phone. The craving could be a desire to stop that feeling. The response is checking social media, and the reward is seeing something interesting. When that process is repeated many times, it becomes a habit.",
+  "You should organize your surroundings in such a way that the cues of your new habit are very obvious. For example, if you want to get in the habit of studying English every day, leave English books or notes in a very clear place.",
+  "To make your habit attractive, Clear recommends joining a culture where your new desired behavior is the normal behavior. For example, you could join a group of other English learners in online meetings.",
+  "To make your new habit easy, you could decrease the number of steps you have to take in order to study. You could also try reducing the amount of time you study. Clear suggests beginning your habits with limited, shorter time periods – two minutes for example. As you repeat the practice over time, you can go longer.",
+  "An important point to keep in mind is that if you place too many demands on yourself, you are more likely to give up on your new habit.",
+  "Finally, you need to make your habit satisfying. You can give yourself a reward after completing your new habit. For example, if you study English for 15 minutes, you could reward yourself by listening to a song you like. Or you could think about how much progress you have made since you first started studying English.",
+  "Building new habits can take time. You may have to repeat an action many times before it becomes a habit. But with time, careful planning and continued practice, you can do it."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How does the text describe habits?",
+   "options": [
+    "Special skills you learn at school",
+    "Regular ways of dealing with your environment that you usually do not think about",
+    "Actions that you do only once",
+    "Things that other people make you do"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “Habits are regular ways of dealing with your environment. You generally do not pay attention to them.”"
+  },
+  {
+   "type": "mcq",
+   "q": "According to James Clear, which four steps make a habit?",
+   "options": [
+    "Cue, craving, response, reward",
+    "Plan, practice, repeat, reward",
+    "Idea, action, result, habit",
+    "Goal, effort, test, success"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: “These steps are cue, craving, response, and reward.”"
+  },
+  {
+   "type": "mcq",
+   "q": "In the example of checking social media, what is the cue?",
+   "options": [
+    "Seeing something interesting",
+    "A feeling of boredom when you are near your computer or phone",
+    "The desire to stop a feeling",
+    "Putting your phone away"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 7: “The cue might be a feeling of boredom while you are near your computer or phone.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does Clear suggest about the time you study when you start a new habit?",
+   "options": [
+    "Study as long as possible",
+    "Begin with limited, shorter periods, such as two minutes",
+    "Study only at night",
+    "Study without any breaks"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 10: “Clear suggests beginning your habits with limited, shorter time periods – two minutes for example.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What reward does the text give as an example for studying English for 15 minutes?",
+   "options": [
+    "Eating a big meal",
+    "Listening to a song you like",
+    "Buying a new book",
+    "Going to bed early"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 12: “if you study English for 15 minutes, you could reward yourself by listening to a song you like.”"
+  },
+  {
+   "type": "tf",
+   "q": "If you place too many demands on yourself, you are more likely to give up on your new habit.",
+   "answer": "T",
+   "explain": "Đoạn 11: nội dung này được nói trực tiếp."
+  },
+  {
+   "type": "tf",
+   "q": "A new habit is usually formed after you repeat an action only once.",
+   "answer": "F",
+   "explain": "Đoạn 13: “You may have to repeat an action many times before it becomes a habit.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "habit",
+    "pos": "n",
+    "def": "something you do often, without thinking about it",
+    "vi": "thói quen",
+    "ex": "Some of them have been trying to get in the habit of learning and studying on their own."
+   },
+   {
+    "w": "regular",
+    "pos": "adj",
+    "def": "happening again and again in the same way",
+    "vi": "đều đặn, thường xuyên",
+    "ex": "Habits are regular ways of dealing with your environment."
+   },
+   {
+    "w": "environment",
+    "pos": "n",
+    "def": "the place and conditions around you",
+    "vi": "môi trường xung quanh",
+    "ex": "Habits are regular ways of dealing with your environment."
+   },
+   {
+    "w": "cue",
+    "pos": "n",
+    "def": "a signal that tells you to do something",
+    "vi": "tín hiệu nhắc (bắt đầu hành động)",
+    "ex": "These steps are cue, craving, response, and reward."
+   },
+   {
+    "w": "craving",
+    "pos": "n",
+    "def": "a strong wish for something",
+    "vi": "sự thèm muốn, khao khát",
+    "ex": "The craving could be a desire to stop that feeling."
+   },
+   {
+    "w": "reward",
+    "pos": "n",
+    "def": "something good you get for doing something",
+    "vi": "phần thưởng",
+    "ex": "You can give yourself a reward after completing your new habit."
+   },
+   {
+    "w": "obvious",
+    "pos": "adj",
+    "def": "easy to see or understand",
+    "vi": "rõ ràng, hiển nhiên",
+    "ex": "the cues of your new habit are very obvious"
+   },
+   {
+    "w": "give up on",
+    "pos": "phr v",
+    "def": "to stop trying to do something",
+    "vi": "từ bỏ (việc gì)",
+    "ex": "you are more likely to give up on your new habit"
+   }
+  ],
+  "coll": [
+   {
+    "c": "get in the habit of + -ing",
+    "vi": "tập thành thói quen làm gì",
+    "ex": "Some of them have been trying to get in the habit of learning and studying on their own."
+   },
+   {
+    "c": "pay attention to",
+    "vi": "chú ý đến",
+    "ex": "You generally do not pay attention to them."
+   },
+   {
+    "c": "make progress",
+    "vi": "tiến bộ",
+    "ex": "how much progress you have made since you first started studying English"
+   },
+   {
+    "c": "give up on",
+    "vi": "từ bỏ",
+    "ex": "you are more likely to give up on your new habit"
+   },
+   {
+    "c": "check social media",
+    "vi": "xem mạng xã hội",
+    "ex": "Maybe you have the habit of often checking social media."
+   }
+  ],
+  "str": [
+   {
+    "s": "used to + verb",
+    "vi": "đã từng (thói quen/trạng thái trong quá khứ)",
+    "ex": "Some people who used to go to school now study at home.",
+    "explain": "used to + động từ nguyên mẫu: việc từng xảy ra nhưng bây giờ không còn nữa."
+   },
+   {
+    "s": "more likely to + verb",
+    "vi": "có nhiều khả năng …",
+    "ex": "if you place too many demands on yourself, you are more likely to give up on your new habit",
+    "explain": "be more likely to + động từ: nói về khả năng cao hơn."
+   },
+   {
+    "s": "in such a way that …",
+    "vi": "theo cách mà …",
+    "ex": "You should organize your surroundings in such a way that the cues of your new habit are very obvious.",
+    "explain": "Dùng để nói về cách làm để đạt một kết quả cụ thể."
+   },
+   {
+    "s": "if … , + imperative",
+    "vi": "nếu …, hãy …",
+    "ex": "if you want to get in the habit of studying English every day, leave English books or notes in a very clear place",
+    "explain": "Mệnh đề if + động từ nguyên mẫu ở mệnh đề chính để đưa lời khuyên."
+   }
+  ]
+ }
+}

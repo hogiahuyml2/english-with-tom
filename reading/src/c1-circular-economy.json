@@ -1,0 +1,227 @@
+{
+ "id": "c1-circular-economy",
+ "level": "C1",
+ "title": "Circular Economy",
+ "topic": "Environment & economy",
+ "words": 543,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Circular economy",
+  "url": "https://en.wikipedia.org/wiki/Circular_economy",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Circular economy is defined in contradistinction to the traditional linear economy. The idea and concepts of a circular economy have been studied extensively in academia, business, and government over the past ten years. It has been gaining popularity because it can help to minimize carbon emissions and the consumption of raw materials, open up new market prospects, and, principally, increase the sustainability of consumption. At a government level, a circular economy is viewed as a method of combating global warming, as well as a facilitator of long-term growth. Circular economy may geographically connect actors and resources to stop material loops at the regional level. In its core principle, the European Parliament defines the circular economy as \"a model of production and consumption that involves sharing, leasing, reusing, repairing, refurbishing, and recycling existing materials and products as long as possible. In this way, the life cycle of products is extended\". Global implementation of circular economy can reduce global emissions by 22.8 billion tons, equivalent to 39% of global emissions produced in 2019. By implementing circular economy strategies in five sectors alone: cement, aluminum, steel, plastics, and food, 9.3 billion metric tons of CO2 equivalent (equal to all current emissions from transportation) can be reduced.",
+  "In a circular economy, business models play a crucial role in enabling the shift from linear to circular processes. Various business models have been identified that support circularity, including product-as-a-service, sharing platforms, and product life extension models, among others. These models aim to optimize resource utilization, reduce waste, and create value for businesses and customers alike, while contributing to the overall goals of the circular economy.",
+  "In a linear economy, natural resources are turned into products that are ultimately destined to become waste because of the way they have been designed and manufactured. This process is often summarized as \"take, make, waste\". By contrast, a circular economy aims to transition from a 'take-make-waste' approach to a more restorative and regenerative system. It employs reuse, sharing, repair, refurbishment, remanufacturing and recycling to create a closed-loop system, reducing the use of resource inputs and the creation of waste, pollution, and carbon emissions. The circular economy aims to keep products, materials, equipment, and infrastructure in use for longer, thus improving the productivity of these resources. Waste materials and energy should become input for other processes through waste valorization: either as a component for another industrial process or as regenerative resources for nature (e.g., compost). The Ellen MacArthur Foundation (EMF) defines the circular economy as an industrial economy that is restorative or regenerative by value and design.",
+  "Circular economy strategies can be applied at various scales, from individual products and services to entire industries and cities. For example, industrial symbiosis is a strategy where waste from one industry becomes an input for another, creating a network of resource exchange and reducing waste, pollution, and resource consumption. Similarly, circular cities aim to integrate circular principles into urban planning and development, foster local resource loops, and promote sustainable lifestyles among their citizens. Less than 10% of economic activity worldwide in 2022 and 2023 is circular. Every year, the global population uses approximately 100 billion tonnes of materials, with more than 90% of them being wasted. The circular economy seeks to address this by eliminating waste entirely."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How is the circular economy defined in the first paragraph?",
+   "options": [
+    "In contradistinction to the traditional linear economy",
+    "As a type of agricultural system",
+    "As a form of international trade",
+    "As a government tax"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Circular economy is defined in contradistinction to the traditional linear economy.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why has the circular economy been gaining popularity?",
+   "options": [
+    "It can help minimize carbon emissions and the consumption of raw materials, open up new market prospects and increase sustainability",
+    "It makes products more expensive",
+    "It increases the use of fossil fuels",
+    "It reduces the number of businesses"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “it can help to minimize carbon emissions and the consumption of raw materials, open up new market prospects, and … increase the sustainability of consumption.”"
+  },
+  {
+   "type": "mcq",
+   "q": "According to the text, how much CO2 equivalent can be reduced by implementing circular strategies in just five sectors?",
+   "options": [
+    "9.3 billion metric tons",
+    "22.8 million tons",
+    "100 billion tonnes",
+    "39 tonnes"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “9.3 billion metric tons of CO2 equivalent … can be reduced.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What role do business models play in a circular economy?",
+   "options": [
+    "A minor role",
+    "A crucial role in enabling the shift from linear to circular processes",
+    "No role",
+    "They only affect governments"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “business models play a crucial role in enabling the shift from linear to circular processes.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How is the linear economy often summarized?",
+   "options": [
+    "“Reduce, reuse, recycle”",
+    "“Take, make, waste”",
+    "“Buy, sell, profit”",
+    "“Plan, build, repair”"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “This process is often summarized as “take, make, waste.””"
+  },
+  {
+   "type": "mcq",
+   "q": "What is industrial symbiosis?",
+   "options": [
+    "A strategy where waste from one industry becomes an input for another",
+    "A way of making products last longer",
+    "A government law about taxes",
+    "A type of renewable energy"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “industrial symbiosis is a strategy where waste from one industry becomes an input for another”."
+  },
+  {
+   "type": "tf",
+   "q": "Less than 10% of economic activity worldwide in 2022 and 2023 is circular.",
+   "answer": "T",
+   "explain": "Đoạn 4: nội dung này được nói trực tiếp."
+  },
+  {
+   "type": "tf",
+   "q": "The text states that more than 90% of the materials used each year are reused.",
+   "answer": "F",
+   "explain": "Đoạn 4: hơn 90% vật liệu bị lãng phí (“more than 90% of them being wasted”)."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "linear",
+    "pos": "adj",
+    "def": "going in a straight line from one point to another; in one direction only",
+    "vi": "tuyến tính",
+    "ex": "the traditional linear economy"
+   },
+   {
+    "w": "sustainability",
+    "pos": "n",
+    "def": "the ability to continue over a long time without harming the environment",
+    "vi": "tính bền vững",
+    "ex": "increase the sustainability of consumption"
+   },
+   {
+    "w": "emissions",
+    "pos": "n",
+    "def": "gases or other substances sent into the air",
+    "vi": "khí thải",
+    "ex": "minimize carbon emissions"
+   },
+   {
+    "w": "prospect",
+    "pos": "n",
+    "def": "the chance that something will happen; an opportunity",
+    "vi": "triển vọng, cơ hội",
+    "ex": "open up new market prospects"
+   },
+   {
+    "w": "restorative",
+    "pos": "adj",
+    "def": "able to make something healthy or good again",
+    "vi": "có tính phục hồi",
+    "ex": "a more restorative and regenerative system"
+   },
+   {
+    "w": "regenerative",
+    "pos": "adj",
+    "def": "able to grow or repair itself again",
+    "vi": "có tính tái tạo",
+    "ex": "a more restorative and regenerative system"
+   },
+   {
+    "w": "optimize",
+    "pos": "v",
+    "def": "to make something as good or effective as possible",
+    "vi": "tối ưu hóa",
+    "ex": "These models aim to optimize resource utilization"
+   },
+   {
+    "w": "symbiosis",
+    "pos": "n",
+    "def": "a relationship in which two parties benefit each other",
+    "vi": "sự cộng sinh",
+    "ex": "industrial symbiosis is a strategy where waste from one industry becomes an input for another"
+   },
+   {
+    "w": "integrate",
+    "pos": "v",
+    "def": "to combine two or more things so they work together",
+    "vi": "tích hợp, đưa vào",
+    "ex": "circular cities aim to integrate circular principles into urban planning"
+   }
+  ],
+  "coll": [
+   {
+    "c": "raw materials",
+    "vi": "nguyên liệu thô",
+    "ex": "the consumption of raw materials"
+   },
+   {
+    "c": "carbon emissions",
+    "vi": "khí thải carbon",
+    "ex": "minimize carbon emissions"
+   },
+   {
+    "c": "play a crucial role in",
+    "vi": "đóng vai trò then chốt trong",
+    "ex": "business models play a crucial role in enabling the shift from linear to circular processes"
+   },
+   {
+    "c": "closed-loop system",
+    "vi": "hệ thống khép kín",
+    "ex": "to create a closed-loop system"
+   },
+   {
+    "c": "resource consumption",
+    "vi": "mức tiêu thụ tài nguyên",
+    "ex": "reducing waste, pollution, and resource consumption"
+   }
+  ],
+  "str": [
+   {
+    "s": "… is defined in contradistinction to …",
+    "vi": "được định nghĩa đối lập với …",
+    "ex": "Circular economy is defined in contradistinction to the traditional linear economy.",
+    "explain": "Cách nói học thuật: định nghĩa một khái niệm bằng cách đối lập với khái niệm khác."
+   },
+   {
+    "s": "aims to transition from … to …",
+    "vi": "nhằm chuyển từ … sang …",
+    "ex": "a circular economy aims to transition from a 'take-make-waste' approach to a more restorative and regenerative system",
+    "explain": "aim to + động từ: nêu mục tiêu; transition from … to … diễn tả sự chuyển đổi."
+   },
+   {
+    "s": "By + V-ing …, … can be reduced",
+    "vi": "Bằng cách …, … có thể được giảm",
+    "ex": "By implementing circular economy strategies in five sectors alone",
+    "explain": "By + V-ing nêu phương tiện; câu chính ở dạng bị động."
+   },
+   {
+    "s": "…, thus + V-ing",
+    "vi": "…, nhờ đó …",
+    "ex": "to keep products, materials, equipment, and infrastructure in use for longer, thus improving the productivity of these resources",
+    "explain": "thus + V-ing: mệnh đề phân từ chỉ kết quả đi theo hành động trước."
+   }
+  ]
+ }
+}

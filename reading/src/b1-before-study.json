@@ -1,0 +1,216 @@
+{
+ "id": "b1-before-study",
+ "level": "B1",
+ "title": "Things to Do Before You Study",
+ "topic": "Study skills",
+ "words": 368,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Things to Do Before You Study",
+  "url": "https://learningenglish.voanews.com/a/things-to-do-before-you-study/5367797.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Many students think about how to best spend their time while studying. But what comes before study sessions can be important too - especially if you want to improve your memory of what you have learned.",
+  "Three important ideas to think about before studying include exercise, study location and pre-study tests. Let’s look at each of these in turn.",
+  "Before you study, doing cardiovascular exercise may help you better remember what you learn. High-intensity exercise may be especially helpful.",
+  "In a 2018 study, published in the journal Physiology and Behavior , researchers found that a group of young people who did 15 minutes of high-intensity training on a treadmill remembered more words.",
+  "Location is also important for improving your learning. While it is good to have a desk or a special study area, some research suggests that changing where you study could help you remember more of what you study.",
+  "Our memories sometimes depend on things in our environment. For example, a book might remind you of something interesting or strange you learned while reading it.",
+  "Be sure to plan your location before you start to study. You might want to try studying in different places. Perhaps one day you could study in your room, and then the next day you could study in the kitchen, or outside. You do not have to change locations every day, but try to at least sometimes.",
+  "We have talked about exercise and location. Now let’s talk about a third way you can improve your study session: taking a pre-study test.",
+  "But, students need to test themselves often. Testing is one of the best ways to make yourself remember new information.",
+  "In 2018, researchers found that students who took a test before learning new material did much better after studying the material. The research was published in the Journal of Experimental Psychology .",
+  "The students failed on the tests, but they were better able to remember the material than students who were only asked to read the information.",
+  "So, try to take a pre-study test. If you are using a textbook, you might want to look to the end of the chapter and do a few practice questions before you read it."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Which three things does the text suggest doing before studying?",
+   "options": [
+    "Eating, sleeping and reading",
+    "Exercise, study location and a pre-study test",
+    "Watching videos, singing and writing",
+    "Making lists, cleaning and resting"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Three important ideas to think about before studying include exercise, study location and pre-study tests.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did researchers find in the 2018 study about exercise?",
+   "options": [
+    "Young people who exercised for 15 minutes on a treadmill remembered more words",
+    "Young people who slept more remembered more words",
+    "Older people learned faster than young people",
+    "Exercise made no difference"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “a group of young people who did 15 minutes of high-intensity training on a treadmill remembered more words.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why might changing where you study help?",
+   "options": [
+    "Because new places are quieter",
+    "Because our memories sometimes depend on things in our environment",
+    "Because it is cheaper",
+    "Because it saves time"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5–6: “our memories sometimes depend on things in our environment.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What happened to students who took a test before learning new material?",
+   "options": [
+    "They did much better after studying the material",
+    "They stopped studying",
+    "They did worse than other students",
+    "They finished earlier"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 10: “students who took a test before learning new material did much better after studying the material.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the text suggest if you are using a textbook?",
+   "options": [
+    "Skip the questions",
+    "Do a few practice questions at the end of the chapter before you read it",
+    "Read it twice without stopping",
+    "Only read the first page"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 12: “look to the end of the chapter and do a few practice questions before you read it.”"
+  },
+  {
+   "type": "tf",
+   "q": "The students in the testing study failed the tests but remembered the material better than students who only read it.",
+   "answer": "T",
+   "explain": "Đoạn 11: “The students failed on the tests, but they were better able to remember the material.”"
+  },
+  {
+   "type": "tf",
+   "q": "The 2018 exercise study was done with 100 young people.",
+   "answer": "NG",
+   "explain": "Bài không nói số người tham gia nghiên cứu."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "memory",
+    "pos": "n",
+    "def": "the ability to remember things",
+    "vi": "trí nhớ; ký ức",
+    "ex": "improve your memory of what you have learned"
+   },
+   {
+    "w": "session",
+    "pos": "n",
+    "def": "a period of time used for one activity",
+    "vi": "buổi (học, tập…)",
+    "ex": "what comes before study sessions can be important too"
+   },
+   {
+    "w": "location",
+    "pos": "n",
+    "def": "a place or position",
+    "vi": "địa điểm, vị trí",
+    "ex": "Location is also important for improving your learning."
+   },
+   {
+    "w": "high-intensity",
+    "pos": "adj",
+    "def": "very strong and hard (exercise)",
+    "vi": "cường độ cao",
+    "ex": "High-intensity exercise may be especially helpful."
+   },
+   {
+    "w": "environment",
+    "pos": "n",
+    "def": "the place and conditions around you",
+    "vi": "môi trường xung quanh",
+    "ex": "Our memories sometimes depend on things in our environment."
+   },
+   {
+    "w": "material",
+    "pos": "n",
+    "def": "information or things that you use for learning",
+    "vi": "tài liệu, nội dung học",
+    "ex": "students who took a test before learning new material"
+   },
+   {
+    "w": "remind",
+    "pos": "v",
+    "def": "to make someone remember something",
+    "vi": "nhắc nhớ",
+    "ex": "a book might remind you of something interesting"
+   },
+   {
+    "w": "textbook",
+    "pos": "n",
+    "def": "a book used for studying a subject",
+    "vi": "sách giáo khoa",
+    "ex": "If you are using a textbook"
+   }
+  ],
+  "coll": [
+   {
+    "c": "improve your memory",
+    "vi": "cải thiện trí nhớ",
+    "ex": "if you want to improve your memory of what you have learned"
+   },
+   {
+    "c": "study session",
+    "vi": "buổi học",
+    "ex": "what comes before study sessions can be important too"
+   },
+   {
+    "c": "high-intensity exercise",
+    "vi": "tập luyện cường độ cao",
+    "ex": "High-intensity exercise may be especially helpful."
+   },
+   {
+    "c": "plan your location",
+    "vi": "lên kế hoạch chỗ học",
+    "ex": "Be sure to plan your location before you start to study."
+   },
+   {
+    "c": "practice questions",
+    "vi": "câu hỏi luyện tập",
+    "ex": "do a few practice questions before you read it"
+   }
+  ],
+  "str": [
+   {
+    "s": "While …, … (contrast)",
+    "vi": "Trong khi …, thì …",
+    "ex": "While it is good to have a desk or a special study area, some research suggests that changing where you study could help you remember more of what you study.",
+    "explain": "While đầu câu nối hai ý tương phản."
+   },
+   {
+    "s": "Be sure to + verb",
+    "vi": "Nhớ hãy …",
+    "ex": "Be sure to plan your location before you start to study.",
+    "explain": "Dùng để nhắc ai đó đừng quên làm gì."
+   },
+   {
+    "s": "try + -ing",
+    "vi": "thử làm gì",
+    "ex": "You might want to try studying in different places.",
+    "explain": "try + V-ing: thử làm một việc để xem kết quả; khác với try to + V (cố gắng làm)."
+   },
+   {
+    "s": "students who + verb",
+    "vi": "những học sinh mà …",
+    "ex": "students who took a test before learning new material did much better after studying the material",
+    "explain": "who + động từ: mệnh đề quan hệ chỉ người."
+   }
+  ]
+ }
+}

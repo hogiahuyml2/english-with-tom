@@ -1,0 +1,193 @@
+{
+ "id": "a2-library",
+ "level": "A2",
+ "title": "What Is a Library?",
+ "topic": "Places & services",
+ "words": 331,
+ "minutes": 5,
+ "source": {
+  "name": "Simple English Wikipedia — Library",
+  "url": "https://simple.wikipedia.org/wiki/Library",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "A library is a place where many books are kept. Most libraries are public and let people take the books to use in their home. Most libraries let people borrow books for several weeks. Some belong to institutions, for example, companies, churches, schools, and universities. The people who work in libraries are librarians. Librarians are people who take care of the library.",
+  "A library is not a bookstore (a store that sells books). Libraries and bookstores are two different things.",
+  "The prime purpose of a library is to provide access to knowledge and information. To fulfil this mission, libraries preserve a valuable record of culture. Then they pass down this to the coming generations. Therefore, they are an essential link between the past, present and future.",
+  "People use libraries to work. They also use library resources to learn about personal interests. Sometimes, they get recreational media such as films and music. Students use libraries to study.",
+  "Libraries help the students to develop good reading and study habits. Public officials use libraries for research and public issues. The libraries provide information and services that are essential for learning and progress.",
+  "Many places have a public library, where anybody can join if they live in the area. With a library card, people can borrow books and take them home for several weeks. It does not cost money to get a library card at most public libraries.",
+  "Books are kept on shelves in a special order so they are easy to find. Public libraries have lot of books on various topics including story books and many others. Many public libraries have books and CDs about learning English. Stories are kept in alphabetical order by the last name of the person who wrote them, the writer. Books about other things are often given a special number, that refers to what they are about. They are then put on the shelf in number order. One number system used by many libraries is the Dewey decimal system."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is a library NOT?",
+   "options": [
+    "A place with many books",
+    "A place where librarians work",
+    "A bookstore",
+    "A place to study"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “A library is not a bookstore (a store that sells books).”"
+  },
+  {
+   "type": "mcq",
+   "q": "How long can people usually borrow books from a library?",
+   "options": [
+    "For one day",
+    "For several weeks",
+    "For one year",
+    "They cannot borrow books"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1 và 6: “Most libraries let people borrow books for several weeks.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do you need to borrow books from a public library?",
+   "options": [
+    "A bookstore card",
+    "A library card",
+    "A student card",
+    "Some money"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 6: “With a library card, people can borrow books and take them home for several weeks.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How are story books kept in a public library?",
+   "options": [
+    "By colour",
+    "By size",
+    "In alphabetical order by the writer’s last name",
+    "By the date they were written"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 7: “Stories are kept in alphabetical order by the last name of the person who wrote them, the writer.”"
+  },
+  {
+   "type": "tf",
+   "q": "It costs money to get a library card at most public libraries.",
+   "answer": "F",
+   "explain": "Đoạn 6: “It does not cost money to get a library card at most public libraries.”"
+  },
+  {
+   "type": "tf",
+   "q": "Libraries help students develop good reading and study habits.",
+   "answer": "T",
+   "explain": "Đoạn 5: “Libraries help the students to develop good reading and study habits.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "librarian",
+    "pos": "n",
+    "def": "a person who works in a library",
+    "vi": "thủ thư",
+    "ex": "The people who work in libraries are librarians."
+   },
+   {
+    "w": "borrow",
+    "pos": "v",
+    "def": "to take something and give it back later",
+    "vi": "mượn",
+    "ex": "Most libraries let people borrow books for several weeks."
+   },
+   {
+    "w": "shelf",
+    "pos": "n",
+    "def": "a flat board on a wall or in a cupboard, used for keeping things",
+    "vi": "giá, kệ (sách)",
+    "ex": "Books are kept on shelves in a special order so they are easy to find."
+   },
+   {
+    "w": "access",
+    "pos": "n",
+    "def": "the chance or right to use or see something",
+    "vi": "sự tiếp cận, quyền sử dụng",
+    "ex": "The prime purpose of a library is to provide access to knowledge and information."
+   },
+   {
+    "w": "preserve",
+    "pos": "v",
+    "def": "to keep something safe and in good condition",
+    "vi": "bảo tồn, lưu giữ",
+    "ex": "libraries preserve a valuable record of culture"
+   },
+   {
+    "w": "generation",
+    "pos": "n",
+    "def": "all the people who are born at about the same time",
+    "vi": "thế hệ",
+    "ex": "Then they pass down this to the coming generations."
+   },
+   {
+    "w": "essential",
+    "pos": "adj",
+    "def": "very important and needed",
+    "vi": "thiết yếu, rất cần thiết",
+    "ex": "they are an essential link between the past, present and future"
+   },
+   {
+    "w": "alphabetical",
+    "pos": "adj",
+    "def": "in the order of the letters A, B, C…",
+    "vi": "theo thứ tự bảng chữ cái",
+    "ex": "Stories are kept in alphabetical order by the last name of the person who wrote them, the writer."
+   }
+  ],
+  "coll": [
+   {
+    "c": "public library",
+    "vi": "thư viện công cộng",
+    "ex": "Many places have a public library, where anybody can join if they live in the area."
+   },
+   {
+    "c": "library card",
+    "vi": "thẻ thư viện",
+    "ex": "With a library card, people can borrow books and take them home for several weeks."
+   },
+   {
+    "c": "borrow books",
+    "vi": "mượn sách",
+    "ex": "Most libraries let people borrow books for several weeks."
+   },
+   {
+    "c": "in alphabetical order",
+    "vi": "theo thứ tự bảng chữ cái",
+    "ex": "Stories are kept in alphabetical order by the last name of the person who wrote them, the writer."
+   },
+   {
+    "c": "study habits",
+    "vi": "thói quen học tập",
+    "ex": "Libraries help the students to develop good reading and study habits."
+   }
+  ],
+  "str": [
+   {
+    "s": "A … is a place where …",
+    "vi": "cấu trúc định nghĩa một nơi chốn",
+    "ex": "A library is a place where many books are kept.",
+    "explain": "place + where + mệnh đề: dùng để giải thích một nơi dùng để làm gì."
+   },
+   {
+    "s": "… are kept …",
+    "vi": "bị động ở hiện tại đơn",
+    "ex": "Books are kept on shelves in a special order so they are easy to find.",
+    "explain": "be + V3: nhấn mạnh sự việc, không nói ai làm."
+   },
+   {
+    "s": "… so they are easy to find",
+    "vi": "so + mệnh đề: để cho / nên",
+    "ex": "Books are kept on shelves in a special order so they are easy to find.",
+    "explain": "“so” nối kết quả/mục đích với hành động ở trước."
+   }
+  ]
+ }
+}

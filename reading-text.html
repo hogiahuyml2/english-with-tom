@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bài đọc — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.rt-wrap { max-width: 1120px; margin: 0 auto; padding: 14px 16px 90px; }
+.rt-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; min-height: 42px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .rt-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .rt-btn.pri { background: var(--primary); color: #fff; border-color: var(--primary); } .rt-btn.sm { min-height: 32px; padding: 4px 10px; font-size: 12.5px; } .rt-btn:disabled { opacity: .5; }
+.rt-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.rt-note { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; } .rt-note b { color: var(--text); }
+.rt-chip { display: inline-block; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; }
+.rt-head h1 { margin: 6px 0 4px; font-size: 24px; line-height: 1.3; }
+.rt-cols { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; } @media (max-width: 900px) { .rt-cols { grid-template-columns: 1fr; } }
+.rt-text { font-size: 17px; line-height: 1.85; } .rt-text p { margin: 0 0 14px; } .rt-text.big { font-size: 19.5px; }
+.rt-text .w { cursor: pointer; border-radius: 4px; padding: 0 1px; } .rt-text .w:hover { background: #ede9fe; } .rt-text .w.cur { border-bottom: 2px dotted var(--primary); } .rt-text .w.sel { background: #c4b5fd; }
+.rt-q { border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; } .rt-q.ok { border-color: #34d399; background: #f0fdf4; } .rt-q.bad { border-color: #f87171; background: #fef2f2; }
+.rt-q .qt { font-weight: 700; margin-bottom: 8px; line-height: 1.55; }
+.rt-opt { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 10px; cursor: pointer; border: 1.5px solid transparent; margin-bottom: 4px; line-height: 1.5; } .rt-opt:hover { background: var(--bg-soft); } .rt-opt input { margin-top: 4px; width: 18px; height: 18px; flex: none; } .rt-opt.sel { border-color: var(--primary); background: var(--primary-soft); } .rt-opt.right { border-color: #10b981; background: #d1fae5; } .rt-opt.wrong { border-color: #ef4444; background: #fee2e2; }
+.rt-ex { margin-top: 8px; font-size: 13.5px; line-height: 1.6; padding: 8px 10px; background: rgba(255,255,255,.7); border-radius: 10px; }
+.rt-score { text-align: center; padding: 16px; border-radius: 16px; background: linear-gradient(135deg, #ede9fe, #dbeafe); margin-bottom: 14px; } .rt-score b.n { font-size: 36px; color: #4c1d95; }
+.rt-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; } .rt-tab { padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); font: 700 13.5px inherit; font-family: inherit; cursor: pointer; color: var(--text); } .rt-tab.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.rt-nt { padding: 9px 0; border-bottom: 1px solid var(--border); line-height: 1.6; font-size: 14.5px; } .rt-nt:last-child { border-bottom: 0; } .rt-nt .en { font-weight: 800; } .rt-nt .ex { color: var(--text-muted); font-style: italic; font-size: 13.5px; display: block; }
+.rt-pop { position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); width: min(520px, 100%); background: var(--surface); border: 1.5px solid var(--primary); border-bottom: 0; border-radius: 18px 18px 0 0; padding: 14px 16px 18px; box-shadow: 0 -10px 40px rgba(0,0,0,.18); z-index: 250; display: none; } .rt-pop.on { display: block; }
+.rt-pop h3 { margin: 0 0 4px; font-size: 22px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .rt-pop .df { font-size: 15px; line-height: 1.6; margin: 6px 0; } .rt-pop .vi { font-size: 16px; font-weight: 800; color: #047857; } .rt-pop .ctx { font-size: 13.5px; color: var(--text-muted); font-style: italic; margin: 6px 0; } .rt-pop .ln { font-size: 12.5px; margin-top: 8px; } .rt-pop .ln a { color: var(--primary); margin-right: 10px; }
+.rt-sticky { position: sticky; top: 12px; }
+.rt-toast { position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; } .rt-toast.on { opacity: 1; }
+</style>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+<main class="rt-wrap" id="root"><div class="rt-note">⏳ Đang tải bài đọc…</div></main>
+<div class="rt-pop" id="pop"></div>
+<div class="rt-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+var tt; function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 2200); }
+function api(u, body) { var o = { credentials: 'same-origin' }; if (body !== undefined) { o.method = 'POST'; o.headers = { 'Content-Type': 'application/json' }; o.body = JSON.stringify(body); } return fetch(u, o).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi'); return d; }); }); }
+var ID = new URLSearchParams(location.search).get('id'), T = null, A = [], PACK = null, RES = null, BIG = false, T0 = Date.now(), SAVED = {}, CURKEY = null;
+var POSV = { n: 'danh từ', v: 'động từ', adj: 'tính từ', adv: 'trạng từ', phr: 'cụm từ', 'phr v': 'cụm động từ', prep: 'giới từ', conj: 'liên từ', pron: 'đại từ', det: 'từ hạn định', other: 'từ loại khác' };
+var NOTE_TAB = 'vocab';
+
+function init() {
+  api('/api/reading/text/' + encodeURIComponent(ID)).then(function (d) {
+    T = d; A = T.questions.map(function () { return null; });
+    if (d.done) return api('/api/reading/text/' + encodeURIComponent(ID) + '/review').then(function (p) { PACK = p; loadSaved(); render(); }).catch(function () { render(); });
+    render();
+  }).catch(function (e) { $('root').innerHTML = '<div class="rt-note">' + esc(e.message) + '</div><a class="rt-btn" href="reading.html">← Về danh sách</a>'; });
+}
+function srcHtml() { var s = T.source; return 'Nguồn: <a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> · ' + esc(s.license) + (s.adapted ? ' · <b>bản chuyển thể</b>' : '') + (s.note ? '<br><small>' + esc(s.note) + '</small>' : ''); }
+function textHtml() {
+  if (PACK) return PACK.ptok.map(function (p) { return '<p>' + p.map(function (t) { return typeof t === 'string' ? esc(t) : '<span class="w' + (PACK.lex[t[1]] && PACK.lex[t[1]].cur ? ' cur' : '') + '" data-k="' + esc(t[1]) + '">' + esc(t[0]) + '</span>'; }).join('') + '</p>'; }).join('');
+  return T.paras.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+}
+function qHtml() {
+  return T.questions.map(function (q, i) {
+    var r = RES && RES.results[i], cls = r ? (r.ok ? ' ok' : ' bad') : '', h = '<div class="rt-q' + cls + '" data-q="' + i + '"><div class="qt">' + (i + 1) + '. ' + esc(q.q) + '</div>';
+    var opts = q.type === 'mcq' ? q.options.map(function (o, k) { return { v: k, t: String.fromCharCode(65 + k) + '. ' + o }; }) : [{ v: 'T', t: 'True (Đúng)' }, { v: 'F', t: 'False (Sai)' }, { v: 'NG', t: 'Not Given (Bài không nói đến)' }];
+    if (q.type === 'tf' && T.level === 'A1') opts = opts.slice(0, 2);
+    opts.forEach(function (o) {
+      var c = ''; if (r) { if (String(o.v) === String(r.answer)) c = ' right'; else if (String(o.v) === String(r.picked)) c = ' wrong'; } else if (String(A[i]) === String(o.v)) c = ' sel';
+      h += '<label class="rt-opt' + c + '"><input type="radio" name="q' + i + '" value="' + o.v + '"' + (String(A[i]) === String(o.v) ? ' checked' : '') + (RES ? ' disabled' : '') + '><span>' + esc(o.t) + '</span></label>';
+    });
+    if (r) h += '<div class="rt-ex">' + (r.ok ? '✅ Chính xác. ' : '❌ Chưa đúng. ') + esc(r.explain) + '</div>';
+    return h + '</div>';
+  }).join('');
+}
+function notesHtml() {
+  var n = PACK.notes, tabs = [['vocab', '📚 Từ vựng chính'], ['coll', '🔗 Collocations'], ['str', '🧱 Cấu trúc đáng học']];
+  var h = '<div class="rt-tabs">' + tabs.map(function (t) { return '<button class="rt-tab' + (NOTE_TAB === t[0] ? ' on' : '') + '" data-nt="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>';
+  if (NOTE_TAB === 'vocab') h += (n.vocab || []).map(function (v) { return '<div class="rt-nt"><span class="en">' + esc(v.w) + '</span> <span class="rt-chip">' + esc(POSV[v.pos] || v.pos) + '</span> <button class="rt-btn sm" data-say="' + esc(v.w) + '">🔊</button><br>' + esc(v.def) + (v.vi ? ' — <b style="color:#047857">' + esc(v.vi) + '</b>' : '') + (v.ex ? '<span class="ex">“' + esc(v.ex) + '”</span>' : '') + '</div>'; }).join('');
+  if (NOTE_TAB === 'coll') h += (n.coll || []).map(function (c) { return '<div class="rt-nt"><span class="en">' + esc(c.c) + '</span>' + (c.vi ? ' — ' + esc(c.vi) : '') + (c.ex ? '<span class="ex">“' + esc(c.ex) + '”</span>' : '') + '</div>'; }).join('');
+  if (NOTE_TAB === 'str') h += (n.str || []).map(function (c) { return '<div class="rt-nt"><span class="en">' + esc(c.s) + '</span>' + (c.vi ? ' — ' + esc(c.vi) : '') + (c.ex ? '<span class="ex">“' + esc(c.ex) + '”</span>' : '') + (c.explain ? '<div class="rt-note">' + esc(c.explain) + '</div>' : '') + '</div>'; }).join('');
+  return h || '<div class="rt-note">Chưa có ghi chú.</div>';
+}
+function render() {
+  var h = '<div style="margin-bottom:10px"><a class="rt-btn sm" href="reading.html?level=' + T.level + '">← Danh sách ' + T.level + '</a></div>';
+  h += '<div class="rt-box rt-head"><span class="rt-chip">' + esc(T.level) + '</span> <span class="rt-chip" style="background:#f1f5f9;color:#475569">' + esc(T.topic) + '</span><h1>' + esc(T.title) + '</h1><div class="rt-note">' + T.words + ' từ · khoảng ' + T.minutes + ' phút · ' + T.questions.length + ' câu hỏi<br>' + srcHtml() + '</div></div>';
+  if (PACK && !RES) h += '<div class="rt-score" style="background:#ecfdf5"><div class="rt-note">✅ Bạn đã làm bài này rồi. <b>Bấm vào bất kỳ từ nào</b> trong bài để xem nghĩa theo ngữ cảnh; ghi chú từ vựng ở cuối trang. Muốn luyện lại, cứ trả lời câu hỏi và nộp bài.</div></div>';
+  if (RES) h += '<div class="rt-score"><b class="n">' + RES.score + '/' + RES.max + '</b><div class="rt-note" style="margin-top:4px">' + (RES.score === RES.max ? 'Xuất sắc! 🎉' : RES.score / RES.max >= .7 ? 'Làm tốt lắm!' : 'Hãy đọc lại bài cùng phần giải thích bên dưới nhé.') + ' Bây giờ <b>bấm vào bất kỳ từ nào</b> trong bài để xem nghĩa theo ngữ cảnh. Các từ gạch chân chấm là từ vựng chính.</div></div>';
+  h += '<div class="rt-cols"><div class="rt-box"><div style="display:flex;gap:8px;justify-content:flex-end;margin-bottom:6px"><button class="rt-btn sm" id="fz">Aa Cỡ chữ</button></div><div class="rt-text' + (BIG ? ' big' : '') + '" id="txt">' + textHtml() + '</div></div>';
+  h += '<div class="rt-sticky"><div class="rt-box"><b>Câu hỏi</b><div class="rt-note" style="margin:2px 0 10px">' + (RES ? 'Đáp án và giải thích đã hiện.' : 'Đọc kỹ bài rồi chọn đáp án. Đáp án và giải thích hiện sau khi nộp bài.') + '</div>' + qHtml() + (RES ? '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="rt-btn" id="again">↺ Làm lại</button><a class="rt-btn pri" href="reading.html?level=' + T.level + '">Bài tiếp theo ▶</a></div>' : '<button class="rt-btn pri" id="sub" style="width:100%;justify-content:center"' + (A.some(function (x) { return x == null; }) ? ' disabled' : '') + '>Nộp bài</button>') + '</div></div></div>';
+  if (PACK) h += '<div class="rt-box"><b style="font-size:17px">📝 Ghi chú để học thêm</b><div style="margin-top:8px" id="notes">' + notesHtml() + '</div></div>';
+  var scr = window.scrollY; $('root').innerHTML = h; window.scrollTo(0, scr);
+}
+document.addEventListener('change', function (e) {
+  var i = e.target.name && /^q(\d+)$/.test(e.target.name) ? Number(RegExp.$1) : -1; if (i < 0 || RES) return;
+  A[i] = e.target.value; var sub = $('sub'); if (sub) sub.disabled = A.some(function (x) { return x == null; });
+  var q = document.querySelector('[data-q="' + i + '"]'); q.querySelectorAll('.rt-opt').forEach(function (o) { o.classList.toggle('sel', o.querySelector('input').checked); });
+});
+document.addEventListener('click', function (e) {
+  var t = e.target;
+  if (t.id === 'sub') { t.disabled = true; api('/api/reading/text/' + encodeURIComponent(ID) + '/submit', { answers: A, seconds: Math.round((Date.now() - T0) / 1000) }).then(function (d) { RES = d; PACK = d; loadSaved(); render(); window.scrollTo(0, 0); }).catch(function (x) { toast(x.message); t.disabled = false; }); return; }
+  if (t.id === 'again') { RES = null; PACK = null; A = T.questions.map(function () { return null; }); T0 = Date.now(); closePop(); render(); window.scrollTo(0, 0); return; }
+  if (t.id === 'fz') { BIG = !BIG; $('txt').classList.toggle('big', BIG); return; }
+  var nt = t.closest('[data-nt]'); if (nt) { NOTE_TAB = nt.getAttribute('data-nt'); $('notes').innerHTML = notesHtml(); return; }
+  var sy = t.closest('[data-say]'); if (sy) { say(sy.getAttribute('data-say')); return; }
+  var w = t.closest('.w'); if (w && PACK) { openPop(w); return; }
+  if (t.closest('#pop')) return;
+  closePop();
+});
+function say(s) { if (!window.speechSynthesis) return; var u = new SpeechSynthesisUtterance(s); u.lang = 'en-GB'; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+function sentenceOf(w) { var p = w.closest('p'), txt = p.textContent, i = 0, node = p.firstChild, off = 0; var all = [].slice.call(p.childNodes); for (var k = 0; k < all.length; k++) { if (all[k] === w) break; off += all[k].textContent.length; } var s = txt.slice(0, off).lastIndexOf('. '); var e = txt.indexOf('. ', off); return txt.slice(s < 0 ? 0 : s + 2, e < 0 ? txt.length : e + 1).trim(); }
+function openPop(w) {
+  document.querySelectorAll('.rt-text .w.sel').forEach(function (x) { x.classList.remove('sel'); }); w.classList.add('sel');
+  var k = w.getAttribute('data-k'), x = PACK.lex[k]; if (!x) return; CURKEY = k;
+  var sent = sentenceOf(w), surf = w.textContent, saved = !!SAVED[k], q = encodeURIComponent(x.w);
+  $('pop').dataset.sent = sent;
+  $('pop').innerHTML = '<h3>' + esc(surf) + (surf.toLowerCase() !== x.w ? ' <small style="font-size:14px;color:var(--text-muted)">← ' + esc(x.w) + '</small>' : '') + ' <span class="rt-chip">' + esc(POSV[x.pos] || x.pos) + '</span>' + (x.cefr ? ' <span class="rt-chip" style="background:#fef3c7;color:#92400e">' + esc(x.cefr) + '</span>' : '') + '</h3>' +
+    (x.vi ? '<div class="vi">' + esc(x.vi) + '</div>' : '') + '<div class="df">' + esc(x.def) + '</div><div class="ctx">“' + esc(sent) + '”</div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="rt-btn sm" id="pSay">🔊 Nghe</button><button class="rt-btn sm' + (saved ? ' pri' : '') + '" id="pSave">' + (saved ? '★ Đã lưu' : '☆ Lưu từ') + '</button><button class="rt-btn sm" id="pX">Đóng</button></div>' +
+    '<div class="ln">' + (x.cur ? '' : 'Nghĩa gợi ý tự động theo từ loại trong bài — hãy kiểm tra thêm: ') + '<a target="_blank" rel="noopener" href="https://dictionary.cambridge.org/dictionary/english/' + q + '">Cambridge</a><a target="_blank" rel="noopener" href="https://www.oxfordlearnersdictionaries.com/definition/english/' + q + '">Oxford Learner’s</a></div>';
+  $('pop').classList.add('on');
+  $('pSay').onclick = function () { say(surf); }; $('pX').onclick = closePop;
+  $('pSave').onclick = function () { api('/api/reading/save-word', { text_id: ID, key: k, sentence: $('pop').dataset.sent }).then(function (d) { SAVED[k] = d.saved; toast(d.saved ? 'Đã lưu từ ⭐' : 'Đã bỏ lưu'); openPop(w); }).catch(function (e) { toast(e.message); }); };
+}
+function closePop() { $('pop').classList.remove('on'); document.querySelectorAll('.rt-text .w.sel').forEach(function (x) { x.classList.remove('sel'); }); }
+function loadSaved() { api('/api/reading/saved-keys/' + encodeURIComponent(ID)).then(function (d) { SAVED = {}; d.keys.forEach(function (k) { SAVED[k] = true; }); }).catch(function () {}); }
+init();
+})();
+</script>
+</body>
+</html>

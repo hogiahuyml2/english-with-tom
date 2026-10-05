@@ -26,6 +26,7 @@ module.exports = function (app, { db, requireAuth, now }) {
       high_scores: graded.filter((r) => r.score / r.max_score >= 0.8).length,
       perfect_scores: graded.filter((r) => r.score >= r.max_score).length,
       mistakes_fixed: one("SELECT COUNT(*) AS c FROM notebook_state WHERE user_id=? AND status='mastered'", uid).c,
+      reading_done: one('SELECT COUNT(DISTINCT text_id) AS c FROM reading_attempts WHERE user_id=?', uid).c,
       plan_days: one('SELECT COUNT(*) AS c FROM today_plan WHERE user_id=? AND done_all=1', uid).c,
       speaking_done: one("SELECT COUNT(*) AS c FROM speaking_sessions WHERE user_id=? AND status='done'", uid).c,
       placement_done: one("SELECT COUNT(*) AS c FROM placement_attempts WHERE user_id=? AND status='done' AND voided=0", uid).c,

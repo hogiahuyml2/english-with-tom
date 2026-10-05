@@ -1,0 +1,228 @@
+{
+ "id": "c1-globalization",
+ "level": "C1",
+ "title": "Globalization",
+ "topic": "Economy & society",
+ "words": 376,
+ "minutes": 7,
+ "source": {
+  "name": "Wikipedia — Globalization",
+  "url": "https://en.wikipedia.org/wiki/Globalization",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Globalization is the process of increasing interdependence and integration among the economies, markets, societies, and cultures of different countries worldwide. It can be attributed to a series of factors, including the reduction of barriers to international trade, the liberalization of capital movements, the development of transportation infrastructure, and the advancement of information and communication technologies. The term globalization first appeared in the early 20th century, but came into popular use in the 1990s to describe the growing international connectivity of the post–Cold War world.",
+  "Large-scale globalization began in the 1820s, and in the late 19th century and early 20th century drove a rapid expansion in the connectivity of the world's economies and cultures. The origins of globalization can be traced back to the 18th and 19th centuries, a period marked by significant advancements in transportation and communication technologies following the Industrial Revolution. These developments increased global interactions, supporting the growth of international trade and the exchange of ideas, beliefs, and cultures.",
+  "Between 1990 and 2010, globalization progressed rapidly, driven by the information and communication technology revolution that lowered communication costs, along with trade liberalization and the shift of manufacturing operations to emerging economies (particularly China). Academic literature commonly divides globalization into three major areas: economic globalization, cultural globalization, and political globalization.",
+  "Proponents of globalization point to economic growth and broader societal development as benefits, while opponents claim globalizing processes are detrimental to social well-being due to ethnocentrism, environmental consequences, and other potential drawbacks.",
+  "The word globalization was used in the English language as early as the 1930s, but only ever in the context of education, and the term failed to gain traction. Over the next few decades, the term was occasionally used by other scholars and media, but it was not clearly defined. One of the first uses of a term resembling the more common meaning and usage of the modern word was by French economist François Perroux in his essays from the early 1960s (in his French works he used the similar yet distinct term mondialisation, translated as mundialization). Theodore Levitt is sometimes inaccurately cited as having invented the term in the mid-1980s, although he can more confidently be credited with popularizing the term and bringing it into the mainstream business audience during that time."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Which of the following is NOT mentioned as a factor behind globalization?",
+   "options": [
+    "The reduction of barriers to international trade",
+    "The development of transportation infrastructure",
+    "A rapid increase in the world’s population",
+    "The advancement of information and communication technologies"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1 liệt kê: giảm rào cản thương mại, tự do hóa dòng vốn, hạ tầng giao thông, công nghệ thông tin – truyền thông. Không nhắc đến dân số."
+  },
+  {
+   "type": "mcq",
+   "q": "When, according to the text, did large-scale globalization begin?",
+   "options": [
+    "In the 1820s",
+    "In the 1930s",
+    "In the 1960s",
+    "In the 1990s"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Large-scale globalization began in the 1820s”."
+  },
+  {
+   "type": "mcq",
+   "q": "What drove the rapid progress of globalization between 1990 and 2010?",
+   "options": [
+    "Wars between large countries",
+    "The information and communication technology revolution, trade liberalization and the shift of manufacturing to emerging economies",
+    "The invention of the steam engine",
+    "The creation of the United Nations"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “driven by the information and communication technology revolution … along with trade liberalization and the shift of manufacturing operations to emerging economies”."
+  },
+  {
+   "type": "mcq",
+   "q": "How do opponents of globalization view it?",
+   "options": [
+    "As harmful to social well-being because of ethnocentrism, environmental consequences and other drawbacks",
+    "As a cause of faster economic growth",
+    "As an old idea that no longer matters",
+    "As a plan made by one government"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “opponents claim globalizing processes are detrimental to social well-being due to ethnocentrism, environmental consequences, and other potential drawbacks.”"
+  },
+  {
+   "type": "mcq",
+   "q": "In paragraph 5, what does “failed to gain traction” mean?",
+   "options": [
+    "Did not become widely accepted or used",
+    "Was banned by the government",
+    "Was translated too slowly",
+    "Was used too often"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: thuật ngữ chỉ dùng trong bối cảnh giáo dục, “failed to gain traction” = không được lan rộng, không phổ biến."
+  },
+  {
+   "type": "mcq",
+   "q": "Who is more confidently credited with popularizing the term in the mid-1980s?",
+   "options": [
+    "François Perroux",
+    "Karl Marx",
+    "Theodore Levitt",
+    "John Dewey"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 5: “Theodore Levitt … can more confidently be credited with popularizing the term”."
+  },
+  {
+   "type": "tf",
+   "q": "The term globalization came into popular use in the 1990s.",
+   "answer": "T",
+   "explain": "Đoạn 1: “came into popular use in the 1990s”."
+  },
+  {
+   "type": "tf",
+   "q": "The word globalization was first used in English in the 1990s.",
+   "answer": "F",
+   "explain": "Đoạn 5: từ này được dùng bằng tiếng Anh “as early as the 1930s”, dù chỉ trong lĩnh vực giáo dục."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "interdependence",
+    "pos": "n",
+    "def": "a situation in which people or countries depend on each other",
+    "vi": "sự phụ thuộc lẫn nhau",
+    "ex": "Globalization is the process of increasing interdependence and integration among the economies"
+   },
+   {
+    "w": "liberalization",
+    "pos": "n",
+    "def": "making rules or laws less strict",
+    "vi": "sự tự do hóa",
+    "ex": "the liberalization of capital movements"
+   },
+   {
+    "w": "infrastructure",
+    "pos": "n",
+    "def": "basic systems such as roads, railways and power supply",
+    "vi": "cơ sở hạ tầng",
+    "ex": "the development of transportation infrastructure"
+   },
+   {
+    "w": "connectivity",
+    "pos": "n",
+    "def": "the state of being connected",
+    "vi": "sự kết nối",
+    "ex": "the growing international connectivity of the post–Cold War world"
+   },
+   {
+    "w": "proponent",
+    "pos": "n",
+    "def": "a person who supports an idea or plan",
+    "vi": "người ủng hộ",
+    "ex": "Proponents of globalization point to economic growth and broader societal development as benefits"
+   },
+   {
+    "w": "detrimental",
+    "pos": "adj",
+    "def": "harmful",
+    "vi": "có hại",
+    "ex": "opponents claim globalizing processes are detrimental to social well-being"
+   },
+   {
+    "w": "drawback",
+    "pos": "n",
+    "def": "a disadvantage of something",
+    "vi": "nhược điểm",
+    "ex": "and other potential drawbacks"
+   },
+   {
+    "w": "traction",
+    "pos": "n",
+    "def": "the support or progress that an idea gets",
+    "vi": "sức hút, đà (tiến triển)",
+    "ex": "the term failed to gain traction"
+   },
+   {
+    "w": "emerging",
+    "pos": "adj",
+    "def": "newly developing and growing",
+    "vi": "mới nổi",
+    "ex": "the shift of manufacturing operations to emerging economies"
+   }
+  ],
+  "coll": [
+   {
+    "c": "barriers to international trade",
+    "vi": "rào cản thương mại quốc tế",
+    "ex": "the reduction of barriers to international trade"
+   },
+   {
+    "c": "be attributed to",
+    "vi": "được cho là do",
+    "ex": "It can be attributed to a series of factors"
+   },
+   {
+    "c": "come into popular use",
+    "vi": "trở nên được dùng phổ biến",
+    "ex": "came into popular use in the 1990s"
+   },
+   {
+    "c": "be traced back to",
+    "vi": "có thể truy nguồn gốc về",
+    "ex": "The origins of globalization can be traced back to the 18th and 19th centuries"
+   },
+   {
+    "c": "gain traction",
+    "vi": "được ủng hộ, lan rộng",
+    "ex": "the term failed to gain traction"
+   }
+  ],
+  "str": [
+   {
+    "s": "Proponents …, while opponents …",
+    "vi": "Người ủng hộ …, trong khi người phản đối …",
+    "ex": "Proponents of globalization point to economic growth and broader societal development as benefits, while opponents claim globalizing processes are detrimental to social well-being",
+    "explain": "Dùng while nối hai quan điểm đối lập, rất phổ biến trong văn viết học thuật."
+   },
+   {
+    "s": "a period marked by …",
+    "vi": "một giai đoạn được đánh dấu bởi …",
+    "ex": "a period marked by significant advancements in transportation and communication technologies",
+    "explain": "Cụm quá khứ phân từ bổ nghĩa cho danh từ (rút gọn mệnh đề quan hệ)."
+   },
+   {
+    "s": "driven by …, along with …",
+    "vi": "được thúc đẩy bởi …, cùng với …",
+    "ex": "driven by the information and communication technology revolution that lowered communication costs, along with trade liberalization",
+    "explain": "Phân từ quá khứ nêu nguyên nhân; along with bổ sung các yếu tố đi kèm."
+   },
+   {
+    "s": "be credited with + V-ing",
+    "vi": "được ghi nhận là đã …",
+    "ex": "he can more confidently be credited with popularizing the term",
+    "explain": "credit someone with + V-ing: công nhận ai là người đã làm gì."
+   }
+  ]
+ }
+}

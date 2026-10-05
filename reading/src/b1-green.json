@@ -1,0 +1,206 @@
+{
+ "id": "b1-green",
+ "level": "B1",
+ "title": "Green Means Spring and Other Things",
+ "topic": "Idioms",
+ "words": 336,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Green Means Spring and Other Things",
+  "url": "https://learningenglish.voanews.com/a/words-and-their-stories-green-idioim-expressions-garden-jealousy/2688277.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Green is an important color in nature. It is the color of grass and the leaves on trees. It is also the color of most growing plants.",
+  "Sometimes, the word green means young, fresh and growing. Sometimes, it describes something that is not yet ripe or finished.",
+  "For example, a greenhorn is someone who has no experience, who is new to a situation. In the fifteenth century, a greenhorn was a young cow or ox whose horns had not yet developed. A century or so later, a greenhorn was a soldier who had not yet had any experience in battle. By the eighteenth century, a greenhorn had the meaning it has today - a person who is new in a job.",
+  "Someone who has the ability to grow plants well is said to have a green thumb. The expression comes from the early 1900s.",
+  "A person with a green thumb seems to have a magic touch that makes plants grow quickly and well. You might say that the woman next door has a green thumb if her garden continues to grow long after your plants have died.",
+  "Green is also the color used to describe the powerful emotion, jealousy. The green-eyed monster is not a frightening creature from outer space. It is an expression used about four hundred years ago by British writer William Shakespeare in his play \"Othello.\"",
+  "It describes the unpleasant feeling a person has when someone has something he wants. A young man may suffer from the green-eyed monster if his girlfriend begins going out with someone else. Or, that green-eyed monster may affect your friend if you get a pay raise and she does not.",
+  "In most places in the world, a green light is a sign to move ahead. A green light on a traffic signal means your car can continue on. In everyday speech, a green light means approval to continue with a project. We want you to know we have a green light to continue this series next week."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What can the word “green” sometimes mean?",
+   "options": [
+    "Young, fresh and growing",
+    "Old and tired",
+    "Cold and wet",
+    "Dangerous"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Sometimes, the word green means young, fresh and growing.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is a “greenhorn”?",
+   "options": [
+    "Someone who has no experience",
+    "Someone who is very rich",
+    "A farmer with many cows",
+    "A teacher"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “a greenhorn is someone who has no experience, who is new to a situation.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does it mean if someone “has a green thumb”?",
+   "options": [
+    "They are good at growing plants",
+    "They are ill",
+    "They like painting",
+    "They are jealous"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “Someone who has the ability to grow plants well is said to have a green thumb.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Who used the expression “the green-eyed monster” about 400 years ago?",
+   "options": [
+    "William Shakespeare",
+    "Mark Twain",
+    "A farmer",
+    "A soldier"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: “It is an expression used about four hundred years ago by British writer William Shakespeare in his play “Othello.””"
+  },
+  {
+   "type": "mcq",
+   "q": "What does a green light mean in everyday speech?",
+   "options": [
+    "Approval to continue with a project",
+    "A danger",
+    "A holiday",
+    "A mistake"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 8: “In everyday speech, a green light means approval to continue with a project.”"
+  },
+  {
+   "type": "tf",
+   "q": "In the fifteenth century, a greenhorn was a young cow or ox whose horns had not yet developed.",
+   "answer": "T",
+   "explain": "Đoạn 3: nội dung này được nói trực tiếp."
+  },
+  {
+   "type": "tf",
+   "q": "The green-eyed monster is a frightening creature from outer space.",
+   "answer": "F",
+   "explain": "Đoạn 6: “The green-eyed monster is not a frightening creature from outer space.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "ripe",
+    "pos": "adj",
+    "def": "ready to be eaten (about fruit)",
+    "vi": "chín (quả)",
+    "ex": "it describes something that is not yet ripe or finished"
+   },
+   {
+    "w": "experience",
+    "pos": "n",
+    "def": "knowledge or skill from doing something",
+    "vi": "kinh nghiệm",
+    "ex": "a greenhorn is someone who has no experience"
+   },
+   {
+    "w": "emotion",
+    "pos": "n",
+    "def": "a strong feeling, like love or anger",
+    "vi": "cảm xúc",
+    "ex": "the powerful emotion, jealousy"
+   },
+   {
+    "w": "magic",
+    "pos": "adj",
+    "def": "with special powers that seem impossible",
+    "vi": "kỳ diệu, thần kỳ",
+    "ex": "seems to have a magic touch that makes plants grow quickly and well"
+   },
+   {
+    "w": "jealousy",
+    "pos": "n",
+    "def": "an unhappy feeling because someone has something you want",
+    "vi": "sự ghen tị",
+    "ex": "the powerful emotion, jealousy"
+   },
+   {
+    "w": "creature",
+    "pos": "n",
+    "def": "any living thing that is not a plant",
+    "vi": "sinh vật",
+    "ex": "not a frightening creature from outer space"
+   },
+   {
+    "w": "approval",
+    "pos": "n",
+    "def": "a feeling or sign that something is good or allowed",
+    "vi": "sự chấp thuận",
+    "ex": "a green light means approval to continue with a project"
+   },
+   {
+    "w": "suffer from",
+    "pos": "phr v",
+    "def": "to feel pain or a bad condition",
+    "vi": "chịu đựng, mắc phải",
+    "ex": "A young man may suffer from the green-eyed monster"
+   }
+  ],
+  "coll": [
+   {
+    "c": "a green thumb",
+    "vi": "tay trồng cây giỏi",
+    "ex": "Someone who has the ability to grow plants well is said to have a green thumb."
+   },
+   {
+    "c": "a magic touch",
+    "vi": "bàn tay thần kỳ",
+    "ex": "A person with a green thumb seems to have a magic touch that makes plants grow quickly and well."
+   },
+   {
+    "c": "the green-eyed monster",
+    "vi": "sự ghen tị",
+    "ex": "The green-eyed monster is not a frightening creature from outer space."
+   },
+   {
+    "c": "a green light",
+    "vi": "sự cho phép tiến hành",
+    "ex": "a green light means approval to continue with a project"
+   },
+   {
+    "c": "a pay raise",
+    "vi": "tăng lương",
+    "ex": "if you get a pay raise and she does not"
+   }
+  ],
+  "str": [
+   {
+    "s": "is said to + verb",
+    "vi": "được cho là, được nói là",
+    "ex": "Someone who has the ability to grow plants well is said to have a green thumb.",
+    "explain": "be said to + động từ: cách nói bị động khi nêu quan điểm chung."
+   },
+   {
+    "s": "By the + century, …",
+    "vi": "Đến thế kỷ …",
+    "ex": "By the eighteenth century, a greenhorn had the meaning it has today - a person who is new in a job.",
+    "explain": "By + mốc thời gian: nói điều đã xảy ra tính đến thời điểm đó."
+   },
+   {
+    "s": "Sometimes, … Sometimes, …",
+    "vi": "Có khi … có khi …",
+    "ex": "Sometimes, the word green means young, fresh and growing. Sometimes, it describes something that is not yet ripe or finished.",
+    "explain": "Dùng để nêu các nghĩa khác nhau của một từ."
+   }
+  ]
+ }
+}

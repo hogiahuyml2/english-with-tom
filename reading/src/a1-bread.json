@@ -1,0 +1,179 @@
+{
+ "id": "a1-bread",
+ "level": "A1",
+ "title": "Bread",
+ "topic": "Food",
+ "words": 63,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Bread",
+  "url": "https://simple.wikipedia.org/wiki/Bread",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Bread is a food. Bread is made from flour and water. People usually add salt and yeast too. They bake bread in an oven. You can buy bread in many countries around the world.",
+  "You can make toast from bread. You can make sandwiches with bread. People also use bread to make other foods, like pizza. There are many different kinds of bread."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is bread made from?",
+   "options": [
+    "Flour and water",
+    "Milk and eggs",
+    "Rice and fish"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Bread is made from flour and water.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do people usually add to bread?",
+   "options": [
+    "Salt and yeast",
+    "Sugar and tea",
+    "Butter and meat"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “People usually add salt and yeast too.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where do people bake bread?",
+   "options": [
+    "In a refrigerator",
+    "In an oven",
+    "In a shop window"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “They bake bread in an oven.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What food can people make from bread?",
+   "options": [
+    "Sandwiches",
+    "Milk",
+    "Rain"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “You can make sandwiches with bread.”"
+  },
+  {
+   "type": "tf",
+   "q": "You can buy bread in only one country.",
+   "answer": "F",
+   "explain": "Đoạn 1: bạn có thể mua bánh mì ở nhiều nước trên thế giới."
+  },
+  {
+   "type": "tf",
+   "q": "There are many different kinds of bread.",
+   "answer": "T",
+   "explain": "Đoạn 2: “There are many different kinds of bread.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "flour",
+    "pos": "n",
+    "def": "a white powder made from wheat, used to make bread",
+    "vi": "bột mì",
+    "ex": "Bread is made from flour and water."
+   },
+   {
+    "w": "yeast",
+    "pos": "n",
+    "def": "a small living thing that makes bread soft and light",
+    "vi": "men nở",
+    "ex": "People usually add salt and yeast too."
+   },
+   {
+    "w": "bake",
+    "pos": "v",
+    "def": "to cook food in an oven",
+    "vi": "nướng (bánh)",
+    "ex": "They bake bread in an oven."
+   },
+   {
+    "w": "oven",
+    "pos": "n",
+    "def": "a hot box for cooking food",
+    "vi": "lò nướng",
+    "ex": "They bake bread in an oven."
+   },
+   {
+    "w": "toast",
+    "pos": "n",
+    "def": "bread that is cooked until it is brown",
+    "vi": "bánh mì nướng",
+    "ex": "You can make toast from bread."
+   },
+   {
+    "w": "sandwich",
+    "pos": "n",
+    "def": "two pieces of bread with food between them",
+    "vi": "bánh mì kẹp (sandwich)",
+    "ex": "You can make sandwiches with bread."
+   },
+   {
+    "w": "salt",
+    "pos": "n",
+    "def": "white powder that makes food taste better",
+    "vi": "muối",
+    "ex": "People usually add salt and yeast too."
+   },
+   {
+    "w": "add",
+    "pos": "v",
+    "def": "to put something with something else",
+    "vi": "thêm vào",
+    "ex": "People usually add salt and yeast too."
+   }
+  ],
+  "coll": [
+   {
+    "c": "bake bread",
+    "vi": "nướng bánh mì",
+    "ex": "They bake bread in an oven."
+   },
+   {
+    "c": "buy bread",
+    "vi": "mua bánh mì",
+    "ex": "You can buy bread in many countries around the world."
+   },
+   {
+    "c": "make toast",
+    "vi": "làm bánh mì nướng",
+    "ex": "You can make toast from bread."
+   },
+   {
+    "c": "around the world",
+    "vi": "trên khắp thế giới",
+    "ex": "You can buy bread in many countries around the world."
+   }
+  ],
+  "str": [
+   {
+    "s": "… is made from …",
+    "vi": "được làm từ …",
+    "ex": "Bread is made from flour and water.",
+    "explain": "be made from + nguyên liệu."
+   },
+   {
+    "s": "You can + verb",
+    "vi": "Bạn có thể …",
+    "ex": "You can make toast from bread.",
+    "explain": "can + động từ nguyên mẫu: nói điều có thể làm."
+   },
+   {
+    "s": "There are many different kinds of …",
+    "vi": "Có nhiều loại … khác nhau",
+    "ex": "There are many different kinds of bread.",
+    "explain": "Dùng để nói về sự đa dạng."
+   }
+  ]
+ }
+}

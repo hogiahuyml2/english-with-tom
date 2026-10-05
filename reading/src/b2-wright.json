@@ -1,0 +1,228 @@
+{
+ "id": "b2-wright",
+ "level": "B2",
+ "title": "Wilbur and Orville Wright: The First Airplane",
+ "topic": "History & inventions",
+ "words": 446,
+ "minutes": 7,
+ "source": {
+  "name": "VOA Learning English — Wilbur and Orville Wright: The First Airplane",
+  "url": "https://learningenglish.voanews.com/a/wilbur-and-orville-wright-the-first-airplane/7998765.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Wilbur and Orville Wright are the American inventors who made a small engine-powered flying machine. They proved that flight without the aid of gas-filled balloons was possible.",
+  "Wilbur Wright was born in 1867 near Melville, Indiana. His brother Orville was born four years later in Dayton, Ohio.",
+  "As they grew up, the Wright brothers experimented with mechanical things. Later, the Wright brothers began to design their own flying machine. They used ideas they had developed from earlier experiments with a toy helicopter, kites, the printing machine and bicycles.",
+  "Soon, they needed a place to test their ideas about flight. The best place with the best wind conditions seemed to be a piece of sandy land in North Carolina along the coast of the Atlantic Ocean. It was called Kill Devil Hill, near the town of Kitty Hawk.",
+  "The Wright brothers did many tests with gliders at Kitty Hawk. With these tests, they learned how to solve many problems.",
+  "By the autumn of 1903, Wilbur and Orville had designed and built an airplane powered by a gasoline engine. The plane had wings 12 meters across. It weighed about 340 kilograms, including the pilot.",
+  "On December 17th, 1903, they made the world's first flight in a machine that was heavier than air and powered by an engine. Orville flew the plane 36 meters. He was in the air for 12 seconds. The two brothers made three more flights that day.",
+  "Four other men watched the Wright brothers' first flights. One of the men took pictures. Few newspapers, however, noted the event.",
+  "It was almost five years before the Wright brothers became famous. In 1908, Wilbur went to France. He gave demonstration flights at heights of 90 meters. A French company agreed to begin making the Wright brothers' flying machine.",
+  "Orville made successful flights in the United States at the time Wilbur was in France. The United States War Department agreed to buy a Wright brothers' plane. Wilbur and Orville suddenly became world heroes. But the brothers were not seeking fame. They returned to Dayton where they continued to improve their airplanes. They taught many others how to fly.",
+  "Wilbur Wright died of typhoid fever in 1912. Orville Wright continued designing and inventing until he died many years later, in 1948.",
+  "Today, the Wright brothers' first airplane is in the Air and Space Museum in Washington, D.C. Visitors to the museum can look at the Wright brothers' small plane. Then they can walk to another area and see space vehicles and a rock collected from the moon. The world has changed a lot since Wilbur and Orville Wright began the modern age of flight over one hundred years ago."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What did the Wright brothers prove?",
+   "options": [
+    "That flight without the aid of gas-filled balloons was possible",
+    "That balloons were safer than planes",
+    "That kites could carry people across oceans",
+    "That bicycles could fly"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “They proved that flight without the aid of gas-filled balloons was possible.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which earlier experiments gave them ideas?",
+   "options": [
+    "A toy helicopter, kites, the printing machine and bicycles",
+    "Cars and trains",
+    "Ships and submarines",
+    "Telephones and radios"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “a toy helicopter, kites, the printing machine and bicycles.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why did they choose Kill Devil Hill near Kitty Hawk?",
+   "options": [
+    "It had the best wind conditions",
+    "It was near their home",
+    "It was cheap",
+    "It had many visitors"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “The best place with the best wind conditions seemed to be a piece of sandy land in North Carolina.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How long was Orville in the air on the first flight in 1903?",
+   "options": [
+    "12 seconds",
+    "12 minutes",
+    "36 seconds",
+    "90 seconds"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: “He was in the air for 12 seconds.”"
+  },
+  {
+   "type": "mcq",
+   "q": "When did the Wright brothers become famous?",
+   "options": [
+    "Immediately after the first flight",
+    "About five years later, in 1908",
+    "In 1912",
+    "In 1948"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 9: “It was almost five years before the Wright brothers became famous.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where is their first airplane today?",
+   "options": [
+    "In the Air and Space Museum in Washington, D.C.",
+    "In Dayton, Ohio",
+    "In France",
+    "In Kitty Hawk"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 12: “the Wright brothers’ first airplane is in the Air and Space Museum in Washington, D.C.”"
+  },
+  {
+   "type": "tf",
+   "q": "Many newspapers wrote about the first flights in 1903.",
+   "answer": "F",
+   "explain": "Đoạn 8: “Few newspapers, however, noted the event.”"
+  },
+  {
+   "type": "tf",
+   "q": "Wilbur Wright was older than Orville Wright.",
+   "answer": "T",
+   "explain": "Đoạn 2: Wilbur sinh năm 1867, còn Orville sinh “four years later”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "aid",
+    "pos": "n",
+    "def": "help",
+    "vi": "sự trợ giúp",
+    "ex": "without the aid of gas-filled balloons"
+   },
+   {
+    "w": "experiment",
+    "pos": "n",
+    "def": "a test to find out something",
+    "vi": "cuộc thử nghiệm",
+    "ex": "earlier experiments with a toy helicopter, kites, the printing machine and bicycles"
+   },
+   {
+    "w": "design",
+    "pos": "v",
+    "def": "to plan how something will be made",
+    "vi": "thiết kế",
+    "ex": "began to design their own flying machine"
+   },
+   {
+    "w": "glider",
+    "pos": "n",
+    "def": "a light plane without an engine",
+    "vi": "tàu lượn (máy bay không động cơ)",
+    "ex": "The Wright brothers did many tests with gliders at Kitty Hawk."
+   },
+   {
+    "w": "powered by",
+    "pos": "phr",
+    "def": "driven by a certain kind of energy",
+    "vi": "chạy bằng, được cấp lực bởi",
+    "ex": "an airplane powered by a gasoline engine"
+   },
+   {
+    "w": "demonstration",
+    "pos": "n",
+    "def": "showing how something works",
+    "vi": "buổi trình diễn",
+    "ex": "He gave demonstration flights at heights of 90 meters."
+   },
+   {
+    "w": "hero",
+    "pos": "n",
+    "def": "a person admired for great deeds",
+    "vi": "anh hùng",
+    "ex": "Wilbur and Orville suddenly became world heroes."
+   },
+   {
+    "w": "seek",
+    "pos": "v",
+    "def": "to try to find or get",
+    "vi": "tìm kiếm",
+    "ex": "the brothers were not seeking fame"
+   }
+  ],
+  "coll": [
+   {
+    "c": "design a flying machine",
+    "vi": "thiết kế một cỗ máy bay",
+    "ex": "began to design their own flying machine"
+   },
+   {
+    "c": "do tests / experiments",
+    "vi": "làm các thử nghiệm",
+    "ex": "The Wright brothers did many tests with gliders at Kitty Hawk."
+   },
+   {
+    "c": "become famous",
+    "vi": "trở nên nổi tiếng",
+    "ex": "before the Wright brothers became famous"
+   },
+   {
+    "c": "demonstration flight",
+    "vi": "chuyến bay trình diễn",
+    "ex": "He gave demonstration flights at heights of 90 meters."
+   },
+   {
+    "c": "agree to + verb",
+    "vi": "đồng ý làm gì",
+    "ex": "The United States War Department agreed to buy a Wright brothers' plane."
+   }
+  ],
+  "str": [
+   {
+    "s": "It was almost five years before …",
+    "vi": "Gần năm năm sau thì …",
+    "ex": "It was almost five years before the Wright brothers became famous.",
+    "explain": "It was + khoảng thời gian + before + mệnh đề: nói thời gian trôi qua trước khi một việc xảy ra."
+   },
+   {
+    "s": "powered by + noun",
+    "vi": "chạy bằng …",
+    "ex": "an airplane powered by a gasoline engine",
+    "explain": "V3 phrase sau danh từ: rút gọn mệnh đề quan hệ bị động (which was powered by)."
+   },
+   {
+    "s": "heavier than air",
+    "vi": "nặng hơn không khí",
+    "ex": "a machine that was heavier than air and powered by an engine",
+    "explain": "So sánh hơn với than + danh từ."
+   },
+   {
+    "s": "Few … , however, …",
+    "vi": "Rất ít …, tuy nhiên …",
+    "ex": "Few newspapers, however, noted the event.",
+    "explain": "few (không có a) = hầu như không có; however đặt giữa câu để chỉ sự tương phản."
+   }
+  ]
+ }
+}

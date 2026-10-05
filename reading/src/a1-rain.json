@@ -1,0 +1,179 @@
+{
+ "id": "a1-rain",
+ "level": "A1",
+ "title": "Rain",
+ "topic": "Weather",
+ "words": 59,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Rain",
+  "url": "https://simple.wikipedia.org/wiki/Rain",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Rain is water that falls from clouds in the sky. Hail, sleet and snow also fall from clouds. All of these are called precipitation. People measure rain with a rain gauge.",
+  "Rain is part of the water cycle. Some places have a lot of rain. These places make rainforests. Some places have very little rain. These places make deserts."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Where does rain come from?",
+   "options": [
+    "From clouds in the sky",
+    "From the sea only",
+    "From mountains"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Rain is water that falls from clouds in the sky.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do people use to measure rain?",
+   "options": [
+    "A clock",
+    "A rain gauge",
+    "A map"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “People measure rain with a rain gauge.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do places with a lot of rain make?",
+   "options": [
+    "Deserts",
+    "Rainforests",
+    "Cities"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Some places have a lot of rain. These places make rainforests.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is rain a part of?",
+   "options": [
+    "The water cycle",
+    "The sun",
+    "The wind"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Rain is part of the water cycle.”"
+  },
+  {
+   "type": "tf",
+   "q": "Snow also falls from clouds.",
+   "answer": "T",
+   "explain": "Đoạn 1: “Hail, sleet and snow also fall from clouds.”"
+  },
+  {
+   "type": "tf",
+   "q": "Deserts have a lot of rain.",
+   "answer": "F",
+   "explain": "Đoạn 2: “Some places have very little rain. These places make deserts.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "cloud",
+    "pos": "n",
+    "def": "a white or grey thing in the sky",
+    "vi": "đám mây",
+    "ex": "Rain is water that falls from clouds in the sky."
+   },
+   {
+    "w": "fall",
+    "pos": "v",
+    "def": "to come down from a high place",
+    "vi": "rơi",
+    "ex": "Hail, sleet and snow also fall from clouds."
+   },
+   {
+    "w": "snow",
+    "pos": "n",
+    "def": "soft white ice that falls from the sky",
+    "vi": "tuyết",
+    "ex": "Hail, sleet and snow also fall from clouds."
+   },
+   {
+    "w": "measure",
+    "pos": "v",
+    "def": "to find the size or amount of something",
+    "vi": "đo",
+    "ex": "People measure rain with a rain gauge."
+   },
+   {
+    "w": "cycle",
+    "pos": "n",
+    "def": "a set of events that happen again and again",
+    "vi": "chu trình, vòng tuần hoàn",
+    "ex": "Rain is part of the water cycle."
+   },
+   {
+    "w": "rainforest",
+    "pos": "n",
+    "def": "a thick forest in a place with a lot of rain",
+    "vi": "rừng mưa nhiệt đới",
+    "ex": "These places make rainforests."
+   },
+   {
+    "w": "desert",
+    "pos": "n",
+    "def": "a very dry place with little rain",
+    "vi": "sa mạc",
+    "ex": "These places make deserts."
+   },
+   {
+    "w": "a lot of",
+    "pos": "det",
+    "def": "many or much",
+    "vi": "nhiều",
+    "ex": "Some places have a lot of rain."
+   }
+  ],
+  "coll": [
+   {
+    "c": "heavy rain / a lot of rain",
+    "vi": "mưa lớn / nhiều mưa",
+    "ex": "Some places have a lot of rain."
+   },
+   {
+    "c": "measure rain",
+    "vi": "đo lượng mưa",
+    "ex": "People measure rain with a rain gauge."
+   },
+   {
+    "c": "the water cycle",
+    "vi": "vòng tuần hoàn nước",
+    "ex": "Rain is part of the water cycle."
+   },
+   {
+    "c": "fall from the sky",
+    "vi": "rơi từ trên trời xuống",
+    "ex": "Rain is water that falls from clouds in the sky."
+   }
+  ],
+  "str": [
+   {
+    "s": "a lot of / very little",
+    "vi": "nhiều / rất ít",
+    "ex": "Some places have a lot of rain.",
+    "explain": "a lot of + danh từ không đếm được/đếm được số nhiều; very little + danh từ không đếm được."
+   },
+   {
+    "s": "water that falls …",
+    "vi": "nước mà rơi …",
+    "ex": "Rain is water that falls from clouds in the sky.",
+    "explain": "that + động từ: mệnh đề quan hệ giải thích danh từ đứng trước."
+   },
+   {
+    "s": "All of these are called …",
+    "vi": "Tất cả những thứ này được gọi là …",
+    "ex": "All of these are called precipitation.",
+    "explain": "Dùng để gọi tên cả một nhóm."
+   }
+  ]
+ }
+}

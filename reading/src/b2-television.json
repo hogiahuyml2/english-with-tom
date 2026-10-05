@@ -1,0 +1,231 @@
+{
+ "id": "b2-television",
+ "level": "B2",
+ "title": "American Inventions: The Television",
+ "topic": "Science & inventions",
+ "words": 445,
+ "minutes": 7,
+ "source": {
+  "name": "VOA Learning English — American Inventions: The Television",
+  "url": "https://learningenglish.voanews.com/a/american-inventions-the-television-/7966519.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Yet many people would find it difficult to name the inventor of the television. They might also be surprised to learn that the inventor came up with the idea when he was just fourteen years old.",
+  "Today, we explore the life of one of the great inventors of 20th century America: Philo Taylor Farnsworth.",
+  "Philo Farnsworth was born in August 1906, near Indian Creek in the western state of Utah. The house he lived in for the first few years of his life had no electricity. But Philo read about electricity and quickly began to experiment with it.",
+  "One night, Philo read a magazine story about the idea of sending pictures and sound through the air. The story said some of the world’s best scientists were working on the idea. It said these scientists were using special machines to try to make a kind of device to send pictures.",
+  "Fourteen-year-old Philo decided these famous scientists were wrong. He decided that mechanical devices would never work.",
+  "Philo believed such a device would have to be electronic. Philo knew electrons could be made to move very fast. All he would have to do was find a way to make electrons do the work.",
+  "Soon, Philo had an idea for such a receiver. It would trap light in a container and send the light on a line of electrons. Philo called it “light in a bottle.”",
+  "Several days later, Philo told his teacher about a device that could capture pictures. He drew a plan for it and gave it to his teacher.",
+  "Philo’s drawing seemed very simple. But it still clearly showed the information needed to build a television.",
+  "In September 1927, Philo turned on a device that was the first working television receiver. In another room was the first television camera. Philo had invented the special camera tube earlier that year.",
+  "While the image produced on the receiver was not very clear, the device worked. Within a few months, Philo had found several people who wanted to invest money in his invention.",
+  "In August 1930, the United States government gave Philo patent documents. These documents aimed to protect his invention from being copied by others.",
+  "Still, he became involved in legal disputes with a powerful company at the time known as RCA. Philo won the disputes but faced many business and financial difficulties in his life.",
+  "He developed more than 100 devices that helped make modern television possible. He also developed early radar, invented the first electronic microscope, and worked on developing peaceful uses of atomic energy.",
+  "Philo Farnsworth died in March of 1971. He is considered one of the most important inventors of the 20th century."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How old was Philo Farnsworth when he came up with the idea for television?",
+   "options": [
+    "Four",
+    "Fourteen",
+    "Twenty-four",
+    "Forty"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “the inventor came up with the idea when he was just fourteen years old.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did the magazine story say?",
+   "options": [
+    "Scientists were trying to make a device to send pictures and sound through the air",
+    "Television had already been invented",
+    "Electricity was dangerous",
+    "Utah had the best scientists"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “some of the world’s best scientists were working on the idea … to try to make a kind of device to send pictures.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why did Philo think the famous scientists were wrong?",
+   "options": [
+    "He believed mechanical devices would never work; the device would have to be electronic",
+    "He thought pictures could not be sent",
+    "He wanted to use batteries",
+    "He did not trust magazines"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5–6: “He decided that mechanical devices would never work … such a device would have to be electronic.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did Philo call his idea for a receiver?",
+   "options": [
+    "A picture box",
+    "Light in a bottle",
+    "The electron machine",
+    "The magic eye"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 7: “Philo called it “light in a bottle.””"
+  },
+  {
+   "type": "mcq",
+   "q": "What happened in September 1927?",
+   "options": [
+    "Philo turned on the first working television receiver",
+    "Philo received his patent",
+    "Philo died",
+    "Philo met his teacher"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 10: “In September 1927, Philo turned on a device that was the first working television receiver.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What was the purpose of the patent documents?",
+   "options": [
+    "To protect his invention from being copied by others",
+    "To pay his debts",
+    "To sell the camera",
+    "To start a company called RCA"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 12: “These documents aimed to protect his invention from being copied by others.”"
+  },
+  {
+   "type": "tf",
+   "q": "The image on the first television receiver was very clear.",
+   "answer": "F",
+   "explain": "Đoạn 11: “the image produced on the receiver was not very clear”."
+  },
+  {
+   "type": "tf",
+   "q": "Philo’s teacher kept the drawing of the television for many years.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói Philo đưa bản vẽ cho thầy giáo; không nói thầy giữ bao lâu."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "experiment",
+    "pos": "v",
+    "def": "to try new things to see what happens",
+    "vi": "thử nghiệm, làm thí nghiệm",
+    "ex": "Philo read about electricity and quickly began to experiment with it."
+   },
+   {
+    "w": "device",
+    "pos": "n",
+    "def": "a machine or tool made for a special purpose",
+    "vi": "thiết bị",
+    "ex": "a device that could capture pictures"
+   },
+   {
+    "w": "mechanical",
+    "pos": "adj",
+    "def": "working with machines or moving parts",
+    "vi": "(thuộc) cơ khí, cơ học",
+    "ex": "He decided that mechanical devices would never work."
+   },
+   {
+    "w": "electronic",
+    "pos": "adj",
+    "def": "using electricity in very small parts such as chips",
+    "vi": "(thuộc) điện tử",
+    "ex": "Philo believed such a device would have to be electronic."
+   },
+   {
+    "w": "capture",
+    "pos": "v",
+    "def": "to take or record an image or information",
+    "vi": "ghi lại, thu (hình)",
+    "ex": "a device that could capture pictures"
+   },
+   {
+    "w": "patent",
+    "pos": "n",
+    "def": "an official document that gives you the right to be the only one to make an invention",
+    "vi": "bằng sáng chế",
+    "ex": "the United States government gave Philo patent documents"
+   },
+   {
+    "w": "dispute",
+    "pos": "n",
+    "def": "a serious disagreement or argument",
+    "vi": "tranh chấp",
+    "ex": "he became involved in legal disputes with a powerful company"
+   },
+   {
+    "w": "invest",
+    "pos": "v",
+    "def": "to put money into something to make a profit later",
+    "vi": "đầu tư",
+    "ex": "several people who wanted to invest money in his invention"
+   }
+  ],
+  "coll": [
+   {
+    "c": "experiment with",
+    "vi": "thử nghiệm với",
+    "ex": "quickly began to experiment with it"
+   },
+   {
+    "c": "come up with an idea",
+    "vi": "nghĩ ra ý tưởng",
+    "ex": "the inventor came up with the idea when he was just fourteen years old"
+   },
+   {
+    "c": "legal dispute",
+    "vi": "tranh chấp pháp lý",
+    "ex": "he became involved in legal disputes with a powerful company"
+   },
+   {
+    "c": "invest money in",
+    "vi": "đầu tư tiền vào",
+    "ex": "several people who wanted to invest money in his invention"
+   },
+   {
+    "c": "be considered",
+    "vi": "được xem là",
+    "ex": "He is considered one of the most important inventors of the 20th century."
+   }
+  ],
+  "str": [
+   {
+    "s": "All he would have to do was + verb",
+    "vi": "Tất cả những gì anh ấy phải làm là …",
+    "ex": "All he would have to do was find a way to make electrons do the work.",
+    "explain": "Cấu trúc All + (that) … + be + V nguyên mẫu (bỏ to): nhấn mạnh việc duy nhất cần làm."
+   },
+   {
+    "s": "would have to + verb (past)",
+    "vi": "sẽ phải … (trong quá khứ)",
+    "ex": "Philo believed such a device would have to be electronic.",
+    "explain": "would là “will” ở quá khứ trong lời kể gián tiếp."
+   },
+   {
+    "s": "had + V3 (past perfect)",
+    "vi": "đã … (trước một mốc quá khứ khác)",
+    "ex": "Within a few months, Philo had found several people who wanted to invest money in his invention.",
+    "explain": "Past perfect dùng cho việc xảy ra trước một việc/mốc thời gian trong quá khứ."
+   },
+   {
+    "s": "be considered + noun",
+    "vi": "được xem là …",
+    "ex": "He is considered one of the most important inventors of the 20th century.",
+    "explain": "Bị động với consider: dùng khi nêu đánh giá chung."
+   }
+  ]
+ }
+}

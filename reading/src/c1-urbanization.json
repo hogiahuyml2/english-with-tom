@@ -1,0 +1,228 @@
+{
+ "id": "c1-urbanization",
+ "level": "C1",
+ "title": "Urbanization",
+ "topic": "Society & cities",
+ "words": 546,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Urbanization",
+  "url": "https://en.wikipedia.org/wiki/Urbanization",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Urbanization (or urbanisation in British English) is the process by which human settlements are formed and become larger as more people live, recreate and work in cities and towns. It describes the population shift from rural to urban areas, the corresponding decrease in the proportion of people living in rural areas, and the ways in which societies and culture adapt to this change.",
+  "Urbanization is not merely a modern phenomenon, but a rapid and historic transformation of human social roots on a global scale, whereby predominantly rural culture is being rapidly replaced by predominantly urban culture. The first major change in settlement patterns was the accumulation of hunter-gatherers into villages many thousands of years ago. Village culture is characterized by common bloodlines, intimate relationships, and communal behaviour, whereas urban culture is characterized by distant bloodlines, unfamiliar relations, and competitive behaviour. This unprecedented movement of people is forecast to continue and intensify during the next few decades, mushrooming cities to sizes unthinkable only a century ago. As a result, the world urban population growth curve has up till recently followed a quadratic-hyperbolic pattern.",
+  "From the development of the earliest cities in Indus Valley Civilization, Mesopotamia and Egypt until the 18th century, an equilibrium existed between the vast majority of the population who were engaged in subsistence agriculture in a rural context, and small centres of populations in the towns where economic activity consisted only of trade at markets and manufactures on a small scale. Due to the primitive and relatively stagnant state of agriculture throughout this period, the ratio of rural to urban population remained at a fixed equilibrium. However, a significant increase in the percentage of the global urban population can be traced in the 1st millennium BCE.",
+  "With the onset of the British Agricultural Revolution and Industrial Revolution in the late 18th century, this relationship was finally broken and an unprecedented growth in urban population took place over the course of the 19th century, both through continued migration from the countryside and due to the tremendous demographic expansion that occurred at that time. In England and Wales, the proportion of the population living in cities with more than 20,000 people jumped from 17% in 1801 to 54% in 1891. Moreover, and adopting a broader definition of urbanization, while the urbanized population in England and Wales represented 72% of the total in 1891, for other countries the figure was 37% in France, 41% in Prussia and 28% in the United States.",
+  "Urbanization occurs either organically or planned as a result of individual, collective and state action. Living in a city can be culturally and economically beneficial since it can provide greater opportunities for access to the labour market, better education, housing, and safety conditions, and reduce the time and expense of commuting and transportation. Conditions like density, proximity, diversity, and marketplace competition are elements of an urban environment that are deemed beneficial. However, there are also harmful social phenomena that arise: alienation, stress, increased cost of living, and mass marginalization that are connected to an urban way of living. Suburbanization, which is happening in the cities of the largest developing countries, may be regarded as an attempt to balance these harmful aspects of urban life while still allowing access to a large extent of shared resources."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does urbanization describe, according to paragraph 1?",
+   "options": [
+    "The population shift from rural to urban areas and how societies adapt to it",
+    "The building of tall towers",
+    "The growth of farms",
+    "The movement of people between countries only"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “the population shift from rural to urban areas … and the ways in which societies and culture adapt to this change.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How does the text contrast village culture with urban culture?",
+   "options": [
+    "Village: common bloodlines, intimate relationships, communal behaviour; urban: distant bloodlines, unfamiliar relations, competitive behaviour",
+    "Village: competitive; urban: communal",
+    "They are exactly the same",
+    "Village culture has no relationships"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Village culture is characterized by common bloodlines, intimate relationships, and communal behaviour, whereas urban culture is characterized by distant bloodlines, unfamiliar relations, and competitive behaviour.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Until the 18th century, why did the ratio of rural to urban population stay at a fixed equilibrium?",
+   "options": [
+    "Because of the primitive and relatively stagnant state of agriculture",
+    "Because there were no cities",
+    "Because of many wars",
+    "Because trade was forbidden"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “Due to the primitive and relatively stagnant state of agriculture throughout this period, the ratio of rural to urban population remained at a fixed equilibrium.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What broke this relationship in the late 18th century?",
+   "options": [
+    "The British Agricultural Revolution and the Industrial Revolution",
+    "The invention of the telephone",
+    "The discovery of America",
+    "A new government"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “With the onset of the British Agricultural Revolution and Industrial Revolution in the late 18th century, this relationship was finally broken”."
+  },
+  {
+   "type": "mcq",
+   "q": "In England and Wales, how did the proportion of people living in cities of more than 20,000 change between 1801 and 1891?",
+   "options": [
+    "From 17% to 54%",
+    "From 54% to 17%",
+    "From 10% to 20%",
+    "It did not change"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “jumped from 17% in 1801 to 54% in 1891.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How is suburbanization seen, according to the last paragraph?",
+   "options": [
+    "As an attempt to balance harmful aspects of urban life while still allowing access to shared resources",
+    "As the end of cities",
+    "As a cause of unemployment",
+    "As a type of farming"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: “Suburbanization … may be regarded as an attempt to balance these harmful aspects of urban life while still allowing access to a large extent of shared resources.”"
+  },
+  {
+   "type": "tf",
+   "q": "Urbanization can occur either organically or planned.",
+   "answer": "T",
+   "explain": "Đoạn 5: “Urbanization occurs either organically or planned”."
+  },
+  {
+   "type": "tf",
+   "q": "The text says urbanization is only a modern phenomenon.",
+   "answer": "F",
+   "explain": "Đoạn 2: “Urbanization is not merely a modern phenomenon”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "settlement",
+    "pos": "n",
+    "def": "a place where people have come to live",
+    "vi": "khu định cư",
+    "ex": "the process by which human settlements are formed and become larger"
+   },
+   {
+    "w": "rural",
+    "pos": "adj",
+    "def": "in the countryside",
+    "vi": "(thuộc) nông thôn",
+    "ex": "the population shift from rural to urban areas"
+   },
+   {
+    "w": "predominantly",
+    "pos": "adv",
+    "def": "mostly; mainly",
+    "vi": "chủ yếu",
+    "ex": "predominantly rural culture is being rapidly replaced by predominantly urban culture"
+   },
+   {
+    "w": "unprecedented",
+    "pos": "adj",
+    "def": "never having happened before",
+    "vi": "chưa từng có",
+    "ex": "This unprecedented movement of people is forecast to continue"
+   },
+   {
+    "w": "equilibrium",
+    "pos": "n",
+    "def": "a state of balance",
+    "vi": "trạng thái cân bằng",
+    "ex": "an equilibrium existed between the vast majority of the population"
+   },
+   {
+    "w": "demographic",
+    "pos": "adj",
+    "def": "relating to the structure of a population",
+    "vi": "(thuộc) nhân khẩu học",
+    "ex": "the tremendous demographic expansion"
+   },
+   {
+    "w": "density",
+    "pos": "n",
+    "def": "how crowded a place is",
+    "vi": "mật độ",
+    "ex": "Conditions like density, proximity, diversity, and marketplace competition"
+   },
+   {
+    "w": "alienation",
+    "pos": "n",
+    "def": "a feeling of not belonging or being separate from others",
+    "vi": "sự xa lánh, cảm giác tách biệt",
+    "ex": "harmful social phenomena that arise: alienation, stress"
+   },
+   {
+    "w": "marginalization",
+    "pos": "n",
+    "def": "making a person or group feel unimportant",
+    "vi": "sự gạt ra bên lề",
+    "ex": "mass marginalization"
+   }
+  ],
+  "coll": [
+   {
+    "c": "population shift",
+    "vi": "sự dịch chuyển dân cư",
+    "ex": "It describes the population shift from rural to urban areas"
+   },
+   {
+    "c": "unprecedented growth",
+    "vi": "sự tăng trưởng chưa từng có",
+    "ex": "an unprecedented growth in urban population took place"
+   },
+   {
+    "c": "take place",
+    "vi": "diễn ra",
+    "ex": "an unprecedented growth in urban population took place over the course of the 19th century"
+   },
+   {
+    "c": "cost of living",
+    "vi": "chi phí sinh hoạt",
+    "ex": "increased cost of living"
+   },
+   {
+    "c": "access to the labour market",
+    "vi": "khả năng tiếp cận thị trường lao động",
+    "ex": "greater opportunities for access to the labour market"
+   }
+  ],
+  "str": [
+   {
+    "s": "not merely …, but …",
+    "vi": "không chỉ … mà còn …",
+    "ex": "Urbanization is not merely a modern phenomenon, but a rapid and historic transformation of human social roots on a global scale",
+    "explain": "Nhấn mạnh rằng sự việc rộng/sâu hơn điều người ta thường nghĩ."
+   },
+   {
+    "s": "X is characterized by …, whereas Y is characterized by …",
+    "vi": "X có đặc điểm …, trong khi Y có đặc điểm …",
+    "ex": "Village culture is characterized by common bloodlines, intimate relationships, and communal behaviour, whereas urban culture is characterized by distant bloodlines",
+    "explain": "whereas nối hai vế đối lập, dùng nhiều khi so sánh khái niệm."
+   },
+   {
+    "s": "With the onset of …, …",
+    "vi": "Khi … bắt đầu, …",
+    "ex": "With the onset of the British Agricultural Revolution and Industrial Revolution in the late 18th century, this relationship was finally broken",
+    "explain": "With the onset of + danh từ: mở đầu mệnh đề nêu thời điểm bắt đầu của một sự kiện."
+   },
+   {
+    "s": "Conditions … are elements … that are deemed beneficial",
+    "vi": "những điều kiện … là yếu tố được xem là có lợi",
+    "ex": "Conditions like density, proximity, diversity, and marketplace competition are elements of an urban environment that are deemed beneficial.",
+    "explain": "be deemed + tính từ: được xem là (trang trọng)."
+   }
+  ]
+ }
+}

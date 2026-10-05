@@ -1,0 +1,179 @@
+{
+ "id": "a1-rabbit",
+ "level": "A1",
+ "title": "Rabbits",
+ "topic": "Animals",
+ "words": 79,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Rabbit",
+  "url": "https://simple.wikipedia.org/wiki/Rabbit",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Rabbits are animals. They are mammals. Rabbits live in many parts of the world. They live in families. They eat vegetables and hay. Some people have rabbits as pets.",
+  "Wild rabbits live in holes under the ground. The holes are called burrows. Rabbits dig their burrows themselves. A group of rabbits in a burrow is called a warren. A male rabbit is called a buck. A female rabbit is called a doe. A baby rabbit is called a kit."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What do rabbits eat?",
+   "options": [
+    "Fish and meat",
+    "Vegetables and hay",
+    "Bread and milk"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “They eat vegetables and hay.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where do wild rabbits live?",
+   "options": [
+    "In trees",
+    "In holes under the ground",
+    "On farms"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Wild rabbits live in holes under the ground.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is a baby rabbit called?",
+   "options": [
+    "A doe",
+    "A buck",
+    "A kit"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “A baby rabbit is called a kit.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is a group of rabbits in a burrow called?",
+   "options": [
+    "A warren",
+    "A family farm",
+    "A pet shop"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “A group of rabbits in a burrow is called a warren.”"
+  },
+  {
+   "type": "tf",
+   "q": "Rabbits live alone.",
+   "answer": "F",
+   "explain": "Đoạn 1: “They live in families.”"
+  },
+  {
+   "type": "tf",
+   "q": "Some people have rabbits as pets.",
+   "answer": "T",
+   "explain": "Đoạn 1: “Some people have rabbits as pets.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "rabbit",
+    "pos": "n",
+    "def": "a small animal with long ears",
+    "vi": "con thỏ",
+    "ex": "Rabbits are animals."
+   },
+   {
+    "w": "hay",
+    "pos": "n",
+    "def": "dry grass for animals to eat",
+    "vi": "cỏ khô",
+    "ex": "They eat vegetables and hay."
+   },
+   {
+    "w": "wild",
+    "pos": "adj",
+    "def": "living in nature, not with people",
+    "vi": "hoang dã",
+    "ex": "Wild rabbits live in holes under the ground."
+   },
+   {
+    "w": "burrow",
+    "pos": "n",
+    "def": "a hole in the ground where an animal lives",
+    "vi": "hang (của thỏ, cáo…)",
+    "ex": "The holes are called burrows."
+   },
+   {
+    "w": "dig",
+    "pos": "v",
+    "def": "to make a hole in the ground",
+    "vi": "đào",
+    "ex": "Rabbits dig their burrows themselves."
+   },
+   {
+    "w": "male",
+    "pos": "adj",
+    "def": "a man or boy; not female",
+    "vi": "đực (giống đực)",
+    "ex": "A male rabbit is called a buck."
+   },
+   {
+    "w": "female",
+    "pos": "adj",
+    "def": "a woman or girl; not male",
+    "vi": "cái (giống cái)",
+    "ex": "A female rabbit is called a doe."
+   },
+   {
+    "w": "baby",
+    "pos": "n",
+    "def": "a very young child or animal",
+    "vi": "con non, em bé",
+    "ex": "A baby rabbit is called a kit."
+   }
+  ],
+  "coll": [
+   {
+    "c": "live in families",
+    "vi": "sống theo gia đình",
+    "ex": "They live in families."
+   },
+   {
+    "c": "have a rabbit as a pet",
+    "vi": "nuôi thỏ làm thú cưng",
+    "ex": "Some people have rabbits as pets."
+   },
+   {
+    "c": "dig a burrow",
+    "vi": "đào hang",
+    "ex": "Rabbits dig their burrows themselves."
+   },
+   {
+    "c": "wild rabbits",
+    "vi": "thỏ rừng",
+    "ex": "Wild rabbits live in holes under the ground."
+   }
+  ],
+  "str": [
+   {
+    "s": "A … is called …",
+    "vi": "… được gọi là …",
+    "ex": "A baby rabbit is called a kit.",
+    "explain": "Cấu trúc gọi tên: A + danh từ + is called + tên."
+   },
+   {
+    "s": "They live in …",
+    "vi": "Chúng sống ở / trong …",
+    "ex": "They live in families.",
+    "explain": "live in + nơi chốn / nhóm."
+   },
+   {
+    "s": "Some people have … as pets",
+    "vi": "Một số người nuôi … làm thú cưng",
+    "ex": "Some people have rabbits as pets.",
+    "explain": "have + động vật + as pets."
+   }
+  ]
+ }
+}

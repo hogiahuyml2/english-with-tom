@@ -1,0 +1,189 @@
+{
+ "id": "a2-camping",
+ "level": "A2",
+ "title": "Going Camping",
+ "topic": "Leisure & travel",
+ "words": 138,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Camping",
+  "url": "https://simple.wikipedia.org/wiki/Camping",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": ""
+ },
+ "paras": [
+  "Camping is a leisure activity, usually during summer when school children are on holiday, where people leave their homes and spend one or more nights outdoors. They may be tourists seeking nature, adventure, or a different environment. They may sleep in a campervan or trailer, a tent, or in the open air in good weather. Winter camping is less common but in some parts of the world, tents are people's homes year around. Rich people began camping for fun in the early 20th century. When more people could afford it, many more did it.",
+  "When camping, people usually prepare food to eat that is easy to make. If they were hunting or fishing, they may cook the animal or fish they caught over a campfire.",
+  "Dangers can arise, such as wild animals or illness from drinking unclean water."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "When do many people go camping?",
+   "options": [
+    "In winter, when it is cold",
+    "In summer, when school children are on holiday",
+    "Only at weekends",
+    "Only in the early morning"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “usually during summer when school children are on holiday”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which is NOT mentioned as a place to sleep when camping?",
+   "options": [
+    "A tent",
+    "A campervan",
+    "A hotel",
+    "The open air"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1 nhắc đến campervan, trailer, tent và open air, không có hotel."
+  },
+  {
+   "type": "mcq",
+   "q": "What kind of food do campers usually prepare?",
+   "options": [
+    "Food that is easy to make",
+    "Food from a restaurant",
+    "Food that is very expensive",
+    "Only cold food"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “people usually prepare food to eat that is easy to make.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is one danger of camping?",
+   "options": [
+    "Too much food",
+    "Illness from drinking unclean water",
+    "Very hot tents",
+    "Not enough animals"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “illness from drinking unclean water”."
+  },
+  {
+   "type": "tf",
+   "q": "Rich people began camping for fun in the early 20th century.",
+   "answer": "T",
+   "explain": "Đoạn 1: “Rich people began camping for fun in the early 20th century.”"
+  },
+  {
+   "type": "tf",
+   "q": "Camping in winter is more common than camping in summer.",
+   "answer": "F",
+   "explain": "Đoạn 1: “Winter camping is less common”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "leisure",
+    "pos": "n",
+    "def": "time when you are free to do what you like",
+    "vi": "thời gian rảnh rỗi",
+    "ex": "Camping is a leisure activity"
+   },
+   {
+    "w": "outdoors",
+    "pos": "adv",
+    "def": "outside, not in a building",
+    "vi": "ngoài trời",
+    "ex": "spend one or more nights outdoors"
+   },
+   {
+    "w": "adventure",
+    "pos": "n",
+    "def": "an exciting or unusual experience",
+    "vi": "cuộc phiêu lưu",
+    "ex": "They may be tourists seeking nature, adventure, or a different environment."
+   },
+   {
+    "w": "campervan",
+    "pos": "n",
+    "def": "a vehicle where you can sleep and cook",
+    "vi": "xe cắm trại",
+    "ex": "They may sleep in a campervan or trailer, a tent, or in the open air in good weather."
+   },
+   {
+    "w": "afford",
+    "pos": "v",
+    "def": "to have enough money to buy something",
+    "vi": "đủ tiền để mua / chi trả",
+    "ex": "When more people could afford it, many more did it."
+   },
+   {
+    "w": "campfire",
+    "pos": "n",
+    "def": "a fire that you make outside when you camp",
+    "vi": "lửa trại",
+    "ex": "they may cook the animal or fish they caught over a campfire"
+   },
+   {
+    "w": "illness",
+    "pos": "n",
+    "def": "a bad health problem; being sick",
+    "vi": "bệnh tật",
+    "ex": "illness from drinking unclean water"
+   },
+   {
+    "w": "unclean",
+    "pos": "adj",
+    "def": "not clean",
+    "vi": "không sạch",
+    "ex": "illness from drinking unclean water"
+   }
+  ],
+  "coll": [
+   {
+    "c": "leisure activity",
+    "vi": "hoạt động giải trí",
+    "ex": "Camping is a leisure activity"
+   },
+   {
+    "c": "spend a night outdoors",
+    "vi": "qua đêm ngoài trời",
+    "ex": "spend one or more nights outdoors"
+   },
+   {
+    "c": "for fun",
+    "vi": "để giải trí, cho vui",
+    "ex": "Rich people began camping for fun in the early 20th century."
+   },
+   {
+    "c": "cook over a campfire",
+    "vi": "nấu trên lửa trại",
+    "ex": "they may cook the animal or fish they caught over a campfire"
+   },
+   {
+    "c": "wild animals",
+    "vi": "động vật hoang dã",
+    "ex": "Dangers can arise, such as wild animals or illness from drinking unclean water."
+   }
+  ],
+  "str": [
+   {
+    "s": "may + verb",
+    "vi": "có thể (khả năng)",
+    "ex": "They may sleep in a campervan or trailer, a tent, or in the open air in good weather.",
+    "explain": "may + động từ nguyên mẫu: nói về khả năng xảy ra."
+   },
+   {
+    "s": "When + clause, …",
+    "vi": "Khi … thì …",
+    "ex": "When more people could afford it, many more did it.",
+    "explain": "Mệnh đề “When” nêu điều kiện/thời điểm dẫn đến kết quả."
+   },
+   {
+    "s": "usually + verb",
+    "vi": "trạng từ tần suất đứng trước động từ thường",
+    "ex": "When camping, people usually prepare food to eat that is easy to make.",
+    "explain": "Trạng từ tần suất (usually, often, sometimes) đứng trước động từ thường, sau động từ be."
+   }
+  ]
+ }
+}

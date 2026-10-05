@@ -1,0 +1,179 @@
+{
+ "id": "a1-dog",
+ "level": "A1",
+ "title": "Dogs",
+ "topic": "Animals",
+ "words": 70,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Dog",
+  "url": "https://simple.wikipedia.org/wiki/Dog",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Dogs are animals. They are mammals. Many people keep dogs as pets. Some dogs work on farms. Some dogs work for the police. Some dogs help people in the mountains.",
+  "Dogs come from wolves. They were the first animals to live with people. Dogs are popular pets because they are friendly and they listen to people. Dogs eat meat and vegetables. People say a dog is a human's best friend."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Where do some dogs work?",
+   "options": [
+    "In schools",
+    "On farms and for the police",
+    "In shops"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “Some dogs work on farms. Some dogs work for the police.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where do dogs come from?",
+   "options": [
+    "From cats",
+    "From wolves",
+    "From horses"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Dogs come from wolves.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why are dogs popular pets?",
+   "options": [
+    "They are friendly and they listen to people",
+    "They are very small",
+    "They can fly"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “they are friendly and they listen to people”."
+  },
+  {
+   "type": "mcq",
+   "q": "What do dogs eat?",
+   "options": [
+    "Only fish",
+    "Meat and vegetables",
+    "Only bread"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Dogs eat meat and vegetables.”"
+  },
+  {
+   "type": "tf",
+   "q": "Dogs were the first animals to live with people.",
+   "answer": "T",
+   "explain": "Đoạn 2: “They were the first animals to live with people.”"
+  },
+  {
+   "type": "tf",
+   "q": "Dogs eat only meat.",
+   "answer": "F",
+   "explain": "Đoạn 2: chó ăn cả thịt và rau (“meat and vegetables”)."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "farm",
+    "pos": "n",
+    "def": "land with fields and animals",
+    "vi": "nông trại",
+    "ex": "Some dogs work on farms."
+   },
+   {
+    "w": "police",
+    "pos": "n",
+    "def": "the people who keep a country safe from crime",
+    "vi": "cảnh sát",
+    "ex": "Some dogs work for the police."
+   },
+   {
+    "w": "wolf",
+    "pos": "n",
+    "def": "a wild animal like a big dog",
+    "vi": "con sói",
+    "ex": "Dogs come from wolves."
+   },
+   {
+    "w": "friendly",
+    "pos": "adj",
+    "def": "kind and happy to meet people",
+    "vi": "thân thiện",
+    "ex": "they are friendly and they listen to people"
+   },
+   {
+    "w": "listen",
+    "pos": "v",
+    "def": "to hear and pay attention",
+    "vi": "lắng nghe",
+    "ex": "they listen to people"
+   },
+   {
+    "w": "mountain",
+    "pos": "n",
+    "def": "a very high hill",
+    "vi": "núi",
+    "ex": "Some dogs help people in the mountains."
+   },
+   {
+    "w": "vegetable",
+    "pos": "n",
+    "def": "a plant that you eat, like carrots",
+    "vi": "rau củ",
+    "ex": "Dogs eat meat and vegetables."
+   },
+   {
+    "w": "best friend",
+    "pos": "n",
+    "def": "the friend you like the most",
+    "vi": "bạn thân nhất",
+    "ex": "People say a dog is a human's best friend."
+   }
+  ],
+  "coll": [
+   {
+    "c": "keep a dog as a pet",
+    "vi": "nuôi chó làm thú cưng",
+    "ex": "Many people keep dogs as pets."
+   },
+   {
+    "c": "work on a farm",
+    "vi": "làm việc ở nông trại",
+    "ex": "Some dogs work on farms."
+   },
+   {
+    "c": "listen to people",
+    "vi": "nghe lời / lắng nghe mọi người",
+    "ex": "they listen to people"
+   },
+   {
+    "c": "best friend",
+    "vi": "bạn thân nhất",
+    "ex": "a dog is a human's best friend"
+   }
+  ],
+  "str": [
+   {
+    "s": "… because …",
+    "vi": "… vì …",
+    "ex": "Dogs are popular pets because they are friendly and they listen to people.",
+    "explain": "because + lý do."
+   },
+   {
+    "s": "Dogs come from …",
+    "vi": "… có nguồn gốc từ …",
+    "ex": "Dogs come from wolves.",
+    "explain": "come from: đến từ / bắt nguồn từ."
+   },
+   {
+    "s": "They were the first … to + verb",
+    "vi": "Chúng là … đầu tiên …",
+    "ex": "They were the first animals to live with people.",
+    "explain": "the first + danh từ + to + động từ."
+   }
+  ]
+ }
+}

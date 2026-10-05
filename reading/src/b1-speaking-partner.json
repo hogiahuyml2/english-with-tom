@@ -1,0 +1,215 @@
+{
+ "id": "b1-speaking-partner",
+ "level": "B1",
+ "title": "Four Ways to Find an English Speaking Partner",
+ "topic": "Learning English",
+ "words": 463,
+ "minutes": 7,
+ "source": {
+  "name": "VOA Learning English — Four Ways to Find an English Speaking Partner",
+  "url": "https://learningenglish.voanews.com/a/four-ways-to-find-an-english-speaking-partner/5791580.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Many VOA Learning English users live in places where it is hard to find someone to practice speaking English with. You may be one of those people. So you may have tried to find people online, even on our website or social media pages. And maybe you found a partner or maybe you did not.",
+  "If you have been unlucky in finding a partner, today’s Education Tips is for you. On this program, we offer four tips to help you find someone who wants to practice speaking English with you.",
+  "Facebook groups are excellent for finding people who share your interests, including English learning.",
+  "You will want to make sure you join a group whose members are very active. When deciding on a group to join, keep in mind that groups with thousands of members may not be as active as smaller groups. So take some time to look around and then choose a group, or maybe a few.",
+  "After joining a group and spending time observing its posts, you will begin to see which members are the most active. If you notice that someone writes a lot of useful comments or questions, they are probably serious about learning English. Consider messaging them directly to ask if they would like to practice speaking English with you. You can practice through Facebook Messenger or video apps like Zoom or Skype.",
+  "Meetup is a free website that helps people with similar interests find each other and meet in person. Users of the website can be found around the world.",
+  "Members of language Meetup groups often meet in public places, such as coffee houses. The coronavirus pandemic has led some groups to meet online, or in places where safe social distancing is possible.",
+  "Language exchanges are unlike usual speaking practices. In a language exchange, a meeting is divided into practicing two languages.",
+  "Suppose for example you are a native Portuguese speaker and you want to practice English. Your partner is a native English speaker who wants to practice Portuguese. You and your partner would speak English for one half of the meetings and Portuguese for the other half.",
+  "Our final tip for today is to “cast a wide net.” That means to try many different things to increase your chances of getting what you want.",
+  "Tell your friends, family and coworkers that you are serious about improving your English. Maybe explain your reasons for learning the language. Let them know you are looking for an English speaker to talk to. Ask around your larger community as well. The more people you ask, the more likely and quickly you will find a good practice partner. He or she may not live in your city – or even your country – but you can meet each other online."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Why are Facebook groups useful, according to the text?",
+   "options": [
+    "They are expensive",
+    "They help you find people who share your interests, including English learning",
+    "They teach grammar",
+    "They are only for friends and family"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “Facebook groups are excellent for finding people who share your interests, including English learning.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the text say about very large Facebook groups?",
+   "options": [
+    "They are always the best",
+    "Groups with thousands of members may not be as active as smaller groups",
+    "They have no members",
+    "They are not allowed to share information"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: “groups with thousands of members may not be as active as smaller groups.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is Meetup?",
+   "options": [
+    "A free website that helps people with similar interests meet in person",
+    "A paid language school",
+    "A video game",
+    "A kind of coffee house"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: “Meetup is a free website that helps people with similar interests find each other and meet in person.”"
+  },
+  {
+   "type": "mcq",
+   "q": "In a language exchange, what do partners do?",
+   "options": [
+    "They only speak English",
+    "They speak each person’s language for part of the meeting",
+    "They write letters",
+    "They watch films together"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 9: một người nói tiếng Anh nửa buổi, rồi nói tiếng Bồ Đào Nha nửa buổi còn lại (ví dụ trong bài)."
+  },
+  {
+   "type": "mcq",
+   "q": "What does “cast a wide net” mean here?",
+   "options": [
+    "Buy a fishing net",
+    "Try many different things to increase your chances",
+    "Stop looking for a partner",
+    "Only ask your family"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 10: “That means to try many different things to increase your chances of getting what you want.”"
+  },
+  {
+   "type": "tf",
+   "q": "Meetup is a website that you must pay to use.",
+   "answer": "F",
+   "explain": "Đoạn 6: Meetup là “a free website”."
+  },
+  {
+   "type": "tf",
+   "q": "The text says Zoom is better than Facebook Messenger for practice.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói có thể luyện qua Messenger hoặc ứng dụng video như Zoom, Skype; không so sánh cái nào tốt hơn."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "partner",
+    "pos": "n",
+    "def": "a person you do an activity with",
+    "vi": "bạn cùng luyện, đối tác",
+    "ex": "someone to practice speaking English with"
+   },
+   {
+    "w": "practice",
+    "pos": "v",
+    "def": "to do something again and again to get better",
+    "vi": "luyện tập",
+    "ex": "places where it is hard to find someone to practice speaking English with"
+   },
+   {
+    "w": "active",
+    "pos": "adj",
+    "def": "doing things often; taking part a lot",
+    "vi": "tích cực, hoạt động nhiều",
+    "ex": "Make sure you join a group whose members are very active."
+   },
+   {
+    "w": "member",
+    "pos": "n",
+    "def": "a person who belongs to a group",
+    "vi": "thành viên",
+    "ex": "groups with thousands of members"
+   },
+   {
+    "w": "in person",
+    "pos": "adv",
+    "def": "meeting face to face",
+    "vi": "trực tiếp, gặp mặt",
+    "ex": "helps people with similar interests find each other and meet in person"
+   },
+   {
+    "w": "native speaker",
+    "pos": "n",
+    "def": "a person who has spoken a language since birth",
+    "vi": "người bản ngữ",
+    "ex": "Your partner is a native English speaker who wants to practice Portuguese."
+   },
+   {
+    "w": "exchange",
+    "pos": "n",
+    "def": "giving something and getting something in return",
+    "vi": "sự trao đổi",
+    "ex": "In a language exchange, a meeting is divided into practicing two languages."
+   },
+   {
+    "w": "chance",
+    "pos": "n",
+    "def": "a possibility that something will happen",
+    "vi": "cơ hội, khả năng",
+    "ex": "to increase your chances of getting what you want"
+   }
+  ],
+  "coll": [
+   {
+    "c": "practice speaking English",
+    "vi": "luyện nói tiếng Anh",
+    "ex": "someone to practice speaking English with"
+   },
+   {
+    "c": "share your interests",
+    "vi": "có chung sở thích",
+    "ex": "people who share your interests, including English learning"
+   },
+   {
+    "c": "keep in mind",
+    "vi": "ghi nhớ",
+    "ex": "keep in mind that groups with thousands of members may not be as active as smaller groups"
+   },
+   {
+    "c": "in person",
+    "vi": "trực tiếp",
+    "ex": "meet in person"
+   },
+   {
+    "c": "cast a wide net",
+    "vi": "thử nhiều cách khác nhau",
+    "ex": "Our final tip for today is to “cast a wide net.”"
+   }
+  ],
+  "str": [
+   {
+    "s": "You will want to + verb",
+    "vi": "Bạn nên (muốn) …",
+    "ex": "You will want to make sure you join a group whose members are very active.",
+    "explain": "Cách khuyên nhẹ nhàng, lịch sự."
+   },
+   {
+    "s": "Consider + -ing",
+    "vi": "Hãy cân nhắc …",
+    "ex": "Consider messaging them directly to ask if they would like to practice speaking English with you.",
+    "explain": "consider + V-ing: gợi ý ai đó làm gì."
+   },
+   {
+    "s": "Suppose + clause",
+    "vi": "Giả sử …",
+    "ex": "Suppose for example you are a native Portuguese speaker and you want to practice English.",
+    "explain": "Suppose / Let’s say: đưa ra một tình huống giả định để minh họa."
+   },
+   {
+    "s": "The more …, the more …",
+    "vi": "Càng … càng …",
+    "ex": "The more people you ask, the more likely and quickly you will find a good practice partner.",
+    "explain": "So sánh kép: hai vế cùng tăng."
+   }
+  ]
+ }
+}

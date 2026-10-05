@@ -1,0 +1,194 @@
+{
+ "id": "a2-dolphin",
+ "level": "A2",
+ "title": "Dolphins",
+ "topic": "Animals & environment",
+ "words": 227,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Dolphin",
+  "url": "https://simple.wikipedia.org/wiki/Dolphin",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ các đoạn đã được kiểm tra nội dung."
+ },
+ "paras": [
+  "Dolphins are part of the toothed whales. Generally, they are among the smaller whales. Most live in salt water oceans, but there are also river dolphins. They are mammals, not fish.",
+  "Dolphins are usually between 1.5 metres (4.9 ft) and 4 metres (13 ft) long. The largest dolphin, the orca (killer whale), can be up to 8 metres (26 ft) long.",
+  "Dolphins breathe air. A dolphin's nose is on top of its head so the dolphin can easily breathe on the surface of the water.",
+  "The skin of a dolphin is gray, smooth, soft, and rubbery. It has no scales. It is very firm, because dolphins are very muscular.",
+  "All dolphins live in groups called \"pods\". They are social animals at all stages of their lives. Pods travel together, hunt together and defend each other. Dolphins have fought off sharks by ramming them over and over again with their snouts and heads.",
+  "Dolphins \"porpoise\" in and out of the water when traveling at high speed. Scientists do not know for sure why they do this. It may be the fastest movement they are capable of.",
+  "Dolphins are carnivores and eat fish. They use echolocation to find their food.",
+  "When they chase fish, the fish go into a \"bait ball\" to self-protect. In turn, the dolphins attack in a group and eat as many fish as they can."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What kind of animals are dolphins?",
+   "options": [
+    "Fish",
+    "Mammals",
+    "Birds",
+    "Insects"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “They are mammals, not fish.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where is a dolphin’s nose?",
+   "options": [
+    "On top of its head",
+    "At the end of its snout",
+    "Under its body",
+    "Next to its eyes"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “A dolphin's nose is on top of its head”."
+  },
+  {
+   "type": "mcq",
+   "q": "What is a group of dolphins called?",
+   "options": [
+    "A herd",
+    "A pod",
+    "A raft",
+    "A school"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “All dolphins live in groups called \"pods\".”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do dolphins use to find their food?",
+   "options": [
+    "Echolocation",
+    "Their skin",
+    "Their eyes only",
+    "Bait balls"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: “They use echolocation to find their food.”"
+  },
+  {
+   "type": "tf",
+   "q": "The orca is the largest dolphin.",
+   "answer": "T",
+   "explain": "Đoạn 2: “The largest dolphin, the orca (killer whale), can be up to 8 metres (26 ft) long.”"
+  },
+  {
+   "type": "tf",
+   "q": "Scientists know exactly why dolphins jump in and out of the water.",
+   "answer": "F",
+   "explain": "Đoạn 6: “Scientists do not know for sure why they do this.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "mammal",
+    "pos": "n",
+    "def": "an animal that feeds its babies with milk",
+    "vi": "động vật có vú",
+    "ex": "They are mammals, not fish."
+   },
+   {
+    "w": "scales",
+    "pos": "n",
+    "def": "small hard flat parts that cover the skin of fish",
+    "vi": "vảy (cá)",
+    "ex": "It has no scales."
+   },
+   {
+    "w": "muscular",
+    "pos": "adj",
+    "def": "having strong muscles",
+    "vi": "vạm vỡ, nhiều cơ bắp",
+    "ex": "because dolphins are very muscular"
+   },
+   {
+    "w": "pod",
+    "pos": "n",
+    "def": "a group of dolphins or whales",
+    "vi": "đàn (cá heo, cá voi)",
+    "ex": "All dolphins live in groups called \"pods\"."
+   },
+   {
+    "w": "social",
+    "pos": "adj",
+    "def": "living in groups or liking to be with others",
+    "vi": "sống theo bầy đàn, hòa đồng",
+    "ex": "They are social animals at all stages of their lives."
+   },
+   {
+    "w": "defend",
+    "pos": "v",
+    "def": "to protect someone or something from attack",
+    "vi": "bảo vệ, chống lại",
+    "ex": "Pods travel together, hunt together and defend each other."
+   },
+   {
+    "w": "carnivore",
+    "pos": "n",
+    "def": "an animal that eats meat",
+    "vi": "động vật ăn thịt",
+    "ex": "Dolphins are carnivores and eat fish."
+   },
+   {
+    "w": "surface",
+    "pos": "n",
+    "def": "the top part of water or the ground",
+    "vi": "mặt (nước), bề mặt",
+    "ex": "so the dolphin can easily breathe on the surface of the water"
+   }
+  ],
+  "coll": [
+   {
+    "c": "breathe air",
+    "vi": "thở bằng không khí",
+    "ex": "Dolphins breathe air."
+   },
+   {
+    "c": "hunt together",
+    "vi": "săn mồi cùng nhau",
+    "ex": "Pods travel together, hunt together and defend each other."
+   },
+   {
+    "c": "at high speed",
+    "vi": "với tốc độ cao",
+    "ex": "Dolphins \"porpoise\" in and out of the water when traveling at high speed."
+   },
+   {
+    "c": "in groups",
+    "vi": "theo nhóm, theo bầy",
+    "ex": "All dolphins live in groups called \"pods\"."
+   },
+   {
+    "c": "find food",
+    "vi": "tìm thức ăn",
+    "ex": "They use echolocation to find their food."
+   }
+  ],
+  "str": [
+   {
+    "s": "between … and …",
+    "vi": "trong khoảng … đến …",
+    "ex": "Dolphins are usually between 1.5 metres (4.9 ft) and 4 metres (13 ft) long.",
+    "explain": "Dùng để nói một khoảng kích thước, số lượng."
+   },
+   {
+    "s": "groups called \"…\"",
+    "vi": "những nhóm được gọi là …",
+    "ex": "All dolphins live in groups called \"pods\".",
+    "explain": "Rút gọn mệnh đề quan hệ bị động: groups (which are) called \"pods\"."
+   },
+   {
+    "s": "do not know for sure why …",
+    "vi": "không biết chắc tại sao …",
+    "ex": "Scientists do not know for sure why they do this.",
+    "explain": "Câu hỏi gián tiếp: why + chủ ngữ + động từ (không đảo ngữ)."
+   }
+  ]
+ }
+}

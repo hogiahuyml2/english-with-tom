@@ -1,0 +1,169 @@
+{
+ "id": "a2-summer",
+ "level": "A2",
+ "title": "Summer",
+ "topic": "Seasons & weather",
+ "words": 158,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Summer",
+  "url": "https://simple.wikipedia.org/wiki/Summer",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": ""
+ },
+ "paras": [
+  "Summer is one of the four seasons. It is the hottest season of the year. In some places, summer is the wettest season (with the most rain), and in other places, it is a dry season. Four seasons are found in areas which are not too hot or too cold. Summer happens to the north and south sides of the Earth at opposite times of the year. In the north part of the world, summer takes place between the months of June and September, and in the south part of the world, it takes place between December and March. This is because when the north part of the Earth points towards the Sun, the south part points away.",
+  "Many people in rich countries travel in summer, to seaside resorts, beaches, camps or picnics. In some countries, they celebrate things in the summer as well as enjoying cool drinks. Other countries get snow in the summer just like winter."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "In the north part of the world, when does summer take place?",
+   "options": [
+    "Between December and March",
+    "Between June and September",
+    "Between March and June",
+    "Between September and December"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “in the north part of the world, summer takes place between the months of June and September”."
+  },
+  {
+   "type": "mcq",
+   "q": "Why is summer at opposite times in the north and the south?",
+   "options": [
+    "Because the south is hotter",
+    "Because the Sun moves away",
+    "Because when the north part of the Earth points towards the Sun, the south part points away",
+    "Because there are more clouds in the south"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “This is because when the north part of the Earth points towards the Sun, the south part points away.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which places have four seasons?",
+   "options": [
+    "Places that are too hot",
+    "Places that are too cold",
+    "Places that are not too hot or too cold",
+    "Places near the sea"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “Four seasons are found in areas which are not too hot or too cold.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do many people in rich countries do in summer?",
+   "options": [
+    "They stay at home",
+    "They travel to seaside resorts, beaches, camps or picnics",
+    "They go to school",
+    "They work more"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Many people in rich countries travel in summer, to seaside resorts, beaches, camps or picnics.”"
+  },
+  {
+   "type": "tf",
+   "q": "Summer is the hottest season of the year.",
+   "answer": "T",
+   "explain": "Đoạn 1: “It is the hottest season of the year.”"
+  },
+  {
+   "type": "tf",
+   "q": "In all places, summer is the wettest season.",
+   "answer": "F",
+   "explain": "Đoạn 1: ở một số nơi là mùa mưa nhiều nhất, nhưng ở nơi khác là mùa khô (“a dry season”)."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "season",
+    "pos": "n",
+    "def": "one of the four parts of the year: spring, summer, autumn, winter",
+    "vi": "mùa",
+    "ex": "Summer is one of the four seasons."
+   },
+   {
+    "w": "opposite",
+    "pos": "adj",
+    "def": "completely different; on the other side",
+    "vi": "đối lập, ngược lại",
+    "ex": "Summer happens to the north and south sides of the Earth at opposite times of the year."
+   },
+   {
+    "w": "resort",
+    "pos": "n",
+    "def": "a place where many people go for a holiday",
+    "vi": "khu nghỉ dưỡng",
+    "ex": "Many people in rich countries travel in summer, to seaside resorts, beaches, camps or picnics."
+   },
+   {
+    "w": "picnic",
+    "pos": "n",
+    "def": "a meal that you eat outside",
+    "vi": "buổi dã ngoại, picnic",
+    "ex": "to seaside resorts, beaches, camps or picnics"
+   },
+   {
+    "w": "celebrate",
+    "pos": "v",
+    "def": "to do something special for an important day or event",
+    "vi": "ăn mừng, tổ chức lễ",
+    "ex": "In some countries, they celebrate things in the summer"
+   },
+   {
+    "w": "dry",
+    "pos": "adj",
+    "def": "with little or no water or rain",
+    "vi": "khô",
+    "ex": "in other places, it is a dry season"
+   }
+  ],
+  "coll": [
+   {
+    "c": "take place",
+    "vi": "diễn ra, xảy ra",
+    "ex": "summer takes place between the months of June and September"
+   },
+   {
+    "c": "seaside resort",
+    "vi": "khu nghỉ dưỡng ven biển",
+    "ex": "to seaside resorts, beaches, camps or picnics"
+   },
+   {
+    "c": "cool drinks",
+    "vi": "đồ uống mát lạnh",
+    "ex": "enjoying cool drinks"
+   },
+   {
+    "c": "dry season",
+    "vi": "mùa khô",
+    "ex": "in other places, it is a dry season"
+   }
+  ],
+  "str": [
+   {
+    "s": "the + superlative",
+    "vi": "so sánh nhất",
+    "ex": "It is the hottest season of the year.",
+    "explain": "the + tính từ ngắn + -est (hottest, wettest)."
+   },
+   {
+    "s": "In some places, … and in other places, …",
+    "vi": "ở một số nơi … còn ở nơi khác …",
+    "ex": "In some places, summer is the wettest season (with the most rain), and in other places, it is a dry season.",
+    "explain": "Dùng để so sánh hai trường hợp khác nhau."
+   },
+   {
+    "s": "This is because …",
+    "vi": "Đó là vì …",
+    "ex": "This is because when the north part of the Earth points towards the Sun, the south part points away.",
+    "explain": "Dùng ở câu sau để giải thích lý do cho điều vừa nói."
+   }
+  ]
+ }
+}

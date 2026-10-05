@@ -1,0 +1,212 @@
+{
+ "id": "b1-trash-treasure",
+ "level": "B1",
+ "title": "One Person's Trash Is Another Person's Treasure",
+ "topic": "Idioms",
+ "words": 283,
+ "minutes": 5,
+ "source": {
+  "name": "VOA Learning English — One Person's Trash Is Another Person's Treasure",
+  "url": "https://learningenglish.voanews.com/a/one-person-s-trash-is-another-person-s-treasure-/7733886.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "People around the world share many things in common. But we are also different from each other. Not only do we look, think, and act differently, but we also like different things. Even identical twins may look the same but are very different individuals.",
+  "When we say one person's trash is another person's treasure , we mean that something that one person may consider worthless could be highly prized or valued by someone else.",
+  "Let’s hear an example of how to use this expression:",
+  "A: I really don't understand the appeal of Jackson Pollock’s paintings. To me, they look like a team of monkeys painted them!\"",
+  "B: I love Pollock’s paintings. I see something new every time I look at them.",
+  "A: Well, I guess it's true what they say, one person's trash is another person's treasure .",
+  "Another expression with a similar meaning is different strokes for different folks .",
+  "This also means that different things appeal to different people. But as a set expression, we do not say “different strokes for different people.” That just doesn't sound right.",
+  "For example, a perfect evening for my friend is to go out and dance all night long. For me, a perfect evening is to stay at home with a book and a cup of tea. Neither is a better way to spend the evening. So, we should not judge. Or in other words, different strokes for different folks .",
+  "It takes all kinds to make the world go round.",
+  "To each his (her) own.",
+  "Whatever floats your boat.",
+  "They all mean … whatever makes you happy!",
+  "And all of these expressions have the same general meaning: We are all different and unique ."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does “one person’s trash is another person’s treasure” mean?",
+   "options": [
+    "Rich people throw away good things",
+    "Something one person thinks is worthless may be highly valued by someone else",
+    "Treasure is hidden in the trash",
+    "People should never throw things away"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “something that one person may consider worthless could be highly prized or valued by someone else.”"
+  },
+  {
+   "type": "mcq",
+   "q": "In the example, what does Speaker A say about Jackson Pollock’s paintings?",
+   "options": [
+    "They look like a team of monkeys painted them",
+    "They are beautiful",
+    "They are very old",
+    "They are too expensive"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “To me, they look like a team of monkeys painted them!”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which expression has a fixed form that cannot be changed?",
+   "options": [
+    "“different strokes for different folks” — we do not say “different people”",
+    "“one man’s trash” — we cannot say “man”",
+    "“to each his own”",
+    "“it takes all kinds”"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 8: “as a set expression, we do not say “different strokes for different people.””"
+  },
+  {
+   "type": "mcq",
+   "q": "What does “whatever floats your boat” mean?",
+   "options": [
+    "Whatever makes you happy",
+    "Whatever is expensive",
+    "Whatever is dangerous",
+    "Whatever is easy"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 13: “They all mean … whatever makes you happy!”"
+  },
+  {
+   "type": "mcq",
+   "q": "What general meaning do all these expressions share?",
+   "options": [
+    "We are all different and unique",
+    "We should all be the same",
+    "Money is not important",
+    "We must always agree"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 14: “We are all different and unique.”"
+  },
+  {
+   "type": "tf",
+   "q": "Speaker B in the dialogue likes Pollock’s paintings.",
+   "answer": "T",
+   "explain": "Đoạn 5: “I love Pollock’s paintings.”"
+  },
+  {
+   "type": "tf",
+   "q": "The text says Jackson Pollock was born in the United States.",
+   "answer": "NG",
+   "explain": "Bài không nói gì về nơi sinh của Pollock."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "trash",
+    "pos": "n",
+    "def": "things that you throw away; rubbish",
+    "vi": "rác",
+    "ex": "one person's trash is another person's treasure"
+   },
+   {
+    "w": "treasure",
+    "pos": "n",
+    "def": "valuable things, like gold or jewels",
+    "vi": "kho báu, vật quý",
+    "ex": "one person's trash is another person's treasure"
+   },
+   {
+    "w": "worthless",
+    "pos": "adj",
+    "def": "having no value",
+    "vi": "vô giá trị",
+    "ex": "something that one person may consider worthless could be highly prized or valued by someone else"
+   },
+   {
+    "w": "prized",
+    "pos": "adj",
+    "def": "very much valued",
+    "vi": "được trân trọng",
+    "ex": "could be highly prized or valued by someone else"
+   },
+   {
+    "w": "appeal",
+    "pos": "n",
+    "def": "a quality that makes people like something",
+    "vi": "sức hấp dẫn",
+    "ex": "I really don't understand the appeal of Jackson Pollock’s paintings."
+   },
+   {
+    "w": "judge",
+    "pos": "v",
+    "def": "to form an opinion about someone or something",
+    "vi": "đánh giá, phán xét",
+    "ex": "So, we should not judge."
+   },
+   {
+    "w": "unique",
+    "pos": "adj",
+    "def": "one of a kind; not like anything else",
+    "vi": "độc nhất, riêng biệt",
+    "ex": "We are all different and unique"
+   },
+   {
+    "w": "set expression",
+    "pos": "n",
+    "def": "a group of words that always has the same form",
+    "vi": "cách nói cố định",
+    "ex": "But as a set expression, we do not say “different strokes for different people.”"
+   }
+  ],
+  "coll": [
+   {
+    "c": "in common",
+    "vi": "điểm chung",
+    "ex": "People around the world share many things in common."
+   },
+   {
+    "c": "consider something worthless",
+    "vi": "xem cái gì là vô giá trị",
+    "ex": "something that one person may consider worthless"
+   },
+   {
+    "c": "different strokes for different folks",
+    "vi": "mỗi người một sở thích",
+    "ex": "Another expression with a similar meaning is different strokes for different folks"
+   },
+   {
+    "c": "to each his (her) own",
+    "vi": "mỗi người một ý thích",
+    "ex": "To each his (her) own."
+   },
+   {
+    "c": "it takes all kinds",
+    "vi": "trên đời có đủ loại người",
+    "ex": "It takes all kinds to make the world go round."
+   }
+  ],
+  "str": [
+   {
+    "s": "Not only do we …, but we also …",
+    "vi": "Không chỉ … mà còn …",
+    "ex": "Not only do we look, think, and act differently, but we also like different things.",
+    "explain": "Đảo ngữ sau Not only: trợ động từ đứng trước chủ ngữ để nhấn mạnh."
+   },
+   {
+    "s": "we do not say …",
+    "vi": "chúng ta không nói …",
+    "ex": "But as a set expression, we do not say “different strokes for different people.”",
+    "explain": "Dùng để chỉ ra cách nói không tự nhiên."
+   },
+   {
+    "s": "Neither is …",
+    "vi": "Không cái nào … hơn",
+    "ex": "Neither is a better way to spend the evening.",
+    "explain": "Neither + động từ: phủ định cả hai lựa chọn."
+   }
+  ]
+ }
+}

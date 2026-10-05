@@ -1,0 +1,210 @@
+{
+ "id": "b1-bad-habits",
+ "level": "B1",
+ "title": "How to Break Bad Habits",
+ "topic": "Study skills",
+ "words": 461,
+ "minutes": 7,
+ "source": {
+  "name": "VOA Learning English — How to Break Bad Habits",
+  "url": "https://learningenglish.voanews.com/a/how-to-break-bad-habits-/5654403.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Imagine you are studying English. Perhaps you are learning new words or expressions. But then you feel the need to check your phone. Perhaps you look on social media.",
+  "You return to your studies, only to look again at your phone a short time later. This process, when repeated many times, could reduce your ability to learn new material. It is what you might call a bad habit – a custom or repeated action that has a negative effect on you or your goals.",
+  "In our cell phone example, the cue is seeing the cell phone. The craving is the desire or urge to check your phone. The response is checking your phone. The reward might be seeing something interesting on social media, for example.",
+  "James Clear notes that to break bad habits, you need to think about each step in the habit-making process.",
+  "To break a habit, he writes, you should think about making the bad habit invisible , unattractive , difficult and unsatisfying.",
+  "To make your phone invisible, you could hide it away. To make it unattractive, you could think about why it is a good idea to stop checking the phone. To make phone use difficult, you can increase the space between you and your phone. To make your phone unsatisfying, you could make a habit contract . For example, you could ask a family member to watch your behavior and point out when you check your phone. You could promise to pay that person every time you look at the device while you are studying.",
+  "One suggestion is to wear a wristwatch. This will limit at least one reason for looking at the phone – checking the time.",
+  "“Silence it. Turn it off. Switch on your phone’s Do Not Disturb mode,” she writes. She adds that you can move your phone to a place that is more difficult to reach. For example, you can put your phone inside a backpack.",
+  "Wood also suggests another way to think about cell phone use. She says you can add a new, healthy habit onto your cell phone habit. “What about if every time you check your phone, you call one member of your family just to say hello and have a quick … chat ?” she asks.",
+  "Finally, Wood suggests one kind of reward you could give yourself for not looking at your phone: reading a good book.",
+  "The important thing to remember is that people can change their habits. But they must think carefully about their surroundings or environment. You might decide to stop doing an action, but if such an action is very easy for you to do, you will probably continue doing it.",
+  "Habit changes take time. But with patience, planning, and repetition, you can do it."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "According to the text, what is a bad habit?",
+   "options": [
+    "A custom or repeated action that has a negative effect on you or your goals",
+    "Any habit that takes a lot of time",
+    "Something that only children do",
+    "An action that other people do not like"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “a bad habit – a custom or repeated action that has a negative effect on you or your goals.”"
+  },
+  {
+   "type": "mcq",
+   "q": "In the cell phone example, what is the cue?",
+   "options": [
+    "Seeing the cell phone",
+    "Wanting to check the phone",
+    "Checking the phone",
+    "Seeing something interesting"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “In our cell phone example, the cue is seeing the cell phone.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How can you make your phone “invisible”?",
+   "options": [
+    "Break it",
+    "Hide it away",
+    "Give it to a friend",
+    "Turn on all the alarms"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 6: “To make your phone invisible, you could hide it away.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why does Wendy Wood suggest wearing a wristwatch?",
+   "options": [
+    "It looks nice",
+    "It limits one reason for looking at the phone – checking the time",
+    "It helps you sleep",
+    "It makes you walk more"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 7: “This will limit at least one reason for looking at the phone – checking the time.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What reward does Wood suggest for not looking at your phone?",
+   "options": [
+    "Reading a good book",
+    "Watching a film",
+    "Buying new clothes",
+    "Calling a friend"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 10: “reading a good book.”"
+  },
+  {
+   "type": "tf",
+   "q": "The text says that changing a habit can happen very quickly.",
+   "answer": "F",
+   "explain": "Đoạn 12: “Habit changes take time.”"
+  },
+  {
+   "type": "tf",
+   "q": "Wendy Wood has written more than one book about habits.",
+   "answer": "NG",
+   "explain": "Bài chỉ nhắc đến một cuốn sách của Wood (Good Habits, Bad Habits); không nói bà viết thêm cuốn nào khác."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "negative",
+    "pos": "adj",
+    "def": "bad or harmful; not positive",
+    "vi": "tiêu cực, không tốt",
+    "ex": "a custom or repeated action that has a negative effect on you or your goals"
+   },
+   {
+    "w": "cue",
+    "pos": "n",
+    "def": "a signal that tells you to do something",
+    "vi": "tín hiệu nhắc",
+    "ex": "the cue is seeing the cell phone"
+   },
+   {
+    "w": "craving",
+    "pos": "n",
+    "def": "a strong wish for something",
+    "vi": "sự thèm muốn",
+    "ex": "The craving is the desire or urge to check your phone."
+   },
+   {
+    "w": "urge",
+    "pos": "n",
+    "def": "a strong feeling that you want to do something",
+    "vi": "thôi thúc",
+    "ex": "The craving is the desire or urge to check your phone."
+   },
+   {
+    "w": "invisible",
+    "pos": "adj",
+    "def": "impossible to see",
+    "vi": "vô hình, không nhìn thấy được",
+    "ex": "you should think about making the bad habit invisible"
+   },
+   {
+    "w": "unattractive",
+    "pos": "adj",
+    "def": "not pleasant or interesting",
+    "vi": "kém hấp dẫn",
+    "ex": "making the bad habit invisible , unattractive , difficult and unsatisfying"
+   },
+   {
+    "w": "repetition",
+    "pos": "n",
+    "def": "doing or saying something again and again",
+    "vi": "sự lặp lại",
+    "ex": "But with patience, planning, and repetition, you can do it."
+   },
+   {
+    "w": "patience",
+    "pos": "n",
+    "def": "the ability to wait calmly",
+    "vi": "sự kiên nhẫn",
+    "ex": "But with patience, planning, and repetition, you can do it."
+   }
+  ],
+  "coll": [
+   {
+    "c": "break a habit",
+    "vi": "bỏ một thói quen",
+    "ex": "To break a habit, he writes, you should think about making the bad habit invisible"
+   },
+   {
+    "c": "have a negative effect on",
+    "vi": "có tác động xấu đến",
+    "ex": "a custom or repeated action that has a negative effect on you or your goals"
+   },
+   {
+    "c": "point out",
+    "vi": "chỉ ra, nhắc",
+    "ex": "ask a family member to watch your behavior and point out when you check your phone"
+   },
+   {
+    "c": "turn it off",
+    "vi": "tắt nó đi",
+    "ex": "Turn it off."
+   },
+   {
+    "c": "take time",
+    "vi": "cần thời gian",
+    "ex": "Habit changes take time."
+   }
+  ],
+  "str": [
+   {
+    "s": "To + verb, … should …",
+    "vi": "Để …, bạn nên …",
+    "ex": "To break a habit, he writes, you should think about making the bad habit invisible , unattractive , difficult and unsatisfying.",
+    "explain": "To + động từ ở đầu câu chỉ mục đích."
+   },
+   {
+    "s": "make + object + adjective",
+    "vi": "làm cho … trở nên …",
+    "ex": "you should think about making the bad habit invisible",
+    "explain": "make + tân ngữ + tính từ: biến đổi trạng thái của sự vật."
+   },
+   {
+    "s": "if …, … will probably …",
+    "vi": "nếu … thì có lẽ …",
+    "ex": "if such an action is very easy for you to do, you will probably continue doing it",
+    "explain": "Câu điều kiện loại 1: nói về khả năng xảy ra trong thực tế."
+   }
+  ]
+ }
+}

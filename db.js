@@ -749,6 +749,33 @@ safeAlter('PRAGMA table_info(speaking_sessions)', [
   ['assign_id', 'ALTER TABLE speaking_sessions ADD COLUMN assign_id INTEGER'],
 ]);
 
+// Đọc hiểu theo cấp độ A1–C1: lượt làm bài + từ học sinh đã lưu khi đọc
+tryExec(`
+CREATE TABLE IF NOT EXISTS reading_attempts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  text_id TEXT NOT NULL,
+  score INTEGER NOT NULL,
+  max_score INTEGER NOT NULL,
+  answers TEXT NOT NULL,
+  seconds INTEGER,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_reading_att_user ON reading_attempts(user_id, text_id);
+CREATE TABLE IF NOT EXISTS reading_saved (
+  user_id INTEGER NOT NULL,
+  key TEXT NOT NULL,
+  word TEXT NOT NULL,
+  pos TEXT,
+  def TEXT,
+  vi TEXT,
+  text_id TEXT,
+  sentence TEXT,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, key)
+);
+`, 'reading tables');
+
 function now() { return new Date().toISOString(); }
 
 module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };

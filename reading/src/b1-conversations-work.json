@@ -1,0 +1,217 @@
+{
+ "id": "b1-conversations-work",
+ "level": "B1",
+ "title": "Tips for Better Conversations in English at Work",
+ "topic": "Work & communication",
+ "words": 433,
+ "minutes": 7,
+ "source": {
+  "name": "VOA Learning English — Tips for Better Conversations in English at Work",
+  "url": "https://learningenglish.voanews.com/a/tips-for-better-conversations-at-work/5726549.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "When we are learning a new language, carrying on a conversation can be difficult. It is even harder when there is the added pressure of doing a job well using the new language. One of our readers , Emre , works at a job that requires him to talk with customers in English. He recently asked for advice on how he can improve his listening skills.",
+  "A learning strategy can be a thought or an action you take to make learning easier.",
+  "The first strategy is to predict what you will hear. Maybe your customers sometimes say they have problems with placing an order on your website. You can think about the ways they usually ask about that problem. What words do they often use in that kind of conversation? For example, customers may often use the word “order.”",
+  "The next strategy is to prepare a list of those words and listen for them when a customer begins talking with you. I call this “ focusing when you listen.” The next time you are listening to a customer, pay attention to the key words that help you understand their question.",
+  "Next, think about what you can say to the customer to let them know you need a little help understanding them. You can let the customer know you are an English learner.",
+  "There are two questions you can ask. At the beginning of the conversation, you can ask, “Would you please speak more slowly?”",
+  "The other kind of question is one I call, “asking to clarify .” Remember, you predicted some of the words your customers may use. You should listen closely for those words. When you hear one, you can ask the customer a short question to be sure. “Did you say you want to order ?”",
+  "You can prepare your answers to customers’ questions and rehearse them in your free time. You may want to keep a notebook with your usual answers. You can practice saying them out loud to yourself.",
+  "You are not sure of the product the customer wants. But you did note the words “order” and “button,” so you can ask a question to clarify the customer’s request. You rehearsed this question:",
+  "Are you looking for the button to order?",
+  "The customer says, “Yes.” Then, you can ask another question that you practiced.",
+  "May I ask the name of the product you want to order?",
+  "Another way you can prepare is to listen to English movies and podcasts as often as you can. The more you listen to conversations in English, the more you will understand over time."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Who asked for advice on improving his listening skills?",
+   "options": [
+    "A teacher",
+    "A reader named Emre",
+    "A customer",
+    "The writer"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “One of our readers, Emre … asked for advice on how he can improve his listening skills.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is a learning strategy?",
+   "options": [
+    "A test",
+    "A thought or an action you take to make learning easier",
+    "A kind of dictionary",
+    "A school rule"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “A learning strategy can be a thought or an action you take to make learning easier.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is the first strategy?",
+   "options": [
+    "Predict what you will hear",
+    "Ask for a free lesson",
+    "Read the news",
+    "Write a long email"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “The first strategy is to predict what you will hear.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What can you ask at the beginning of the conversation?",
+   "options": [
+    "“Would you please speak more slowly?”",
+    "“What is your name?”",
+    "“How old are you?”",
+    "“Where do you live?”"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: “At the beginning of the conversation, you can ask, ‘Would you please speak more slowly?’”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does “asking to clarify” mean in the text?",
+   "options": [
+    "Asking a short question to be sure of what you heard",
+    "Asking for more money",
+    "Asking the customer to leave",
+    "Asking the customer to write it down"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: “you can ask the customer a short question to be sure.”"
+  },
+  {
+   "type": "tf",
+   "q": "The writer suggests you can practice your answers out loud in your free time.",
+   "answer": "T",
+   "explain": "Đoạn 8: “rehearse them in your free time … practice saying them out loud to yourself.”"
+  },
+  {
+   "type": "tf",
+   "q": "The text says you should never tell customers you are an English learner.",
+   "answer": "F",
+   "explain": "Đoạn 5: “You can let the customer know you are an English learner.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "strategy",
+    "pos": "n",
+    "def": "a plan for doing something",
+    "vi": "chiến lược, cách làm",
+    "ex": "A learning strategy can be a thought or an action you take to make learning easier."
+   },
+   {
+    "w": "predict",
+    "pos": "v",
+    "def": "to say what will happen or be said",
+    "vi": "dự đoán",
+    "ex": "The first strategy is to predict what you will hear."
+   },
+   {
+    "w": "focus",
+    "pos": "v",
+    "def": "to give all your attention to one thing",
+    "vi": "tập trung",
+    "ex": "I call this “ focusing when you listen.”"
+   },
+   {
+    "w": "clarify",
+    "pos": "v",
+    "def": "to make something clear",
+    "vi": "làm rõ",
+    "ex": "you can ask a question to clarify the customer’s request"
+   },
+   {
+    "w": "rehearse",
+    "pos": "v",
+    "def": "to practice something before you do it for real",
+    "vi": "tập dượt",
+    "ex": "You can prepare your answers to customers’ questions and rehearse them in your free time."
+   },
+   {
+    "w": "customer",
+    "pos": "n",
+    "def": "a person who buys things or services",
+    "vi": "khách hàng",
+    "ex": "a job that requires him to talk with customers in English"
+   },
+   {
+    "w": "key words",
+    "pos": "n",
+    "def": "the most important words that carry the meaning",
+    "vi": "từ khóa",
+    "ex": "pay attention to the key words that help you understand their question"
+   },
+   {
+    "w": "request",
+    "pos": "n",
+    "def": "asking for something politely",
+    "vi": "yêu cầu",
+    "ex": "you can ask a question to clarify the customer’s request"
+   }
+  ],
+  "coll": [
+   {
+    "c": "carry on a conversation",
+    "vi": "duy trì cuộc trò chuyện",
+    "ex": "When we are learning a new language, carrying on a conversation can be difficult."
+   },
+   {
+    "c": "pay attention to",
+    "vi": "chú ý đến",
+    "ex": "pay attention to the key words that help you understand their question"
+   },
+   {
+    "c": "learning strategy",
+    "vi": "chiến lược học tập",
+    "ex": "A learning strategy can be a thought or an action you take to make learning easier."
+   },
+   {
+    "c": "practice saying … out loud",
+    "vi": "luyện nói thành tiếng",
+    "ex": "You can practice saying them out loud to yourself."
+   },
+   {
+    "c": "listen for",
+    "vi": "chú ý lắng nghe (từ nào đó)",
+    "ex": "listen for them when a customer begins talking with you"
+   }
+  ],
+  "str": [
+   {
+    "s": "the first strategy is to + verb",
+    "vi": "Chiến lược đầu tiên là …",
+    "ex": "The first strategy is to predict what you will hear.",
+    "explain": "The first/next/final + noun + is to + động từ nguyên mẫu."
+   },
+   {
+    "s": "Would you please + verb?",
+    "vi": "Bạn vui lòng … được không?",
+    "ex": "Would you please speak more slowly?",
+    "explain": "Câu yêu cầu lịch sự."
+   },
+   {
+    "s": "The more …, the more …",
+    "vi": "Càng … càng …",
+    "ex": "The more you listen to conversations in English, the more you will understand over time.",
+    "explain": "So sánh kép."
+   },
+   {
+    "s": "May I + verb?",
+    "vi": "Tôi có thể … không?",
+    "ex": "May I ask the name of the product you want to order?",
+    "explain": "Cách xin phép lịch sự khi nói chuyện với khách."
+   }
+  ]
+ }
+}

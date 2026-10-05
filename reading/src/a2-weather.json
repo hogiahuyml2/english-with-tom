@@ -1,0 +1,201 @@
+{
+ "id": "a2-weather",
+ "level": "A2",
+ "title": "What Is Weather?",
+ "topic": "Science & nature",
+ "words": 303,
+ "minutes": 5,
+ "source": {
+  "name": "Simple English Wikipedia — Weather",
+  "url": "https://simple.wikipedia.org/wiki/Weather",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Weather is the day-to-day or hour-to-hour change in the atmosphere. Weather includes wind, lightning, storms, hurricanes, tornadoes, rain, hail, snow, and lots more. Energy from the Sun affects the weather too.",
+  "Climate tells us what kinds of weather usually happen in an area at different times of the year.",
+  "Changes in weather can affect the mood and life of many living things. People wear different clothes and do different things in different weather conditions. They also choose different food in different seasons.",
+  "Weather stations around the world measure different parts of weather. Ways to measure weather are wind speed, wind direction, temperature and humidity. People try to use these measurements to make weather forecasts for the future. These people are scientists that are called meteorologists. They use computers to build large mathematical models to follow weather trends.",
+  "Weather happens because different parts of the Earth get different amounts of heat from the Sun. This makes different climates. The tropics get the most heat because the Sun shines straight down on them, while the poles get the least heat because the Sun shines on them from a low angle. Warmer air is lighter than cooler air and rises higher in the sky by convection.",
+  "The air always has some water mixed with it. This is called humidity. When it cools, the water can change from a gas to a liquid through condensation. Then the water can fall from the sky as rain or snow. After the air rises, it gets colder and goes back towards the ground. Because the air lost its water before, it is dry when it comes back to the ground. When two air masses of different temperatures meet, this is called a warm front or cold front. The ways that the air moves around the Earth are called atmospheric circulation."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does climate tell us?",
+   "options": [
+    "What the weather will be like tomorrow",
+    "What kinds of weather usually happen in an area at different times of the year",
+    "How fast the wind is moving today",
+    "Which clothes we should wear"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Climate tells us what kinds of weather usually happen in an area at different times of the year.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Who uses computers to follow weather trends?",
+   "options": [
+    "Farmers",
+    "Pilots",
+    "Meteorologists",
+    "Teachers"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 4: “scientists that are called meteorologists. They use computers to build large mathematical models to follow weather trends.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why do the tropics get the most heat?",
+   "options": [
+    "They are very close to the poles",
+    "The Sun shines straight down on them",
+    "They have the most clouds",
+    "The air there is very dry"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “The tropics get the most heat because the Sun shines straight down on them.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is humidity?",
+   "options": [
+    "The speed of the wind",
+    "The temperature of the air",
+    "The water that is mixed with the air",
+    "The warm front"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 6: “The air always has some water mixed with it. This is called humidity.”"
+  },
+  {
+   "type": "tf",
+   "q": "Changes in weather can affect people’s mood.",
+   "answer": "T",
+   "explain": "Đoạn 3: “Changes in weather can affect the mood and life of many living things.”"
+  },
+  {
+   "type": "tf",
+   "q": "Warmer air is heavier than cooler air.",
+   "answer": "F",
+   "explain": "Đoạn 5: “Warmer air is lighter than cooler air and rises higher in the sky.” Không phải “heavier”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "atmosphere",
+    "pos": "n",
+    "def": "the layer of air around the Earth",
+    "vi": "khí quyển",
+    "ex": "Weather is the day-to-day or hour-to-hour change in the atmosphere."
+   },
+   {
+    "w": "climate",
+    "pos": "n",
+    "def": "the usual weather in a place over a long time",
+    "vi": "khí hậu",
+    "ex": "Climate tells us what kinds of weather usually happen in an area at different times of the year."
+   },
+   {
+    "w": "forecast",
+    "pos": "n",
+    "def": "a statement about what the weather will be like",
+    "vi": "dự báo (thời tiết)",
+    "ex": "People try to use these measurements to make weather forecasts for the future."
+   },
+   {
+    "w": "humidity",
+    "pos": "n",
+    "def": "how much water is in the air",
+    "vi": "độ ẩm",
+    "ex": "This is called humidity."
+   },
+   {
+    "w": "temperature",
+    "pos": "n",
+    "def": "how hot or cold something is",
+    "vi": "nhiệt độ",
+    "ex": "Ways to measure weather are wind speed, wind direction, temperature and humidity."
+   },
+   {
+    "w": "measure",
+    "pos": "v",
+    "def": "to find the size or amount of something",
+    "vi": "đo, đo lường",
+    "ex": "Weather stations around the world measure different parts of weather."
+   },
+   {
+    "w": "meteorologist",
+    "pos": "n",
+    "def": "a scientist who studies the weather",
+    "vi": "nhà khí tượng học",
+    "ex": "These people are scientists that are called meteorologists."
+   },
+   {
+    "w": "tropics",
+    "pos": "n",
+    "def": "the hottest parts of the Earth, near the equator",
+    "vi": "vùng nhiệt đới",
+    "ex": "The tropics get the most heat because the Sun shines straight down on them"
+   },
+   {
+    "w": "condensation",
+    "pos": "n",
+    "def": "when a gas cools and becomes a liquid",
+    "vi": "sự ngưng tụ",
+    "ex": "the water can change from a gas to a liquid through condensation"
+   },
+   {
+    "w": "affect",
+    "pos": "v",
+    "def": "to change something or have an effect on it",
+    "vi": "ảnh hưởng đến",
+    "ex": "Changes in weather can affect the mood and life of many living things."
+   }
+  ],
+  "coll": [
+   {
+    "c": "weather forecast",
+    "vi": "dự báo thời tiết",
+    "ex": "People try to use these measurements to make weather forecasts for the future."
+   },
+   {
+    "c": "weather station",
+    "vi": "trạm thời tiết",
+    "ex": "Weather stations around the world measure different parts of weather."
+   },
+   {
+    "c": "wind speed",
+    "vi": "tốc độ gió",
+    "ex": "Ways to measure weather are wind speed, wind direction, temperature and humidity."
+   },
+   {
+    "c": "affect the mood",
+    "vi": "ảnh hưởng đến tâm trạng",
+    "ex": "Changes in weather can affect the mood and life of many living things."
+   }
+  ],
+  "str": [
+   {
+    "s": "… happens because …",
+    "vi": "cấu trúc giải thích nguyên nhân bằng because",
+    "ex": "Weather happens because different parts of the Earth get different amounts of heat from the Sun.",
+    "explain": "Mệnh đề sau “because” nêu lý do của sự việc ở mệnh đề trước."
+   },
+   {
+    "s": "… are called …",
+    "vi": "cấu trúc bị động để gọi tên một khái niệm",
+    "ex": "The ways that the air moves around the Earth are called atmospheric circulation.",
+    "explain": "be called + tên: dùng khi giới thiệu thuật ngữ mới."
+   },
+   {
+    "s": "Warmer … than …",
+    "vi": "so sánh hơn (comparative)",
+    "ex": "Warmer air is lighter than cooler air and rises higher in the sky by convection.",
+    "explain": "Tính từ ngắn + -er + than. Ở đây có hai so sánh: warmer/cooler, lighter, higher."
+   }
+  ]
+ }
+}

@@ -1,0 +1,229 @@
+{
+ "id": "c1-cognitive-bias",
+ "level": "C1",
+ "title": "Cognitive Bias",
+ "topic": "Psychology",
+ "words": 553,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Cognitive bias",
+  "url": "https://en.wikipedia.org/wiki/Cognitive_bias",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "A cognitive bias is a systematic pattern of deviation from the norm or rationality in judgment. Individuals create their own \"subjective reality\" from their perception of the input. An individual's construction of reality, not the objective input, may dictate their behavior in the world. Thus, cognitive biases may sometimes lead to perceptual distortion, inaccurate judgment, illogical interpretation, and irrationality.",
+  "While cognitive biases may initially appear to be negative, some are adaptive. They may lead to more effective actions in a given context. Furthermore, allowing cognitive biases enables faster decisions which can be desirable when timeliness is more valuable than accuracy, as illustrated in heuristics. Other cognitive biases are a \"by-product\" of human processing limitations, resulting from a lack of appropriate mental mechanisms (bounded rationality), the impact of an individual's constitution and biological state (embodied cognition), or simply from a limited capacity for information processing. Cognitive biases can make individuals more inclined to endorsing pseudoscientific beliefs by requiring less evidence for claims that confirm their preconceptions. This can potentially distort their perceptions and lead to inaccurate judgments.",
+  "When making judgments under uncertainty, people rely on mental shortcuts or heuristics, which provide swift estimates about the possibility of uncertain occurrences. For example,",
+  "the representativeness heuristic is defined as the tendency to judge the frequency or likelihood of an occurrence by the extent of which the event resembles the typical case. Similarly the availability heuristic is that individuals estimate the likelihood of events by how easy they are to recall, and the anchoring heuristic prefers the initial reference points that are recalled. While these heuristics are efficient and simple for the brain to compute, they sometimes introduce predictable and systematic cognitive errors, or biases.",
+  "The \"Linda Problem\" illustrates the representativeness heuristic and corresponding bias. Participants were given a description of \"Linda\" that suggests Linda might well be a feminist (e.g., she is said to be concerned about discrimination and social justice issues). They were then asked whether they thought Linda was more likely to be (a) a \"bank teller\" or (b) a \"bank teller and active in the feminist movement\". A majority chose answer (b). Independent of the information given about Linda, though, the more restrictive answer (b) is under any circumstance statistically less likely than answer (a). This is an example of the conjunction fallacy: respondents chose (b) because it seemed more \"representative\" or typical of persons who might fit the description of Linda. If they assumed that choosing (a) would entail Linda not being active in the feminist movement, that would be a pragmatic implicature. The representativeness heuristic may lead to errors such as activating stereotypes and inaccurate judgments of others.",
+  "Gerd Gigerenzer argues that heuristics should not lead us to conceive of human thinking as riddled with irrational cognitive biases. They should rather conceive rationality as an adaptive tool, not identical to the rules of formal logic or the probability calculus. Gigerenzer believes that cognitive biases are not biases, but rules of thumb, or as he would put it \"gut feelings\" that can actually help us make accurate decisions in our lives. There is not clear evidence that these behaviors are genuinely, severely biased once the actual problems people face are understood. Advances in economics and cognitive neuroscience now suggest that many behaviors previously labeled as biases might instead represent optimal decision-making strategies."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How does the text define a cognitive bias?",
+   "options": [
+    "A systematic pattern of deviation from the norm or rationality in judgment",
+    "A problem with eyesight",
+    "A kind of memory loss",
+    "A deliberate lie"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “A cognitive bias is a systematic pattern of deviation from the norm or rationality in judgment.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why might some cognitive biases be considered adaptive?",
+   "options": [
+    "They always give perfect answers",
+    "They may lead to more effective actions in a given context and allow faster decisions",
+    "They make people more emotional",
+    "They remove the need to think"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “some are adaptive. They may lead to more effective actions in a given context … allowing cognitive biases enables faster decisions”."
+  },
+  {
+   "type": "mcq",
+   "q": "What are heuristics?",
+   "options": [
+    "Mental shortcuts that provide swift estimates about uncertain occurrences",
+    "Rules of formal logic",
+    "Medical tests",
+    "Memory exercises"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “people rely on mental shortcuts or heuristics, which provide swift estimates about the possibility of uncertain occurrences.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the availability heuristic mean?",
+   "options": [
+    "People judge likelihood by how easy examples are to recall",
+    "People always choose the first option",
+    "People ignore all evidence",
+    "People trust experts completely"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “individuals estimate the likelihood of events by how easy they are to recall”."
+  },
+  {
+   "type": "mcq",
+   "q": "In the “Linda Problem”, which answer did a majority choose?",
+   "options": [
+    "(a) a bank teller",
+    "(b) a bank teller and active in the feminist movement",
+    "Neither answer",
+    "They could not decide"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “A majority chose answer (b).”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does Gerd Gigerenzer argue?",
+   "options": [
+    "Heuristics prove that humans are irrational",
+    "Cognitive biases may be rules of thumb or “gut feelings” that help us make accurate decisions",
+    "Heuristics should be banned in science",
+    "Rationality means following formal logic only"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 6: “cognitive biases are not biases, but rules of thumb, or … “gut feelings” that can actually help us make accurate decisions”."
+  },
+  {
+   "type": "tf",
+   "q": "The text says that heuristics are efficient and simple for the brain to compute.",
+   "answer": "T",
+   "explain": "Đoạn 4: “While these heuristics are efficient and simple for the brain to compute…”."
+  },
+  {
+   "type": "tf",
+   "q": "According to Gigerenzer, there is clear evidence that human behaviour is severely biased.",
+   "answer": "F",
+   "explain": "Đoạn 6: “There is not clear evidence that these behaviors are genuinely, severely biased”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "deviation",
+    "pos": "n",
+    "def": "a difference from what is normal or expected",
+    "vi": "sự lệch khỏi chuẩn",
+    "ex": "a systematic pattern of deviation from the norm or rationality in judgment"
+   },
+   {
+    "w": "perception",
+    "pos": "n",
+    "def": "the way you notice or understand something",
+    "vi": "nhận thức, cảm nhận",
+    "ex": "from their perception of the input"
+   },
+   {
+    "w": "distortion",
+    "pos": "n",
+    "def": "a change that makes something wrong or unclear",
+    "vi": "sự bóp méo, méo mó",
+    "ex": "cognitive biases may sometimes lead to perceptual distortion"
+   },
+   {
+    "w": "adaptive",
+    "pos": "adj",
+    "def": "able to change to suit new conditions",
+    "vi": "có tính thích nghi",
+    "ex": "some are adaptive"
+   },
+   {
+    "w": "heuristic",
+    "pos": "n",
+    "def": "a simple rule or shortcut used to make a decision",
+    "vi": "quy tắc kinh nghiệm",
+    "ex": "people rely on mental shortcuts or heuristics"
+   },
+   {
+    "w": "likelihood",
+    "pos": "n",
+    "def": "how probable something is",
+    "vi": "khả năng xảy ra",
+    "ex": "individuals estimate the likelihood of events by how easy they are to recall"
+   },
+   {
+    "w": "restrictive",
+    "pos": "adj",
+    "def": "limiting; allowing only a small number of things",
+    "vi": "mang tính hạn chế",
+    "ex": "the more restrictive answer (b)"
+   },
+   {
+    "w": "stereotype",
+    "pos": "n",
+    "def": "a fixed, simple idea about a type of person",
+    "vi": "định kiến, khuôn mẫu",
+    "ex": "The representativeness heuristic may lead to errors such as activating stereotypes"
+   },
+   {
+    "w": "conceive of",
+    "pos": "phr v",
+    "def": "to think of or imagine something in a certain way",
+    "vi": "hình dung, quan niệm",
+    "ex": "should not lead us to conceive of human thinking as riddled with irrational cognitive biases"
+   }
+  ],
+  "coll": [
+   {
+    "c": "rely on",
+    "vi": "dựa vào",
+    "ex": "people rely on mental shortcuts or heuristics"
+   },
+   {
+    "c": "make judgments under uncertainty",
+    "vi": "đưa ra phán đoán khi không chắc chắn",
+    "ex": "When making judgments under uncertainty"
+   },
+   {
+    "c": "in a given context",
+    "vi": "trong một bối cảnh nhất định",
+    "ex": "more effective actions in a given context"
+   },
+   {
+    "c": "rule of thumb",
+    "vi": "quy tắc kinh nghiệm",
+    "ex": "cognitive biases are not biases, but rules of thumb"
+   },
+   {
+    "c": "gut feelings",
+    "vi": "linh cảm, trực giác",
+    "ex": "“gut feelings” that can actually help us make accurate decisions"
+   }
+  ],
+  "str": [
+   {
+    "s": "While …, some …",
+    "vi": "Mặc dù …, một số …",
+    "ex": "While cognitive biases may initially appear to be negative, some are adaptive.",
+    "explain": "While mở đầu mệnh đề nhượng bộ trước khi nêu ý chính."
+   },
+   {
+    "s": "might well + verb",
+    "vi": "rất có thể …",
+    "ex": "a description of “Linda” that suggests Linda might well be a feminist",
+    "explain": "might well: có khả năng khá cao, mạnh hơn might."
+   },
+   {
+    "s": "Independent of …, … is …",
+    "vi": "Bất kể …, … vẫn …",
+    "ex": "Independent of the information given about Linda, though, the more restrictive answer (b) is under any circumstance statistically less likely than answer (a).",
+    "explain": "Independent of + danh từ: không phụ thuộc vào, bất kể."
+   },
+   {
+    "s": "should not lead us to conceive of … as …",
+    "vi": "không nên khiến ta xem … như là …",
+    "ex": "heuristics should not lead us to conceive of human thinking as riddled with irrational cognitive biases",
+    "explain": "lead someone to + động từ; conceive of A as B: hình dung A là B."
+   }
+  ]
+ }
+}

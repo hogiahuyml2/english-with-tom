@@ -1,0 +1,179 @@
+{
+ "id": "a1-banana",
+ "level": "A1",
+ "title": "Bananas",
+ "topic": "Food",
+ "words": 75,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Banana",
+  "url": "https://simple.wikipedia.org/wiki/Banana",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "A banana is a fruit. Bananas grow on plants in warm parts of the world. Most banana plants are in Southeast Asia. Historians think the first people to grow bananas lived in Papua New Guinea. Today people grow bananas in warm countries all around the world.",
+  "There are about 110 kinds of bananas. The banana that we usually eat is soft and sweet. Other bananas are firmer. People cook these bananas. They are called plantains."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Where do bananas grow?",
+   "options": [
+    "In cold countries",
+    "In warm parts of the world",
+    "Only in the sea"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “Bananas grow on plants in warm parts of the world.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where did the first people to grow bananas probably live?",
+   "options": [
+    "In Papua New Guinea",
+    "In Spain",
+    "In Canada"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Historians think the first people to grow bananas lived in Papua New Guinea.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How many kinds of bananas are there?",
+   "options": [
+    "About 11",
+    "About 110",
+    "About 1,100"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “There are about 110 kinds of bananas.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What are firmer bananas called?",
+   "options": [
+    "Plantains",
+    "Berries",
+    "Sandwiches"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Other bananas are firmer. People cook these bananas. They are called plantains.”"
+  },
+  {
+   "type": "tf",
+   "q": "All bananas are soft and sweet.",
+   "answer": "F",
+   "explain": "Đoạn 2: chuối thường ăn thì mềm và ngọt, nhưng còn những loại khác “firmer” và được dùng để nấu ăn."
+  },
+  {
+   "type": "tf",
+   "q": "Today people grow bananas in warm countries around the world.",
+   "answer": "T",
+   "explain": "Đoạn 1: “Today people grow bananas in warm countries all around the world.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "fruit",
+    "pos": "n",
+    "def": "a sweet food that grows on trees or plants",
+    "vi": "trái cây",
+    "ex": "A banana is a fruit."
+   },
+   {
+    "w": "plant",
+    "pos": "n",
+    "def": "a living thing that grows in the ground",
+    "vi": "cây, thực vật",
+    "ex": "Bananas grow on plants in warm parts of the world."
+   },
+   {
+    "w": "warm",
+    "pos": "adj",
+    "def": "a little hot",
+    "vi": "ấm",
+    "ex": "warm parts of the world"
+   },
+   {
+    "w": "historian",
+    "pos": "n",
+    "def": "a person who studies the past",
+    "vi": "nhà sử học",
+    "ex": "Historians think the first people to grow bananas lived in Papua New Guinea."
+   },
+   {
+    "w": "grow",
+    "pos": "v",
+    "def": "to put a plant in the ground and look after it",
+    "vi": "trồng; mọc",
+    "ex": "Today people grow bananas in warm countries"
+   },
+   {
+    "w": "soft",
+    "pos": "adj",
+    "def": "not hard",
+    "vi": "mềm",
+    "ex": "The banana that we usually eat is soft and sweet."
+   },
+   {
+    "w": "sweet",
+    "pos": "adj",
+    "def": "tasting like sugar",
+    "vi": "ngọt",
+    "ex": "The banana that we usually eat is soft and sweet."
+   },
+   {
+    "w": "firm",
+    "pos": "adj",
+    "def": "hard, not soft",
+    "vi": "chắc, cứng hơn",
+    "ex": "Other bananas are firmer."
+   }
+  ],
+  "coll": [
+   {
+    "c": "grow bananas",
+    "vi": "trồng chuối",
+    "ex": "Today people grow bananas in warm countries all around the world."
+   },
+   {
+    "c": "warm countries",
+    "vi": "các nước ấm áp",
+    "ex": "Today people grow bananas in warm countries all around the world."
+   },
+   {
+    "c": "cook bananas",
+    "vi": "nấu chuối",
+    "ex": "People cook these bananas."
+   },
+   {
+    "c": "soft and sweet",
+    "vi": "mềm và ngọt",
+    "ex": "The banana that we usually eat is soft and sweet."
+   }
+  ],
+  "str": [
+   {
+    "s": "Historians think + clause",
+    "vi": "Các nhà sử học cho rằng …",
+    "ex": "Historians think the first people to grow bananas lived in Papua New Guinea.",
+    "explain": "think + mệnh đề: nêu ý kiến hoặc phỏng đoán."
+   },
+   {
+    "s": "the first + noun + to + verb",
+    "vi": "… đầu tiên làm gì",
+    "ex": "the first people to grow bananas",
+    "explain": "the first + danh từ + to + động từ."
+   },
+   {
+    "s": "They are called …",
+    "vi": "Chúng được gọi là …",
+    "ex": "They are called plantains.",
+    "explain": "Cấu trúc gọi tên."
+   }
+  ]
+ }
+}

@@ -1,0 +1,227 @@
+{
+ "id": "c1-biodiversity",
+ "level": "C1",
+ "title": "Biodiversity",
+ "topic": "Environment & science",
+ "words": 423,
+ "minutes": 7,
+ "source": {
+  "name": "Wikipedia — Biodiversity",
+  "url": "https://en.wikipedia.org/wiki/Biodiversity",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Biodiversity is the variability of life on Earth. It can be measured on various levels, for example, genetic variability, species diversity, ecosystem diversity, and phylogenetic diversity. Diversity is not distributed evenly on Earth — it is greater in the tropics as a result of the warm climate and high primary productivity in the region near the equator. Tropical forest ecosystems cover less than one-fifth of Earth's terrestrial area and contain about 50% of the world's species. There are latitudinal gradients in species diversity for both marine and terrestrial taxa.",
+  "Since life began on Earth, six major mass extinctions and several minor events have led to large and sudden drops in biodiversity. The Phanerozoic aeon (the last 540 million years) marked a rapid growth in biodiversity via the Cambrian explosion. In this period, the majority of multicellular phyla first appeared. The next 400 million years included repeated, massive biodiversity losses. Those events have been classified as mass extinction events. In the Carboniferous, rainforest collapse may have led to a great loss of plant and animal life. The Permian–Triassic extinction event, 251 million years ago, was the worst; vertebrate recovery took 30 million years.",
+  "Human activities have led to an ongoing biodiversity loss and an accompanying loss of genetic diversity. This process is often referred to as Holocene extinction, or the sixth mass extinction. For example, it was estimated in 2007 that up to 30% of all species will be extinct by 2050. Destroying habitats for farming is a key reason why biodiversity is decreasing today. Climate change also plays a role. This can be seen for example in the effects of climate change on biomes. This anthropogenic extinction may have started toward the end of the Pleistocene, as some studies suggest that the megafaunal extinction event that took place around the end of the last ice age partly resulted from overhunting.",
+  "Biodiversity is most commonly used to replace the more clearly-defined and long-established terms, species diversity and species richness. However, there is no concrete definition for biodiversity, as its definition continues to be reimagined and redefined. To give a couple of examples, the Food and Agriculture Organization of the United Nations (FAO) defined biodiversity in 2019 as \"the variability that exists among living organisms (both within and between species) and the ecosystems of which they are part.\" The World Health Organization updated its website's definition of biodiversity to be the \"variability among living organisms from all sources.\" Both these definitions, although broad, give a current understanding of what is meant by the term biodiversity."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "According to the text, where is biodiversity greatest?",
+   "options": [
+    "In the polar regions",
+    "In the tropics",
+    "In deserts",
+    "In the deep sea only"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “it is greater in the tropics as a result of the warm climate and high primary productivity”."
+  },
+  {
+   "type": "mcq",
+   "q": "What share of the world’s species do tropical forest ecosystems contain?",
+   "options": [
+    "About 5%",
+    "About 20%",
+    "About 50%",
+    "About 90%"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: chiếm “less than one-fifth of Earth’s terrestrial area and contain about 50% of the world’s species”."
+  },
+  {
+   "type": "mcq",
+   "q": "How many major mass extinctions have there been since life began on Earth?",
+   "options": [
+    "Two",
+    "Four",
+    "Six",
+    "Ten"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “six major mass extinctions”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which event does the text describe as the worst?",
+   "options": [
+    "The Cambrian explosion",
+    "The Permian–Triassic extinction event",
+    "The Carboniferous rainforest collapse",
+    "The Holocene extinction"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “The Permian–Triassic extinction event, 251 million years ago, was the worst”."
+  },
+  {
+   "type": "mcq",
+   "q": "What is described as a key reason why biodiversity is decreasing today?",
+   "options": [
+    "Destroying habitats for farming",
+    "Too many volcanoes",
+    "The growth of forests",
+    "A cooler climate"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “Destroying habitats for farming is a key reason why biodiversity is decreasing today.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the text say about the definition of biodiversity?",
+   "options": [
+    "It is simple and fixed",
+    "There is no concrete definition, and it continues to be redefined",
+    "It is defined only by the WHO",
+    "It refers only to plants"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: “there is no concrete definition for biodiversity, as its definition continues to be reimagined and redefined.”"
+  },
+  {
+   "type": "tf",
+   "q": "The Phanerozoic aeon marked a rapid growth in biodiversity via the Cambrian explosion.",
+   "answer": "T",
+   "explain": "Đoạn 2: nội dung này được nói trực tiếp."
+  },
+  {
+   "type": "tf",
+   "q": "The text claims that climate change plays no role in the current loss of biodiversity.",
+   "answer": "F",
+   "explain": "Đoạn 3: “Climate change also plays a role.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "variability",
+    "pos": "n",
+    "def": "how much something changes or differs",
+    "vi": "tính biến thiên, đa dạng",
+    "ex": "Biodiversity is the variability of life on Earth."
+   },
+   {
+    "w": "distributed",
+    "pos": "adj",
+    "def": "spread over an area",
+    "vi": "phân bố",
+    "ex": "Diversity is not distributed evenly on Earth"
+   },
+   {
+    "w": "extinction",
+    "pos": "n",
+    "def": "the death of all members of a species",
+    "vi": "sự tuyệt chủng",
+    "ex": "six major mass extinctions"
+   },
+   {
+    "w": "habitat",
+    "pos": "n",
+    "def": "the natural home of a plant or animal",
+    "vi": "môi trường sống",
+    "ex": "Destroying habitats for farming is a key reason why biodiversity is decreasing today."
+   },
+   {
+    "w": "ongoing",
+    "pos": "adj",
+    "def": "continuing to happen now",
+    "vi": "đang diễn ra",
+    "ex": "Human activities have led to an ongoing biodiversity loss"
+   },
+   {
+    "w": "concrete",
+    "pos": "adj",
+    "def": "clear and definite; real rather than general",
+    "vi": "cụ thể, rõ ràng",
+    "ex": "there is no concrete definition for biodiversity"
+   },
+   {
+    "w": "anthropogenic",
+    "pos": "adj",
+    "def": "caused by humans",
+    "vi": "do con người gây ra",
+    "ex": "This anthropogenic extinction may have started toward the end of the Pleistocene"
+   },
+   {
+    "w": "overhunting",
+    "pos": "n",
+    "def": "hunting too many animals",
+    "vi": "sự săn bắt quá mức",
+    "ex": "partly resulted from overhunting"
+   },
+   {
+    "w": "richness",
+    "pos": "n",
+    "def": "having a large amount or variety",
+    "vi": "sự phong phú",
+    "ex": "species diversity and species richness"
+   }
+  ],
+  "coll": [
+   {
+    "c": "mass extinction",
+    "vi": "tuyệt chủng hàng loạt",
+    "ex": "six major mass extinctions"
+   },
+   {
+    "c": "biodiversity loss",
+    "vi": "sự suy giảm đa dạng sinh học",
+    "ex": "an ongoing biodiversity loss"
+   },
+   {
+    "c": "genetic diversity",
+    "vi": "đa dạng di truyền",
+    "ex": "an accompanying loss of genetic diversity"
+   },
+   {
+    "c": "species diversity",
+    "vi": "đa dạng loài",
+    "ex": "species diversity and species richness"
+   },
+   {
+    "c": "play a role",
+    "vi": "đóng vai trò",
+    "ex": "Climate change also plays a role."
+   }
+  ],
+  "str": [
+   {
+    "s": "is not distributed evenly … — it is greater in …",
+    "vi": "không phân bố đều … — nó lớn hơn ở …",
+    "ex": "Diversity is not distributed evenly on Earth — it is greater in the tropics as a result of the warm climate and high primary productivity in the region near the equator.",
+    "explain": "Dấu gạch ngang nối một nhận xét giải thích; as a result of + danh từ nêu nguyên nhân."
+   },
+   {
+    "s": "may have led to",
+    "vi": "có lẽ đã dẫn đến",
+    "ex": "rainforest collapse may have led to a great loss of plant and animal life",
+    "explain": "may have + V3: suy đoán về điều có thể đã xảy ra trong quá khứ."
+   },
+   {
+    "s": "is often referred to as …",
+    "vi": "thường được gọi là …",
+    "ex": "This process is often referred to as Holocene extinction, or the sixth mass extinction.",
+    "explain": "Cụm bị động dùng để giới thiệu thuật ngữ khác."
+   },
+   {
+    "s": "it was estimated in 2007 that …",
+    "vi": "người ta ước tính năm 2007 rằng …",
+    "ex": "it was estimated in 2007 that up to 30% of all species will be extinct by 2050",
+    "explain": "it + bị động + that-clause: nêu một ước tính/nhận định chung."
+   }
+  ]
+ }
+}

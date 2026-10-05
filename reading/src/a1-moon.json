@@ -1,0 +1,179 @@
+{
+ "id": "a1-moon",
+ "level": "A1",
+ "title": "The Moon",
+ "topic": "Space",
+ "words": 101,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Moon",
+  "url": "https://simple.wikipedia.org/wiki/Moon",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "The Moon goes around the Earth. It is the only object that goes around the Earth and is not made by people. We can see the Moon in the night sky. Sometimes we can see it in the day too.",
+  "The Moon is smaller than the Earth. It is about one-fourth as wide as the Earth. It looks small because it is far away. The Moon is a place with rocks and dust. Things are lighter on the Moon. A thing is six times lighter there than on Earth. The Moon moves away from the Earth, about 3.8 centimetres every year."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "When can we usually see the Moon?",
+   "options": [
+    "In the night sky",
+    "Only in the morning",
+    "Only in the summer"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “We can see the Moon in the night sky. Sometimes we can see it in the day too.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why does the Moon look small?",
+   "options": [
+    "Because it is far away",
+    "Because it is very old",
+    "Because it is a star"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “It looks small because it is far away.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is the Moon like?",
+   "options": [
+    "A place with rocks and dust",
+    "A place with rivers and trees",
+    "A place with cities"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “The Moon is a place with rocks and dust.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How much does the Moon move away from the Earth every year?",
+   "options": [
+    "About 3.8 centimetres",
+    "About 38 metres",
+    "About 3.8 kilometres"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “about 3.8 centimetres every year.”"
+  },
+  {
+   "type": "tf",
+   "q": "The Moon is bigger than the Earth.",
+   "answer": "F",
+   "explain": "Đoạn 2: “The Moon is smaller than the Earth.”"
+  },
+  {
+   "type": "tf",
+   "q": "Things are lighter on the Moon.",
+   "answer": "T",
+   "explain": "Đoạn 2: “Things are lighter on the Moon.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "object",
+    "pos": "n",
+    "def": "a thing that you can see or touch",
+    "vi": "vật thể",
+    "ex": "It is the only object that goes around the Earth and is not made by people."
+   },
+   {
+    "w": "sky",
+    "pos": "n",
+    "def": "the space above the Earth where you see the sun and clouds",
+    "vi": "bầu trời",
+    "ex": "We can see the Moon in the night sky."
+   },
+   {
+    "w": "wide",
+    "pos": "adj",
+    "def": "large from one side to the other",
+    "vi": "rộng",
+    "ex": "It is about one-fourth as wide as the Earth."
+   },
+   {
+    "w": "rock",
+    "pos": "n",
+    "def": "a hard thing from the ground; a stone",
+    "vi": "đá",
+    "ex": "The Moon is a place with rocks and dust."
+   },
+   {
+    "w": "dust",
+    "pos": "n",
+    "def": "very small dry bits of dirt",
+    "vi": "bụi",
+    "ex": "The Moon is a place with rocks and dust."
+   },
+   {
+    "w": "light",
+    "pos": "adj",
+    "def": "not heavy",
+    "vi": "nhẹ",
+    "ex": "Things are lighter on the Moon."
+   },
+   {
+    "w": "far away",
+    "pos": "adv",
+    "def": "a long way from here",
+    "vi": "ở xa",
+    "ex": "It looks small because it is far away."
+   },
+   {
+    "w": "centimetre",
+    "pos": "n",
+    "def": "a small measure of length",
+    "vi": "xen-ti-mét",
+    "ex": "about 3.8 centimetres every year"
+   }
+  ],
+  "coll": [
+   {
+    "c": "the night sky",
+    "vi": "bầu trời đêm",
+    "ex": "We can see the Moon in the night sky."
+   },
+   {
+    "c": "go around the Earth",
+    "vi": "quay quanh Trái Đất",
+    "ex": "The Moon goes around the Earth."
+   },
+   {
+    "c": "far away",
+    "vi": "ở xa",
+    "ex": "It looks small because it is far away."
+   },
+   {
+    "c": "every year",
+    "vi": "mỗi năm",
+    "ex": "about 3.8 centimetres every year"
+   }
+  ],
+  "str": [
+   {
+    "s": "smaller than",
+    "vi": "nhỏ hơn",
+    "ex": "The Moon is smaller than the Earth.",
+    "explain": "Tính từ ngắn + -er + than."
+   },
+   {
+    "s": "… times + comparative + than",
+    "vi": "… lần nhẹ/nhanh/… hơn",
+    "ex": "A thing is six times lighter there than on Earth.",
+    "explain": "số lần + so sánh hơn + than."
+   },
+   {
+    "s": "It looks + adjective",
+    "vi": "Trông có vẻ …",
+    "ex": "It looks small because it is far away.",
+    "explain": "look + tính từ: nói về vẻ bề ngoài."
+   }
+  ]
+ }
+}

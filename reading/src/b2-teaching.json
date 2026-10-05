@@ -1,0 +1,229 @@
+{
+ "id": "b2-teaching",
+ "level": "B2",
+ "title": "Improve Your Learning by Teaching",
+ "topic": "Education & learning",
+ "words": 359,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Improve Your Learning By Teaching",
+  "url": "https://learningenglish.voanews.com/a/improve-your-learning-by-teaching-/5728658.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "You might be looking for new ways to improve your understanding of something you are studying. Perhaps you are seeking better methods to remember important information.",
+  "One way to help you reach these goals is to try teaching – not as a job, but as a way to improve your own learning.",
+  "A 1982 study found that tutoring helped both the tutors and the people who studied with them.",
+  "Tutoring means teaching one person or a very small group of students.",
+  "More recent studies have looked at the link between teaching and memory. A 2013 study, which we briefly described in a previous Education Tips, found that teaching had a strong effect on understanding and learning.",
+  "An important part of the study compared the learning results of people who actually taught a lesson to those who simply prepared but did not teach.",
+  "“Overall, these findings suggest that when students actually teach the content of a lesson, they develop a deeper and more persistent understanding of the material than from solely preparing to teach,” the researchers wrote.",
+  "A 2018 study suggests that teaching may help your learning because you have to remember the information you have learned as you continue to teach. Experts call this “retrieval.”",
+  "The basic idea is that if you want to improve your memory of what you have learned, you have to practice remembering that information.",
+  "One way might be to teach your family or friends about something that you are learning. For example, you could teach your parents about English grammar or vocabulary.",
+  "You could also try teaching a younger person – perhaps a cousin, brother or sister. Try to make your lessons simple and clear, and ask them what they do not understand.",
+  "The process of teaching and asking for feedback will help you realize that you may not understand some things as well as you thought you did. That is an important, necessary step in the learning process.",
+  "A final idea for those who like technology: You could record video of yourself teaching information. You could then send the lesson to friends or put it on YouTube or some other social media service."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the writer suggest you try in order to improve your own learning?",
+   "options": [
+    "Reading more books",
+    "Teaching",
+    "Taking more tests",
+    "Studying alone at night"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “try teaching – not as a job, but as a way to improve your own learning.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did a 1982 study find about tutoring?",
+   "options": [
+    "It helped only the students",
+    "It helped both the tutors and the people who studied with them",
+    "It was too expensive",
+    "It made no difference"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “tutoring helped both the tutors and the people who studied with them.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did the 2013 study compare?",
+   "options": [
+    "People who taught a lesson and people who only prepared to teach",
+    "Teachers and doctors",
+    "Two different schools",
+    "Computers and books"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: “compared the learning results of people who actually taught a lesson to those who simply prepared but did not teach.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is “retrieval” in this text?",
+   "options": [
+    "Looking up information on the internet",
+    "Remembering the information you have learned as you teach",
+    "Writing notes after a lesson",
+    "Getting a book back"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 8: “you have to remember the information you have learned as you continue to teach. Experts call this “retrieval.””"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the text advise when you teach a younger person?",
+   "options": [
+    "Make your lessons simple and clear, and ask what they do not understand",
+    "Teach very difficult ideas",
+    "Do not ask any questions",
+    "Teach only for five minutes"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 11: “Try to make your lessons simple and clear, and ask them what they do not understand.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why is asking for feedback useful?",
+   "options": [
+    "It makes lessons shorter",
+    "It helps you realize you may not understand things as well as you thought",
+    "It saves money",
+    "It helps you sleep"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 12: “will help you realize that you may not understand some things as well as you thought you did.”"
+  },
+  {
+   "type": "tf",
+   "q": "The 2013 study found that people who only prepared a lesson understood it more deeply than people who taught it.",
+   "answer": "F",
+   "explain": "Đoạn 7: người thật sự dạy bài “develop a deeper and more persistent understanding” hơn người chỉ chuẩn bị."
+  },
+  {
+   "type": "tf",
+   "q": "The 2013 study was done with university students.",
+   "answer": "NG",
+   "explain": "Bài không nói người tham gia nghiên cứu là ai."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "tutoring",
+    "pos": "n",
+    "def": "teaching one person or a very small group",
+    "vi": "việc dạy kèm",
+    "ex": "Tutoring means teaching one person or a very small group of students."
+   },
+   {
+    "w": "method",
+    "pos": "n",
+    "def": "a way of doing something",
+    "vi": "phương pháp",
+    "ex": "Perhaps you are seeking better methods to remember important information."
+   },
+   {
+    "w": "persistent",
+    "pos": "adj",
+    "def": "continuing for a long time",
+    "vi": "bền vững, kéo dài",
+    "ex": "they develop a deeper and more persistent understanding of the material"
+   },
+   {
+    "w": "content",
+    "pos": "n",
+    "def": "the information or ideas in something",
+    "vi": "nội dung",
+    "ex": "when students actually teach the content of a lesson"
+   },
+   {
+    "w": "retrieval",
+    "pos": "n",
+    "def": "getting back information from memory",
+    "vi": "sự truy xuất (trí nhớ)",
+    "ex": "Experts call this “retrieval.”"
+   },
+   {
+    "w": "feedback",
+    "pos": "n",
+    "def": "comments that tell you how well you are doing",
+    "vi": "phản hồi",
+    "ex": "The process of teaching and asking for feedback will help you realize"
+   },
+   {
+    "w": "realize",
+    "pos": "v",
+    "def": "to understand something suddenly or clearly",
+    "vi": "nhận ra",
+    "ex": "will help you realize that you may not understand some things as well as you thought you did"
+   },
+   {
+    "w": "overall",
+    "pos": "adv",
+    "def": "considering everything",
+    "vi": "nhìn chung",
+    "ex": "Overall, these findings suggest that"
+   }
+  ],
+  "coll": [
+   {
+    "c": "improve your understanding of",
+    "vi": "nâng cao hiểu biết về",
+    "ex": "You might be looking for new ways to improve your understanding of something you are studying."
+   },
+   {
+    "c": "have a strong effect on",
+    "vi": "có tác động mạnh đến",
+    "ex": "teaching had a strong effect on understanding and learning"
+   },
+   {
+    "c": "practice remembering",
+    "vi": "luyện tập ghi nhớ",
+    "ex": "you have to practice remembering that information"
+   },
+   {
+    "c": "ask for feedback",
+    "vi": "xin phản hồi",
+    "ex": "The process of teaching and asking for feedback"
+   },
+   {
+    "c": "record a video",
+    "vi": "quay video",
+    "ex": "You could record video of yourself teaching information."
+   }
+  ],
+  "str": [
+   {
+    "s": "if you want to …, you have to …",
+    "vi": "nếu bạn muốn …, bạn phải …",
+    "ex": "if you want to improve your memory of what you have learned, you have to practice remembering that information",
+    "explain": "Câu điều kiện loại 1 diễn tả điều kiện cần để đạt mục tiêu."
+   },
+   {
+    "s": "… as well as you thought you did",
+    "vi": "… tốt như bạn nghĩ",
+    "ex": "you may not understand some things as well as you thought you did",
+    "explain": "as + trạng từ + as + mệnh đề; did thay cho động từ ở trước (understand)."
+   },
+   {
+    "s": "because + clause … as you continue to …",
+    "vi": "vì … khi bạn tiếp tục …",
+    "ex": "teaching may help your learning because you have to remember the information you have learned as you continue to teach",
+    "explain": "as = trong khi/khi: hai việc diễn ra song song."
+   },
+   {
+    "s": "Try to + verb, and ask …",
+    "vi": "Hãy cố gắng …, và hỏi …",
+    "ex": "Try to make your lessons simple and clear, and ask them what they do not understand.",
+    "explain": "Câu mệnh lệnh nối bằng and; what + chủ ngữ + động từ (câu hỏi gián tiếp)."
+   }
+  ]
+ }
+}

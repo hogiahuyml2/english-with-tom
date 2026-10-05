@@ -1,0 +1,192 @@
+{
+ "id": "a2-bicycle",
+ "level": "A2",
+ "title": "The Bicycle",
+ "topic": "Transport & inventions",
+ "words": 379,
+ "minutes": 6,
+ "source": {
+  "name": "Simple English Wikipedia — Bicycle",
+  "url": "https://simple.wikipedia.org/wiki/Bicycle",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "A bicycle (or bike) is a small, human powered land vehicle with a seat, two wheels, two pedals, and a metal chain connected to cogs on the pedals and rear wheel. A frame gives the bike strength, and the other parts are attached to the frame. The name comes from the prefix bi (meaning two) and the suffix cycle (meaning wheel). It is powered by a person riding on top, who pushes the pedals around with his or her feet.",
+  "Riding bicycles, which is also called cycling, is an important way to travel in several parts of the world. The most popular type of cycling is Utility cycling. It is also a common kind of recreation, a good form of low-impact exercise, and a popular sport. According to one study, road bicycle racing is the eighth most popular spectator sport in the world.",
+  "Cycling uses less energy per mile than any other human transport.",
+  "In 1817 a German professor, Baron Karl von Drais, created the first two-wheeled bicycle. It was made of wood and had two wheels. The front wheel could be turned using the handlebars in order to steer the bike. However, it did not have pedals, so the rider would have to push their feet on the ground to make it move.",
+  "In the 1860s, French inventors added pedals to the front wheel. However, it took a lot of effort to turn the pedals. Later inventors made bikes out of metal only, and made the front wheel very big, giving higher speed. This design was called the penny-farthing bicycle. However, it was difficult to ride and any fall would be a long, dangerous fall .",
+  "Several improvements were made in the 1880s and '90s. In 1885, John Kemp Starley invented the safety bicycle. This had two wheels the same size so that the rider could sit at a lower height. It was called the safety bicycle because it much easier to ride than the penny-farthing. When stopping, the rider can simply put down a foot instead of completely dismounting. Instead of pedaling and steering with the front wheel, the safety bicycle steers with the front wheel while the pedals turn the back wheel using a chain. Brakes operated by hand levers on some bikes also increased safety."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the prefix “bi” mean?",
+   "options": [
+    "Fast",
+    "Two",
+    "Wheel",
+    "Metal"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “the prefix bi (meaning two)”."
+  },
+  {
+   "type": "mcq",
+   "q": "Who created the first two-wheeled bicycle?",
+   "options": [
+    "John Boyd Dunlop",
+    "John Kemp Starley",
+    "Baron Karl von Drais",
+    "A French inventor"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 4: “In 1817 a German professor, Baron Karl von Drais, created the first two-wheeled bicycle.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did French inventors add in the 1860s?",
+   "options": [
+    "A chain",
+    "Pedals on the front wheel",
+    "Air tires",
+    "Hand brakes"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “In the 1860s, French inventors added pedals to the front wheel.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why was it called the “safety bicycle”?",
+   "options": [
+    "It was made of wood",
+    "It had a very big front wheel",
+    "It was much easier to ride than the penny-farthing",
+    "It had no wheels"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 6: “It was called the safety bicycle because it much easier to ride than the penny-farthing.”"
+  },
+  {
+   "type": "tf",
+   "q": "The first two-wheeled bicycle had pedals.",
+   "answer": "F",
+   "explain": "Đoạn 4: “it did not have pedals, so the rider would have to push their feet on the ground”."
+  },
+  {
+   "type": "tf",
+   "q": "Cycling uses less energy per mile than any other human transport.",
+   "answer": "T",
+   "explain": "Đoạn 3: “Cycling uses less energy per mile than any other human transport.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "pedal",
+    "pos": "n",
+    "def": "the part of a bicycle that you push with your foot",
+    "vi": "bàn đạp",
+    "ex": "a seat, two wheels, two pedals, and a metal chain"
+   },
+   {
+    "w": "chain",
+    "pos": "n",
+    "def": "metal rings joined together in a line",
+    "vi": "dây xích",
+    "ex": "a metal chain connected to cogs on the pedals and rear wheel"
+   },
+   {
+    "w": "frame",
+    "pos": "n",
+    "def": "the main metal part of a bicycle",
+    "vi": "khung xe",
+    "ex": "A frame gives the bike strength"
+   },
+   {
+    "w": "steer",
+    "pos": "v",
+    "def": "to make a vehicle go in the direction you want",
+    "vi": "lái (xe)",
+    "ex": "The front wheel could be turned using the handlebars in order to steer the bike."
+   },
+   {
+    "w": "invent",
+    "pos": "v",
+    "def": "to make or think of something for the first time",
+    "vi": "phát minh",
+    "ex": "In 1885, John Kemp Starley invented the safety bicycle."
+   },
+   {
+    "w": "recreation",
+    "pos": "n",
+    "def": "activities that you do for fun in your free time",
+    "vi": "sự giải trí, tiêu khiển",
+    "ex": "It is also a common kind of recreation, a good form of low-impact exercise, and a popular sport."
+   },
+   {
+    "w": "brake",
+    "pos": "n",
+    "def": "a part that makes a vehicle go slower or stop",
+    "vi": "phanh, thắng",
+    "ex": "Brakes operated by hand levers on some bikes also increased safety."
+   },
+   {
+    "w": "energy",
+    "pos": "n",
+    "def": "the power to do work or be active",
+    "vi": "năng lượng",
+    "ex": "Cycling uses less energy per mile than any other human transport."
+   }
+  ],
+  "coll": [
+   {
+    "c": "ride a bicycle",
+    "vi": "đi xe đạp",
+    "ex": "Riding bicycles, which is also called cycling, is an important way to travel in several parts of the world."
+   },
+   {
+    "c": "human powered",
+    "vi": "chạy bằng sức người",
+    "ex": "A bicycle (or bike) is a small, human powered land vehicle"
+   },
+   {
+    "c": "low-impact exercise",
+    "vi": "bài tập nhẹ nhàng cho khớp",
+    "ex": "a good form of low-impact exercise"
+   },
+   {
+    "c": "turn the pedals",
+    "vi": "đạp bàn đạp",
+    "ex": "However, it took a lot of effort to turn the pedals."
+   },
+   {
+    "c": "a popular sport",
+    "vi": "môn thể thao phổ biến",
+    "ex": "a popular sport"
+   }
+  ],
+  "str": [
+   {
+    "s": "be made of + material",
+    "vi": "được làm bằng …",
+    "ex": "It was made of wood and had two wheels.",
+    "explain": "be made of + chất liệu: nói vật được làm bằng gì."
+   },
+   {
+    "s": "… so + clause (result)",
+    "vi": "nên …",
+    "ex": "However, it did not have pedals, so the rider would have to push their feet on the ground to make it move.",
+    "explain": "“so” nối kết quả; would have to chỉ việc bắt buộc phải làm trong quá khứ."
+   },
+   {
+    "s": "The name comes from …",
+    "vi": "Tên gọi bắt nguồn từ …",
+    "ex": "The name comes from the prefix bi (meaning two) and the suffix cycle (meaning wheel).",
+    "explain": "Dùng để giải thích nguồn gốc của từ."
+   }
+  ]
+ }
+}

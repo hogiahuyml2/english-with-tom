@@ -75,6 +75,8 @@ module.exports = function (app, { db, requireAuth, now }) {
     if (s.weak) C.push({ score: 66 + jit('k') / 3, kind: 'weak', icon: '💪', title: 'Luyện kỹ năng ' + (SK[s.weak.skill] || s.weak.skill) + ' (đang yếu nhất)', desc: 'Điểm trung bình kỹ năng này mới ' + s.weak.avg + '% — làm thêm 1 bài để cải thiện.', min: s.weak.skill === 'Writing' ? 25 : 15, skill: s.weak.skill, link: 'exercises.html' });
     const daysSince = (r) => r && r.finished_at ? (Date.now() - Date.parse(r.finished_at)) / DAY : (r && r.submitted_at ? (Date.now() - Date.parse(r.submitted_at)) / DAY : 99);
     C.push({ score: 58 + Math.min(10, daysSince(s.lastDict)) + jit('d') / 2, kind: 'dict', icon: '🎧', title: 'Chép chính tả 1 lượt', desc: 'Luyện nghe và viết chính xác (khoảng 6–8 phút).', min: 7, link: 'dictation.html' });
+    const rn = app.locals.readingNext ? app.locals.readingNext(s.uid) : null;
+    if (rn) C.push({ score: 54 + jit('r') / 2, kind: 'reading', icon: '📖', title: 'Đọc bài: ' + rn.title, desc: 'Bài đọc cấp ' + rn.level + ' (khoảng ' + rn.minutes + ' phút) — làm xong bấm vào từ để xem nghĩa và học thêm từ vựng.', min: Math.min(15, rn.minutes + 2), link: 'reading-text.html?id=' + encodeURIComponent(rn.id) });
     const ds = daysSince(s.lastSpeak);
     C.push({ score: 50 + Math.min(18, ds * 2) + jit('s') / 2, kind: 'speak', icon: '🎤', title: 'Luyện nói 1 phần Speaking', desc: 'Ghi âm và nhận nhận xét từ AI — kỹ năng khó luyện nhất ở nhà.', min: 8, link: 'speaking.html?exam=' + speakExam(s) });
     C.sort((a, b) => b.score - a.score);
@@ -94,6 +96,7 @@ module.exports = function (app, { db, requireAuth, now }) {
       case 'newwords': return s.newToday - base.nw >= (t.target || 5);
       case 'notebook': return s.mastered - base.mast >= (t.target || 3);
       case 'weak': return !!one('SELECT 1 AS c FROM submissions x JOIN exercises e ON e.id=x.exercise_id WHERE x.user_id=? AND e.skill=? AND x.submitted_at>=?', uid, t.skill, since);
+      case 'reading': return !!one('SELECT 1 AS c FROM reading_attempts WHERE user_id=? AND created_at>=?', uid, since);
       case 'dict': return !!one("SELECT 1 AS c FROM dictation_runs WHERE user_id=? AND mode='dictate' AND finished_at>=?", uid, since);
       case 'speak': return !!one("SELECT 1 AS c FROM speaking_sessions WHERE user_id=? AND status IN ('grading','done') AND submitted_at>=?", uid, since);
     }

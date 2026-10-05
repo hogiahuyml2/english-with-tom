@@ -1,0 +1,229 @@
+{
+ "id": "c1-printing-press",
+ "level": "C1",
+ "title": "The Printing Press",
+ "topic": "History & technology",
+ "words": 496,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Printing press",
+  "url": "https://en.wikipedia.org/wiki/Printing_press",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "A printing press is a machine that applies pressure to transfer ink onto a surface made of paper, cloth, or a similar material. Its workers are known as printing press operators. It marked a significant improvement on earlier methods, in which the paper was rubbed by hand to transfer applied ink to the printing surface.",
+  "The printing press was invented by the German goldsmith Johannes Gutenberg around 1440, and its subsequent global spread revolutionized literary production and communication during the early modern period. The spread of printing brought about an era of mass communication in European society, allowing information to quickly spread across Europe and contributing to the Reformation and the Scientific Revolution. The cost of printed texts declined and their availability increased, facilitating higher adult literacy rates across Europe. Books increasingly appeared in vernacular languages rather than Latin, and national languages were standardized.",
+  "The basic design of the wooden handpress was largely consistent for over three centuries, until the Industrial Revolution. By 1800 Lord Stanhope had built a new iron printing press printing a sheet at one pull. In 1814, The Times adopted Friedrich Koenig's new presses, which incorporated steam power and rotary motion. Richard M. Hoe's rotary printing press, introduced in 1843, enabled much higher output; later rotary presses could produce millions of page impressions in a day. During the twentieth century, the letterpress was largely replaced by offset printing, phototypesetting, and digital printing in commercial work.",
+  "Johannes Gutenberg invented the movable-type printing press around 1440, utilizing four existing technologies: the screw press, movable type, the codex book format, and mechanized paper production. The economic and cultural changes of late medieval Europe brought about viable commercial conditions for his press. The urban middle class grew alongside trade and commerce, while the growing number of universities since the twelfth century had increased demand for books. Hand-copying was slow and expensive, and by the fifteenth century, the supply of manuscripts was much less than the demand.",
+  "Gutenberg integrated these four technologies into a single working system and added a number of innovations of his own, including a hand mold for casting type and an oil-based ink suited to metal type.",
+  "The first factor, the screw press, permitted direct pressure to be applied on a flat plane. Used for a variety of tasks and introduced by the Romans in the 1st century AD, it was often used by farmers for pressing grapes to make wine and olives to make oil. Gutenberg may also have been inspired by the paper presses which operated similarly to the screw press and were used across the German lands from the late 14th century. He adopted the basic design of the screw press, thereby mechanizing the printing process. Printing brought the machine different demands, and Gutenberg adapted the construction so that the platen (a flat surface) exerted even pressure across the paper with minimal smearing. Gutenberg introduced a movable undertable with a level surface on which the sheets could be swiftly changed."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Which of these was NOT a consequence of the spread of printing in Europe?",
+   "options": [
+    "Printed texts became cheaper",
+    "Adult literacy rates rose",
+    "Books increasingly appeared in vernacular languages",
+    "Latin became the main language of all books"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: sách ngày càng xuất hiện bằng ngôn ngữ địa phương “rather than Latin”."
+  },
+  {
+   "type": "mcq",
+   "q": "What remained largely consistent for over three centuries?",
+   "options": [
+    "The basic design of the wooden handpress",
+    "The price of paper",
+    "The language of books",
+    "The size of printing houses"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “The basic design of the wooden handpress was largely consistent for over three centuries, until the Industrial Revolution.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which four existing technologies did Gutenberg use?",
+   "options": [
+    "The screw press, movable type, the codex book format and mechanized paper production",
+    "The steam engine, the telephone, the camera and the clock",
+    "The compass, the telescope, the map and the globe",
+    "Oil painting, glass making, weaving and farming"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “utilizing four existing technologies: the screw press, movable type, the codex book format, and mechanized paper production.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why were commercial conditions favorable for Gutenberg’s press?",
+   "options": [
+    "The urban middle class and the number of universities were growing, and hand-copying was slow and expensive",
+    "Paper was free",
+    "There were no manuscripts",
+    "The Church ordered it"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: tầng lớp trung lưu đô thị tăng, nhiều đại học làm tăng nhu cầu sách, trong khi chép tay chậm và đắt."
+  },
+  {
+   "type": "mcq",
+   "q": "What innovations of his own did Gutenberg add?",
+   "options": [
+    "A hand mold for casting type and an oil-based ink suited to metal type",
+    "A steam engine",
+    "A rotary press",
+    "A digital printer"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: “a hand mold for casting type and an oil-based ink suited to metal type.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What was the screw press often used for before Gutenberg?",
+   "options": [
+    "Pressing grapes to make wine and olives to make oil",
+    "Cutting wood",
+    "Making paper",
+    "Printing money"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: “it was often used by farmers for pressing grapes to make wine and olives to make oil.”"
+  },
+  {
+   "type": "tf",
+   "q": "In 1814, The Times adopted new presses that incorporated steam power and rotary motion.",
+   "answer": "T",
+   "explain": "Đoạn 3: “In 1814, The Times adopted Friedrich Koenig's new presses, which incorporated steam power and rotary motion.”"
+  },
+  {
+   "type": "tf",
+   "q": "Richard M. Hoe’s rotary press, introduced in 1843, reduced output.",
+   "answer": "F",
+   "explain": "Đoạn 3: máy của Hoe “enabled much higher output”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "subsequent",
+    "pos": "adj",
+    "def": "coming after something",
+    "vi": "tiếp theo, sau đó",
+    "ex": "its subsequent global spread revolutionized literary production"
+   },
+   {
+    "w": "revolutionize",
+    "pos": "v",
+    "def": "to change something completely",
+    "vi": "cách mạng hóa",
+    "ex": "revolutionized literary production and communication"
+   },
+   {
+    "w": "literacy",
+    "pos": "n",
+    "def": "the ability to read and write",
+    "vi": "khả năng biết đọc biết viết",
+    "ex": "facilitating higher adult literacy rates across Europe"
+   },
+   {
+    "w": "vernacular",
+    "pos": "adj",
+    "def": "(of a language) the ordinary language of a region, not a formal or ancient one",
+    "vi": "(ngôn ngữ) bản địa, thông tục",
+    "ex": "Books increasingly appeared in vernacular languages rather than Latin"
+   },
+   {
+    "w": "facilitate",
+    "pos": "v",
+    "def": "to make something easier or possible",
+    "vi": "tạo điều kiện, làm cho dễ dàng",
+    "ex": "facilitating higher adult literacy rates across Europe"
+   },
+   {
+    "w": "viable",
+    "pos": "adj",
+    "def": "able to work successfully",
+    "vi": "khả thi",
+    "ex": "brought about viable commercial conditions for his press"
+   },
+   {
+    "w": "manuscript",
+    "pos": "n",
+    "def": "a book or document written by hand",
+    "vi": "bản thảo viết tay",
+    "ex": "the supply of manuscripts was much less than the demand"
+   },
+   {
+    "w": "incorporate",
+    "pos": "v",
+    "def": "to include something as part of a whole",
+    "vi": "kết hợp, đưa vào",
+    "ex": "which incorporated steam power and rotary motion"
+   },
+   {
+    "w": "mechanize",
+    "pos": "v",
+    "def": "to use machines to do work",
+    "vi": "cơ giới hóa",
+    "ex": "thereby mechanizing the printing process"
+   }
+  ],
+  "coll": [
+   {
+    "c": "mass communication",
+    "vi": "truyền thông đại chúng",
+    "ex": "The spread of printing brought about an era of mass communication in European society"
+   },
+   {
+    "c": "bring about",
+    "vi": "mang lại, gây ra",
+    "ex": "The spread of printing brought about an era of mass communication"
+   },
+   {
+    "c": "literacy rates",
+    "vi": "tỷ lệ biết chữ",
+    "ex": "higher adult literacy rates across Europe"
+   },
+   {
+    "c": "adopt a design",
+    "vi": "áp dụng một thiết kế",
+    "ex": "He adopted the basic design of the screw press"
+   },
+   {
+    "c": "steam power",
+    "vi": "sức hơi nước",
+    "ex": "which incorporated steam power and rotary motion"
+   }
+  ],
+  "str": [
+   {
+    "s": "…, allowing X to + verb and contributing to …",
+    "vi": "…, cho phép … và góp phần vào …",
+    "ex": "allowing information to quickly spread across Europe and contributing to the Reformation and the Scientific Revolution",
+    "explain": "Hai mệnh đề phân từ V-ing cùng nối tiếp một mệnh đề chính, nêu các kết quả."
+   },
+   {
+    "s": "… rather than …",
+    "vi": "… thay vì …",
+    "ex": "Books increasingly appeared in vernacular languages rather than Latin",
+    "explain": "rather than + danh từ: nêu điều bị thay thế."
+   },
+   {
+    "s": "thereby + V-ing",
+    "vi": "nhờ đó …",
+    "ex": "He adopted the basic design of the screw press, thereby mechanizing the printing process.",
+    "explain": "thereby + V-ing: chỉ kết quả trực tiếp của hành động trước."
+   },
+   {
+    "s": "may also have been inspired by",
+    "vi": "có lẽ cũng đã được truyền cảm hứng bởi",
+    "ex": "Gutenberg may also have been inspired by the paper presses",
+    "explain": "may have been + V3: suy đoán về điều có thể đã xảy ra trong quá khứ (bị động)."
+   }
+  ]
+ }
+}

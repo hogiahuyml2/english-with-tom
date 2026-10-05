@@ -1,0 +1,179 @@
+{
+ "id": "a1-cat",
+ "level": "A1",
+ "title": "Cats",
+ "topic": "Animals",
+ "words": 83,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Cat",
+  "url": "https://simple.wikipedia.org/wiki/Cat",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Cats are small animals. They are mammals. Many people have a cat at home. A cat at home is called a house cat or a pet. Cats are one of the most popular pets in the world.",
+  "People keep cats for two reasons. Cats catch mice and rats. And cats are good friends. People have kept cats for nearly 10,000 years. There are about 92 kinds of cat. Some cats have short hair. Some cats have long hair. Some cats have no hair."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What are cats?",
+   "options": [
+    "Small animals",
+    "Big birds",
+    "Fish"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Cats are small animals.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why do people keep cats?",
+   "options": [
+    "Cats catch mice and rats, and are good friends",
+    "Cats make milk",
+    "Cats are very big"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Cats catch mice and rats. And cats are good friends.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How long have people kept cats?",
+   "options": [
+    "For 10 years",
+    "For nearly 10,000 years",
+    "For 92 years"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “People have kept cats for nearly 10,000 years.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How many kinds of cat are there?",
+   "options": [
+    "About 9",
+    "About 29",
+    "About 92"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “There are about 92 kinds of cat.”"
+  },
+  {
+   "type": "tf",
+   "q": "All cats have long hair.",
+   "answer": "F",
+   "explain": "Đoạn 2: có mèo lông ngắn, lông dài và không có lông."
+  },
+  {
+   "type": "tf",
+   "q": "Cats are one of the most popular pets in the world.",
+   "answer": "T",
+   "explain": "Đoạn 1: “Cats are one of the most popular pets in the world.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "mammal",
+    "pos": "n",
+    "def": "an animal that feeds its babies with milk",
+    "vi": "động vật có vú",
+    "ex": "They are mammals."
+   },
+   {
+    "w": "pet",
+    "pos": "n",
+    "def": "an animal that you keep at home",
+    "vi": "thú cưng",
+    "ex": "A cat at home is called a house cat or a pet."
+   },
+   {
+    "w": "popular",
+    "pos": "adj",
+    "def": "liked by many people",
+    "vi": "phổ biến, được nhiều người thích",
+    "ex": "Cats are one of the most popular pets in the world."
+   },
+   {
+    "w": "catch",
+    "pos": "v",
+    "def": "to get an animal that is running away",
+    "vi": "bắt",
+    "ex": "Cats catch mice and rats."
+   },
+   {
+    "w": "reason",
+    "pos": "n",
+    "def": "the answer to “why?”",
+    "vi": "lý do",
+    "ex": "People keep cats for two reasons."
+   },
+   {
+    "w": "kind",
+    "pos": "n",
+    "def": "a type of something",
+    "vi": "loại",
+    "ex": "There are about 92 kinds of cat."
+   },
+   {
+    "w": "hair",
+    "pos": "n",
+    "def": "the thin lines that grow on the body of an animal",
+    "vi": "lông, tóc",
+    "ex": "Some cats have short hair."
+   },
+   {
+    "w": "keep",
+    "pos": "v",
+    "def": "to have something and look after it",
+    "vi": "nuôi, giữ",
+    "ex": "People keep cats for two reasons."
+   }
+  ],
+  "coll": [
+   {
+    "c": "keep a pet",
+    "vi": "nuôi thú cưng",
+    "ex": "People keep cats for two reasons."
+   },
+   {
+    "c": "at home",
+    "vi": "ở nhà",
+    "ex": "Many people have a cat at home."
+   },
+   {
+    "c": "short hair / long hair",
+    "vi": "lông ngắn / lông dài",
+    "ex": "Some cats have short hair. Some cats have long hair."
+   },
+   {
+    "c": "catch mice",
+    "vi": "bắt chuột",
+    "ex": "Cats catch mice and rats."
+   }
+  ],
+  "str": [
+   {
+    "s": "… is called …",
+    "vi": "được gọi là …",
+    "ex": "A cat at home is called a house cat or a pet.",
+    "explain": "is called + tên: dùng để gọi tên một thứ."
+   },
+   {
+    "s": "Some … Some …",
+    "vi": "Một số … Một số …",
+    "ex": "Some cats have short hair. Some cats have long hair. Some cats have no hair.",
+    "explain": "Dùng “Some … Some …” để nói về các nhóm khác nhau."
+   },
+   {
+    "s": "There are about + number",
+    "vi": "Có khoảng …",
+    "ex": "There are about 92 kinds of cat.",
+    "explain": "There are + số lượng + danh từ số nhiều."
+   }
+  ]
+ }
+}

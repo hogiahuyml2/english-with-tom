@@ -1,0 +1,193 @@
+{
+ "id": "a2-airport",
+ "level": "A2",
+ "title": "At the Airport",
+ "topic": "Travel",
+ "words": 339,
+ "minutes": 5,
+ "source": {
+  "name": "Simple English Wikipedia — Airport",
+  "url": "https://simple.wikipedia.org/wiki/Airport",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "An airport is a place where airplanes can land or take off. Most airports in the world have only a long strip of level ground called a runway. Many airports have buildings which are used to hold airplanes and passengers. A building that holds passengers waiting for their planes or luggage is called a terminal. The sections between planes and the terminal are called \"gates\". Airports also have buildings called hangars to hold planes when they are not used. Some airports have buildings to control the airport, like a control tower which tells planes where to go.",
+  "An international airport is a large airport that airplanes can use to fly to and from other countries. A domestic airport is an airport which is usually smaller and only has airplanes coming from different places in the same country. Most international airports have shops and restaurants for airplane passengers to use.",
+  "When someone first enters an airport, they will need to check in. This is so they can check in their luggage and get their boarding pass (this is needed to enter the plane). Some airlines need you to pay to check in large luggage.",
+  "Once somebody has checked in, they will need to go through security. Queues can be long depending on airport. In the European Union, they have a new system called the Entry Exit System, and many people have missed their flights because of very long queues.",
+  "After security, some large airports have a large store called a duty free. They sell many items, such as beauty and skincare products.",
+  "After duty-free, someone can make their way to a certain gate, where their flight takes off from.",
+  "Boarding takes place in stages. Many airlines board first class passengers first, they have paid more money to board first and sit on more comfortable seats. Some airlines have something called a first come first serve policy, if someone turns up earlier they can sit wherever they want in the plane. This is because the plane has less people in it."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is a terminal?",
+   "options": [
+    "A building where passengers wait for planes or luggage",
+    "A long strip of ground for planes",
+    "A building for old planes",
+    "A machine that checks luggage"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “A building that holds passengers waiting for their planes or luggage is called a terminal.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does a control tower do?",
+   "options": [
+    "It sells tickets",
+    "It tells planes where to go",
+    "It checks passports",
+    "It holds planes when they are not used"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “a control tower which tells planes where to go.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do passengers need to enter the plane?",
+   "options": [
+    "A boarding pass",
+    "A duty free card",
+    "A library card",
+    "A hangar"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “get their boarding pass (this is needed to enter the plane).”"
+  },
+  {
+   "type": "mcq",
+   "q": "What can you find in some large airports after security?",
+   "options": [
+    "A runway",
+    "A duty free store",
+    "A control tower",
+    "A hangar"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “After security, some large airports have a large store called a duty free.”"
+  },
+  {
+   "type": "tf",
+   "q": "A domestic airport has planes coming from other countries.",
+   "answer": "F",
+   "explain": "Đoạn 2: domestic airport “only has airplanes coming from different places in the same country”."
+  },
+  {
+   "type": "tf",
+   "q": "Some airlines ask you to pay to check in large luggage.",
+   "answer": "T",
+   "explain": "Đoạn 3: “Some airlines need you to pay to check in large luggage.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "runway",
+    "pos": "n",
+    "def": "a long strip of ground where planes take off and land",
+    "vi": "đường băng",
+    "ex": "Most airports in the world have only a long strip of level ground called a runway."
+   },
+   {
+    "w": "terminal",
+    "pos": "n",
+    "def": "the building at an airport where passengers wait",
+    "vi": "nhà ga (sân bay)",
+    "ex": "A building that holds passengers waiting for their planes or luggage is called a terminal."
+   },
+   {
+    "w": "gate",
+    "pos": "n",
+    "def": "the place in an airport where you get on the plane",
+    "vi": "cổng lên máy bay",
+    "ex": "The sections between planes and the terminal are called \"gates\"."
+   },
+   {
+    "w": "luggage",
+    "pos": "n",
+    "def": "the bags and cases you take when you travel",
+    "vi": "hành lý",
+    "ex": "they can check in their luggage and get their boarding pass"
+   },
+   {
+    "w": "boarding pass",
+    "pos": "n",
+    "def": "a card that lets you get on a plane",
+    "vi": "thẻ lên máy bay",
+    "ex": "get their boarding pass (this is needed to enter the plane)"
+   },
+   {
+    "w": "queue",
+    "pos": "n",
+    "def": "a line of people waiting for something",
+    "vi": "hàng người xếp chờ",
+    "ex": "Queues can be long depending on airport."
+   },
+   {
+    "w": "passenger",
+    "pos": "n",
+    "def": "a person who travels in a plane, train or car but does not drive it",
+    "vi": "hành khách",
+    "ex": "Most international airports have shops and restaurants for airplane passengers to use."
+   },
+   {
+    "w": "flight",
+    "pos": "n",
+    "def": "a journey in a plane",
+    "vi": "chuyến bay",
+    "ex": "many people have missed their flights because of very long queues"
+   }
+  ],
+  "coll": [
+   {
+    "c": "check in luggage",
+    "vi": "ký gửi hành lý",
+    "ex": "they will need to check in. This is so they can check in their luggage"
+   },
+   {
+    "c": "boarding pass",
+    "vi": "thẻ lên máy bay",
+    "ex": "get their boarding pass"
+   },
+   {
+    "c": "go through security",
+    "vi": "đi qua khâu an ninh",
+    "ex": "they will need to go through security"
+   },
+   {
+    "c": "miss a flight",
+    "vi": "lỡ chuyến bay",
+    "ex": "many people have missed their flights because of very long queues"
+   },
+   {
+    "c": "take off / land",
+    "vi": "cất cánh / hạ cánh",
+    "ex": "An airport is a place where airplanes can land or take off."
+   }
+  ],
+  "str": [
+   {
+    "s": "… is called …",
+    "vi": "bị động dùng để gọi tên",
+    "ex": "A building that holds passengers waiting for their planes or luggage is called a terminal.",
+    "explain": "Dùng khi định nghĩa một từ mới."
+   },
+   {
+    "s": "will need to + verb",
+    "vi": "sẽ cần phải làm gì",
+    "ex": "When someone first enters an airport, they will need to check in.",
+    "explain": "need to + động từ nguyên mẫu: diễn tả việc cần làm."
+   },
+   {
+    "s": "Once + present perfect, …",
+    "vi": "Sau khi … xong thì …",
+    "ex": "Once somebody has checked in, they will need to go through security.",
+    "explain": "“Once” + hiện tại hoàn thành chỉ việc phải xong trước rồi mới đến việc tiếp theo."
+   }
+  ]
+ }
+}

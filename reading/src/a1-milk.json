@@ -1,0 +1,179 @@
+{
+ "id": "a1-milk",
+ "level": "A1",
+ "title": "Milk",
+ "topic": "Food & health",
+ "words": 71,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Milk",
+  "url": "https://simple.wikipedia.org/wiki/Milk",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Milk is a white liquid. Mammals make milk. Cows, dogs and people make milk. A mother makes milk for her baby. Babies drink milk before they eat food. Milk helps babies grow. Milk also has calcium. Calcium is good for bones and teeth.",
+  "Keep milk cold in a refrigerator. If milk is not cold, it becomes sour after some time. People make cream, butter, yogurt, ice cream and cheese from milk."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What colour is milk?",
+   "options": [
+    "White",
+    "Red",
+    "Green"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Milk is a white liquid.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Who makes milk?",
+   "options": [
+    "Only cows",
+    "Mammals",
+    "Only people"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “Mammals make milk. Cows, dogs and people make milk.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is good for bones and teeth?",
+   "options": [
+    "Salt",
+    "Calcium",
+    "Butter"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “Calcium is good for bones and teeth.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What happens if milk is not cold?",
+   "options": [
+    "It becomes sour",
+    "It becomes a cheese at once",
+    "It becomes water"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “If milk is not cold, it becomes sour after some time.”"
+  },
+  {
+   "type": "tf",
+   "q": "People make cheese from milk.",
+   "answer": "T",
+   "explain": "Đoạn 2: “People make cream, butter, yogurt, ice cream and cheese from milk.”"
+  },
+  {
+   "type": "tf",
+   "q": "Only cows make milk.",
+   "answer": "F",
+   "explain": "Đoạn 1: bò, chó và người đều tạo ra sữa."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "liquid",
+    "pos": "n",
+    "def": "something like water that is not solid",
+    "vi": "chất lỏng",
+    "ex": "Milk is a white liquid."
+   },
+   {
+    "w": "mammal",
+    "pos": "n",
+    "def": "an animal that feeds its babies with milk",
+    "vi": "động vật có vú",
+    "ex": "Mammals make milk."
+   },
+   {
+    "w": "calcium",
+    "pos": "n",
+    "def": "something in food that makes bones strong",
+    "vi": "canxi",
+    "ex": "Milk also has calcium."
+   },
+   {
+    "w": "bone",
+    "pos": "n",
+    "def": "one of the hard parts inside your body",
+    "vi": "xương",
+    "ex": "Calcium is good for bones and teeth."
+   },
+   {
+    "w": "refrigerator",
+    "pos": "n",
+    "def": "a machine that keeps food cold",
+    "vi": "tủ lạnh",
+    "ex": "Keep milk cold in a refrigerator."
+   },
+   {
+    "w": "sour",
+    "pos": "adj",
+    "def": "with a sharp, bad taste, like old milk",
+    "vi": "chua, bị thiu",
+    "ex": "it becomes sour after some time"
+   },
+   {
+    "w": "cheese",
+    "pos": "n",
+    "def": "a food made from milk",
+    "vi": "phô mai",
+    "ex": "People make cream, butter, yogurt, ice cream and cheese from milk."
+   },
+   {
+    "w": "grow",
+    "pos": "v",
+    "def": "to become bigger",
+    "vi": "lớn lên, phát triển",
+    "ex": "Milk helps babies grow."
+   }
+  ],
+  "coll": [
+   {
+    "c": "make milk",
+    "vi": "tạo ra sữa",
+    "ex": "Mammals make milk."
+   },
+   {
+    "c": "good for + noun",
+    "vi": "tốt cho …",
+    "ex": "Calcium is good for bones and teeth."
+   },
+   {
+    "c": "keep something cold",
+    "vi": "giữ cho lạnh",
+    "ex": "Keep milk cold in a refrigerator."
+   },
+   {
+    "c": "become sour",
+    "vi": "bị chua / thiu",
+    "ex": "it becomes sour after some time"
+   }
+  ],
+  "str": [
+   {
+    "s": "If + present, … present",
+    "vi": "Nếu … thì …",
+    "ex": "If milk is not cold, it becomes sour after some time.",
+    "explain": "Câu điều kiện loại 0: nói về sự thật luôn đúng."
+   },
+   {
+    "s": "Keep + noun + adjective",
+    "vi": "Hãy giữ … như thế nào",
+    "ex": "Keep milk cold in a refrigerator.",
+    "explain": "Câu mệnh lệnh: động từ nguyên mẫu ở đầu câu."
+   },
+   {
+    "s": "before + clause",
+    "vi": "trước khi …",
+    "ex": "Babies drink milk before they eat food.",
+    "explain": "before + mệnh đề: nói việc xảy ra trước."
+   }
+  ]
+ }
+}

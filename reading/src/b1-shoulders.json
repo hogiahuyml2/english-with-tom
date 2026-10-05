@@ -1,0 +1,210 @@
+{
+ "id": "b1-shoulders",
+ "level": "B1",
+ "title": "Expressions Using Our Head and Shoulders",
+ "topic": "Idioms",
+ "words": 390,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Expressions Using Our Head and Shoulders",
+  "url": "https://learningenglish.voanews.com/a/expressions-using-our-head-and-shoulders/7825009.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Many English expressions and idioms use parts of the body to describe things unrelated to the body. For example, a green thumb means to be good at growing vegetables, flowers and other plants. And if something costs an arm and a leg , it is very expensive .",
+  "Well, today, we talk about your shoulder. This part connects your arm to your body. And the shoulder finds its way into many expressions.",
+  "For starters, let’s talk about “shoulder” as a verb. If you shoulder something, you accept it as your responsibility; you give support, or you take the blame.",
+  "Here is an example:",
+  "Since he was the leader of the project, he shouldered the blame for its failure.",
+  "For example, during difficult times in our lives, it is often necessary to have a shoulder to lean on or a shoulder to cry on .",
+  "When we lean on someone’s shoulder , we ask for their help. When we cry on someone’s shoulder , they are there for support.",
+  "It is important to have at least one friend who has a good shoulder to cry on . These friends are great because they don't ask questions. They just listen and let us cry. You can also put your head on someone’s shoulder . This means you are getting comfort and support from that person.",
+  "There is another way our shoulders give us support. If you are successful in your career but others have come before you, you can say you are standing on the shoulders of giants . This means you have not succeeded on your own. You have learned from others in the same field who had earlier successes.",
+  "If you have a good head on your shoulders, you are thoughtful and smart. You do the right thing, and people can count on you. When you have a good head on your shoulders , you often achieve success in life.",
+  "This quality, people say, often puts you head and shoulders above the rest . This means you are much better than those in a similar field or competition.",
+  "You have applied for a job. You have more education and much more experience than the job requires. You also have special skills that make you even more desirable. You feel these factors put you head and shoulders above the other candidates."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does a “green thumb” mean?",
+   "options": [
+    "To be good at growing plants",
+    "To be very expensive",
+    "To have a lot of friends",
+    "To be a good cook"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “a green thumb means to be good at growing vegetables, flowers and other plants.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does “to shoulder something” mean?",
+   "options": [
+    "To carry it on your back",
+    "To accept it as your responsibility or take the blame",
+    "To throw it away",
+    "To ask for help"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “If you shoulder something, you accept it as your responsibility; you give support, or you take the blame.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is “a shoulder to cry on”?",
+   "options": [
+    "A person who is there to support you",
+    "A pillow",
+    "A person who makes you cry",
+    "A place to sit"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: “When we cry on someone’s shoulder, they are there for support.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does “standing on the shoulders of giants” mean?",
+   "options": [
+    "You are very tall",
+    "You have learned from others who had earlier successes",
+    "You are famous in science",
+    "You work alone"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 9: “You have not succeeded on your own. You have learned from others in the same field who had earlier successes.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does “head and shoulders above the rest” mean?",
+   "options": [
+    "Much better than others",
+    "Taller than others",
+    "Late for the race",
+    "Very tired"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 11: “This means you are much better than those in a similar field or competition.”"
+  },
+  {
+   "type": "tf",
+   "q": "If you have a good head on your shoulders, you are thoughtful and smart.",
+   "answer": "T",
+   "explain": "Đoạn 10: “you are thoughtful and smart.”"
+  },
+  {
+   "type": "tf",
+   "q": "The expression “a shoulder to cry on” comes from an old story.",
+   "answer": "NG",
+   "explain": "Bài không nói về nguồn gốc của cách nói này."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "expression",
+    "pos": "n",
+    "def": "a fixed group of words with a special meaning",
+    "vi": "cách diễn đạt, thành ngữ",
+    "ex": "Many English expressions and idioms use parts of the body to describe things unrelated to the body."
+   },
+   {
+    "w": "blame",
+    "pos": "n",
+    "def": "saying that someone did something wrong",
+    "vi": "sự đổ lỗi, trách nhiệm",
+    "ex": "he shouldered the blame for its failure"
+   },
+   {
+    "w": "responsibility",
+    "pos": "n",
+    "def": "a duty to take care of something or someone",
+    "vi": "trách nhiệm",
+    "ex": "you accept it as your responsibility"
+   },
+   {
+    "w": "support",
+    "pos": "n",
+    "def": "help and comfort that you give someone",
+    "vi": "sự hỗ trợ, nâng đỡ",
+    "ex": "you give support, or you take the blame"
+   },
+   {
+    "w": "lean on",
+    "pos": "phr v",
+    "def": "to depend on someone for help",
+    "vi": "dựa vào (ai) để được giúp",
+    "ex": "a shoulder to lean on"
+   },
+   {
+    "w": "comfort",
+    "pos": "n",
+    "def": "a feeling of being calm and not worried",
+    "vi": "sự an ủi, thoải mái",
+    "ex": "you are getting comfort and support from that person"
+   },
+   {
+    "w": "thoughtful",
+    "pos": "adj",
+    "def": "thinking carefully about things and about other people",
+    "vi": "chín chắn, biết suy nghĩ",
+    "ex": "you are thoughtful and smart"
+   },
+   {
+    "w": "competition",
+    "pos": "n",
+    "def": "an event where people try to win",
+    "vi": "cuộc thi, sự cạnh tranh",
+    "ex": "much better than those in a similar field or competition"
+   }
+  ],
+  "coll": [
+   {
+    "c": "take the blame",
+    "vi": "nhận lỗi",
+    "ex": "you give support, or you take the blame"
+   },
+   {
+    "c": "give support",
+    "vi": "hỗ trợ, nâng đỡ",
+    "ex": "you give support"
+   },
+   {
+    "c": "count on someone",
+    "vi": "tin cậy, trông cậy vào ai",
+    "ex": "people can count on you"
+   },
+   {
+    "c": "a good head on your shoulders",
+    "vi": "chín chắn, thông minh, biết suy xét",
+    "ex": "If you have a good head on your shoulders, you are thoughtful and smart."
+   },
+   {
+    "c": "cost an arm and a leg",
+    "vi": "rất đắt đỏ",
+    "ex": "if something costs an arm and a leg , it is very expensive"
+   }
+  ],
+  "str": [
+   {
+    "s": "If … , it/you …",
+    "vi": "Nếu … thì …",
+    "ex": "And if something costs an arm and a leg , it is very expensive .",
+    "explain": "Câu điều kiện loại 0 dùng cho sự thật luôn đúng."
+   },
+   {
+    "s": "This means …",
+    "vi": "Điều này có nghĩa là …",
+    "ex": "This means you are getting comfort and support from that person.",
+    "explain": "Dùng để giải thích nghĩa của một thành ngữ."
+   },
+   {
+    "s": "If you are …, but …, you can say …",
+    "vi": "Nếu bạn …, nhưng …, bạn có thể nói …",
+    "ex": "If you are successful in your career but others have come before you, you can say you are standing on the shoulders of giants .",
+    "explain": "Cấu trúc gợi ý cách dùng thành ngữ trong tình huống."
+   }
+  ]
+ }
+}

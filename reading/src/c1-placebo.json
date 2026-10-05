@@ -1,0 +1,228 @@
+{
+ "id": "c1-placebo",
+ "level": "C1",
+ "title": "Placebo",
+ "topic": "Medicine & science",
+ "words": 500,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Placebo",
+  "url": "https://en.wikipedia.org/wiki/Placebo",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "A placebo ( pluh-SEE-boh) is a medicine or treatment intended to appear genuine to its recipient, but which has no pharmaceutical effect. Common placebos include inert tablets (like sugar pills), inert injections (like saline), sham surgery, and other procedures.",
+  "Placebos are used in randomized clinical trials to test the efficacy of medical treatments. In a placebo-controlled trial, any change in the control group is known as the placebo response, and the difference between this and the result of no treatment is the placebo effect. Placebos in clinical trials should ideally be indistinguishable from so-called verum treatments under investigation, except for the latter's particular hypothesized medicinal effect. This is to shield test participants (with their consent) from knowing who is getting the placebo and who is getting the treatment under test, as patients' and clinicians' expectations of efficacy can influence results.",
+  "The idea of a \"placebo effect\" was discussed in 18th century psychology, but became more prominent in the 20th century. Modern studies find that placebos can affect some outcomes such as pain and nausea, but otherwise do not generally have important clinical effects. Improvements that patients experience after being treated with a placebo can also be due to unrelated factors, such as regression to the mean (a statistical effect where an unusually high or low measurement is likely to be followed by a less extreme one). The use of placebos in clinical medicine raises ethical concerns, especially if they are disguised as an active treatment, as this introduces dishonesty into the doctor–patient relationship and bypasses informed consent.",
+  "Placebos are also popular because they can sometimes produce relief through psychological mechanisms (a phenomenon known as the \"placebo effect\"). They can affect how patients perceive their condition and encourage the body's chemical processes for relieving pain and a few other symptoms, but have no impact on the disease itself.",
+  "The placebo effect is a well-documented phenomenon, though it remains widely misunderstood and surrounded by misconceptions. Several studies have questioned its clinical relevance, fueling ongoing debate about its actual effectiveness. A 2001 meta-analysis of the placebo effect looked at trials in 40 different medical conditions, and concluded the only one where it had been shown to have a significant effect was for pain. Another Cochrane review in 2010 suggested that placebo effects are apparent only in subjective, continuous measures, and in the treatment of pain and related conditions. The review found that placebos do not appear to affect the actual diseases, or outcomes that are not dependent on a patient's perception. The authors, Asbjørn Hróbjartsson and Peter C. Gøtzsche, concluded that their study \"did not find that placebo interventions have important clinical effects in general.\" This interpretation has been subject to criticism, particularly due to concerns about the adequacy of the methodology used. Recent research has linked placebo interventions to improved motor functions in patients with Parkinson's disease. Other objective outcomes affected by placebos include immune and endocrine parameters, end-organ functions regulated by the autonomic nervous system,, sport performance , and cognitive performance."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is a placebo?",
+   "options": [
+    "A medicine that cures every disease",
+    "A treatment intended to appear genuine but with no pharmaceutical effect",
+    "A new type of vaccine",
+    "A medical machine"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “a medicine or treatment intended to appear genuine to its recipient, but which has no pharmaceutical effect.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why are placebos used in randomized clinical trials?",
+   "options": [
+    "To make patients feel worse",
+    "To test the efficacy of medical treatments",
+    "To save money on medicine",
+    "To stop doctors from working"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “Placebos are used in randomized clinical trials to test the efficacy of medical treatments.”"
+  },
+  {
+   "type": "mcq",
+   "q": "In a placebo-controlled trial, what is the “placebo effect”?",
+   "options": [
+    "The difference between the placebo response and the result of no treatment",
+    "The side effects of a real drug",
+    "The cost of the trial",
+    "The patients’ opinions about doctors"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “any change in the control group is known as the placebo response, and the difference between this and the result of no treatment is the placebo effect.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do modern studies find about placebos?",
+   "options": [
+    "They cure serious diseases",
+    "They can affect some outcomes such as pain and nausea, but do not generally have important clinical effects",
+    "They are dangerous",
+    "They work only on children"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “placebos can affect some outcomes such as pain and nausea, but otherwise do not generally have important clinical effects.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What ethical concern does the text raise?",
+   "options": [
+    "Placebos are too expensive",
+    "Using placebos disguised as active treatment introduces dishonesty and bypasses informed consent",
+    "Placebos harm the body",
+    "Placebos are illegal everywhere"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “especially if they are disguised as an active treatment, as this introduces dishonesty … and bypasses informed consent.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did the 2010 Cochrane review find about the actual diseases?",
+   "options": [
+    "Placebos strongly improve them",
+    "Placebos do not appear to affect the actual diseases or outcomes not dependent on patient perception",
+    "Placebos make them worse",
+    "Placebos cure them completely"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “placebos do not appear to affect the actual diseases, or outcomes that are not dependent on a patient's perception.”"
+  },
+  {
+   "type": "tf",
+   "q": "A 2001 meta-analysis concluded that pain was the only condition where the placebo effect had been shown to be significant.",
+   "answer": "T",
+   "explain": "Đoạn 5: nội dung này được nói trực tiếp."
+  },
+  {
+   "type": "tf",
+   "q": "Sugar pills are the most commonly used placebo in clinical trials.",
+   "answer": "NG",
+   "explain": "Bài chỉ nêu viên đường là một ví dụ (“Common placebos include inert tablets (like sugar pills)”), không nói đó là loại dùng nhiều nhất."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "genuine",
+    "pos": "adj",
+    "def": "real; not false",
+    "vi": "thật, chính hiệu",
+    "ex": "intended to appear genuine to its recipient"
+   },
+   {
+    "w": "efficacy",
+    "pos": "n",
+    "def": "the ability to produce the result that you want",
+    "vi": "hiệu quả (của thuốc/điều trị)",
+    "ex": "to test the efficacy of medical treatments"
+   },
+   {
+    "w": "indistinguishable",
+    "pos": "adj",
+    "def": "impossible to tell apart",
+    "vi": "không thể phân biệt được",
+    "ex": "should ideally be indistinguishable from so-called verum treatments"
+   },
+   {
+    "w": "consent",
+    "pos": "n",
+    "def": "permission to do something",
+    "vi": "sự đồng ý, chấp thuận",
+    "ex": "bypasses informed consent"
+   },
+   {
+    "w": "outcome",
+    "pos": "n",
+    "def": "the final result of something",
+    "vi": "kết quả",
+    "ex": "placebos can affect some outcomes such as pain and nausea"
+   },
+   {
+    "w": "disguise",
+    "pos": "v",
+    "def": "to hide the real nature of something",
+    "vi": "ngụy trang",
+    "ex": "especially if they are disguised as an active treatment"
+   },
+   {
+    "w": "mechanism",
+    "pos": "n",
+    "def": "a process by which something works",
+    "vi": "cơ chế",
+    "ex": "relief through psychological mechanisms"
+   },
+   {
+    "w": "subjective",
+    "pos": "adj",
+    "def": "based on personal feelings or opinions",
+    "vi": "chủ quan",
+    "ex": "placebo effects are apparent only in subjective, continuous measures"
+   },
+   {
+    "w": "misconception",
+    "pos": "n",
+    "def": "a wrong idea or belief",
+    "vi": "quan niệm sai lầm",
+    "ex": "widely misunderstood and surrounded by misconceptions"
+   }
+  ],
+  "coll": [
+   {
+    "c": "clinical trial",
+    "vi": "thử nghiệm lâm sàng",
+    "ex": "Placebos are used in randomized clinical trials"
+   },
+   {
+    "c": "control group",
+    "vi": "nhóm đối chứng",
+    "ex": "any change in the control group is known as the placebo response"
+   },
+   {
+    "c": "informed consent",
+    "vi": "sự đồng ý có hiểu biết",
+    "ex": "bypasses informed consent"
+   },
+   {
+    "c": "raise ethical concerns",
+    "vi": "gây ra mối lo ngại về đạo đức",
+    "ex": "The use of placebos in clinical medicine raises ethical concerns"
+   },
+   {
+    "c": "subject to criticism",
+    "vi": "bị chỉ trích",
+    "ex": "This interpretation has been subject to criticism"
+   }
+  ],
+  "str": [
+   {
+    "s": "intended to + verb",
+    "vi": "nhằm để / được thiết kế để …",
+    "ex": "a medicine or treatment intended to appear genuine to its recipient",
+    "explain": "Quá khứ phân từ + to-infinitive sau danh từ: rút gọn mệnh đề quan hệ."
+   },
+   {
+    "s": "can also be due to …",
+    "vi": "cũng có thể là do …",
+    "ex": "Improvements that patients experience after being treated with a placebo can also be due to unrelated factors",
+    "explain": "be due to + danh từ: chỉ nguyên nhân."
+   },
+   {
+    "s": "…, though it remains + V3",
+    "vi": "…, dù nó vẫn còn …",
+    "ex": "The placebo effect is a well-documented phenomenon, though it remains widely misunderstood and surrounded by misconceptions.",
+    "explain": "Though mở đầu nhượng bộ ở giữa/cuối câu; remain + V3/tính từ."
+   },
+   {
+    "s": "have no impact on …",
+    "vi": "không có tác động đến …",
+    "ex": "but have no impact on the disease itself",
+    "explain": "Cụm dùng để nói về giới hạn của một tác động."
+   }
+  ]
+ }
+}

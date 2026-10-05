@@ -1,0 +1,228 @@
+{
+ "id": "b2-christmas",
+ "level": "B2",
+ "title": "A History of Christmas in America",
+ "topic": "History & culture",
+ "words": 645,
+ "minutes": 9,
+ "source": {
+  "name": "VOA Learning English — A History of Christmas in America",
+  "url": "https://learningenglish.voanews.com/a/a-history-of-chrismas-in-america/4174019.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "During this period, there was no set way of celebrating the day, which was not yet an official holiday. Communities around the country honored the day in different ways. Some observed Christmas as an important Christian religious day honoring the birth of Jesus. Others celebrated the day with parties, music, drinking and eating. And, some communities did not celebrate the day at all.",
+  "But, it was during this period that Americans began to reinvent the holiday. They combined ancient Christmas traditions from different cultures with modern American influences.",
+  "In 1819, the popular American writer Washington Irving wrote a series of five essays published in a book called The Sketchbook of Geoffrey Crayon, Gent .",
+  "The essays describe a wealthy British landowner who invites his farm workers into his home to celebrate Christmas. The landowner recreates a traditional Christmas as it would have been celebrated in the distant past. Irving praised this looking back to ancient traditions. He liked the idea of different levels of society coming together to enjoy a festive and peaceful holiday. Washington Irving seemed to express concern about the lack of such unifying Christmas traditions in modern America.",
+  "Penne Restad wrote a book Christmas in America: A History . It shows how Americans began to slowly shape Christmas into a unifying national holiday during the first half of the 19th century. She describes how Christmas had different meanings for Americans who came from different cultural and religious backgrounds. Many immigrants brought Christmas traditions from their own countries.",
+  "Religion played a big role in how an American might celebrate the holiday. Calvinist Christians banned the celebration of Christmas. But groups such as Episcopalians and Moravians honored the day with religious services and seasonal decorations .",
+  "Christmas became an important time for families to celebrate at home. More and more Christian Americans also began to follow the European traditions of Christmas trees and giving gifts. Christians believed that the tree represented Jesus and was also a sign of new beginnings. German immigrants brought their tradition of putting lights, sweets and toys on the branches of evergreen trees placed in their homes.",
+  "This tradition of setting up a Christmas tree soon spread to many American homes. So did the practice of giving people presents. As these traditions increased in popularity, the modern trade and business linked to Christmas also grew.",
+  "As Christmas became more popular, some states declared the day a state holiday. Louisiana was the first state to make the move in 1837. By 1860, 14 other states had followed. It was not until 1870 that President Ulysses Grant made Christmas a federal holiday.",
+  "Americans already knew old Christmas songs that came from England and other areas of Europe. But many new American Christmas songs started to become popular. For example, in eighteen forty-nine, a religious leader from Massachusetts wrote the words to It Came Upon a Midnight Clear .The song J ingle Bells appeared seven years later. And, a year later, a religious leader in Williamsport, Pennsylvania wrote the song We Three Kings of Orient Are .",
+  "This character is based on the story of Saint Nicholas, a Christian holy person believed to have lived in the third century. Saint Nicholas became known as a protector of children. Different cultures have given him different names. These include Sinterklaas, Kris Kringle and Father Christmas. But for most Americans his most popular name would become Santa Claus.",
+  "In the 19th century, many Dutch immigrants living in the United States celebrated the feast of Saint Nicholas on December 6. Saint Nicholas was especially important to New Yorkers because of their history as a Dutch colony. In 1809, Washington Irving published his History of New York . It lists Saint Nicholas as the patron saint of New Yorkers. He describes the saint wearing a low hat, large pants, and smoking a pipe. Does this description sound familiar?"
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What was Christmas like in the United States in the first half of the 19th century?",
+   "options": [
+    "Everyone celebrated it in the same way",
+    "There was no set way of celebrating it, and communities honored it differently",
+    "It was already an official federal holiday",
+    "No one celebrated it"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “there was no set way of celebrating the day, which was not yet an official holiday.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did Washington Irving’s essays describe?",
+   "options": [
+    "A poor family who could not celebrate",
+    "A wealthy British landowner who invites his farm workers into his home to celebrate Christmas",
+    "A city parade in New York",
+    "A religious service in a church"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: “a wealthy British landowner who invites his farm workers into his home to celebrate Christmas.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why did Irving praise looking back to ancient traditions?",
+   "options": [
+    "He wanted to sell more books",
+    "He liked the idea of different levels of society coming together for a peaceful holiday",
+    "He did not like modern America",
+    "He wanted to ban Christmas"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: “He liked the idea of different levels of society coming together to enjoy a festive and peaceful holiday.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which group of Christians banned the celebration of Christmas?",
+   "options": [
+    "Episcopalians",
+    "Moravians",
+    "Calvinists",
+    "Immigrants from Germany"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 6: “Calvinist Christians banned the celebration of Christmas.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Who brought the tradition of putting lights, sweets and toys on evergreen trees?",
+   "options": [
+    "Dutch immigrants",
+    "German immigrants",
+    "British landowners",
+    "American writers"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 7: “German immigrants brought their tradition of putting lights, sweets and toys on the branches of evergreen trees.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which state first declared Christmas a state holiday?",
+   "options": [
+    "New York",
+    "Pennsylvania",
+    "Louisiana",
+    "Massachusetts"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 9: “Louisiana was the first state to make the move in 1837.”"
+  },
+  {
+   "type": "tf",
+   "q": "Christmas became a federal holiday in 1870 under President Ulysses Grant.",
+   "answer": "T",
+   "explain": "Đoạn 9: “It was not until 1870 that President Ulysses Grant made Christmas a federal holiday.”"
+  },
+  {
+   "type": "tf",
+   "q": "The song “Jingle Bells” was written by a religious leader from Massachusetts.",
+   "answer": "NG",
+   "explain": "Bài nói một nhà lãnh đạo tôn giáo ở Massachusetts viết “It Came Upon a Midnight Clear”; còn “Jingle Bells” chỉ được nói là xuất hiện bảy năm sau, không nêu tác giả."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "observe",
+    "pos": "v",
+    "def": "to celebrate (a day or tradition)",
+    "vi": "cử hành, kỷ niệm (một ngày lễ)",
+    "ex": "Some observed Christmas as an important Christian religious day"
+   },
+   {
+    "w": "reinvent",
+    "pos": "v",
+    "def": "to change something so that it is like something new",
+    "vi": "làm mới lại",
+    "ex": "Americans began to reinvent the holiday."
+   },
+   {
+    "w": "festive",
+    "pos": "adj",
+    "def": "happy and enjoyable, like a celebration",
+    "vi": "mang không khí lễ hội",
+    "ex": "a festive and peaceful holiday"
+   },
+   {
+    "w": "unifying",
+    "pos": "adj",
+    "def": "bringing people together",
+    "vi": "có tính đoàn kết, gắn kết",
+    "ex": "such unifying Christmas traditions in modern America"
+   },
+   {
+    "w": "immigrant",
+    "pos": "n",
+    "def": "a person who comes to live in a new country",
+    "vi": "người nhập cư",
+    "ex": "Many immigrants brought Christmas traditions from their own countries."
+   },
+   {
+    "w": "ban",
+    "pos": "v",
+    "def": "to officially say that something is not allowed",
+    "vi": "cấm",
+    "ex": "Calvinist Christians banned the celebration of Christmas."
+   },
+   {
+    "w": "federal",
+    "pos": "adj",
+    "def": "of the central government of a country like the US",
+    "vi": "(thuộc) liên bang",
+    "ex": "President Ulysses Grant made Christmas a federal holiday"
+   },
+   {
+    "w": "patron saint",
+    "pos": "n",
+    "def": "a saint who is believed to protect a place or group",
+    "vi": "thánh bảo hộ",
+    "ex": "It lists Saint Nicholas as the patron saint of New Yorkers."
+   }
+  ],
+  "coll": [
+   {
+    "c": "play a big role in",
+    "vi": "đóng vai trò lớn trong",
+    "ex": "Religion played a big role in how an American might celebrate the holiday."
+   },
+   {
+    "c": "religious service",
+    "vi": "buổi lễ tôn giáo",
+    "ex": "honored the day with religious services and seasonal decorations"
+   },
+   {
+    "c": "state / federal holiday",
+    "vi": "ngày lễ của bang / quốc gia",
+    "ex": "some states declared the day a state holiday"
+   },
+   {
+    "c": "become popular",
+    "vi": "trở nên phổ biến",
+    "ex": "As Christmas became more popular"
+   },
+   {
+    "c": "shape … into …",
+    "vi": "biến … thành, định hình",
+    "ex": "Americans began to slowly shape Christmas into a unifying national holiday"
+   }
+  ],
+  "str": [
+   {
+    "s": "It was not until … that …",
+    "vi": "Mãi đến … thì …",
+    "ex": "It was not until 1870 that President Ulysses Grant made Christmas a federal holiday.",
+    "explain": "Câu nhấn mạnh thời điểm muộn: It was not until + mốc thời gian + that + mệnh đề."
+   },
+   {
+    "s": "More and more … began to …",
+    "vi": "Ngày càng nhiều … bắt đầu …",
+    "ex": "More and more Christian Americans also began to follow the European traditions of Christmas trees and giving gifts.",
+    "explain": "More and more + danh từ: sự gia tăng liên tục."
+   },
+   {
+    "s": "believed to have lived",
+    "vi": "được cho là đã sống",
+    "ex": "a Christian holy person believed to have lived in the third century",
+    "explain": "Cấu trúc bị động với reporting verb: be believed to have + V3 (nói về sự việc trong quá khứ)."
+   },
+   {
+    "s": "as it would have been celebrated",
+    "vi": "như nó đã được tổ chức (giả định)",
+    "ex": "The landowner recreates a traditional Christmas as it would have been celebrated in the distant past.",
+    "explain": "would have + V3 trong mệnh đề as: cách tổ chức “có lẽ đã” diễn ra thế nào."
+   }
+  ]
+ }
+}

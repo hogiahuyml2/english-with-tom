@@ -1,0 +1,224 @@
+{
+ "id": "b2-thanksgiving",
+ "level": "B2",
+ "title": "Thanksgiving: An American Tradition",
+ "topic": "Culture & traditions",
+ "words": 570,
+ "minutes": 8,
+ "source": {
+  "name": "VOA Learning English — Thanksgiving: An American Tradition",
+  "url": "https://learningenglish.voanews.com/a/thanksgiving-american-tradition-2017/4117570.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "The American holiday of Thanksgiving is celebrated every year on the fourth Thursday in November. The holiday is during autumn -- the main season for harvesting crops. Thanksgiving is an autumn harvest festival like those found in many cultures around the world.",
+  "On this day, most Americans gather with friends and family. Many take time to think about what they are thankful for, cook up a storm , and eat.",
+  "The star of most Thanksgiving dinners is a roasted turkey. Turkeys are large birds native to North America.",
+  "The turkey is cooked in an oven for many hours, often with a mix of celery, bread, onions and spices inside the bird. This mix becomes stuffing -- another star of the Thanksgiving dinner table.",
+  "One of many side dishes. Families often make other foods like mashed potatoes, sweet potatoes, cranberry sauce and vegetable casseroles. A casserole is a dish that cooks slowly in an oven.",
+  "And do not forget about the gravy. This rich sauce is made from the fatty liquid that comes off the turkey as it cooks. People cover their turkey meat, stuffing and mashed potatoes with gravy.",
+  "The quintessential Thanksgiving dessert is pie. Pumpkin, cherry, apple or pecan pie are all great ways to finish off a Thanksgiving meal...if you are not too full of food by that point!",
+  "Some Americans must travel long distances to be with their families. In fact, the Sunday after Thanksgiving is the busiest travel day of the entire year. This is usually when people return home from family gatherings.",
+  "Not everyone can make the return home each Thanksgiving. So, young people living in cities away from their hometowns sometimes celebrate “Friendsgiving” -- a Thanksgiving meal with their friends instead of their family. They gather at someone’s apartment or house and have a “ potluck .” This is a meal where everyone who is invited brings food to share with others.",
+  "One tradition is the television broadcast of Macy’s Thanksgiving Day Parade. It takes place each year in New York City. Workers of the Macy’s store on Herald Square organized the first parade in 1924. Many of the workers were immigrants and wanted to hold a big parade like the ones in Europe. So, they dressed in costumes and borrowed some animals from the zoo. They also carried small balloons that floated just overhead.",
+  "Some start Thanksgiving Day early - and in a healthy way. So-called “Turkey Trot ” races take place in many towns and cities. These events involve runners dressing up in a Thanksgiving-related costume and running a short distance -- usually five kilometers.",
+  "Many Turkey Trots urge runners to bring canned food to donate to local food banks -- non-profit organizations that give food to poor people in a community.",
+  "Certainly, not everyone in America has an easy Thanksgiving. The United States is home to many poor and homeless people. Some cannot afford a Thanksgiving dinner. Others are without friends or families. Many religious and service organizations around the country try to fill these needs. Some provide community dinners at churches and other centers. Some groups also deliver Thanksgiving meals to people too sick or old to leave their homes.",
+  "The writer O. Henry called Thanksgiving the one holiday that is purely American. It is not linked to a religion or a certain group. Anyone in the United States on the fourth Thursday of November is welcome to celebrate Thanksgiving."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "When is Thanksgiving celebrated in the United States?",
+   "options": [
+    "On the first Monday in October",
+    "On the fourth Thursday in November",
+    "On December 25",
+    "On the last day of summer"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “celebrated every year on the fourth Thursday in November.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is usually the “star” of Thanksgiving dinners?",
+   "options": [
+    "A roasted turkey",
+    "A large cake",
+    "Rice and fish",
+    "Hot dogs"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “The star of most Thanksgiving dinners is a roasted turkey.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is stuffing?",
+   "options": [
+    "A kind of pie",
+    "A mix of celery, bread, onions and spices cooked inside the turkey",
+    "A sauce made from fruit",
+    "A drink"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: “a mix of celery, bread, onions and spices inside the bird. This mix becomes stuffing.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is “Friendsgiving”?",
+   "options": [
+    "A Thanksgiving meal with friends instead of family",
+    "A holiday in spring",
+    "A parade in New York",
+    "A cooking competition"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 9: “a Thanksgiving meal with their friends instead of their family.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why was the first Macy’s parade held in 1924?",
+   "options": [
+    "The workers were mostly immigrants who wanted a big parade like those in Europe",
+    "The government asked for it",
+    "There was a football game",
+    "It was the store’s birthday"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 10: “Many of the workers were immigrants and wanted to hold a big parade like the ones in Europe.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do runners do in “Turkey Trot” races?",
+   "options": [
+    "Run in costumes, usually for about five kilometers",
+    "Cook turkeys while running",
+    "Run for 24 hours",
+    "Race against turkeys"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 11: “runners dressing up in a Thanksgiving-related costume and running a short distance -- usually five kilometers.”"
+  },
+  {
+   "type": "tf",
+   "q": "The Sunday after Thanksgiving is the busiest travel day of the entire year in the United States.",
+   "answer": "T",
+   "explain": "Đoạn 8: nội dung này được nói trực tiếp."
+  },
+  {
+   "type": "tf",
+   "q": "Canadians celebrate Thanksgiving on the same day as Americans.",
+   "answer": "NG",
+   "explain": "Bài không nhắc đến Canada."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "harvest",
+    "pos": "n",
+    "def": "the time when crops are gathered from the fields",
+    "vi": "mùa thu hoạch",
+    "ex": "Thanksgiving is an autumn harvest festival"
+   },
+   {
+    "w": "gather",
+    "pos": "v",
+    "def": "to come together in one place",
+    "vi": "tụ họp",
+    "ex": "most Americans gather with friends and family"
+   },
+   {
+    "w": "roast",
+    "pos": "v",
+    "def": "to cook in an oven",
+    "vi": "nướng (lò)",
+    "ex": "The star of most Thanksgiving dinners is a roasted turkey."
+   },
+   {
+    "w": "side dish",
+    "pos": "n",
+    "def": "a small dish served with the main food",
+    "vi": "món ăn kèm",
+    "ex": "Families often make other foods"
+   },
+   {
+    "w": "gravy",
+    "pos": "n",
+    "def": "a sauce made from the juices of cooked meat",
+    "vi": "nước sốt (từ nước thịt)",
+    "ex": "And do not forget about the gravy."
+   },
+   {
+    "w": "potluck",
+    "pos": "n",
+    "def": "a meal where everyone brings food to share",
+    "vi": "bữa tiệc mỗi người mang một món",
+    "ex": "This is a meal where everyone who is invited brings food to share with others."
+   },
+   {
+    "w": "parade",
+    "pos": "n",
+    "def": "a public celebration where people walk or ride through the streets",
+    "vi": "cuộc diễu hành",
+    "ex": "the television broadcast of Macy’s Thanksgiving Day Parade"
+   },
+   {
+    "w": "donate",
+    "pos": "v",
+    "def": "to give something to help others",
+    "vi": "quyên góp, hiến tặng",
+    "ex": "Many Turkey Trots urge runners to bring canned food to donate to local food banks"
+   }
+  ],
+  "coll": [
+   {
+    "c": "cook up a storm",
+    "vi": "nấu nướng thật nhiều, thật hăng say",
+    "ex": "Many take time to think about what they are thankful for, cook up a storm , and eat."
+   },
+   {
+    "c": "side dish",
+    "vi": "món ăn kèm",
+    "ex": "One of many side dishes."
+   },
+   {
+    "c": "gather with friends and family",
+    "vi": "tụ họp với bạn bè và gia đình",
+    "ex": "most Americans gather with friends and family"
+   },
+   {
+    "c": "take place",
+    "vi": "diễn ra",
+    "ex": "It takes place each year in New York City."
+   },
+   {
+    "c": "food bank",
+    "vi": "ngân hàng thực phẩm",
+    "ex": "local food banks -- non-profit organizations that give food to poor people in a community"
+   }
+  ],
+  "str": [
+   {
+    "s": "Not everyone … (partial negation)",
+    "vi": "Không phải ai cũng …",
+    "ex": "Not everyone in America has an easy Thanksgiving.",
+    "explain": "Not everyone / Not all: phủ định một phần, nghĩa là “có người không”."
+   },
+   {
+    "s": "wanted to + verb … like the ones in …",
+    "vi": "muốn làm gì giống như …",
+    "ex": "Many of the workers were immigrants and wanted to hold a big parade like the ones in Europe.",
+    "explain": "like + the ones: so sánh với những cái cùng loại (the ones = the parades)."
+   },
+   {
+    "s": "This is a meal where …",
+    "vi": "Đây là bữa ăn mà …",
+    "ex": "This is a meal where everyone who is invited brings food to share with others.",
+    "explain": "Mệnh đề quan hệ với where giải thích một danh từ chỉ nơi/tình huống."
+   }
+  ]
+ }
+}
