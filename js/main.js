@@ -206,7 +206,7 @@
   function classNudge() {
     var page = location.pathname.split('/').pop();
     if (page === 'login.html' || page === 'account.html' || page === 'placement.html' || page === 'forgot-password.html' || page === 'reset-password.html') return;
-    try { if (sessionStorage.getItem('ewtClassNudge')) return; } catch (e) {}
+    var mini = false; try { mini = sessionStorage.getItem('ewtClassNudge') === 'min'; } catch (e) {}
     if (document.getElementById('clsNudge')) return;
     var st = document.createElement('style');
     st.textContent =
@@ -230,7 +230,10 @@
       '#clsNudge .cn-free{flex:1 1 150px;border:1.5px dashed var(--border-strong,#c9c4ee);border-radius:12px;padding:9px 12px;font-weight:600;font-size:13px;color:var(--text-muted,#6B6880);background:transparent;cursor:pointer}' +
       '#clsNudge .cn-free:hover{border-color:var(--primary,#7B6EF6);color:var(--primary,#7B6EF6)}' +
       '#clsNudge.cn-bye{animation:clsOut .35s ease forwards}' +
-      '@media (prefers-reduced-motion:reduce){#clsNudge,#clsNudge:before,#clsNudge .cn-ico span{animation:none!important}}' +
+      '#clsPill{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:9990;display:flex;align-items:center;gap:8px;border:none;cursor:pointer;border-radius:99px;padding:11px 18px;font:700 14px inherit;font-family:inherit;color:#fff;background:var(--gradient,linear-gradient(135deg,#7B6EF6,#6FA8F5));animation:clsIn .6s cubic-bezier(.2,.9,.3,1.2) both,clsGlow 2.4s ease-in-out .8s infinite}' +
+      '#clsPill span{display:inline-block;animation:clsWave 2.4s ease-in-out 1s infinite;transform-origin:70% 70%}' +
+      '@media (max-width:520px){#clsPill{right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}}' +
+      '@media (prefers-reduced-motion:reduce){#clsNudge,#clsPill,#clsPill span,#clsNudge:before,#clsNudge .cn-ico span{animation:none!important}}' +
       '@media (max-width:520px){#clsNudge{right:16px;left:16px;width:auto}}';
     document.head.appendChild(st);
     var el = document.createElement('div');
@@ -240,11 +243,19 @@
       '<div class="cn-top"><div class="cn-ico"><span>👋</span></div><div><h4>Chào bạn, bạn học lớp nào nhỉ?</h4>' +
       '<p>Bạn chưa chọn lớp học. Hãy <b>chọn lớp của mình</b> hoặc xác nhận là <b>người dùng tự do</b> để nhận đúng bài tập phù hợp với chương trình đang học nhé!</p></div></div>' +
       '<div class="cn-act"><button class="cn-go">🏫 Chọn lớp ngay</button><button class="cn-free">🙋 Tôi là người dùng tự do</button></div>';
-    function bye(remember) {
-      if (remember) { try { sessionStorage.setItem('ewtClassNudge', '1'); } catch (e) {} }
-      el.classList.add('cn-bye'); setTimeout(function () { el.remove(); }, 380);
+    function showPill() {
+      try { sessionStorage.setItem('ewtClassNudge', 'min'); } catch (e) {}
+      if (document.getElementById('clsPill')) return;
+      var pl = document.createElement('button'); pl.id = 'clsPill'; pl.type = 'button'; pl.setAttribute('aria-label', 'Chọn lớp học của bạn');
+      pl.innerHTML = '<span>👋</span> Chọn lớp học của bạn';
+      pl.onclick = function () { location.href = 'account.html#classCard'; };
+      document.body.appendChild(pl);
     }
-    function go() { try { sessionStorage.setItem('ewtClassNudge', '1'); } catch (e) {} location.href = 'account.html#classCard'; }
+    function bye(toPill) {
+      el.classList.add('cn-bye');
+      setTimeout(function () { el.remove(); if (toPill) showPill(); }, 380);
+    }
+    function go() { location.href = 'account.html#classCard'; }
     el.addEventListener('click', function (e) {
       if (e.target.closest('.cn-x')) { e.stopPropagation(); bye(true); return; }
       if (e.target.closest('.cn-free')) {
@@ -260,7 +271,7 @@
       }
       go();
     });
-    setTimeout(function () { if (document.body) document.body.appendChild(el); }, 900);
+    setTimeout(function () { if (!document.body) return; if (mini) showPill(); else document.body.appendChild(el); }, 900);
   }
 
   function escNameT(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }

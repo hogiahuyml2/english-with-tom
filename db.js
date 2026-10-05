@@ -171,6 +171,7 @@ safeAlter('PRAGMA table_info(users)', [
   ['reset_code_hash',   'ALTER TABLE users ADD COLUMN reset_code_hash TEXT'],
   ['reset_code_expiry', 'ALTER TABLE users ADD COLUMN reset_code_expiry TEXT'],
   ['reset_code_tries',  'ALTER TABLE users ADD COLUMN reset_code_tries INTEGER NOT NULL DEFAULT 0'],
+  ['auto_remind',      'ALTER TABLE users ADD COLUMN auto_remind INTEGER NOT NULL DEFAULT 1'], // giáo viên: 1 = tự động nhắc học sinh về bài mình giao
   ['class_choice',      'ALTER TABLE users ADD COLUMN class_choice TEXT'], // NULL = chưa chọn · free = xác nhận tự do · class = đã chọn lớp
 ]);
 
@@ -244,6 +245,7 @@ safeAlter('PRAGMA table_info(group_members)', [
 safeAlter('PRAGMA table_info(assignments)', [
   ['group_id',      'ALTER TABLE assignments ADD COLUMN group_id INTEGER'],
   ['reminder_sent', 'ALTER TABLE assignments ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0'],
+  ['overdue_sent',  'ALTER TABLE assignments ADD COLUMN overdue_sent INTEGER NOT NULL DEFAULT 0'], // đã nhắc sau khi quá hạn
 ]);
 
 // Indexes — trong 1 try/catch, không critical nếu fail

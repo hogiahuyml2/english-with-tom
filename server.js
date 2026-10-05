@@ -1031,6 +1031,17 @@ function getAssignmentDeadline(exId, user) {
   const email = String(user.email || '').toLowerCase();
   return _assignmentDeadlines.get(exId + '|' + email) || null;
 }
+function deadlineMs(deadlineStr) {
+  if (!deadlineStr) return 0;
+  const hasZone = /[+-]\d{2}:?\d{2}$|Z$/i.test(deadlineStr);
+  const t = Date.parse(hasZone ? deadlineStr : String(deadlineStr).replace(' ', 'T') + '+07:00');
+  return isNaN(t) ? 0 : t;
+}
+// "2026-10-06T23:59" → "23:59 06/10/2026" (hạn nhập theo giờ Việt Nam, không đổi múi giờ)
+function fmtDeadlineVN(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/.exec(String(s || ''));
+  return m ? (m[4] ? m[4] + ':' + m[5] + ' ' : '') + m[3] + '/' + m[2] + '/' + m[1] : String(s || '');
+}
 function isPastDeadline(deadlineStr) {
   if (!deadlineStr) return false;
   // Giáo viên nhập deadline qua <input type="datetime-local"> trên trình duyệt ở Việt Nam
@@ -2575,54 +2586,73 @@ app.post('/api/messages/:userId', requireAuth, (req, res) => {
 });
 
 // ===================== NHẮC DEADLINE =====================
+// Tự động nhắc học sinh: (1) còn dưới 24 giờ là hết hạn mà chưa nộp; (2) đã quá hạn mà chưa nộp (trong 48 giờ đầu) — kèm tổng kết cho giáo viên.
+// Kênh: thông báo trong web (🔔) + thông báo đẩy (nếu học sinh đã bật) + email (nếu đã cấu hình). Mỗi bài chỉ nhắc 1 lần mỗi loại.
+let _autoRemindBusy = false;
 async function sendDeadlineReminders() {
-  if (!emailEnabled()) return;
-  const pending = db.prepare(`
-    SELECT a.id, a.student_email, a.deadline,
-           e.title, e.program, e.id AS exercise_id, e.skill,
-           u.id AS student_id, u.name AS student_name,
-           sub.id AS submission_id
-    FROM assignments a
-    JOIN exercises e ON e.id = a.exercise_id
-    LEFT JOIN users u ON u.email = a.student_email
-    LEFT JOIN submissions sub ON sub.exercise_id = a.exercise_id AND sub.user_id = u.id
-    WHERE a.deadline IS NOT NULL
-      AND a.reminder_sent = 0
-      AND datetime(a.deadline) > datetime('now')
-      AND datetime(a.deadline) <= datetime('now', '+24 hours')
-      AND sub.id IS NULL
-  `).all();
-
-  for (const row of pending) {
-    const name = row.student_name || row.student_email;
+  if (_autoRemindBusy) return { pre: 0, overdue: 0, skipped: 'busy' };
+  _autoRemindBusy = true;
+  const stat = { pre: 0, overdue: 0, teachers: 0 };
+  try {
+    const t0 = Date.now();
+    const rows = db.prepare(`
+      SELECT a.id, a.student_email, a.deadline, a.assigned_by, a.group_id, a.reminder_sent, a.overdue_sent,
+             e.title, e.program, e.id AS exercise_id, e.skill,
+             u.id AS student_id, u.name AS student_name, g.name AS group_name,
+             COALESCE(t.auto_remind, 1) AS auto_on
+      FROM assignments a
+      JOIN exercises e ON e.id = a.exercise_id
+      JOIN users u ON u.email = a.student_email
+      LEFT JOIN users t ON t.id = a.assigned_by
+      LEFT JOIN groups g ON g.id = a.group_id
+      WHERE a.deadline IS NOT NULL AND (a.reminder_sent = 0 OR a.overdue_sent = 0)
+        AND substr(a.deadline, 1, 10) >= date('now', '-4 days')
+        AND NOT EXISTS (SELECT 1 FROM submissions s WHERE s.user_id = u.id AND s.exercise_id = a.exercise_id)
+      LIMIT 3000`).all();
+    const digest = new Map(); // giáo viên|đề|lớp → danh sách học sinh quá hạn
     const assignLink = (process.env.BASE_URL || 'https://engwithtom.online') + '/assigned.html';
-    const dline = fmtDeadline(row.deadline);
-    await sendBrevoEmail(
-      { email: row.student_email, name },
-      `⏰ Nhắc nhở: Bài tập "${row.title}" sắp đến hạn — English With Tom`,
-      `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
-        <h2 style="color:#E57C2B">⏰ Nhắc nhở nộp bài</h2>
-        <p>Xin chào <b>${htmlEsc(name)}</b>,</p>
-        <p>Bài tập <b>${htmlEsc(row.title)}</b>${row.program ? ` (${htmlEsc(row.program)})` : ''} của bạn sẽ <b>hết hạn vào ${dline}</b>.</p>
-        <p>Bạn chưa nộp bài này. Hãy hoàn thành trước khi hết giờ nhé!</p>
-        <p style="margin:22px 0">
-          <a href="${assignLink}" style="display:inline-block;background:#E57C2B;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Nộp bài ngay</a>
-        </p>
-        <p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này (${htmlEsc(row.student_email)}) để xem bài được giao.</p>
-      </div>`
-    ).catch(() => {});
-    if (row.student_id) {
-      notifyUser(row.student_id, 'deadline_reminder', '⏰ Sắp hết hạn: ' + row.title, 'Hạn nộp ' + dline + ' — bạn chưa nộp bài.', practiceUrlFor(row.skill, row.exercise_id, true));
+    for (const r of rows) {
+      if (!r.auto_on) continue;
+      const d = deadlineMs(r.deadline); if (!d) continue;
+      const name = r.student_name || r.student_email, dline = fmtDeadlineVN(r.deadline);
+      const left = d - t0;
+      if (!r.reminder_sent && left > 0 && left <= 24 * 3600e3) {
+        db.prepare('UPDATE assignments SET reminder_sent=1 WHERE id=?').run(r.id);
+        const hrs = Math.max(1, Math.round(left / 3600e3));
+        notifyUser(r.student_id, 'deadline_reminder', '⏰ Còn khoảng ' + hrs + ' giờ: ' + r.title, 'Hạn nộp ' + dline + ' — bạn chưa nộp bài. Làm ngay nhé!', practiceUrlFor(r.skill, r.exercise_id, true));
+        stat.pre++;
+        if (emailEnabled()) await sendBrevoEmail({ email: r.student_email, name }, `⏰ Nhắc nhở: Bài tập "${r.title}" sắp đến hạn — English With Tom`,
+          `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7"><h2 style="color:#E57C2B">⏰ Nhắc nhở nộp bài</h2><p>Xin chào <b>${htmlEsc(name)}</b>,</p><p>Bài tập <b>${htmlEsc(r.title)}</b>${r.program ? ` (${htmlEsc(r.program)})` : ''} sẽ <b>hết hạn vào ${dline}</b> (còn khoảng ${hrs} giờ).</p><p>Bạn chưa nộp bài này. Hãy hoàn thành trước khi hết giờ nhé!</p><p style="margin:22px 0"><a href="${assignLink}" style="display:inline-block;background:#E57C2B;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Nộp bài ngay</a></p><p style="font-size:13px;color:#888">Đăng nhập bằng đúng email này (${htmlEsc(r.student_email)}) để xem bài được giao.</p></div>`).catch(() => {});
+      } else if (!r.overdue_sent && left <= 0) {
+        db.prepare('UPDATE assignments SET overdue_sent=1, reminder_sent=1 WHERE id=?').run(r.id);
+        if (-left > 48 * 3600e3) continue; // quá hạn đã lâu (vd. bài cũ lúc mới bật tính năng) thì không nhắc nữa
+        notifyUser(r.student_id, 'overdue_reminder', '⚠️ Đã quá hạn: ' + r.title, 'Hạn nộp là ' + dline + '. Bạn chưa nộp — hãy nhắn thầy/cô để xin thêm thời gian nếu cần nhé.', '/assigned.html');
+        stat.overdue++;
+        const key = r.assigned_by + '|' + r.exercise_id + '|' + (r.group_id || 0);
+        const o = digest.get(key) || { teacher: r.assigned_by, title: r.title, exercise_id: r.exercise_id, group: r.group_name, group_id: r.group_id, names: [] };
+        o.names.push(name); digest.set(key, o);
+        if (emailEnabled()) await sendBrevoEmail({ email: r.student_email, name }, `⚠️ Bài tập "${r.title}" đã quá hạn — English With Tom`,
+          `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7"><h2 style="color:#dc2626">⚠️ Bài tập đã quá hạn</h2><p>Xin chào <b>${htmlEsc(name)}</b>,</p><p>Bài tập <b>${htmlEsc(r.title)}</b> đã hết hạn nộp vào <b>${dline}</b> nhưng bạn chưa nộp.</p><p>Nếu bạn cần thêm thời gian, hãy nhắn cho thầy/cô để được hỗ trợ nhé.</p><p style="margin:22px 0"><a href="${assignLink}" style="display:inline-block;background:#7B6EF6;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem bài tập của tôi</a></p></div>`).catch(() => {});
+      }
     }
-    db.prepare('UPDATE assignments SET reminder_sent=1 WHERE id=?').run(row.id);
-    console.log(`📬 Nhắc deadline: ${row.student_email} — "${row.title}" (hạn ${dline})`);
-  }
+    for (const o of digest.values()) {
+      if (!o.teacher) continue;
+      notifyUser(o.teacher, 'overdue_digest', '📋 ' + o.names.length + ' học sinh chưa nộp “' + o.title + '”' + (o.group ? ' (lớp ' + o.group + ')' : '') + ' đã quá hạn',
+        o.names.slice(0, 5).join(', ') + (o.names.length > 5 ? '…' : '') + ' — đã tự động nhắc các em.', '/teacher-track.html?ex=' + o.exercise_id + (o.group_id ? '&class=' + o.group_id : '') + '&status=overdue');
+      stat.teachers++;
+    }
+    if (stat.pre || stat.overdue) console.log(`📬 Tự động nhắc: ${stat.pre} sắp hết hạn, ${stat.overdue} quá hạn, ${stat.teachers} tổng kết cho giáo viên`);
+  } finally { _autoRemindBusy = false; }
+  return stat;
 }
+app.post('/api/admin/auto-remind/run', requireRole('admin'), async (req, res) => {
+  try { res.json({ ok: true, ...(await sendDeadlineReminders()) }); } catch (e) { console.error('[auto-remind]', e.message); res.status(500).json({ error: 'Chạy nhắc thất bại.' }); }
+});
 
-// Chạy ngay sau khi server khởi động (trễ 30s) rồi mỗi giờ
+// Chạy ngay sau khi server khởi động (trễ 30s) rồi mỗi 15 phút
 setTimeout(() => {
   sendDeadlineReminders().catch(console.error);
-  setInterval(() => sendDeadlineReminders().catch(console.error), 60 * 60 * 1000);
+  setInterval(() => sendDeadlineReminders().catch(console.error), 15 * 60 * 1000); // mỗi 15 phút
 }, 30_000);
 
 // ===================== GÓC TỪ VỰNG (kho từ, ôn tập ngắt quãng, XP, chuỗi ngày, nhiệm vụ) =====================

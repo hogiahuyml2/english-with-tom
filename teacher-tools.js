@@ -72,7 +72,15 @@ module.exports = function (app, deps) {
       noClass = db.prepare(`SELECT COUNT(*) AS c FROM users WHERE role='student' AND (class_choice IS NULL OR class_choice='')
         AND NOT EXISTS (SELECT 1 FROM group_members gm WHERE gm.user_id = users.id)`).get().c;
     } catch (_) {}
-    res.json({ now: t0, grading, overdue, due_soon: dueSoon, requests: reqs, no_class: noClass });
+    let autoRemind = 1; try { autoRemind = db.prepare('SELECT auto_remind FROM users WHERE id=?').get(u.id).auto_remind; } catch (_) {}
+    res.json({ now: t0, grading, overdue, due_soon: dueSoon, requests: reqs, no_class: noClass, auto_remind: autoRemind ? 1 : 0 });
+  });
+
+  // Bật/tắt tự động nhắc học sinh về các bài MÌNH giao (trước hạn 24 giờ + sau khi quá hạn)
+  app.put('/api/teacher/auto-remind', T, (req, res) => {
+    const on = (req.body || {}).on ? 1 : 0;
+    db.prepare('UPDATE users SET auto_remind=? WHERE id=?').run(on, req.user.id);
+    res.json({ ok: true, auto_remind: on });
   });
 
   /* ───────────────────────── 2. DUYỆT HỌC SINH VÀO LỚP ───────────────────────── */
