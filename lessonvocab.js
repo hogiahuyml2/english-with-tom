@@ -797,4 +797,5 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
 
   return { parseWords, checkCard, buildQuestion, cleanCards, cleanQuestions, generateCards, generateQuestions, dictCheckCard, hasForm };
 };
+module.exports.readers = { xlsxToText, docxToText };
 module.exports.pure = { parseWords, checkCard, buildQuestion, hasForm, normStem, ipaNorm, lev, IPA_RE };

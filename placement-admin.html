@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=22">
+<link rel="stylesheet" href="css/style.css?v=23">
 <style>
 .pa-wrap{max-width:1180px;margin:0 auto;padding:0 16px 56px}
 .pa-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
@@ -41,7 +41,7 @@
 </section>
 <div class="pa-wrap" id="paRoot"><div class="pa-card">Đang tải...</div></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=28"></script>
+<script src="js/main.js?v=29"></script>
 <script>
 (function () {
 'use strict';
@@ -163,8 +163,9 @@ function openItem(id) {
 // ───────── Giao bài ─────────
 function renderAssign() {
   $('paBody').innerHTML = '<div class="pa-card"><h3 style="margin-bottom:8px">Mời học sinh làm Bài kiểm tra đầu vào</h3><p style="font-size:13.5px;color:var(--text-muted);margin-bottom:10px">Học sinh nhận thông báo (kèm đường dẫn) trên web. Mỗi học sinh làm 1 lần, chỉ làm lại sau 7 ngày (giáo viên có thể "Vô hiệu" lượt cũ để cho làm lại ngay).</p>' +
-    '<div class="pa-grid"><div><b style="font-size:13px">Chọn lớp</b><div id="aGr" style="max-height:200px;overflow:auto;border:1.5px solid var(--border);border-radius:10px;padding:6px 10px;margin-top:4px;font-size:13.5px">Đang tải...</div></div><div><b style="font-size:13px">Hoặc nhập email học sinh</b><textarea class="pa-in" id="aEm" rows="6" style="width:100%;margin-top:4px" placeholder="mỗi dòng một email"></textarea></div></div>' +
+    '<div class="pa-grid"><div><b style="font-size:13px">Chọn lớp</b><div id="aGr" style="max-height:200px;overflow:auto;border:1.5px solid var(--border);border-radius:10px;padding:6px 10px;margin-top:4px;font-size:13.5px">Đang tải...</div></div><div><b style="font-size:13px">Hoặc nhập email học sinh</b><div id="aKit"></div><textarea class="pa-in" id="aEm" rows="6" style="width:100%;margin-top:4px" placeholder="mỗi dòng một email"></textarea></div></div>' +
     '<label style="display:block;margin:10px 0"><input type="checkbox" id="aAll"> Gửi cho TẤT CẢ học sinh</label><button class="pa-btn" id="aSend">📨 Gửi lời mời</button><div id="aMsg"></div></div>';
+  window.ewtImportKit($('aKit'), { template: 'students', target: 'aEm', unit: ' email', append: true });
   api('GET', '/api/groups').then(function (r) { $('aGr').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label style="display:block;padding:3px 0"><input type="checkbox" class="aG" value="' + g.id + '"> ' + esc(g.name) + ' <span style="color:var(--text-muted);font-size:12px">(' + g.member_count + ' HS)</span></label>'; }).join('') : '<span style="color:var(--text-muted)">Chưa có lớp.</span>'; }).catch(function () { $('aGr').textContent = 'Không tải được lớp.'; });
   $('aSend').onclick = function () {
     var body = { group_ids: Array.prototype.map.call(document.querySelectorAll('.aG:checked'), function (c) { return +c.value; }), emails: $('aEm').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean), all_students: $('aAll').checked };

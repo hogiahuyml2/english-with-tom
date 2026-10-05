@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=22">
+<link rel="stylesheet" href="css/style.css?v=23">
 <style>
 .lv-wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
 .lv-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 16px; }
@@ -93,7 +93,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=28"></script>
+<script src="js/main.js?v=29"></script>
 <script>
 (function () {
 'use strict';
@@ -153,6 +153,7 @@ function viewCreate() {
     '<div class="lv-form"><label class="f">Tên bài học / bộ từ</label><input id="cTitle" maxlength="80" placeholder="VD: Unit 5 — Feelings & Plans">' +
     '<label class="f">📷 Nhập nhanh bằng ảnh hoặc file</label>' +
     '<div class="lv-drop" id="cDrop"><div style="font-size:30px;">📷 📄</div><b>Thả ảnh / file vào đây, hoặc bấm để chọn</b><div class="lv-sub" style="margin-top:4px;">Ảnh chụp danh sách từ (JPG, PNG), PDF, Word (.docx), Excel (.xlsx), CSV, TXT. Trên điện thoại: bấm để chụp ảnh trực tiếp.</div><input type="file" id="cFile" accept="image/*,.pdf,.docx,.xlsx,.csv,.tsv,.txt" hidden></div>' +
+    '<div class="ik"><a class="ik-btn" href="/api/templates/lesson-words.xlsx" download>⬇️ Tải file Excel mẫu (Từ | Loại từ)</a><span class="ik-msg">Điền theo mẫu rồi thả file vào khung trên.</span></div>' +
     '<label style="display:flex;gap:8px;align-items:center;margin:8px 0 0;font-size:13px;"><input type="checkbox" id="cAuto" checked style="width:auto;"> Tự tạo thẻ + 10 câu hỏi ngay sau khi đọc xong</label><div id="cImpMsg"></div>' +
     '<div class="lv-or">— hoặc gõ / dán trực tiếp —</div>' +
     '<label class="f">Danh sách từ (mỗi dòng một từ) — gồm <b>từ</b> và <b>từ loại</b></label>' +

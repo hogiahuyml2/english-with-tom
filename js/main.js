@@ -436,3 +436,30 @@
   s.async = true;
   document.head.appendChild(s);
 })();
+
+/* Bộ nhập liệu từ file: nút "Tải file mẫu" + "Nhập từ file" cho các ô nhập của giáo viên (xem templates.js) */
+window.ewtImportKit = function (mount, o) {
+  if (!mount) return null;
+  var val = function (v) { return typeof v === 'function' ? v() : v; };
+  mount.classList.add('ik');
+  mount.innerHTML = '<a class="ik-btn" download>⬇️ Tải file mẫu Excel</a><label class="ik-btn ik-up">📤 Nhập từ file<input type="file" hidden accept=".xlsx,.docx,.csv,.txt"></label><span class="ik-msg" role="status"></span>';
+  var a = mount.querySelector('a'), inp = mount.querySelector('input'), msg = mount.querySelector('.ik-msg');
+  function refresh() { a.setAttribute('href', '/api/templates/' + val(o.template) + '.xlsx'); a.setAttribute('download', ''); }
+  refresh();
+  function say(cls, t) { msg.className = 'ik-msg ' + cls; msg.textContent = t; }
+  inp.onchange = function () {
+    var f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
+    say('', '⏳ Đang đọc "' + f.name + '"…');
+    var fd = new FormData(); fd.append('file', f);
+    fetch('/api/import/parse?kind=' + encodeURIComponent(val(o.kind) || val(o.template)), { method: 'POST', credentials: 'same-origin', body: fd })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'Không đọc được file.'); return d; }); })
+      .then(function (d) {
+        var t = document.getElementById(o.target); if (!t) return;
+        t.value = (o.append && t.value.trim() ? t.value.replace(/\s+$/, '') + '\n' : '') + d.text;
+        t.dispatchEvent(new Event('input', { bubbles: true }));
+        say('ok', '✅ Đã đọc ' + d.count + (o.unit || ' dòng') + ' từ file — hãy xem lại trong ô bên cạnh rồi bấm nút lưu/nhập.');
+        if (o.onDone) o.onDone(d);
+      }).catch(function (e) { say('err', '⚠️ ' + e.message); });
+  };
+  return { refresh: refresh };
+};

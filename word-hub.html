@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=22">
+<link rel="stylesheet" href="css/style.css?v=23">
 <style>
 /* ═══════════ Góc Từ Vựng ═══════════ */
 .wh-wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
@@ -299,6 +299,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
         </div>
         <textarea id="tText" placeholder="Mỗi dòng một từ, ngăn cách bằng dấu |&#10;từ | loại từ | nghĩa tiếng Việt | câu ví dụ (chứa đúng từ đó) | dịch câu ví dụ&#10;&#10;VD:&#10;umbrella | n | cái ô | Take an umbrella because it may rain. | Hãy mang ô vì trời có thể mưa.&#10;sunny | adj | có nắng | It is sunny and warm today. | Hôm nay trời nắng và ấm."></textarea>
         <div class="wh-sub" style="margin:6px 0 10px;">💡 Có thể dán thẳng từ Excel/Google Sheets (các cột cách nhau bằng Tab). Từ đã có sẽ được cập nhật nghĩa/ví dụ, không bị nhân đôi. Câu ví dụ giúp game "Tình huống" tạo chỗ trống.</div>
+        <div id="tKit"></div>
         <button class="wh-cta" id="tImportBtn" style="padding:10px 20px;font-size:14px;">📥 Nhập vào kho từ</button>
         <div id="tMsg"></div>
       </div>
@@ -329,7 +330,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
 <div class="wh-ov" id="whOv"><div class="wh-modal" id="whModal"></div></div>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=28"></script>
+<script src="js/main.js?v=29"></script>
 <script>
 (function () {
 'use strict';
@@ -990,7 +991,9 @@ function initTeacher() {
     colloc: 'cụm từ | từ cần điền | nghĩa | câu ví dụ (chứa đúng cụm) | dịch | nhiễu1,nhiễu2,nhiễu3 (không bắt buộc)\n\nVD:\nmake a decision | make | đưa ra quyết định | She needs to make a decision by Friday. | Cô ấy cần đưa ra quyết định trước thứ Sáu. | do,give,get',
     upgrade: 'từ mạnh | từ cơ bản | nghĩa | câu dùng từ mạnh | dịch | câu dùng từ cơ bản\n\nVD:\nsignificant | big | đáng kể | There was a significant increase in sales. | Doanh số đã tăng đáng kể. | There was a big increase in sales.'
   };
-  $('tKind').onchange = function () { $('tText').placeholder = PH[$('tKind').value]; };
+  var TPL = { word: 'vocab-word', colloc: 'vocab-colloc', upgrade: 'vocab-upgrade' };
+  var kit = window.ewtImportKit($('tKit'), { template: function () { return TPL[$('tKind').value] || 'vocab-word'; }, target: 'tText', unit: ' dòng' });
+  $('tKind').onchange = function () { $('tText').placeholder = PH[$('tKind').value]; if (kit) kit.refresh(); };
   $('tText').placeholder = PH.word;
   $('tImportBtn').onclick = function () {
     var btn = $('tImportBtn'); btn.disabled = true;
@@ -1162,9 +1165,10 @@ function initDlgTab() {
     el.setAttribute('data-init', '1');
     el.innerHTML = '<div class="wh-t-row"><select id="dLevel"><option>KET</option><option>PET</option><option>FCE</option><option>IELTS</option></select><input id="dTitle" placeholder="Tên hội thoại (VD: Đặt phòng khách sạn)" maxlength="80"></div>' +
       '<input id="dScene" placeholder="Bối cảnh (VD: Bạn gọi điện đặt phòng)" maxlength="120" style="margin-bottom:10px;">' +
-      '<textarea id="dScript" style="min-height:190px;" placeholder="Mỗi dòng một lượt nói:  Tên: câu thoại có {đáp án đúng|nhiễu 1|nhiễu 2} || bản dịch\n(đáp án ĐÚNG luôn đứng đầu trong dấu { }, hệ thống tự xáo trộn khi hiển thị)\n\nVD:\nGuest: I would like to {book|cook|look} a room for two nights. || Tôi muốn đặt một phòng hai đêm.\nReceptionist: Certainly. May I have your {name|game|came}? || Vâng ạ. Cho tôi xin tên của bạn?\nGuest: It is Linh. Is {breakfast|breakdown|bridge} included? || Tên tôi là Linh. Có gồm bữa sáng không?"></textarea>' +
+      '<div id="dKit"></div><textarea id="dScript" style="min-height:190px;" placeholder="Mỗi dòng một lượt nói:  Tên: câu thoại có {đáp án đúng|nhiễu 1|nhiễu 2} || bản dịch\n(đáp án ĐÚNG luôn đứng đầu trong dấu { }, hệ thống tự xáo trộn khi hiển thị)\n\nVD:\nGuest: I would like to {book|cook|look} a room for two nights. || Tôi muốn đặt một phòng hai đêm.\nReceptionist: Certainly. May I have your {name|game|came}? || Vâng ạ. Cho tôi xin tên của bạn?\nGuest: It is Linh. Is {breakfast|breakdown|bridge} included? || Tên tôi là Linh. Có gồm bữa sáng không?"></textarea>' +
       '<div class="wh-sub" style="margin:6px 0 10px;">Cần 3–16 dòng, 2–12 chỗ trống, mỗi chỗ trống 2–5 lựa chọn. Lưu cùng tên + cấp độ sẽ cập nhật hội thoại cũ.</div>' +
       '<button class="wh-cta" id="dGo" style="padding:10px 20px;font-size:14px;">💾 Lưu hội thoại</button><div id="dMsg"></div><div class="wh-title" style="margin-top:20px;">Hội thoại hiện có</div><div id="dList"></div>';
+    window.ewtImportKit($('dKit'), { template: 'dialogue', target: 'dScript' });
     $('dGo').onclick = function () {
       var btn = $('dGo'); btn.disabled = true;
       api('POST', '/api/word-dialogues', { level: $('dLevel').value, title: $('dTitle').value, scene: $('dScene').value, script: $('dScript').value }).then(function (r) {
@@ -1195,12 +1199,13 @@ function initSetsTab() {
       '<div class="ws-pick" id="sPick"></div><div class="wh-sub" id="sCount"></div>' +
       '<div class="wh-t-row" style="margin-top:10px;"><div><div class="wh-sub">Hạn học (tuỳ chọn)</div><input type="datetime-local" id="sDeadline"></div><div><div class="wh-sub">Ghi chú cho học sinh (tuỳ chọn)</div><input id="sNote" maxlength="300" placeholder="VD: Học trước thứ Sáu nhé"></div></div>' +
       '<div class="wh-sub" style="margin-top:6px;">Giao cho:</div><div class="ws-pick" id="sGroups" style="max-height:130px;">Đang tải danh sách lớp...</div>' +
-      '<textarea id="sEmails" style="min-height:60px;" placeholder="Hoặc nhập email học sinh (mỗi dòng/dấu phẩy một email)"></textarea>' +
+      '<div id="sKit"></div><textarea id="sEmails" style="min-height:60px;" placeholder="Hoặc nhập email học sinh (mỗi dòng/dấu phẩy một email)"></textarea>' +
       '<label style="display:flex;gap:8px;align-items:center;margin:8px 0;font-size:13px;"><input type="checkbox" id="sAll" style="width:auto;"> Giao cho TẤT CẢ học sinh trên website</label>' +
       '<button class="wh-cta" id="sGo" style="padding:10px 20px;font-size:14px;">📨 Giao bộ từ</button><div id="sMsg"></div>' +
       '<div class="wh-title" style="margin-top:22px;">Bộ từ đã giao</div><div id="sList"><div class="wh-sub">Đang tải...</div></div>';
     ['sLevel', 'sKind'].forEach(function (id) { $(id).onchange = refreshPick; });
     $('sTopic').onchange = refreshPick;
+    window.ewtImportKit($('sKit'), { template: 'students', target: 'sEmails', unit: ' email', append: true });
     $('sGo').onclick = submitSet;
     api('GET', '/api/groups').then(function (r) {
       $('sGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="sGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="wh-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="wh-sub">Chưa có lớp nào — hãy nhập email học sinh bên dưới.</div>';
