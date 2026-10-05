@@ -97,7 +97,7 @@
    "type": "tf",
    "q": "Wendy Wood has written more than one book about habits.",
    "answer": "NG",
-   "explain": "Bài chỉ nhắc đến một cuốn sách của Wood (Good Habits, Bad Habits); không nói bà viết thêm cuốn nào khác."
+   "explain": "Bài đưa ra tên cuốn sách của James Clear nhưng không nói gì về việc bà Wendy Wood đã viết bao nhiêu cuốn sách."
   }
  ],
  "notes": {

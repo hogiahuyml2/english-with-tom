@@ -101,7 +101,7 @@
   },
   {
    "type": "tf",
-   "q": "According to Gigerenzer, there is clear evidence that human behaviour is severely biased.",
+   "q": "The text says there is clear evidence that human behaviors are genuinely, severely biased.",
    "answer": "F",
    "explain": "Đoạn 6: “There is not clear evidence that these behaviors are genuinely, severely biased”."
   }

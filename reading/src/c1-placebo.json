@@ -100,9 +100,9 @@
   },
   {
    "type": "tf",
-   "q": "Sugar pills are the most commonly used placebo in clinical trials.",
-   "answer": "NG",
-   "explain": "Bài chỉ nêu viên đường là một ví dụ (“Common placebos include inert tablets (like sugar pills)”), không nói đó là loại dùng nhiều nhất."
+   "q": "The text says that placebos can only be given as tablets.",
+   "answer": "F",
+   "explain": "Đoạn 1: “Common placebos include inert tablets (like sugar pills), inert injections (like saline), sham surgery, and other procedures.”"
   }
  ],
  "notes": {

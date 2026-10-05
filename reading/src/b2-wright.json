@@ -107,9 +107,9 @@
   },
   {
    "type": "tf",
-   "q": "Wilbur Wright was older than Orville Wright.",
+   "q": "Orville Wright was born in Dayton, Ohio.",
    "answer": "T",
-   "explain": "Đoạn 2: Wilbur sinh năm 1867, còn Orville sinh “four years later”."
+   "explain": "Đoạn 2: “His brother Orville was born four years later in Dayton, Ohio.”"
   }
  ],
  "notes": {

@@ -97,9 +97,9 @@
   },
   {
    "type": "tf",
-   "q": "The text says Jackson Pollock was born in the United States.",
+   "q": "Jackson Pollock painted for more than twenty years.",
    "answer": "NG",
-   "explain": "Bài không nói gì về nơi sinh của Pollock."
+   "explain": "Bài chỉ nhắc đến tranh của Pollock trong một đoạn hội thoại ví dụ; không nói gì về thời gian ông vẽ."
   }
  ],
  "notes": {

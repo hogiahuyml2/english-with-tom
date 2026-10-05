@@ -107,9 +107,9 @@
   },
   {
    "type": "tf",
-   "q": "The song “Jingle Bells” was written by a religious leader from Massachusetts.",
+   "q": "The Sketchbook of Geoffrey Crayon, Gent. sold more than a million copies.",
    "answer": "NG",
-   "explain": "Bài nói một nhà lãnh đạo tôn giáo ở Massachusetts viết “It Came Upon a Midnight Clear”; còn “Jingle Bells” chỉ được nói là xuất hiện bảy năm sau, không nêu tác giả."
+   "explain": "Bài chỉ nói Washington Irving viết một loạt 5 bài tiểu luận trong cuốn sách này; không nhắc đến số lượng bán ra."
   }
  ],
  "notes": {

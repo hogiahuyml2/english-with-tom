@@ -100,9 +100,9 @@
   },
   {
    "type": "tf",
-   "q": "The text says that sleep disorders affect only older people.",
+   "q": "Insomnia is the most common sleep disorder.",
    "answer": "NG",
-   "explain": "Bài chỉ nêu con người “may suffer from various sleep disorders”, không nói về độ tuổi."
+   "explain": "Bài chỉ nêu insomnia là một trong nhiều rối loạn giấc ngủ (“various sleep disorders, including … insomnia”); không nói rối loạn nào phổ biến nhất."
   }
  ],
  "notes": {

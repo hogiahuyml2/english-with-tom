@@ -74,9 +74,9 @@
   },
   {
    "type": "tf",
-   "q": "Camping in winter is more common than camping in summer.",
+   "q": "Camping usually takes place in winter.",
    "answer": "F",
-   "explain": "Đoạn 1: “Winter camping is less common”."
+   "explain": "Đoạn 1: camping thường diễn ra “usually during summer when school children are on holiday”. Cắm trại mùa đông chỉ là “less common”."
   }
  ],
  "notes": {

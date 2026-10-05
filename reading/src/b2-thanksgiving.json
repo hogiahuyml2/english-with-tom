@@ -109,9 +109,9 @@
   },
   {
    "type": "tf",
-   "q": "Canadians celebrate Thanksgiving on the same day as Americans.",
+   "q": "Most Americans travel by plane to visit their families at Thanksgiving.",
    "answer": "NG",
-   "explain": "Bài không nhắc đến Canada."
+   "explain": "Bài chỉ nói một số người Mỹ phải đi xa để về với gia đình; không nói họ dùng phương tiện gì."
   }
  ],
  "notes": {
