@@ -979,7 +979,7 @@ async function loadProgress() {
     fetch('/api/me/classes',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if (!d || !d.open.length || (d.choice === 'free' && !d.mine.length)) return; var cb = document.getElementById('clBanner'); var mine = d.mine[0];
       cb.className = 'note'; cb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;background:var(--success-soft);border-color:transparent;color:var(--text)';
-      cb.innerHTML = mine ? '<span>🏫 Lớp của bạn: <b>' + mine.name.replace(/[<>&]/g,'') + '</b> — bài tập giáo viên giao cho lớp sẽ hiện ở “Bài tập được giao”.</span><a class="btn btn-sm" href="account.html">Đổi lớp</a>'
+      cb.innerHTML = (!mine && d.pending) ? '<span>⏳ Yêu cầu vào lớp <b>' + d.pending.name.replace(/[<>&]/g,'') + '</b> đang chờ giáo viên duyệt.</span><a class="btn btn-sm" href="account.html#classCard">Xem</a>' : mine ? '<span>🏫 Lớp của bạn: <b>' + mine.name.replace(/[<>&]/g,'') + '</b> — bài tập giáo viên giao cho lớp sẽ hiện ở “Bài tập được giao”.</span><a class="btn btn-sm" href="account.html">Đổi lớp</a>'
         : '<span>🏫 Bạn học lớp nào của thầy/cô? Chọn lớp để nhận bài tập theo lớp (bỏ qua nếu bạn tự học).</span><a class="btn btn-sm btn-primary" href="account.html">Chọn lớp</a>';
     }).catch(function(){});
     fetch('/api/placement/status',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(st){

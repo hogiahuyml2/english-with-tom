@@ -397,7 +397,8 @@ app.get('/api/me', (req, res) => {
   try {
     if (u && u.role === 'student') {
       const ch = db.prepare('SELECT class_choice FROM users WHERE id=?').get(u.id);
-      if (!ch || !ch.class_choice) nudge = !db.prepare('SELECT 1 FROM group_members WHERE user_id=? LIMIT 1').get(u.id)
+      const stillPending = ch && ch.class_choice === 'pending' && db.prepare('SELECT 1 FROM group_join_requests WHERE user_id=?').get(u.id);
+      if (!ch || !ch.class_choice || (ch.class_choice === 'pending' && !stillPending)) nudge = !db.prepare('SELECT 1 FROM group_members WHERE user_id=? LIMIT 1').get(u.id)
         && !!db.prepare('SELECT 1 FROM groups WHERE self_join=1 LIMIT 1').get();
     }
   } catch (_) {}
@@ -1991,9 +1992,10 @@ app.get('/api/groups', requireRole('teacher','admin'), (req, res) => {
     SELECT g.id, g.name, g.created_at, g.teacher_id,
       u.name AS teacher_name,
       COUNT(CASE WHEN gm.user_id IS NOT NULL THEN 1 END) AS member_count,
-      COUNT(CASE WHEN gm.user_id IS NULL THEN 1 END) AS pending_count,
+      COUNT(CASE WHEN gm.id IS NOT NULL AND gm.user_id IS NULL THEN 1 END) AS pending_count,
       COUNT(CASE WHEN gm.source = 'self' THEN 1 END) AS self_count,
-      g.self_join AS self_join
+      g.self_join AS self_join, g.needs_approval AS needs_approval,
+      (SELECT COUNT(*) FROM group_join_requests r WHERE r.group_id=g.id) AS request_count
     FROM groups g
     LEFT JOIN users u ON u.id = g.teacher_id
     LEFT JOIN group_members gm ON gm.group_id = g.id
@@ -2025,6 +2027,7 @@ app.delete('/api/groups/:id', requireRole('teacher','admin'), (req, res) => {
   if (!grpCheck) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   if (req.user.role !== 'admin' && grpCheck.teacher_id !== req.user.id)
     return res.status(403).json({ error: 'Chỉ giáo viên tạo lớp hoặc quản trị viên mới có thể xoá lớp.' });
+  db.prepare('DELETE FROM group_join_requests WHERE group_id=?').run(Number(req.params.id));
   const r = db.prepare('DELETE FROM groups WHERE id=?').run(Number(req.params.id));
   if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   res.json({ ok: true });
@@ -2104,14 +2107,15 @@ app.put('/api/groups/:id/selfjoin', requireRole('teacher','admin'), (req, res) =
   res.json({ ok: true, self_join: (req.body || {}).on ? 1 : 0 });
 });
 function openClasses() {
-  return db.prepare(`SELECT g.id, g.name, u.name AS teacher_name,
+  return db.prepare(`SELECT g.id, g.name, g.needs_approval, u.name AS teacher_name,
       (SELECT COUNT(*) FROM group_members m WHERE m.group_id=g.id AND m.user_id IS NOT NULL) AS member_count
     FROM groups g LEFT JOIN users u ON u.id=g.teacher_id WHERE g.self_join=1 ORDER BY g.name COLLATE NOCASE`).all();
 }
 app.get('/api/me/classes', requireAuth, (req, res) => {
   const mine = db.prepare('SELECT g.id, g.name, gm.source FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.user_id=? ORDER BY g.name').all(req.user.id);
   const ch = db.prepare('SELECT class_choice FROM users WHERE id=?').get(req.user.id);
-  res.json({ open: openClasses(), mine, can_choose: req.user.role === 'student', choice: (ch && ch.class_choice) || null });
+  const pend = db.prepare('SELECT g.id, g.name FROM group_join_requests r JOIN groups g ON g.id=r.group_id WHERE r.user_id=?').get(req.user.id) || null;
+  res.json({ open: openClasses(), mine, pending: pend, can_choose: req.user.role === 'student', choice: (ch && ch.class_choice) || null });
 });
 // Giao lại cho học sinh mới vào lớp các bài đã giao cho lớp (còn hạn hoặc không có hạn)
 function backfillGroupAssignments(user, groupId, groupName) {
@@ -2132,29 +2136,45 @@ function backfillGroupAssignments(user, groupId, groupName) {
   if (n) notifyUser(user.id, 'assignment_created', '📝 Bạn có ' + n + ' bài tập của lớp ' + groupName, titles.slice(0, 3).join(' · ') + (n > 3 ? '…' : ''), '/assigned.html');
   return n;
 }
+// Đưa học sinh vào lớp (nguồn 'self'): bỏ lớp tự chọn cũ, thêm thành viên, gộp lời mời theo email, giao lại bài còn hạn. Gọi bên trong BEGIN/COMMIT.
+function applySelfJoin(user, g) {
+  db.prepare("DELETE FROM group_members WHERE user_id=? AND source='self' AND group_id<>?").run(user.id, g.id);
+  if (!db.prepare('SELECT id FROM group_members WHERE group_id=? AND user_id=?').get(g.id, user.id))
+    db.prepare("INSERT INTO group_members (group_id,user_id,added_at,source) VALUES (?,?,?,'self')").run(g.id, user.id, now());
+  db.prepare('DELETE FROM group_members WHERE group_id=? AND user_id IS NULL AND invited_email=?').run(g.id, user.email);
+  db.prepare('DELETE FROM group_join_requests WHERE user_id=?').run(user.id);
+  db.prepare("UPDATE users SET class_choice='class' WHERE id=?").run(user.id);
+  return backfillGroupAssignments(user, g.id, g.name);
+}
 app.put('/api/me/class', requireAuth, (req, res) => {
   if (req.user.role !== 'student') return res.status(403).json({ error: 'Chỉ học sinh mới chọn lớp theo học.' });
   const gid = (req.body || {}).group_id ? Number((req.body || {}).group_id) : null;
   try {
     db.exec('BEGIN');
-    // bỏ các lớp đã tự chọn trước đó (mỗi học sinh chỉ tự chọn 1 lớp; lớp do giáo viên thêm tay được giữ nguyên)
-    db.prepare("DELETE FROM group_members WHERE user_id=? AND source='self' AND group_id<>?").run(req.user.id, gid || -1);
-    let name = null, backfilled = 0;
+    let name = null, backfilled = 0, pending = false;
     if (gid) {
-      const g = db.prepare('SELECT id,name,self_join FROM groups WHERE id=?').get(gid);
+      const g = db.prepare('SELECT id,name,self_join,needs_approval,teacher_id FROM groups WHERE id=?').get(gid);
       if (!g || !g.self_join) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Lớp này không mở cho học sinh tự chọn.' }); }
       name = g.name;
-      if (!db.prepare('SELECT id FROM group_members WHERE group_id=? AND user_id=?').get(gid, req.user.id))
-        db.prepare("INSERT INTO group_members (group_id,user_id,added_at,source) VALUES (?,?,?,'self')").run(gid, req.user.id, now());
-      // lời mời theo email (nếu giáo viên đã mời trước) thì gộp luôn
-      db.prepare('DELETE FROM group_members WHERE group_id=? AND user_id IS NULL AND invited_email=?').run(gid, req.user.email);
-      backfilled = backfillGroupAssignments(req.user, gid, name);
+      const already = db.prepare('SELECT id FROM group_members WHERE group_id=? AND user_id=?').get(gid, req.user.id);
+      if (g.needs_approval && !already) {
+        // lớp cần giáo viên duyệt: chỉ gửi yêu cầu, chưa vào lớp (mỗi học sinh chỉ có 1 yêu cầu đang chờ)
+        db.prepare('DELETE FROM group_join_requests WHERE user_id=?').run(req.user.id);
+        db.prepare('INSERT INTO group_join_requests (group_id,user_id,created_at) VALUES (?,?,?)').run(gid, req.user.id, now());
+        db.prepare("UPDATE users SET class_choice='pending' WHERE id=?").run(req.user.id);
+        pending = true;
+        notifyUser(g.teacher_id, 'class_request', '🙋 ' + req.user.name + ' xin vào lớp ' + g.name, 'Bấm để duyệt trong "Việc cần làm hôm nay".', '/teacher.html');
+      } else backfilled = applySelfJoin(req.user, g);
+    } else {
+      db.prepare("DELETE FROM group_members WHERE user_id=? AND source='self'").run(req.user.id);
+      db.prepare('DELETE FROM group_join_requests WHERE user_id=?').run(req.user.id);
+      db.prepare("UPDATE users SET class_choice='free' WHERE id=?").run(req.user.id);
     }
-    db.prepare('UPDATE users SET class_choice=? WHERE id=?').run(gid ? 'class' : 'free', req.user.id);
     db.exec('COMMIT');
-    res.json({ ok: true, class: name, backfilled });
+    res.json({ ok: true, class: name, backfilled, pending });
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
 });
+require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin });
 
 // ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────
 app.get('/api/teacher/tracker', requireRole('teacher','admin'), (req, res) => {

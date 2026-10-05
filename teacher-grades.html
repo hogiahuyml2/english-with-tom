@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sổ điểm lớp — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=23">
+<style>
+.gb-wrap { max-width: 1400px; margin: 0 auto; padding: 14px 18px 70px; }
+.gb-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .gb-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.gb-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .gb-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .gb-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; } .gb-btn:disabled { opacity: .5; cursor: not-allowed; }
+.gb-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.gb-sel, .gb-in { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; } .gb-sel:focus, .gb-in:focus { outline: none; border-color: var(--primary); }
+.gb-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.gb-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; } .gb-card b { display: block; font-size: 26px; line-height: 1.1; } .gb-card span { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+.gb-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.gb-chip { padding: 5px 11px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 600 12.5px inherit; font-family: inherit; cursor: pointer; } .gb-chip:hover { border-color: var(--primary); } .gb-chip.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.gb-scroll { overflow: auto; max-height: 74vh; border: 1px solid var(--border); border-radius: 12px; }
+table.gb { border-collapse: separate; border-spacing: 0; font-size: 13px; min-width: 100%; }
+table.gb th, table.gb td { padding: 7px 9px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); text-align: center; background: var(--surface); white-space: nowrap; }
+table.gb thead th { position: sticky; top: 0; z-index: 3; background: var(--bg-soft); font-size: 12px; color: var(--text-muted); vertical-align: bottom; height: 96px; min-width: 74px; max-width: 96px; }
+table.gb thead th .ex { display: block; white-space: normal; line-height: 1.25; max-height: 62px; overflow: hidden; font-weight: 700; color: var(--text); } table.gb thead th small { display: block; font-weight: 500; margin-top: 3px; }
+table.gb .sticky { position: sticky; left: 0; z-index: 2; text-align: left; min-width: 190px; max-width: 230px; background: var(--surface); box-shadow: 2px 0 0 var(--border); } table.gb thead th.sticky { z-index: 4; background: var(--bg-soft); }
+table.gb th.sort { cursor: pointer; } table.gb th.sort:hover { color: var(--primary); }
+table.gb td.avg { font-weight: 800; background: var(--bg-soft); } table.gb tr.foot td { font-weight: 800; background: var(--primary-soft); position: sticky; bottom: 0; z-index: 2; }
+table.gb tr:hover td:not(.avg) { filter: brightness(.97); }
+.gb-hi { background: #d1fae5 !important; color: #065f46; font-weight: 800; } .gb-mid { background: #fef3c7 !important; color: #92400e; font-weight: 800; } .gb-lo { background: #fee2e2 !important; color: #991b1b; font-weight: 800; }
+.gb-pend { background: var(--warning-soft) !important; color: #b45309; font-weight: 700; font-size: 12px; } .gb-none { color: #dc2626; font-size: 12px; background: rgba(239,68,68,.06) !important; } .gb-na { color: var(--text-faint); background: var(--bg-soft) !important; }
+.gb-cell { display: block; text-decoration: none; color: inherit; } .gb-late:after { content: " ⏰"; font-size: 10px; }
+.gb-name a { color: inherit; text-decoration: none; font-weight: 700; } .gb-name a:hover { color: var(--primary); } .gb-name small { display: block; color: var(--text-faint); font-weight: 500; }
+.gb-legend { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--text-muted); margin-top: 8px; } .gb-legend i { display: inline-block; padding: 1px 8px; border-radius: 6px; font-style: normal; font-weight: 700; }
+.gb-empty { text-align: center; color: var(--text-muted); padding: 40px 10px; }
+.gb-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; } .gb-toast.on { opacity: 1; }
+@media print { #site-header, #site-footer, .gb-top .gb-btn, .gb-tools, .gb-toast { display: none !important; } .gb-scroll { max-height: none; overflow: visible; } }
+</style>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="gb-wrap">
+  <div class="gb-top">
+    <h1>📒 Sổ điểm lớp</h1>
+    <select class="gb-sel" id="clsSel" aria-label="Chọn lớp"></select>
+    <button class="gb-btn pri" id="btnXlsx" disabled>⬇️ Xuất Excel lớp này</button>
+    <button class="gb-btn" id="btnAll" title="Mỗi lớp một trang tính trong cùng một file Excel">⬇️ Xuất tất cả lớp (1 file)</button>
+    <a class="gb-btn" href="teacher-track.html">📊 Theo dõi &amp; lọc</a>
+    <a class="gb-btn" href="teacher.html">← Khu vực giáo viên</a>
+  </div>
+  <div class="gb-cards" id="cards"></div>
+  <div class="gb-box">
+    <div class="gb-tools">
+      <input class="gb-in" id="q" placeholder="🔍 Tìm học sinh…" style="min-width:200px">
+      <button class="gb-chip" data-f="weak">🔴 TB dưới 50%</button>
+      <button class="gb-chip" data-f="missing">❌ Còn bài chưa nộp</button>
+      <button class="gb-chip" data-f="pend">⏳ Có bài chờ chấm</button>
+      <span style="flex:1"></span>
+      <span style="font-size:12.5px;color:var(--text-muted)">Bấm tên cột “Học sinh” hoặc “TB” để sắp xếp · bấm vào ô điểm để mở bài chấm</span>
+    </div>
+    <div class="gb-scroll"><table class="gb"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+    <div class="gb-legend"><span>Chú thích:</span><i class="gb-hi">≥ 80%</i><i class="gb-mid">50–79%</i><i class="gb-lo">&lt; 50%</i><i class="gb-pend">Chờ chấm</i><i class="gb-none">Chưa nộp</i><i class="gb-na">Không được giao</i><span>⏰ = nộp muộn · điểm tính theo % mỗi bài, TB chỉ tính bài đã chấm</span></div>
+  </div>
+</main>
+<div class="gb-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=30"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd'); }
+var tt; function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 2400); }
+var GB = null, GROUPS = [], CUR = 0, SORT = { k: 'name', d: 1 }, FL = {};
+function cls(p) { return p >= 80 ? 'gb-hi' : p >= 50 ? 'gb-mid' : 'gb-lo'; }
+
+function loadGroups() {
+  return fetch('/api/teacher/gradebook', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+    GROUPS = d.groups || [];
+    $('clsSel').innerHTML = GROUPS.length ? GROUPS.map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join('') : '<option value="">(chưa có lớp)</option>';
+    if (!GROUPS.length) { $('tbody').innerHTML = '<tr><td class="gb-empty">Bạn chưa có lớp nào. Vào Khu vực giáo viên → Lớp học → “⚡ Tạo nhanh” để tạo lớp.</td></tr>'; return; }
+    var want = new URLSearchParams(location.search).get('class'); CUR = GROUPS.some(function (g) { return String(g.id) === want; }) ? Number(want) : GROUPS[0].id;
+    $('clsSel').value = CUR; loadClass();
+  }).catch(function () { $('tbody').innerHTML = '<tr><td class="gb-empty">Không tải được danh sách lớp.</td></tr>'; });
+}
+function loadClass() {
+  $('tbody').innerHTML = '<tr><td class="gb-empty">Đang tải sổ điểm…</td></tr>'; $('thead').innerHTML = '';
+  fetch('/api/teacher/gradebook?class=' + CUR, { credentials: 'same-origin' }).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi tải'); return d; }); }).then(function (d) {
+    GB = d; $('btnXlsx').disabled = false; render();
+  }).catch(function (e) { $('tbody').innerHTML = '<tr><td class="gb-empty">' + esc(e.message) + '</td></tr>'; });
+}
+function visible() {
+  var q = norm($('q').value);
+  var rows = GB.students.filter(function (s) {
+    if (q && norm(s.name + ' ' + s.email).indexOf(q) < 0) return false;
+    if (FL.weak && !(s.avg != null && s.avg < 50)) return false;
+    if (FL.missing && !Object.keys(s.cells).some(function (k) { return s.cells[k].a && s.cells[k].st === 'none'; })) return false;
+    if (FL.pend && !Object.keys(s.cells).some(function (k) { return s.cells[k].st === 'pend'; })) return false;
+    return true;
+  });
+  rows.sort(function (a, b) {
+    var x = SORT.k === 'avg' ? (a.avg == null ? -1 : a.avg) : norm(a.name || a.email), y = SORT.k === 'avg' ? (b.avg == null ? -1 : b.avg) : norm(b.name || b.email);
+    return (x < y ? -1 : x > y ? 1 : 0) * SORT.d;
+  });
+  return rows;
+}
+function renderCards() {
+  var st = GB.students, ex = GB.exercises, tot = 0, done = 0, sum = 0, n = 0;
+  st.forEach(function (s) { tot += s.total; done += s.done; if (s.avg != null) { sum += s.avg; n++; } });
+  var weak = st.filter(function (s) { return s.avg != null && s.avg < 50; }).length;
+  $('cards').innerHTML = [[st.length, 'Học sinh'], [ex.length, 'Bài đã giao cho lớp'], [tot ? Math.round(done / tot * 100) + '%' : '—', 'Tỉ lệ đã nộp (' + done + '/' + tot + ')'], [n ? Math.round(sum / n) + '%' : '—', 'Điểm TB cả lớp'], [weak, 'Học sinh TB dưới 50%']].map(function (c) { return '<div class="gb-card"><b>' + c[0] + '</b><span>' + c[1] + '</span></div>'; }).join('');
+}
+function render() {
+  renderCards();
+  var ex = GB.exercises;
+  $('thead').innerHTML = '<tr><th class="sticky sort" data-sort="name">Học sinh' + (SORT.k === 'name' ? (SORT.d > 0 ? ' ▲' : ' ▼') : '') + '</th>' + ex.map(function (e) {
+    return '<th title="' + esc(e.title + ' — ' + (e.skill || '') + ' ' + (e.program || '')) + '"><span class="ex">' + esc(e.title) + '</span><small>' + esc(e.skill || '') + '</small></th>';
+  }).join('') + '<th class="sort" data-sort="avg" style="background:var(--primary-soft)">TB' + (SORT.k === 'avg' ? (SORT.d > 0 ? ' ▲' : ' ▼') : '') + '</th><th>Đã nộp</th></tr>';
+  var rows = visible();
+  if (!ex.length) { $('tbody').innerHTML = '<tr><td class="gb-empty" colspan="3">Lớp này chưa có bài nào được giao. Khi bạn giao bài cho cả lớp (Giao bài riêng → chọn lớp), các bài sẽ hiện thành cột ở đây.</td></tr>'; return; }
+  if (!GB.students.length) { $('tbody').innerHTML = '<tr><td class="gb-empty" colspan="' + (ex.length + 3) + '">Lớp chưa có học sinh.</td></tr>'; return; }
+  if (!rows.length) { $('tbody').innerHTML = '<tr><td class="gb-empty" colspan="' + (ex.length + 3) + '">Không có học sinh nào khớp bộ lọc.</td></tr>'; return; }
+  var h = rows.map(function (s) {
+    return '<tr><td class="sticky gb-name"><a href="teacher-student.html?id=' + s.id + '" title="Mở hồ sơ học sinh">' + esc(s.name || s.email) + '</a><small>' + esc(s.email) + '</small></td>' + ex.map(function (e) {
+      var c = s.cells[e.id];
+      if (!c || !c.a) return '<td class="gb-na">—</td>';
+      if (c.st === 'none') return '<td class="gb-none">chưa nộp</td>';
+      var link = 'teacher.html?tab=grade&sub=' + c.sub;
+      if (c.st === 'pend') return '<td class="gb-pend"><a class="gb-cell" href="' + link + '">chờ chấm</a></td>';
+      return c.pct == null ? '<td><a class="gb-cell" href="' + link + '">đã chấm</a></td>' : '<td class="' + cls(c.pct) + '"><a class="gb-cell' + (c.late ? ' gb-late' : '') + '" href="' + link + '" title="' + c.score + '/' + c.max + '">' + c.pct + '%</a></td>';
+    }).join('') + '<td class="avg ' + (s.avg == null ? '' : cls(s.avg)) + '">' + (s.avg == null ? '—' : s.avg + '%') + '</td><td>' + s.done + '/' + s.total + '</td></tr>';
+  }).join('');
+  var foot = '<tr class="foot"><td class="sticky" style="background:var(--primary-soft)">Trung bình lớp</td>' + ex.map(function (e) { return '<td>' + (e.avg == null ? '—' : e.avg + '%') + '</td>'; }).join('');
+  var avgs = GB.students.filter(function (s) { return s.avg != null; }), all = avgs.length ? Math.round(avgs.reduce(function (a, s) { return a + s.avg; }, 0) / avgs.length) : null;
+  foot += '<td>' + (all == null ? '—' : all + '%') + '</td><td></td></tr>';
+  $('tbody').innerHTML = h + foot;
+}
+$('clsSel').onchange = function () { CUR = Number(this.value); history.replaceState(null, '', '?class=' + CUR); loadClass(); };
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('th[data-sort]');
+  if (el && GB) { var k = el.getAttribute('data-sort'); if (SORT.k === k) SORT.d *= -1; else { SORT.k = k; SORT.d = k === 'avg' ? -1 : 1; } render(); return; }
+  var ch = e.target.closest('.gb-chip'); if (ch && GB) { var f = ch.getAttribute('data-f'); FL[f] = !FL[f]; ch.classList.toggle('on', !!FL[f]); render(); }
+});
+$('q').addEventListener('input', function () { if (GB) render(); });
+$('btnXlsx').onclick = function () { if (CUR) { location.href = '/api/teacher/gradebook.xlsx?class=' + CUR; toast('Đang tải file Excel…'); } };
+$('btnAll').onclick = function () { location.href = '/api/teacher/gradebook.xlsx'; toast('Đang tải file Excel…'); };
+loadGroups();
+})();
+</script>
+</body>
+</html>

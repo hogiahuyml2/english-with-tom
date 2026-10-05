@@ -37,6 +37,7 @@ table.tk tr:hover:not(.gh) td { background: var(--bg-soft); }
 .tk-empty { text-align: center; color: var(--text-muted); padding: 40px 10px; }
 .tk-pager { display: flex; gap: 8px; align-items: center; justify-content: center; margin-top: 12px; flex-wrap: wrap; font-size: 13px; }
 .tk-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .tk-toast.on { opacity: 1; }
+.tk-pre { display:inline-flex; align-items:stretch; border:1.5px solid var(--border); border-radius:99px; overflow:hidden; background:var(--surface); margin:0 6px 6px 0; } .tk-pre.on { border-color:var(--primary); background:var(--primary-soft); } .tk-pre button { border:none; background:none; font:700 12.5px inherit; font-family:inherit; color:var(--text); padding:6px 12px; cursor:pointer; } .tk-pre button:hover { color:var(--primary); } .tk-pre .x { padding:6px 9px 6px 2px; color:var(--text-faint); font-weight:500; } .tk-pre .x:hover { color:#dc2626; }
 .tk-hint { font-size: 12.5px; color: var(--text-muted); }
 @media (max-width: 700px) { .tk-fl { width: 100%; } }
 </style>
@@ -48,11 +49,13 @@ table.tk tr:hover:not(.gh) td { background: var(--bg-soft); }
     <h1>📊 Theo dõi lớp &amp; bài nộp</h1>
     <a class="tk-btn" href="teacher.html?tab=groups">🏫 Quản lý lớp</a>
     <a class="tk-btn" href="teacher.html?tab=grade">📥 Bài nộp &amp; chấm</a>
+    <a class="tk-btn" href="teacher-grades.html">📒 Sổ điểm lớp</a>
     <button class="tk-btn" id="btnReload">🔄 Làm mới</button>
     <button class="tk-btn" id="btnCsv">⬇️ Xuất Excel (CSV)</button>
   </div>
   <div class="tk-cards" id="cards"></div>
   <div class="tk-box" id="classBox" style="display:none;"></div>
+  <div class="tk-box" id="presetBox"></div>
   <div class="tk-box" id="filters"></div>
   <div class="tk-box">
     <div class="tk-f" style="justify-content:space-between;">
@@ -179,7 +182,7 @@ function renderTable() {
   $('resCount').innerHTML = cnt + ' / ' + ROWS.length + ' dòng <span class="tk-hint" style="font-weight:500">· đã nộp ' + subN + ' · chưa nộp ' + (cnt - subN) + '</span>';
   updRemind();
 }
-function render() { renderCards(); renderClasses(); renderFilters(); renderTable(); }
+function render() { renderCards(); renderClasses(); renderFilters(); renderTable(); renderPresets(); }
 function updRemind() { var n = Object.keys(SEL).filter(function (k) { return SEL[k]; }).length; $('remN').textContent = n; $('btnRemind').disabled = !n; }
 
 /* ───── sự kiện ───── */
@@ -201,7 +204,7 @@ document.addEventListener('click', function (e) {
 document.addEventListener('change', function (e) {
   var t = e.target;
   if (t.id === 'fex') { F.ex = t.value; PAGE = 1; render(); }
-  else if (t.id === 'groupBy') renderTable();
+  else if (t.id === 'groupBy') { renderTable(); renderPresets(); }
   else if (t.id === 'fmin' || t.id === 'fmax') { F[t.id === 'fmin' ? 'scMin' : 'scMax'] = t.value; F.sc = ''; PAGE = 1; renderFilters(); renderTable(); }
   else if (t.id === 'selAll') { filtered().forEach(function (r) { if (r.st === 'none' && r.student_id) SEL[r.aid] = t.checked; }); renderTable(); }
   else if (t.hasAttribute && t.hasAttribute('data-sel')) { SEL[t.getAttribute('data-sel')] = t.checked; updRemind(); }
@@ -220,10 +223,65 @@ $('btnCsv').onclick = function () {
   var blob = new Blob(['﻿' + out.join('\r\n')], { type: 'text/csv;charset=utf-8' }), a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = 'theo-doi-bai-nop-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã xuất ' + rows.length + ' dòng');
 };
+
+/* ───── bộ lọc đã lưu ───── */
+var BLANK = { q: '', cls: [], st: '', skill: '', prog: '', ex: '', sc: '', scMin: '', scMax: '', sub: '', due: '' };
+var BUILTIN = [
+  { id: 'b1', name: '⏰ Quá hạn chưa nộp', data: { st: 'overdue' } },
+  { id: 'b2', name: '⏳ Chờ chấm', data: { st: 'pend' } },
+  { id: 'b3', name: '⌛ Hạn trong 3 ngày (chưa nộp)', data: { due: '3' } },
+  { id: 'b4', name: '🔴 Điểm dưới 50%', data: { sc: 'lo' } },
+  { id: 'b5', name: '🐢 Nộp muộn', data: { st: 'late' } },
+  { id: 'b6', name: '🗓️ Nộp 7 ngày qua', data: { sub: '7' } }
+];
+var SAVED = [], ACTIVE = '';
+function snapshot() { var o = {}; Object.keys(BLANK).forEach(function (k) { o[k] = Array.isArray(F[k]) ? F[k].slice() : F[k]; }); o.groupBy = $('groupBy').value; return o; }
+function sameData(a, b) { var x = Object.assign({}, BLANK, a), y = Object.assign({}, BLANK, b); return Object.keys(BLANK).every(function (k) { return JSON.stringify(x[k]) === JSON.stringify(y[k]); }); }
+function applyPreset(data) {
+  F = Object.assign({}, BLANK, JSON.parse(JSON.stringify(data || {}))); delete F.groupBy; $('groupBy').value = (data && data.groupBy) || ''; PAGE = 1; render();
+}
+function renderPresets() {
+  var cur = snapshot(), none = sameData(cur, {}), h = '<div class="tk-f" style="margin-bottom:6px"><span class="tk-fl" style="width:auto">⚡ Lọc nhanh</span><span class="tk-hint">bấm một nút để lọc ngay — bấm lại để bỏ lọc</span></div><div>';
+  BUILTIN.concat(SAVED).forEach(function (p) {
+    var on = !none && sameData(cur, p.data);
+    h += '<span class="tk-pre' + (on ? ' on' : '') + '"><button data-pre="' + p.id + '">' + esc(p.name) + '</button>' + (String(p.id)[0] === 'b' ? '' : '<button class="x" data-predel="' + p.id + '" title="Xoá bộ lọc này">✕</button>') + '</span>';
+  });
+  h += '<button class="tk-btn sm" id="btnSavePre" style="margin-bottom:6px"' + (none ? ' disabled title="Hãy chọn vài bộ lọc trước rồi mới lưu"' : '') + '>💾 Lưu bộ lọc hiện tại…</button></div>';
+  $('presetBox').innerHTML = h;
+}
+function loadSaved() {
+  return fetch('/api/me/filters?page=track', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : { filters: [] }; }).then(function (d) { SAVED = d.filters || []; renderPresets(); }).catch(function () {});
+}
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-pre]'))) {
+    var id = el.getAttribute('data-pre'), p = BUILTIN.concat(SAVED).filter(function (x) { return String(x.id) === id; })[0]; if (!p) return;
+    if (sameData(snapshot(), p.data)) applyPreset({}); else applyPreset(p.data); return;
+  }
+  if ((el = t.closest('[data-predel]'))) {
+    var did = el.getAttribute('data-predel'), pr = SAVED.filter(function (x) { return String(x.id) === did; })[0];
+    if (!pr || !confirm('Xoá bộ lọc “' + pr.name + '”?')) return;
+    fetch('/api/me/filters/' + did, { method: 'DELETE', credentials: 'same-origin' }).then(function () { SAVED = SAVED.filter(function (x) { return String(x.id) !== did; }); renderPresets(); toast('Đã xoá bộ lọc'); }); return;
+  }
+  if (t.id === 'btnSavePre') {
+    var name = prompt('Đặt tên cho bộ lọc này (ví dụ: “12A2 chưa nộp quá hạn”):', suggestName()); if (!name || !name.trim()) return;
+    fetch('/api/me/filters', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'track', name: name.trim(), data: snapshot() }) }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.ok) { toast(d.error || 'Không lưu được'); return; } toast(d.updated ? 'Đã cập nhật bộ lọc' : 'Đã lưu bộ lọc'); loadSaved();
+    }).catch(function () { toast('Không lưu được'); });
+  }
+});
+function suggestName() {
+  var p = []; if (F.cls.length) p.push(F.cls.join(' + ')); var st = { none: 'chưa nộp', overdue: 'quá hạn chưa nộp', pend: 'chờ chấm', ok: 'đã chấm', late: 'nộp muộn' }[F.st]; if (st) p.push(st);
+  if (F.skill) p.push(F.skill); if (F.prog) p.push(F.prog); if (F.sc) p.push({ lo: 'điểm <50%', mid: 'điểm 50–79%', hi: 'điểm ≥80%' }[F.sc]); return p.join(' · ');
+}
+
 var pre = new URLSearchParams(location.search);
 load().then(function () {
-  var c = pre.get('class'); if (c) { var g = GROUPS.filter(function (x) { return String(x.id) === c; })[0]; if (g) { F.cls = [g.name]; render(); } }
-  if (pre.get('status')) { F.st = pre.get('status'); render(); }
+  var c = pre.get('class'); if (c) { var g = GROUPS.filter(function (x) { return String(x.id) === c; })[0]; if (g) { F.cls = [g.name]; } }
+  if (pre.get('status')) F.st = pre.get('status');
+  if (pre.get('ex')) F.ex = pre.get('ex');
+  if (pre.get('due')) F.due = pre.get('due');
+  render(); loadSaved();
 });
 })();
 </script>

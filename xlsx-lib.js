@@ -25,17 +25,19 @@ function zipStore(files) {
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
 const colName = (i) => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
 
-// style ids: 0 thường, 1 tiêu đề cột (chữ trắng, nền xanh), 2 ô văn bản tự xuống dòng, 3 tiêu đề lớn, 4 ghi chú nghiêng
+// style ids: 5 ô giữa viền, 6 xanh (điểm cao), 7 vàng (trung bình), 8 đỏ (thấp), 9 xám (chưa nộp); 0 thường, 1 tiêu đề cột (chữ trắng, nền xanh), 2 ô văn bản tự xuống dòng, 3 tiêu đề lớn, 4 ghi chú nghiêng
 const STYLES = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
   '<fonts count="4"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="14"/><color rgb="FF3730A3"/><name val="Calibri"/></font><font><i/><sz val="10"/><color rgb="FF6B7280"/><name val="Calibri"/></font></fonts>' +
-  '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF4F46E5"/><bgColor indexed="64"/></patternFill></fill></fills>' +
+  '<fills count="7"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF4F46E5"/><bgColor indexed="64"/></patternFill></fill>' +
+  '<fill><patternFill patternType="solid"><fgColor rgb="FFD1FAE5"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFEF3C7"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFEE2E2"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF3F4F6"/><bgColor indexed="64"/></patternFill></fill></fills>' +
   '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"><color rgb="FFD1D5DB"/></left><right style="thin"><color rgb="FFD1D5DB"/></right><top style="thin"><color rgb="FFD1D5DB"/></top><bottom style="thin"><color rgb="FFD1D5DB"/></bottom><diagonal/></border></borders>' +
   '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
-  '<cellXfs count="5"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+  '<cellXfs count="10"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
   '<xf numFmtId="49" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1" applyNumberFormat="1"><alignment vertical="center" wrapText="1"/></xf>' +
   '<xf numFmtId="49" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1" applyNumberFormat="1"><alignment vertical="top" wrapText="1"/></xf>' +
   '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
-  '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf></cellXfs>' +
+  '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+  [0, 3, 4, 5, 6].map(function (f) { return '<xf numFmtId="0" fontId="0" fillId="' + f + '" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'; }).join('') + '</cellXfs>' +
   '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
 
 // sheet: { name, widths:[...], header:[...], rows:[[...]], lines:[...] (chế độ văn bản: mỗi phần tử một dòng), validations:[{col, list}] , textCols: true }
@@ -44,7 +46,13 @@ function sheetXml(sh) {
   const cell = (c, v, s) => '<c r="' + colName(c) + r + '" t="inlineStr"' + (s ? ' s="' + s + '"' : '') + '><is><t xml:space="preserve">' + esc(v) + '</t></is></c>';
   if (sh.title) { r++; rows += '<row r="' + r + '" ht="26" customHeight="1">' + cell(0, sh.title, 3) + '</row>'; }
   if (sh.header) { r++; rows += '<row r="' + r + '" ht="30" customHeight="1">' + sh.header.map((h, i) => cell(i, h, 1)).join('') + '</row>'; }
-  for (const row of sh.rows || []) { r++; rows += '<row r="' + r + '">' + row.map((v, i) => cell(i, v, 2)).join('') + '</row>'; }
+  // ô có thể là giá trị thường hoặc { v, s } (s = style id); số thì ghi dạng số thật để Excel tính được
+  const cellAny = (c, x) => {
+    let v = x, s = 2; if (x && typeof x === 'object') { v = x.v; s = x.s == null ? 2 : x.s; }
+    if (typeof v === 'number' && isFinite(v)) return '<c r="' + colName(c) + r + '" s="' + (s === 2 ? 5 : s) + '"><v>' + v + '</v></c>';
+    return cell(c, v, s);
+  };
+  for (const row of sh.rows || []) { r++; rows += '<row r="' + r + '">' + row.map((v, i) => cellAny(i, v)).join('') + '</row>'; }
   for (const ln of sh.lines || []) { r++; rows += '<row r="' + r + '">' + (ln === '' ? '' : cell(0, ln, ln.startsWith('•') || /^\d+\./.test(ln) ? 4 : 0)) + '</row>'; }
   const cols = (sh.widths || []).length ? '<cols>' + sh.widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>' : '';
   const freeze = sh.header ? '<sheetViews><sheetView workbookViewId="0"' + (sh.active ? ' tabSelected="1"' : '') + '><pane ySplit="' + (sh.title ? 2 : 1) + '" topLeftCell="A' + (sh.title ? 3 : 2) + '" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' : '<sheetViews><sheetView workbookViewId="0"' + (sh.active ? ' tabSelected="1"' : '') + '/></sheetViews>';

@@ -325,6 +325,20 @@
   }
   .ielts-type-btn:hover { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
   .ielts-type-btn.active { border-color:var(--primary); background:var(--primary); color:#fff; box-shadow:0 2px 6px rgba(123,110,246,.3); }
+
+/* ===== Việc cần làm hôm nay ===== */
+.todo-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 16px 18px; margin-bottom: 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.todo-box:before { content:""; position:absolute; left:0; right:0; top:0; height:4px; background: var(--gradient); }
+.todo-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.todo-head h3 { margin:0; font-size:17px; flex:1; min-width:200px; }
+.todo-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.todo-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:99px; font-size:13px; font-weight:700; background:var(--bg-soft); color:var(--text-muted); }
+.todo-pill b { font-size:15px; } .todo-pill.hot { background:rgba(239,68,68,.12); color:#dc2626; } .todo-pill.wait { background:var(--warning-soft); color:#b45309; } .todo-pill.info { background:var(--primary-soft); color:var(--primary); } .todo-pill.zero { opacity:.55; }
+.todo-sec { border-top:1px dashed var(--border); padding-top:10px; margin-top:10px; }
+.todo-sec h4 { margin:0 0 6px; font-size:14px; display:flex; align-items:center; gap:8px; }
+.todo-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:7px 10px; border-radius:10px; font-size:13.5px; }
+.todo-row:hover { background:var(--bg-soft); } .todo-row .tx { flex:1; min-width:200px; } .todo-row .tx small { display:block; color:var(--text-faint); font-size:12px; }
+.todo-ok { text-align:center; padding:18px 8px; color:var(--success); font-weight:700; }
 </style>
 </head>
 <body data-page="" data-guard="teacher">
@@ -347,6 +361,9 @@
       <div class="stat-card accent"><div class="label">Bài chờ chấm</div><div class="value" id="statPending">…</div></div>
     </div>
 
+    <!-- ===== VIỆC CẦN LÀM HÔM NAY ===== -->
+    <div class="todo-box" id="todoBox"><div style="color:var(--text-faint);font-size:14px;">⏳ Đang tổng hợp việc cần làm…</div></div>
+
     <!-- ===== TABS ===== -->
     <div style="display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;">
       <button class="btn" id="tabCreateBtn" onclick="showTab('create')" style="font-weight:700;">➕ Tạo đề mới</button>
@@ -354,6 +371,7 @@
       <button class="btn" id="tabAssignBtn" onclick="showTab('assign')">📤 Giao bài riêng</button>
       <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
       <a class="btn" href="teacher-track.html" id="tabTrackBtn" style="border-color:var(--primary);color:var(--primary);font-weight:700;">📊 Theo dõi &amp; lọc</a>
+      <a class="btn" href="teacher-grades.html" id="tabGradesBtn" style="border-color:var(--primary);color:var(--primary);font-weight:700;">📒 Sổ điểm lớp</a>
       <button class="btn" id="tabBankBtn"     onclick="showTab('bank')">📚 Ngân hàng đề</button>
       <button class="btn" id="tabStudentsBtn" onclick="showTab('students')">👩‍🎓 Học sinh của tôi</button>
       <a class="btn" href="mcq.html" id="tabMcqBtn">📝 Đề trắc nghiệm (Word)</a>
@@ -644,6 +662,13 @@
             <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
               <input type="checkbox" id="groupSelfJoin" style="width:20px;height:20px;margin-top:2px;" onchange="toggleSelfJoin(this.checked)">
               <span><b>🔗 Cho học sinh tự chọn lớp này trong Hồ sơ</b><br><span style="font-size:13px;color:var(--text-muted);">Bật lên thì học sinh vào <b>Hồ sơ → Lớp đang theo học</b>, chọn đúng tên lớp này là được đưa vào lớp ngay (và nhận các bài đã giao cho lớp còn hạn). Bạn không cần thêm từng bạn nữa. Tắt đi thì lớp không còn hiện trong danh sách chọn (học sinh đã vào vẫn giữ nguyên).</span></span>
+            </label>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;" id="groupApprCard">
+            <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
+              <input type="checkbox" id="groupNeedsApproval" style="width:20px;height:20px;margin-top:2px;" onchange="toggleApproval(this.checked)">
+              <span><b>🛡️ Học sinh tự chọn lớp phải chờ tôi duyệt</b><br><span style="font-size:13px;color:var(--text-muted);">Bật lên thì học sinh chọn lớp xong sẽ ở trạng thái “chờ duyệt”, chỉ vào lớp khi bạn bấm duyệt (ở ô <b>Việc cần làm hôm nay</b> trên đầu trang). Giúp chặn người ngoài chọn nhầm hoặc cố tình vào lớp. Chỉ áp dụng cho học sinh chọn mới; học sinh đã vào lớp giữ nguyên.</span></span>
             </label>
           </div>
 
@@ -1244,14 +1269,14 @@
         list.innerHTML = '<p style="color:var(--text-faint);text-align:center;padding:20px 0;">Chưa có lớp nào. Bấm "+ Tạo lớp" để bắt đầu.</p>';
         return;
       }
-      window._grpSelf = {}; d.groups.forEach(function(g){ window._grpSelf[g.id] = g.self_join ? 1 : 0; });
+      window._grpSelf = {}; window._grpApr = {}; d.groups.forEach(function(g){ window._grpSelf[g.id] = g.self_join ? 1 : 0; window._grpApr[g.id] = g.needs_approval ? 1 : 0; });
       list.innerHTML = d.groups.map(function(g){
         var total = (g.member_count||0) + (g.pending_count||0);
         var pending = g.pending_count > 0 ? ' <span style="font-size:11px;color:var(--text-faint);">('+g.pending_count+' chờ đăng ký)</span>' : '';
         var byTeacher = g.teacher_name ? '<span style="font-size:11px;color:var(--text-faint);"> · GV: '+escHtml(g.teacher_name)+'</span>' : '';
         return '<div class="group-row" id="grow-'+g.id+'" onclick="loadGroupDetail('+g.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:10px;cursor:pointer;margin-bottom:4px;transition:background .15s;">'
           +'<div><div style="font-weight:600;font-size:14px;">'+escHtml(g.name)+byTeacher+'</div>'
-          +'<div style="font-size:12px;color:var(--text-faint);">'+total+' học sinh'+pending+(g.self_count?' · '+g.self_count+' tự chọn':'')+'</div>'+(g.self_join?'<div style="font-size:11px;color:var(--success);font-weight:700;">🔗 Mở cho học sinh tự chọn</div>':'')+'</div>'
+          +'<div style="font-size:12px;color:var(--text-faint);">'+total+' học sinh'+pending+(g.self_count?' · '+g.self_count+' tự chọn':'')+'</div>'+(g.self_join?'<div style="font-size:11px;color:var(--success);font-weight:700;">🔗 Mở cho học sinh tự chọn'+(g.needs_approval?' · 🛡️ cần duyệt':'')+'</div>':'')+(g.request_count?'<div style="font-size:11px;color:#b45309;font-weight:800;">🙋 '+g.request_count+' yêu cầu chờ duyệt</div>':'')+'</div>'
           +'<span style="font-size:18px;color:var(--text-faint);">›</span></div>';
       }).join('');
     });
@@ -1270,6 +1295,7 @@
       _currentGroupName = d.group ? d.group.name : '';
       document.getElementById('groupDetailName').textContent = _currentGroupName;
       document.getElementById('groupSelfJoin').checked = !!(window._grpSelf && window._grpSelf[groupId]);
+      document.getElementById('groupNeedsApproval').checked = !!(window._grpApr && window._grpApr[groupId]);
       document.getElementById('groupTrackLink').href = 'teacher-track.html?class=' + groupId;
       document.getElementById('groupDetailCount').textContent = (d.members||[]).length + ' thành viên';
       var ml = document.getElementById('memberList');
@@ -1297,8 +1323,13 @@
     fetch('/api/groups/'+_currentGroupId+'/selfjoin',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:!!on})})
       .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { alert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupSelfJoin').checked = !on; } });
   }
+  function toggleApproval(on) {
+    if (!_currentGroupId) return;
+    fetch('/api/groups/'+_currentGroupId+'/approval',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:!!on})})
+      .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { alert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupNeedsApproval').checked = !on; } });
+  }
   function quickCreateClasses() {
-    var t = prompt('Nhập tên các lớp, cách nhau bằng dấu ; (các lớp này sẽ được mở cho học sinh tự chọn trong Hồ sơ):', '10A4 LC2627; 10A8 LC2627; 12A2 LC2627; 12A4 LC2627');
+    var t = prompt('Nhập tên các lớp, cách nhau bằng dấu ; (các lớp này mở cho học sinh tự chọn trong Hồ sơ, học sinh chọn xong sẽ chờ bạn duyệt — có thể tắt duyệt ở từng lớp):', '10A4 LC2627; 10A8 LC2627; 12A2 LC2627; 12A4 LC2627');
     if (!t) return;
     var names = t.split(/[;\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
     if (!names.length) return;
@@ -1306,7 +1337,9 @@
       if (i >= names.length) { loadGroups(); return; }
       fetch('/api/groups',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:names[i]})}).then(r=>r.json()).then(function(d){
         if (!d.ok) return next(i+1);
-        fetch('/api/groups/'+d.id+'/selfjoin',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:true})}).then(function(){ next(i+1); });
+        fetch('/api/groups/'+d.id+'/selfjoin',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:true})}).then(function(){
+          return fetch('/api/groups/'+d.id+'/approval',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:true})});
+        }).then(function(){ next(i+1); });
       });
     })(0);
   }
@@ -1401,6 +1434,76 @@
         }
       });
   }
+
+
+  /* ===== VIỆC CẦN LÀM HÔM NAY ===== */
+  var _todo = null;
+  function tdEsc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function loadTodo() {
+    fetch('/api/teacher/todo',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ _todo = d; renderTodo(); }).catch(function(){
+      document.getElementById('todoBox').innerHTML = '<div style="color:var(--text-faint);font-size:14px;">Chưa tải được danh sách việc cần làm. <button class="btn btn-sm" onclick="loadTodo()">Thử lại</button></div>';
+    });
+  }
+  function renderTodo() {
+    var d = _todo, box = document.getElementById('todoBox'); if (!d) return;
+    var g = d.grading, o = d.overdue, s = d.due_soon, rq = d.requests || [];
+    var pill = function(cls, n, t){ return '<span class="todo-pill '+(n?cls:'zero')+'"><b>'+n+'</b> '+t+'</span>'; };
+    var h = '<div class="todo-head"><h3>🗓️ Việc cần làm hôm nay</h3><button class="btn btn-sm" onclick="loadTodo()">🔄 Làm mới</button><a class="btn btn-sm" href="teacher-track.html">📊 Mở bảng theo dõi</a></div>';
+    h += '<div class="todo-pills">'+pill('hot',g.total,'bài chờ chấm')+pill('hot',o.total,'bài quá hạn chưa nộp')+pill('wait',s.total,'bài sắp hết hạn (3 ngày)')+pill('info',rq.length,'chờ duyệt vào lớp')+(d.no_class?pill('info',d.no_class,'học sinh chưa chọn lớp'):'')+'</div>';
+    var any = g.total || o.total || s.total || rq.length;
+    if (!any) h += '<div class="todo-ok">🎉 Hôm nay bạn đã xong hết — không có bài chờ chấm, quá hạn hay yêu cầu nào cần duyệt.</div>';
+
+    if (rq.length) {
+      h += '<div class="todo-sec"><h4>🙋 Học sinh xin vào lớp <button class="btn btn-sm btn-primary" onclick="decideRequests(\'approve\',null)">✅ Duyệt tất cả ('+rq.length+')</button></h4>';
+      var byG = {}; rq.forEach(function(r){ (byG[r.group_name] = byG[r.group_name] || []).push(r); });
+      Object.keys(byG).forEach(function(gn){
+        h += '<div style="font-size:12.5px;font-weight:800;color:var(--text-muted);margin:6px 10px 2px;">Lớp '+tdEsc(gn)+' · '+byG[gn].length+' yêu cầu <button class="btn btn-sm" style="margin-left:6px;" onclick="decideRequests(\'approve\','+JSON.stringify(byG[gn].map(function(r){return r.id;}))+')">Duyệt cả lớp này</button></div>';
+        byG[gn].forEach(function(r){
+          h += '<div class="todo-row"><div class="tx"><b>'+tdEsc(r.name||r.email)+'</b><small>'+tdEsc(r.email)+'</small></div><button class="btn btn-sm btn-primary" onclick="decideRequests(\'approve\',['+r.id+'])">✅ Duyệt</button><button class="btn btn-sm" onclick="decideRequests(\'reject\',['+r.id+'])">✕ Từ chối</button></div>';
+        });
+      });
+      h += '</div>';
+    }
+    if (g.total) {
+      h += '<div class="todo-sec"><h4>📥 Bài chờ chấm <span style="font-weight:500;color:var(--text-faint);font-size:12.5px;">(cũ nhất lên đầu)</span></h4>';
+      g.items.forEach(function(it){
+        var w = it.waiting_h >= 48 ? Math.round(it.waiting_h/24)+' ngày' : it.waiting_h+' giờ';
+        h += '<div class="todo-row"><div class="tx"><b>'+tdEsc(it.student)+'</b> — '+tdEsc(it.title)+'<small>'+tdEsc(it.skill||'')+' · chờ '+w+'</small></div><button class="btn btn-sm btn-primary" onclick="todoGrade('+it.id+')">Chấm ngay</button></div>';
+      });
+      if (g.total > g.items.length) h += '<div class="todo-row"><div class="tx"><small>… và '+(g.total-g.items.length)+' bài khác</small></div><a class="btn btn-sm" href="teacher-track.html?status=pend">Xem tất cả</a></div>';
+      h += '</div>';
+    }
+    var grp = function(title, data, kind){
+      if (!data.total) return '';
+      var x = '<div class="todo-sec"><h4>'+title+'</h4>';
+      data.groups.forEach(function(r, i){
+        var who = r.names.slice(0,3).map(tdEsc).join(', ') + (r.count > 3 ? '…' : '');
+        var link = 'teacher-track.html?ex='+r.exercise_id+(r.group_id?'&class='+r.group_id:'')+'&status='+(kind==='over'?'overdue':'none');
+        x += '<div class="todo-row"><div class="tx"><b>'+(r.group?tdEsc(r.group)+' · ':'')+tdEsc(r.title)+'</b>: '+r.count+' học sinh<small>'+who+' · hạn '+tdEsc(String(r.deadline||'').replace('T',' '))+'</small></div><button class="btn btn-sm btn-primary" onclick="todoRemind('+JSON.stringify(r.ids)+',this)">🔔 Nhắc ngay</button><a class="btn btn-sm" href="'+link+'">Xem</a></div>';
+      });
+      return x + '</div>';
+    };
+    h += grp('⏰ Quá hạn chưa nộp (30 ngày gần đây)', o, 'over') + grp('⌛ Sắp hết hạn — chưa nộp (3 ngày tới)', s, 'soon');
+    box.innerHTML = h;
+  }
+  function todoGrade(id) { showTab('grade'); openGradingPanel(id); window.scrollTo({top:document.getElementById('tabGrade').offsetTop-80,behavior:'smooth'}); }
+  function todoRemind(ids, btn) {
+    if (!confirm('Gửi thông báo nhắc làm bài cho '+ids.length+' học sinh?')) return;
+    btn.disabled = true;
+    fetch('/api/teacher/remind',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:ids})}).then(r=>r.json()).then(function(d){
+      btn.textContent = '✓ Đã nhắc '+(d.sent||0)+(d.skipped?' (bỏ qua '+d.skipped+')':'');
+    }).catch(function(){ btn.disabled = false; alert('Không gửi được, thử lại nhé.'); });
+  }
+  function decideRequests(action, ids) {
+    var list = ids || (_todo.requests||[]).map(function(r){return r.id;});
+    if (!list.length) return;
+    if (!ids && !confirm((action==='approve'?'Duyệt':'Từ chối')+' tất cả '+list.length+' yêu cầu vào lớp?')) return;
+    fetch('/api/groups/requests/decide',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:list,action:action})}).then(r=>r.json()).then(function(d){
+      if (!d.ok) { alert(d.error||'Không xử lý được'); return; }
+      loadTodo(); if (document.getElementById('tabGroups').style.display !== 'none') loadGroups();
+    }).catch(function(){ alert('Không xử lý được, thử lại nhé.'); });
+  }
+  loadTodo();
 
   /* ===== STATS ===== */
   fetch('/api/teacher/stats',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
@@ -2469,7 +2572,7 @@
     }
     var s = d.student; var stats = d.stats || {}; var subs = d.submissions || [];
     document.getElementById('spEmail').textContent = s.email || '';
-    document.getElementById('spJoined').textContent = s.created_at ? 'Tham gia: ' + fmtDate(s.created_at) : '';
+    document.getElementById('spJoined').innerHTML = (s.created_at ? 'Tham gia: ' + fmtDate(s.created_at) + ' · ' : '') + '<a href="teacher-student.html?id='+s.id+'" style="color:var(--primary);font-weight:700;">📄 Mở hồ sơ đầy đủ (biểu đồ, kỹ năng, bài còn nợ)</a>';
 
     var avgPctHtml = stats.overall_avg_pct != null
       ? '<div class="sp-stat-val" style="color:'+scoreColor(stats.overall_avg_pct)+'">'+stats.overall_avg_pct+'%</div>'

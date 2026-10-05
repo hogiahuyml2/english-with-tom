@@ -81,7 +81,9 @@
     var d = await fetch('/api/me/classes',{credentials:'same-origin'}).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
     if (!d || !d.can_choose || !d.open.length) return;
     var sel = document.getElementById('classSel'), mine = (d.mine.filter(function(m){ return m.source === 'self'; })[0]) || null;
-    d.open.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name; if (mine && mine.id === c.id) o.selected = true; sel.appendChild(o); });
+    d.open.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name + (c.needs_approval ? ' (cần giáo viên duyệt)' : ''); if ((mine && mine.id === c.id) || (!mine && d.pending && d.pending.id === c.id)) o.selected = true; sel.appendChild(o); });
+    function showMsg(ok, html){ var box = document.getElementById('classMsg'); box.style.display = 'flex'; box.style.borderColor = 'transparent'; box.style.background = ok ? 'var(--success-soft)' : 'var(--warning-soft)'; box.style.color = ok ? 'var(--success)' : 'var(--warning)'; box.innerHTML = html; }
+    if (d.pending && !mine) showMsg(true, '<span>⏳</span><div>Yêu cầu vào lớp <b>' + d.pending.name.replace(/[<>&]/g,'') + '</b> đang chờ giáo viên duyệt. Khi được duyệt, bạn sẽ nhận thông báo và bài tập của lớp.</div>');
     var other = d.mine.filter(function(m){ return m.source !== 'self'; });
     if (other.length) document.getElementById('classHint').textContent = 'Bạn cũng đã được giáo viên thêm vào: ' + other.map(function(m){ return m.name; }).join(', ') + '.';
     document.getElementById('classCard').style.display = '';
@@ -92,6 +94,7 @@
       var r = await fetch('/api/me/class',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({group_id: sel.value ? Number(sel.value) : null})});
       var j = await r.json().catch(function(){ return {}; }); btn.disabled = false;
       box.style.display = 'flex'; box.style.borderColor = 'transparent'; box.style.background = r.ok ? 'var(--success-soft)' : 'var(--warning-soft)'; box.style.color = r.ok ? 'var(--success)' : 'var(--warning)';
+      if (r.ok && j.pending) { box.style.background = 'var(--success-soft)'; box.style.color = 'var(--success)'; box.innerHTML = '<span>⏳</span><div>Đã gửi yêu cầu vào lớp <b>' + j.class.replace(/[<>&]/g,'') + '</b>. Vui lòng đợi giáo viên duyệt — bạn sẽ nhận thông báo ngay khi được duyệt.</div>'; return; }
       box.innerHTML = '<span>' + (r.ok ? '✅' : '⚠️') + '</span><div>' + (r.ok ? (j.class ? 'Đã vào lớp <b>' + j.class.replace(/[<>&]/g,'') + '</b>.' + (j.backfilled ? ' Bạn có ' + j.backfilled + ' bài tập của lớp — xem ở mục “Bài tập được giao”.' : '') : 'Đã bỏ chọn lớp (người dùng tự do).') : (j.error || 'Không lưu được.')) + '</div>';
     };
   })();

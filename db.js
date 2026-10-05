@@ -216,6 +216,27 @@ CREATE TABLE IF NOT EXISTS group_assignments (
 safeAlter('PRAGMA table_info(groups)', [
   ['self_join', 'ALTER TABLE groups ADD COLUMN self_join INTEGER NOT NULL DEFAULT 0'],
 ]);
+safeAlter('PRAGMA table_info(groups)', [
+  ['needs_approval', 'ALTER TABLE groups ADD COLUMN needs_approval INTEGER NOT NULL DEFAULT 0'], // 1 = học sinh tự chọn lớp phải chờ giáo viên duyệt
+]);
+tryExec(`
+CREATE TABLE IF NOT EXISTS group_join_requests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  group_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE(group_id, user_id)
+);
+CREATE TABLE IF NOT EXISTS saved_filters (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  page TEXT NOT NULL,
+  name TEXT NOT NULL,
+  data TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_saved_filters_user ON saved_filters(user_id, page);
+`, 'join requests + saved filters');
 safeAlter('PRAGMA table_info(group_members)', [
   ['source', "ALTER TABLE group_members ADD COLUMN source TEXT NOT NULL DEFAULT 'teacher'"],
 ]);
