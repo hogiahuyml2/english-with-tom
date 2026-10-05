@@ -353,6 +353,7 @@
       <button class="btn" id="tabGroupsBtn" onclick="showTab('groups')">🏫 Lớp học</button>
       <button class="btn" id="tabAssignBtn" onclick="showTab('assign')">📤 Giao bài riêng</button>
       <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
+      <a class="btn" href="teacher-track.html" id="tabTrackBtn" style="border-color:var(--primary);color:var(--primary);font-weight:700;">📊 Theo dõi &amp; lọc</a>
       <button class="btn" id="tabBankBtn"     onclick="showTab('bank')">📚 Ngân hàng đề</button>
       <button class="btn" id="tabStudentsBtn" onclick="showTab('students')">👩‍🎓 Học sinh của tôi</button>
       <a class="btn" href="mcq.html" id="tabMcqBtn">📝 Đề trắc nghiệm (Word)</a>
@@ -615,7 +616,7 @@
         <div class="card" style="padding:0;">
           <div class="card-head" style="justify-content:space-between;">
             <h3>🏫 Danh sách lớp</h3>
-            <button class="btn btn-sm btn-primary" onclick="openCreateGroup()">+ Tạo lớp</button>
+            <span style="display:flex;gap:6px;"><button class="btn btn-sm" onclick="quickCreateClasses()" title="Tạo nhiều lớp một lúc, mở cho học sinh tự chọn">⚡ Tạo nhanh</button><button class="btn btn-sm btn-primary" onclick="openCreateGroup()">+ Tạo lớp</button></span>
           </div>
           <div id="groupList" style="padding:12px;"><p style="color:var(--text-faint);text-align:center;padding:20px 0;">Đang tải...</p></div>
         </div>
@@ -630,11 +631,20 @@
                 <h3 id="groupDetailName" style="margin:0;font-size:20px;"></h3>
                 <p id="groupDetailCount" style="color:var(--text-faint);font-size:13px;margin:4px 0 0;"></p>
               </div>
-              <div style="display:flex;gap:8px;">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <a class="btn btn-sm" id="groupTrackLink" href="teacher-track.html" style="color:var(--primary);">📊 Bài nộp của lớp</a>
                 <button class="btn btn-sm" onclick="renameCurrentGroup()">✏️ Đổi tên</button>
                 <button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="deleteCurrentGroup()">🗑️ Xoá lớp</button>
               </div>
             </div>
+          </div>
+
+          <!-- Cho học sinh tự chọn lớp -->
+          <div class="card" style="margin-bottom:16px;">
+            <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
+              <input type="checkbox" id="groupSelfJoin" style="width:20px;height:20px;margin-top:2px;" onchange="toggleSelfJoin(this.checked)">
+              <span><b>🔗 Cho học sinh tự chọn lớp này trong Hồ sơ</b><br><span style="font-size:13px;color:var(--text-muted);">Bật lên thì học sinh vào <b>Hồ sơ → Lớp đang theo học</b>, chọn đúng tên lớp này là được đưa vào lớp ngay (và nhận các bài đã giao cho lớp còn hạn). Bạn không cần thêm từng bạn nữa. Tắt đi thì lớp không còn hiện trong danh sách chọn (học sinh đã vào vẫn giữ nguyên).</span></span>
+            </label>
           </div>
 
           <!-- Thêm thành viên -->
@@ -1234,13 +1244,14 @@
         list.innerHTML = '<p style="color:var(--text-faint);text-align:center;padding:20px 0;">Chưa có lớp nào. Bấm "+ Tạo lớp" để bắt đầu.</p>';
         return;
       }
+      window._grpSelf = {}; d.groups.forEach(function(g){ window._grpSelf[g.id] = g.self_join ? 1 : 0; });
       list.innerHTML = d.groups.map(function(g){
         var total = (g.member_count||0) + (g.pending_count||0);
         var pending = g.pending_count > 0 ? ' <span style="font-size:11px;color:var(--text-faint);">('+g.pending_count+' chờ đăng ký)</span>' : '';
         var byTeacher = g.teacher_name ? '<span style="font-size:11px;color:var(--text-faint);"> · GV: '+escHtml(g.teacher_name)+'</span>' : '';
         return '<div class="group-row" id="grow-'+g.id+'" onclick="loadGroupDetail('+g.id+')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:10px;cursor:pointer;margin-bottom:4px;transition:background .15s;">'
           +'<div><div style="font-weight:600;font-size:14px;">'+escHtml(g.name)+byTeacher+'</div>'
-          +'<div style="font-size:12px;color:var(--text-faint);">'+total+' học sinh'+pending+'</div></div>'
+          +'<div style="font-size:12px;color:var(--text-faint);">'+total+' học sinh'+pending+(g.self_count?' · '+g.self_count+' tự chọn':'')+'</div>'+(g.self_join?'<div style="font-size:11px;color:var(--success);font-weight:700;">🔗 Mở cho học sinh tự chọn</div>':'')+'</div>'
           +'<span style="font-size:18px;color:var(--text-faint);">›</span></div>';
       }).join('');
     });
@@ -1258,13 +1269,15 @@
     fetch('/api/groups/'+groupId+'/members',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
       _currentGroupName = d.group ? d.group.name : '';
       document.getElementById('groupDetailName').textContent = _currentGroupName;
+      document.getElementById('groupSelfJoin').checked = !!(window._grpSelf && window._grpSelf[groupId]);
+      document.getElementById('groupTrackLink').href = 'teacher-track.html?class=' + groupId;
       document.getElementById('groupDetailCount').textContent = (d.members||[]).length + ' thành viên';
       var ml = document.getElementById('memberList');
       if (!d.members || !d.members.length) {
         ml.innerHTML = '<p style="color:var(--text-faint);padding:14px 0;">Lớp chưa có thành viên. Thêm học sinh bên trên.</p>';
         return;
       }
-      ml.innerHTML = '<table class="table"><thead><tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th></th></tr></thead><tbody>'
+      ml.innerHTML = '<table class="table"><thead><tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th>Nguồn</th><th></th></tr></thead><tbody>'
         + d.members.map(function(m){
           var displayName = m.name || '';
           var nameHtml = displayName && m.user_id
@@ -1272,13 +1285,31 @@
             : (displayName ? escHtml(displayName) : '<em style="color:var(--text-faint);">Chưa đăng ký</em>');
           var email = m.email || m.invited_email || '';
           var badge = m.user_id ? '' : '<span style="background:#fff3cd;color:#7a5c00;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:600;">Chờ đăng ký</span>';
-          return '<tr><td>'+nameHtml+'</td><td style="font-size:13px;">'+escHtml(email)+'</td><td>'+badge+'</td>'
+          return '<tr><td>'+nameHtml+'</td><td style="font-size:13px;">'+escHtml(email)+'</td><td>'+badge+'</td><td style="font-size:12px;color:var(--text-muted);">'+(m.source==='self'?'🔗 Tự chọn':'')+'</td>'
             +'<td><button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="removeMember('+m.id+')">Xoá</button></td></tr>';
         }).join('')
         + '</tbody></table>';
     });
   }
 
+  function toggleSelfJoin(on) {
+    if (!_currentGroupId) return;
+    fetch('/api/groups/'+_currentGroupId+'/selfjoin',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:!!on})})
+      .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { alert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupSelfJoin').checked = !on; } });
+  }
+  function quickCreateClasses() {
+    var t = prompt('Nhập tên các lớp, cách nhau bằng dấu ; (các lớp này sẽ được mở cho học sinh tự chọn trong Hồ sơ):', '10A4 LC2627; 10A8 LC2627; 12A2 LC2627; 12A4 LC2627');
+    if (!t) return;
+    var names = t.split(/[;\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+    if (!names.length) return;
+    (function next(i){
+      if (i >= names.length) { loadGroups(); return; }
+      fetch('/api/groups',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:names[i]})}).then(r=>r.json()).then(function(d){
+        if (!d.ok) return next(i+1);
+        fetch('/api/groups/'+d.id+'/selfjoin',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:true})}).then(function(){ next(i+1); });
+      });
+    })(0);
+  }
   function openCreateGroup() {
     var name = prompt('Tên lớp mới (VD: KET1, IELTS A, APTIS 1:1...):');
     if (!name || !name.trim()) return;

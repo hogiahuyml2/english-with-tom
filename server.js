@@ -1558,6 +1558,10 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
     return res.status(400).json({ error: 'Thiếu danh sách học sinh hoặc lớp.' });
   }
 
+  if (group_id) {
+    try { db.prepare('INSERT INTO group_assignments (group_id,exercise_id,assigned_by,deadline,note,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(group_id,exercise_id) DO UPDATE SET deadline=excluded.deadline, note=excluded.note, assigned_by=excluded.assigned_by')
+      .run(group_id, exercise_id, req.user.id, deadline || null, note || null, now()); } catch (e) { console.error('[group_assignments]', e.message); }
+  }
   const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id) VALUES (?,?,?,?,?,?,?)');
   let count = 0;
   for (const email of emails) {
@@ -1976,7 +1980,9 @@ app.get('/api/groups', requireRole('teacher','admin'), (req, res) => {
     SELECT g.id, g.name, g.created_at, g.teacher_id,
       u.name AS teacher_name,
       COUNT(CASE WHEN gm.user_id IS NOT NULL THEN 1 END) AS member_count,
-      COUNT(CASE WHEN gm.user_id IS NULL THEN 1 END) AS pending_count
+      COUNT(CASE WHEN gm.user_id IS NULL THEN 1 END) AS pending_count,
+      COUNT(CASE WHEN gm.source = 'self' THEN 1 END) AS self_count,
+      g.self_join AS self_join
     FROM groups g
     LEFT JOIN users u ON u.id = g.teacher_id
     LEFT JOIN group_members gm ON gm.group_id = g.id
@@ -2018,7 +2024,7 @@ app.get('/api/groups/:id/members', requireRole('teacher','admin'), (req, res) =>
   const grp = db.prepare('SELECT id,name FROM groups WHERE id=?').get(Number(req.params.id));
   if (!grp) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
   const members = db.prepare(`
-    SELECT gm.id, gm.user_id, gm.invited_email, gm.added_at,
+    SELECT gm.id, gm.user_id, gm.invited_email, gm.added_at, gm.source,
            u.name, u.email
     FROM group_members gm
     LEFT JOIN users u ON u.id = gm.user_id
@@ -2074,6 +2080,113 @@ app.delete('/api/groups/:id/members/:memberId', requireRole('teacher','admin'), 
   const r = db.prepare('DELETE FROM group_members WHERE id=? AND group_id=?').run(Number(req.params.memberId), groupId);
   if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy thành viên.' });
   res.json({ ok: true });
+});
+
+// ───────────── Học sinh tự chọn lớp trong Hồ sơ ─────────────
+// Giáo viên bật "cho học sinh tự chọn" ở từng lớp; học sinh chọn lớp mình học → vào lớp ngay (không cần thêm thủ công)
+// và tự nhận các bài đã giao cho lớp đó còn hạn.
+app.put('/api/groups/:id/selfjoin', requireRole('teacher','admin'), (req, res) => {
+  const g = db.prepare('SELECT id,teacher_id FROM groups WHERE id=?').get(Number(req.params.id));
+  if (!g) return res.status(404).json({ error: 'Không tìm thấy lớp.' });
+  if (req.user.role !== 'admin' && g.teacher_id !== req.user.id) return res.status(403).json({ error: 'Chỉ giáo viên tạo lớp hoặc quản trị viên mới đổi được cài đặt này.' });
+  db.prepare('UPDATE groups SET self_join=? WHERE id=?').run((req.body || {}).on ? 1 : 0, g.id);
+  res.json({ ok: true, self_join: (req.body || {}).on ? 1 : 0 });
+});
+function openClasses() {
+  return db.prepare(`SELECT g.id, g.name, u.name AS teacher_name,
+      (SELECT COUNT(*) FROM group_members m WHERE m.group_id=g.id AND m.user_id IS NOT NULL) AS member_count
+    FROM groups g LEFT JOIN users u ON u.id=g.teacher_id WHERE g.self_join=1 ORDER BY g.name COLLATE NOCASE`).all();
+}
+app.get('/api/me/classes', requireAuth, (req, res) => {
+  const mine = db.prepare('SELECT g.id, g.name, gm.source FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.user_id=? ORDER BY g.name').all(req.user.id);
+  res.json({ open: openClasses(), mine, can_choose: req.user.role === 'student' });
+});
+// Giao lại cho học sinh mới vào lớp các bài đã giao cho lớp (còn hạn hoặc không có hạn)
+function backfillGroupAssignments(user, groupId, groupName) {
+  const byEx = new Map();
+  for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note FROM assignments WHERE group_id=? ORDER BY id').all(groupId)) byEx.set(r.exercise_id, r);
+  for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note FROM group_assignments WHERE group_id=?').all(groupId)) byEx.set(r.exercise_id, r); // bản ghi cấp lớp là chuẩn nhất
+  const rows = [...byEx.values()];
+  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id) VALUES (?,?,?,?,?,?,?)');
+  let n = 0; const titles = [];
+  for (const r of rows) {
+    if (r.deadline && Date.parse(r.deadline) < Date.now() - 24 * 3600e3) continue; // bài đã quá hạn từ lâu thì không giao lại
+    if (db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(r.exercise_id, user.email)) continue;
+    ins.run(r.exercise_id, user.email, r.assigned_by, r.deadline || null, r.note || null, now(), groupId);
+    _assignedSet.add(Number(r.exercise_id) + '|' + user.email);
+    if (r.deadline) _assignmentDeadlines.set(Number(r.exercise_id) + '|' + user.email, r.deadline);
+    const ex = db.prepare('SELECT title FROM exercises WHERE id=?').get(r.exercise_id); if (ex) titles.push(ex.title); n++;
+  }
+  if (n) notifyUser(user.id, 'assignment_created', '📝 Bạn có ' + n + ' bài tập của lớp ' + groupName, titles.slice(0, 3).join(' · ') + (n > 3 ? '…' : ''), '/assigned.html');
+  return n;
+}
+app.put('/api/me/class', requireAuth, (req, res) => {
+  if (req.user.role !== 'student') return res.status(403).json({ error: 'Chỉ học sinh mới chọn lớp theo học.' });
+  const gid = (req.body || {}).group_id ? Number((req.body || {}).group_id) : null;
+  try {
+    db.exec('BEGIN');
+    // bỏ các lớp đã tự chọn trước đó (mỗi học sinh chỉ tự chọn 1 lớp; lớp do giáo viên thêm tay được giữ nguyên)
+    db.prepare("DELETE FROM group_members WHERE user_id=? AND source='self' AND group_id<>?").run(req.user.id, gid || -1);
+    let name = null, backfilled = 0;
+    if (gid) {
+      const g = db.prepare('SELECT id,name,self_join FROM groups WHERE id=?').get(gid);
+      if (!g || !g.self_join) { db.exec('ROLLBACK'); return res.status(400).json({ error: 'Lớp này không mở cho học sinh tự chọn.' }); }
+      name = g.name;
+      if (!db.prepare('SELECT id FROM group_members WHERE group_id=? AND user_id=?').get(gid, req.user.id))
+        db.prepare("INSERT INTO group_members (group_id,user_id,added_at,source) VALUES (?,?,?,'self')").run(gid, req.user.id, now());
+      // lời mời theo email (nếu giáo viên đã mời trước) thì gộp luôn
+      db.prepare('DELETE FROM group_members WHERE group_id=? AND user_id IS NULL AND invited_email=?').run(gid, req.user.email);
+      backfilled = backfillGroupAssignments(req.user, gid, name);
+    }
+    db.exec('COMMIT');
+    res.json({ ok: true, class: name, backfilled });
+  } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
+});
+
+// ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────
+app.get('/api/teacher/tracker', requireRole('teacher','admin'), (req, res) => {
+  const admin = req.user.role === 'admin';
+  const rows = db.prepare(`
+    SELECT a.id AS aid, a.student_email, a.deadline, a.created_at AS assigned_at, a.group_id,
+           e.id AS exercise_id, e.title, e.program, e.skill,
+           u.id AS student_id, u.name AS student_name,
+           sub.id AS sub_id, sub.status, sub.score, sub.max_score, sub.submitted_at
+    FROM assignments a
+    JOIN exercises e ON e.id = a.exercise_id
+    LEFT JOIN users u ON u.email = a.student_email
+    LEFT JOIN submissions sub ON sub.id = (SELECT s2.id FROM submissions s2 WHERE s2.user_id = u.id AND s2.exercise_id = a.exercise_id ORDER BY s2.id DESC LIMIT 1)
+    ${admin ? '' : 'WHERE a.assigned_by = ?'}
+    ORDER BY a.id DESC LIMIT 20000
+  `).all(...(admin ? [] : [req.user.id]));
+  const ids = [...new Set(rows.map(r => r.student_id).filter(Boolean))];
+  const cls = new Map();
+  if (ids.length) {
+    for (let i = 0; i < ids.length; i += 500) {
+      const part = ids.slice(i, i + 500);
+      for (const m of db.prepare(`SELECT gm.user_id, g.id, g.name FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.user_id IN (${part.map(() => '?').join(',')})`).all(...part)) {
+        if (!cls.has(m.user_id)) cls.set(m.user_id, []); cls.get(m.user_id).push({ id: m.id, name: m.name });
+      }
+    }
+  }
+  const groups = db.prepare(`SELECT g.id, g.name, g.self_join, (SELECT COUNT(*) FROM group_members m WHERE m.group_id=g.id AND m.user_id IS NOT NULL) AS members FROM groups g ORDER BY g.name COLLATE NOCASE`).all();
+  res.json({ now: Date.now(), groups, rows: rows.map(r => ({ ...r, classes: cls.get(r.student_id) || [] })) });
+});
+const _remindAt = new Map();
+app.post('/api/teacher/remind', requireRole('teacher','admin'), (req, res) => {
+  const ids = Array.isArray((req.body || {}).ids) ? req.body.ids.map(Number).filter(Boolean).slice(0, 300) : [];
+  if (!ids.length) return res.status(400).json({ error: 'Chưa chọn bài nào.' });
+  let sent = 0, skipped = 0;
+  for (const id of ids) {
+    const a = db.prepare('SELECT a.id,a.student_email,a.assigned_by,a.exercise_id,a.deadline,e.title,e.skill FROM assignments a JOIN exercises e ON e.id=a.exercise_id WHERE a.id=?').get(id);
+    if (!a || (req.user.role !== 'admin' && a.assigned_by !== req.user.id)) { skipped++; continue; }
+    const u = db.prepare('SELECT id FROM users WHERE email=?').get(a.student_email); if (!u) { skipped++; continue; }
+    if (db.prepare('SELECT id FROM submissions WHERE user_id=? AND exercise_id=?').get(u.id, a.exercise_id)) { skipped++; continue; }
+    if (Date.now() - (_remindAt.get(id) || 0) < 6 * 3600e3) { skipped++; continue; }
+    _remindAt.set(id, Date.now());
+    notifyUser(u.id, 'assignment_reminder', '⏰ Nhắc làm bài: ' + a.title, a.deadline ? 'Hạn nộp: ' + a.deadline.replace('T', ' ') : 'Thầy/Cô nhắc bạn hoàn thành bài này nhé.', practiceUrlFor(a.skill, a.exercise_id, true));
+    sent++;
+  }
+  res.json({ ok: true, sent, skipped });
 });
 
 // Danh sách học sinh đã đăng ký (để teacher tìm kiếm khi thêm vào lớp)

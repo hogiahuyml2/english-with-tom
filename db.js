@@ -198,6 +198,27 @@ safeAlter('PRAGMA table_info(exercises)', [
   ['metadata',   'ALTER TABLE exercises ADD COLUMN metadata TEXT'],
 ]);
 
+// Ghi nhớ bài đã giao cho CẢ LỚP (để học sinh vào lớp sau vẫn nhận được bài còn hạn)
+tryExec(`
+CREATE TABLE IF NOT EXISTS group_assignments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  group_id INTEGER NOT NULL,
+  exercise_id INTEGER NOT NULL,
+  assigned_by INTEGER NOT NULL,
+  deadline TEXT,
+  note TEXT,
+  created_at TEXT NOT NULL,
+  UNIQUE(group_id, exercise_id)
+)`, 'group_assignments');
+
+// Lớp cho học sinh tự chọn trong Hồ sơ (self_join) + nguồn thêm thành viên (teacher | self | invite)
+safeAlter('PRAGMA table_info(groups)', [
+  ['self_join', 'ALTER TABLE groups ADD COLUMN self_join INTEGER NOT NULL DEFAULT 0'],
+]);
+safeAlter('PRAGMA table_info(group_members)', [
+  ['source', "ALTER TABLE group_members ADD COLUMN source TEXT NOT NULL DEFAULT 'teacher'"],
+]);
+
 safeAlter('PRAGMA table_info(assignments)', [
   ['group_id',      'ALTER TABLE assignments ADD COLUMN group_id INTEGER'],
   ['reminder_sent', 'ALTER TABLE assignments ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0'],

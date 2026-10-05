@@ -38,6 +38,17 @@
         </div>
       </div>
 
+      <div class="card" id="classCard" style="display:none;">
+        <div class="card-head"><h3>🏫 Lớp đang theo học</h3></div>
+        <div id="classMsg" style="display:none; margin-bottom:14px;" class="note"></div>
+        <div class="field">
+          <label>Lớp bạn đang theo học (để nhận bài tập theo lớp) — nếu là người dùng tự do có thể bỏ qua mục này:</label>
+          <select id="classSel"><option value="">— Không chọn (người dùng tự do) —</option></select>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;" id="classHint">Chọn đúng lớp của bạn, hệ thống sẽ tự đưa bạn vào lớp đó và bạn sẽ nhận bài tập giáo viên giao cho cả lớp.</div>
+        <button class="btn btn-primary" id="classBtn">Lưu lớp</button>
+      </div>
+
       <div class="card">
         <div class="card-head"><h3>🔒 Đổi mật khẩu</h3></div>
         <div id="pwMsg" style="display:none; margin-bottom:14px;" class="note"></div>
@@ -63,6 +74,24 @@
     document.getElementById('acName').textContent = u.name;
     document.getElementById('acInfo').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
     document.getElementById('acAvatar').textContent = (u.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
+  })();
+
+  /* Chọn lớp đang theo học (chỉ học sinh; chỉ hiện khi giáo viên đã mở lớp cho học sinh tự chọn) */
+  (async function(){
+    var d = await fetch('/api/me/classes',{credentials:'same-origin'}).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+    if (!d || !d.can_choose || !d.open.length) return;
+    var sel = document.getElementById('classSel'), mine = (d.mine.filter(function(m){ return m.source === 'self'; })[0]) || null;
+    d.open.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name; if (mine && mine.id === c.id) o.selected = true; sel.appendChild(o); });
+    var other = d.mine.filter(function(m){ return m.source !== 'self'; });
+    if (other.length) document.getElementById('classHint').textContent = 'Bạn cũng đã được giáo viên thêm vào: ' + other.map(function(m){ return m.name; }).join(', ') + '.';
+    document.getElementById('classCard').style.display = '';
+    document.getElementById('classBtn').onclick = async function(){
+      var btn = this, box = document.getElementById('classMsg'); btn.disabled = true;
+      var r = await fetch('/api/me/class',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({group_id: sel.value ? Number(sel.value) : null})});
+      var j = await r.json().catch(function(){ return {}; }); btn.disabled = false;
+      box.style.display = 'flex'; box.style.borderColor = 'transparent'; box.style.background = r.ok ? 'var(--success-soft)' : 'var(--warning-soft)'; box.style.color = r.ok ? 'var(--success)' : 'var(--warning)';
+      box.innerHTML = '<span>' + (r.ok ? '✅' : '⚠️') + '</span><div>' + (r.ok ? (j.class ? 'Đã vào lớp <b>' + j.class.replace(/[<>&]/g,'') + '</b>.' + (j.backfilled ? ' Bạn có ' + j.backfilled + ' bài tập của lớp — xem ở mục “Bài tập được giao”.' : '') : 'Đã bỏ chọn lớp (người dùng tự do).') : (j.error || 'Không lưu được.')) + '</div>';
+    };
   })();
 
   function msg(text, ok){
