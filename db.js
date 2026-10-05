@@ -218,6 +218,8 @@ safeAlter('PRAGMA table_info(groups)', [
   ['self_join', 'ALTER TABLE groups ADD COLUMN self_join INTEGER NOT NULL DEFAULT 0'],
 ]);
 safeAlter('PRAGMA table_info(groups)', [
+  ['lb_on',          'ALTER TABLE groups ADD COLUMN lb_on INTEGER NOT NULL DEFAULT 0'],   // 1 = học sinh trong lớp xem được bảng xếp hạng lớp
+  ['lb_anon',        'ALTER TABLE groups ADD COLUMN lb_anon INTEGER NOT NULL DEFAULT 0'], // 1 = ẩn tên các bạn khác (chỉ thấy tên mình)
   ['needs_approval', 'ALTER TABLE groups ADD COLUMN needs_approval INTEGER NOT NULL DEFAULT 0'], // 1 = học sinh tự chọn lớp phải chờ giáo viên duyệt
 ]);
 tryExec(`

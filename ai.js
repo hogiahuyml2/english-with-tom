@@ -120,7 +120,27 @@ function provider() {
   return null;
 }
 
+// AI giả lập chỉ để thử cục bộ (EWT_AI_MOCK=1). Bị vô hiệu hoá khi chạy trên Railway để không bao giờ chấm giả trên web thật.
+const AI_MOCK = () => process.env.EWT_AI_MOCK === '1' && !process.env.RAILWAY_ENVIRONMENT && !process.env.RAILWAY_PROJECT_ID;
+function mockGrade(exercise, essay, teacherNote, previousResult) {
+  const words = String(essay || '').split(/\s+/).filter(Boolean).length;
+  let base = Math.max(2, Math.min(4, Math.round(words / 25)));
+  const note = String(teacherNote || '');
+  const bump = /tăng|cao hơn|too low|hợp lý hơn|tốt hơn/i.test(note) ? 1 : /giảm|thấp hơn|too high/i.test(note) ? -1 : 0;
+  const crit = ['Content', 'Communicative Achievement', 'Organisation', 'Language'].map((n, i) => {
+    const sc = Math.max(0, Math.min(5, base + (i === 3 ? -1 : 0) + (i === 0 ? bump : 0)));
+    return { name: n, score: sc, max: 5, comment: '[giả lập] ' + n + (note && i === 0 ? ' — đã xem lại theo góp ý: ' + note.slice(0, 60) : '') };
+  });
+  const total = crit.reduce((a, c) => a + c.score, 0);
+  const firstWord = (String(essay || '').match(/[A-Za-z']{3,}/) || ['text'])[0];
+  return { overall_score: total, scale_label: 'B1 Preliminary (0–20)', criteria: crit,
+    summary: '[giả lập] Bài ' + words + ' từ.' + (previousResult ? ' (Chấm lại theo góp ý của giáo viên.)' : ''), suggestions: ['[giả lập] Thêm từ nối.'],
+    suggested_writing: '', suggested_notes: [], error_list: [{ severity: 'error', category: 'grammar', error: firstWord, correction: firstWord, explanation: '[giả lập]', rule: '[giả lập]' }],
+    annotations: [] };
+}
+
 function aiEnabled() {
+  if (AI_MOCK()) return true;
   const p = provider();
   if (p === 'gemini') return !!process.env.GEMINI_API_KEY;
   if (p === 'claude') return !!process.env.ANTHROPIC_API_KEY;
@@ -690,7 +710,10 @@ function buildUserText(exercise, essay, teacherNote, previousResult) {
       prevBlock = `\n\nKẾT QUẢ CHẤM LẦN TRƯỚC (giáo viên thấy CHƯA HỢP LÝ):\n` +
         `Tổng điểm: ${previousResult.overall_score ?? '?'} (${previousResult.scale_label || ''})\n` +
         `Điểm từng tiêu chí:\n${critLines}\n` +
-        `Nhận xét tổng quan cũ: ${previousResult.summary || '(không có)'}`;
+        `Nhận xét tổng quan cũ: ${previousResult.summary || '(không có)'}` +
+        ((previousResult.teacher_score != null && previousResult.teacher_score !== previousResult.overall_score)
+          ? `\nĐiểm tổng GIÁO VIÊN ĐÃ CHỈNH tay sau lần chấm đó: ${previousResult.teacher_score}${previousResult.teacher_max ? '/' + previousResult.teacher_max : ''} (giáo viên coi đây là mức hợp lý hơn)` : '') +
+        (previousResult.teacher_comment ? `\nNhận xét giáo viên đã viết cho học sinh sau lần chấm đó: ${previousResult.teacher_comment}` : '');
     }
     noteBlock = `\n\n⚠️ ĐÂY LÀ LẦN CHẤM LẠI — Giáo viên đã xem kết quả chấm trước đó và thấy CHƯA HỢP LÝ.${prevBlock}\n\n` +
       `GHI CHÚ CỦA GIÁO VIÊN (lý do/yêu cầu điều chỉnh):\n"""\n${teacherNote.trim()}\n"""\n\n` +
@@ -876,6 +899,7 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage, teacher
 }
 
 async function gradeWriting(exercise, essay, studentImage, teacherNote, previousResult) {
+  if (AI_MOCK()) { await new Promise(r => setTimeout(r, 400)); return mockGrade(exercise, essay, teacherNote, previousResult); }
   const p         = provider();
   const imageData = await fetchImageBase64(exercise.image_url);
   if (p === 'gemini') return gradeWithGemini(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null);

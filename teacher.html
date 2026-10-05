@@ -372,6 +372,7 @@
       <button class="btn" id="tabAssignBtn" onclick="showTab('assign')">📤 Giao bài riêng</button>
       <button class="btn" id="tabGradeBtn"  onclick="showTab('grade')">📥 Bài nộp &amp; chấm</button>
       <a class="btn" href="teacher-track.html" id="tabTrackBtn" style="border-color:var(--primary);color:var(--primary);font-weight:700;">📊 Theo dõi &amp; lọc</a>
+      <a class="btn" href="teacher-writing.html" id="tabWritingBtn" style="border-color:var(--primary);color:var(--primary);font-weight:700;">✍️ Chấm Writing hàng loạt</a>
       <a class="btn" href="teacher-grades.html" id="tabGradesBtn" style="border-color:var(--primary);color:var(--primary);font-weight:700;">📒 Sổ điểm lớp</a>
       <button class="btn" id="tabBankBtn"     onclick="showTab('bank')">📚 Ngân hàng đề</button>
       <button class="btn" id="tabStudentsBtn" onclick="showTab('students')">👩‍🎓 Học sinh của tôi</button>
@@ -652,6 +653,7 @@
               </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <a class="btn btn-sm" id="groupTrackLink" href="teacher-track.html" style="color:var(--primary);">📊 Bài nộp của lớp</a>
+                <button class="btn btn-sm" onclick="openPromoteModal()" style="color:var(--primary);font-weight:700;" title="Chuyển cả lớp lên lớp mới (vd. 10A4 → 11A4) chỉ một bấm">🎓 Lên lớp cuối năm</button>
                 <button class="btn btn-sm" onclick="renameCurrentGroup()">✏️ Đổi tên</button>
                 <button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="deleteCurrentGroup()">🗑️ Xoá lớp</button>
               </div>
@@ -673,6 +675,18 @@
             </label>
           </div>
 
+          <div class="card" style="margin-bottom:16px;" id="groupLbCard">
+            <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
+              <input type="checkbox" id="groupLbOn" style="width:20px;height:20px;margin-top:2px;" onchange="saveLb()">
+              <span><b>🏆 Hiện bảng xếp hạng lớp cho học sinh</b><br><span style="font-size:13px;color:var(--text-muted);">Bật lên thì học sinh trong lớp thấy mục “Xếp hạng lớp” ở trang Hồ sơ (theo điểm trung bình, số bài đã nộp, hoặc XP Luyện từ). Tắt đi thì học sinh không thấy gì.</span></span>
+            </label>
+            <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin:10px 0 0 30px;">
+              <input type="checkbox" id="groupLbAnon" style="width:18px;height:18px;margin-top:2px;" onchange="saveLb()">
+              <span><b>🙈 Ẩn tên các bạn khác</b> <span style="font-size:13px;color:var(--text-muted);">— mỗi em chỉ thấy tên và thứ hạng của chính mình, các bạn khác hiện là “Bạn học ẩn danh” (đỡ ngại cho em điểm thấp).</span></span>
+            </label>
+            <div style="margin:10px 0 0 30px;"><a class="btn btn-sm" id="groupLbPreview" href="#" onclick="previewLb();return false;">👁 Xem trước bảng xếp hạng</a></div>
+          </div>
+
           <!-- Thêm thành viên -->
           <div class="card" style="margin-bottom:16px;">
             <div class="card-head"><h3>➕ Thêm học sinh vào lớp</h3></div>
@@ -684,6 +698,17 @@
               <button class="btn btn-primary" style="height:42px;" onclick="addMemberToGroup()">Thêm</button>
             </div>
             <p id="addMemberMsg" style="font-size:13px;margin-top:8px;display:none;"></p>
+            <details style="margin-top:12px;" id="bulkAddBox">
+              <summary style="cursor:pointer;font-weight:700;color:var(--primary);">📋 Thêm nhiều học sinh cùng lúc (dán danh sách email)</summary>
+              <div style="margin-top:10px;">
+                <textarea id="bulkEmails" rows="5" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px;font:13.5px inherit;background:var(--surface);color:var(--text);" placeholder="Mỗi dòng một email (hoặc cách nhau bằng dấu phẩy):&#10;an@gmail.com&#10;binh@gmail.com"></textarea>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;">
+                  <button class="btn btn-primary btn-sm" onclick="bulkAddMembers()">Thêm tất cả</button>
+                  <span style="font-size:12.5px;color:var(--text-muted);">Email đã có tài khoản vào lớp ngay và nhận bài đã giao; email chưa đăng ký được lưu lời mời (tự vào lớp khi đăng ký). Tối đa 300 email/lần.</span>
+                </div>
+                <div id="bulkAddMsg" style="font-size:13px;margin-top:8px;"></div>
+              </div>
+            </details>
           </div>
 
           <!-- Danh sách thành viên -->
@@ -1270,7 +1295,7 @@
         list.innerHTML = '<p style="color:var(--text-faint);text-align:center;padding:20px 0;">Chưa có lớp nào. Bấm "+ Tạo lớp" để bắt đầu.</p>';
         return;
       }
-      window._grpSelf = {}; window._grpApr = {}; d.groups.forEach(function(g){ window._grpSelf[g.id] = g.self_join ? 1 : 0; window._grpApr[g.id] = g.needs_approval ? 1 : 0; });
+      window._allGroups = d.groups; window._grpLb = {}; window._grpSelf = {}; window._grpApr = {}; d.groups.forEach(function(g){ window._grpLb[g.id] = { on: !!g.lb_on, anon: !!g.lb_anon }; }); d.groups.forEach(function(g){ window._grpSelf[g.id] = g.self_join ? 1 : 0; window._grpApr[g.id] = g.needs_approval ? 1 : 0; });
       list.innerHTML = d.groups.map(function(g){
         var total = (g.member_count||0) + (g.pending_count||0);
         var pending = g.pending_count > 0 ? ' <span style="font-size:11px;color:var(--text-faint);">('+g.pending_count+' chờ đăng ký)</span>' : '';
@@ -1297,6 +1322,8 @@
       document.getElementById('groupDetailName').textContent = _currentGroupName;
       document.getElementById('groupSelfJoin').checked = !!(window._grpSelf && window._grpSelf[groupId]);
       document.getElementById('groupNeedsApproval').checked = !!(window._grpApr && window._grpApr[groupId]);
+      document.getElementById('groupLbOn').checked = !!(window._grpLb && window._grpLb[groupId] && window._grpLb[groupId].on);
+      document.getElementById('groupLbAnon').checked = !!(window._grpLb && window._grpLb[groupId] && window._grpLb[groupId].anon);
       document.getElementById('groupTrackLink').href = 'teacher-track.html?class=' + groupId;
       document.getElementById('groupDetailCount').textContent = (d.members||[]).length + ' thành viên';
       var ml = document.getElementById('memberList');
@@ -1304,7 +1331,9 @@
         ml.innerHTML = '<p style="color:var(--text-faint);padding:14px 0;">Lớp chưa có thành viên. Thêm học sinh bên trên.</p>';
         return;
       }
-      ml.innerHTML = '<table class="table"><thead><tr><th>Tên</th><th>Email</th><th>Trạng thái</th><th>Nguồn</th><th></th></tr></thead><tbody>'
+      window._members = d.members; _selMembers = {};
+      ml.innerHTML = '<div id="memberBulk" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;margin-bottom:8px;border-radius:12px;background:var(--primary-soft);font-size:13.5px;"></div>'
+        + '<table class="table"><thead><tr><th style="width:34px;"><input type="checkbox" id="memSelAll" onchange="memSelectAll(this.checked)" title="Chọn tất cả"></th><th>Tên</th><th>Email</th><th>Trạng thái</th><th>Nguồn</th><th></th></tr></thead><tbody>'
         + d.members.map(function(m){
           var displayName = m.name || '';
           var nameHtml = displayName && m.user_id
@@ -1312,7 +1341,7 @@
             : (displayName ? escHtml(displayName) : '<em style="color:var(--text-faint);">Chưa đăng ký</em>');
           var email = m.email || m.invited_email || '';
           var badge = m.user_id ? '' : '<span style="background:#fff3cd;color:#7a5c00;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:600;">Chờ đăng ký</span>';
-          return '<tr><td>'+nameHtml+'</td><td style="font-size:13px;">'+escHtml(email)+'</td><td>'+badge+'</td><td style="font-size:12px;color:var(--text-muted);">'+(m.source==='self'?'🔗 Tự chọn':'')+'</td>'
+          return '<tr><td><input type="checkbox" class="memChk" data-mid="'+m.id+'" onchange="memSelect()"></td><td>'+nameHtml+'</td><td style="font-size:13px;">'+escHtml(email)+'</td><td>'+badge+'</td><td style="font-size:12px;color:var(--text-muted);">'+(m.source==='self'?'🔗 Tự chọn':'')+'</td>'
             +'<td><button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="removeMember('+m.id+')">Xoá</button></td></tr>';
         }).join('')
         + '</tbody></table>';
@@ -1437,6 +1466,146 @@
   }
 
 
+
+  /* ===== THAO TÁC HÀNG LOẠT / LÊN LỚP / XẾP HẠNG ===== */
+  var _selMembers = {};
+  function gmFetch(url, method, body) {
+    return fetch(url,{method:method||'GET',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){ return r.json().then(function(d){ if (!r.ok && !d.error) d.error='Lỗi ('+r.status+')'; return d; }); });
+  }
+  function gmToast(html, ms) {
+    var el = document.getElementById('gmToast');
+    if (!el) { el = document.createElement('div'); el.id = 'gmToast'; el.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;z-index:9999;max-width:92vw;display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 8px 30px rgba(0,0,0,.3);'; document.body.appendChild(el); }
+    el.innerHTML = html; el.style.display = 'flex'; clearTimeout(el._t); el._t = setTimeout(function(){ el.style.display = 'none'; }, ms || 5000);
+    return el;
+  }
+  function gmModal(title, bodyHtml) {
+    var old = document.getElementById('gmModal'); if (old) old.remove();
+    var o = document.createElement('div'); o.id = 'gmModal';
+    o.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9990;display:grid;place-items:center;padding:16px;';
+    o.innerHTML = '<div style="background:var(--surface);color:var(--text);border-radius:18px;max-width:560px;width:100%;max-height:92vh;overflow:auto;padding:20px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35);"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;"><h3 style="margin:0;font-size:18px;">'+title+'</h3><button class="btn btn-sm" onclick="gmClose()">✕</button></div>'+bodyHtml+'</div>';
+    o.addEventListener('mousedown', function(e){ if (e.target === o) gmClose(); });
+    document.body.appendChild(o); return o;
+  }
+  function gmClose() { var o = document.getElementById('gmModal'); if (o) o.remove(); }
+  function otherGroupsOptions(sel) {
+    return (window._allGroups||[]).filter(function(g){ return g.id !== _currentGroupId; }).map(function(g){ return '<option value="'+g.id+'"'+(sel===g.id?' selected':'')+'>'+escHtml(g.name)+'</option>'; }).join('');
+  }
+
+  function memSelect() {
+    _selMembers = {}; document.querySelectorAll('.memChk').forEach(function(c){ if (c.checked) _selMembers[c.getAttribute('data-mid')] = 1; });
+    var n = Object.keys(_selMembers).length, bar = document.getElementById('memberBulk'); if (!bar) return;
+    var all = document.getElementById('memSelAll'); if (all) all.checked = n && n === document.querySelectorAll('.memChk').length;
+    if (!n) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    bar.innerHTML = '<b>Đã chọn '+n+' thành viên</b><span style="flex:1"></span><button class="btn btn-sm" onclick="openMoveModal(\'move\')">↪ Chuyển sang lớp khác…</button><button class="btn btn-sm" onclick="openMoveModal(\'copy\')">📋 Thêm vào lớp khác…</button><button class="btn btn-sm" style="color:var(--danger,#e53e3e);" onclick="bulkRemove()">🗑 Xoá khỏi lớp</button>';
+  }
+  function memSelectAll(on) { document.querySelectorAll('.memChk').forEach(function(c){ c.checked = on; }); memSelect(); }
+
+  function bulkRemove() {
+    var ids = Object.keys(_selMembers).map(Number); if (!ids.length) return;
+    if (!confirm('Xoá '+ids.length+' thành viên đã chọn khỏi lớp “'+_currentGroupName+'”?\n(Bài đã nộp và điểm của các em vẫn được giữ nguyên.)')) return;
+    gmFetch('/api/groups/'+_currentGroupId+'/members/remove','POST',{member_ids:ids}).then(function(d){
+      if (!d.ok) { alert('Lỗi: '+(d.error||'Không xoá được')); return; }
+      gmToast('Đã xoá '+d.removed+' thành viên khỏi lớp'); loadGroupDetail(_currentGroupId); loadGroups();
+    });
+  }
+
+  function openMoveModal(mode) {
+    var ids = Object.keys(_selMembers).map(Number); if (!ids.length) return;
+    var opts = otherGroupsOptions(); if (!opts) { alert('Bạn chưa có lớp nào khác. Hãy tạo lớp đích trước (hoặc dùng “Lên lớp cuối năm” để tạo lớp mới ngay).'); return; }
+    var isMove = mode !== 'copy';
+    gmModal(isMove ? '↪ Chuyển '+ids.length+' thành viên sang lớp khác' : '📋 Thêm '+ids.length+' thành viên vào lớp khác',
+      '<div class="field"><label>Lớp đích</label><select id="gmTo" style="width:100%;">'+opts+'</select></div>'
+      +'<p style="font-size:13px;color:var(--text-muted);margin:8px 0 14px;">'+(isMove?'Các em sẽ rời lớp “'+escHtml(_currentGroupName)+'” và vào lớp đích, nhận luôn các bài còn hạn của lớp đích.':'Các em vẫn ở lại lớp hiện tại và được thêm vào lớp đích.')+' Lịch sử bài nộp và điểm của các em được giữ nguyên.</p>'
+      +'<div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn" onclick="gmClose()">Huỷ</button><button class="btn btn-primary" id="gmGo">'+(isMove?'Chuyển ngay':'Thêm vào lớp đích')+'</button></div>');
+    document.getElementById('gmGo').onclick = function(){
+      var to = Number(document.getElementById('gmTo').value), btn = this; btn.disabled = true; var from = _currentGroupId;
+      gmFetch('/api/groups/members/move','POST',{from:from,to:to,member_ids:ids,mode:isMove?'move':'copy'}).then(function(d){
+        gmClose(); if (!d.ok) { alert('Lỗi: '+(d.error||'Không chuyển được')); return; }
+        var msg = (isMove?'Đã chuyển ':'Đã thêm ')+d.moved+' thành viên sang “'+escHtml(d.to.name)+'”'+(d.duplicates?' ('+d.duplicates+' đã có sẵn ở lớp đích)':'')+(d.backfilled?' · giao '+d.backfilled+' bài của lớp':'');
+        var el = gmToast(msg + (isMove && (d.moved||d.duplicates) ? ' <button class="btn btn-sm" id="gmUndo" style="color:#111;">↩ Hoàn tác</button>' : ''), 14000);
+        var u = document.getElementById('gmUndo'); if (u) u.onclick = function(){ u.disabled = true;
+          gmFetch('/api/groups/members/move','POST',{from:to,to:from,user_ids:d.user_ids,emails:d.emails,mode:'move'}).then(function(r){ gmToast(r.ok?'Đã hoàn tác':'Không hoàn tác được: '+(r.error||''), 4000); loadGroupDetail(_currentGroupId); loadGroups(); }); };
+        loadGroupDetail(_currentGroupId); loadGroups();
+      });
+    };
+  }
+
+  function suggestNextClass(name) {
+    return String(name||'').replace(/\d+/, function(n){ var v = parseInt(n,10); return (v >= 1 && v < 12) ? String(v+1) : n; });
+  }
+  function openPromoteModal() {
+    if (!_currentGroupId) return;
+    var total = (window._members||[]).length; if (!total) { alert('Lớp này chưa có thành viên để chuyển.'); return; }
+    var opts = otherGroupsOptions(), sug = suggestNextClass(_currentGroupName);
+    var exists = (window._allGroups||[]).filter(function(g){ return g.name.toLowerCase() === sug.toLowerCase() && g.id !== _currentGroupId; })[0];
+    gmModal('🎓 Lên lớp cuối năm: '+escHtml(_currentGroupName),
+      '<p style="margin:0 0 12px;font-size:14px;">Chuyển <b>cả '+total+' thành viên</b> của lớp này sang lớp mới. <b>Lịch sử bài nộp, điểm, hồ sơ của các em được giữ nguyên.</b></p>'
+      +'<div class="field"><label>Tên lớp mới (nếu chưa có, hệ thống tự tạo)</label><input type="text" id="gmNew" value="'+escHtml(exists ? '' : sug)+'" placeholder="VD: 11A4 LC2728"></div>'
+      +(opts ? '<div class="field"><label>…hoặc chọn một lớp đã có</label><select id="gmTo" style="width:100%;"><option value="">— Không chọn (dùng tên lớp mới ở trên) —</option>'+otherGroupsOptions(exists?exists.id:null)+'</select></div>' : '')
+      +'<label style="display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:13.5px;cursor:pointer;"><input type="checkbox" id="gmClose" checked style="width:18px;height:18px;margin-top:1px;"> <span><b>Đóng lớp cũ</b> — tắt “cho học sinh tự chọn” ở lớp cũ để năm sau các em không chọn nhầm.</span></label>'
+      +'<label style="display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:13.5px;cursor:pointer;"><input type="checkbox" id="gmCopy" style="width:18px;height:18px;margin-top:1px;"> <span><b>Giữ lại lớp cũ (chỉ sao chép, không chuyển)</b> — các em ở cả hai lớp; chọn nếu bạn muốn lớp cũ vẫn còn sổ điểm đầy đủ.</span></label>'
+      +'<div style="font-size:13px;margin:10px 0;"><a href="/api/teacher/gradebook.xlsx?class='+_currentGroupId+'" style="color:var(--primary);font-weight:700;">⬇️ Tải sổ điểm lớp cũ (Excel) để lưu trước khi chuyển</a></div>'
+      +'<div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn" onclick="gmClose()">Huỷ</button><button class="btn btn-primary" id="gmGo">🎓 Chuyển cả lớp</button></div>');
+    document.getElementById('gmGo').onclick = function(){
+      var sel = document.getElementById('gmTo'), toId = sel && sel.value ? Number(sel.value) : 0, nn = document.getElementById('gmNew').value.trim();
+      if (!toId && !nn) { alert('Hãy nhập tên lớp mới hoặc chọn một lớp đã có.'); return; }
+      var copy = document.getElementById('gmCopy').checked, closeOld = document.getElementById('gmClose').checked, from = _currentGroupId, fromName = _currentGroupName;
+      if (!confirm('Chuyển '+total+' thành viên từ “'+fromName+'” sang '+(toId ? 'lớp đã chọn' : '“'+nn+'”')+(copy?' (sao chép, giữ lớp cũ)':'')+'?')) return;
+      this.disabled = true;
+      gmFetch('/api/groups/'+from+'/promote','POST',{to_id:toId||undefined,new_name:toId?undefined:nn,mode:copy?'copy':'move',close_old:closeOld}).then(function(d){
+        gmClose(); if (!d.ok) { alert('Lỗi: '+(d.error||'Không chuyển được')); return; }
+        var msg = '🎓 Đã '+(copy?'thêm ':'chuyển ')+d.moved+' thành viên sang “'+escHtml(d.to.name)+'”'+(d.to.created?' (lớp mới được tạo)':'')+(d.duplicates?' · '+d.duplicates+' đã có sẵn':'')+(d.backfilled?' · giao '+d.backfilled+' bài':'');
+        gmToast(msg+' <button class="btn btn-sm" id="gmUndo" style="color:#111;">↩ Hoàn tác</button>', 20000);
+        var u = document.getElementById('gmUndo'); if (u) u.onclick = function(){ u.disabled = true;
+          gmFetch('/api/groups/members/move','POST',{from:d.to.id,to:from,user_ids:d.user_ids,emails:d.emails,mode:'move'}).then(function(r){
+            var p = d.closed_old ? gmFetch('/api/groups/'+from+'/selfjoin','PUT',{on:true}) : Promise.resolve();
+            p.then(function(){ gmToast(r.ok?'Đã hoàn tác':'Không hoàn tác được: '+(r.error||''), 4000); loadGroups(); loadGroupDetail(from); });
+          }); };
+        loadGroups(); loadGroupDetail(from);
+      });
+    };
+  }
+
+  function bulkAddMembers() {
+    if (!_currentGroupId) return;
+    var t = document.getElementById('bulkEmails').value, box = document.getElementById('bulkAddMsg');
+    if (!t.trim()) { box.innerHTML = '<span style="color:var(--warning);">Hãy dán danh sách email trước.</span>'; return; }
+    box.textContent = 'Đang thêm…';
+    gmFetch('/api/groups/'+_currentGroupId+'/members/bulk','POST',{emails:t}).then(function(d){
+      if (!d.ok) { box.innerHTML = '<span style="color:var(--danger,#e53e3e);">'+escHtml(d.error||'Không thêm được')+'</span>'; return; }
+      var parts = [];
+      if (d.added.length) parts.push('✅ Đã vào lớp: <b>'+d.added.length+'</b>'+(d.backfilled?' (giao '+d.backfilled+' bài)':''));
+      if (d.invited.length) parts.push('✉️ Chưa có tài khoản, đã lưu lời mời: <b>'+d.invited.length+'</b>');
+      if (d.existed.length) parts.push('↩ Đã có trong lớp: '+d.existed.length);
+      if (d.invalid.length) parts.push('⚠️ Email sai định dạng: <b>'+d.invalid.length+'</b> ('+d.invalid.slice(0,5).map(escHtml).join(', ')+(d.invalid.length>5?'…':'')+')');
+      box.innerHTML = parts.join('<br>');
+      if (!d.invalid.length) document.getElementById('bulkEmails').value = ''; else document.getElementById('bulkEmails').value = d.invalid.join('\n');
+      loadGroupDetail(_currentGroupId); loadGroups();
+    });
+  }
+
+  function saveLb() {
+    if (!_currentGroupId) return;
+    gmFetch('/api/groups/'+_currentGroupId+'/leaderboard','PUT',{on:document.getElementById('groupLbOn').checked,anon:document.getElementById('groupLbAnon').checked}).then(function(d){
+      if (!d.ok) { alert('Lỗi: '+(d.error||'Không lưu được')); return; }
+      window._grpLb[_currentGroupId] = { on: !!d.lb_on, anon: !!d.lb_anon }; gmToast(d.lb_on ? '🏆 Đã bật bảng xếp hạng cho lớp' : 'Đã tắt bảng xếp hạng', 2500);
+    });
+  }
+  function previewLb() {
+    var metric = 'avg';
+    function draw() {
+      gmFetch('/api/me/leaderboard?class='+_currentGroupId+'&metric='+metric).then(function(d){
+        var c = (d.classes||[])[0], h = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">' + Object.keys(d.metrics||{}).map(function(k){ return '<button class="btn btn-sm'+(k===metric?' btn-primary':'')+'" data-m="'+k+'">'+escHtml(d.metrics[k])+'</button>'; }).join('') + '</div>';
+        if (!c || !c.rows.length) h += '<p style="color:var(--text-faint);">Chưa có dữ liệu để xếp hạng (cần có học sinh đã nộp bài / có XP).</p>';
+        else h += '<table class="table"><thead><tr><th>Hạng</th><th>Học sinh</th><th>Thành tích</th></tr></thead><tbody>'+c.rows.map(function(r){ return '<tr><td><b>'+(r.rank===1?'🥇':r.rank===2?'🥈':r.rank===3?'🥉':r.rank)+'</b></td><td>'+escHtml(r.name)+'</td><td>'+escHtml(r.value)+'</td></tr>'; }).join('')+'</tbody></table>'+(c.anon?'<p style="font-size:12.5px;color:var(--text-muted);">Bạn đang xem tên thật. Học sinh sẽ thấy các bạn khác là “Bạn học ẩn danh”.</p>':'');
+        var m = gmModal('🏆 Xếp hạng lớp '+escHtml(_currentGroupName)+' (xem trước)', h);
+        m.querySelectorAll('[data-m]').forEach(function(b){ b.onclick = function(){ metric = b.getAttribute('data-m'); draw(); }; });
+      });
+    }
+    draw();
+  }
+
   /* ===== VIỆC CẦN LÀM HÔM NAY ===== */
   var _todo = null;
   function tdEsc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
@@ -1466,7 +1635,7 @@
       h += '</div>';
     }
     if (g.total) {
-      h += '<div class="todo-sec"><h4>📥 Bài chờ chấm <span style="font-weight:500;color:var(--text-faint);font-size:12.5px;">(cũ nhất lên đầu)</span></h4>';
+      h += '<div class="todo-sec"><h4>📥 Bài chờ chấm <span style="font-weight:500;color:var(--text-faint);font-size:12.5px;">(cũ nhất lên đầu)</span> <a class="btn btn-sm btn-primary" href="teacher-writing.html">✍️ Chấm Writing hàng loạt (AI chấm nháp)</a></h4>';
       g.items.forEach(function(it){
         var w = it.waiting_h >= 48 ? Math.round(it.waiting_h/24)+' ngày' : it.waiting_h+' giờ';
         h += '<div class="todo-row"><div class="tx"><b>'+tdEsc(it.student)+'</b> — '+tdEsc(it.title)+'<small>'+tdEsc(it.skill||'')+' · chờ '+w+'</small></div><button class="btn btn-sm btn-primary" onclick="todoGrade('+it.id+')">Chấm ngay</button></div>';

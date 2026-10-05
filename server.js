@@ -1716,6 +1716,7 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
   res.json({ ok: true });
 });
 
+const _aiGradeHits = new Map();
 // Giáo viên chấm bài bằng AI (dùng lại gradeWriting đã có)
 app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req, res) => {
   const subId = Number(req.params.id);
@@ -1735,6 +1736,12 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
   let previousResult = null;
   if (teacher_note && sub.feedback) {
     try { previousResult = typeof sub.feedback === 'string' ? JSON.parse(sub.feedback) : sub.feedback; } catch (e) { previousResult = null; }
+    if (previousResult) { previousResult.teacher_score = sub.score; previousResult.teacher_max = sub.max_score; } // điểm giáo viên đã chỉnh tay (nếu có)
+  }
+  { // chặn chấm AI quá nhiều trong 1 giờ (tránh tốn phí khi bấm nhầm hàng loạt)
+    const arr = (_aiGradeHits.get(req.user.id) || []).filter(t => Date.now() - t < 3600e3);
+    if (arr.length >= 300) return res.status(429).json({ error: 'Bạn đã chấm AI 300 bài trong 1 giờ qua. Hãy nghỉ một lát rồi chấm tiếp nhé.' });
+    arr.push(Date.now()); _aiGradeHits.set(req.user.id, arr);
   }
 
   let essay = '';
@@ -1760,6 +1767,17 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
       const m = result.scale_label.match(/\(0[–\-](\d+)\)/);
       if (m) maxScore = parseInt(m[1]);
     }
+    // Lịch sử các lần chấm: lần này là lần mấy, và tóm tắt các lần trước (kèm góp ý của giáo viên)
+    if (previousResult) {
+      result.rounds = (Array.isArray(previousResult.rounds) ? previousResult.rounds : []).concat([{
+        round: previousResult.round || 1, overall_score: previousResult.overall_score ?? null, scale_label: previousResult.scale_label || null,
+        final_score: previousResult.teacher_score ?? null, summary: previousResult.summary || '', teacher_comment: previousResult.teacher_comment || '',
+        teacher_note: String(teacher_note || '').slice(0, 2000), at: now(),
+      }]).slice(-5);
+      result.round = (previousResult.round || 1) + 1;
+      if (previousResult.visibility !== undefined) result.visibility = previousResult.visibility;
+      if (previousResult.teacher_comment) result.teacher_comment = previousResult.teacher_comment; // giữ nhận xét giáo viên đã viết cho học sinh
+    } else result.round = 1;
     // Lưu kết quả với status='pending_review' — chưa gửi cho học sinh
     db.prepare('UPDATE submissions SET feedback=?, score=?, max_score=?, status=? WHERE id=?')
       .run(JSON.stringify(result), result.overall_score ?? null, maxScore, 'pending_review', subId);
@@ -1823,16 +1841,15 @@ app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, re
   res.json({ ok: true });
 });
 
-// Giáo viên xác nhận & gửi kết quả chấm cho học sinh
-app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
-  const subId = Number(req.params.id);
-  const { score, max_score, teacher_comment, visibility, error_list, suggested_writing, criteria } = req.body || {};
+// Giáo viên xác nhận & gửi kết quả chấm cho học sinh (dùng cho cả gửi 1 bài và gửi hàng loạt)
+function finalizeGrade(subId, edits, req) {
+  const { score, max_score, teacher_comment, visibility, error_list, suggested_writing, criteria } = edits || {};
   const sub = db.prepare(`
     SELECT s.*, u.name AS student_name, u.email AS student_email, e.title AS exercise_title
     FROM submissions s JOIN users u ON u.id=s.user_id JOIN exercises e ON e.id=s.exercise_id
     WHERE s.id=?
   `).get(subId);
-  if (!sub) return res.status(404).json({ error: 'Không tìm thấy bài nộp.' });
+  if (!sub) return { status: 404, error: 'Không tìm thấy bài nộp.' };
   const feedbackJson = mergeTeacherEdits(sub.feedback, { teacher_comment, visibility, error_list, suggested_writing, criteria });
   const finalScore    = score    ?? sub.score;
   const finalMaxScore = max_score ?? sub.max_score ?? 5;
@@ -1842,13 +1859,13 @@ app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (r
   const scoreText = finalScore != null ? `${finalScore}/${finalMaxScore}` : 'Đã chấm';
   if (emailEnabled()) {
     const commentHtml = teacher_comment
-      ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${teacher_comment}</p>` : '';
+      ? `<p style="margin:14px 0;padding:12px;background:#f5f3ff;border-left:3px solid #7B6EF6;border-radius:6px">${htmlEsc(teacher_comment)}</p>` : '';
     sendBrevoEmail(
       { email: sub.student_email, name: sub.student_name },
       `Bài của bạn đã được chấm — ${sub.exercise_title}`,
       `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
         <h2 style="color:#6F58EE">✅ Bài của bạn đã được chấm!</h2>
-        <p>Bài tập: <b>${sub.exercise_title}</b></p>
+        <p>Bài tập: <b>${htmlEsc(sub.exercise_title)}</b></p>
         <p>Điểm số: <b style="font-size:20px;color:#6F58EE">${scoreText}</b></p>
         ${commentHtml}
         <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Xem kết quả chi tiết</a></p>
@@ -1856,7 +1873,70 @@ app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (r
     ).catch(() => {});
   }
   notifyUser(sub.user_id, 'grade_received', '✅ Bài của bạn đã được chấm!', sub.exercise_title, 'assigned.html?open=' + subId);
+  return { ok: true };
+}
+app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
+  const r = finalizeGrade(Number(req.params.id), req.body || {}, req);
+  if (r.error) return res.status(r.status || 400).json({ error: r.error });
   res.json({ ok: true });
+});
+
+// ───────────── CHẤM HÀNG LOẠT BÀI WRITING: hàng đợi + gửi nhiều bài một lúc ─────────────
+// Hàng đợi bài Writing của giáo viên (đề mình tạo hoặc mình giao; quản trị viên thấy tất cả)
+app.get('/api/teacher/writing-queue', requireRole('teacher','admin'), (req, res) => {
+  const admin = req.user.role === 'admin';
+  const scope = admin ? '' : 'AND (e.created_by = ? OR EXISTS (SELECT 1 FROM assignments a WHERE a.exercise_id = s.exercise_id AND a.assigned_by = ?))';
+  const sa = admin ? [] : [req.user.id, req.user.id];
+  const base = `FROM submissions s JOIN exercises e ON e.id = s.exercise_id JOIN users u ON u.id = s.user_id
+    WHERE LOWER(e.skill) = 'writing' AND UPPER(e.program) <> 'APTIS' AND s.answers LIKE '%essay%' ${scope}`;
+  const cnt = {};
+  for (const r of db.prepare(`SELECT s.status AS st, COUNT(*) AS c ${base} AND (s.status IN ('pending','pending_review') OR (s.status='graded' AND s.submitted_at >= datetime('now','-14 days'))) GROUP BY s.status`).all(...sa)) cnt[r.st] = r.c;
+  const want = String(req.query.status || 'todo');
+  const only = Number(req.query.only) || 0;
+  const stCond = only ? ('s.id = ' + only) : want === 'draft' ? "s.status = 'pending_review'" : want === 'sent' ? "s.status = 'graded' AND s.submitted_at >= datetime('now','-14 days')" : "s.status = 'pending'";
+  const exId = Number(req.query.exercise) || 0, gid = Number(req.query.class) || 0;
+  const rows = db.prepare(`SELECT s.id, s.user_id, s.exercise_id, s.answers, s.score, s.max_score, s.status, s.feedback, s.submitted_at,
+      u.name AS student_name, u.email AS student_email, e.title, e.program, e.task_type
+    ${base} AND ${stCond} ${exId ? 'AND s.exercise_id = ' + exId : ''}
+    ${gid ? 'AND EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = ' + gid + ' AND gm.user_id = s.user_id)' : ''}
+    ORDER BY s.submitted_at ASC LIMIT 300`).all(...sa);
+  const uids = [...new Set(rows.map(r => r.user_id))], cls = new Map();
+  for (let i = 0; i < uids.length; i += 400) {
+    const part = uids.slice(i, i + 400);
+    for (const m of db.prepare(`SELECT gm.user_id, g.name FROM group_members gm JOIN groups g ON g.id = gm.group_id WHERE gm.user_id IN (${part.map(() => '?').join(',')})`).all(...part)) {
+      if (!cls.has(m.user_id)) cls.set(m.user_id, []); cls.get(m.user_id).push(m.name);
+    }
+  }
+  const items = rows.map(r => {
+    let essay = ''; try { const a = JSON.parse(r.answers); essay = String(a.essay || ''); } catch (_) {}
+    let fb = null; try { fb = r.feedback ? JSON.parse(r.feedback) : null; } catch (_) {}
+    return {
+      id: r.id, student: { id: r.user_id, name: r.student_name, email: r.student_email }, classes: cls.get(r.user_id) || [],
+      exercise: { id: r.exercise_id, title: r.title, program: r.program }, submitted_at: r.submitted_at, status: r.status,
+      essay, words: essay.split(/\s+/).filter(Boolean).length, score: r.score, max_score: r.max_score,
+      ai: fb ? {
+        overall_score: fb.overall_score ?? null, scale_label: fb.scale_label || '', summary: fb.summary || '',
+        criteria: Array.isArray(fb.criteria) ? fb.criteria.map(c => ({ name: c.name, score: c.score, max: c.max, comment: c.comment || '' })) : [],
+        error_count: Array.isArray(fb.error_list) ? fb.error_list.length : 0, teacher_comment: fb.teacher_comment || '',
+        round: fb.round || 1, rounds: Array.isArray(fb.rounds) ? fb.rounds : [],
+      } : null,
+    };
+  });
+  const exMap = new Map(); for (const r of db.prepare(`SELECT e.id, e.title, COUNT(*) AS c ${base} AND ${stCond} GROUP BY e.id ORDER BY e.title`).all(...sa)) exMap.set(r.id, { id: r.id, title: r.title, count: r.c });
+  res.json({ counts: { todo: cnt.pending || 0, draft: cnt.pending_review || 0, sent: cnt.graded || 0 }, items, exercises: [...exMap.values()], ai_ready: aiEnabled() });
+});
+// Duyệt & gửi hàng loạt: chỉ các bài đã có điểm nháp (AI hoặc giáo viên) và đang ở trạng thái chờ duyệt
+app.post('/api/teacher/send-grade-batch', requireRole('teacher','admin'), (req, res) => {
+  const ids = Array.isArray((req.body || {}).ids) ? req.body.ids.map(Number).filter(Boolean).slice(0, 100) : [];
+  if (!ids.length) return res.status(400).json({ error: 'Chưa chọn bài nào.' });
+  let sent = 0; const skipped = [];
+  for (const id of ids) {
+    const s = db.prepare("SELECT s.id, s.status, s.score, e.created_by FROM submissions s JOIN exercises e ON e.id=s.exercise_id WHERE s.id=?").get(id);
+    if (!s || s.status !== 'pending_review' || s.score == null) { skipped.push(id); continue; }
+    if (req.user.role !== 'admin' && s.created_by !== req.user.id && !db.prepare('SELECT 1 FROM assignments a JOIN submissions x ON x.exercise_id=a.exercise_id WHERE x.id=? AND a.assigned_by=? LIMIT 1').get(id, req.user.id)) { skipped.push(id); continue; }
+    const r = finalizeGrade(id, {}, req); if (r.ok) sent++; else skipped.push(id);
+  }
+  res.json({ ok: true, sent, skipped });
 });
 
 // Giáo viên lấy bài mẫu AI cho một đề (từ submission_id)
@@ -2005,7 +2085,7 @@ app.get('/api/groups', requireRole('teacher','admin'), (req, res) => {
       COUNT(CASE WHEN gm.user_id IS NOT NULL THEN 1 END) AS member_count,
       COUNT(CASE WHEN gm.id IS NOT NULL AND gm.user_id IS NULL THEN 1 END) AS pending_count,
       COUNT(CASE WHEN gm.source = 'self' THEN 1 END) AS self_count,
-      g.self_join AS self_join, g.needs_approval AS needs_approval,
+      g.self_join AS self_join, g.needs_approval AS needs_approval, g.lb_on AS lb_on, g.lb_anon AS lb_anon,
       (SELECT COUNT(*) FROM group_join_requests r WHERE r.group_id=g.id) AS request_count
     FROM groups g
     LEFT JOIN users u ON u.id = g.teacher_id
@@ -2060,6 +2140,19 @@ app.get('/api/groups/:id/members', requireRole('teacher','admin'), (req, res) =>
 });
 
 // Thêm thành viên vào lớp (theo email)
+function sendInviteEmail(req, mail, groupName) {
+  if (!emailEnabled()) return;
+  const link = baseUrl(req) + '/login.html';
+  sendBrevoEmail({ email: mail, name: mail },
+    `Bạn được mời tham gia lớp ${groupName} — English With Tom`,
+    `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
+      <h2 style="color:#6F58EE">Lời mời tham gia lớp học</h2>
+      <p>Giáo viên đã mời bạn tham gia lớp <b>${htmlEsc(groupName)}</b> trên <b>English With Tom</b>.</p>
+      <p>Hãy đăng ký tài khoản với đúng địa chỉ email này để tự động vào lớp:</p>
+      <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Đăng ký / Đăng nhập</a></p>
+    </div>`
+  ).catch(() => {});
+}
 app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, res) => {
   const groupId = Number(req.params.id);
   const grp = db.prepare('SELECT id,name FROM groups WHERE id=?').get(groupId);
@@ -2081,18 +2174,7 @@ app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, 
     const existing = db.prepare('SELECT id FROM group_members WHERE group_id=? AND invited_email=?').get(groupId, mail);
     if (existing) return res.status(409).json({ error: 'Email này đã được mời vào lớp.' });
     db.prepare('INSERT INTO group_members (group_id,invited_email,added_at) VALUES (?,?,?)').run(groupId, mail, now());
-    if (emailEnabled()) {
-      const link = baseUrl(req) + '/login.html';
-      sendBrevoEmail({ email: mail, name: mail },
-        `Bạn được mời tham gia lớp ${grp.name} — English With Tom`,
-        `<div style="font-family:sans-serif;font-size:15px;color:#2E2B45;line-height:1.7">
-          <h2 style="color:#6F58EE">Lời mời tham gia lớp học</h2>
-          <p>Giáo viên đã mời bạn tham gia lớp <b>${grp.name}</b> trên <b>English With Tom</b>.</p>
-          <p>Hãy đăng ký tài khoản với đúng địa chỉ email này để tự động vào lớp:</p>
-          <p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#6F58EE;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">Đăng ký / Đăng nhập</a></p>
-        </div>`
-      ).catch(() => {});
-    }
+    sendInviteEmail(req, mail, grp.name);
     res.json({ ok: true, status: 'invited', email: mail });
   }
 });
@@ -2185,7 +2267,7 @@ app.put('/api/me/class', requireAuth, (req, res) => {
     res.json({ ok: true, class: name, backfilled, pending });
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
 });
-require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin });
+require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });
 
 // ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────
 app.get('/api/teacher/tracker', requireRole('teacher','admin'), (req, res) => {

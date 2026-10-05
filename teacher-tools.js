@@ -3,7 +3,7 @@
 const { buildXlsx } = require('./xlsx-lib');
 
 module.exports = function (app, deps) {
-  const { db, requireRole, notifyUser, now, applySelfJoin } = deps;
+  const { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail } = deps;
   const T = requireRole('teacher', 'admin');
   const isAdmin = (u) => u.role === 'admin';
   const DAY = 86400000;
@@ -291,5 +291,158 @@ module.exports = function (app, deps) {
       timeline: timeline.slice(-60), skills, programs, criteria_weak: criteria.slice(0, 4), criteria_strong: criteria.slice().reverse().slice(0, 3).filter(c => c.avg >= 70),
       outstanding: outstanding.slice(0, 40), recent: recent.slice(-12).reverse(), placement,
     });
+  });
+
+  /* ───────────────────────── 6. THAO TÁC HÀNG LOẠT VỚI LỚP ───────────────────────── */
+  // Trả về lớp nếu người dùng quản lý được (admin hoặc giáo viên tạo lớp)
+  function manageable(user, gid) {
+    const g = db.prepare('SELECT id,name,teacher_id,self_join,needs_approval,lb_on,lb_anon FROM groups WHERE id=?').get(Number(gid));
+    if (!g) return { status: 404, error: 'Không tìm thấy lớp.' };
+    if (!isAdmin(user) && g.teacher_id !== user.id) return { status: 403, error: 'Lớp “' + g.name + '” không phải lớp của bạn.' };
+    return { g };
+  }
+  const EMAIL_RE = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/;
+
+  // Thêm nhiều học sinh một lúc: dán danh sách email (mỗi dòng/cách nhau bởi dấu , ;)
+  app.post('/api/groups/:id/members/bulk', T, (req, res) => {
+    const m = manageable(req.user, req.params.id); if (m.error) return res.status(m.status).json({ error: m.error });
+    const g = m.g, raw = (req.body || {}).emails;
+    const list = (Array.isArray(raw) ? raw.join('\n') : String(raw || '')).split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
+    const uniq = [...new Set(list)]; if (!uniq.length) return res.status(400).json({ error: 'Hãy dán danh sách email (mỗi dòng một email).' });
+    if (uniq.length > 300) return res.status(400).json({ error: 'Mỗi lần thêm tối đa 300 email.' });
+    const out = { added: [], invited: [], existed: [], invalid: [] }; let backfilled = 0;
+    for (const mail of uniq) {
+      if (!EMAIL_RE.test(mail)) { out.invalid.push(mail); continue; }
+      const u = db.prepare("SELECT id,name,email FROM users WHERE email=?").get(mail);
+      if (u) {
+        if (db.prepare('SELECT 1 FROM group_members WHERE group_id=? AND user_id=?').get(g.id, u.id)) { out.existed.push(mail); continue; }
+        db.prepare("INSERT INTO group_members (group_id,user_id,added_at,source) VALUES (?,?,?,'teacher')").run(g.id, u.id, now());
+        db.prepare('DELETE FROM group_join_requests WHERE user_id=? AND group_id=?').run(u.id, g.id);
+        db.prepare("UPDATE users SET class_choice='class' WHERE id=? AND role='student'").run(u.id);
+        backfilled += backfillGroupAssignments(u, g.id, g.name) || 0; out.added.push(mail);
+      } else {
+        if (db.prepare('SELECT 1 FROM group_members WHERE group_id=? AND invited_email=?').get(g.id, mail)) { out.existed.push(mail); continue; }
+        db.prepare('INSERT INTO group_members (group_id,invited_email,added_at) VALUES (?,?,?)').run(g.id, mail, now());
+        sendInviteEmail(req, mail, g.name); out.invited.push(mail);
+      }
+    }
+    res.json({ ok: true, ...out, backfilled });
+  });
+
+  // Chuyển / sao chép thành viên giữa hai lớp. Lịch sử bài nộp của học sinh luôn giữ nguyên (gắn với học sinh, không gắn với lớp).
+  function moveMembers(user, fromId, toId, sel, mode) {
+    const a = manageable(user, fromId); if (a.error) return a;
+    const b = manageable(user, toId); if (b.error) return b;
+    if (Number(fromId) === Number(toId)) return { status: 400, error: 'Lớp nguồn và lớp đích đang trùng nhau.' };
+    let rows;
+    if (sel.all) rows = db.prepare('SELECT * FROM group_members WHERE group_id=?').all(a.g.id);
+    else {
+      const ids = (sel.member_ids || []).map(Number).filter(Boolean), uids = (sel.user_ids || []).map(Number).filter(Boolean), ems = (sel.emails || []).map(x => String(x).toLowerCase());
+      rows = db.prepare('SELECT * FROM group_members WHERE group_id=?').all(a.g.id).filter(r => ids.includes(r.id) || (r.user_id && uids.includes(r.user_id)) || (r.invited_email && ems.includes(String(r.invited_email).toLowerCase())));
+    }
+    if (!rows.length) return { status: 400, error: 'Chưa chọn thành viên nào.' };
+    const res = { moved: 0, duplicates: 0, user_ids: [], emails: [], newUsers: [] };
+    try {
+      db.exec('BEGIN');
+      for (const r of rows) {
+        const dup = r.user_id ? db.prepare('SELECT 1 FROM group_members WHERE group_id=? AND user_id=?').get(b.g.id, r.user_id)
+          : db.prepare('SELECT 1 FROM group_members WHERE group_id=? AND invited_email=?').get(b.g.id, r.invited_email);
+        if (dup) res.duplicates++;
+        else {
+          db.prepare("INSERT INTO group_members (group_id,user_id,invited_email,added_at,source) VALUES (?,?,?,?,'teacher')").run(b.g.id, r.user_id || null, r.invited_email || null, now());
+          res.moved++; if (r.user_id) { res.user_ids.push(r.user_id); res.newUsers.push(r.user_id); db.prepare("UPDATE users SET class_choice='class' WHERE id=? AND role='student'").run(r.user_id); } else res.emails.push(r.invited_email);
+        }
+        if (mode !== 'copy') db.prepare('DELETE FROM group_members WHERE id=?').run(r.id);
+      }
+      db.exec('COMMIT');
+    } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[move-members]', e.message); return { status: 500, error: 'Không chuyển được, hãy thử lại.' }; }
+    let backfilled = 0;
+    for (const uid of res.newUsers) { const u = db.prepare('SELECT id,name,email FROM users WHERE id=?').get(uid); if (u) backfilled += backfillGroupAssignments(u, b.g.id, b.g.name) || 0; }
+    return { ok: true, from: a.g, to: b.g, moved: res.moved, duplicates: res.duplicates, user_ids: res.user_ids, emails: res.emails, backfilled };
+  }
+  app.post('/api/groups/members/move', T, (req, res) => {
+    const b = req.body || {}, r = moveMembers(req.user, b.from, b.to, b, b.mode === 'copy' ? 'copy' : 'move');
+    if (r.error) return res.status(r.status || 400).json({ error: r.error });
+    res.json({ ok: true, moved: r.moved, duplicates: r.duplicates, user_ids: r.user_ids, emails: r.emails, backfilled: r.backfilled, to: { id: r.to.id, name: r.to.name } });
+  });
+  app.post('/api/groups/:id/members/remove', T, (req, res) => {
+    const m = manageable(req.user, req.params.id); if (m.error) return res.status(m.status).json({ error: m.error });
+    const ids = Array.isArray((req.body || {}).member_ids) ? req.body.member_ids.map(Number).filter(Boolean).slice(0, 500) : [];
+    if (!ids.length) return res.status(400).json({ error: 'Chưa chọn thành viên nào.' });
+    let n = 0; for (const id of ids) n += db.prepare('DELETE FROM group_members WHERE id=? AND group_id=?').run(id, m.g.id).changes;
+    res.json({ ok: true, removed: n });
+  });
+
+  // 🎓 Lên lớp cuối năm: chuyển cả lớp (vd. 10A4 → 11A4) chỉ một bấm. Tạo lớp đích nếu chưa có.
+  app.post('/api/groups/:id/promote', T, (req, res) => {
+    const m = manageable(req.user, req.params.id); if (m.error) return res.status(m.status).json({ error: m.error });
+    const b = req.body || {}; let toId = Number(b.to_id) || 0, created = false;
+    if (!toId) {
+      const name = String(b.new_name || '').trim().slice(0, 80); if (!name) return res.status(400).json({ error: 'Hãy chọn lớp đích hoặc nhập tên lớp mới.' });
+      const ex = db.prepare('SELECT id FROM groups WHERE LOWER(name)=LOWER(?) AND (teacher_id=? OR ?=1)').get(name, req.user.id, isAdmin(req.user) ? 1 : 0);
+      if (ex) toId = ex.id;
+      else {
+        const r = db.prepare('INSERT INTO groups (name,teacher_id,self_join,needs_approval,lb_on,lb_anon) VALUES (?,?,?,?,?,?)').run(name, req.user.id, m.g.self_join ? 1 : 0, m.g.needs_approval ? 1 : 0, m.g.lb_on ? 1 : 0, m.g.lb_anon ? 1 : 0);
+        toId = Number(r.lastInsertRowid); created = true;
+      }
+    }
+    const r = moveMembers(req.user, m.g.id, toId, { all: true }, b.mode === 'copy' ? 'copy' : 'move');
+    if (r.error) { if (created) db.prepare('DELETE FROM groups WHERE id=?').run(toId); return res.status(r.status || 400).json({ error: r.error }); }
+    // đóng lớp cũ để học sinh năm sau không chọn nhầm
+    if (b.close_old !== false) db.prepare('UPDATE groups SET self_join=0 WHERE id=?').run(m.g.id);
+    res.json({ ok: true, to: { id: r.to.id, name: r.to.name, created }, moved: r.moved, duplicates: r.duplicates, user_ids: r.user_ids, emails: r.emails, backfilled: r.backfilled, mode: b.mode === 'copy' ? 'copy' : 'move', closed_old: b.close_old !== false });
+  });
+
+  /* ───────────────────────── 7. BẢNG XẾP HẠNG LỚP ───────────────────────── */
+  app.put('/api/groups/:id/leaderboard', T, (req, res) => {
+    const m = manageable(req.user, req.params.id); if (m.error) return res.status(m.status).json({ error: m.error });
+    const b = req.body || {};
+    db.prepare('UPDATE groups SET lb_on=?, lb_anon=? WHERE id=?').run(b.on ? 1 : 0, b.anon ? 1 : 0, m.g.id);
+    res.json({ ok: true, lb_on: b.on ? 1 : 0, lb_anon: b.anon ? 1 : 0 });
+  });
+
+  const METRICS = { avg: 'Điểm trung bình', done: 'Chăm chỉ (số bài đã nộp)', xp: 'XP Luyện từ' };
+  function boardOf(g, metric, viewerId, staff) {
+    const members = db.prepare('SELECT u.id, u.name, u.email FROM group_members gm JOIN users u ON u.id=gm.user_id WHERE gm.group_id=? AND u.role=\'student\'').all(g.id);
+    const exIds = [...new Set([...db.prepare('SELECT DISTINCT exercise_id AS e FROM assignments WHERE group_id=?').all(g.id), ...db.prepare('SELECT exercise_id AS e FROM group_assignments WHERE group_id=?').all(g.id)].map(r => r.e))];
+    const val = new Map();
+    if (metric === 'xp') {
+      for (const r of db.prepare(`SELECT user_id, xp FROM word_game WHERE user_id IN (${members.map(() => '?').join(',') || 'NULL'})`).all(...members.map(x => x.id))) val.set(r.user_id, r.xp);
+    } else if (exIds.length && members.length) {
+      const last = new Map();
+      for (const s of db.prepare(`SELECT user_id, exercise_id, score, max_score, status FROM submissions WHERE exercise_id IN (${exIds.map(() => '?').join(',')}) AND user_id IN (${members.map(() => '?').join(',')}) ORDER BY id ASC`).all(...exIds, ...members.map(x => x.id))) last.set(s.user_id + '|' + s.exercise_id, s);
+      const agg = new Map();
+      for (const s of last.values()) {
+        const o = agg.get(s.user_id) || { n: 0, sum: 0, g: 0 }; o.n++;
+        if (s.status === 'graded' && s.max_score) { o.sum += s.score / s.max_score * 100; o.g++; }
+        agg.set(s.user_id, o);
+      }
+      for (const [uid, o] of agg) { if (metric === 'done') val.set(uid, o.n); else if (o.g) val.set(uid, Math.round(o.sum / o.g)); }
+    }
+    const ranked = members.filter(x => val.has(x.id) && val.get(x.id) > 0 || (metric === 'avg' && val.has(x.id))).map(x => ({ id: x.id, name: x.name || x.email, v: val.get(x.id) }))
+      .sort((a, b) => b.v - a.v || String(a.name).localeCompare(String(b.name), 'vi'));
+    let rank = 0, prev = null;
+    ranked.forEach((r, i) => { if (r.v !== prev) { rank = i + 1; prev = r.v; } r.rank = rank; });
+    const fmt = (v) => metric === 'avg' ? v + '%' : metric === 'done' ? v + (exIds.length ? '/' + exIds.length : '') + ' bài' : v + ' XP';
+    const mask = (r) => (g.lb_anon && !staff && r.id !== viewerId) ? 'Bạn học ẩn danh' : r.name;
+    const meRow = ranked.find(r => r.id === viewerId) || null;
+    return {
+      id: g.id, name: g.name, anon: !!g.lb_anon, metric, total: ranked.length, class_size: members.length, exercises: exIds.length,
+      rows: ranked.slice(0, 10).map(r => ({ rank: r.rank, name: mask(r), value: fmt(r.v), me: r.id === viewerId })),
+      me: meRow ? { rank: meRow.rank, value: fmt(meRow.v), name: meRow.name } : null,
+    };
+  }
+  // Học sinh: các lớp mình đang học có bật bảng xếp hạng. Giáo viên/admin: ?class=ID để xem trước (thấy tên thật).
+  app.get('/api/me/leaderboard', (req, res) => {
+    if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });
+    const metric = METRICS[req.query.metric] ? String(req.query.metric) : 'avg';
+    const staff = req.user.role === 'teacher' || req.user.role === 'admin';
+    if (staff) {
+      const gid = Number(req.query.class) || 0; if (!gid) return res.json({ metrics: METRICS, classes: [] });
+      const m = manageable(req.user, gid); if (m.error) return res.status(m.status).json({ error: m.error });
+      return res.json({ metrics: METRICS, metric, classes: [boardOf(m.g, metric, 0, true)] });
+    }
+    const gs = db.prepare('SELECT g.id,g.name,g.lb_anon FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.user_id=? AND g.lb_on=1 ORDER BY g.name').all(req.user.id);
+    res.json({ metrics: METRICS, metric, classes: gs.map(g => boardOf(g, metric, req.user.id, false)) });
   });
 };

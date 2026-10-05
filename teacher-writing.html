@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chấm Writing hàng loạt — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=23">
+<style>
+.wb-wrap { max-width: 1100px; margin: 0 auto; padding: 14px 18px 90px; }
+.wb-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .wb-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 240px; }
+.wb-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .wb-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .wb-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; } .wb-btn.ok { background: #16a34a; color: #fff; border-color: transparent; } .wb-btn.sm { padding: 5px 11px; font-size: 12.5px; border-radius: 8px; } .wb-btn:disabled { opacity: .5; cursor: not-allowed; }
+.wb-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.wb-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; } .wb-tab { padding: 9px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; } .wb-tab.on { background: var(--gradient); color: #fff; border-color: transparent; } .wb-tab b { margin-left: 4px; opacity: .9; }
+.wb-f { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.wb-sel, .wb-in { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; } .wb-sel:focus, .wb-in:focus, .wb-ta:focus { outline: none; border-color: var(--primary); }
+.wb-bar { position: sticky; top: 64px; z-index: 20; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--surface); border: 1.5px solid var(--primary); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.wb-prog { flex: 1 1 220px; min-width: 180px; } .wb-prog .t { font-size: 13px; font-weight: 700; margin-bottom: 4px; } .wb-prog .b { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; } .wb-prog .b i { display: block; height: 100%; width: 0; background: var(--gradient); transition: width .3s; }
+.wb-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow); transition: border-color .2s; } .wb-card.sel { border-color: var(--primary); } .wb-card.busy { opacity: .75; pointer-events: none; }
+.wb-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; } .wb-head input[type=checkbox] { width: 18px; height: 18px; }
+.wb-name { font-weight: 800; font-size: 15.5px; color: inherit; text-decoration: none; } .wb-name:hover { color: var(--primary); }
+.wb-chip { display: inline-block; background: var(--primary-soft); color: var(--primary); border-radius: 99px; padding: 2px 10px; font-size: 12px; font-weight: 700; } .wb-chip.ex { background: var(--bg-soft); color: var(--text-muted); } .wb-chip.rd { background: #fde68a; color: #92400e; } .wb-chip.st { background: var(--success-soft); color: #166534; }
+.wb-meta { color: var(--text-muted); font-size: 12.5px; }
+.wb-essay { white-space: pre-wrap; background: var(--bg-soft); border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.7; max-height: 7.2em; overflow: hidden; position: relative; } .wb-essay.open { max-height: none; }
+.wb-more { background: none; border: none; color: var(--primary); font: 700 12.5px inherit; font-family: inherit; cursor: pointer; padding: 4px 0; }
+.wb-grade { display: grid; grid-template-columns: 210px 1fr; gap: 14px; margin-top: 12px; } @media (max-width: 760px) { .wb-grade { grid-template-columns: 1fr; } }
+.wb-score { background: linear-gradient(135deg, var(--primary-soft), var(--bg-soft)); border-radius: 14px; padding: 12px; text-align: center; } .wb-score .big { display: flex; align-items: baseline; justify-content: center; gap: 4px; } .wb-score input { width: 70px; font: 800 28px inherit; font-family: inherit; text-align: center; border: 1.5px solid var(--border); border-radius: 10px; padding: 2px; background: var(--surface); color: var(--text); } .wb-score .mx { font-size: 18px; font-weight: 700; color: var(--text-muted); } .wb-score small { display: block; margin-top: 4px; color: var(--text-muted); font-size: 12px; }
+.wb-crit { display: flex; gap: 8px; align-items: baseline; font-size: 13px; padding: 3px 0; border-bottom: 1px dashed var(--border); } .wb-crit b { flex: none; min-width: 150px; } .wb-crit .sc { flex: none; font-weight: 800; color: var(--primary); width: 44px; } .wb-crit span.cm { color: var(--text-muted); }
+.wb-sum { font-size: 13.5px; margin: 8px 0; line-height: 1.6; }
+.wb-ta { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 10px; font: 13.5px inherit; font-family: inherit; background: var(--surface); color: var(--text); resize: vertical; min-height: 56px; }
+.wb-lab { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .3px; margin: 10px 0 4px; }
+.wb-regr { border: 1.5px dashed #f59e0b; background: rgba(245,158,11,.07); border-radius: 12px; padding: 10px 12px; margin-top: 10px; }
+.wb-act { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.wb-hist { font-size: 12.5px; color: var(--text-muted); margin-top: 8px; } .wb-hist summary { cursor: pointer; font-weight: 700; color: #b45309; } .wb-hist div { padding: 4px 0; border-bottom: 1px dashed var(--border); }
+.wb-empty { text-align: center; color: var(--text-muted); padding: 50px 10px; }
+.wb-note { background: var(--warning-soft); color: #92400e; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; font-size: 13.5px; }
+.wb-err { color: #dc2626; font-size: 12.5px; margin-top: 6px; }
+.wb-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 92vw; } .wb-toast.on { opacity: 1; }
+.wb-spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: wbspin .8s linear infinite; vertical-align: -2px; } @keyframes wbspin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="wb-wrap">
+  <div class="wb-top">
+    <h1>✍️ Chấm Writing hàng loạt</h1>
+    <a class="wb-btn" href="teacher.html?tab=grade">📥 Bài nộp &amp; chấm (từng bài)</a>
+    <a class="wb-btn" href="teacher.html">← Khu vực giáo viên</a>
+  </div>
+  <div class="wb-box" style="font-size:13.5px;line-height:1.7">
+    <b>Cách dùng nhanh:</b> ① chọn các bài chưa chấm → bấm <b>🤖 AI chấm nháp</b> · ② đọc từng bài, sửa điểm / viết nhận xét cho học sinh · ③ nếu thấy AI chấm chưa hợp lý, ghi <b>góp ý</b> vào ô vàng rồi bấm <b>🔄 Chấm lại theo góp ý</b> (AI sẽ xem lại bài dựa trên kết quả lần trước và góp ý của bạn) · ④ chọn các bài đã ổn → <b>✅ Duyệt &amp; gửi</b>. Học sinh chỉ thấy kết quả sau khi bạn duyệt.
+  </div>
+  <div class="wb-tabs" id="tabs"></div>
+  <div class="wb-box wb-f" id="filters">
+    <select class="wb-sel" id="fEx" style="max-width:340px"><option value="">Tất cả đề Writing</option></select>
+    <select class="wb-sel" id="fCls"><option value="">Tất cả lớp</option></select>
+    <input class="wb-in" id="fQ" placeholder="🔍 Tìm tên học sinh…" style="flex:1;min-width:180px">
+    <button class="wb-btn" id="btnReload">🔄 Làm mới</button>
+  </div>
+  <div id="aiNote"></div>
+  <div class="wb-bar" id="bar" style="display:none"></div>
+  <div id="list"><div class="wb-empty"><span class="wb-spin"></span> Đang tải bài nộp…</div></div>
+</main>
+<div class="wb-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=31"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd'); }
+var tt; function toast(t, ms) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 2800); }
+function fd(t) { if (!t) return ''; var d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+function api(url, method, body) {
+  return fetch(url, { method: method || 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
+    return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.status = r.status; throw e; } return d; });
+  });
+}
+
+var TAB = 'todo', DATA = { counts: {}, items: [], exercises: [], ai_ready: true }, SEL = {}, DIRTY = {}, NOTES = {}, RUN = { on: false, cancel: false };
+var qs = new URLSearchParams(location.search); if (['todo', 'draft', 'sent'].indexOf(qs.get('status')) >= 0) TAB = qs.get('status');
+
+function load() {
+  var url = '/api/teacher/writing-queue?status=' + TAB + ($('fEx').value ? '&exercise=' + $('fEx').value : '') + ($('fCls').value ? '&class=' + $('fCls').value : '');
+  $('list').innerHTML = '<div class="wb-empty"><span class="wb-spin"></span> Đang tải bài nộp…</div>';
+  return api(url).then(function (d) {
+    DATA = d; SEL = {}; DIRTY = {}; NOTES = {};
+    var cur = $('fEx').value; $('fEx').innerHTML = '<option value="">Tất cả đề Writing</option>' + d.exercises.map(function (e) { return '<option value="' + e.id + '">' + esc(e.title) + ' (' + e.count + ')</option>'; }).join(''); $('fEx').value = cur;
+    var cls = {}; d.items.forEach(function (it) { it.classes.forEach(function (c) { cls[c] = 1; }); });
+    render();
+  }).catch(function (e) { $('list').innerHTML = '<div class="wb-empty">' + esc(e.message) + '</div>'; });
+}
+function loadClasses() {
+  api('/api/teacher/gradebook').then(function (d) { $('fCls').innerHTML = '<option value="">Tất cả lớp</option>' + (d.groups || []).map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join(''); var c = qs.get('class'); if (c) $('fCls').value = c; }).catch(function () {});
+}
+
+function visibleItems() { var q = norm($('fQ').value); return DATA.items.filter(function (it) { return !q || norm(it.student.name + ' ' + it.student.email).indexOf(q) >= 0; }); }
+function renderTabs() {
+  var c = DATA.counts || {};
+  $('tabs').innerHTML = [['todo', '📥 Chưa chấm', c.todo], ['draft', '🤖 Đã chấm nháp — chờ duyệt', c.draft], ['sent', '✅ Đã gửi (14 ngày)', c.sent]].map(function (t) { return '<button class="wb-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '<b>' + (t[2] || 0) + '</b></button>'; }).join('');
+  $('aiNote').innerHTML = DATA.ai_ready === false ? '<div class="wb-note">⚠️ Hệ thống AI chưa được cấu hình nên chưa chấm nháp tự động được. Bạn vẫn có thể mở từng bài để chấm tay.</div>' : '';
+}
+function selIds() { return Object.keys(SEL).filter(function (k) { return SEL[k]; }).map(Number); }
+function renderBar() {
+  var ids = selIds(), n = ids.length, vis = visibleItems(), bar = $('bar');
+  if (RUN.on) return;
+  if (TAB === 'sent' || !vis.length) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  var selDraft = ids.filter(function (id) { var it = find(id); return it && it.status === 'pending_review'; }).length;
+  var selTodo = ids.filter(function (id) { var it = find(id); return it && it.status === 'pending'; }).length;
+  bar.innerHTML = '<label style="display:flex;gap:6px;align-items:center;font-weight:700;font-size:13.5px"><input type="checkbox" id="selAll" style="width:18px;height:18px"' + (n && n === vis.length ? ' checked' : '') + '> Chọn tất cả (' + vis.length + ')</label><span style="font-size:13.5px;color:var(--text-muted)">Đã chọn <b>' + n + '</b></span><span style="flex:1"></span>' +
+    '<button class="wb-btn pri" id="btnAi"' + (selTodo && DATA.ai_ready !== false ? '' : ' disabled') + '>🤖 AI chấm nháp' + (selTodo ? ' (' + selTodo + ')' : '') + '</button>' +
+    '<button class="wb-btn ok" id="btnSend"' + (selDraft ? '' : ' disabled') + '>✅ Duyệt &amp; gửi' + (selDraft ? ' (' + selDraft + ')' : '') + '</button>';
+}
+function find(id) { for (var i = 0; i < DATA.items.length; i++) if (DATA.items[i].id === id) return DATA.items[i]; return null; }
+
+function cardHtml(it) {
+  var h = '<div class="wb-card' + (SEL[it.id] ? ' sel' : '') + '" id="c' + it.id + '" data-id="' + it.id + '"><div class="wb-head">' +
+    (TAB !== 'sent' ? '<input type="checkbox" data-sel="' + it.id + '"' + (SEL[it.id] ? ' checked' : '') + '>' : '') +
+    '<a class="wb-name" href="teacher-student.html?id=' + it.student.id + '" title="Mở hồ sơ học sinh">' + esc(it.student.name || it.student.email) + '</a>' +
+    it.classes.map(function (c) { return '<span class="wb-chip">' + esc(c) + '</span>'; }).join('') + '<span class="wb-chip ex">' + esc(it.exercise.title) + '</span>' +
+    '<span class="wb-meta">' + it.words + ' từ · nộp ' + fd(it.submitted_at) + '</span>' +
+    (it.ai && it.ai.round > 1 ? '<span class="wb-chip rd">Lần chấm ' + it.ai.round + '</span>' : '') +
+    '<span style="flex:1"></span>' + (it.status === 'graded' ? '<span class="wb-chip st">Đã gửi</span>' : '') + '</div>';
+  h += '<div class="wb-essay" id="e' + it.id + '">' + esc(it.essay) + '</div>' + (it.words > 90 ? '<button class="wb-more" data-more="' + it.id + '">▼ Xem hết bài</button>' : '');
+  if (it.ai) {
+    var a = it.ai, mx = it.max_score || (a.criteria[0] ? null : null), canEdit = it.status === 'pending_review';
+    h += '<div class="wb-grade"><div><div class="wb-score"><div class="big"><input type="number" step="0.5" min="0" data-score="' + it.id + '" value="' + (it.score == null ? '' : it.score) + '"' + (canEdit ? '' : ' disabled') + '><span class="mx">/ ' + (it.max_score == null ? '?' : it.max_score) + '</span></div><small>' + esc(a.scale_label || 'Điểm') + '</small><small>' + a.error_count + ' lỗi/gợi ý được đánh dấu</small></div></div><div>' +
+      a.criteria.map(function (c) { return '<div class="wb-crit"><b>' + esc(String(c.name).split('(')[0]) + '</b><span class="sc">' + c.score + '/' + c.max + '</span><span class="cm">' + esc(c.comment) + '</span></div>'; }).join('') +
+      (a.summary ? '<div class="wb-sum"><b>Nhận xét AI:</b> ' + esc(a.summary) + '</div>' : '') + '</div></div>';
+    if (a.rounds && a.rounds.length) h += '<details class="wb-hist"><summary>🕘 Xem ' + a.rounds.length + ' lần chấm trước</summary>' + a.rounds.map(function (r) { return '<div><b>Lần ' + r.round + ':</b> AI ' + (r.overall_score == null ? '?' : r.overall_score) + (r.final_score != null && r.final_score !== r.overall_score ? ' → thầy/cô chỉnh ' + r.final_score : '') + (r.teacher_note ? '<br>💬 Góp ý của bạn: “' + esc(r.teacher_note) + '”' : '') + '</div>'; }).join('') + '</details>';
+    if (canEdit) {
+      h += '<div class="wb-lab">Nhận xét gửi cho học sinh (tuỳ chọn)</div><textarea class="wb-ta" data-tc="' + it.id + '" placeholder="Vd: Bài có ý tưởng tốt, em chú ý thì quá khứ đơn…">' + esc(a.teacher_comment) + '</textarea>' +
+        '<div class="wb-regr"><div class="wb-lab" style="margin-top:0;color:#b45309">💬 Góp ý để AI chấm lại (không bắt buộc)</div><textarea class="wb-ta" data-note="' + it.id + '" placeholder="Vd: Điểm Content còn thấp, bài đã đủ ý theo yêu cầu đề. Language chấm hơi nghiêm, lỗi chính tả nhỏ không ảnh hưởng nhiều…">' + esc(NOTES[it.id] || '') + '</textarea>' +
+        '<div class="wb-act"><button class="wb-btn sm" data-regrade="' + it.id + '"' + (DATA.ai_ready === false ? ' disabled' : '') + '>🔄 Chấm lại theo góp ý</button><span class="wb-meta">AI sẽ đọc lại bài, xem kết quả lần trước, điểm bạn đã chỉnh và góp ý này rồi chấm mới.</span></div></div>' +
+        '<div class="wb-act"><button class="wb-btn sm" data-save="' + it.id + '">💾 Lưu chỉnh sửa</button><button class="wb-btn sm ok" data-send1="' + it.id + '">✅ Duyệt &amp; gửi bài này</button><a class="wb-btn sm" href="teacher.html?tab=grade&sub=' + it.id + '" target="_blank">🔍 Chi tiết (đánh dấu lỗi, bài mẫu)</a><span class="wb-meta" id="m' + it.id + '"></span></div>';
+    } else {
+      h += (a.teacher_comment ? '<div class="wb-sum"><b>Nhận xét của thầy/cô:</b> ' + esc(a.teacher_comment) + '</div>' : '') + '<div class="wb-act"><a class="wb-btn sm" href="teacher.html?tab=grade&sub=' + it.id + '" target="_blank">🔍 Mở chi tiết</a></div>';
+    }
+  } else {
+    h += '<div class="wb-act"><button class="wb-btn sm pri" data-ai1="' + it.id + '"' + (DATA.ai_ready === false ? ' disabled' : '') + '>🤖 AI chấm nháp bài này</button><a class="wb-btn sm" href="teacher.html?tab=grade&sub=' + it.id + '" target="_blank">✍️ Chấm tay</a><span class="wb-meta" id="m' + it.id + '"></span></div>';
+  }
+  return h + '</div>';
+}
+function captureEdits() { // giữ lại các chỉnh sửa chưa lưu khi vẽ lại danh sách (lọc/tìm/chọn tất cả)
+  DATA.items.forEach(function (it) {
+    var sc = document.querySelector('[data-score="' + it.id + '"]'), tc = document.querySelector('[data-tc="' + it.id + '"]'), nt = document.querySelector('[data-note="' + it.id + '"]');
+    if (sc && DIRTY[it.id]) it.score = sc.value === '' ? null : Number(sc.value);
+    if (tc && DIRTY[it.id] && it.ai) it.ai.teacher_comment = tc.value;
+    if (nt) NOTES[it.id] = nt.value;
+  });
+}
+function render() {
+  captureEdits(); renderTabs();
+  var vis = visibleItems();
+  if (!vis.length) $('list').innerHTML = '<div class="wb-empty">' + (TAB === 'todo' ? '🎉 Không còn bài Writing nào chưa chấm.' : TAB === 'draft' ? 'Chưa có bài nào đang chờ duyệt.' : 'Chưa có bài nào được gửi trong 14 ngày qua.') + '</div>';
+  else $('list').innerHTML = vis.map(cardHtml).join('');
+  renderBar();
+}
+function refreshCard(id) {
+  return api('/api/teacher/writing-queue?only=' + id).then(function (d) {
+    var it = d.items[0]; if (!it) return; var i = DATA.items.findIndex(function (x) { return x.id === id; }); if (i >= 0) DATA.items[i] = it; else return;
+    var el = $('c' + id); if (el) { var tmp = document.createElement('div'); tmp.innerHTML = cardHtml(it); el.replaceWith(tmp.firstChild); }
+    delete DIRTY[id]; delete NOTES[id]; renderBar();
+  });
+}
+function setMsg(id, t, bad) { var m = $('m' + id); if (m) { m.innerHTML = t; m.style.color = bad ? '#dc2626' : ''; } }
+function bump(from, to) { var c = DATA.counts; if (from) c[from] = Math.max(0, (c[from] || 0) - 1); if (to) c[to] = (c[to] || 0) + 1; renderTabs(); }
+
+/* ───── AI chấm nháp ───── */
+function aiGrade(id, note) {
+  var it = find(id), el = $('c' + id); if (el) el.classList.add('busy'); setMsg(id, '<span class="wb-spin"></span> AI đang chấm…');
+  var wasTodo = it && it.status === 'pending';
+  var pre = Promise.resolve();
+  if (note) pre = saveEdits(id, true); // lưu điểm/nhận xét bạn vừa chỉnh để AI thấy
+  return pre.then(function () { return api('/api/teacher/ai-grade/' + id, 'POST', note ? { teacher_note: note } : {}); }).then(function () {
+    if (wasTodo) bump('todo', 'draft'); return refreshCard(id);
+  }).catch(function (e) { if (el) el.classList.remove('busy'); setMsg(id, '⚠️ ' + esc(e.message), true); throw e; });
+}
+function runBatch(ids) {
+  if (RUN.on || !ids.length) return;
+  RUN = { on: true, cancel: false }; var done = 0, fail = 0, total = ids.length, q = ids.slice(), bar = $('bar'); bar.style.display = 'flex';
+  function paint() { bar.innerHTML = '<div class="wb-prog"><div class="t"><span class="wb-spin"></span> AI đang chấm nháp… ' + done + '/' + total + (fail ? ' · lỗi ' + fail : '') + '</div><div class="b"><i style="width:' + Math.round((done + fail) / total * 100) + '%"></i></div></div><button class="wb-btn" id="btnStop">⏹ Dừng</button>'; }
+  paint();
+  function worker() {
+    if (RUN.cancel || !q.length) return Promise.resolve();
+    var id = q.shift();
+    return aiGrade(id).then(function () { done++; }).catch(function (e) { fail++; if (e && e.status === 429) { RUN.cancel = true; toast(e.message, 5000); } }).then(function () { paint(); return worker(); });
+  }
+  Promise.all([worker(), worker()]).then(function () {
+    RUN.on = false; toast('Xong: đã chấm nháp ' + done + ' bài' + (fail ? ', ' + fail + ' bài lỗi (thử lại riêng từng bài)' : '') + (RUN.cancel && q.length ? ' · đã dừng, còn ' + q.length + ' bài' : ''), 5000);
+    if (TAB === 'todo') toast('Chuyển sang tab “Đã chấm nháp” để duyệt nhé.', 4500);
+    renderBar();
+  });
+}
+
+/* ───── lưu / gửi ───── */
+function saveEdits(id, quiet) {
+  var it = find(id); if (!it || it.status !== 'pending_review') return Promise.resolve();
+  var sc = document.querySelector('[data-score="' + id + '"]'), tc = document.querySelector('[data-tc="' + id + '"]'); if (!sc) return Promise.resolve();
+  var score = sc.value === '' ? null : Number(sc.value);
+  if (score != null && (isNaN(score) || score < 0 || (it.max_score && score > it.max_score))) { var e = new Error('Điểm phải từ 0 đến ' + it.max_score); setMsg(id, '⚠️ ' + e.message, true); return Promise.reject(e); }
+  return api('/api/teacher/save-draft/' + id, 'POST', { score: score, max_score: it.max_score, teacher_comment: tc ? tc.value : undefined }).then(function () {
+    it.score = score; if (it.ai && tc) it.ai.teacher_comment = tc.value; delete DIRTY[id]; if (!quiet) setMsg(id, '✓ Đã lưu');
+  });
+}
+function sendIds(ids) {
+  if (!ids.length) return;
+  var chain = Promise.resolve();
+  ids.forEach(function (id) { if (DIRTY[id]) chain = chain.then(function () { return saveEdits(id, true); }); });
+  chain.then(function () { return api('/api/teacher/send-grade-batch', 'POST', { ids: ids }); }).then(function (d) {
+    toast('✅ Đã gửi kết quả cho ' + d.sent + ' học sinh' + (d.skipped.length ? ' · bỏ qua ' + d.skipped.length + ' bài (chưa có điểm hoặc không phải bài của bạn)' : ''), 4500);
+    var sent = ids.filter(function (id) { return d.skipped.indexOf(id) < 0; });
+    DATA.items = DATA.items.filter(function (x) { return sent.indexOf(x.id) < 0; }); sent.forEach(function (id) { delete SEL[id]; });
+    DATA.counts.draft = Math.max(0, (DATA.counts.draft || 0) - sent.length); DATA.counts.sent = (DATA.counts.sent || 0) + sent.length; render();
+  }).catch(function (e) { toast('⚠️ ' + e.message, 4500); });
+}
+
+/* ───── sự kiện ───── */
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); history.replaceState(null, '', '?status=' + TAB); load(); return; }
+  if ((el = t.closest('[data-more]'))) { var id = el.getAttribute('data-more'), b = $('e' + id); b.classList.toggle('open'); el.textContent = b.classList.contains('open') ? '▲ Thu gọn' : '▼ Xem hết bài'; return; }
+  if ((el = t.closest('[data-ai1]'))) { aiGrade(Number(el.getAttribute('data-ai1'))).catch(function () {}); return; }
+  if ((el = t.closest('[data-regrade]'))) {
+    var rid = Number(el.getAttribute('data-regrade')), note = document.querySelector('[data-note="' + rid + '"]').value.trim();
+    if (!note) { setMsg(rid, '⚠️ Hãy ghi góp ý (điều bạn thấy chưa hợp lý) vào ô vàng trước khi chấm lại.', true); document.querySelector('[data-note="' + rid + '"]').focus(); return; }
+    aiGrade(rid, note).then(function () { toast('🔄 AI đã chấm lại theo góp ý của bạn — xem kết quả mới và các lần trước ở mục “Xem lần chấm trước”.', 4500); }).catch(function () {}); return;
+  }
+  if ((el = t.closest('[data-save]'))) { var sid = Number(el.getAttribute('data-save')); saveEdits(sid).catch(function (x) { setMsg(sid, '⚠️ ' + esc(x.message), true); }); return; }
+  if ((el = t.closest('[data-send1]'))) { sendIds([Number(el.getAttribute('data-send1'))]); return; }
+  if (t.id === 'btnAi') { var todo = selIds().filter(function (id) { var it = find(id); return it && it.status === 'pending'; }); if (!todo.length) return; if (todo.length > 30 && !confirm('Chấm nháp ' + todo.length + ' bài bằng AI? (có thể mất vài phút)')) return; runBatch(todo); return; }
+  if (t.id === 'btnStop') { RUN.cancel = true; t.disabled = true; t.textContent = 'Đang dừng…'; return; }
+  if (t.id === 'btnSend') { var dr = selIds().filter(function (id) { var it = find(id); return it && it.status === 'pending_review'; }); if (dr.length && confirm('Gửi kết quả chấm cho ' + dr.length + ' học sinh?\n(Học sinh sẽ nhận thông báo và xem được điểm.)')) sendIds(dr); return; }
+});
+document.addEventListener('change', function (e) {
+  var t = e.target;
+  if (t.hasAttribute && t.hasAttribute('data-sel')) { var id = Number(t.getAttribute('data-sel')); SEL[id] = t.checked; var c = $('c' + id); if (c) c.classList.toggle('sel', t.checked); renderBar(); }
+  else if (t.id === 'selAll') { visibleItems().forEach(function (it) { SEL[it.id] = t.checked; }); render(); }
+  else if (t.id === 'fEx' || t.id === 'fCls') load();
+});
+document.addEventListener('input', function (e) {
+  var t = e.target; if (!t.getAttribute) return;
+  var id = t.getAttribute('data-score') || t.getAttribute('data-tc'); if (id) DIRTY[Number(id)] = true;
+  if (t.id === 'fQ') render();
+});
+$('btnReload').onclick = function () { load(); };
+window.addEventListener('beforeunload', function (e) { if (Object.keys(DIRTY).length || RUN.on) { e.preventDefault(); e.returnValue = ''; } });
+loadClasses(); load();
+})();
+</script>
+</body>
+</html>

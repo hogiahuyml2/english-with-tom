@@ -391,6 +391,14 @@
 .prog-stat-name { font-size:13px; font-weight:700; color:var(--text); }
 .prog-stat-count { font-size:12px; color:var(--text-faint); margin-top:2px; }
 .prog-stat-best { font-size:18px; font-weight:800; color:var(--primary); line-height:1; margin-top:4px; }
+
+.lb-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 16px 18px; margin-bottom: 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.lb-card:before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg,#f59e0b,#f97316,#ec4899); }
+.lb-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; } .lb-head h3 { margin: 0; font-size: 17px; flex: 1; min-width: 160px; }
+.lb-tabs { display: flex; gap: 6px; flex-wrap: wrap; } .lb-tab { padding: 5px 12px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 600 12.5px inherit; font-family: inherit; cursor: pointer; } .lb-tab.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.lb-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 12px; font-size: 14px; } .lb-row.me { background: var(--primary-soft); font-weight: 800; box-shadow: inset 0 0 0 1.5px var(--primary); }
+.lb-rank { flex: none; width: 34px; text-align: center; font-weight: 800; font-size: 16px; } .lb-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .lb-val { flex: none; font-weight: 800; color: var(--primary); }
+.lb-note { font-size: 12.5px; color: var(--text-muted); margin-top: 8px; }
 </style>
 </head>
 <body data-page="dashboard" data-guard="auth">
@@ -421,6 +429,7 @@
     <div id="verifyBanner" style="display:none;"></div>
     <div id="clBanner" style="display:none;"></div>
     <div id="plBanner" style="display:none;"></div>
+    <div id="lbCard" style="display:none;"></div>
 
     <!-- Stat cards -->
     <div class="stat-grid">
@@ -982,6 +991,29 @@ async function loadProgress() {
       cb.innerHTML = (!mine && d.pending) ? '<span>⏳ Yêu cầu vào lớp <b>' + d.pending.name.replace(/[<>&]/g,'') + '</b> đang chờ giáo viên duyệt.</span><a class="btn btn-sm" href="account.html#classCard">Xem</a>' : mine ? '<span>🏫 Lớp của bạn: <b>' + mine.name.replace(/[<>&]/g,'') + '</b> — bài tập giáo viên giao cho lớp sẽ hiện ở “Bài tập được giao”.</span><a class="btn btn-sm" href="account.html">Đổi lớp</a>'
         : '<span>🏫 Bạn học lớp nào của thầy/cô? Chọn lớp để nhận bài tập theo lớp (bỏ qua nếu bạn tự học).</span><a class="btn btn-sm btn-primary" href="account.html">Chọn lớp</a>';
     }).catch(function(){});
+
+    var lbMetric = 'avg';
+    function lbLoad() {
+      fetch('/api/me/leaderboard?metric='+lbMetric,{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+        var box = document.getElementById('lbCard'); if (!d || !d.classes || !d.classes.length) { box.style.display = 'none'; return; }
+        function esc2(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+        var h = '';
+        d.classes.forEach(function(c, idx){
+          h += '<div class="lb-card"><div class="lb-head"><h3>🏆 Xếp hạng lớp '+esc2(c.name)+'</h3>' + (idx === 0 ? '<div class="lb-tabs">'+Object.keys(d.metrics).map(function(k){ return '<button class="lb-tab'+(k===d.metric?' on':'')+'" data-lbm="'+k+'">'+esc2(d.metrics[k])+'</button>'; }).join('')+'</div>' : '') + '</div>';
+          if (!c.rows.length) h += '<div class="lb-note">Chưa có ai trong lớp có dữ liệu để xếp hạng. Hãy làm bài để lên bảng nhé!</div>';
+          else {
+            h += c.rows.map(function(r){ return '<div class="lb-row'+(r.me?' me':'')+'"><span class="lb-rank">'+(r.rank===1?'🥇':r.rank===2?'🥈':r.rank===3?'🥉':r.rank)+'</span><span class="lb-name">'+esc2(r.name)+(r.me?' (bạn)':'')+'</span><span class="lb-val">'+esc2(r.value)+'</span></div>'; }).join('');
+            var inTop = c.rows.some(function(r){ return r.me; });
+            if (c.me && !inTop) h += '<div class="lb-row me" style="margin-top:6px"><span class="lb-rank">'+c.me.rank+'</span><span class="lb-name">'+esc2(c.me.name)+' (bạn)</span><span class="lb-val">'+esc2(c.me.value)+'</span></div>';
+            else if (!c.me) h += '<div class="lb-note">Bạn chưa có dữ liệu cho tiêu chí này — hãy làm bài để có tên trên bảng nhé!</div>';
+          }
+          h += (c.anon ? '<div class="lb-note">🙈 Tên các bạn khác được ẩn — chỉ bạn thấy tên của mình.</div>' : '') + '</div>';
+        });
+        box.innerHTML = h; box.style.display = '';
+        box.querySelectorAll('[data-lbm]').forEach(function(b){ b.onclick = function(){ lbMetric = b.getAttribute('data-lbm'); lbLoad(); }; });
+      }).catch(function(){});
+    }
+    lbLoad();
     fetch('/api/placement/status',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(st){
       if (!st) return; var pb = document.getElementById('plBanner'); var h = (st.history||[])[0];
       pb.className = 'note'; pb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px;background:var(--primary-soft);border-color:transparent;color:var(--text)';
