@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/favicon.png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Hồ sơ học sinh — English With Tom</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6F58EE">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=23">
+<link rel="stylesheet" href="css/style.css?v=24">
 <style>
 /* ── Bộ lọc ── */
 .filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
@@ -430,6 +434,7 @@
     <div id="clBanner" style="display:none;"></div>
     <div id="plBanner" style="display:none;"></div>
     <div id="lbCard" style="display:none;"></div>
+    <div id="ewtInstallMount"></div>
 
     <!-- Stat cards -->
     <div class="stat-grid">
@@ -568,7 +573,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=31"></script>
+<script src="js/main.js?v=32"></script>
 <script>
 var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
 var G_allSubs = [];
@@ -992,6 +997,7 @@ async function loadProgress() {
         : '<span>🏫 Bạn học lớp nào của thầy/cô? Chọn lớp để nhận bài tập theo lớp (bỏ qua nếu bạn tự học).</span><a class="btn btn-sm btn-primary" href="account.html">Chọn lớp</a>';
     }).catch(function(){});
 
+    if (window.ewtInstallCard) ewtInstallCard(document.getElementById('ewtInstallMount'));
     var lbMetric = 'avg';
     function lbLoad() {
       fetch('/api/me/leaderboard?metric='+lbMetric,{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){

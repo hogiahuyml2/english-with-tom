@@ -3,15 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/favicon.png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>English With Tom — Luyện thi chứng chỉ quốc tế</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6F58EE">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=23">
+<link rel="stylesheet" href="css/style.css?v=24">
 </head>
 <body data-page="home">
 <div id="site-header"></div>
@@ -103,6 +107,11 @@
         <div class="promo-body"><span class="promo-tag">Học mà chơi</span><h3>Trò chơi từ vựng theo chủ đề</h3><p>Đua xe, cứu công chúa, bong bóng chữ, thủ môn bắt bóng… chọn chủ đề thể thao, môi trường, giáo dục và chơi để nhớ từ lâu hơn.</p></div>
         <span class="promo-go">Chơi ngay →</span>
       </a>
+      <a class="promo promo-dict" href="dictation.html">
+        <div class="promo-ico">🎧</div>
+        <div class="promo-body"><span class="promo-tag">Luyện nghe</span><h3>Chép chính tả từ bản ghi Cambridge</h3><p>Nghe từng câu ngắn từ đề KET, PET, FCE, CAE rồi gõ lại. Mỗi lượt 10 câu ngẫu nhiên, chọn cấp độ A1 → C1, chấm từng từ và chỉ ra chỗ sai.</p></div>
+        <span class="promo-go">Luyện ngay →</span>
+      </a>
     </div>
   </div>
 </section>
@@ -135,7 +144,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=31"></script>
+<script src="js/main.js?v=32"></script>
 <script>
 // Người đã đăng nhập: bỏ lời mời đăng ký, đưa nút chính tới trang học
 fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {

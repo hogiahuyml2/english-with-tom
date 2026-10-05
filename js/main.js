@@ -55,6 +55,7 @@
     { href: 'vocabulary.html', label: '🃏 Flashcard chủ đề', pages: ['vocabulary'] },
     { href: 'arcade.html', label: '🎮 Trò chơi', pages: ['arcade'] },
     { href: 'practice.html', label: '✍️ Luyện câu', pages: ['practice'] },
+    { href: 'dictation.html', label: '🎧 Chép chính tả', pages: ['dictation'] },
     { href: 'lesson-vocab.html', label: '📘 Bộ từ được giao', pages: ['lesson-vocab'] }
   ];
   var inVocab = VOCAB_TABS.some(function (t) { return t.pages.indexOf(page) >= 0; });
@@ -80,7 +81,7 @@
         '<img class="brand-logo" src="images/logo-icon.png" alt="EWT" onerror="this.outerHTML=\'<span class=&quot;brand-logo&quot;>T</span>\'">' +
         '<span>English With Tom<small>Học tiếng Anh cùng Tom</small></span>' +
       '</a>' +
-      '<nav class="nav-links" id="navLinks">' + links + '</nav>' +
+      '<nav class="nav-links" id="navLinks">' + links + '<div class="nav-m-tools" id="navMTools"></div></nav>' +
       '<div class="nav-actions" id="navActions">' +
         '<button class="dark-toggle" id="paletteToggle" title="Đổi màu & hiệu ứng giao diện" aria-label="Đổi màu giao diện">🎨</button>' +
         '<button class="dark-toggle" id="darkToggle" title="Chuyển chế độ sáng/tối" aria-label="Toggle dark mode"></button>' +
@@ -133,7 +134,7 @@
   // Thanh tab "Luyện từ" dưới header (chỉ ở các trang thuộc nhóm này)
   if (inVocab) {
     var st = document.createElement('style');
-    st.textContent = '.vt-bar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:74px;z-index:90}.vt-in{display:flex;gap:6px;overflow-x:auto;padding:8px 20px;scrollbar-width:none}.vt-in::-webkit-scrollbar{display:none}.vt-tab{flex-shrink:0;padding:8px 15px;border-radius:99px;font-size:13.5px;font-weight:700;color:var(--text-muted);border:1.5px solid transparent;white-space:nowrap}.vt-tab:hover{background:var(--primary-soft);color:var(--text)}.vt-tab.on{background:var(--gradient);color:#fff}';
+    st.textContent = '.vt-bar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:74px;z-index:90}.vt-in{display:flex;gap:6px;overflow-x:auto;padding:8px 20px;scrollbar-width:none}.vt-in::-webkit-scrollbar{display:none}.vt-tab{flex-shrink:0;padding:8px 15px;border-radius:99px;font-size:13.5px;font-weight:700;color:var(--text-muted);border:1.5px solid transparent;white-space:nowrap}.vt-tab:hover{background:var(--primary-soft);color:var(--text)}.vt-tab.on{background:var(--gradient);color:#fff}@media(max-width:640px){.vt-bar{top:60px}.vt-in{padding:8px 14px}.vt-tab{padding:10px 14px}}';
     document.head.appendChild(st);
     var bar = document.createElement('div');
     bar.className = 'vt-bar';
@@ -274,6 +275,20 @@
     setTimeout(function () { if (!document.body) return; if (mini) showPill(); else document.body.appendChild(el); }, 900);
   }
 
+  /* Thanh công cụ trong menu ☰ trên điện thoại: các nút phụ (giao diện, chế độ tối, khu vực giáo viên, đăng xuất) dồn vào đây cho thanh trên cùng gọn, không tràn màn hình */
+  function fillTools(user) {
+    var box = document.getElementById('navMTools'); if (!box) return;
+    var h = '<button type="button" class="js-palette">🎨 Màu &amp; hiệu ứng</button><button type="button" id="mtDark">' + (isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối') + '</button>';
+    if (user && (user.role === 'teacher' || user.role === 'admin')) h += '<a href="teacher.html">👨‍🏫 Khu vực giáo viên</a>';
+    if (user && user.role === 'admin') h += '<a href="admin.html">⚙️ Quản trị</a>';
+    if (user) h += '<a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
+    else h += '<a href="login.html">Đăng nhập</a><a href="login.html#register" style="background:var(--gradient);color:#fff;border-color:transparent">Đăng ký</a>';
+    box.innerHTML = h;
+    var d = document.getElementById('mtDark'); if (d) d.onclick = function () { applyTheme(!isDark()); d.innerHTML = isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối'; };
+    var lo = document.getElementById('mtLogout'); if (lo) lo.onclick = function () { fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).then(function () { location.href = 'index.html'; }); };
+  }
+  fillTools(null);
+
   function escNameT(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function applyAuth(user) {
     var actions = document.getElementById('navActions');
@@ -281,9 +296,9 @@
       if (user) {
         var initials = escNameT((user.name || '?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase());
         var teacherLink = (user.role === 'teacher' || user.role === 'admin')
-          ? '<a class="btn btn-sm" href="teacher.html">Khu vực giáo viên</a>' : '';
+          ? '<a class="btn btn-sm nav-staff" href="teacher.html">Khu vực giáo viên</a>' : '';
         var adminLink = (user.role === 'admin')
-          ? '<a class="btn btn-sm" href="admin.html">Quản trị</a>' : '';
+          ? '<a class="btn btn-sm nav-staff" href="admin.html">Quản trị</a>' : '';
         // Chuông thông báo — hiện cho MỌI vai trò đã đăng nhập (học sinh, giáo viên, admin)
         var bellBtn = '<button type="button" id="navBellBtn" title="Thông báo" style="position:relative;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--primary-soft,#ECE9FE);color:var(--primary,#7B6EF6);border:none;cursor:pointer;font-size:17px;flex-shrink:0;transition:background .15s;" onmouseenter="this.style.background=\'var(--primary,#7B6EF6)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'var(--primary-soft,#ECE9FE)\';this.style.color=\'var(--primary,#7B6EF6)\'">🔔</button>';
         actions.innerHTML =
@@ -304,6 +319,7 @@
         };
         var mt2 = document.getElementById('menuToggle2');
         if (mt2) mt2.onclick = function () { document.getElementById('navLinks').classList.toggle('open'); };
+        fillTools(user);
       }
     }
 
@@ -463,37 +479,35 @@
     navigator.serviceWorker.register('/sw.js').catch(function () {});
   }
 
-  // Bắt sự kiện beforeinstallprompt để hiện nút cài app
-  var deferredInstall = null;
+  // Bắt sự kiện beforeinstallprompt (Chrome/Edge/Android): giữ lại để nút "Cài ứng dụng" trong Hồ sơ dùng được bất cứ lúc nào
   var installDismissed = localStorage.getItem('ewt-pwa-dismissed');
   var dismissedRecently = installDismissed && (Date.now() - Number(installDismissed) < 7 * 24 * 60 * 60 * 1000);
-
-  if (!dismissedRecently) {
-    window.addEventListener('beforeinstallprompt', function (e) {
-      e.preventDefault();
-      deferredInstall = e;
-      showInstallBanner();
-    });
-  }
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    window.ewtInstallPrompt = e;
+    document.dispatchEvent(new Event('ewt-install-ready'));
+    if (!dismissedRecently && !document.getElementById('ewtInstallMount')) showInstallBanner();
+  });
+  window.addEventListener('appinstalled', function () {
+    window.ewtInstallPrompt = null; window.ewtInstalled = true;
+    var b = document.getElementById('pwaInstallBanner'); if (b) b.remove();
+    document.dispatchEvent(new Event('ewt-installed'));
+  });
 
   function showInstallBanner() {
     if (document.getElementById('pwaInstallBanner')) return;
     var banner = document.createElement('div');
     banner.id = 'pwaInstallBanner';
     banner.innerHTML =
-      '<span style="flex:1">📱 <strong>Cài English With Tom</strong> lên màn hình chính — dùng offline!</span>' +
-      '<button id="pwaInstallBtn" style="background:#fff;color:#6F58EE;border:none;border-radius:8px;padding:7px 16px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:13px;">Cài ngay</button>' +
-      '<button id="pwaInstallClose" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;line-height:1;padding:0 0 0 8px;">×</button>';
-    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#6F58EE,#9b59b6);color:#fff;display:flex;align-items:center;gap:12px;padding:14px 16px;z-index:9999;font-size:14px;box-shadow:0 -4px 20px rgba(111,88,238,.3);';
+      '<span style="flex:1">📱 <strong>Cài English With Tom</strong> lên màn hình chính — mở nhanh như ứng dụng!</span>' +
+      '<button id="pwaInstallBtn" style="background:#fff;color:#6F58EE;border:none;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:13px;min-height:40px;">Cài ngay</button>' +
+      '<button id="pwaInstallClose" aria-label="Đóng" style="background:none;border:none;color:rgba(255,255,255,.8);font-size:22px;cursor:pointer;line-height:1;padding:6px 8px;min-width:40px;min-height:40px;">×</button>';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#6F58EE,#9b59b6);color:#fff;display:flex;align-items:center;gap:12px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));z-index:9000;font-size:14px;box-shadow:0 -4px 20px rgba(111,88,238,.3);';
     document.body.appendChild(banner);
-
     document.getElementById('pwaInstallBtn').onclick = function () {
-      if (!deferredInstall) return;
-      deferredInstall.prompt();
-      deferredInstall.userChoice.then(function () {
-        deferredInstall = null;
-        banner.remove();
-      });
+      var p = window.ewtInstallPrompt; if (!p) return;
+      p.prompt();
+      p.userChoice.then(function () { window.ewtInstallPrompt = null; banner.remove(); });
     };
     document.getElementById('pwaInstallClose').onclick = function () {
       banner.remove();
@@ -502,10 +516,75 @@
   }
 })();
 
+/* Thẻ hướng dẫn "Thêm vào màn hình chính" / cài ứng dụng — hiện trong Hồ sơ và Tài khoản.
+   Tự nhận diện thiết bị (iPhone/iPad, Android, máy tính) và trình duyệt (Safari, Chrome, Zalo/Facebook...) để chỉ đúng các bước. */
+window.ewtInstallCard = function (mount) {
+  if (!mount) return;
+  var ua = navigator.userAgent || '', plat = navigator.platform || '';
+  var isAndroid = /Android/i.test(ua);
+  var isIOS = /iPhone|iPad|iPod/.test(ua) || (!isAndroid && /Macintosh/.test(ua) && plat === 'MacIntel' && navigator.maxTouchPoints > 1); // iPad (iPadOS giả danh Mac) có màn hình cảm ứng
+  var inApp = /FBAN|FBAV|FB_IAB|Instagram|Zalo|Line\/|Messenger|MicroMessenger|TikTok|Snapchat/i.test(ua);
+  var isIOSSafari = isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua) && !inApp;
+  var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true || window.ewtInstalled;
+  var isMobile = isIOS || isAndroid;
+  var isSafariMac = !isMobile && /Safari/.test(ua) && !/Chrome|Chromium|Edg|OPR|Firefox/.test(ua);
+  var isFirefox = /Firefox/.test(ua) && !isIOS;
+  if (!document.getElementById('ewtInstCss')) {
+    var st = document.createElement('style'); st.id = 'ewtInstCss';
+    st.textContent = '.inst{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:16px 18px;margin-bottom:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}.inst:before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#6F58EE,#6FA8F5,#2E9E7B)}' +
+      '.inst-head{display:flex;gap:12px;align-items:center;margin-bottom:8px}.inst-ico{flex:none;width:48px;height:48px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)}.inst h3{margin:0;font-size:16.5px}.inst p{margin:0;font-size:13.5px;color:var(--text-muted);line-height:1.6}' +
+      '.inst-perks{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}.inst-perks span{font-size:12.5px;font-weight:700;background:var(--primary-soft);color:var(--primary);border-radius:99px;padding:3px 10px}' +
+      '.inst ol{margin:8px 0 4px;padding:0;list-style:none;counter-reset:s}.inst li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px dashed var(--border);font-size:14px;line-height:1.55}.inst li:before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--gradient);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;margin-top:1px}' +
+      '.inst li svg{vertical-align:-5px;margin:0 2px;width:22px;height:22px}.inst-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:12px;padding:12px 20px;background:var(--gradient);color:#fff;font:800 15px inherit;font-family:inherit;cursor:pointer;min-height:48px;width:100%;margin-top:6px}.inst-btn.ghost{background:var(--bg-soft);color:var(--text);border:1.5px solid var(--border);font-weight:700}' +
+      '.inst-ok{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:700;color:var(--success)}.inst-warn{background:var(--warning-soft);color:#92400e;border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.6;margin:8px 0}';
+    document.head.appendChild(st);
+  }
+  var SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="nút Chia sẻ"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+  var PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" aria-label="dấu cộng"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  var DOTS = '<svg viewBox="0 0 24 24" fill="#555" aria-label="menu ba chấm"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>';
+  function head(t, d) { return '<div class="inst-head"><img class="inst-ico" src="/images/icon-192.png" alt="" width="48" height="48"><div><h3>' + t + '</h3><p>' + d + '</p></div></div>'; }
+  var PERKS = '<div class="inst-perks"><span>⚡ Mở nhanh 1 chạm</span><span>🖥️ Toàn màn hình</span><span>🔔 Nhận nhắc bài tập</span></div>';
+  function render() {
+    var h;
+    if (standalone) {
+      h = '<div class="inst-ok">✅ Bạn đang dùng ứng dụng English With Tom đã cài trên thiết bị. Chúc bạn học tốt!</div>';
+    } else if (inApp) {
+      h = head('📱 Cài English With Tom lên màn hình chính', 'Bạn đang mở web trong ứng dụng khác (Zalo, Facebook, Messenger…) nên chưa cài được.') + PERKS +
+        '<div class="inst-warn">Hãy mở web bằng trình duyệt <b>' + (isIOS ? 'Safari' : 'Chrome') + '</b> trước:</div><ol><li><span>Bấm nút <b>⋯</b> (hoặc <b>⋮</b>) ở góc màn hình.</span></li><li><span>Chọn <b>“Mở bằng trình duyệt”</b> / <b>“Mở trong ' + (isIOS ? 'Safari' : 'Chrome') + '”</b>.</span></li><li><span>Vào lại trang <b>Hồ sơ</b> để làm tiếp bước cài đặt.</span></li></ol><button class="inst-btn ghost" id="instCopy">📋 Sao chép liên kết web</button>';
+    } else if (isIOS && !isIOSSafari) {
+      h = head('📱 Thêm vào màn hình chính (iPhone / iPad)', 'Trên iPhone, hãy mở web bằng <b>Safari</b> để thêm biểu tượng ứng dụng.') + PERKS +
+        '<ol><li><span>Mở <b>Safari</b> (biểu tượng la bàn xanh) rồi vào <b>engwithtom.online</b>.</span></li><li><span>Làm theo hướng dẫn trong thẻ này khi mở bằng Safari.</span></li></ol><button class="inst-btn ghost" id="instCopy">📋 Sao chép liên kết để dán vào Safari</button>';
+    } else if (isIOS) {
+      h = head('📱 Thêm vào màn hình chính', 'Chỉ 4 bước, không cần tải từ App Store — dùng như một ứng dụng thật.') + PERKS +
+        '<ol><li><span>Bấm nút <b>Chia sẻ</b> ' + SHARE + ' ở thanh công cụ của Safari (dưới cùng, hoặc trên cùng nếu bạn dùng iPad).</span></li><li><span>Kéo menu lên và chọn <b>“Thêm vào MH chính”</b> (<i>Add to Home Screen</i>) ' + PLUS + '.</span></li><li><span>Giữ nguyên tên <b>English With Tom</b>, bấm <b>“Thêm”</b> ở góc trên bên phải.</span></li><li><span>Mở biểu tượng mới trên màn hình chính — từ nay vào học chỉ 1 chạm. 🎉</span></li></ol>' +
+        '<div class="inst-warn" style="margin-bottom:0">💡 Không thấy “Thêm vào MH chính”? Kéo menu Chia sẻ xuống hết cỡ, hoặc bấm <b>“Chỉnh sửa tác vụ”</b>. Để nhận thông báo bài tập trên iPhone, bạn cần cài theo cách này (iOS 16.4 trở lên).</div>';
+    } else if (isAndroid) {
+      h = head('📱 Cài ứng dụng lên điện thoại', 'Cài như ứng dụng thật, không tốn dung lượng đáng kể.') + PERKS +
+        (window.ewtInstallPrompt ? '<button class="inst-btn" id="instGo">📲 Cài ứng dụng ngay</button>' :
+        '<ol><li><span>Bấm nút <b>menu ⋮</b> ' + DOTS + ' ở góc trên bên phải của Chrome.</span></li><li><span>Chọn <b>“Cài đặt ứng dụng”</b> hoặc <b>“Thêm vào màn hình chính”</b>.</span></li><li><span>Bấm <b>“Cài đặt”</b> / <b>“Thêm”</b> để xác nhận.</span></li></ol><div class="inst-warn" style="margin-bottom:0">Dùng Samsung Internet: bấm menu ☰ → <b>“Thêm trang vào”</b> → <b>“Màn hình chính”</b>.</div>');
+    } else if (isFirefox) {
+      h = head('💻 Cài ứng dụng', 'Firefox trên máy tính chưa hỗ trợ cài ứng dụng web. Hãy dùng Chrome hoặc Edge để cài.');
+    } else if (isSafariMac) {
+      h = head('💻 Thêm vào Dock (Safari trên Mac)', 'Biến web thành ứng dụng trên máy Mac.') + '<ol><li><span>Trên thanh menu, chọn <b>Tệp (File)</b> → <b>Thêm vào Dock</b>.</span></li><li><span>Bấm <b>Thêm</b> — ứng dụng xuất hiện trong Dock.</span></li></ol>';
+    } else {
+      h = head('💻 Cài ứng dụng lên máy tính', 'Mở nhanh từ màn hình nền, có cửa sổ riêng như ứng dụng thật.') + PERKS +
+        (window.ewtInstallPrompt ? '<button class="inst-btn" id="instGo">💻 Cài ứng dụng ngay</button>' : '<ol><li><span>Bấm biểu tượng <b>Cài đặt ứng dụng</b> ⊕ ở cuối thanh địa chỉ (bên phải), hoặc menu <b>⋮</b> → <b>“Truyền, lưu và chia sẻ”</b> → <b>“Cài đặt trang dưới dạng ứng dụng”</b>.</span></li><li><span>Bấm <b>Cài đặt</b>.</span></li></ol>');
+    }
+    mount.className = 'inst'; mount.innerHTML = h;
+    var go = document.getElementById('instGo'); if (go) go.onclick = function () { var p = window.ewtInstallPrompt; if (!p) return; p.prompt(); p.userChoice.then(function () { window.ewtInstallPrompt = null; render(); }); };
+    var cp = document.getElementById('instCopy'); if (cp) cp.onclick = function () {
+      var url = location.origin + '/'; var done = function () { cp.textContent = '✅ Đã sao chép — hãy dán vào ' + (isIOS ? 'Safari' : 'Chrome'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done).catch(function () { prompt('Sao chép liên kết này:', url); }); else prompt('Sao chép liên kết này:', url);
+    };
+  }
+  render();
+  document.addEventListener('ewt-install-ready', render); document.addEventListener('ewt-installed', render);
+};
+
 /* Hiệu ứng galaxy/stars + bộ chọn bảng màu */
 (function () {
   var s = document.createElement('script');
-  s.src = 'js/galaxy.js?v=5';
+  s.src = 'js/galaxy.js?v=6';
   s.async = true;
   document.head.appendChild(s);
 })();

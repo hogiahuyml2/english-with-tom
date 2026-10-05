@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Chép chính tả (Dictation) — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=24">
+<style>
+.dc-wrap { max-width: 860px; margin: 0 auto; padding: 16px 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.dc-h1 { font-size: 26px; margin: 4px 0 6px; } .dc-sub { color: var(--text-muted); font-size: 14.5px; line-height: 1.65; margin: 0 0 14px; }
+.dc-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.dc-card h3 { margin: 0 0 10px; font-size: 16px; }
+.dc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; } .dc-stat { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 12px; text-align: center; } .dc-stat b { display: block; font-size: 22px; } .dc-stat span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.dc-lv { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.dc-lvb { text-align: left; background: var(--surface); border: 2px solid var(--border); border-radius: 14px; padding: 12px 14px; cursor: pointer; font-family: inherit; color: var(--text); transition: border-color .15s, transform .1s; min-height: 76px; } .dc-lvb:hover { border-color: var(--primary); } .dc-lvb.on { border-color: var(--primary); background: var(--primary-soft); box-shadow: 0 0 0 3px rgba(123,110,246,.15); }
+.dc-lvb b { display: block; font-size: 16px; } .dc-lvb small { display: block; color: var(--text-muted); font-size: 12.5px; margin-top: 2px; } .dc-bar { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 8px; } .dc-bar i { display: block; height: 100%; background: var(--gradient); }
+.dc-seg { display: flex; gap: 8px; flex-wrap: wrap; } .dc-seg button { flex: 1 1 140px; padding: 11px 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; min-height: 46px; } .dc-seg button.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+.dc-go { width: 100%; margin-top: 4px; padding: 15px; border: none; border-radius: 14px; background: var(--gradient); color: #fff; font: 800 17px inherit; font-family: inherit; cursor: pointer; min-height: 52px; } .dc-go:disabled { opacity: .5; }
+.dc-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; background: var(--bg-soft); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
+.dc-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .dc-prog { flex: 1; height: 10px; background: var(--border); border-radius: 99px; overflow: hidden; } .dc-prog i { display: block; height: 100%; width: 0; background: var(--gradient); transition: width .3s; } .dc-top .n { font-weight: 800; font-size: 14px; white-space: nowrap; }
+.dc-quit { border: none; background: none; color: var(--text-muted); font: 600 13px inherit; font-family: inherit; cursor: pointer; padding: 8px; }
+.dc-player { text-align: center; padding: 22px 16px; }
+.dc-play { width: 96px; height: 96px; border-radius: 50%; border: none; background: var(--gradient); color: #fff; font-size: 38px; cursor: pointer; box-shadow: 0 10px 26px rgba(123,110,246,.4); transition: transform .12s; display: inline-grid; place-items: center; } .dc-play:active { transform: scale(.93); } .dc-play.playing { animation: dcPulse 1.2s ease-in-out infinite; }
+@keyframes dcPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(123,110,246,.5), 0 10px 26px rgba(123,110,246,.4); } 50% { box-shadow: 0 0 0 16px rgba(123,110,246,0), 0 10px 26px rgba(123,110,246,.4); } }
+.dc-ctl { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px; } .dc-chip { padding: 9px 16px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 42px; } .dc-chip.on { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); } .dc-chip:disabled { opacity: .5; }
+.dc-meta { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+.dc-ta { width: 100%; border: 2px solid var(--border); border-radius: 14px; padding: 12px 14px; font: 17px/1.6 inherit; font-family: inherit; background: var(--surface); color: var(--text); resize: none; min-height: 92px; } .dc-ta:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(123,110,246,.15); } .dc-ta:disabled { background: var(--bg-soft); }
+.dc-act { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; } .dc-btn { flex: 1 1 150px; padding: 13px 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font: 800 15px inherit; font-family: inherit; cursor: pointer; min-height: 48px; } .dc-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; } .dc-btn:disabled { opacity: .5; }
+.dc-res { animation: dcIn .3s ease both; } @keyframes dcIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.dc-score { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; } .dc-ring { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; font-weight: 800; color: #fff; flex: none; } .dc-ring.hi { background: #16a34a; } .dc-ring.mid { background: #f59e0b; } .dc-ring.lo { background: #ef4444; } .dc-ring.na { background: #94a3b8; font-size: 14px; }
+.dc-lab { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .3px; margin: 10px 0 4px; }
+.dc-line { font-size: 17px; line-height: 2; padding: 8px 12px; background: var(--bg-soft); border-radius: 12px; word-break: break-word; }
+.dc-w { padding: 1px 3px; border-radius: 6px; margin: 0 1px; } .dc-w.ok { color: #166534; } .dc-w.typo { background: #fef3c7; color: #92400e; } .dc-w.miss { background: #fee2e2; color: #991b1b; } .dc-w.extra { background: #fee2e2; color: #991b1b; text-decoration: line-through; } .dc-w em { font-style: normal; font-size: 12px; opacity: .85; }
+.dc-sum { text-align: center; } .dc-big { font-size: 56px; font-weight: 800; line-height: 1.1; }
+.dc-list { text-align: left; margin-top: 12px; } .dc-li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); } .dc-li:last-child { border: none; } .dc-li .sc { flex: none; width: 52px; text-align: center; font-weight: 800; border-radius: 10px; padding: 4px 0; color: #fff; font-size: 14px; } .dc-li .tx { flex: 1; font-size: 14.5px; line-height: 1.6; } .dc-li .tx small { color: var(--text-muted); display: block; }
+.dc-err { color: #dc2626; font-size: 13.5px; margin-top: 8px; }
+.dc-empty { text-align: center; color: var(--text-muted); padding: 40px 12px; }
+@media (max-width: 520px) { .dc-lv { grid-template-columns: repeat(2, 1fr); gap: 8px; } .dc-lvb { padding: 10px 11px; min-height: 0; } .dc-lvb b { font-size: 15px; } .dc-lvb small:nth-of-type(1) { display: none; } .dc-h1 { font-size: 22px; } .dc-stats { gap: 6px; } .dc-stat b { font-size: 19px; } .dc-play { width: 88px; height: 88px; } .dc-btn { flex-basis: 100%; } }
+</style>
+</head>
+<body data-page="dictation" data-guard="auth">
+<div id="site-header"></div>
+<main class="dc-wrap" id="root"><div class="dc-empty">⏳ Đang tải…</div></main>
+<div id="site-footer"></div>
+<script src="js/main.js?v=32"></script>
+<script>
+(function () {
+'use strict';
+var root = document.getElementById('root');
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function api(url, body) {
+  return fetch(url, { method: body ? 'POST' : 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
+    return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.status = r.status; throw e; } return d; });
+  });
+}
+var META = null, SEL = { lv: 'A2', kind: 'any', mode: 'dictate' }, RUN = null, I = 0, audio = null, rate = 1, plays = 0;
+try { var sv = JSON.parse(localStorage.getItem('ewt-dict-sel') || 'null'); if (sv) { SEL.lv = sv.lv || SEL.lv; SEL.kind = sv.kind || SEL.kind; SEL.mode = sv.mode || SEL.mode; } } catch (e) {}
+function save() { try { localStorage.setItem('ewt-dict-sel', JSON.stringify(SEL)); } catch (e) {} }
+
+/* ───── Màn hình chọn ───── */
+function setup(err) {
+  killAudio();
+  if (!META) { api('/api/dictation/meta').then(function (m) { META = m; setup(); }).catch(function (e) { root.innerHTML = '<div class="dc-empty">' + esc(e.message) + '</div>'; }); return; }
+  var lv = META.levels, all = { count: 0, seen: 0, single: 0, compound: 0 };
+  lv.forEach(function (L) { all.count += L.count; all.seen += L.seen; all.single += L.single; all.compound += L.compound; });
+  if (!META.ready) { root.innerHTML = '<div class="dc-empty">Ngân hàng câu chép chính tả chưa sẵn sàng. Vui lòng quay lại sau.</div>'; return; }
+  if (SEL.lv !== 'all' && !lv.some(function (L) { return L.lv === SEL.lv; })) SEL.lv = 'all';
+  var cur = SEL.lv === 'all' ? all : (lv.filter(function (L) { return L.lv === SEL.lv; })[0] || all);
+  var avail = SEL.kind === 'single' ? cur.single : SEL.kind === 'compound' ? cur.compound : cur.count;
+  var h = '<h1 class="dc-h1">🎧 Chép chính tả (Dictation)</h1><p class="dc-sub">Nghe từng câu ngắn từ <b>bản ghi gốc của Cambridge</b> (KET · PET · FCE · CAE) rồi gõ lại. Mỗi lượt có <b>10 câu ngẫu nhiên</b>, ưu tiên câu bạn chưa luyện — mỗi lần luyện là một bộ câu khác.</p>';
+  h += '<div class="dc-stats"><div class="dc-stat"><b>' + META.stats.sentences + '</b><span>câu đã luyện</span></div><div class="dc-stat"><b>' + META.stats.runs + '</b><span>lượt hoàn thành</span></div><div class="dc-stat"><b>' + (META.stats.avg == null ? '—' : META.stats.avg + '%') + '</b><span>điểm trung bình</span></div></div>';
+  h += '<div class="dc-card"><h3>1️⃣ Chọn cấp độ</h3><div class="dc-lv">' + lv.map(function (L) { return lvBtn(L.lv, L.label, L.exam + ' · ' + L.desc, L); }).join('') + lvBtn('all', '🔀 Trộn tất cả', 'Mọi cấp độ đang có', all) + '</div></div>';
+  h += '<div class="dc-card"><h3>2️⃣ Chọn loại câu</h3><div class="dc-seg" data-seg="kind">' + [['any', 'Cả hai loại'], ['single', '✂️ Câu đơn (ngắn)'], ['compound', '🔗 Câu ghép / dài']].map(function (k) { return '<button data-v="' + k[0] + '"' + (SEL.kind === k[0] ? ' class="on"' : '') + '>' + k[1] + '</button>'; }).join('') + '</div></div>';
+  h += '<div class="dc-card"><h3>3️⃣ Chọn cách luyện</h3><div class="dc-seg" data-seg="mode">' + [['dictate', '📝 Chép chính tả'], ['listen', '👂 Nghe có phụ đề']].map(function (k) { return '<button data-v="' + k[0] + '"' + (SEL.mode === k[0] ? ' class="on"' : '') + '>' + k[1] + '</button>'; }).join('') + '</div>' +
+    '<div class="dc-note">' + (SEL.mode === 'dictate' ? '📝 Nghe câu (nghe lại bao nhiêu lần tuỳ ý, có chế độ nghe chậm), gõ lại thật chính xác rồi bấm “Kiểm tra”. Hệ thống chấm từng từ và chỉ ra chỗ sai. Không cần viết hoa hay đúng dấu câu; “I’m” và “I am”, “six” và “6” đều được chấp nhận.' : '👂 Vừa nghe vừa đọc phụ đề của từng câu để làm quen cách phát âm, nối âm và tốc độ nói. Chế độ này không chấm điểm.') + '</div></div>';
+  h += '<button class="dc-go" id="go"' + (avail < 4 ? ' disabled' : '') + '>▶ Bắt đầu — ' + Math.min(10, avail) + ' câu' + (cur.count - cur.seen > 0 ? ' (còn ' + cur.count + ' câu trong ngân hàng, bạn đã luyện ' + cur.seen + ')' : '') + '</button>';
+  if (avail < 4) h += '<div class="dc-err">Lựa chọn này chưa đủ câu. Hãy chọn “Cả hai loại” hoặc cấp độ khác.</div>';
+  if (err) h += '<div class="dc-err">' + esc(err) + '</div>';
+  h += '<div class="dc-note">📌 <b>Lưu ý bản quyền:</b> Âm thanh được cắt từ các bộ đề nghe của Cambridge, chỉ dùng cho mục đích học tập phi lợi nhuận — không buôn bán và không thu lợi cá nhân.</div>';
+  root.innerHTML = h;
+}
+function lvBtn(v, title, sub, L) {
+  var pct = L.count ? Math.round(L.seen / L.count * 100) : 0;
+  return '<button class="dc-lvb' + (SEL.lv === v ? ' on' : '') + '" data-lv="' + v + '"><b>' + title + '</b><small>' + esc(sub) + '</small><small>' + L.count + ' câu · đã luyện ' + L.seen + '</small><div class="dc-bar"><i style="width:' + pct + '%"></i></div></button>';
+}
+root.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-lv]'))) { SEL.lv = el.getAttribute('data-lv'); save(); setup(); return; }
+  if ((el = t.closest('[data-seg] button'))) { SEL[el.parentNode.getAttribute('data-seg')] = el.getAttribute('data-v'); save(); setup(); return; }
+  if (t.id === 'go') start();
+});
+
+/* ───── Bắt đầu lượt ───── */
+function start() {
+  var b = document.getElementById('go'); b.disabled = true; b.textContent = 'Đang chọn câu…';
+  api('/api/dictation/run', { lv: SEL.lv, kind: SEL.kind, mode: SEL.mode, n: 10 }).then(function (r) { RUN = r; RUN.res = {}; I = 0; show(); }).catch(function (e) { setup(e.message); });
+}
+function killAudio() { if (audio) { try { audio.pause(); } catch (e) {} audio = null; } }
+
+/* ───── Một câu ───── */
+function show() {
+  killAudio(); plays = 0; var it = RUN.items[I], n = RUN.items.length, listen = RUN.mode === 'listen';
+  var h = '<div class="dc-top"><button class="dc-quit" id="quit">✕ Thoát</button><div class="dc-prog"><i style="width:' + Math.round(I / n * 100) + '%"></i></div><span class="n">Câu ' + (I + 1) + '/' + n + '</span></div>';
+  h += '<div class="dc-card dc-player"><button class="dc-play" id="play" aria-label="Nghe câu">▶</button><div class="dc-ctl"><button class="dc-chip" id="slow">🐢 Nghe chậm</button><button class="dc-chip" id="again">↻ Nghe lại</button></div><div class="dc-meta" id="meta">Câu có <b>' + it.words + ' từ</b> · bấm ▶ để nghe</div></div>';
+  if (listen) {
+    h += '<div class="dc-card dc-res"><div class="dc-lab">Phụ đề</div><div class="dc-line" style="font-size:19px">' + esc(it.text) + '</div><div class="dc-act"><button class="dc-btn pri" id="next">' + (I + 1 < n ? 'Câu tiếp theo →' : 'Hoàn thành ✓') + '</button></div></div>';
+  } else {
+    h += '<div class="dc-card" id="ans"><textarea class="dc-ta" id="ta" rows="3" placeholder="Gõ lại câu bạn nghe được…" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Câu bạn nghe được"></textarea><div class="dc-act"><button class="dc-btn pri" id="chk">✔ Kiểm tra</button><button class="dc-btn" id="hint">💡 Xem phụ đề (không tính điểm)</button></div><div class="dc-err" id="err"></div></div><div id="res"></div>';
+  }
+  root.innerHTML = h; window.scrollTo(0, 0);
+  load(it); document.getElementById('play').onclick = playNow; document.getElementById('again').onclick = playNow;
+  document.getElementById('slow').onclick = function () { rate = rate === 1 ? 0.7 : 1; this.classList.toggle('on', rate !== 1); if (audio) audio.playbackRate = rate; };
+  document.getElementById('slow').classList.toggle('on', rate !== 1);
+  document.getElementById('quit').onclick = function () { if (confirm('Thoát khỏi lượt luyện này? Các câu đã làm vẫn được ghi nhận.')) finish(true); };
+  if (listen) document.getElementById('next').onclick = function () { api('/api/dictation/check', { run: RUN.run, id: it.id }).catch(function () {}); step(); };
+  else {
+    var ta = document.getElementById('ta');
+    document.getElementById('chk').onclick = check; document.getElementById('hint').onclick = reveal;
+    ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); check(); } });
+  }
+  setTimeout(playNow, 250); // tự phát; nếu trình duyệt chặn thì học sinh bấm ▶
+}
+function load(it) {
+  audio = new Audio('/api/dictation/audio/' + encodeURIComponent(it.id)); audio.preload = 'auto'; audio.playbackRate = rate;
+  var pl = document.getElementById('play');
+  audio.addEventListener('play', function () { pl.classList.add('playing'); pl.textContent = '❚❚'; });
+  audio.addEventListener('pause', function () { pl.classList.remove('playing'); pl.textContent = '▶'; });
+  audio.addEventListener('ended', function () { pl.classList.remove('playing'); pl.textContent = '▶'; });
+  audio.addEventListener('error', function () { var m = document.getElementById('meta'); if (m) m.innerHTML = '⚠️ Không tải được âm thanh. Kiểm tra mạng rồi bấm ▶ thử lại.'; });
+}
+function playNow() {
+  if (!audio) return;
+  if (!audio.paused && !audio.ended && audio.currentTime > 0.05 && this && this.id === 'play') { audio.pause(); return; }
+  try { audio.currentTime = 0; } catch (e) {} audio.playbackRate = rate;
+  var p = audio.play(); if (p && p.then) p.then(function () { plays++; var m = document.getElementById('meta'); if (m) m.innerHTML = 'Câu có <b>' + RUN.items[I].words + ' từ</b> · đã nghe <b>' + plays + '</b> lần'; }).catch(function () {});
+}
+function check() {
+  var it = RUN.items[I], ta = document.getElementById('ta'), err = document.getElementById('err'); var text = ta.value.trim();
+  if (!text) { err.textContent = 'Hãy gõ câu bạn nghe được (đoán cũng được), rồi bấm “Kiểm tra”.'; ta.focus(); return; }
+  err.textContent = ''; document.getElementById('chk').disabled = true; document.getElementById('hint').disabled = true;
+  api('/api/dictation/check', { run: RUN.run, id: it.id, text: text }).then(function (r) { RUN.res[it.id] = r; ta.disabled = true; result(r); }).catch(function (e) { document.getElementById('chk').disabled = false; document.getElementById('hint').disabled = false; err.textContent = e.message; });
+}
+function reveal() {
+  var it = RUN.items[I], err = document.getElementById('err');
+  if (!confirm('Xem phụ đề sẽ không được tính điểm cho câu này. Bạn vẫn muốn xem?')) return;
+  api('/api/dictation/reveal', { run: RUN.run, id: it.id }).then(function (r) {
+    var ta = document.getElementById('ta'); var typed = ta.value.trim();
+    document.getElementById('hint').disabled = true;
+    var box = document.getElementById('res'); box.innerHTML = '<div class="dc-card dc-res"><div class="dc-lab">Phụ đề (câu này không tính điểm)</div><div class="dc-line">' + esc(r.text) + '</div><div class="dc-meta">Nghe lại và thử gõ lại câu này, rồi bấm “Kiểm tra” để xem bạn viết đúng chưa.</div></div>';
+  }).catch(function (e) { err.textContent = e.message; });
+}
+function wordsHtml(arr, kind) {
+  return arr.map(function (x) { var c = x.s === 'ok' ? 'ok' : x.s; return '<span class="dc-w ' + c + '">' + esc(x.w) + (x.fix ? ' <em>→ ' + esc(x.fix) + '</em>' : '') + '</span>'; }).join(' ');
+}
+function result(r) {
+  var n = RUN.items.length, cls = r.assisted ? 'na' : r.score >= 85 ? 'hi' : r.score >= 60 ? 'mid' : 'lo';
+  var msg = r.assisted ? 'Đã xem phụ đề — không tính điểm' : r.perfect ? '🎉 Chính xác hoàn toàn!' : r.score >= 85 ? 'Rất tốt, chỉ sai vài chỗ nhỏ' : r.score >= 60 ? 'Khá ổn — xem các chỗ sai bên dưới' : 'Nghe lại câu và so với đáp án nhé';
+  var c = r.counts || {};
+  var h = '<div class="dc-card dc-res" role="status" aria-live="polite"><div class="dc-score"><div class="dc-ring ' + cls + '">' + (r.assisted ? 'N/A' : r.score + '%') + '</div><div><b style="font-size:16px">' + msg + '</b><div class="dc-meta">' + (c.ok || 0) + ' từ đúng' + (c.typo ? ' · ' + c.typo + ' sai chính tả' : '') + (c.miss ? ' · ' + c.miss + ' từ thiếu/sai' : '') + (c.extra ? ' · ' + c.extra + ' từ thừa' : '') + '</div></div></div>' +
+    '<div class="dc-lab">Đáp án đúng</div><div class="dc-line">' + wordsHtml(r.ref) + '</div>' + (r.perfect ? '' : '<div class="dc-lab">Bài của bạn</div><div class="dc-line">' + wordsHtml(r.typed) + '</div><div class="dc-meta"><span class="dc-w ok">xanh</span> đúng · <span class="dc-w typo">vàng</span> sai chính tả (→ từ đúng) · <span class="dc-w miss">đỏ</span> thiếu/sai · <span class="dc-w extra">gạch</span> thừa</div>') +
+    '<div class="dc-act"><button class="dc-btn" id="re">↻ Nghe lại câu</button><button class="dc-btn pri" id="next">' + (I + 1 < n ? 'Câu tiếp theo →' : 'Xem kết quả ✓') + '</button></div></div>';
+  var box = document.getElementById('res'); box.innerHTML = h;
+  document.getElementById('re').onclick = playNow; var nx = document.getElementById('next'); nx.onclick = step; nx.focus({ preventScroll: true });
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function step() { I++; if (I >= RUN.items.length) finish(false); else show(); }
+
+/* ───── Tổng kết ───── */
+function finish(early) {
+  killAudio();
+  api('/api/dictation/finish', { run: RUN.run }).then(function (s) {
+    META = null; var listen = s.mode === 'listen';
+    var h = '<div class="dc-card dc-sum"><div style="font-size:44px">' + (listen ? '👂' : s.avg == null ? '📝' : s.avg >= 85 ? '🏆' : s.avg >= 60 ? '👍' : '💪') + '</div><h2 style="margin:4px 0">' + (early ? 'Đã dừng lượt luyện' : 'Hoàn thành lượt luyện!') + '</h2>' +
+      (listen ? '<p class="dc-sub">Bạn đã nghe ' + s.done + '/' + s.total + ' câu có phụ đề.</p>' : '<div class="dc-big" style="color:' + (s.avg == null ? 'var(--text-muted)' : s.avg >= 85 ? '#16a34a' : s.avg >= 60 ? '#d97706' : '#dc2626') + '">' + (s.avg == null ? '—' : s.avg + '%') + '</div><p class="dc-sub">Điểm trung bình · ' + s.perfect + ' câu chính xác hoàn toàn · ' + s.done + '/' + s.total + ' câu đã làm' + (s.assisted ? ' · ' + s.assisted + ' câu xem phụ đề' : '') + '</p>') +
+      '<div class="dc-list">' + s.results.map(function (x) {
+        var col = x.score == null ? '#94a3b8' : x.score >= 85 ? '#16a34a' : x.score >= 60 ? '#f59e0b' : '#ef4444';
+        return '<div class="dc-li"><span class="sc" style="background:' + col + '">' + (x.score == null ? (x.done ? '👂' : '—') : x.score + '%') + '</span><div class="tx">' + (x.text ? esc(x.text) : '<small>(chưa làm)</small>') + (x.typed && x.score != null && x.score < 100 ? '<small>Bạn gõ: ' + esc(x.typed) + '</small>' : '') + '</div></div>';
+      }).join('') + '</div>' +
+      '<div class="dc-act"><button class="dc-btn pri" id="again2">▶ Luyện lượt mới (câu khác)</button><button class="dc-btn" id="menu">Đổi cấp độ / cách luyện</button></div>' +
+      '<div class="dc-note">💡 Lượt mới sẽ lấy các câu khác để bạn luyện đa dạng. Những câu bạn làm chưa tốt sẽ được ưu tiên quay lại sau khi bạn đã luyện hết câu mới.</div></div>';
+    root.innerHTML = h; window.scrollTo(0, 0);
+    document.getElementById('again2').onclick = function () { setupThenStart(); }; document.getElementById('menu').onclick = function () { setup(); };
+  }).catch(function (e) { setup(e.message); });
+}
+function setupThenStart() { root.innerHTML = '<div class="dc-empty">⏳ Đang chọn câu mới…</div>'; api('/api/dictation/run', { lv: SEL.lv, kind: SEL.kind, mode: SEL.mode, n: 10 }).then(function (r) { RUN = r; RUN.res = {}; I = 0; show(); }).catch(function (e) { META = null; setup(e.message); }); }
+setup();
+})();
+</script>
+</body>
+</html>

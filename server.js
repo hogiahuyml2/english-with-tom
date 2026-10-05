@@ -2284,6 +2284,7 @@ app.put('/api/me/class', requireAuth, (req, res) => {
     res.json({ ok: true, class: name, backfilled, pending });
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
 });
+require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });
 

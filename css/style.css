@@ -400,7 +400,9 @@ img.brand-logo {
 .promo-body p { font-size: 13.5px; line-height: 1.5; color: rgba(255,255,255,.92); margin: 0; }
 .promo-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .3px; padding: 2px 10px; border-radius: 99px; background: rgba(255,255,255,.25); }
 .promo-go { flex: none; position: relative; z-index: 1; font-weight: 800; font-size: 14px; background: #fff; color: #4338ca; padding: 9px 16px; border-radius: 12px; white-space: nowrap; }
+.promo-dict { background: linear-gradient(135deg, #b45309, #f59e0b 55%, #ef4444); grid-column: 1 / -1; }
 .promo-game .promo-go { color: #0f766e; }
+.promo-dict .promo-go { color: #b45309; }
 @media (max-width: 860px) { .promo-grid { grid-template-columns: 1fr; } .promo { flex-wrap: wrap; } .promo-go { margin-left: auto; } }
 .feature .fico { width:54px; height:54px; border-radius:15px; background:var(--primary-soft); color:var(--primary); display:grid; place-items:center; font-size:25px; margin:0 auto 14px; }
 .feature h3 { font-size:17px; margin-bottom:7px; }
@@ -783,7 +785,7 @@ img.brand-logo {
 /* ── 400px: rất nhỏ (iPhone SE, fold) ── */
 @media (max-width: 400px) {
   .hero h1 { font-size: 19px; }
-  .stat-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
   /* Ẩn nút Đăng nhập, chỉ giữ Đăng ký + hamburger */
   .nav-actions > a:not(.btn-primary):not(.menu-toggle) { display: none; }
 }
@@ -1108,3 +1110,65 @@ body, [data-theme="dark"] body { background: var(--body-bg) fixed; }
 .ik-up { border-style: dashed; }
 .ik-msg { font-size: 12.5px; color: var(--text-muted); flex: 1 1 100%; }
 .ik-msg.ok { color: var(--success); } .ik-msg.err { color: var(--danger, #dc2626); }
+
+/* ======================================================================
+   TỐI ƯU ĐIỆN THOẠI (v24) — thanh trên cùng gọn, vùng bấm đủ lớn, ô nhập không bị iPhone phóng to
+   ====================================================================== */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+img, video, canvas { max-width: 100%; }
+body { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.nav-m-tools { display: none; }
+
+@media (max-width: 860px) {
+  /* Menu ☰ dài thì cuộn được, không bị cắt ở màn hình thấp (điện thoại nằm ngang) */
+  .nav-links { max-height: calc(100vh - 60px - env(safe-area-inset-top, 0px)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+}
+
+@media (max-width: 640px) {
+  /* Thanh trên cùng: chỉ giữ logo + chuông + tin nhắn + avatar + ☰ → không còn tràn ngang */
+  .nav-m-tools { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 2px 4px; margin-top: 6px; border-top: 1px dashed var(--border); }
+  .nav-links .nav-m-tools > * { flex: 1 1 calc(50% - 8px); min-height: 46px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-soft); color: var(--text); font: 700 14px/1.25 inherit; font-family: inherit; display: flex; align-items: center; justify-content: center; text-align: center; gap: 6px; padding: 8px 10px; cursor: pointer; text-decoration: none; }
+  #paletteToggle, #darkToggle, #darkToggle2, #logoutBtn, .nav-staff, .nav-account-text { display: none !important; }
+  #navBellBtn, #navChatBtn { width: 40px !important; height: 40px !important; }
+  .nav-actions { gap: 6px; }
+  .nav-actions .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; line-height: 1.1; white-space: nowrap; }
+  .menu-toggle { min-width: 44px; min-height: 44px; font-size: 26px; padding: 0; }
+  .nav .brand > span { min-width: 0; }
+
+  /* Ô nhập: chữ ≥ 16px để iPhone không tự phóng to trang khi chạm vào */
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]):not([type=submit]):not([type=button]), select, textarea { font-size: 16px !important; }
+
+  /* Vùng bấm đủ lớn (≥ 40–44px) */
+  .btn { min-height: 44px; }
+  .btn-sm { min-height: 40px; padding: 8px 14px; }
+  .fpill, .vt-tab, .filter-chip { min-height: 38px; display: inline-flex; align-items: center; }
+  .nav-account > span:first-child { width: 36px !important; height: 36px !important; }
+  a#backLink { display: inline-block; padding: 8px 2px; }
+  .crumb a { display: inline-block; padding: 8px 2px; }
+  .opt { padding: 13px 14px; font-size: 15px; min-height: 48px; }
+  .opt input { width: 20px; height: 20px; flex: none; }
+  .q-item .q-text { font-size: 15.5px; line-height: 1.55; }
+  .card { padding: 16px; }
+
+  /* Trình soạn bài viết: nút to hơn, chữ 16px để không bị phóng to khi chạm vào */
+  .re-btn { width: 40px; height: 40px; }
+  .re-toolbar { gap: 4px; padding: 6px 8px; }
+  .re-body { font-size: 16px !important; }
+
+  /* Bảng rộng: cuộn ngang trong khung, không làm cả trang trượt ngang */
+  .table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+
+  /* Thanh cố định phía dưới chừa chỗ cho thanh home của iPhone */
+  .practice-bar { position: static; }
+}
+
+@media (max-width: 400px) {
+  .container { padding: 0 12px; }
+  .nav .brand > span { font-size: 13.5px; }
+}
+
+/* Khi mở như ứng dụng đã cài (màn hình chính): chừa chỗ cho tai thỏ / thanh home */
+@media (display-mode: standalone) {
+  .site-header { padding-top: env(safe-area-inset-top, 0px); }
+  body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+}

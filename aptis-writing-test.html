@@ -3,11 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/favicon.png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>APTIS Writing Test — English With Tom</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6F58EE">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -183,6 +187,13 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
 .re-body{padding:10px 13px;font-family:var(--font);font-size:14.5px;line-height:1.8;color:var(--text);outline:none;word-break:break-word;}
 .re-body:empty::before{content:attr(data-placeholder);color:var(--text-faint);pointer-events:none;display:block;}
 .re-body p{margin:0 0 4px;}.re-body ul,.re-body ol{padding-left:22px;margin:5px 0;}.re-body li{margin:3px 0;}
+
+/* Điện thoại: ô nhập chữ ≥16px (iPhone không tự phóng to), vùng bấm lớn hơn */
+@media (max-width: 640px) {
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select, textarea { font-size: 16px !important; }
+  a { padding-top: 4px; padding-bottom: 4px; }
+  button { min-height: 44px; }
+}
 </style>
 </head>
 <body data-guard="auth">
@@ -376,7 +387,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
 </footer>
 
 <script src="js/editor.js"></script>
-<script src="js/main.js?v=31"></script>
+<script src="js/main.js?v=32"></script>
 <script>
 /* ────────────────────────────────────────────
    APTIS Writing Test — client logic

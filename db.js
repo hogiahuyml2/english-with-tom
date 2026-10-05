@@ -214,6 +214,28 @@ CREATE TABLE IF NOT EXISTS group_assignments (
 )`, 'group_assignments');
 
 // Lớp cho học sinh tự chọn trong Hồ sơ (self_join) + nguồn thêm thành viên (teacher | self | invite)
+tryExec(`
+CREATE TABLE IF NOT EXISTS dictation_runs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  level TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  mode TEXT NOT NULL DEFAULT 'dictate',
+  items TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  finished_at TEXT,
+  score INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_dictation_runs_user ON dictation_runs(user_id, id);
+CREATE TABLE IF NOT EXISTS dictation_seen (
+  user_id INTEGER NOT NULL,
+  item_id TEXT NOT NULL,
+  times INTEGER NOT NULL DEFAULT 0,
+  best INTEGER,
+  last_at TEXT,
+  PRIMARY KEY (user_id, item_id)
+);
+`, 'dictation tables');
 safeAlter('PRAGMA table_info(group_assignments)', [
   ['strict',     'ALTER TABLE group_assignments ADD COLUMN strict INTEGER NOT NULL DEFAULT 0'],
   ['max_leaves', 'ALTER TABLE group_assignments ADD COLUMN max_leaves INTEGER NOT NULL DEFAULT 3'],

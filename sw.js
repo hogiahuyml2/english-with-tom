@@ -1,6 +1,6 @@
 // Service Worker — English With Tom (PWA + Push Notifications)
 
-var CACHE = 'ewt-v1';
+var CACHE = 'ewt-v2';
 var SHELL = [
   '/offline.html',
   '/css/style.css',

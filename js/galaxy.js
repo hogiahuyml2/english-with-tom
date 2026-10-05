@@ -423,7 +423,7 @@
     loop();
   }
   document.addEventListener('click', function (e) {
-    var t = e.target, btn = t.closest && t.closest('#paletteToggle');
+    var t = e.target, btn = t.closest && t.closest('#paletteToggle, .js-palette');
     if (btn) { e.stopPropagation(); if (pop.classList.contains('open')) pop.classList.remove('open'); else { render(); place(btn); pop.classList.add('open'); } return; }
     if (!pop.contains(t)) { pop.classList.remove('open'); return; }
     var p = t.closest('[data-pal]'); if (p) { setPalette(p.getAttribute('data-pal')); return; }

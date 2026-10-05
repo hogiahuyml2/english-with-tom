@@ -4,23 +4,37 @@
   "description": "Luyện thi KET, PET, FCE, APTIS và IELTS với chấm điểm tự động",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#0f0d1c",
+  "background_color": "#ffffff",
   "theme_color": "#6F58EE",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "lang": "vi",
-  "categories": ["education"],
+  "categories": [
+    "education"
+  ],
   "icons": [
     {
       "src": "/images/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/images/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -28,6 +42,11 @@
       "name": "Bài tập được giao",
       "url": "/assigned.html",
       "description": "Xem bài tập giáo viên giao"
+    },
+    {
+      "name": "Chép chính tả",
+      "url": "/dictation.html",
+      "description": "Nghe câu ngắn và chép lại"
     },
     {
       "name": "Luyện tập",
@@ -41,5 +60,11 @@
     }
   ],
   "screenshots": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "id": "/",
+  "scope": "/",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ]
 }
