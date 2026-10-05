@@ -96,9 +96,26 @@ function viewHub() {
   h += '<div class="sp-grid">' + Object.keys(F).map(function (k) {
     var f = F[k]; return '<a class="sp-ex" href="speaking.html?exam=' + k + '"><div class="ic">' + f.icon + '</div><h3>' + esc(f.name) + '</h3><div class="meta">' + f.parts.length + ' phần · ' + esc(f.minutes) + '</div><p>' + esc(f.parts.map(function (p) { return p.vi; }).join(' · ')) + '</p></a>';
   }).join('') + '</div>';
+  h += '<div id="asgBox"></div>';
   h += '<div class="sp-box" style="margin-top:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="flex:1">📈 Bài gần đây của bạn</b></div><div id="hist"><div class="sp-note">Đang tải…</div></div></div>';
   $('root').innerHTML = h;
   api('/api/speaking/mine').then(function (d) { $('hist').innerHTML = histHtml(d.items.slice(0, 8)); }).catch(function () { $('hist').innerHTML = ''; });
+  loadAssigned();
+}
+
+
+/* ───────── Bài thầy/cô giao (không bắt buộc) ───────── */
+var ASG = [];
+function loadAssigned() {
+  api('/api/speaking-assigned').then(function (d) {
+    ASG = d.items; var box = $('asgBox'); if (!box || !ASG.length) return;
+    box.innerHTML = '<div class="sp-box" style="border-color:var(--primary)"><b>📤 Thầy/cô giao cho bạn</b><div class="sp-note" style="margin:2px 0 8px">Bạn làm khi sẵn sàng; không làm cũng không sao.</div>' + ASG.map(function (a, i) {
+      var f = F[a.exam], dl = a.deadline ? ' · hạn ' + esc(String(a.deadline).replace('T', ' ')) : '';
+      var st = a.status === 'done' ? '<span class="sp-chip" style="background:#d1fae5;color:#065f46">✓ đã nộp ' + esc(scoreTxt(a.overall)) + '</span>' : a.status === 'grading' ? '<span class="sp-chip">⏳ đang chấm</span>' : a.overdue ? '<span class="sp-chip" style="background:#fee2e2;color:#b91c1c">quá hạn</span>' : '<span class="sp-chip" style="background:#fef3c7;color:#92400e">chưa làm</span>';
+      return '<div class="sp-hist"><span style="flex:1;min-width:180px"><b>' + esc(f.short) + '</b> · ' + (a.parts ? 'Part ' + a.parts.join(', ') : 'cả bài') + ' · ' + (a.mode === 'exam' ? 'thi thử' : 'luyện tập') + dl + '<br><small style="color:var(--text-muted)">' + esc(a.teacher) + ' · ' + esc(a.group) + (a.note ? ' — ' + esc(a.note) : '') + '</small></span>' + st + (a.session ? '<a class="sp-btn sm" href="speaking-result.html?id=' + a.session + '">Xem</a>' : '') + (a.status !== 'grading' ? '<button class="sp-btn sm pri" data-asg="' + i + '">' + (a.status === 'none' ? 'Làm bài' : 'Làm lại') + '</button>' : '') + '</div>';
+    }).join('') + '</div>';
+    box.onclick = function (e) { var b = e.target.closest('[data-asg]'); if (!b) return; var a = ASG[Number(b.getAttribute('data-asg'))]; begin(a.exam, a.parts, a.mode, false, a.id); };
+  }).catch(function () {});
 }
 
 /* ───────── Trang một kỳ thi ───────── */
@@ -124,7 +141,7 @@ function viewExam(k, hlPart) {
 }
 
 /* ───────── Bắt đầu: kiểm tra micro ───────── */
-function begin(exam, parts, mode, hide) {
+function begin(exam, parts, mode, hide, assignId) {
   if (!READY) { toast('AI chấm giọng nói chưa được bật.'); return; }
   if (!EWTRec.supported()) { toast('Trình duyệt này chưa hỗ trợ ghi âm. Hãy dùng Chrome hoặc Safari bản mới.'); return; }
   if (!window.isSecureContext) { toast('Cần mở web bằng https để dùng micro.'); return; }
@@ -141,7 +158,7 @@ function begin(exam, parts, mode, hide) {
   };
   $('goBtn').onclick = function () {
     $('goBtn').disabled = true;
-    api('/api/speaking/start', { exam: exam, parts: parts, mode: mode }).then(function (d) {
+    api('/api/speaking/start', { exam: exam, parts: parts, mode: mode, assign_id: assignId || undefined }).then(function (d) {
       S = { id: d.id, exam: exam, mode: mode, turns: d.turns, i: 0, up: {}, blobs: {}, hide: !!hide, notes: '', parts: parts };
       RUN = true; EWTRec.setLevelCb(null); showTurn();
     }).catch(function (e) { toast(e.message); $('goBtn').disabled = false; });

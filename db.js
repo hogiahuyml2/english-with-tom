@@ -725,6 +725,30 @@ CREATE TABLE IF NOT EXISTS today_plan (
 );
 `, 'today_plan');
 
+// Giáo viên giao bài Speaking cho lớp (TUỲ CHỌN — không giao thì học sinh vẫn tự luyện như bình thường)
+tryExec(`
+CREATE TABLE IF NOT EXISTS speaking_assign (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  group_id INTEGER NOT NULL,
+  assigned_by INTEGER NOT NULL,
+  exam TEXT NOT NULL,
+  parts TEXT,
+  mode TEXT NOT NULL DEFAULT 'practice',
+  deadline TEXT,
+  note TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS speaking_assign_notice (
+  assign_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  kind TEXT NOT NULL,
+  PRIMARY KEY (assign_id, user_id, kind)
+);
+`, 'speaking_assign');
+safeAlter('PRAGMA table_info(speaking_sessions)', [
+  ['assign_id', 'ALTER TABLE speaking_sessions ADD COLUMN assign_id INTEGER'],
+]);
+
 function now() { return new Date().toISOString(); }
 
 module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };

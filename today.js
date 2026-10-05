@@ -36,6 +36,11 @@ module.exports = function (app, { db, requireAuth, now }) {
       if (d < t0 - 14 * DAY || d > t0 + 3 * DAY) continue;
       sit.assigned.push({ aid: a.aid, exercise_id: a.exercise_id, title: a.title, skill: a.skill, d, over: d < t0 });
     }
+    for (const a of all(`SELECT a.id,a.exam,a.deadline,a.parts FROM speaking_assign a WHERE a.group_id IN (SELECT group_id FROM group_members WHERE user_id=?) ORDER BY a.id DESC LIMIT 20`, uid)) {
+      if (one("SELECT 1 AS c FROM speaking_sessions WHERE user_id=? AND assign_id=? AND status IN ('grading','done')", uid, a.id)) continue;
+      const d = a.deadline ? dlMs(a.deadline) : 0; if (d && (d < t0 - 14 * DAY || d > t0 + 3 * DAY)) continue; if (!d) continue; // chỉ gợi ý khi có hạn gần — không ép
+      sit.assigned.push({ aid: 'sp' + a.id, speak: a.exam, parts: a.parts, d, over: d < t0, title: 'Bài Speaking ' + a.exam.toUpperCase() + ' thầy/cô giao' });
+    }
     sit.assigned.sort((x, y) => (y.over - x.over) || x.d - y.d);
     // kỹ năng yếu nhất (cần ≥ 3 bài đã chấm theo kỹ năng) + chương trình hay làm
     const graded = all(`SELECT e.skill, e.program, s.score, s.max_score FROM submissions s JOIN exercises e ON e.id=s.exercise_id
@@ -62,7 +67,7 @@ module.exports = function (app, { db, requireAuth, now }) {
     if (!s.hasPlacement) C.push({ score: 100, kind: 'placement', icon: '🎯', title: 'Làm bài Kiểm tra đầu vào', desc: 'Biết trình độ hiện tại để web gợi ý đúng bài cho bạn (khoảng 20 phút).', min: 20, link: 'placement.html' });
     s.assigned.slice(0, 2).forEach((a, i) => {
       const hrs = Math.round((a.d - Date.now()) / 3600e3);
-      C.push({ score: (a.over ? 95 : hrs <= 24 ? 92 : 80) - i, kind: 'assign', icon: a.over ? '⚠️' : '⏰', title: a.title, desc: a.over ? 'Bài được giao đã QUÁ HẠN — nộp sớm nhất có thể.' : hrs <= 24 ? 'Bài được giao — còn khoảng ' + Math.max(1, hrs) + ' giờ.' : 'Bài được giao — hạn trong ' + Math.ceil(hrs / 24) + ' ngày.', min: a.skill === 'Writing' || a.skill === 'Speaking' ? 25 : 15, link: urlFor(a.skill, a.exercise_id) + '&assigned=1', aid: a.aid, exercise_id: a.exercise_id });
+      C.push({ score: (a.over ? 95 : hrs <= 24 ? 92 : 80) - i, kind: 'assign', icon: a.over ? '⚠️' : '⏰', title: a.title, desc: a.over ? 'Bài được giao đã QUÁ HẠN — nộp sớm nhất có thể.' : hrs <= 24 ? 'Bài được giao — còn khoảng ' + Math.max(1, hrs) + ' giờ.' : 'Bài được giao — hạn trong ' + Math.ceil(hrs / 24) + ' ngày.', min: a.speak ? 10 : (a.skill === 'Writing' || a.skill === 'Speaking' ? 25 : 15), link: a.speak ? 'speaking.html' : urlFor(a.skill, a.exercise_id) + '&assigned=1', aid: a.aid, exercise_id: a.exercise_id, spassign: a.speak ? Number(String(a.aid).slice(2)) : 0 });
     });
     if (s.due >= 1) { const n = Math.min(20, Math.max(8, s.due)); C.push({ score: 76 + (s.streakAtRisk ? 10 : 0) + jit('w') / 3, kind: 'words', icon: '🧠', title: 'Ôn ' + n + ' từ vựng đến hạn', desc: s.streakAtRisk ? 'Giữ chuỗi ' + s.streak + ' ngày liên tiếp của bạn! 🔥' : 'Ôn đúng lúc sắp quên để nhớ lâu hơn.', min: 7, link: 'word-hub.html', target: Math.min(n, 15) }); }
     else C.push({ score: 56, kind: 'newwords', icon: '🌱', title: 'Học 5 từ mới', desc: s.seenWords ? 'Hôm nay chưa có từ nào đến hạn ôn — học thêm từ mới nhé.' : 'Bắt đầu xây vốn từ của bạn.', min: 6, link: 'word-hub.html', target: 5 });
@@ -84,7 +89,7 @@ module.exports = function (app, { db, requireAuth, now }) {
     const uid = s.uid;
     switch (t.kind) {
       case 'placement': return s.hasPlacement;
-      case 'assign': return !!one('SELECT 1 AS c FROM submissions WHERE user_id=? AND exercise_id=?', uid, t.exercise_id);
+      case 'assign': if (t.spassign) return !!one("SELECT 1 AS c FROM speaking_sessions WHERE user_id=? AND assign_id=? AND status IN ('grading','done')", uid, t.spassign); return !!one('SELECT 1 AS c FROM submissions WHERE user_id=? AND exercise_id=?', uid, t.exercise_id);
       case 'words': return s.reviewsToday - base.rev >= (t.target || 10);
       case 'newwords': return s.newToday - base.nw >= (t.target || 5);
       case 'notebook': return s.mastered - base.mast >= (t.target || 3);

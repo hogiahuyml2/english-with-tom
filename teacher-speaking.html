@@ -25,6 +25,9 @@
 .ts-row { display: grid; grid-template-columns: minmax(150px, 1.3fr) minmax(120px, 1fr) 110px 120px auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; } .ts-row:last-child { border-bottom: 0; }
 .ts-row small { color: var(--text-muted); display: block; } .ts-chip { display: inline-block; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 700; } .ts-chip.ok { background: #d1fae5; color: #065f46; } .ts-chip.bad { background: #fee2e2; color: #b91c1c; } .ts-chip.wait { background: #fef3c7; color: #92400e; }
 @media (max-width: 760px) { .ts-row { grid-template-columns: 1fr 1fr; } }
+.ts-pill { display: inline-flex; align-items: center; gap: 4px; padding: 5px 11px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); font: 600 13px inherit; font-family: inherit; cursor: pointer; } .ts-pill input { margin: 0; } .ts-pill:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+.ts-asg { border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; } .ts-asg summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .ts-asg summary::-webkit-details-marker { display: none; }
+.ts-st { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px dashed var(--border); font-size: 13.5px; flex-wrap: wrap; align-items: center; } .ts-st:last-child { border-bottom: 0; }
 </style>
 </head>
 <body data-page="" data-guard="teacher">
@@ -32,6 +35,22 @@
 <main class="ts-wrap">
   <div class="ts-top"><h1>🎤 Speaking của học sinh</h1><a class="ts-btn" href="teacher.html">← Khu vực giáo viên</a></div>
   <div class="ts-box" style="font-size:13.5px;color:var(--text-muted);line-height:1.65">Các bài Speaking học sinh tự luyện (KET, PET, FCE, Aptis, IELTS). Mở từng bài để <b>nghe lại ghi âm</b>, xem bản chép và điểm AI, rồi <b>chỉnh điểm và viết nhận xét</b> — học sinh sẽ nhận thông báo. Chỉ hiện học sinh thuộc lớp của bạn.</div>
+  <div class="ts-box">
+    <details id="asgBox"><summary style="cursor:pointer;font-weight:800;font-size:16px">📤 Giao bài Speaking cho lớp <span style="font-weight:500;font-size:13px;color:var(--text-muted)">(tuỳ chọn — không giao thì học sinh vẫn tự luyện bình thường)</span></summary>
+      <div style="margin-top:12px;display:grid;gap:10px">
+        <div><div style="font-size:12.5px;font-weight:700;margin-bottom:4px">Lớp nhận bài</div><div id="aClasses" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label style="font-size:12.5px;font-weight:700">Kỳ thi<br><select class="ts-sel" id="aExam"><option value="ket">KET</option><option value="pet">PET</option><option value="fce">FCE</option><option value="aptis">Aptis</option><option value="ielts">IELTS</option></select></label>
+          <label style="font-size:12.5px;font-weight:700">Chế độ<br><select class="ts-sel" id="aMode"><option value="practice">Luyện tập (được nghe lại, ghi lại)</option><option value="exam">Thi thử (ghi một lần như thi thật)</option></select></label>
+          <label style="font-size:12.5px;font-weight:700">Hạn nộp (không bắt buộc)<br><input class="ts-in" type="datetime-local" id="aDl"></label>
+        </div>
+        <div><div style="font-size:12.5px;font-weight:700;margin-bottom:4px">Phần giao <span style="font-weight:500;color:var(--text-muted)">(không chọn gì = cả bài)</span></div><div id="aParts" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        <textarea class="ts-in" id="aNote" rows="2" maxlength="500" placeholder="Lời dặn cho học sinh (không bắt buộc)…" style="width:100%;box-sizing:border-box"></textarea>
+        <div><button class="ts-btn pri" id="aGo">📤 Giao bài</button> <span id="aMsg" style="font-size:13px;color:var(--text-muted)"></span></div>
+      </div>
+    </details>
+    <div id="asgList" style="margin-top:12px"></div>
+  </div>
   <div class="ts-box">
     <div class="ts-tools">
       <select class="ts-sel" id="fClass"></select>
@@ -54,7 +73,7 @@ var NAMES = { ket: 'KET', pet: 'PET', fce: 'FCE', aptis: 'Aptis', ielts: 'IELTS'
 function load() {
   var qs = '?class=' + ($('fClass').value || 0) + '&exam=' + $('fExam').value + '&q=' + encodeURIComponent($('fQ').value);
   fetch('/api/teacher/speaking' + qs, { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
-    if (first) { $('fClass').innerHTML = '<option value="0">Tất cả lớp của tôi</option>' + d.groups.map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join(''); first = false; }
+    if (first) { $('aClasses').innerHTML = d.groups.map(function (g) { return '<label class="ts-pill"><input type="checkbox" value="' + g.id + '"> ' + esc(g.name) + '</label>'; }).join('') || '<span style="font-size:13px;color:var(--text-muted)">Bạn chưa có lớp nào.</span>'; $('fClass').innerHTML = '<option value="0">Tất cả lớp của tôi</option>' + d.groups.map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join(''); first = false; }
     ITEMS = d.items; draw();
   }).catch(function () { $('list').textContent = 'Không tải được.'; });
 }
@@ -70,6 +89,33 @@ function draw() {
 ['fClass', 'fExam'].forEach(function (id) { $(id).onchange = load; }); $('fNew').onchange = draw;
 var qt; $('fQ').oninput = function () { clearTimeout(qt); qt = setTimeout(load, 300); };
 load();
+loadAsg();
+
+/* ───── Giao bài (tuỳ chọn) ───── */
+var PARTS = { ket: ['Interview', 'Discussion'], pet: ['Interview', 'Photo', 'Collaborative task', 'General conversation'], fce: ['Interview', 'Long turn', 'Collaborative task', 'Discussion'], aptis: ['Personal info', 'Describe a photo', 'Compare 2 photos', 'Abstract topic'], ielts: ['Interview', 'Long turn', 'Discussion'] };
+function drawParts() { $('aParts').innerHTML = PARTS[$('aExam').value].map(function (n, i) { return '<label class="ts-pill"><input type="checkbox" value="' + (i + 1) + '"> Part ' + (i + 1) + ' — ' + esc(n) + '</label>'; }).join(''); }
+$('aExam').onchange = drawParts; drawParts();
+function api(url, body, method) { var o = { credentials: 'same-origin' }; if (body !== undefined || method) { o.method = method || 'POST'; o.headers = { 'Content-Type': 'application/json' }; if (body !== undefined) o.body = JSON.stringify(body); } return fetch(url, o).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi'); return d; }); }); }
+function loadAsg() {
+  api('/api/teacher/speaking/assign').then(function (d) {
+    if (!d.items.length) { $('asgList').innerHTML = ''; return; }
+    $('asgList').innerHTML = '<div style="font-weight:800;margin-bottom:6px">Bài đã giao</div>' + d.items.map(function (a) {
+      var dl = a.deadline ? ' · hạn ' + esc(String(a.deadline).replace('T', ' ')) : '';
+      return '<details class="ts-asg"><summary><span class="ts-chip">' + esc(NAMES[a.exam]) + '</span> ' + esc(a.group) + ' · ' + (a.parts ? 'Part ' + a.parts.join(', ') : 'cả bài') + ' · ' + (a.mode === 'exam' ? 'thi thử' : 'luyện tập') + dl + '<span style="flex:1"></span><b>' + a.submitted + '/' + a.total + ' đã nộp</b></summary>' +
+        (a.note ? '<div style="font-size:13px;color:var(--text-muted);margin:6px 0">💬 ' + esc(a.note) + '</div>' : '') +
+        a.students.map(function (s) { var st = s.status === 'none' ? '<span class="ts-chip wait">chưa nộp</span>' : s.status === 'grading' ? '<span class="ts-chip">⏳ đang chấm</span>' : s.status === 'error' ? '<span class="ts-chip bad">lỗi chấm</span>' : '<span class="ts-chip ok">đã nộp</span>'; return '<div class="ts-st"><b style="flex:1;min-width:140px">' + esc(s.name) + '</b>' + st + (s.late ? ' <span class="ts-chip bad">nộp muộn</span>' : '') + (s.overall ? ' <b>' + (s.overall.unit === 'Band' ? 'Band ' + s.overall.value : s.overall.value + s.overall.unit) + '</b>' : '') + (s.session ? ' <a class="ts-btn" href="speaking-result.html?id=' + s.session + '">Mở bài</a>' : '') + '</div>'; }).join('') +
+        '<div style="margin-top:8px"><button class="ts-btn" data-del="' + a.id + '" style="color:#b91c1c">🗑 Gỡ bài giao này</button></div></details>';
+    }).join('');
+  }).catch(function () {});
+}
+$('asgList').onclick = function (e) { var b = e.target.closest('[data-del]'); if (b && confirm('Gỡ bài giao này? Các bài học sinh đã làm vẫn được giữ.')) api('/api/teacher/speaking/assign/' + b.getAttribute('data-del'), undefined, 'DELETE').then(loadAsg); };
+$('aGo').onclick = function () {
+  var gids = [].map.call(document.querySelectorAll('#aClasses input:checked'), function (i) { return Number(i.value); });
+  var parts = [].map.call(document.querySelectorAll('#aParts input:checked'), function (i) { return Number(i.value); });
+  if (!gids.length) { $('aMsg').textContent = 'Hãy chọn ít nhất một lớp.'; return; }
+  this.disabled = true;
+  api('/api/teacher/speaking/assign', { group_ids: gids, exam: $('aExam').value, parts: parts, mode: $('aMode').value, deadline: $('aDl').value, note: $('aNote').value }).then(function (d) { $('aMsg').textContent = '✅ Đã giao cho ' + d.ids.length + ' lớp — học sinh nhận thông báo.'; $('aNote').value = ''; loadAsg(); }).catch(function (x) { $('aMsg').textContent = x.message; }).then(function () { $('aGo').disabled = false; });
+};
 })();
 </script>
 </body>
