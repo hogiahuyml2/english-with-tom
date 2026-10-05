@@ -111,9 +111,9 @@
   },
   {
    "type": "tf",
-   "q": "The survey was carried out only by teachers.",
-   "answer": "F",
-   "explain": "Đoạn 2: khảo sát do Common Sense Media và Kahoot! thực hiện; các nhà nghiên cứu hỏi học sinh trong lớp học."
+   "q": "Researchers led discussions with young people in classes in the United States.",
+   "answer": "T",
+   "explain": "Đoạn 2: “researchers led a series of discussions at classes in the United States. They asked young people what they thought about social media.”"
   }
  ],
  "notes": {

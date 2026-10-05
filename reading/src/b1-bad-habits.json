@@ -89,7 +89,7 @@
   },
   {
    "type": "tf",
-   "q": "The text says that changing a habit can happen very quickly.",
+   "q": "The text says that changing a habit does not take any time.",
    "answer": "F",
    "explain": "Đoạn 12: “Habit changes take time.”"
   },
