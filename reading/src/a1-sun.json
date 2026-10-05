@@ -1,0 +1,179 @@
+{
+ "id": "a1-sun",
+ "level": "A1",
+ "title": "The Sun",
+ "topic": "Space",
+ "words": 86,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Sun",
+  "url": "https://simple.wikipedia.org/wiki/Sun",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "The Sun is a star. It is at the centre of our solar system. The Sun is a huge ball of hot gas. It gives us light and heat. Without the Sun, the Earth would be cold and empty of life.",
+  "The Sun is very big. It is about 109 times wider than the Earth. Sunlight takes about 8 minutes to come to the Earth. The Sun is about 4.6 billion years old. The Sun looks yellow from the ground, but its real colour is white."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is the Sun?",
+   "options": [
+    "A star",
+    "A planet",
+    "A moon"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “The Sun is a star.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the Sun give us?",
+   "options": [
+    "Light and heat",
+    "Rain and snow",
+    "Wind and sand"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “It gives us light and heat.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How long does sunlight take to come to the Earth?",
+   "options": [
+    "About 8 minutes",
+    "About 8 hours",
+    "About 8 days"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Sunlight takes about 8 minutes to come to the Earth.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is the real colour of the Sun?",
+   "options": [
+    "Yellow",
+    "White",
+    "Red"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “The Sun looks yellow from the ground, but its real colour is white.”"
+  },
+  {
+   "type": "tf",
+   "q": "The Sun is a huge ball of hot gas.",
+   "answer": "T",
+   "explain": "Đoạn 1: “The Sun is a huge ball of hot gas.”"
+  },
+  {
+   "type": "tf",
+   "q": "The Sun is smaller than the Earth.",
+   "answer": "F",
+   "explain": "Đoạn 2: Mặt Trời rộng hơn Trái Đất khoảng 109 lần."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "star",
+    "pos": "n",
+    "def": "a very big, hot ball of gas in space that gives light",
+    "vi": "ngôi sao",
+    "ex": "The Sun is a star."
+   },
+   {
+    "w": "centre",
+    "pos": "n",
+    "def": "the middle of something",
+    "vi": "trung tâm",
+    "ex": "It is at the centre of our solar system."
+   },
+   {
+    "w": "huge",
+    "pos": "adj",
+    "def": "very, very big",
+    "vi": "khổng lồ",
+    "ex": "The Sun is a huge ball of hot gas."
+   },
+   {
+    "w": "heat",
+    "pos": "n",
+    "def": "the feeling of being hot",
+    "vi": "nhiệt, hơi nóng",
+    "ex": "It gives us light and heat."
+   },
+   {
+    "w": "wide",
+    "pos": "adj",
+    "def": "large from one side to the other",
+    "vi": "rộng",
+    "ex": "It is about 109 times wider than the Earth."
+   },
+   {
+    "w": "sunlight",
+    "pos": "n",
+    "def": "light from the Sun",
+    "vi": "ánh sáng mặt trời",
+    "ex": "Sunlight takes about 8 minutes to come to the Earth."
+   },
+   {
+    "w": "billion",
+    "pos": "n",
+    "def": "one thousand million",
+    "vi": "tỷ",
+    "ex": "The Sun is about 4.6 billion years old."
+   },
+   {
+    "w": "real",
+    "pos": "adj",
+    "def": "true; not false",
+    "vi": "thật, thực sự",
+    "ex": "its real colour is white"
+   }
+  ],
+  "coll": [
+   {
+    "c": "a ball of gas",
+    "vi": "một quả cầu khí",
+    "ex": "The Sun is a huge ball of hot gas."
+   },
+   {
+    "c": "light and heat",
+    "vi": "ánh sáng và nhiệt",
+    "ex": "It gives us light and heat."
+   },
+   {
+    "c": "years old",
+    "vi": "… tuổi",
+    "ex": "The Sun is about 4.6 billion years old."
+   },
+   {
+    "c": "from the ground",
+    "vi": "nhìn từ mặt đất",
+    "ex": "The Sun looks yellow from the ground"
+   }
+  ],
+  "str": [
+   {
+    "s": "X times wider than Y",
+    "vi": "rộng gấp X lần Y",
+    "ex": "It is about 109 times wider than the Earth.",
+    "explain": "số lần + so sánh hơn + than."
+   },
+   {
+    "s": "Without …, … would be …",
+    "vi": "Nếu không có …, … sẽ …",
+    "ex": "Without the Sun, the Earth would be cold and empty of life.",
+    "explain": "Without + danh từ + would: nói điều sẽ xảy ra nếu thiếu thứ đó."
+   },
+   {
+    "s": "… looks + adjective, but …",
+    "vi": "trông có vẻ …, nhưng …",
+    "ex": "The Sun looks yellow from the ground, but its real colour is white.",
+    "explain": "look + tính từ: nói về vẻ bề ngoài; but nối hai ý tương phản."
+   }
+  ]
+ }
+}

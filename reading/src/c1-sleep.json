@@ -1,0 +1,228 @@
+{
+ "id": "c1-sleep",
+ "level": "C1",
+ "title": "Sleep",
+ "topic": "Health & science",
+ "words": 470,
+ "minutes": 7,
+ "source": {
+  "name": "Wikipedia — Sleep",
+  "url": "https://en.wikipedia.org/wiki/Sleep",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Sleep is a state of reduced mental and physical activity in which consciousness is altered and certain sensory activity is inhibited. During sleep, there is a marked decrease in muscle activity and interactions with the surrounding environment. While sleep differs from wakefulness in terms of the ability to react to stimuli, it still involves active brain patterns, making it more reactive than a coma or disorders of consciousness.",
+  "Sleep occurs in repeating periods, during which the body alternates between two distinct modes: rapid eye movement sleep (REM) and non-REM sleep. Although REM stands for \"rapid eye movement\", this mode of sleep has many other aspects, including virtual paralysis of the body. Dreams are a succession of images, ideas, emotions, and sensations that usually occur involuntarily in the mind during certain stages of sleep.",
+  "During sleep, most of the body's systems are in an anabolic state, helping to restore the immune, nervous, skeletal, and muscular systems; these are vital processes that maintain mood, memory, and cognitive function, and play a large role in the function of the endocrine and immune systems. The internal circadian clock promotes sleep daily at night, when it is dark. However, midday naps may also be necessary: current research is studying power naps. The diverse purposes and mechanisms of sleep are the subject of substantial ongoing research. Sleep is a highly conserved behavior across animal evolution, likely going back hundreds of millions of years, and originating as a means for the brain to cleanse itself of waste products. Researchers have found that cleansing, including the removal of amyloid, may be a core purpose of sleep.",
+  "Humans may suffer from various sleep disorders, including dyssomnias, such as insomnia, hypersomnia, narcolepsy, and sleep apnea; parasomnias, such as sleepwalking and rapid eye movement sleep behavior disorder; bruxism; and circadian rhythm sleep disorders. The use of artificial light has substantially altered humanity's sleep patterns. Common sources of artificial light include outdoor lighting and the screens of digital devices such as smartphones and televisions, which emit large amounts of blue light, a form of light typically associated with daytime. This disrupts the release of the hormone melatonin needed to regulate the sleep cycle.",
+  "Sleep is divided into two broad types: non-rapid eye movement (non-REM or NREM) sleep and rapid eye movement (REM) sleep. Non-REM and REM sleep are so different that physiologists identify them as distinct behavioral states. Non-REM sleep occurs first and after a transitional period is called slow-wave sleep or deep sleep. During this phase, body temperature and heart rate fall, and the brain uses less energy. REM sleep, also known as paradoxical sleep, represents a smaller portion of total sleep time. It is the main occasion for dreams (or nightmares), and is associated with desynchronized and fast brain waves, eye movements, loss of muscle tone, and suspension of homeostasis."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How does the text describe sleep?",
+   "options": [
+    "A state of reduced mental and physical activity in which consciousness is altered and certain sensory activity is inhibited",
+    "A complete stop of all brain activity",
+    "The same as a coma",
+    "A habit that only humans have"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Sleep is a state of reduced mental and physical activity in which consciousness is altered…”"
+  },
+  {
+   "type": "mcq",
+   "q": "Between which two modes does the body alternate during sleep?",
+   "options": [
+    "REM sleep and non-REM sleep",
+    "Deep sleep and daydreaming",
+    "Sleep and a coma",
+    "Light and darkness"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “the body alternates between two distinct modes: rapid eye movement sleep (REM) and non-REM sleep.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does the text suggest may be a core purpose of sleep?",
+   "options": [
+    "Cleansing the brain of waste products",
+    "Burning fat",
+    "Making muscles bigger",
+    "Raising body temperature"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “originating as a means for the brain to cleanse itself of waste products … may be a core purpose of sleep.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How has artificial light changed human sleep?",
+   "options": [
+    "It has substantially altered sleep patterns, partly because screens emit blue light that disrupts melatonin",
+    "It has made everyone sleep longer",
+    "It has no effect",
+    "It only affects animals"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “The use of artificial light has substantially altered humanity's sleep patterns … This disrupts the release of the hormone melatonin”."
+  },
+  {
+   "type": "mcq",
+   "q": "What happens to body temperature and heart rate during slow-wave sleep?",
+   "options": [
+    "They fall",
+    "They rise sharply",
+    "They stay exactly the same",
+    "They become unpredictable"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: “During this phase, body temperature and heart rate fall”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which is true of REM sleep, according to the text?",
+   "options": [
+    "It is the main occasion for dreams or nightmares and represents a smaller portion of total sleep time",
+    "It occurs first, before non-REM sleep",
+    "It is the deepest phase",
+    "It has no brain activity"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: “REM sleep … represents a smaller portion of total sleep time. It is the main occasion for dreams (or nightmares)”."
+  },
+  {
+   "type": "tf",
+   "q": "The internal circadian clock promotes sleep at night, when it is dark.",
+   "answer": "T",
+   "explain": "Đoạn 3: “The internal circadian clock promotes sleep daily at night, when it is dark.”"
+  },
+  {
+   "type": "tf",
+   "q": "The text says that sleep disorders affect only older people.",
+   "answer": "NG",
+   "explain": "Bài chỉ nêu con người “may suffer from various sleep disorders”, không nói về độ tuổi."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "inhibit",
+    "pos": "v",
+    "def": "to stop or reduce something",
+    "vi": "ức chế, kìm hãm",
+    "ex": "certain sensory activity is inhibited"
+   },
+   {
+    "w": "consciousness",
+    "pos": "n",
+    "def": "the state of being awake and aware",
+    "vi": "ý thức, sự tỉnh táo",
+    "ex": "consciousness is altered"
+   },
+   {
+    "w": "stimulus",
+    "pos": "n",
+    "def": "something that causes a reaction",
+    "vi": "tác nhân kích thích (số nhiều: stimuli)",
+    "ex": "the ability to react to stimuli"
+   },
+   {
+    "w": "involuntarily",
+    "pos": "adv",
+    "def": "without choosing; not on purpose",
+    "vi": "một cách không chủ ý",
+    "ex": "usually occur involuntarily in the mind during certain stages of sleep"
+   },
+   {
+    "w": "vital",
+    "pos": "adj",
+    "def": "extremely important",
+    "vi": "thiết yếu, sống còn",
+    "ex": "these are vital processes that maintain mood, memory, and cognitive function"
+   },
+   {
+    "w": "substantial",
+    "pos": "adj",
+    "def": "large in amount or importance",
+    "vi": "đáng kể",
+    "ex": "The diverse purposes and mechanisms of sleep are the subject of substantial ongoing research."
+   },
+   {
+    "w": "disrupt",
+    "pos": "v",
+    "def": "to stop something from continuing normally",
+    "vi": "làm gián đoạn",
+    "ex": "This disrupts the release of the hormone melatonin needed to regulate the sleep cycle."
+   },
+   {
+    "w": "regulate",
+    "pos": "v",
+    "def": "to control something so that it works properly",
+    "vi": "điều hòa",
+    "ex": "needed to regulate the sleep cycle"
+   },
+   {
+    "w": "transitional",
+    "pos": "adj",
+    "def": "changing from one state to another",
+    "vi": "mang tính chuyển tiếp",
+    "ex": "after a transitional period"
+   }
+  ],
+  "coll": [
+   {
+    "c": "react to stimuli",
+    "vi": "phản ứng với kích thích",
+    "ex": "the ability to react to stimuli"
+   },
+   {
+    "c": "sleep disorder",
+    "vi": "rối loạn giấc ngủ",
+    "ex": "Humans may suffer from various sleep disorders"
+   },
+   {
+    "c": "sleep pattern",
+    "vi": "nhịp/thói quen ngủ",
+    "ex": "The use of artificial light has substantially altered humanity's sleep patterns."
+   },
+   {
+    "c": "ongoing research",
+    "vi": "nghiên cứu đang tiếp diễn",
+    "ex": "the subject of substantial ongoing research"
+   },
+   {
+    "c": "play a large role in",
+    "vi": "đóng vai trò lớn trong",
+    "ex": "play a large role in the function of the endocrine and immune systems"
+   }
+  ],
+  "str": [
+   {
+    "s": "While …, it still involves …",
+    "vi": "Mặc dù …, nó vẫn …",
+    "ex": "While sleep differs from wakefulness in terms of the ability to react to stimuli, it still involves active brain patterns",
+    "explain": "While mở đầu mệnh đề nhượng bộ; in terms of + danh từ: xét về mặt."
+   },
+   {
+    "s": "helping to + verb",
+    "vi": "giúp …",
+    "ex": "most of the body's systems are in an anabolic state, helping to restore the immune, nervous, skeletal, and muscular systems",
+    "explain": "V-ing phrase nêu mục đích/kết quả của trạng thái đã nói."
+   },
+   {
+    "s": "likely going back … and originating as …",
+    "vi": "có lẽ bắt nguồn từ … và khởi đầu như …",
+    "ex": "Sleep is a highly conserved behavior across animal evolution, likely going back hundreds of millions of years",
+    "explain": "Phân từ hiện tại bổ sung thông tin về nguồn gốc, có trạng từ chỉ khả năng likely."
+   },
+   {
+    "s": "is also known as …",
+    "vi": "còn được gọi là …",
+    "ex": "REM sleep, also known as paradoxical sleep, represents a smaller portion of total sleep time.",
+    "explain": "also known as: nêu tên gọi khác, đặt giữa hai dấu phẩy."
+   }
+  ]
+ }
+}

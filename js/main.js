@@ -45,6 +45,8 @@
     { href: 'ielts.html', label: 'IELTS', key: 'ielts' },
     { href: 'aptis.html', label: 'APTIS', key: 'aptis' },
     { href: 'school.html', label: 'Tiếng Anh phổ thông', key: 'school' },
+    { href: 'speaking.html', label: '🎤 Luyện Speaking', key: 'speaking' },
+    { href: 'reading.html', label: '📖 Đọc hiểu A1–C1', key: 'reading-x' },
   ];
   var navItemsAfter = [
     { href: 'word-hub.html', label: 'Luyện từ', key: 'vocab' },
@@ -56,6 +58,7 @@
     { href: 'arcade.html', label: '🎮 Trò chơi', pages: ['arcade'] },
     { href: 'practice.html', label: '✍️ Luyện câu', pages: ['practice'] },
     { href: 'dictation.html', label: '🎧 Chép chính tả', pages: ['dictation'] },
+    { href: 'reading.html', label: '📖 Đọc hiểu', pages: ['reading', 'reading-text'] },
     { href: 'lesson-vocab.html', label: '📘 Bộ từ được giao', pages: ['lesson-vocab'] }
   ];
   var inVocab = VOCAB_TABS.some(function (t) { return t.pages.indexOf(page) >= 0; });
@@ -281,7 +284,7 @@
     var h = '<button type="button" class="js-palette">🎨 Màu &amp; hiệu ứng</button><button type="button" id="mtDark">' + (isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối') + '</button>';
     if (user && (user.role === 'teacher' || user.role === 'admin')) h += '<a href="teacher.html">👨‍🏫 Khu vực giáo viên</a>';
     if (user && user.role === 'admin') h += '<a href="admin.html">⚙️ Quản trị</a>';
-    if (user) h += '<a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
+    if (user) h += '<a href="reading.html">📖 Đọc hiểu</a><a href="speaking.html">🎤 Luyện Speaking</a><a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
     else h += '<a href="login.html">Đăng nhập</a><a href="login.html#register" style="background:var(--gradient);color:#fff;border-color:transparent">Đăng ký</a>';
     box.innerHTML = h;
     var d = document.getElementById('mtDark'); if (d) d.onclick = function () { applyTheme(!isDark()); d.innerHTML = isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối'; };

@@ -1,0 +1,199 @@
+{
+ "id": "a2-breakfast",
+ "level": "A2",
+ "title": "Breakfast Around the World",
+ "topic": "Food & culture",
+ "words": 175,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Breakfast",
+  "url": "https://simple.wikipedia.org/wiki/Breakfast",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Breakfast is the first meal of the day. It is usually eaten in the morning. The word comes from two other words; \"break\" (\"end\") and fast (\"not eating for a long time\").",
+  "People around the world eat different things for breakfast:",
+  "In the United States, people usually eat pancakes, waffles, toast, eggs or bagels for breakfast.",
+  "In Canada, people usually eat maple cured bacon, fried potatoes, maple-infused beans, eggs, toast, pancakes and maple syrup or hot oatmeal for breakfast.",
+  "In the United Kingdom a large breakfast was often, and still is sometimes, served. Usually this would be bread, tea, egg, bacon, ham, fruits, baked beans on toast and sometimes vegetables. This pattern of heavy eating has greatly changed in recent years. Most people do not do manual work nowadays.",
+  "In France, people usually eat a very light meal; often bread and coffee with milk. Again, this depends on what kind of work is done (usually by the father of the household).",
+  "In Asia, most people eat rice instead of bread. They also sometimes eat porridge."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the word “breakfast” come from?",
+   "options": [
+    "“Break” and “fast”",
+    "“Bread” and “fast”",
+    "“Bake” and “feast”",
+    "“Brake” and “first”"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “The word comes from two other words; \"break\" (\"end\") and fast (\"not eating for a long time\").”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do people in the United States usually eat for breakfast?",
+   "options": [
+    "Pancakes, waffles, toast, eggs or bagels",
+    "Rice and porridge",
+    "Bread and coffee with milk",
+    "Fried fish"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “In the United States, people usually eat pancakes, waffles, toast, eggs or bagels for breakfast.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which country is described as having a very light breakfast?",
+   "options": [
+    "The United Kingdom",
+    "Canada",
+    "France",
+    "The United States"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 6: “In France, people usually eat a very light meal; often bread and coffee with milk.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Why has the heavy British breakfast changed?",
+   "options": [
+    "Most people do not do manual work nowadays",
+    "Bacon is too expensive",
+    "Tea is not popular now",
+    "People like rice more"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: “This pattern of heavy eating has greatly changed in recent years. Most people do not do manual work nowadays.”"
+  },
+  {
+   "type": "tf",
+   "q": "In Asia, most people eat rice instead of bread for breakfast.",
+   "answer": "T",
+   "explain": "Đoạn 7: “In Asia, most people eat rice instead of bread.”"
+  },
+  {
+   "type": "tf",
+   "q": "Breakfast is usually eaten in the evening.",
+   "answer": "F",
+   "explain": "Đoạn 1: “It is usually eaten in the morning.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "meal",
+    "pos": "n",
+    "def": "food that you eat at one time of the day",
+    "vi": "bữa ăn",
+    "ex": "Breakfast is the first meal of the day."
+   },
+   {
+    "w": "maple",
+    "pos": "adj",
+    "def": "made from the maple tree; tasting of maple",
+    "vi": "(thuộc) cây phong, siro phong",
+    "ex": "In Canada, people usually eat maple cured bacon"
+   },
+   {
+    "w": "oatmeal",
+    "pos": "n",
+    "def": "a soft hot food made from oats",
+    "vi": "cháo yến mạch",
+    "ex": "hot oatmeal for breakfast"
+   },
+   {
+    "w": "serve",
+    "pos": "v",
+    "def": "to give food to people",
+    "vi": "phục vụ (món ăn), dọn ra",
+    "ex": "a large breakfast was often, and still is sometimes, served"
+   },
+   {
+    "w": "manual",
+    "pos": "adj",
+    "def": "done with the hands; physical (work)",
+    "vi": "(thuộc) lao động chân tay",
+    "ex": "Most people do not do manual work nowadays."
+   },
+   {
+    "w": "light",
+    "pos": "adj",
+    "def": "small in amount; not heavy (of a meal)",
+    "vi": "nhẹ (bữa ăn)",
+    "ex": "In France, people usually eat a very light meal"
+   },
+   {
+    "w": "porridge",
+    "pos": "n",
+    "def": "a soft food made by cooking oats or rice in milk or water",
+    "vi": "cháo",
+    "ex": "They also sometimes eat porridge."
+   },
+   {
+    "w": "nowadays",
+    "pos": "adv",
+    "def": "at the present time",
+    "vi": "ngày nay",
+    "ex": "Most people do not do manual work nowadays."
+   }
+  ],
+  "coll": [
+   {
+    "c": "the first meal of the day",
+    "vi": "bữa ăn đầu tiên trong ngày",
+    "ex": "Breakfast is the first meal of the day."
+   },
+   {
+    "c": "eat … for breakfast",
+    "vi": "ăn … vào bữa sáng",
+    "ex": "In the United States, people usually eat pancakes, waffles, toast, eggs or bagels for breakfast."
+   },
+   {
+    "c": "a light meal",
+    "vi": "một bữa ăn nhẹ",
+    "ex": "In France, people usually eat a very light meal"
+   },
+   {
+    "c": "manual work",
+    "vi": "công việc lao động chân tay",
+    "ex": "Most people do not do manual work nowadays."
+   },
+   {
+    "c": "in recent years",
+    "vi": "trong những năm gần đây",
+    "ex": "This pattern of heavy eating has greatly changed in recent years."
+   }
+  ],
+  "str": [
+   {
+    "s": "X instead of Y",
+    "vi": "X thay vì Y",
+    "ex": "In Asia, most people eat rice instead of bread.",
+    "explain": "instead of + danh từ: chọn cái này, không chọn cái kia."
+   },
+   {
+    "s": "usually + verb",
+    "vi": "thường …",
+    "ex": "In the United States, people usually eat pancakes, waffles, toast, eggs or bagels for breakfast.",
+    "explain": "Trạng từ tần suất đứng trước động từ thường."
+   },
+   {
+    "s": "has + V3 (present perfect)",
+    "vi": "đã thay đổi (còn ảnh hưởng đến hiện tại)",
+    "ex": "This pattern of heavy eating has greatly changed in recent years.",
+    "explain": "Hiện tại hoàn thành với in recent years."
+   },
+   {
+    "s": "Again, this depends on …",
+    "vi": "Một lần nữa, điều này tuỳ thuộc vào …",
+    "ex": "Again, this depends on what kind of work is done",
+    "explain": "depend on + mệnh đề what: tuỳ thuộc vào loại gì."
+   }
+  ]
+ }
+}

@@ -38,13 +38,13 @@
 .rt-toast { position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; } .rt-toast.on { opacity: 1; }
 </style>
 </head>
-<body data-page="" data-guard="auth">
+<body data-page="reading-text" data-guard="auth">
 <div id="site-header"></div>
 <main class="rt-wrap" id="root"><div class="rt-note">⏳ Đang tải bài đọc…</div></main>
 <div class="rt-pop" id="pop"></div>
 <div class="rt-toast" id="toast"></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=34"></script>
+<script src="js/main.js?v=35"></script>
 <script>
 (function () {
 'use strict';
@@ -63,7 +63,7 @@ function init() {
     render();
   }).catch(function (e) { $('root').innerHTML = '<div class="rt-note">' + esc(e.message) + '</div><a class="rt-btn" href="reading.html">← Về danh sách</a>'; });
 }
-function srcHtml() { var s = T.source; return 'Nguồn: <a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> · ' + esc(s.license) + (s.adapted ? ' · <b>bản chuyển thể</b>' : '') + (s.note ? '<br><small>' + esc(s.note) + '</small>' : ''); }
+function srcHtml() { var s = T.source; return 'Nguồn: ' + (s.url ? '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a>' : esc(s.name)) + ' · ' + esc(s.license) + (s.adapted ? ' · <b>bản chuyển thể</b>' : '') + (s.note ? '<br><small>' + esc(s.note) + '</small>' : ''); }
 function textHtml() {
   if (PACK) return PACK.ptok.map(function (p) { return '<p>' + p.map(function (t) { return typeof t === 'string' ? esc(t) : '<span class="w' + (PACK.lex[t[1]] && PACK.lex[t[1]].cur ? ' cur' : '') + '" data-k="' + esc(t[1]) + '">' + esc(t[0]) + '</span>'; }).join('') + '</p>'; }).join('');
   return T.paras.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');

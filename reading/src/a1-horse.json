@@ -1,0 +1,180 @@
+{
+ "id": "a1-horse",
+ "level": "A1",
+ "title": "Horses",
+ "topic": "Animals",
+ "words": 75,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Horse",
+  "url": "https://simple.wikipedia.org/wiki/Horse",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Horses are large, strong animals. People have kept horses for at least 5,000 years. Some horses pull heavy things.",
+  "A male horse is called a stallion. A female horse is called a mare. A baby horse is called a foal. A small adult horse is called a pony. A group of horses is called a herd.",
+  "Fifty million years ago, there were no horses like the horses of today. The first horses were small animals."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What are horses like?",
+   "options": [
+    "Large and strong",
+    "Small and weak",
+    "Very slow"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Horses are large, strong animals.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How long have people kept horses?",
+   "options": [
+    "For at least 5,000 years",
+    "For 50 years",
+    "For 5 years"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “People have kept horses for at least 5,000 years.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is a baby horse called?",
+   "options": [
+    "A foal",
+    "A mare",
+    "A herd"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “A baby horse is called a foal.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What is a group of horses called?",
+   "options": [
+    "A pony",
+    "A herd",
+    "A stallion"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “A group of horses is called a herd.”"
+  },
+  {
+   "type": "tf",
+   "q": "A female horse is called a mare.",
+   "answer": "T",
+   "explain": "Đoạn 2: “A female horse is called a mare.”"
+  },
+  {
+   "type": "tf",
+   "q": "The first horses were very big.",
+   "answer": "F",
+   "explain": "Đoạn 3: “The first horses were small animals.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "strong",
+    "pos": "adj",
+    "def": "having a lot of power",
+    "vi": "khỏe, mạnh",
+    "ex": "Horses are large, strong animals."
+   },
+   {
+    "w": "pull",
+    "pos": "v",
+    "def": "to move something towards you",
+    "vi": "kéo",
+    "ex": "Some horses pull heavy things."
+   },
+   {
+    "w": "heavy",
+    "pos": "adj",
+    "def": "not light; weighing a lot",
+    "vi": "nặng",
+    "ex": "Some horses pull heavy things."
+   },
+   {
+    "w": "male",
+    "pos": "adj",
+    "def": "a man or boy; not female",
+    "vi": "đực",
+    "ex": "A male horse is called a stallion."
+   },
+   {
+    "w": "female",
+    "pos": "adj",
+    "def": "a woman or girl; not male",
+    "vi": "cái",
+    "ex": "A female horse is called a mare."
+   },
+   {
+    "w": "pony",
+    "pos": "n",
+    "def": "a small horse",
+    "vi": "ngựa nhỏ (ngựa pony)",
+    "ex": "A small adult horse is called a pony."
+   },
+   {
+    "w": "herd",
+    "pos": "n",
+    "def": "a group of animals like horses or cows",
+    "vi": "đàn (thú)",
+    "ex": "A group of horses is called a herd."
+   },
+   {
+    "w": "million",
+    "pos": "n",
+    "def": "1,000,000",
+    "vi": "triệu",
+    "ex": "Fifty million years ago, there were no horses like the horses of today."
+   }
+  ],
+  "coll": [
+   {
+    "c": "keep horses",
+    "vi": "nuôi ngựa",
+    "ex": "People have kept horses for at least 5,000 years."
+   },
+   {
+    "c": "pull heavy things",
+    "vi": "kéo vật nặng",
+    "ex": "Some horses pull heavy things."
+   },
+   {
+    "c": "a group of …",
+    "vi": "một nhóm …",
+    "ex": "A group of horses is called a herd."
+   },
+   {
+    "c": "years ago",
+    "vi": "cách đây … năm",
+    "ex": "Fifty million years ago"
+   }
+  ],
+  "str": [
+   {
+    "s": "… is called …",
+    "vi": "được gọi là …",
+    "ex": "A baby horse is called a foal.",
+    "explain": "Cấu trúc gọi tên."
+   },
+   {
+    "s": "at least + number",
+    "vi": "ít nhất …",
+    "ex": "People have kept horses for at least 5,000 years.",
+    "explain": "at least + số: không ít hơn số đó."
+   },
+   {
+    "s": "There were no … like …",
+    "vi": "Không có … như …",
+    "ex": "there were no horses like the horses of today",
+    "explain": "There were no + danh từ: nói không tồn tại."
+   }
+  ]
+ }
+}

@@ -1,0 +1,190 @@
+{
+ "id": "a2-tooth",
+ "level": "A2",
+ "title": "Teeth",
+ "topic": "Health & the body",
+ "words": 232,
+ "minutes": 5,
+ "source": {
+  "name": "Simple English Wikipedia — Tooth",
+  "url": "https://simple.wikipedia.org/wiki/Tooth",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "A tooth is one of the hard, white things in the mouth. Teeth (plural) are used to help the mastication process by chewing food. Chew means to break up and crush food so it can be swallowed (pushed down into the stomach).",
+  "Most vertebrates have teeth. Birds are the biggest group that do not. Many invertebrates have mouthparts which, to some extent, act like teeth. Different animals have different kinds of teeth because they eat different foods. Some animals use teeth as a weapon. Human adults usually have 32 teeth. Human children usually have 20 teeth.",
+  "Deciduous teeth or milk teeth or temporary teeth are the first set of teeth for most mammals. Humans have 20 of them. The first teeth (called \"primary teeth\") start to erupt (come through the gums of the jaw) when a baby is about 6 months old. When these teeth erupt it can really hurt. Babies chew on things to make the pain better. This is called teething (verb: to teethe). Most children have all 20 teeth by two or three years of age.",
+  "At age 6–7 the permanent teeth start to erupt. By the age of 11–12 most children have 28 adult teeth. The last four teeth, called 'wisdom teeth' or third molars come in by age 17–21 in most people. Some people never grow wisdom teeth. Or they may have only two instead of four."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does “chew” mean in the text?",
+   "options": [
+    "To break up and crush food so it can be swallowed",
+    "To drink water",
+    "To cut food with a knife",
+    "To cook food"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Chew means to break up and crush food so it can be swallowed”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which group of animals is the biggest group that do NOT have teeth?",
+   "options": [
+    "Birds",
+    "Fish",
+    "Dogs",
+    "Snakes"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Most vertebrates have teeth. Birds are the biggest group that do not.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How many teeth do human adults usually have?",
+   "options": [
+    "20",
+    "28",
+    "32",
+    "36"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “Human adults usually have 32 teeth.”"
+  },
+  {
+   "type": "mcq",
+   "q": "When do the first teeth usually start to come through the gums?",
+   "options": [
+    "When a baby is about 6 months old",
+    "At birth",
+    "At age 6",
+    "At age 11"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “start to erupt … when a baby is about 6 months old.”"
+  },
+  {
+   "type": "tf",
+   "q": "Most children have all 20 baby teeth by two or three years of age.",
+   "answer": "T",
+   "explain": "Đoạn 3: “Most children have all 20 teeth by two or three years of age.”"
+  },
+  {
+   "type": "tf",
+   "q": "Everybody always grows four wisdom teeth.",
+   "answer": "F",
+   "explain": "Đoạn 4: “Some people never grow wisdom teeth. Or they may have only two instead of four.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "tooth",
+    "pos": "n",
+    "def": "one of the hard white things in the mouth",
+    "vi": "cái răng",
+    "ex": "A tooth is one of the hard, white things in the mouth."
+   },
+   {
+    "w": "chew",
+    "pos": "v",
+    "def": "to break food into small pieces in the mouth",
+    "vi": "nhai",
+    "ex": "Teeth (plural) are used to help the mastication process by chewing food."
+   },
+   {
+    "w": "swallow",
+    "pos": "v",
+    "def": "to make food go down your throat",
+    "vi": "nuốt",
+    "ex": "Chew means to break up and crush food so it can be swallowed"
+   },
+   {
+    "w": "weapon",
+    "pos": "n",
+    "def": "something used to fight or hurt",
+    "vi": "vũ khí",
+    "ex": "Some animals use teeth as a weapon."
+   },
+   {
+    "w": "gum",
+    "pos": "n",
+    "def": "the pink flesh around your teeth",
+    "vi": "nướu, lợi",
+    "ex": "come through the gums of the jaw"
+   },
+   {
+    "w": "permanent",
+    "pos": "adj",
+    "def": "lasting for a long time or for ever",
+    "vi": "vĩnh viễn, (răng) vĩnh viễn",
+    "ex": "At age 6–7 the permanent teeth start to erupt."
+   },
+   {
+    "w": "adult",
+    "pos": "n",
+    "def": "a grown-up person",
+    "vi": "người lớn",
+    "ex": "By the age of 11–12 most children have 28 adult teeth."
+   },
+   {
+    "w": "wisdom teeth",
+    "pos": "n",
+    "def": "the last four back teeth that grow in adults",
+    "vi": "răng khôn",
+    "ex": "The last four teeth, called 'wisdom teeth' or third molars"
+   }
+  ],
+  "coll": [
+   {
+    "c": "chew food",
+    "vi": "nhai thức ăn",
+    "ex": "Teeth (plural) are used to help the mastication process by chewing food."
+   },
+   {
+    "c": "baby teeth / adult teeth",
+    "vi": "răng sữa / răng người lớn",
+    "ex": "By the age of 11–12 most children have 28 adult teeth."
+   },
+   {
+    "c": "come through the gums",
+    "vi": "mọc xuyên qua nướu",
+    "ex": "start to erupt (come through the gums of the jaw)"
+   },
+   {
+    "c": "wisdom teeth",
+    "vi": "răng khôn",
+    "ex": "called 'wisdom teeth' or third molars"
+   },
+   {
+    "c": "at the age of",
+    "vi": "ở tuổi …",
+    "ex": "By the age of 11–12 most children have 28 adult teeth."
+   }
+  ],
+  "str": [
+   {
+    "s": "are used to + verb",
+    "vi": "được dùng để …",
+    "ex": "Teeth (plural) are used to help the mastication process by chewing food.",
+    "explain": "be used to + động từ nguyên mẫu: chỉ mục đích sử dụng."
+   },
+   {
+    "s": "Different … have different … because …",
+    "vi": "Các … khác nhau có … khác nhau vì …",
+    "ex": "Different animals have different kinds of teeth because they eat different foods.",
+    "explain": "Cấu trúc giải thích nguyên nhân bằng because."
+   },
+   {
+    "s": "Some people never …. Or they may …",
+    "vi": "Có người không bao giờ …; hoặc có thể …",
+    "ex": "Some people never grow wisdom teeth. Or they may have only two instead of four.",
+    "explain": "may + động từ: nói về khả năng."
+   }
+  ]
+ }
+}

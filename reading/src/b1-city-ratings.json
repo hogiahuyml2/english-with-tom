@@ -1,0 +1,208 @@
+{
+ "id": "b1-city-ratings",
+ "level": "B1",
+ "title": "How Do People Rate Cities?",
+ "topic": "Cities & society",
+ "words": 170,
+ "minutes": 4,
+ "source": {
+  "name": "Diễn đạt lại từ ý tưởng của một đoạn đọc về khảo sát City Brands Index trong sách Complete IELTS Bands 4–5 (Cambridge University Press)",
+  "url": "",
+  "license": "Văn bản do web viết lại hoàn toàn bằng lời khác; chỉ giữ thông tin; câu hỏi và ghi chú soạn riêng",
+  "adapted": true,
+  "note": "Bản diễn đạt lại; không phải trích nguyên văn."
+ },
+ "paras": [
+  "Which city would you most like to live in? Many websites rank cities, and most of them rely on hard data such as prices, jobs and crime figures that officials collect.",
+  "The City Brands Index takes a different route. It treats a city like a product, for example a brand of trainers, and asks ordinary people to give it a score. The surprising part is that the people who answer have often never been there. They judge a city by what they have picked up from the news, magazines and television.",
+  "Every year, around ten thousand people in twenty countries complete an online questionnaire about fifty cities. They give marks for things such as the economy, education, the environment, culture, the weather and the people who live there.",
+  "Why does this matter? Someone planning to move, study or take a holiday can see how a city looks from the outside. City governments can learn why visitors and companies choose to come, or stay away, and then decide what to improve."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How is the City Brands Index different from many other city rankings?",
+   "options": [
+    "It asks ordinary people to score cities like products",
+    "It only uses crime figures",
+    "It is made by city governments",
+    "It ranks only small towns"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “It treats a city like a product … and asks ordinary people to give it a score.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do people who answer the survey often base their opinions on?",
+   "options": [
+    "News, magazines and television",
+    "Their own long visits",
+    "Their parents’ advice",
+    "Travel agents"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “They judge a city by what they have picked up from the news, magazines and television.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How many cities are scored each year?",
+   "options": [
+    "Twenty",
+    "Fifty",
+    "Ten thousand",
+    "Five hundred"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “an online questionnaire about fifty cities.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which of these is NOT mentioned as something people give marks for?",
+   "options": [
+    "Public transport prices",
+    "The economy",
+    "Education",
+    "The weather"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3 liệt kê economy, education, environment, culture, weather, people — không có giá giao thông công cộng."
+  },
+  {
+   "type": "mcq",
+   "q": "Who can use the results, according to the text?",
+   "options": [
+    "People planning to move, study or take a holiday, and city governments",
+    "Only teachers",
+    "Only scientists",
+    "Only banks"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: người định chuyển đến, học hoặc đi nghỉ, và chính quyền thành phố."
+  },
+  {
+   "type": "tf",
+   "q": "People who answer must have visited the cities they score.",
+   "answer": "F",
+   "explain": "Đoạn 2: người trả lời “have often never been there”."
+  },
+  {
+   "type": "tf",
+   "q": "The survey is carried out twice a year.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói “every year”, không nói số lần khảo sát."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "rank",
+    "pos": "v",
+    "def": "to put things in order from best to worst",
+    "vi": "xếp hạng",
+    "ex": "Many websites rank cities"
+   },
+   {
+    "w": "rely on",
+    "pos": "phr v",
+    "def": "to depend on",
+    "vi": "dựa vào",
+    "ex": "most of them rely on hard data"
+   },
+   {
+    "w": "figures",
+    "pos": "n",
+    "def": "numbers and facts",
+    "vi": "số liệu",
+    "ex": "hard data such as prices, jobs and crime figures that officials collect"
+   },
+   {
+    "w": "treat … like",
+    "pos": "phr",
+    "def": "to think of or deal with something as another thing",
+    "vi": "xem … như là",
+    "ex": "It treats a city like a product"
+   },
+   {
+    "w": "score",
+    "pos": "n",
+    "def": "a mark that shows how good something is",
+    "vi": "điểm số",
+    "ex": "asks ordinary people to give it a score"
+   },
+   {
+    "w": "questionnaire",
+    "pos": "n",
+    "def": "a list of questions people answer for a survey",
+    "vi": "bảng câu hỏi khảo sát",
+    "ex": "complete an online questionnaire about fifty cities"
+   },
+   {
+    "w": "judge",
+    "pos": "v",
+    "def": "to form an opinion about something",
+    "vi": "đánh giá",
+    "ex": "They judge a city by what they have picked up"
+   },
+   {
+    "w": "improve",
+    "pos": "v",
+    "def": "to make or become better",
+    "vi": "cải thiện",
+    "ex": "decide what to improve"
+   }
+  ],
+  "coll": [
+   {
+    "c": "rely on data",
+    "vi": "dựa vào dữ liệu",
+    "ex": "most of them rely on hard data"
+   },
+   {
+    "c": "hard data",
+    "vi": "dữ liệu cụ thể, đáng tin",
+    "ex": "hard data such as prices, jobs and crime figures"
+   },
+   {
+    "c": "give … a score",
+    "vi": "chấm điểm cho …",
+    "ex": "asks ordinary people to give it a score"
+   },
+   {
+    "c": "complete a questionnaire",
+    "vi": "hoàn thành bảng khảo sát",
+    "ex": "complete an online questionnaire"
+   },
+   {
+    "c": "stay away",
+    "vi": "tránh xa, không đến",
+    "ex": "why visitors and companies choose to come, or stay away"
+   }
+  ],
+  "str": [
+   {
+    "s": "such as …",
+    "vi": "chẳng hạn như …",
+    "ex": "hard data such as prices, jobs and crime figures that officials collect",
+    "explain": "such as + ví dụ: đưa ví dụ minh họa."
+   },
+   {
+    "s": "the people who + verb",
+    "vi": "những người mà …",
+    "ex": "the people who answer have often never been there",
+    "explain": "who + động từ: mệnh đề quan hệ chỉ người."
+   },
+   {
+    "s": "what they have picked up from …",
+    "vi": "những gì họ biết được từ …",
+    "ex": "They judge a city by what they have picked up from the news, magazines and television.",
+    "explain": "what + chủ ngữ + động từ: mệnh đề danh từ làm tân ngữ của by."
+   },
+   {
+    "s": "Someone planning to …",
+    "vi": "Người đang định …",
+    "ex": "Someone planning to move, study or take a holiday can see how a city looks from the outside.",
+    "explain": "V-ing sau danh từ: rút gọn mệnh đề quan hệ (who is planning)."
+   }
+  ]
+ }
+}
