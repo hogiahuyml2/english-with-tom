@@ -72,11 +72,14 @@ module.exports = function (app, deps) {
     const dr = all("SELECT score FROM dictation_runs WHERE user_id=? AND mode='dictate' AND finished_at>=? AND score IS NOT NULL", sid, new Date(startMs).toISOString());
     const dict = { n: dr.length, avg: dr.length ? Math.round(dr.reduce((a, r) => a + r.score, 0) / dr.length) : null };
 
+    const sp = all("SELECT result FROM speaking_sessions WHERE user_id=? AND status='done' AND graded_at>=?", sid, new Date(startMs).toISOString());
+    const speaking = { n: sp.length, best: sp.map((r) => { try { return JSON.parse(r.result).overall; } catch (_) { return null; } }).filter(Boolean) };
+
     const badges = all('SELECT key, tier FROM achievements WHERE user_id=? AND unlocked_at>=? ORDER BY unlocked_at', sid, new Date(startMs).toISOString())
       .map((r) => { const a = BD.find(r.key); return a ? { icon: a.icon, name: a.name, tier: BD.TIER_NAME[BD.look(a.tiers.length, r.tier - 1)] } : null; }).filter(Boolean).slice(0, 5);
 
     return { startDay, endDay, activeDays: active.size, prevActive: activePrev.size, work, avg, graded: graded.length, pending: work.length - graded.length, overdue, soon: soon.slice(0, 5), ontimeWeek,
-      words: { fresh: wd.nw, reviews: wd.rv, acc: wd.rv > 0 ? Math.round(wd.ok / wd.rv * 100) : null, mastered }, streak, dict, badges };
+      speaking, words: { fresh: wd.nw, reviews: wd.rv, acc: wd.rv > 0 ? Math.round(wd.ok / wd.rv * 100) : null, mastered }, streak, dict, badges };
   }
 
   // Nhận xét bằng lời — nêu điểm sáng trước, rồi mới đến việc cần đồng hành
@@ -129,7 +132,7 @@ module.exports = function (app, deps) {
       (r.good.length ? sect('🌟 Điểm sáng', '<ul style="margin:0;padding-left:20px;font-size:14.5px">' + r.good.map((x) => '<li style="margin:3px 0">' + x + '</li>').join('') + '</ul>') : '') +
       (r.todo.length ? sect('🤝 Phụ huynh có thể đồng hành', '<ul style="margin:0;padding-left:20px;font-size:14.5px">' + r.todo.map((x) => '<li style="margin:3px 0">' + x + '</li>').join('') + '</ul>') : '') +
       (rows ? sect('📝 Bài đã nộp trong tuần', '<table role="presentation" width="100%" style="border-collapse:collapse">' + rows + '</table>' + (d.pending ? '<div style="font-size:12px;color:#9C99AE;margin-top:4px">“Chờ chấm”: thầy/cô sẽ chấm và gửi kết quả sau.</div>' : '')) : '') +
-      sect('📚 Từ vựng &amp; luyện nghe', '<div style="font-size:14.5px">Đã thuộc tổng cộng <b>' + d.words.mastered + '</b> từ' + (d.words.acc != null ? ' · độ chính xác khi ôn tuần này <b>' + d.words.acc + '%</b>' : '') + (d.streak ? ' · chuỗi học <b>' + d.streak + ' ngày</b>' : '') + (d.dict.n ? '<br>Chép chính tả: <b>' + d.dict.n + '</b> lượt' + (d.dict.avg != null ? ', trung bình <b>' + d.dict.avg + '%</b>' : '') : '') + '</div>') +
+      sect('📚 Từ vựng &amp; luyện nghe', '<div style="font-size:14.5px">Đã thuộc tổng cộng <b>' + d.words.mastered + '</b> từ' + (d.words.acc != null ? ' · độ chính xác khi ôn tuần này <b>' + d.words.acc + '%</b>' : '') + (d.streak ? ' · chuỗi học <b>' + d.streak + ' ngày</b>' : '') + (d.dict.n ? '<br>Chép chính tả: <b>' + d.dict.n + '</b> lượt' + (d.dict.avg != null ? ', trung bình <b>' + d.dict.avg + '%</b>' : '') : '') + (d.speaking.n ? '<br>Luyện nói (Speaking): <b>' + d.speaking.n + '</b> bài' + (d.speaking.best.length ? ', gần nhất đạt <b>' + htmlEsc(d.speaking.best[d.speaking.best.length - 1].value + (d.speaking.best[d.speaking.best.length - 1].unit === 'Band' ? ' band' : d.speaking.best[d.speaking.best.length - 1].unit)) + '</b>' : '') : '') + '</div>') +
       (d.badges.length ? sect('🏅 Huy hiệu mới', '<div style="font-size:14.5px">' + d.badges.map((b) => b.icon + ' ' + htmlEsc(b.name) + ' (' + b.tier + ')').join(' · ') + '</div>') : '') +
       '<p style="margin:22px 0 4px;color:#4B4863">Cảm ơn Quý phụ huynh đã luôn đồng hành cùng ' + htmlEsc(nm) + '. Nếu cần trao đổi thêm, xin liên hệ trực tiếp thầy/cô.</p>' +
       '<p style="margin:0;color:#4B4863">Trân trọng,<br><b>' + htmlEsc(st.teacher || 'English With Tom') + '</b></p>' +

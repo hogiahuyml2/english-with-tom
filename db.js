@@ -688,6 +688,28 @@ CREATE TABLE IF NOT EXISTS parent_reports (
 CREATE INDEX IF NOT EXISTS idx_parent_reports_user ON parent_reports(user_id, id);
 `, 'parent_reports');
 
+// Luyện Speaking có chấm (AI nghe ghi âm): mỗi lần làm là một "phiên"
+tryExec(`
+CREATE TABLE IF NOT EXISTS speaking_sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  exam TEXT NOT NULL,
+  mode TEXT NOT NULL DEFAULT 'exam',
+  parts TEXT,
+  turns TEXT NOT NULL,
+  clips TEXT NOT NULL DEFAULT '{}',
+  status TEXT NOT NULL DEFAULT 'open',
+  result TEXT,
+  error TEXT,
+  teacher TEXT,
+  created_at TEXT NOT NULL,
+  submitted_at TEXT,
+  graded_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_speaking_user ON speaking_sessions(user_id, id);
+CREATE INDEX IF NOT EXISTS idx_speaking_status ON speaking_sessions(status, id);
+`, 'speaking_sessions');
+
 function now() { return new Date().toISOString(); }
 
 module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };

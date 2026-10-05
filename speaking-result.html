@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Kết quả Speaking — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.sr-wrap { max-width: 920px; margin: 0 auto; padding: 14px 16px 80px; }
+.sr-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .sr-top h1 { font-size: 23px; margin: 0; flex: 1; min-width: 200px; }
+.sr-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; min-height: 42px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .sr-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .sr-btn.pri { background: var(--primary); color: #fff; border-color: var(--primary); } .sr-btn.sm { min-height: 32px; padding: 4px 10px; font-size: 12.5px; } .sr-btn:disabled { opacity: .5; }
+.sr-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px; } .sr-box h3 { margin: 0 0 8px; font-size: 17px; }
+.sr-note { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; } .sr-note b { color: var(--text); }
+.sr-warn { background: var(--warning-soft); color: #92400e; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; margin-bottom: 12px; line-height: 1.55; }
+.sr-hero { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; background: linear-gradient(135deg, #ede9fe, #dbeafe); border-radius: 18px; padding: 18px; margin-bottom: 14px; } .sr-hero .big { font-size: 52px; font-weight: 800; line-height: 1; color: #4c1d95; } .sr-hero .big small { font-size: 20px; font-weight: 700; color: #6d28d9; } .sr-hero .lb { font-weight: 800; font-size: 17px; color: #1e293b; } .sr-hero .sub { font-size: 13px; color: #475569; margin-top: 2px; }
+.sr-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 14px; } .sr-stat { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 12px; } .sr-stat b { display: block; font-size: 21px; } .sr-stat span { font-size: 12px; color: var(--text-muted); }
+.sr-cr { margin-bottom: 14px; } .sr-cr .h { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; } .sr-cr .h b { font-size: 15px; } .sr-cr .h span { color: var(--text-muted); font-size: 12.5px; flex: 1; } .sr-cr .h em { font-style: normal; font-weight: 800; font-size: 17px; }
+.sr-bar { height: 10px; background: var(--bg-soft); border-radius: 99px; overflow: hidden; margin: 5px 0; } .sr-bar i { display: block; height: 100%; border-radius: 99px; }
+.sr-q { font-size: 12.5px; color: var(--text-muted); font-style: italic; margin-top: 3px; }
+.sr-pri { border-left: 4px solid var(--primary); background: var(--bg-soft); border-radius: 0 12px 12px 0; padding: 10px 12px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; } .sr-pri b { display: block; }
+.sr-t { border: 1.5px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; } .sr-t > summary { cursor: pointer; padding: 11px 14px; font-weight: 700; font-size: 14.5px; list-style: none; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .sr-t > summary::-webkit-details-marker { display: none; } .sr-t[open] > summary { background: var(--bg-soft); } .sr-t .bd { padding: 12px 14px; font-size: 14px; line-height: 1.65; }
+.sr-tr { background: var(--bg-soft); border-radius: 10px; padding: 10px 12px; margin: 8px 0; font-size: 15px; } .sr-tr mark { background: #fecaca; color: #7f1d1d; border-radius: 4px; padding: 0 2px; }
+.sr-er { padding: 6px 0; border-bottom: 1px dashed var(--border); } .sr-er:last-child { border-bottom: 0; } .sr-er s { color: #b91c1c; } .sr-er b { color: #047857; }
+.sr-tag { display: inline-block; font-size: 11.5px; font-weight: 800; padding: 1px 8px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); }
+.sr-mod { background: #ecfdf5; border-left: 4px solid #10b981; border-radius: 0 10px 10px 0; padding: 10px 12px; margin-top: 8px; }
+.sr-in { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; width: 100%; box-sizing: border-box; }
+.sr-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; } .sr-toast.on { opacity: 1; }
+@keyframes srspin { to { transform: rotate(360deg); } } .sr-spin { width: 46px; height: 46px; border: 5px solid var(--bg-soft); border-top-color: var(--primary); border-radius: 50%; animation: srspin .9s linear infinite; margin: 0 auto 12px; }
+</style>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+<main class="sr-wrap" id="root"><div class="sr-note">⏳ Đang tải…</div></main>
+<div class="sr-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script src="js/speaking-rec.js?v=1"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+var tt; function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 3000); }
+function api(url, body, method) {
+  var o = { credentials: 'same-origin' }; if (body !== undefined) { o.method = method || 'POST'; o.headers = { 'Content-Type': 'application/json' }; o.body = JSON.stringify(body); }
+  return fetch(url, o).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi'); return d; }); });
+}
+function fd(t) { var d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+function fmt(s) { s = Math.round(s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+var ID = Number(new URLSearchParams(location.search).get('id')), D = null, F = null, poll = null, ME = null;
+var NAMES = { ket: 'KET — A2 Key', pet: 'PET — B1 Preliminary', fce: 'FCE — B2 First', aptis: 'Aptis General', ielts: 'IELTS Speaking' };
+function col(p) { return p >= 0.7 ? '#10b981' : p >= 0.5 ? '#f59e0b' : '#ef4444'; }
+
+function load() {
+  api('/api/speaking/' + ID).then(function (d) {
+    D = d; render();
+    if (d.status === 'grading') { clearTimeout(poll); poll = setTimeout(load, 3500); }
+  }).catch(function (e) { $('root').innerHTML = '<div class="sr-warn">' + esc(e.message) + '</div><a class="sr-btn" href="speaking.html">← Về Luyện Speaking</a>'; });
+}
+function head(extra) {
+  return '<div class="sr-top"><h1>🎤 ' + esc(NAMES[D.exam] || D.exam) + ' — ' + (D.parts ? 'Part ' + D.parts.join(', ') : 'cả bài') + '</h1><a class="sr-btn" href="speaking.html?exam=' + D.exam + '">← Luyện tiếp</a></div>' +
+    (D.student ? '<div class="sr-note" style="margin-bottom:10px">👤 <b>' + esc(D.student.name) + '</b> · ' + esc(D.student.email) + ' · nộp lúc ' + fd(D.submitted_at || D.created_at) + '</div>' : '<div class="sr-note" style="margin-bottom:10px">' + fd(D.submitted_at || D.created_at) + ' · ' + (D.mode === 'practice' ? 'chế độ luyện tập' : 'chế độ thi thử') + '</div>') + (extra || '');
+}
+function render() {
+  if (D.status === 'open') { $('root').innerHTML = head() + '<div class="sr-warn">Bài này chưa được nộp.</div>'; return; }
+  if (D.status === 'grading') { $('root').innerHTML = head() + '<div class="sr-box" style="text-align:center;padding:40px 16px"><div class="sr-spin"></div><h2 style="margin:0 0 6px">AI đang nghe và chấm bài…</h2><div class="sr-note">Thường mất 30–90 giây. Bạn có thể ở lại trang này, kết quả sẽ tự hiện ra. (Cũng có thông báo 🔔 khi xong.)</div></div>'; return; }
+  if (D.status === 'error') { $('root').innerHTML = head() + '<div class="sr-warn">⚠️ ' + esc(D.error || 'Chấm bài chưa thành công.') + '</div><button class="sr-btn pri" id="regr">🔄 Chấm lại</button>'; $('regr').onclick = function () { this.disabled = true; api('/api/speaking/' + ID + '/regrade', {}).then(load).catch(function (e) { toast(e.message); }); }; return; }
+  var R = D.result, o = R.overall, st = R.stats, isT = !D.mine;
+  var h = head();
+  if (R.ai && R.ai.mock) h += '<div class="sr-warn">🧪 Đây là kết quả chấm THỬ NGHIỆM trên máy lập trình, không phải AI thật.</div>';
+  h += '<div class="sr-hero"><div class="big">' + esc(o.unit === 'Band' ? o.value : o.value) + '<small> ' + (o.unit === 'Band' ? 'band' : o.unit) + '</small></div><div><div class="lb">' + esc(o.label) + '</div><div class="sub">Tổng hợp từ ' + R.criteria.length + ' tiêu chí · ' + st.answered + '/' + st.turns + ' câu đã trả lời' + (R.completion < 1 ? ' (điểm bị giới hạn vì chưa trả lời hết)' : '') + '</div><div class="sub">⚠️ Điểm do AI ước tính để luyện tập, có thể lệch so với giám khảo thật.</div></div></div>';
+  h += '<div class="sr-stats"><div class="sr-stat"><b>' + st.words + '</b><span>từ đã nói</span></div><div class="sr-stat"><b>' + (st.wpm == null ? '—' : st.wpm) + '</b><span>từ/phút (khi đang nói)</span></div><div class="sr-stat"><b>' + fmt(st.speech_sec) + '</b><span>thời gian nói</span></div><div class="sr-stat"><b>' + st.fillers + '</b><span>lần “um/uh”</span></div><div class="sr-stat"><b>' + st.longest_pause + 's</b><span>quãng dừng dài nhất</span></div></div>';
+  if (D.teacher) h += '<div class="sr-box" style="border-color:#10b981"><h3>👩‍🏫 Nhận xét của thầy/cô ' + esc(D.teacher.by || '') + '</h3>' + (D.teacher.comment ? '<div style="white-space:pre-line;line-height:1.65">' + esc(D.teacher.comment) + '</div>' : '<div class="sr-note">Thầy/cô đã xem bài này.</div>') + (Object.keys(D.teacher.scores || {}).length ? '<div class="sr-note" style="margin-top:6px">Điểm thầy/cô chỉnh: ' + R.criteria.filter(function (c) { return D.teacher.scores[c.key] != null; }).map(function (c) { return esc(c.vi) + ' <b>' + D.teacher.scores[c.key] + '/' + c.max + '</b> (AI: ' + c.score + ')'; }).join(' · ') + '</div>' : '') + '<div class="sr-note">' + fd(D.teacher.at) + '</div></div>';
+  h += '<div class="sr-box"><h3>📊 Điểm theo tiêu chí</h3>' + R.criteria.map(function (c) {
+    var tv = D.teacher && D.teacher.scores && D.teacher.scores[c.key];
+    return '<div class="sr-cr"><div class="h"><b>' + esc(c.name) + '</b><span>' + esc(c.vi) + '</span><em>' + c.score + '/' + c.max + (tv != null ? ' <small style="color:#047857">→ thầy/cô ' + tv + '</small>' : '') + '</em></div><div class="sr-bar"><i style="width:' + (c.score / c.max * 100) + '%;background:' + col(c.score / c.max) + '"></i></div><div class="sr-note">' + esc(c.comment) + '</div>' + (c.evidence.length ? '<div class="sr-q">' + c.evidence.map(function (q) { return '“' + esc(q) + '”'; }).join(' · ') + '</div>' : '') + '</div>';
+  }).join('') + '</div>';
+  h += '<div class="sr-box"><h3>📝 Nhận xét chung</h3><div style="line-height:1.7;font-size:14.5px">' + esc(R.summary) + '</div>' + (R.strengths.length ? '<div style="margin-top:10px"><b>👍 Làm tốt</b><ul style="margin:4px 0 0 20px;line-height:1.7">' + R.strengths.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') + '</div>';
+  if (R.priorities.length) h += '<div class="sr-box"><h3>🎯 3 việc nên sửa trước</h3>' + R.priorities.map(function (p, i) { return '<div class="sr-pri"><b>' + (i + 1) + '. ' + esc(p.title) + '</b>' + esc(p.why) + '<br><span style="color:var(--primary);font-weight:700">Cách luyện:</span> ' + esc(p.how) + '</div>'; }).join('') + (R.plan.length ? '<div style="margin-top:10px"><b>📅 Kế hoạch tuần tới</b><ol style="margin:4px 0 0 20px;line-height:1.7">' + R.plan.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></div>' : '') + '</div>';
+  h += '<div class="sr-box"><h3>🔎 Chi tiết từng câu</h3><div class="sr-note" style="margin-bottom:8px">Bấm vào từng câu để nghe lại bản ghi, xem bản chép AI nghe được, lỗi và cách nói tốt hơn.</div>' + R.turns.map(function (t, k) { return turnHtml(t, k); }).join('') + '</div>';
+  if (isT) h += reviewForm(R);
+  if (D.mine) h += '<div style="text-align:center;margin:14px 0"><button class="sr-btn" id="delBtn" style="color:#b91c1c">🗑 Xoá bài này và bản ghi âm</button></div>';
+  $('root').innerHTML = h; bind(R);
+}
+function hl(tr, errs) {
+  var low = tr.toLowerCase(), rs = [];
+  errs.forEach(function (e) { var i = low.indexOf(String(e.said).toLowerCase()); if (i >= 0) rs.push([i, i + e.said.length]); });
+  rs.sort(function (a, b) { return a[0] - b[0]; });
+  var out = '', p = 0; rs.forEach(function (r) { if (r[0] < p) return; out += esc(tr.slice(p, r[0])) + '<mark>' + esc(tr.slice(r[0], r[1])) + '</mark>'; p = r[1]; });
+  return out + esc(tr.slice(p));
+}
+function turnHtml(t, k) {
+  var q = D.turns[t.i], ur = D.clips[t.i];
+  var h = '<details class="sr-t"><summary><span class="sr-tag">Part ' + q.part + '</span><span style="flex:1;min-width:140px">' + esc(String(q.q || q.say).split('\n')[0].slice(0, 90)) + '</span>' + (t.ok ? '<small style="color:var(--text-muted)">' + fmt(t.dur) + ' · ' + t.words + ' từ</small>' : '<span class="sr-tag" style="background:#fee2e2;color:#b91c1c">chưa trả lời</span>') + '</summary><div class="bd">';
+  h += '<div class="sr-note"><b>Câu hỏi:</b> ' + esc(q.say) + '</div>';
+  if (ur) h += '<audio controls preload="none" src="' + esc(ur) + '" style="width:100%;margin-top:6px"></audio>';
+  if (!t.ok) return h + '<div class="sr-note" style="margin-top:6px">Không có bản ghi hợp lệ cho câu này.</div></div></details>';
+  h += '<div class="sr-tr">' + (t.transcript ? hl(t.transcript, t.errors) : '<i>(không chép được)</i>') + '</div><div class="sr-note" style="margin-top:-2px">Đoạn tô đỏ là chỗ có lỗi. Bản chép là những gì AI nghe được, giữ nguyên lỗi của bạn.</div>';
+  if (t.note) h += '<div class="sr-note" style="margin-top:6px">🗣 ' + esc(t.note) + (t.wpm ? ' (Tốc độ: ' + t.wpm + ' từ/phút' + (t.pauses ? ', ' + t.pauses + ' lần dừng dài' : '') + '.)' : '') + '</div>';
+  if (!t.on_topic) h += '<div class="sr-warn" style="margin-top:8px">Câu trả lời có vẻ chưa đúng trọng tâm câu hỏi.</div>';
+  if (t.errors.length) h += '<div style="margin-top:8px"><b>✏️ Lỗi cần sửa</b>' + t.errors.map(function (e) { return '<div class="sr-er"><s>' + esc(e.said) + '</s> → <b>' + esc(e.fix) + '</b><div class="sr-note">' + esc(e.tip) + '</div></div>'; }).join('') + '</div>';
+  if (t.pron.length) h += '<div style="margin-top:8px"><b>🔊 Từ cần luyện phát âm</b>' + t.pron.map(function (p) { return '<div class="sr-er"><button class="sr-btn sm" data-say="' + esc(p.word) + '">🔊 ' + esc(p.word) + '</button> <span class="sr-note">' + esc(p.issue) + '</span></div>'; }).join('') + '</div>';
+  if (t.good.length) h += '<div class="sr-note" style="margin-top:8px">👍 Nói tốt: ' + t.good.map(function (g) { return '“' + esc(g) + '”'; }).join(' · ') + '</div>';
+  if (t.upgrades.length) h += '<div style="margin-top:8px"><b>⬆️ Nâng cấp cách nói</b>' + t.upgrades.map(function (u) { return '<div class="sr-er">“' + esc(u.said) + '” → <b>“' + esc(u.better) + '”</b></div>'; }).join('') + '</div>';
+  if (t.model) h += '<div class="sr-mod"><b>⭐ Bài mẫu tham khảo</b> <button class="sr-btn sm" data-say="' + esc(t.model.text) + '">🔊 Nghe</button><div style="margin:4px 0">' + esc(t.model.text) + '</div><div class="sr-note">' + esc(t.model.why) + '</div></div>';
+  return h + '</div></details>';
+}
+function reviewForm(R) {
+  var T = D.teacher || {}, sc = T.scores || {};
+  return '<div class="sr-box" style="border-color:var(--primary)"><h3>👩‍🏫 Giáo viên xem lại</h3><div class="sr-note" style="margin-bottom:8px">Bạn có thể chỉnh điểm từng tiêu chí (để trống = giữ điểm AI) và viết nhận xét. Học sinh sẽ nhận thông báo.</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">' + R.criteria.map(function (c) { return '<label style="font-size:12.5px;font-weight:700">' + esc(c.vi) + ' (AI ' + c.score + ')<input class="sr-in" data-k="' + c.key + '" type="number" min="0" max="' + c.max + '" step="0.5" value="' + (sc[c.key] != null ? sc[c.key] : '') + '"></label>'; }).join('') + '</div><textarea class="sr-in" id="tcom" rows="4" maxlength="1500" placeholder="Nhận xét gửi cho học sinh…" style="margin-top:10px">' + esc(T.comment || '') + '</textarea><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="sr-btn pri" id="saveRev">💾 Lưu nhận xét</button><button class="sr-btn" id="regrade">🔄 Chấm lại bằng AI</button></div></div>';
+}
+function bind(R) {
+  $('root').onclick = function (e) {
+    var b = e.target.closest('[data-say]'); if (b) { EWTRec.speak(b.getAttribute('data-say')); return; }
+    if (e.target.id === 'saveRev') { var sc = {}; document.querySelectorAll('[data-k]').forEach(function (i) { if (i.value !== '') sc[i.getAttribute('data-k')] = Number(i.value); }); api('/api/teacher/speaking/' + ID + '/review', { scores: sc, comment: $('tcom').value }).then(function () { toast('Đã lưu nhận xét'); load(); }).catch(function (x) { toast(x.message); }); }
+    if (e.target.id === 'regrade') { if (confirm('Chấm lại bài này bằng AI? Điểm AI hiện tại sẽ được thay.')) api('/api/speaking/' + ID + '/regrade', {}).then(load).catch(function (x) { toast(x.message); }); }
+    if (e.target.id === 'delBtn') { if (confirm('Xoá bài này cùng các bản ghi âm? Không khôi phục được.')) fetch('/api/speaking/' + ID, { method: 'DELETE', credentials: 'same-origin' }).then(function (r) { if (r.ok) location.href = 'speaking.html?exam=' + D.exam; else toast('Chưa xoá được (bài đang chấm?)'); }); }
+  };
+}
+load();
+})();
+</script>
+</body>
+</html>

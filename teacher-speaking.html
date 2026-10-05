@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Speaking của học sinh — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.ts-wrap { max-width: 1050px; margin: 0 auto; padding: 14px 16px 70px; }
+.ts-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .ts-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.ts-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; min-height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .ts-btn:hover { border-color: var(--primary); background: var(--primary-soft); } .ts-btn.pri { background: var(--primary); color: #fff; border-color: var(--primary); }
+.ts-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.ts-in, .ts-sel { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; min-width: 0; }
+.ts-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.ts-row { display: grid; grid-template-columns: minmax(150px, 1.3fr) minmax(120px, 1fr) 110px 120px auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; } .ts-row:last-child { border-bottom: 0; }
+.ts-row small { color: var(--text-muted); display: block; } .ts-chip { display: inline-block; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 700; } .ts-chip.ok { background: #d1fae5; color: #065f46; } .ts-chip.bad { background: #fee2e2; color: #b91c1c; } .ts-chip.wait { background: #fef3c7; color: #92400e; }
+@media (max-width: 760px) { .ts-row { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="ts-wrap">
+  <div class="ts-top"><h1>🎤 Speaking của học sinh</h1><a class="ts-btn" href="teacher.html">← Khu vực giáo viên</a></div>
+  <div class="ts-box" style="font-size:13.5px;color:var(--text-muted);line-height:1.65">Các bài Speaking học sinh tự luyện (KET, PET, FCE, Aptis, IELTS). Mở từng bài để <b>nghe lại ghi âm</b>, xem bản chép và điểm AI, rồi <b>chỉnh điểm và viết nhận xét</b> — học sinh sẽ nhận thông báo. Chỉ hiện học sinh thuộc lớp của bạn.</div>
+  <div class="ts-box">
+    <div class="ts-tools">
+      <select class="ts-sel" id="fClass"></select>
+      <select class="ts-sel" id="fExam"><option value="">Tất cả kỳ thi</option><option value="ket">KET</option><option value="pet">PET</option><option value="fce">FCE</option><option value="aptis">Aptis</option><option value="ielts">IELTS</option></select>
+      <input class="ts-in" id="fQ" placeholder="🔍 Tìm học sinh…" style="flex:1;min-width:160px">
+      <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="fNew"> Chỉ bài chưa xem</label>
+    </div>
+    <div id="list"><div style="color:var(--text-muted)">Đang tải…</div></div>
+  </div>
+</main>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function fd(t) { var d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+var NAMES = { ket: 'KET', pet: 'PET', fce: 'FCE', aptis: 'Aptis', ielts: 'IELTS' }, ITEMS = [], first = true;
+function load() {
+  var qs = '?class=' + ($('fClass').value || 0) + '&exam=' + $('fExam').value + '&q=' + encodeURIComponent($('fQ').value);
+  fetch('/api/teacher/speaking' + qs, { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+    if (first) { $('fClass').innerHTML = '<option value="0">Tất cả lớp của tôi</option>' + d.groups.map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join(''); first = false; }
+    ITEMS = d.items; draw();
+  }).catch(function () { $('list').textContent = 'Không tải được.'; });
+}
+function draw() {
+  var L = ITEMS.filter(function (x) { return !$('fNew').checked || (x.status === 'done' && !x.reviewed); });
+  if (!L.length) { $('list').innerHTML = '<div style="color:var(--text-muted);padding:14px 0">Chưa có bài Speaking nào phù hợp.</div>'; return; }
+  $('list').innerHTML = L.map(function (x) {
+    var sc = x.overall ? (x.overall.unit === 'Band' ? 'Band ' + x.overall.value : x.overall.value + x.overall.unit) : '—';
+    var st = x.status === 'done' ? (x.reviewed ? '<span class="ts-chip ok">✓ đã xem</span>' : '<span class="ts-chip wait">chưa xem</span>') : x.status === 'grading' ? '<span class="ts-chip">⏳ đang chấm</span>' : '<span class="ts-chip bad">lỗi chấm</span>';
+    return '<div class="ts-row"><div><b>' + esc(x.student) + '</b><small>' + esc(x.classes || '') + '</small></div><div><span class="ts-chip">' + esc(NAMES[x.exam] || x.exam) + '</span> <small>' + (x.parts ? 'Part ' + x.parts.join(', ') : 'Cả bài') + ' · ' + (x.mode === 'practice' ? 'luyện' : 'thi thử') + '</small></div><div><b>' + esc(sc) + '</b>' + (x.completion != null && x.completion < 1 ? '<small>làm ' + Math.round(x.completion * 100) + '% bài</small>' : '') + '</div><div><small>' + fd(x.at) + '</small>' + st + '</div><div><a class="ts-btn pri" href="speaking-result.html?id=' + x.id + '">Mở bài</a></div></div>';
+  }).join('');
+}
+['fClass', 'fExam'].forEach(function (id) { $(id).onchange = load; }); $('fNew').onchange = draw;
+var qt; $('fQ').oninput = function () { clearTimeout(qt); qt = setTimeout(load, 300); };
+load();
+})();
+</script>
+</body>
+</html>

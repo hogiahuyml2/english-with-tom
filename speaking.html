@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Luyện Speaking — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.sp-wrap { max-width: 920px; margin: 0 auto; padding: 14px 16px 80px; }
+.sp-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .sp-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 200px; }
+.sp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; min-height: 42px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .sp-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .sp-btn.pri { background: var(--primary); color: #fff; border-color: var(--primary); } .sp-btn.pri:hover:not(:disabled) { filter: brightness(1.06); background: var(--primary); } .sp-btn:disabled { opacity: .5; cursor: default; } .sp-btn.sm { min-height: 34px; padding: 5px 11px; font-size: 13px; } .sp-btn.red { background: #ef4444; border-color: #ef4444; color: #fff; }
+.sp-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.sp-note { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; } .sp-note b { color: var(--text); }
+.sp-warn { background: var(--warning-soft); color: #92400e; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; margin-bottom: 12px; line-height: 1.55; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.sp-ex { display: block; text-decoration: none; color: inherit; background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); transition: transform .15s, border-color .15s; } .sp-ex:hover { transform: translateY(-2px); border-color: var(--primary); }
+.sp-ex .ic { font-size: 30px; } .sp-ex h3 { margin: 6px 0 2px; font-size: 18px; } .sp-ex .meta { font-size: 12.5px; color: var(--text-muted); } .sp-ex p { margin: 8px 0 0; font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+.sp-chip { display: inline-block; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 700; }
+.sp-part { border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; } .sp-part.hl { border-color: var(--primary); background: var(--primary-soft); }
+.sp-part h4 { margin: 0 0 4px; font-size: 15.5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .sp-part ul { margin: 6px 0 0 18px; padding: 0; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.sp-hist { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; flex-wrap: wrap; } .sp-hist:last-child { border-bottom: 0; } .sp-hist .sc { font-weight: 800; min-width: 70px; }
+/* runner */
+.sp-prog { height: 8px; background: var(--bg-soft); border-radius: 99px; overflow: hidden; margin: 6px 0 14px; } .sp-prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--primary), #4F8BF0); transition: width .3s; }
+.sp-ph { font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.sp-exm { display: flex; gap: 12px; align-items: flex-start; } .sp-av { font-size: 34px; line-height: 1; flex: none; } .sp-bub { background: var(--bg-soft); border-radius: 4px 16px 16px 16px; padding: 12px 14px; font-size: 17px; line-height: 1.6; flex: 1; min-width: 0; white-space: pre-line; } .sp-bub.hide { color: var(--text-muted); font-style: italic; font-size: 14px; }
+.sp-scene { text-align: center; padding: 18px 10px; border-radius: 16px; background: linear-gradient(135deg, #dbeafe, #ede9fe); margin-top: 12px; } .sp-scene .em { font-size: 54px; letter-spacing: 6px; line-height: 1.25; word-break: break-word; } .sp-scene .lb { font-size: 12.5px; color: #475569; margin-top: 4px; }
+.sp-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; } .sp-two .sp-scene { margin: 0; } .sp-two .em { font-size: 40px; }
+.sp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-top: 12px; } .sp-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 14px; padding: 10px 6px; text-align: center; font-size: 13px; font-weight: 700; color: #78350f; } .sp-card .em { font-size: 30px; display: block; }
+.sp-mind { margin-top: 12px; text-align: center; } .sp-mind .ctr { display: inline-block; background: var(--primary); color: #fff; padding: 10px 16px; border-radius: 16px; font-weight: 700; font-size: 14.5px; max-width: 100%; margin-bottom: 10px; } .sp-mind .opts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; } .sp-mind .opt { background: #ede9fe; color: #4c1d95; padding: 8px 12px; border-radius: 12px; font-weight: 700; font-size: 13.5px; }
+.sp-cue { margin-top: 12px; background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 14px; padding: 14px 16px; line-height: 1.7; } .sp-cue b { font-size: 16px; } .sp-cue ul { margin: 6px 0 0 20px; padding: 0; }
+.sp-rec { margin-top: 18px; text-align: center; }
+.sp-mic { width: 92px; height: 92px; border-radius: 50%; border: 0; background: var(--primary); color: #fff; font-size: 38px; cursor: pointer; box-shadow: 0 8px 24px rgba(111,88,238,.35); transition: transform .12s; } .sp-mic:hover:not(:disabled) { transform: scale(1.05); } .sp-mic:disabled { opacity: .5; cursor: default; } .sp-mic.on { background: #ef4444; box-shadow: 0 0 0 0 rgba(239,68,68,.5); animation: sppulse 1.2s infinite; }
+@keyframes sppulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,.5); } 70% { box-shadow: 0 0 0 22px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+.sp-time { margin: 12px auto 0; max-width: 420px; } .sp-tb { position: relative; height: 12px; background: var(--bg-soft); border-radius: 99px; overflow: hidden; } .sp-tb i { position: absolute; left: 0; top: 0; bottom: 0; background: #ef4444; width: 0; } .sp-tb u { position: absolute; top: 0; bottom: 0; width: 2px; background: #059669; } .sp-tl { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+.sp-lvl { height: 6px; width: 160px; margin: 10px auto 0; background: var(--bg-soft); border-radius: 99px; overflow: hidden; } .sp-lvl i { display: block; height: 100%; width: 0; background: #22c55e; transition: width .08s; }
+.sp-big { font-size: 40px; font-variant-numeric: tabular-nums; font-weight: 800; text-align: center; margin: 8px 0; }
+.sp-notes { width: 100%; min-height: 90px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; font: 15px inherit; font-family: inherit; background: var(--surface); color: var(--text); box-sizing: border-box; resize: vertical; }
+.sp-tog { display: flex; align-items: center; gap: 8px; font-size: 13.5px; cursor: pointer; margin: 6px 0; } .sp-tog input { width: 18px; height: 18px; }
+.sp-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .sp-toast.on { opacity: 1; }
+@media (max-width: 560px) { .sp-scene .em { font-size: 44px; } .sp-two .em { font-size: 32px; } .sp-bub { font-size: 16px; } }
+</style>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+<main class="sp-wrap" id="root"><div class="sp-note">⏳ Đang tải…</div></main>
+<div class="sp-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script src="js/speaking-rec.js?v=1"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+var tt; function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 3400); }
+function api(url, body, method) {
+  var o = { credentials: 'same-origin' }; if (body !== undefined) { o.method = method || 'POST'; o.headers = { 'Content-Type': 'application/json' }; o.body = JSON.stringify(body); }
+  return fetch(url, o).then(function (r) { return r.json().then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi'); e.status = r.status; throw e; } return d; }); });
+}
+function fmt(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+function fd(t) { var d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+var Q = new URLSearchParams(location.search), F = null, READY = true, S = null, RUN = false;
+
+function load() {
+  return api('/api/speaking/formats').then(function (d) { F = d.formats; READY = d.ai_ready; route(); }).catch(function (e) { $('root').innerHTML = '<div class="sp-warn">' + esc(e.message) + '</div>'; });
+}
+function route() {
+  var ex = Q.get('exam');
+  if (ex && F[ex]) return viewExam(ex, Number(Q.get('part')) || 0);
+  viewHub();
+}
+function scoreTxt(o) { return o ? (o.unit === 'Band' ? 'Band ' + o.value : o.value + o.unit) : '—'; }
+function histHtml(items) {
+  if (!items.length) return '<div class="sp-note">Chưa có bài nào. Hãy thử một bài đầu tiên nhé!</div>';
+  return items.map(function (h) {
+    var f = F[h.exam] || { short: h.exam }, st = h.status === 'done' ? '' : h.status === 'grading' ? ' <span class="sp-chip">⏳ đang chấm</span>' : ' <span class="sp-chip" style="background:#fee2e2;color:#b91c1c">lỗi chấm</span>';
+    return '<div class="sp-hist"><span class="sc">' + esc(scoreTxt(h.overall)) + '</span><span style="flex:1;min-width:160px"><b>' + esc(f.short) + '</b> · ' + (h.parts ? 'Phần ' + h.parts.join(', ') : 'Cả bài') + ' · ' + (h.mode === 'practice' ? 'luyện tập' : 'thi thử') + st + (h.reviewed ? ' <span class="sp-chip">👩‍🏫 thầy/cô đã xem</span>' : '') + '<br><small style="color:var(--text-muted)">' + fd(h.at) + '</small></span><a class="sp-btn sm" href="speaking-result.html?id=' + h.id + '">Xem</a></div>';
+  }).join('');
+}
+
+/* ───────── Trang chọn kỳ thi ───────── */
+function viewHub() {
+  var h = '<div class="sp-top"><h1>🎤 Luyện Speaking có chấm</h1></div>';
+  if (!READY) h += '<div class="sp-warn">⚠️ AI chấm giọng nói hiện chưa được bật trên hệ thống. Bạn vẫn xem được cấu trúc đề; hãy báo giáo viên để bật.</div>';
+  h += '<div class="sp-box sp-note">Chọn kỳ thi bạn đang luyện. Bài được <b>dựng đúng cấu trúc và thời lượng</b> của đề thật; “giám khảo” hỏi bằng giọng đọc, bạn <b>ghi âm từng câu trả lời</b>. AI sẽ nghe, chép lại những gì bạn nói, chấm điểm theo <b>thang của chính kỳ thi đó</b>, chỉ ra lỗi và cách sửa. Thầy/cô cũng có thể nghe lại và nhận xét.</div>';
+  h += '<div class="sp-grid">' + Object.keys(F).map(function (k) {
+    var f = F[k]; return '<a class="sp-ex" href="speaking.html?exam=' + k + '"><div class="ic">' + f.icon + '</div><h3>' + esc(f.name) + '</h3><div class="meta">' + f.parts.length + ' phần · ' + esc(f.minutes) + '</div><p>' + esc(f.parts.map(function (p) { return p.vi; }).join(' · ')) + '</p></a>';
+  }).join('') + '</div>';
+  h += '<div class="sp-box" style="margin-top:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="flex:1">📈 Bài gần đây của bạn</b></div><div id="hist"><div class="sp-note">Đang tải…</div></div></div>';
+  $('root').innerHTML = h;
+  api('/api/speaking/mine').then(function (d) { $('hist').innerHTML = histHtml(d.items.slice(0, 8)); }).catch(function () { $('hist').innerHTML = ''; });
+}
+
+/* ───────── Trang một kỳ thi ───────── */
+function viewExam(k, hlPart) {
+  var f = F[k];
+  var h = '<div class="sp-top"><h1>' + f.icon + ' ' + esc(f.name) + ' — Speaking</h1><a class="sp-btn" href="speaking.html">← Chọn kỳ thi khác</a></div>';
+  if (!READY) h += '<div class="sp-warn">⚠️ AI chấm giọng nói chưa được bật nên chưa làm bài được.</div>';
+  h += '<div class="sp-box"><div class="sp-note"><b>Cấu trúc đề thật:</b> ' + esc(f.official) + '</div><div class="sp-note" style="margin-top:8px">💡 ' + esc(f.selfNote) + '</div>';
+  h += '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="sp-btn pri" data-start="all">▶ Thi thử cả bài (' + esc(f.minutes) + ')</button></div>';
+  h += '<label class="sp-tog"><input type="checkbox" id="hideTxt"> Ẩn chữ câu hỏi — chỉ nghe như thi thật (khó hơn)</label></div>';
+  h += '<div class="sp-box"><b>Luyện từng phần</b><div class="sp-note" style="margin:2px 0 10px">Chọn một phần để luyện riêng — được nghe lại bản ghi và ghi lại nếu chưa hài lòng.</div>';
+  f.parts.forEach(function (p) {
+    h += '<div class="sp-part' + (hlPart === p.n ? ' hl' : '') + '"><h4><span>Part ' + p.n + ' — ' + esc(p.vi) + '</span><span class="sp-chip">' + esc(p.min) + '</span></h4><div class="sp-note">' + esc(p.what) + '</div><ul>' + p.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><div style="margin-top:10px"><button class="sp-btn sm pri" data-start="' + p.n + '">🎤 Luyện Part ' + p.n + '</button></div></div>';
+  });
+  h += '</div><div class="sp-box"><b>Chấm theo tiêu chí nào?</b><div class="sp-note" style="margin-top:6px">' + f.criteria.map(function (c) { return '<b>' + esc(c.name) + '</b> (' + esc(c.vi) + ')'; }).join(' · ') + (f.scale === 'cam5' ? ' · <b>Global Achievement</b> (đánh giá chung). Mỗi tiêu chí chấm 0–5; mức 3 là đạt chuẩn của trình độ ' + esc(f.level) + '.' : f.scale === 'aptis' ? '. Mỗi tiêu chí chấm 0–5, quy đổi ra điểm 0–50 và mức CEFR (ước tính).' : '. Mỗi tiêu chí chấm band 0–9, điểm tổng là trung bình làm tròn theo quy tắc IELTS.') + '</div></div>';
+  h += '<div class="sp-box"><div style="display:flex;align-items:center;margin-bottom:6px"><b style="flex:1">📈 Lịch sử ' + esc(f.short) + '</b></div><div id="hist"><div class="sp-note">Đang tải…</div></div></div>';
+  $('root').innerHTML = h;
+  api('/api/speaking/mine?exam=' + k).then(function (d) { $('hist').innerHTML = histHtml(d.items.slice(0, 10)); }).catch(function () { $('hist').innerHTML = ''; });
+  $('root').onclick = function (e) {
+    var b = e.target.closest('[data-start]'); if (!b) return;
+    var p = b.getAttribute('data-start'); begin(k, p === 'all' ? null : [Number(p)], p === 'all' ? 'exam' : 'practice', $('hideTxt').checked);
+  };
+}
+
+/* ───────── Bắt đầu: kiểm tra micro ───────── */
+function begin(exam, parts, mode, hide) {
+  if (!READY) { toast('AI chấm giọng nói chưa được bật.'); return; }
+  if (!EWTRec.supported()) { toast('Trình duyệt này chưa hỗ trợ ghi âm. Hãy dùng Chrome hoặc Safari bản mới.'); return; }
+  if (!window.isSecureContext) { toast('Cần mở web bằng https để dùng micro.'); return; }
+  $('root').onclick = null;
+  var f = F[exam];
+  $('root').innerHTML = '<div class="sp-top"><h1>🎙️ Kiểm tra micro</h1></div><div class="sp-box" style="text-align:center"><div class="sp-note" style="margin-bottom:12px">Bài <b>' + esc(f.short) + '</b> · ' + (parts ? 'Part ' + parts.join(', ') : 'cả bài') + ' · ' + (mode === 'practice' ? 'chế độ luyện tập' : 'chế độ thi thử') + '.<br>Hãy ở nơi yên tĩnh, đặt micro cách miệng khoảng một gang tay. Bấm nút bên dưới, cho phép micro rồi nói thử “Hello, my name is…” — thanh xanh phải nhảy lên.</div><button class="sp-mic" id="micOn">🎤</button><div class="sp-lvl"><i id="lvl"></i></div><div class="sp-note" id="micMsg" style="margin-top:10px">Bấm micro để bật.</div><div style="margin-top:14px"><button class="sp-btn pri" id="goBtn" disabled>▶ Bắt đầu bài</button> <a class="sp-btn" href="speaking.html?exam=' + exam + '">Huỷ</a></div></div>';
+  var heard = false;
+  $('micOn').onclick = function () {
+    EWTRec.openMic().then(function () {
+      $('micMsg').textContent = 'Đã bật micro. Hãy nói thử một câu…'; $('micOn').classList.add('on');
+      EWTRec.setLevelCb(function (r) { $('lvl') && ($('lvl').style.width = Math.min(100, r * 400) + '%'); if (r > 0.02 && !heard) { heard = true; $('micMsg').innerHTML = '✅ Nghe rõ rồi! Sẵn sàng bắt đầu.'; $('goBtn').disabled = false; } });
+      setTimeout(function () { if (!heard && $('micMsg')) { $('micMsg').innerHTML = 'Chưa thấy tín hiệu âm thanh — hãy nói to hơn hoặc kiểm tra micro. Bạn vẫn có thể bắt đầu.'; $('goBtn').disabled = false; } }, 6000);
+    }).catch(function () { $('micMsg').innerHTML = '<span style="color:#dc2626">Không bật được micro. Hãy cho phép micro cho trang web này trong cài đặt trình duyệt rồi thử lại.</span>'; });
+  };
+  $('goBtn').onclick = function () {
+    $('goBtn').disabled = true;
+    api('/api/speaking/start', { exam: exam, parts: parts, mode: mode }).then(function (d) {
+      S = { id: d.id, exam: exam, mode: mode, turns: d.turns, i: 0, up: {}, blobs: {}, hide: !!hide, notes: '', parts: parts };
+      RUN = true; EWTRec.setLevelCb(null); showTurn();
+    }).catch(function (e) { toast(e.message); $('goBtn').disabled = false; });
+  };
+}
+window.addEventListener('beforeunload', function (e) { if (RUN) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ───────── Từng câu hỏi ───────── */
+var tick = null, recStart = 0, prepT = null;
+function visual(t) {
+  var h = '';
+  if (t.scene) h += '<div class="sp-scene"><div class="em">' + esc(t.scene.emoji) + '</div><div class="lb">Hình minh hoạ cho bức ảnh' + (t.scene.label && t.scene.label !== 'Photo' ? ': ' + esc(t.scene.label) : '') + '</div></div>';
+  if (t.photos) h += '<div class="sp-two">' + t.photos.map(function (p) { return '<div class="sp-scene"><div class="em">' + esc(p.emoji) + '</div><div class="lb">' + esc(p.label) + '</div></div>'; }).join('') + '</div>';
+  if (t.items && !t.mind) h += '<div class="sp-cards">' + t.items.map(function (it) { return '<div class="sp-card"><span class="em">' + esc(it.emoji) + '</span>' + esc(it.label) + '</div>'; }).join('') + '</div>';
+  if (t.mind) h += '<div class="sp-mind"><div class="ctr">' + esc(t.mind.center) + '</div><div class="opts">' + t.mind.items.map(function (x) { return '<div class="opt">' + esc(x) + '</div>'; }).join('') + '</div></div>';
+  if (t.cue) h += '<div class="sp-cue"><b>' + esc(t.cue.card) + '</b><div style="margin-top:6px">You should say:</div><ul>' + t.cue.bullets.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul></div>';
+  if (t.numbered) h += '<div class="sp-cue" style="border-style:solid"><b>Topic: ' + esc(t.topic) + '</b><ol style="margin:6px 0 0 20px;padding:0">' + t.numbered.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ol></div>';
+  return h;
+}
+function showTurn() {
+  var t = S.turns[S.i], N = S.turns.length;
+  clearInterval(tick); clearInterval(prepT);
+  var strict = !!t.strict || S.mode === 'exam';
+  var bubble = S.hide && !t.cue && !t.numbered && !t.mind && !t.items ? '<div class="sp-bub hide">🔊 Hãy nghe câu hỏi… (bấm “Nghe lại” nếu cần)</div>' : '<div class="sp-bub">' + esc(t.q || t.say) + '</div>';
+  $('root').innerHTML = '<div class="sp-ph"><span>Part ' + t.part + ' · ' + esc(t.ph || '') + '</span><span>Câu ' + (S.i + 1) + '/' + N + '</span></div><div class="sp-prog"><i style="width:' + (S.i / N * 100) + '%"></i></div>' +
+    '<div class="sp-box"><div class="sp-exm"><div class="sp-av">🧑‍🏫</div>' + bubble + '</div><div style="margin:8px 0 0 46px"><button class="sp-btn sm" id="replay">🔊 Nghe lại</button></div>' + (t.hint ? '<div class="sp-note" style="margin:8px 0 0 46px">💡 ' + esc(t.hint) + '</div>' : '') + visual(t) + '<div id="zone"></div></div>';
+  $('replay').onclick = function () { EWTRec.speak(t.say); };
+  EWTRec.speak(t.say).then(function () { if (t.prep) startPrep(t); });
+  if (!t.prep) readyRec(t);
+  else { $('zone').innerHTML = '<div class="sp-rec"><div class="sp-note">Nghe hết yêu cầu, rồi bắt đầu thời gian chuẩn bị (' + fmt(t.prep) + ').</div><button class="sp-btn pri" id="goPrep" style="margin-top:10px">▶ Bắt đầu chuẩn bị</button></div>'; $('goPrep').onclick = function () { EWTRec.cancelSpeech(); startPrep(t); }; }
+}
+function startPrep(t) {
+  if (!$('zone') || S.prepDone === S.i) return; S.prepDone = S.i;
+  var left = t.prep;
+  $('zone').innerHTML = '<div class="sp-rec"><div class="sp-note"><b>⏳ Thời gian chuẩn bị</b> — ghi chú nhanh các ý chính (ghi chú chỉ nằm trên máy bạn).</div><div class="sp-big" id="prepL">' + fmt(left) + '</div><textarea class="sp-notes" id="notes" placeholder="Ghi chú ý chính ở đây…"></textarea><div style="margin-top:10px"><button class="sp-btn pri" id="skipPrep">Nói ngay</button></div></div>';
+  prepT = setInterval(function () { left--; if ($('prepL')) $('prepL').textContent = fmt(left); if (left <= 0) { clearInterval(prepT); readyRec(t, true); } }, 1000);
+  $('skipPrep').onclick = function () { clearInterval(prepT); readyRec(t, true); };
+}
+function readyRec(t, afterPrep) {
+  if (!$('zone')) return; if (t.prep && !afterPrep) return;
+  var keep = ''; if (afterPrep && $('notes') && $('notes').value.trim()) { S.notes = $('notes').value; keep = '<div class="sp-note" style="margin-top:12px;text-align:left;background:var(--bg-soft);padding:8px 12px;border-radius:10px;white-space:pre-line"><b>📝 Ghi chú của bạn:</b>\n' + esc(S.notes) + '</div>'; }
+  $('zone').innerHTML = '<div class="sp-rec"><button class="sp-mic" id="rec">🎤</button><div class="sp-lvl"><i id="lvl"></i></div><div class="sp-time"><div class="sp-tb"><i id="tbar"></i><u style="left:' + Math.min(98, t.min / t.max * 100) + '%"></u></div><div class="sp-tl"><span id="tcur">0:00</span><span>nên nói ≥ ' + fmt(t.min) + ' · tối đa ' + fmt(t.max) + '</span></div></div><div class="sp-note" id="recMsg" style="margin-top:8px">Bấm micro để bắt đầu nói.</div></div>' + keep;
+  $('rec').onclick = function () { if (EWTRec.isRecording()) stopRec(t); else startRec(t); };
+}
+function startRec(t) {
+  EWTRec.cancelSpeech();
+  EWTRec.setLevelCb(function (r) { var l = $('lvl'); if (l) l.style.width = Math.min(100, r * 400) + '%'; });
+  EWTRec.start().then(function () {
+    recStart = Date.now(); $('rec').classList.add('on'); $('rec').textContent = '⏹'; $('recMsg').textContent = 'Đang ghi âm… bấm ⏹ khi nói xong.';
+    tick = setInterval(function () {
+      var s = (Date.now() - recStart) / 1000; if ($('tcur')) $('tcur').textContent = fmt(s); if ($('tbar')) $('tbar').style.width = Math.min(100, s / t.max * 100) + '%';
+      if (s >= t.max) stopRec(t);
+    }, 200);
+  }).catch(function () { toast('Không ghi âm được. Hãy kiểm tra micro.'); });
+}
+function stopRec(t) {
+  clearInterval(tick); if (!EWTRec.isRecording()) return;
+  var r = EWTRec.stop(); EWTRec.setLevelCb(null);
+  S.blobs[t.i] = r.blob; S.up[t.i] = upload(t.i, r.blob);
+  var practice = S.mode === 'practice' && !t.strict, url = URL.createObjectURL(r.blob);
+  var last = S.i >= S.turns.length - 1;
+  $('zone').innerHTML = '<div class="sp-rec"><div style="font-size:30px">✅</div><div class="sp-note"><b>Đã ghi ' + fmt(r.dur) + '</b>' + (r.dur < t.min ? ' — hơi ngắn so với yêu cầu, lần sau hãy nói dài hơn nhé.' : '') + '<span id="upMsg"></span></div>' +
+    (practice ? '<audio controls src="' + url + '" style="width:100%;max-width:420px;margin-top:8px"></audio>' : '') +
+    '<div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' + (practice ? '<button class="sp-btn" id="redo">↺ Ghi lại</button>' : '') + '<button class="sp-btn pri" id="next">' + (last ? '✔ Hoàn thành & nộp bài' : 'Câu tiếp theo ▶') + '</button></div></div>';
+  S.up[t.i].then(function (res) {
+    if (!$('upMsg')) return;
+    if (res && res.silent) { $('upMsg').innerHTML = '<br><span style="color:#dc2626">⚠️ Mình gần như không nghe thấy tiếng. Hãy kiểm tra micro và ghi lại.</span>'; if (!practice) { var d = document.createElement('button'); d.className = 'sp-btn'; d.id = 'redo'; d.textContent = '↺ Ghi lại'; $('next').parentNode.insertBefore(d, $('next')); d.onclick = redo; } }
+  }).catch(function () { if ($('upMsg')) $('upMsg').innerHTML = '<br><span style="color:#dc2626">Chưa gửi được bản ghi — sẽ thử lại khi nộp bài.</span>'; });
+  function redo() { URL.revokeObjectURL(url); delete S.blobs[t.i]; delete S.up[t.i]; readyRec(t); }
+  if ($('redo')) $('redo').onclick = redo;
+  $('next').onclick = function () { URL.revokeObjectURL(url); if (last) finish(); else { S.i++; showTurn(); } };
+}
+function upload(i, blob, n) {
+  var fd2 = new FormData(); fd2.append('turn', i); fd2.append('file', blob, 'clip.wav');
+  return fetch('/api/speaking/' + S.id + '/clip', { method: 'POST', credentials: 'same-origin', body: fd2 }).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi'); return d; }); })
+    .catch(function (e) { if ((n || 0) < 2) return new Promise(function (ok) { setTimeout(ok, 1200); }).then(function () { return upload(i, blob, (n || 0) + 1); }); throw e; });
+}
+function finish() {
+  EWTRec.cancelSpeech(); EWTRec.closeMic();
+  $('root').innerHTML = '<div class="sp-box" style="text-align:center;padding:40px 16px"><div style="font-size:44px">📤</div><h2 style="margin:8px 0">Đang nộp bài…</h2><div class="sp-note" id="finMsg">Đang gửi các bản ghi âm lên máy chủ. Đừng đóng trang nhé.</div></div>';
+  var ids = Object.keys(S.blobs);
+  var tryAll = function () {
+    return Promise.all(ids.map(function (i) { return S.up[i].catch(function () { S.up[i] = upload(i, S.blobs[i]); return S.up[i]; }); }));
+  };
+  tryAll().then(function () { return api('/api/speaking/' + S.id + '/submit', {}); }).then(function () { RUN = false; location.href = 'speaking-result.html?id=' + S.id; })
+    .catch(function (e) { $('finMsg').innerHTML = '<span style="color:#dc2626">' + esc(e.message || 'Mạng không ổn định.') + '</span><br><button class="sp-btn pri" id="retryFin" style="margin-top:10px">Thử gửi lại</button>'; $('retryFin').onclick = finish; });
+}
+load();
+})();
+</script>
+</body>
+</html>

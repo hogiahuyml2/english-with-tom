@@ -1441,7 +1441,7 @@ function toClaudeSchema(sc) {
   return out;
 }
 
-async function generateJSON({ system, user, schema, maxTokens, temperature, files }) {
+async function generateJSON({ system, user, schema, maxTokens, temperature, files, timeoutMs }) {
   // files: [{ mime, data(base64) }] — ảnh hoặc PDF để AI đọc (Gemini inlineData / Claude image|document)
   const fileList = Array.isArray(files) ? files : [];
   const p = provider();
@@ -1460,7 +1460,7 @@ async function generateJSON({ system, user, schema, maxTokens, temperature, file
         return await rateLimitedGeminiCall(() => callGemini(url, null, {
           ...baseBody,
           generationConfig: { ...baseBody.generationConfig, maxOutputTokens: attempts[i], thinkingConfig: { thinkingBudget: 0 } }
-        }, 75000));
+        }, timeoutMs || 75000));
       } catch (e) { lastErr = e; if (i < attempts.length - 1) console.warn('[AI] generateJSON attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...'); }
     }
     throw lastErr;
@@ -1482,4 +1482,4 @@ async function generateJSON({ system, user, schema, maxTokens, temperature, file
   throw new Error('Chưa cấu hình AI');
 }
 
-module.exports = { aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider, generateJSON, toGeminiSchema, toClaudeSchema };
+module.exports = { aiMock: AI_MOCK, aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider, generateJSON, toGeminiSchema, toClaudeSchema };
