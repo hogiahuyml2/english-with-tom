@@ -13,7 +13,7 @@ module.exports = function (app, deps) {
   const DAY = 86400000;
   const one = (sql, ...a) => db.prepare(sql).get(...a);
   const all = (sql, ...a) => db.prepare(sql).all(...a);
-  const dlMs = (s) => { if (!s) return 0; const t = Date.parse(/[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : String(s).replace(' ', 'T') + '+07:00'); return isNaN(t) ? 0 : t; };
+  const dlMs = (s) => { if (!s) return 0; const t = Date.parse(/[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : (/^\d{4}-\d{2}-\d{2}$/.test(String(s)) ? s + 'T23:59:59' : String(s).replace(' ', 'T')) + '+07:00'); return isNaN(t) ? 0 : t; };
   const vnDayOf = (ms) => new Date(ms + 7 * 3600e3).toISOString().slice(0, 10);
   const vnStartMs = (day) => Date.parse(day + 'T00:00:00+07:00');
   const dmy = (day) => day.slice(8, 10) + '/' + day.slice(5, 7);

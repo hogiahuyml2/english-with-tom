@@ -133,8 +133,8 @@ module.exports = function (app, { db, requireAuth, now }) {
     setState(req.user.id, key, done ? 'mastered' : 'open', false); res.json({ ok: true });
   });
   // Số câu đang cần ôn (cho khung nhắc ở Hồ sơ)
-  app.get('/api/notebook/count', requireAuth, (req, res) => {
-    const uid = req.user.id, st = stateOf(uid), open = (l) => l.filter((it) => { const s = st.get(it.key); return !(s && s.status === 'mastered'); }).length;
-    res.json({ open: open(quizItems(uid).concat(mcqItems(uid))) + open(writingItems(uid)) + open(wordItems(uid)) + dictItems(uid).length });
-  });
+  const openCount = (uid) => { const st = stateOf(uid), open = (l) => l.filter((it) => { const s = st.get(it.key); return !(s && s.status === 'mastered'); }).length;
+    return open(quizItems(uid).concat(mcqItems(uid))) + open(writingItems(uid)) + open(wordItems(uid)) + dictItems(uid).length; };
+  app.locals.notebookOpen = openCount; // dùng cho "Hôm nay mình học gì?"
+  app.get('/api/notebook/count', requireAuth, (req, res) => { res.json({ open: openCount(req.user.id) }); });
 };

@@ -710,6 +710,21 @@ CREATE INDEX IF NOT EXISTS idx_speaking_user ON speaking_sessions(user_id, id);
 CREATE INDEX IF NOT EXISTS idx_speaking_status ON speaking_sessions(status, id);
 `, 'speaking_sessions');
 
+// Kế hoạch học hằng ngày ("Hôm nay mình học gì?"): chốt một lần mỗi ngày để việc đã làm xong vẫn hiện tick
+tryExec(`
+CREATE TABLE IF NOT EXISTS today_plan (
+  user_id INTEGER NOT NULL,
+  day TEXT NOT NULL,
+  tasks TEXT NOT NULL,
+  done_n INTEGER NOT NULL DEFAULT 0,
+  total INTEGER NOT NULL DEFAULT 0,
+  done_all INTEGER NOT NULL DEFAULT 0,
+  rewarded INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (user_id, day)
+);
+`, 'today_plan');
+
 function now() { return new Date().toISOString(); }
 
 module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };

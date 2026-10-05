@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hôm nay mình học gì? — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.td-wrap { max-width: 760px; margin: 0 auto; padding: 14px 16px 80px; }
+.td-hero { display: flex; gap: 18px; align-items: center; background: linear-gradient(135deg, #ede9fe, #dbeafe); border-radius: 20px; padding: 18px; margin-bottom: 14px; flex-wrap: wrap; }
+.td-ring { position: relative; width: 104px; height: 104px; flex: none; } .td-ring svg { transform: rotate(-90deg); } .td-ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 24px; color: #4c1d95; }
+.td-hero h1 { margin: 0 0 4px; font-size: 22px; } .td-hero p { margin: 0; color: #475569; font-size: 14px; line-height: 1.55; }
+.td-dots { display: flex; gap: 6px; margin-top: 10px; } .td-dot { text-align: center; font-size: 11px; color: #64748b; } .td-dot i { display: block; width: 24px; height: 24px; border-radius: 50%; background: #e2e8f0; margin: 0 auto 2px; display: grid; place-items: center; font-style: normal; font-size: 13px; color: #fff; } .td-dot.full i { background: #10b981; } .td-dot.part i { background: #fbbf24; } .td-dot.today i { outline: 2px solid #6F58EE; outline-offset: 1px; }
+.td-task { display: flex; gap: 12px; align-items: center; background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); } .td-task.done { opacity: .7; background: #f0fdf4; border-color: #86efac; }
+.td-ic { font-size: 28px; flex: none; width: 46px; height: 46px; border-radius: 14px; background: var(--primary-soft); display: grid; place-items: center; } .td-task.done .td-ic { background: #bbf7d0; }
+.td-body { flex: 1; min-width: 0; } .td-body b { display: block; font-size: 15.5px; } .td-body span { font-size: 13px; color: var(--text-muted); line-height: 1.5; } .td-body small { color: var(--text-faint); font-size: 12px; }
+.td-btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 16px; min-height: 40px; border-radius: 12px; background: var(--primary); color: #fff; font: 700 14px inherit; font-family: inherit; text-decoration: none; flex: none; } .td-task.done .td-btn { background: #10b981; pointer-events: none; }
+.td-reward { background: #fef3c7; border: 2px solid #fbbf24; border-radius: 16px; padding: 14px; text-align: center; margin-bottom: 14px; font-weight: 700; color: #78350f; animation: tdpop .5s; } @keyframes tdpop { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.td-note { font-size: 13px; color: var(--text-muted); line-height: 1.6; text-align: center; margin-top: 12px; }
+@media (max-width: 480px) { .td-task { flex-wrap: wrap; } .td-btn { width: 100%; } }
+</style>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+<main class="td-wrap" id="root"><div class="td-note">⏳ Đang chuẩn bị kế hoạch cho bạn…</div></main>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script>
+(function () {
+'use strict';
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function load() {
+  fetch('/api/today', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+    var root = document.getElementById('root');
+    if (d.staff) { root.innerHTML = '<div class="td-note">Tính năng này dành cho học sinh.</div>'; return; }
+    var pct = d.total ? d.done_n / d.total : 0, C = 2 * Math.PI * 44;
+    var h = (d.reward ? '<div class="td-reward">🎉 Hoàn thành kế hoạch hôm nay! Bạn nhận +' + d.reward.coins + ' xu 🪙</div>' : '');
+    h += '<div class="td-hero"><div class="td-ring"><svg width="104" height="104"><circle cx="52" cy="52" r="44" fill="none" stroke="#fff" stroke-width="10"/><circle cx="52" cy="52" r="44" fill="none" stroke="#6F58EE" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (C * pct) + ' ' + C + '"/></svg><b>' + d.done_n + '/' + d.total + '</b></div><div style="flex:1;min-width:200px"><h1>🎯 Hôm nay mình học gì?</h1><p>' + esc(d.headline) + (d.streak ? ' <b>🔥 ' + d.streak + ' ngày</b>' : '') + '</p><div class="td-dots">' + d.dots.map(function (x) { return '<div class="td-dot ' + x.state + (x.today ? ' today' : '') + '"><i>' + (x.state === 'full' ? '✓' : x.state === 'part' ? '•' : '') + '</i>' + x.dow + '</div>'; }).join('') + '</div></div></div>';
+    if (!d.tasks.length) h += '<div class="td-note">Chưa có gợi ý nào. Bạn cứ vào mục Luyện từ hoặc Chương trình để học nhé.</div>';
+    d.tasks.forEach(function (t) {
+      h += '<div class="td-task' + (t.done ? ' done' : '') + '"><div class="td-ic">' + (t.done ? '✅' : t.icon) + '</div><div class="td-body"><b>' + esc(t.title) + '</b><span>' + esc(t.desc) + '</span><br><small>≈ ' + t.min + ' phút</small></div><a class="td-btn" href="' + esc(t.link) + '">' + (t.done ? 'Xong' : 'Bắt đầu') + '</a></div>';
+    });
+    h += '<div class="td-note">Kế hoạch được chọn từ chính bài làm của bạn: bài được giao, từ đến hạn ôn, câu sai, kỹ năng yếu… Việc nào xong sẽ tự được tick ✓. Hoàn thành cả ngày để nhận xu và huy hiệu “Đều đặn từng ngày”.</div>';
+    root.innerHTML = h;
+  }).catch(function () { document.getElementById('root').innerHTML = '<div class="td-note">Không tải được kế hoạch, hãy thử lại sau.</div>'; });
+}
+load();
+document.addEventListener('visibilitychange', function () { if (!document.hidden) load(); });
+})();
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ const AV = require('./js/avatar.js');
 
 module.exports = function (app, { db, requireAuth, now }) {
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
-  const dlMs = (s) => { if (!s) return 0; const t = Date.parse(/[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : String(s).replace(' ', 'T') + '+07:00'); return isNaN(t) ? 0 : t; };
+  const dlMs = (s) => { if (!s) return 0; const t = Date.parse(/[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : (/^\d{4}-\d{2}-\d{2}$/.test(String(s)) ? s + 'T23:59:59' : String(s).replace(' ', 'T')) + '+07:00'); return isNaN(t) ? 0 : t; };
   const one = (sql, ...a) => db.prepare(sql).get(...a);
 
   function metrics(uid, email) {
@@ -26,6 +26,7 @@ module.exports = function (app, { db, requireAuth, now }) {
       high_scores: graded.filter((r) => r.score / r.max_score >= 0.8).length,
       perfect_scores: graded.filter((r) => r.score >= r.max_score).length,
       mistakes_fixed: one("SELECT COUNT(*) AS c FROM notebook_state WHERE user_id=? AND status='mastered'", uid).c,
+      plan_days: one('SELECT COUNT(*) AS c FROM today_plan WHERE user_id=? AND done_all=1', uid).c,
       speaking_done: one("SELECT COUNT(*) AS c FROM speaking_sessions WHERE user_id=? AND status='done'", uid).c,
       placement_done: one("SELECT COUNT(*) AS c FROM placement_attempts WHERE user_id=? AND status='done' AND voided=0", uid).c,
       arcade_plays: (one('SELECT SUM(plays) AS c FROM arcade_stats WHERE user_id=?', uid) || {}).c || 0,

@@ -11,7 +11,7 @@ module.exports = function (app, deps) {
   // Hạn nộp do giáo viên nhập ở Việt Nam (không có múi giờ) → coi là giờ UTC+7
   function dlMs(s) {
     if (!s) return 0;
-    const iso = /[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : String(s).replace(' ', 'T') + '+07:00';
+    const iso = /[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : (/^\d{4}-\d{2}-\d{2}$/.test(String(s)) ? s + 'T23:59:59' : String(s).replace(' ', 'T')) + '+07:00';
     const t = Date.parse(iso); return isNaN(t) ? 0 : t;
   }
   const pctOf = (score, max) => (score != null && max) ? Math.round(score / max * 100) : null;

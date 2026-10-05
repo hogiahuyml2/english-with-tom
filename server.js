@@ -2289,6 +2289,7 @@ app.put('/api/me/class', requireAuth, (req, res) => {
 require('./avatar')(app, { db, requireAuth, now });
 require('./notebook')(app, { db, requireAuth, now });
 require('./achievements')(app, { db, requireAuth, now });
+require('./today')(app, { db, requireAuth, now });
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./speaking')(app, { db, requireAuth, requireRole, now, notifyUser, upload, checkUpload, uploadsDir });

@@ -437,6 +437,7 @@
     <!-- Verify banner -->
     <div id="verifyBanner" style="display:none;"></div>
     <div id="avBanner" style="display:none;"></div>
+    <div id="todayCard" style="display:none;"></div>
     <div id="nbBanner" style="display:none;"></div>
     <div id="clBanner" style="display:none;"></div>
     <div id="plBanner" style="display:none;"></div>
@@ -1012,6 +1013,11 @@ async function loadProgress() {
       if (!d || !d.open) return; var nb = document.getElementById('nbBanner'); nb.className = 'note';
       nb.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;background:var(--warning-soft);border-color:transparent;color:var(--text)';
       nb.innerHTML = '<span>📒 Bạn có <b>' + d.open + ' câu</b> cần ôn trong <b>Sổ lỗi sai</b>. Ôn lại để nắm chắc nhé!</span><a class="btn btn-sm btn-primary" href="notebook.html">Ôn ngay</a>';
+    }).catch(function(){});
+    fetch('/api/today',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if (!d || d.staff || !d.tasks || !d.tasks.length) return; var c = document.getElementById('todayCard'); c.className = 'lb-card'; c.style.display = '';
+      var esc2 = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); };
+      c.innerHTML = '<div class="lb-head"><h3>🎯 Hôm nay mình học gì? · ' + d.done_n + '/' + d.total + '</h3><a class="btn btn-sm btn-primary" href="today.html">' + (d.all_done ? 'Xem lại' : 'Bắt đầu') + '</a></div><div style="font-size:13.5px;color:var(--text-muted);margin-bottom:8px">' + esc2(d.headline) + '</div>' + d.tasks.slice(0, 3).map(function(t){ return '<a href="' + esc2(t.link) + '" style="display:flex;gap:10px;align-items:center;padding:7px 0;text-decoration:none;color:inherit;border-top:1px solid var(--border);' + (t.done ? 'opacity:.6;' : '') + '"><span style="font-size:20px">' + (t.done ? '✅' : t.icon) + '</span><span style="flex:1;font-weight:600;font-size:14px">' + esc2(t.title) + '</span><small style="color:var(--text-faint)">' + t.min + "'" + '</small></a>'; }).join('');
     }).catch(function(){});
     fetch('/api/achievements',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if (!d || !d.items) return; var box = document.getElementById('achCard');
