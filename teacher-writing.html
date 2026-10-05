@@ -127,6 +127,7 @@ function cardHtml(it) {
     it.classes.map(function (c) { return '<span class="wb-chip">' + esc(c) + '</span>'; }).join('') + '<span class="wb-chip ex">' + esc(it.exercise.title) + '</span>' +
     '<span class="wb-meta">' + it.words + ' từ · nộp ' + fd(it.submitted_at) + '</span>' +
     (it.ai && it.ai.round > 1 ? '<span class="wb-chip rd">Lần chấm ' + it.ai.round + '</span>' : '') +
+    ((it.leaves || it.pastes) ? '<span class="wb-chip rd" title="Chế độ thi: số lần rời trang / thử dán nội dung">⚠️ Rời trang ' + (it.leaves || 0) + (it.pastes ? ' · dán ' + it.pastes : '') + '</span>' : '') +
     '<span style="flex:1"></span>' + (it.status === 'graded' ? '<span class="wb-chip st">Đã gửi</span>' : '') + '</div>';
   h += '<div class="wb-essay" id="e' + it.id + '">' + esc(it.essay) + '</div>' + (it.words > 90 ? '<button class="wb-more" data-more="' + it.id + '">▼ Xem hết bài</button>' : '');
   if (it.ai) {

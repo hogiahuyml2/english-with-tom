@@ -1125,6 +1125,12 @@ app.get('/api/exercises/:id', requireAuth, async (req, res) => {
     const result = Object.assign({}, ex);
     result.questions = result.questions ? JSON.parse(result.questions) : null;
     // Đề giao riêng có hạn nộp đã qua → khoá, học sinh không làm bài được nữa
+    if (req.user && req.user.role === 'student') {
+      try { // chế độ thi do giáo viên bật khi giao bài
+        const as = db.prepare('SELECT strict, max_leaves FROM assignments WHERE exercise_id=? AND student_email=? ORDER BY id DESC LIMIT 1').get(id, req.user.email);
+        if (as && as.strict) { result.strict = 1; result.max_leaves = as.max_leaves || 3; }
+      } catch (_) {}
+    }
     if (ex.is_private && req.user && req.user.role === 'student') {
       const dl = getAssignmentDeadline(id, req.user);
       result.deadline = dl;
@@ -1562,6 +1568,7 @@ app.delete('/api/admin/exercises/:id', requireRole('admin'), (req, res) => {
 // Giáo viên giao đề cho học sinh theo email
 app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) => {
   const { exercise_id, student_emails, group_id, deadline, note } = req.body || {};
+  const strict = (req.body || {}).strict ? 1 : 0, maxLeaves = Math.max(1, Math.min(10, parseInt((req.body || {}).max_leaves, 10) || 3));
   if (!exercise_id) return res.status(400).json({ error: 'Thiếu thông tin đề.' });
   const ex = db.prepare('SELECT id,title,skill,is_private FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
@@ -1582,15 +1589,16 @@ app.post('/api/assignments', requireRole('teacher','admin'), async (req, res) =>
   }
 
   if (group_id) {
-    try { db.prepare('INSERT INTO group_assignments (group_id,exercise_id,assigned_by,deadline,note,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(group_id,exercise_id) DO UPDATE SET deadline=excluded.deadline, note=excluded.note, assigned_by=excluded.assigned_by')
-      .run(group_id, exercise_id, req.user.id, deadline || null, note || null, now()); } catch (e) { console.error('[group_assignments]', e.message); }
+    try { db.prepare('INSERT INTO group_assignments (group_id,exercise_id,assigned_by,deadline,note,created_at,strict,max_leaves) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(group_id,exercise_id) DO UPDATE SET deadline=excluded.deadline, note=excluded.note, assigned_by=excluded.assigned_by, strict=excluded.strict, max_leaves=excluded.max_leaves')
+      .run(group_id, exercise_id, req.user.id, deadline || null, note || null, now(), strict, maxLeaves); } catch (e) { console.error('[group_assignments]', e.message); }
   }
-  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id) VALUES (?,?,?,?,?,?,?)');
+  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id,strict,max_leaves) VALUES (?,?,?,?,?,?,?,?,?)');
   let count = 0;
   for (const email of emails) {
     const exists = db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(exercise_id, email);
+    if (exists && (req.body || {}).strict !== undefined) db.prepare('UPDATE assignments SET strict=?, max_leaves=? WHERE id=?').run(strict, maxLeaves, exists.id); // giao lại để bật/tắt chế độ thi
     if (!exists) {
-      ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null);
+      ins.run(exercise_id, email, req.user.id, deadline || null, note || null, now(), group_id || null, strict, maxLeaves);
       count++;
       if (deadline) _assignmentDeadlines.set(Number(exercise_id) + '|' + email, deadline);
     }
@@ -1679,6 +1687,13 @@ app.get('/api/teacher/submission/:id', requireRole('teacher','admin'), (req, res
     WHERE s.id = ?
   `).get(Number(req.params.id));
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
+  try {
+    const st = db.prepare('SELECT strict, max_leaves FROM assignments WHERE exercise_id=? AND student_email=? ORDER BY id DESC LIMIT 1').get(sub.exercise_id, sub.student_email);
+    if (st && st.strict) {
+      const ev = db.prepare('SELECT type, created_at FROM exam_events WHERE user_id=? AND exercise_id=? ORDER BY id ASC LIMIT 60').all(sub.user_id, sub.exercise_id);
+      sub.integrity = { strict: true, max_leaves: st.max_leaves, leaves: ev.filter(e => ['tab','blur','reopen'].includes(e.type)).length, pastes: ev.filter(e => ['paste','copy'].includes(e.type)).length, events: ev };
+    }
+  } catch (_) {}
   res.json({ submission: sub });
 });
 
@@ -1914,6 +1929,8 @@ app.get('/api/teacher/writing-queue', requireRole('teacher','admin'), (req, res)
       id: r.id, student: { id: r.user_id, name: r.student_name, email: r.student_email }, classes: cls.get(r.user_id) || [],
       exercise: { id: r.exercise_id, title: r.title, program: r.program }, submitted_at: r.submitted_at, status: r.status,
       essay, words: essay.split(/\s+/).filter(Boolean).length, score: r.score, max_score: r.max_score,
+      leaves: db.prepare("SELECT COUNT(*) AS c FROM exam_events WHERE user_id=? AND exercise_id=? AND type IN ('tab','blur','reopen')").get(r.user_id, r.exercise_id).c,
+      pastes: db.prepare("SELECT COUNT(*) AS c FROM exam_events WHERE user_id=? AND exercise_id=? AND type IN ('paste','copy')").get(r.user_id, r.exercise_id).c,
       ai: fb ? {
         overall_score: fb.overall_score ?? null, scale_label: fb.scale_label || '', summary: fb.summary || '',
         criteria: Array.isArray(fb.criteria) ? fb.criteria.map(c => ({ name: c.name, score: c.score, max: c.max, comment: c.comment || '' })) : [],
@@ -2213,15 +2230,15 @@ app.get('/api/me/classes', requireAuth, (req, res) => {
 // Giao lại cho học sinh mới vào lớp các bài đã giao cho lớp (còn hạn hoặc không có hạn)
 function backfillGroupAssignments(user, groupId, groupName) {
   const byEx = new Map();
-  for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note FROM assignments WHERE group_id=? ORDER BY id').all(groupId)) byEx.set(r.exercise_id, r);
-  for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note FROM group_assignments WHERE group_id=?').all(groupId)) byEx.set(r.exercise_id, r); // bản ghi cấp lớp là chuẩn nhất
+  for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note, strict, max_leaves FROM assignments WHERE group_id=? ORDER BY id').all(groupId)) byEx.set(r.exercise_id, r);
+  for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note, strict, max_leaves FROM group_assignments WHERE group_id=?').all(groupId)) byEx.set(r.exercise_id, r); // bản ghi cấp lớp là chuẩn nhất
   const rows = [...byEx.values()];
-  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id) VALUES (?,?,?,?,?,?,?)');
+  const ins = db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,group_id,strict,max_leaves) VALUES (?,?,?,?,?,?,?,?,?)');
   let n = 0; const titles = [];
   for (const r of rows) {
     if (r.deadline && Date.parse(r.deadline) < Date.now() - 24 * 3600e3) continue; // bài đã quá hạn từ lâu thì không giao lại
     if (db.prepare('SELECT id FROM assignments WHERE exercise_id=? AND student_email=?').get(r.exercise_id, user.email)) continue;
-    ins.run(r.exercise_id, user.email, r.assigned_by, r.deadline || null, r.note || null, now(), groupId);
+    ins.run(r.exercise_id, user.email, r.assigned_by, r.deadline || null, r.note || null, now(), groupId, r.strict ? 1 : 0, r.max_leaves || 3);
     _assignedSet.add(Number(r.exercise_id) + '|' + user.email);
     if (r.deadline) _assignmentDeadlines.set(Number(r.exercise_id) + '|' + user.email, r.deadline);
     const ex = db.prepare('SELECT title FROM exercises WHERE id=?').get(r.exercise_id); if (ex) titles.push(ex.title); n++;
@@ -2267,6 +2284,7 @@ app.put('/api/me/class', requireAuth, (req, res) => {
     res.json({ ok: true, class: name, backfilled, pending });
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
 });
+require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });
 
 // ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────
@@ -2276,6 +2294,9 @@ app.get('/api/teacher/tracker', requireRole('teacher','admin'), (req, res) => {
     SELECT a.id AS aid, a.student_email, a.deadline, a.created_at AS assigned_at, a.group_id,
            e.id AS exercise_id, e.title, e.program, e.skill,
            u.id AS student_id, u.name AS student_name,
+           a.strict,
+           (SELECT COUNT(*) FROM exam_events ev WHERE ev.user_id = u.id AND ev.exercise_id = a.exercise_id AND ev.type IN ('tab','blur','reopen')) AS leaves,
+           (SELECT COUNT(*) FROM exam_events ev WHERE ev.user_id = u.id AND ev.exercise_id = a.exercise_id AND ev.type IN ('paste','copy')) AS pastes,
            sub.id AS sub_id, sub.status, sub.score, sub.max_score, sub.submitted_at
     FROM assignments a
     JOIN exercises e ON e.id = a.exercise_id

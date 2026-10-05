@@ -214,6 +214,20 @@ CREATE TABLE IF NOT EXISTS group_assignments (
 )`, 'group_assignments');
 
 // Lớp cho học sinh tự chọn trong Hồ sơ (self_join) + nguồn thêm thành viên (teacher | self | invite)
+safeAlter('PRAGMA table_info(group_assignments)', [
+  ['strict',     'ALTER TABLE group_assignments ADD COLUMN strict INTEGER NOT NULL DEFAULT 0'],
+  ['max_leaves', 'ALTER TABLE group_assignments ADD COLUMN max_leaves INTEGER NOT NULL DEFAULT 3'],
+]);
+tryExec(`
+CREATE TABLE IF NOT EXISTS exam_events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  exercise_id INTEGER NOT NULL,
+  type TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_exam_events_ue ON exam_events(user_id, exercise_id);
+`, 'exam_events');
 safeAlter('PRAGMA table_info(groups)', [
   ['self_join', 'ALTER TABLE groups ADD COLUMN self_join INTEGER NOT NULL DEFAULT 0'],
 ]);
@@ -247,6 +261,8 @@ safeAlter('PRAGMA table_info(group_members)', [
 safeAlter('PRAGMA table_info(assignments)', [
   ['group_id',      'ALTER TABLE assignments ADD COLUMN group_id INTEGER'],
   ['reminder_sent', 'ALTER TABLE assignments ADD COLUMN reminder_sent INTEGER NOT NULL DEFAULT 0'],
+  ['strict',        'ALTER TABLE assignments ADD COLUMN strict INTEGER NOT NULL DEFAULT 0'],     // 1 = chế độ thi (chống gian lận)
+  ['max_leaves',    'ALTER TABLE assignments ADD COLUMN max_leaves INTEGER NOT NULL DEFAULT 3'], // số lần được rời trang trước khi tự nộp
   ['overdue_sent',  'ALTER TABLE assignments ADD COLUMN overdue_sent INTEGER NOT NULL DEFAULT 0'], // đã nhắc sau khi quá hạn
 ]);
 

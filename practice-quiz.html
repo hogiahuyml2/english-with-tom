@@ -72,6 +72,7 @@
 
 <div id="site-footer"></div>
 <script src="js/main.js?v=31"></script>
+<script src="js/exam-guard.js?v=1"></script>
 <script>
   function qp(n){ return new URLSearchParams(location.search).get(n); }
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
@@ -163,6 +164,8 @@
       }).join('');
       return '<div class="q-item"><div class="q-text">'+(i+1)+'. '+esc(q.q)+'</div>'+opts+'</div>';
     }).join('');
+    // Chế độ thi (giáo viên bật khi giao bài): chống rời trang / dán nội dung, vượt giới hạn thì tự nộp
+    if (e.strict && window.EWTGuard) EWTGuard.start({ exerciseId: EXERCISE_ID, maxLeaves: e.max_leaves, onForce: function(){ document.getElementById('submitBtn').click(); } });
   }).catch(function(err){
     clearTimeout(_quizTimeout);
     if (attempt < 8) {
@@ -191,6 +194,7 @@
     document.getElementById('resScore').textContent = data.score + '/' + data.max_score;
     document.getElementById('resPercent').textContent = (data.max_score ? Math.round(data.score/data.max_score*100) : 0) + '%';
     var box = document.getElementById('result'); box.style.display='block'; box.scrollIntoView({behavior:'smooth'});
+    if (window.EWTGuard) EWTGuard.stop();
   });
 </script>
 </body>

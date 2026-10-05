@@ -102,7 +102,7 @@ function scBand(r) { if (r.pct == null) return ''; return r.pct < 50 ? 'lo' : r.
 function match(r, skip) {
   if (skip !== 'q' && F.q && r.hay.indexOf(norm(F.q)) < 0) return false;
   if (skip !== 'cls' && F.cls.length && !r.clsKey.some(function (c) { return F.cls.indexOf(c) >= 0; })) return false;
-  if (skip !== 'st') { if (F.st === 'late') { if (!r.late) return false; } else if (F.st === 'overdue') { if (!r.overdue) return false; } else if (F.st && r.st !== F.st) return false; }
+  if (skip !== 'st') { if (F.st === 'late') { if (!r.late) return false; } else if (F.st === 'overdue') { if (!r.overdue) return false; } else if (F.st === 'sus') { if (!(r.leaves > 0 || r.pastes > 0)) return false; } else if (F.st && r.st !== F.st) return false; }
   if (skip !== 'skill' && F.skill && r.skill !== F.skill) return false;
   if (skip !== 'prog' && F.prog && r.program !== F.prog) return false;
   if (skip !== 'ex' && F.ex && String(r.exercise_id) !== F.ex) return false;
@@ -146,7 +146,7 @@ function renderFilters() {
   var exIds = Object.keys(exMap).sort(function (a, b) { return exMap[a].localeCompare(exMap[b], 'vi'); });
   var h = '<div class="tk-f"><span class="tk-fl">Tìm</span><input class="tk-in" id="fq" style="flex:1;min-width:220px" placeholder="🔍 Tên học sinh, email, tên đề, lớp…" value="' + esc(F.q) + '"><button class="tk-btn sm" id="btnClear">✕ Xoá bộ lọc</button></div>';
   h += '<div class="tk-f"><span class="tk-fl">Lớp</span>' + chips('cls', clsNames.map(function (c) { return { v: c, t: c, n: count('cls', function (r) { return r.clsKey.indexOf(c) >= 0; }) }; }), function (v) { return v === '' ? !F.cls.length : F.cls.indexOf(v) >= 0; }, null, true) + '</div>';
-  h += '<div class="tk-f"><span class="tk-fl">Trạng thái</span>' + chips('st', [{ v: 'none', t: '❌ Chưa nộp', n: count('st', function (r) { return r.st === 'none'; }) }, { v: 'overdue', t: '⏰ Quá hạn chưa nộp', n: count('st', function (r) { return r.overdue; }) }, { v: 'pend', t: '⏳ Chờ chấm', n: count('st', function (r) { return r.st === 'pend'; }) }, { v: 'ok', t: '✅ Đã chấm', n: count('st', function (r) { return r.st === 'ok'; }) }, { v: 'late', t: '🐢 Nộp muộn', n: count('st', function (r) { return r.late; }) }], function (v) { return F.st === v; }, null, true) + '</div>';
+  h += '<div class="tk-f"><span class="tk-fl">Trạng thái</span>' + chips('st', [{ v: 'none', t: '❌ Chưa nộp', n: count('st', function (r) { return r.st === 'none'; }) }, { v: 'overdue', t: '⏰ Quá hạn chưa nộp', n: count('st', function (r) { return r.overdue; }) }, { v: 'pend', t: '⏳ Chờ chấm', n: count('st', function (r) { return r.st === 'pend'; }) }, { v: 'ok', t: '✅ Đã chấm', n: count('st', function (r) { return r.st === 'ok'; }) }, { v: 'late', t: '🐢 Nộp muộn', n: count('st', function (r) { return r.late; }) }, { v: 'sus', t: '⚠️ Rời trang / dán nội dung', n: count('st', function (r) { return r.leaves > 0 || r.pastes > 0; }) }], function (v) { return F.st === v; }, null, true) + '</div>';
   h += '<div class="tk-f"><span class="tk-fl">Kỹ năng</span>' + chips('skill', uniq(ROWS.map(function (r) { return r.skill; })).map(function (s) { return { v: s, t: s, n: count('skill', function (r) { return r.skill === s; }) }; }), function (v) { return F.skill === v; }, null, true) +
     '<span class="tk-fl" style="margin-left:14px;width:auto">Chương trình</span>' + chips('prog', uniq(ROWS.map(function (r) { return r.program; })).map(function (s) { return { v: s, t: s, n: count('prog', function (r) { return r.program === s; }) }; }), function (v) { return F.prog === v; }, null, true) + '</div>';
   h += '<div class="tk-f"><span class="tk-fl">Đề</span><select class="tk-sel" id="fex" style="max-width:380px"><option value="">Tất cả đề (' + exIds.length + ')</option>' + exIds.map(function (id) { return '<option value="' + id + '"' + (F.ex === id ? ' selected' : '') + '>' + esc(exMap[id]) + '</option>'; }).join('') + '</select></div>';
@@ -160,7 +160,7 @@ function fmt(t) { if (!t) return '—'; var d = new Date(t); return d.toLocaleDa
 function sortVal(r, k) { if (k === 'cls') return r.cnames.join(','); if (k === 'st') return { none: 0, pend: 1, ok: 2 }[r.st]; if (k === 'pct') return r.pct == null ? -1 : r.pct; if (k === 'nm' || k === 'title') return norm(r[k]); return r[k] || 0; }
 function rowHtml(r) {
   var sc = r.pct == null ? '—' : '<span class="tk-score ' + (r.pct < 50 ? 'tk-s-lo' : r.pct < 80 ? 'tk-s-mid' : 'tk-s-hi') + '">' + r.score + '/' + r.max_score + ' · ' + r.pct + '%</span>';
-  var st = '<span class="tk-badge ' + (r.st === 'none' ? 'b-none' : r.st === 'pend' ? 'b-pend' : 'b-ok') + '">' + SC[r.st] + '</span>' + (r.late ? '<span class="tk-badge b-late">muộn</span>' : '') + (r.overdue ? '<span class="tk-badge b-late">quá hạn</span>' : '');
+  var st = '<span class="tk-badge ' + (r.st === 'none' ? 'b-none' : r.st === 'pend' ? 'b-pend' : 'b-ok') + '">' + SC[r.st] + '</span>' + (r.late ? '<span class="tk-badge b-late">muộn</span>' : '') + (r.overdue ? '<span class="tk-badge b-late">quá hạn</span>' : '') + ((r.leaves || r.pastes) ? '<span class="tk-badge b-late" style="background:#fee2e2;color:#991b1b" title="Chế độ thi: số lần rời trang / thử dán nội dung">⚠️ rời ' + (r.leaves || 0) + (r.pastes ? ' · dán ' + r.pastes : '') + '</span>' : (r.strict ? '<span class="tk-badge b-ok" title="Chế độ thi đã bật">🔒</span>' : ''));
   var act = r.sub_id ? '<a class="tk-btn sm" href="teacher.html?tab=grade&sub=' + r.sub_id + '">' + (r.st === 'ok' ? 'Xem' : 'Chấm') + '</a>' : '<span class="tk-hint">—</span>';
   return '<tr><td>' + (r.st === 'none' && r.student_id ? '<input type="checkbox" data-sel="' + r.aid + '"' + (SEL[r.aid] ? ' checked' : '') + '>' : '') + '</td><td><b>' + esc(r.nm) + '</b><div class="tk-hint">' + esc(r.student_email) + '</div></td><td>' + (r.cnames.length ? r.cnames.map(function (c) { return '<span class="tk-cls">' + esc(c) + '</span>'; }).join('') : '<span class="tk-cls none">chưa vào lớp</span>') + '</td><td>' + esc(r.title) + '<div class="tk-hint">' + esc(r.skill) + ' · ' + esc(r.program) + '</div></td><td>' + fmt(r.asgT) + '</td><td>' + fmt(r.dueT) + '</td><td>' + st + '</td><td>' + sc + '</td><td>' + fmt(r.subT) + '</td><td>' + act + '</td></tr>';
 }
@@ -217,9 +217,9 @@ $('btnRemind').onclick = function () {
   fetch('/api/teacher/remind', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: ids }) }).then(function (r) { return r.json(); }).then(function (d) { SEL = {}; toast('Đã nhắc ' + (d.sent || 0) + ' học sinh' + (d.skipped ? ' (bỏ qua ' + d.skipped + ': đã nộp / vừa nhắc / chưa có tài khoản)' : '')); renderTable(); }).catch(function () { toast('Không gửi được'); });
 };
 $('btnCsv').onclick = function () {
-  var rows = filtered(), head = ['Học sinh', 'Email', 'Lớp', 'Đề', 'Kỹ năng', 'Chương trình', 'Ngày giao', 'Hạn nộp', 'Trạng thái', 'Nộp muộn', 'Điểm', 'Tối đa', 'Phần trăm', 'Nộp lúc'];
+  var rows = filtered(), head = ['Học sinh', 'Email', 'Lớp', 'Đề', 'Kỹ năng', 'Chương trình', 'Ngày giao', 'Hạn nộp', 'Trạng thái', 'Nộp muộn', 'Điểm', 'Tối đa', 'Phần trăm', 'Nộp lúc', 'Số lần rời trang'];
   function q(s) { s = String(s == null ? '' : s); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
-  var out = [head.map(q).join(',')].concat(rows.map(function (r) { return [r.nm, r.student_email, r.cnames.join(' / '), r.title, r.skill, r.program, fmt(r.asgT), fmt(r.dueT), SC[r.st] + (r.overdue ? ' (quá hạn)' : ''), r.late ? 'có' : '', r.sub_id ? r.score : '', r.sub_id ? r.max_score : '', r.pct == null ? '' : r.pct, fmt(r.subT)].map(q).join(','); }));
+  var out = [head.map(q).join(',')].concat(rows.map(function (r) { return [r.nm, r.student_email, r.cnames.join(' / '), r.title, r.skill, r.program, fmt(r.asgT), fmt(r.dueT), SC[r.st] + (r.overdue ? ' (quá hạn)' : ''), r.late ? 'có' : '', r.sub_id ? r.score : '', r.sub_id ? r.max_score : '', r.pct == null ? '' : r.pct, fmt(r.subT), r.strict ? (r.leaves || 0) : ''].map(q).join(','); }));
   var blob = new Blob(['﻿' + out.join('\r\n')], { type: 'text/csv;charset=utf-8' }), a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = 'theo-doi-bai-nop-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã xuất ' + rows.length + ' dòng');
 };
@@ -232,7 +232,8 @@ var BUILTIN = [
   { id: 'b3', name: '⌛ Hạn trong 3 ngày (chưa nộp)', data: { due: '3' } },
   { id: 'b4', name: '🔴 Điểm dưới 50%', data: { sc: 'lo' } },
   { id: 'b5', name: '🐢 Nộp muộn', data: { st: 'late' } },
-  { id: 'b6', name: '🗓️ Nộp 7 ngày qua', data: { sub: '7' } }
+  { id: 'b6', name: '🗓️ Nộp 7 ngày qua', data: { sub: '7' } },
+  { id: 'b7', name: '⚠️ Nghi gian lận (rời trang)', data: { st: 'sus' } }
 ];
 var SAVED = [], ACTIVE = '';
 function snapshot() { var o = {}; Object.keys(BLANK).forEach(function (k) { o[k] = Array.isArray(F[k]) ? F[k].slice() : F[k]; }); o.groupBy = $('groupBy').value; return o; }
