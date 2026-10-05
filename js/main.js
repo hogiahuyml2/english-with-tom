@@ -198,8 +198,70 @@
   var roleLabel = { student: 'Học sinh', teacher: 'Giáo viên', admin: 'Quản trị' };
   fetch('/api/me', { credentials: 'same-origin' })
     .then(function (r) { return r.ok ? r.json() : { user: null }; })
-    .then(function (d) { applyAuth(d.user); })
+    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); })
     .catch(function () { applyAuth(null); }); // chạy trên GitHub Pages (không có API) -> coi như chưa đăng nhập
+
+
+  /* ===== Lời nhắc chọn lớp (học sinh chưa chọn lớp / chưa xác nhận là người dùng tự do) ===== */
+  function classNudge() {
+    var page = location.pathname.split('/').pop();
+    if (page === 'login.html' || page === 'account.html' || page === 'placement.html' || page === 'forgot-password.html' || page === 'reset-password.html') return;
+    try { if (sessionStorage.getItem('ewtClassNudge')) return; } catch (e) {}
+    if (document.getElementById('clsNudge')) return;
+    var st = document.createElement('style');
+    st.textContent =
+      '@keyframes clsIn{0%{opacity:0;transform:translateY(40px) scale(.9)}60%{opacity:1;transform:translateY(-6px) scale(1.02)}100%{opacity:1;transform:none}}' +
+      '@keyframes clsGlow{0%,100%{box-shadow:0 10px 30px rgba(123,110,246,.28),0 0 0 0 rgba(123,110,246,.45)}50%{box-shadow:0 14px 36px rgba(123,110,246,.38),0 0 0 9px rgba(123,110,246,0)}}' +
+      '@keyframes clsWave{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-10deg)}50%{transform:rotate(8deg)}}' +
+      '@keyframes clsBar{0%{background-position:0 0}100%{background-position:200% 0}}' +
+      '@keyframes clsOut{to{opacity:0;transform:translateY(30px) scale(.92)}}' +
+      '#clsNudge{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:9990;width:min(380px,calc(100vw - 32px));background:var(--surface,#fff);color:var(--text,#2E2B45);border-radius:20px;padding:18px 18px 16px;cursor:pointer;overflow:hidden;animation:clsIn .7s cubic-bezier(.2,.9,.3,1.2) both,clsGlow 2.6s ease-in-out 1s infinite;border:1px solid var(--border,#e6e3f5)}' +
+      '#clsNudge:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#7B6EF6,#6FA8F5,#2E9E7B,#F5A86F,#7B6EF6);background-size:200% 100%;animation:clsBar 3s linear infinite}' +
+      '#clsNudge .cn-top{display:flex;gap:12px;align-items:flex-start}' +
+      '#clsNudge .cn-ico{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:25px;background:var(--primary-soft,#ECE9FE)}' +
+      '#clsNudge .cn-ico span{display:inline-block;transform-origin:70% 70%;animation:clsWave 2.4s ease-in-out 1.2s infinite}' +
+      '#clsNudge h4{margin:0 0 4px;font-size:15.5px;line-height:1.3}' +
+      '#clsNudge p{margin:0;font-size:13.5px;line-height:1.55;color:var(--text-muted,#6B6880)}' +
+      '#clsNudge .cn-x{position:absolute;top:10px;right:10px;width:26px;height:26px;border:none;border-radius:50%;background:transparent;color:var(--text-faint,#9C99AE);font-size:16px;cursor:pointer;line-height:1}' +
+      '#clsNudge .cn-x:hover{background:var(--primary-soft,#ECE9FE);color:var(--text,#2E2B45)}' +
+      '#clsNudge .cn-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}' +
+      '#clsNudge .cn-go{flex:1 1 150px;border:none;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13.5px;color:#fff;cursor:pointer;background:var(--gradient,linear-gradient(135deg,#7B6EF6,#6FA8F5));transition:transform .15s}' +
+      '#clsNudge .cn-go:hover{transform:translateY(-2px)}' +
+      '#clsNudge .cn-free{flex:1 1 150px;border:1.5px dashed var(--border-strong,#c9c4ee);border-radius:12px;padding:9px 12px;font-weight:600;font-size:13px;color:var(--text-muted,#6B6880);background:transparent;cursor:pointer}' +
+      '#clsNudge .cn-free:hover{border-color:var(--primary,#7B6EF6);color:var(--primary,#7B6EF6)}' +
+      '#clsNudge.cn-bye{animation:clsOut .35s ease forwards}' +
+      '@media (prefers-reduced-motion:reduce){#clsNudge,#clsNudge:before,#clsNudge .cn-ico span{animation:none!important}}' +
+      '@media (max-width:520px){#clsNudge{right:16px;left:16px;width:auto}}';
+    document.head.appendChild(st);
+    var el = document.createElement('div');
+    el.id = 'clsNudge'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Nhắc chọn lớp học');
+    el.innerHTML =
+      '<button class="cn-x" aria-label="Để sau" title="Để sau">✕</button>' +
+      '<div class="cn-top"><div class="cn-ico"><span>👋</span></div><div><h4>Chào bạn, bạn học lớp nào nhỉ?</h4>' +
+      '<p>Bạn chưa chọn lớp học. Hãy <b>chọn lớp của mình</b> hoặc xác nhận là <b>người dùng tự do</b> để nhận đúng bài tập phù hợp với chương trình đang học nhé!</p></div></div>' +
+      '<div class="cn-act"><button class="cn-go">🏫 Chọn lớp ngay</button><button class="cn-free">🙋 Tôi là người dùng tự do</button></div>';
+    function bye(remember) {
+      if (remember) { try { sessionStorage.setItem('ewtClassNudge', '1'); } catch (e) {} }
+      el.classList.add('cn-bye'); setTimeout(function () { el.remove(); }, 380);
+    }
+    function go() { try { sessionStorage.setItem('ewtClassNudge', '1'); } catch (e) {} location.href = 'account.html#classCard'; }
+    el.addEventListener('click', function (e) {
+      if (e.target.closest('.cn-x')) { e.stopPropagation(); bye(true); return; }
+      if (e.target.closest('.cn-free')) {
+        e.stopPropagation(); var b = e.target.closest('.cn-free'); b.disabled = true; b.textContent = 'Đang lưu…';
+        fetch('/api/me/class', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ group_id: null }) })
+          .then(function (r) {
+            if (!r.ok) throw 0;
+            el.querySelector('h4').textContent = 'Đã ghi nhận! 🎉';
+            el.querySelector('p').textContent = 'Bạn đang học tự do. Khi cần vào lớp, bạn có thể đổi bất cứ lúc nào ở Tài khoản → Lớp đang theo học.';
+            el.querySelector('.cn-act').remove(); setTimeout(function () { bye(false); }, 3200);
+          }).catch(function () { b.disabled = false; b.textContent = 'Chưa lưu được, thử lại'; });
+        return;
+      }
+      go();
+    });
+    setTimeout(function () { if (document.body) document.body.appendChild(el); }, 900);
+  }
 
   function escNameT(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function applyAuth(user) {

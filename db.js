@@ -171,6 +171,7 @@ safeAlter('PRAGMA table_info(users)', [
   ['reset_code_hash',   'ALTER TABLE users ADD COLUMN reset_code_hash TEXT'],
   ['reset_code_expiry', 'ALTER TABLE users ADD COLUMN reset_code_expiry TEXT'],
   ['reset_code_tries',  'ALTER TABLE users ADD COLUMN reset_code_tries INTEGER NOT NULL DEFAULT 0'],
+  ['class_choice',      'ALTER TABLE users ADD COLUMN class_choice TEXT'], // NULL = chưa chọn · free = xác nhận tự do · class = đã chọn lớp
 ]);
 
 // Nhật ký gửi email — để quản trị viên biết vì sao email lỗi (hết hạn mức, sai khóa API, chưa xác minh người gửi...)

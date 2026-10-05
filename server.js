@@ -391,7 +391,18 @@ app.post('/api/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/api/me', (req, res) => res.json({ user: req.user || null }));
+// class_nudge = học sinh chưa có lớp và chưa xác nhận "tự do" (và đang có lớp mở để chọn) → web hiện lời nhắc chọn lớp
+app.get('/api/me', (req, res) => {
+  const u = req.user || null; let nudge = false;
+  try {
+    if (u && u.role === 'student') {
+      const ch = db.prepare('SELECT class_choice FROM users WHERE id=?').get(u.id);
+      if (!ch || !ch.class_choice) nudge = !db.prepare('SELECT 1 FROM group_members WHERE user_id=? LIMIT 1').get(u.id)
+        && !!db.prepare('SELECT 1 FROM groups WHERE self_join=1 LIMIT 1').get();
+    }
+  } catch (_) {}
+  res.json({ user: u, class_nudge: nudge });
+});
 
 // ===== QUÊN MẬT KHẨU =====
 // Email gồm CẢ mã OTP 6 số lẫn nút bấm (link). Người dùng chọn 1 trong 2. Hiệu lực 30 phút, nhập sai mã tối đa 5 lần.
@@ -2099,7 +2110,8 @@ function openClasses() {
 }
 app.get('/api/me/classes', requireAuth, (req, res) => {
   const mine = db.prepare('SELECT g.id, g.name, gm.source FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.user_id=? ORDER BY g.name').all(req.user.id);
-  res.json({ open: openClasses(), mine, can_choose: req.user.role === 'student' });
+  const ch = db.prepare('SELECT class_choice FROM users WHERE id=?').get(req.user.id);
+  res.json({ open: openClasses(), mine, can_choose: req.user.role === 'student', choice: (ch && ch.class_choice) || null });
 });
 // Giao lại cho học sinh mới vào lớp các bài đã giao cho lớp (còn hạn hoặc không có hạn)
 function backfillGroupAssignments(user, groupId, groupName) {
@@ -2138,6 +2150,7 @@ app.put('/api/me/class', requireAuth, (req, res) => {
       db.prepare('DELETE FROM group_members WHERE group_id=? AND user_id IS NULL AND invited_email=?').run(gid, req.user.email);
       backfilled = backfillGroupAssignments(req.user, gid, name);
     }
+    db.prepare('UPDATE users SET class_choice=? WHERE id=?').run(gid ? 'class' : 'free', req.user.id);
     db.exec('COMMIT');
     res.json({ ok: true, class: name, backfilled });
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }

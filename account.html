@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=23">
-</head>
+<style>@keyframes clsPulse{0%,100%{box-shadow:0 0 0 0 rgba(123,110,246,.5)}50%{box-shadow:0 0 0 12px rgba(123,110,246,0)}}.cls-pulse{animation:clsPulse 1.4s ease-in-out 3;outline:2px solid var(--primary)}</style></head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
 
@@ -43,10 +43,10 @@
         <div id="classMsg" style="display:none; margin-bottom:14px;" class="note"></div>
         <div class="field">
           <label>Lớp bạn đang theo học (để nhận bài tập theo lớp) — nếu là người dùng tự do có thể bỏ qua mục này:</label>
-          <select id="classSel"><option value="">— Không chọn (người dùng tự do) —</option></select>
+          <select id="classSel"><option value="">— Tôi là người dùng tự do —</option></select>
         </div>
         <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;" id="classHint">Chọn đúng lớp của bạn, hệ thống sẽ tự đưa bạn vào lớp đó và bạn sẽ nhận bài tập giáo viên giao cho cả lớp.</div>
-        <button class="btn btn-primary" id="classBtn">Lưu lớp</button>
+        <button class="btn btn-primary" id="classBtn">Lưu lựa chọn</button>
       </div>
 
       <div class="card">
@@ -63,7 +63,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=29"></script>
+<script src="js/main.js?v=30"></script>
 <script>
   var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
 
@@ -85,6 +85,8 @@
     var other = d.mine.filter(function(m){ return m.source !== 'self'; });
     if (other.length) document.getElementById('classHint').textContent = 'Bạn cũng đã được giáo viên thêm vào: ' + other.map(function(m){ return m.name; }).join(', ') + '.';
     document.getElementById('classCard').style.display = '';
+    if (d.choice === 'free' && !mine) document.getElementById('classHint').textContent = 'Bạn đang ở chế độ người dùng tự do. Khi vào lớp, bạn sẽ nhận bài tập của lớp đó.';
+    if (location.hash === '#classCard') { var cc = document.getElementById('classCard'); setTimeout(function(){ cc.scrollIntoView({behavior:'smooth',block:'center'}); cc.classList.add('cls-pulse'); }, 350); }
     document.getElementById('classBtn').onclick = async function(){
       var btn = this, box = document.getElementById('classMsg'); btn.disabled = true;
       var r = await fetch('/api/me/class',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({group_id: sel.value ? Number(sel.value) : null})});
