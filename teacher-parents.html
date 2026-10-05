@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Báo cáo phụ huynh — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.pp-wrap { max-width: 1100px; margin: 0 auto; padding: 14px 16px 70px; }
+.pp-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .pp-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.pp-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; min-height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .pp-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .pp-btn.pri { background: var(--primary); color: #fff; border-color: var(--primary); } .pp-btn:disabled { opacity: .5; cursor: default; }
+.pp-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.pp-in, .pp-sel, .pp-ta { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; width: 100%; min-width: 0; box-sizing: border-box; } .pp-in:focus, .pp-ta:focus, .pp-sel:focus { outline: none; border-color: var(--primary); }
+.pp-sel { width: auto; }
+.pp-how { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; } .pp-how b { color: var(--text); }
+.pp-warn { background: var(--warning-soft); color: #92400e; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; margin-bottom: 12px; }
+.pp-row { display: grid; grid-template-columns: minmax(150px, 1.1fr) minmax(180px, 1.4fr) minmax(130px, 1fr) auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.pp-row:last-child { border-bottom: 0; }
+.pp-nm b { display: block; } .pp-nm small { color: var(--text-faint); font-size: 12px; word-break: break-all; }
+.pp-sw { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; } .pp-sw input { width: 20px; height: 20px; }
+.pp-more { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.pp-more .pp-ta { flex: 1 1 260px; min-height: 40px; height: 40px; resize: vertical; }
+.pp-st { font-size: 12px; color: var(--text-muted); } .pp-st.bad { color: #dc2626; font-weight: 700; } .pp-st.ok { color: #059669; }
+.pp-modal { position: fixed; inset: 0; background: rgba(17,24,39,.55); z-index: 300; display: none; align-items: flex-start; justify-content: center; padding: 20px 12px; overflow: auto; } .pp-modal.on { display: flex; }
+.pp-sheet { background: #fff; border-radius: 16px; width: 100%; max-width: 660px; padding: 14px; } .pp-sheet h3 { margin: 0 0 8px; }
+.pp-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .pp-toast.on { opacity: 1; }
+@media (max-width: 760px) { .pp-row { grid-template-columns: 1fr; gap: 8px; } }
+</style>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="pp-wrap">
+  <div class="pp-top">
+    <h1>👪 Báo cáo tuần cho phụ huynh</h1>
+    <select class="pp-sel" id="clsSel" aria-label="Chọn lớp"></select>
+    <a class="pp-btn" href="teacher.html">← Khu vực giáo viên</a>
+  </div>
+  <div id="warn"></div>
+  <div class="pp-box pp-how">
+    Mỗi <b>tối Chủ nhật (từ 18:00)</b>, web tự gửi email tóm tắt <b>7 ngày học gần nhất</b> của từng học sinh cho phụ huynh đã được bật: số ngày học, điểm các bài đã chấm, bài còn nợ/sắp hạn, từ vựng, chép chính tả, huy hiệu mới, kèm nhận xét và <b>lời nhắn riêng của thầy/cô</b> (nếu bạn nhập). Email chỉ có <b>điểm số</b>, không có đáp án hay lỗi chi tiết. Mỗi email có nút để phụ huynh <b>ngừng nhận</b>.
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="pp-btn pri" id="btnBulk">📋 Dán danh sách email phụ huynh</button>
+      <button class="pp-btn" id="btnOn">✅ Bật cho cả lớp (những em đã có email)</button>
+      <button class="pp-btn" id="btnOff">⛔ Tắt cho cả lớp</button>
+    </div>
+  </div>
+  <div class="pp-box" id="list"><div class="pp-how">Đang tải…</div></div>
+</main>
+<div class="pp-modal" id="mBulk"><div class="pp-sheet"><h3>📋 Dán danh sách</h3>
+  <div class="pp-how" style="margin-bottom:8px">Mỗi dòng một học sinh: <b>email học sinh, email phụ huynh, tên phụ huynh (không bắt buộc)</b>. Có thể copy thẳng 2–3 cột từ Excel. Các em được thêm sẽ tự bật nhận báo cáo.</div>
+  <textarea class="pp-ta" id="bulkTa" style="height:180px" placeholder="hoc.sinh1@gmail.com, phuhuynh1@gmail.com, Chị Lan&#10;hoc.sinh2@gmail.com, phuhuynh2@gmail.com"></textarea>
+  <div id="bulkRes" class="pp-how" style="margin-top:8px"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="pp-btn" data-close>Đóng</button><button class="pp-btn pri" id="bulkGo">Lưu danh sách</button></div></div></div>
+<div class="pp-modal" id="mPrev"><div class="pp-sheet"><h3>👁 Xem trước email</h3><div class="pp-how" id="prevInfo" style="margin-bottom:8px"></div><div id="prevBody" style="border:1px solid var(--border);border-radius:12px;padding:8px;overflow:auto"></div>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="pp-btn" data-close>Đóng</button></div></div></div>
+<div class="pp-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=34"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+var tt; function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 3200); }
+function api(url, body) {
+  var o = { credentials: 'same-origin' }; if (body) { o.method = 'POST'; o.headers = { 'Content-Type': 'application/json' }; o.body = JSON.stringify(body); }
+  return fetch(url, o).then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || 'Lỗi'); return d; }); });
+}
+function fd(t) { if (!t) return ''; var d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+var DATA = null, CUR = 0;
+
+function load() {
+  return api('/api/parent-report/students' + (CUR ? '?group=' + CUR : '')).then(function (d) {
+    DATA = d;
+    if (!$('clsSel').options.length) {
+      $('clsSel').innerHTML = '<option value="0">Tất cả lớp của tôi</option>' + d.groups.map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join('');
+    }
+    $('warn').innerHTML = d.email_ready ? '' : '<div class="pp-warn">⚠️ Máy chủ chưa cấu hình gửi email (BREVO_API_KEY / FROM_EMAIL) nên chưa gửi được. Bạn vẫn lưu danh sách và xem trước được.</div>';
+    render();
+  }).catch(function (e) { $('list').innerHTML = '<div class="pp-how">' + esc(e.message) + '</div>'; });
+}
+function render() {
+  var S = DATA.students;
+  if (!S.length) { $('list').innerHTML = '<div class="pp-how">Chưa có học sinh nào trong lớp của bạn.</div>'; return; }
+  var on = S.filter(function (s) { return s.parent_report && s.parent_email; }).length;
+  $('list').innerHTML = '<div class="pp-how" style="margin-bottom:6px"><b>' + on + '</b> / ' + S.length + ' học sinh đang bật nhận báo cáo</div>' + S.map(function (s) {
+    var st = s.parent_unsub_at ? '<span class="pp-st bad">Phụ huynh đã chọn ngừng nhận</span>' : s.last_sent ? '<span class="pp-st ok">Đã gửi lần gần nhất: ' + fd(s.last_sent) + '</span>' : '<span class="pp-st">Chưa gửi lần nào</span>';
+    return '<div class="pp-row" data-id="' + s.id + '">' +
+      '<div class="pp-nm"><b>' + esc(s.name) + '</b><small>' + esc(s.email) + (s.classes ? ' · ' + esc(s.classes) : '') + '</small></div>' +
+      '<input class="pp-in" data-f="pe" type="email" inputmode="email" placeholder="Email phụ huynh" value="' + esc(s.parent_email || '') + '" aria-label="Email phụ huynh của ' + esc(s.name) + '">' +
+      '<input class="pp-in" data-f="pn" placeholder="Tên phụ huynh (nếu muốn)" value="' + esc(s.parent_name || '') + '" aria-label="Tên phụ huynh">' +
+      '<label class="pp-sw"><input type="checkbox" data-f="on"' + (s.parent_report ? ' checked' : '') + '> Gửi hằng tuần</label>' +
+      '<div class="pp-more"><textarea class="pp-ta" data-f="note" maxlength="600" placeholder="💬 Lời nhắn riêng của thầy/cô (chỉ kèm vào email kế tiếp rồi tự xoá)">' + esc(s.parent_note || '') + '</textarea>' +
+      '<button class="pp-btn pri" data-a="save">💾 Lưu</button><button class="pp-btn" data-a="prev">👁 Xem trước</button><button class="pp-btn" data-a="me" title="Gửi thử về email của bạn">✉️ Gửi thử cho tôi</button><button class="pp-btn" data-a="now">📨 Gửi ngay</button>' + st + '</div></div>';
+  }).join('');
+}
+function rowData(row) {
+  var g = function (f) { return row.querySelector('[data-f="' + f + '"]'); };
+  return { user_id: Number(row.getAttribute('data-id')), parent_email: g('pe').value.trim(), parent_name: g('pn').value.trim(), enabled: g('on').checked, note: g('note').value.trim() };
+}
+function save(row) { var d = rowData(row); return api('/api/parent-report/set', d); }
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-a]'), row = b && b.closest('.pp-row');
+  if (b && row) {
+    var a = b.getAttribute('data-a'), id = Number(row.getAttribute('data-id')); b.disabled = true;
+    var done = function () { b.disabled = false; };
+    if (a === 'save') save(row).then(function () { toast('Đã lưu'); return load(); }).catch(function (x) { toast(x.message); }).then(done);
+    else if (a === 'prev') save(row).then(function () { return api('/api/parent-report/preview/' + id); }).then(function (d) {
+      $('prevInfo').innerHTML = '<b>Tiêu đề:</b> ' + esc(d.subject) + '<br><b>Gửi tới:</b> ' + esc(d.to || '(chưa có email phụ huynh)');
+      $('prevBody').innerHTML = d.html; $('mPrev').classList.add('on');
+    }).catch(function (x) { toast(x.message); }).then(done);
+    else if (a === 'me') save(row).then(function () { return api('/api/parent-report/send', { user_id: id, to: 'me' }); }).then(function (d) { toast('Đã gửi thử tới ' + d.to); }).catch(function (x) { toast(x.message); }).then(done);
+    else if (a === 'now') {
+      var pe = row.querySelector('[data-f="pe"]').value.trim();
+      if (!pe) { toast('Hãy nhập email phụ huynh trước.'); done(); return; }
+      if (!confirm('Gửi báo cáo ngay cho phụ huynh (' + pe + ')?')) { done(); return; }
+      save(row).then(function () { return api('/api/parent-report/send', { user_id: id, to: 'parent' }); }).then(function () { toast('Đã gửi cho phụ huynh'); return load(); }).catch(function (x) { toast(x.message); }).then(done);
+    }
+    return;
+  }
+  if (e.target.closest('[data-close]') || e.target.classList.contains('pp-modal')) { document.querySelectorAll('.pp-modal').forEach(function (m) { m.classList.remove('on'); }); }
+});
+$('clsSel').addEventListener('change', function () { CUR = Number(this.value); load(); });
+$('btnBulk').onclick = function () { $('bulkRes').innerHTML = ''; $('mBulk').classList.add('on'); };
+$('bulkGo').onclick = function () {
+  var btn = this; btn.disabled = true;
+  api('/api/parent-report/bulk', { lines: $('bulkTa').value }).then(function (d) {
+    var m = '✅ Đã lưu <b>' + d.ok + '</b> học sinh.';
+    if (d.unknown.length) m += '<br>❓ Không có học sinh với email: ' + d.unknown.map(esc).join(', ');
+    if (d.notYours.length) m += '<br>🚫 Không thuộc lớp của bạn: ' + d.notYours.map(esc).join(', ');
+    if (d.unsub.length) m += '<br>⛔ Phụ huynh đã ngừng nhận (bỏ qua): ' + d.unsub.map(esc).join(', ');
+    if (d.bad.length) m += '<br>⚠️ Dòng chưa đúng định dạng: ' + d.bad.map(esc).join(' | ');
+    $('bulkRes').innerHTML = m; load();
+  }).catch(function (x) { $('bulkRes').textContent = x.message; }).then(function () { btn.disabled = false; });
+};
+function classToggle(on) {
+  if (!CUR) { toast('Hãy chọn một lớp cụ thể ở ô chọn lớp phía trên.'); return; }
+  if (!confirm((on ? 'Bật' : 'Tắt') + ' báo cáo hằng tuần cho cả lớp này?')) return;
+  api('/api/parent-report/enable-class', { group_id: CUR, enabled: on }).then(function (d) { toast((on ? 'Đã bật' : 'Đã tắt') + ' cho ' + d.changed + ' học sinh'); load(); }).catch(function (x) { toast(x.message); });
+}
+$('btnOn').onclick = function () { classToggle(true); }; $('btnOff').onclick = function () { classToggle(false); };
+load();
+})();
+</script>
+</body>
+</html>

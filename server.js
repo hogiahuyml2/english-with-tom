@@ -2291,6 +2291,7 @@ require('./notebook')(app, { db, requireAuth, now });
 require('./achievements')(app, { db, requireAuth, now });
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
+require('./parent-report')(app, { db, requireRole, notifyUser, now, sendBrevoEmail, emailEnabled, htmlEsc });
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });
 
 // ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────

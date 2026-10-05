@@ -667,6 +667,27 @@ async function verifyPasswordAsync(password, stored) {
   } catch (e) { if (e && e.code === 'BUSY') throw e; return false; }
 }
 
+// Báo cáo tuần cho phụ huynh: email phụ huynh + bật/tắt + lời nhắn của giáo viên (xoá sau khi gửi) + mã huỷ đăng ký
+safeAlter('PRAGMA table_info(users)', [
+  ['parent_email',  'ALTER TABLE users ADD COLUMN parent_email TEXT'],
+  ['parent_name',   'ALTER TABLE users ADD COLUMN parent_name TEXT'],
+  ['parent_report', 'ALTER TABLE users ADD COLUMN parent_report INTEGER NOT NULL DEFAULT 0'],
+  ['parent_note',   'ALTER TABLE users ADD COLUMN parent_note TEXT'],
+  ['parent_token',  'ALTER TABLE users ADD COLUMN parent_token TEXT'],
+  ['parent_unsub_at','ALTER TABLE users ADD COLUMN parent_unsub_at TEXT'],
+]);
+tryExec(`
+CREATE TABLE IF NOT EXISTS parent_reports (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  to_email TEXT NOT NULL,
+  kind TEXT NOT NULL DEFAULT 'auto',
+  ok INTEGER NOT NULL DEFAULT 1,
+  sent_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_parent_reports_user ON parent_reports(user_id, id);
+`, 'parent_reports');
+
 function now() { return new Date().toISOString(); }
 
 module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };
