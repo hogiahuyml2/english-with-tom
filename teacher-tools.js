@@ -425,11 +425,12 @@ module.exports = function (app, deps) {
     ranked.forEach((r, i) => { if (r.v !== prev) { rank = i + 1; prev = r.v; } r.rank = rank; });
     const fmt = (v) => metric === 'avg' ? v + '%' : metric === 'done' ? v + (exIds.length ? '/' + exIds.length : '') + ' bài' : v + ' XP';
     const mask = (r) => (g.lb_anon && !staff && r.id !== viewerId) ? 'Bạn học ẩn danh' : r.name;
+    const avOf = (r) => { if (g.lb_anon && !staff && r.id !== viewerId) return null; try { const x = db.prepare('SELECT avatar FROM users WHERE id=?').get(r.id); return x && x.avatar ? JSON.parse(x.avatar) : null; } catch (_) { return null; } };
     const meRow = ranked.find(r => r.id === viewerId) || null;
     return {
       id: g.id, name: g.name, anon: !!g.lb_anon, metric, total: ranked.length, class_size: members.length, exercises: exIds.length,
-      rows: ranked.slice(0, 10).map(r => ({ rank: r.rank, name: mask(r), value: fmt(r.v), me: r.id === viewerId })),
-      me: meRow ? { rank: meRow.rank, value: fmt(meRow.v), name: meRow.name } : null,
+      rows: ranked.slice(0, 10).map(r => ({ rank: r.rank, name: mask(r), value: fmt(r.v), me: r.id === viewerId, av: avOf(r) })),
+      me: meRow ? { rank: meRow.rank, value: fmt(meRow.v), name: meRow.name, av: avOf(meRow) } : null,
     };
   }
   // Học sinh: các lớp mình đang học có bật bảng xếp hạng. Giáo viên/admin: ?class=ID để xem trước (thấy tên thật).

@@ -402,7 +402,9 @@ app.get('/api/me', (req, res) => {
         && !!db.prepare('SELECT 1 FROM groups WHERE self_join=1 LIMIT 1').get();
     }
   } catch (_) {}
-  res.json({ user: u, class_nudge: nudge });
+  let avatar = null;
+  try { if (u) { const r = db.prepare('SELECT avatar FROM users WHERE id=?').get(u.id); if (r && r.avatar) avatar = JSON.parse(r.avatar); } } catch (_) {}
+  res.json({ user: u, class_nudge: nudge, avatar });
 });
 
 // ===== QUÊN MẬT KHẨU =====
@@ -2284,6 +2286,7 @@ app.put('/api/me/class', requireAuth, (req, res) => {
     res.json({ ok: true, class: name, backfilled, pending });
   } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} console.error('[me/class]', e.message); res.status(500).json({ error: 'Không lưu được lớp, hãy thử lại.' }); }
 });
+require('./avatar')(app, { db, requireAuth, now });
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });

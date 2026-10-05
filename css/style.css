@@ -1162,6 +1162,10 @@ body { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-are
   .practice-bar { position: static; }
 }
 
+@media (max-width: 360px) {
+  #navChatBtn { display: none !important; }   /* màn hình rất hẹp: tin nhắn chuyển vào menu ☰ */
+  .nav .brand > span { font-size: 12.5px; }
+}
 @media (max-width: 400px) {
   .container { padding: 0 12px; }
   .nav .brand > span { font-size: 13.5px; }
@@ -1171,4 +1175,12 @@ body { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-are
 @media (display-mode: standalone) {
   .site-header { padding-top: env(safe-area-inset-top, 0px); }
   body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+}
+
+/* Máy tính màn hình vừa (861–1180px): thanh trên cùng gọn lại để không tràn khi đã đăng nhập */
+@media (max-width: 1180px) and (min-width: 861px) {
+  .brand small { display: none; }
+  .nav { gap: 8px; }
+  .nav-links a, .nav-dropdown-toggle { padding: 8px 5px; }
+  img.brand-logo { width: 44px; height: 44px; }
 }

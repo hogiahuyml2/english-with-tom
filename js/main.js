@@ -199,7 +199,7 @@
   var roleLabel = { student: 'Học sinh', teacher: 'Giáo viên', admin: 'Quản trị' };
   fetch('/api/me', { credentials: 'same-origin' })
     .then(function (r) { return r.ok ? r.json() : { user: null }; })
-    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); })
+    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); if (d.user && d.avatar) showHeaderAvatar(d.avatar); })
     .catch(function () { applyAuth(null); }); // chạy trên GitHub Pages (không có API) -> coi như chưa đăng nhập
 
 
@@ -281,13 +281,29 @@
     var h = '<button type="button" class="js-palette">🎨 Màu &amp; hiệu ứng</button><button type="button" id="mtDark">' + (isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối') + '</button>';
     if (user && (user.role === 'teacher' || user.role === 'admin')) h += '<a href="teacher.html">👨‍🏫 Khu vực giáo viên</a>';
     if (user && user.role === 'admin') h += '<a href="admin.html">⚙️ Quản trị</a>';
-    if (user) h += '<a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
+    if (user) h += '<a href="chat.html">💬 Tin nhắn</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
     else h += '<a href="login.html">Đăng nhập</a><a href="login.html#register" style="background:var(--gradient);color:#fff;border-color:transparent">Đăng ký</a>';
     box.innerHTML = h;
     var d = document.getElementById('mtDark'); if (d) d.onclick = function () { applyTheme(!isDark()); d.innerHTML = isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối'; };
     var lo = document.getElementById('mtLogout'); if (lo) lo.onclick = function () { fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).then(function () { location.href = 'index.html'; }); };
   }
   fillTools(null);
+
+
+  /* ===== Nhân vật (avatar): nạp thư viện vẽ khi cần, gắn vào thanh menu ===== */
+  var _avLoading = null;
+  window.ewtAvatarInto = function (el, cfg, size, shape) {
+    if (!el || !cfg) return;
+    function put() { el.innerHTML = window.EWTAvatar.render(cfg, { size: size || 40, shape: shape || 'circle' }); }
+    if (window.EWTAvatar) { put(); return; }
+    if (!_avLoading) _avLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=1'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    _avLoading.then(function () { if (window.EWTAvatar) put(); });
+  };
+  function showHeaderAvatar(cfg) {
+    var b = document.querySelector('.nav-account > span:first-child'); if (!b) return;
+    b.style.background = 'none'; b.style.overflow = 'visible'; b.style.fontSize = '0';
+    window.ewtAvatarInto(b, cfg, 36);
+  }
 
   function escNameT(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
   function applyAuth(user) {

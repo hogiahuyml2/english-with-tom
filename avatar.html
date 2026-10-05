@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nhân vật của tôi — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.av-wrap { max-width: 1060px; margin: 0 auto; padding: 14px 16px calc(96px + env(safe-area-inset-bottom, 0px)); }
+.av-h1 { font-size: 26px; margin: 4px 0 4px; } .av-sub { color: var(--text-muted); font-size: 14.5px; margin: 0 0 14px; line-height: 1.6; }
+.av-grid { display: grid; grid-template-columns: 340px 1fr; gap: 18px; align-items: start; }
+.av-grid > * { min-width: 0; }
+.av-prev { position: sticky; top: 86px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 22px; padding: 16px; text-align: center; box-shadow: var(--shadow); }
+.av-stage { display: grid; place-items: center; }
+.av-stage svg { width: 260px; height: 260px; filter: drop-shadow(0 10px 20px rgba(80,60,160,.25)); animation: avBob 3.2s ease-in-out infinite; }
+@keyframes avBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.av-name { font-size: 18px; font-weight: 800; margin-top: 8px; } .av-name small { display: block; font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+.av-coin { display: inline-flex; align-items: center; gap: 6px; background: var(--warning-soft); color: #92400e; border-radius: 99px; padding: 5px 12px; font-weight: 800; font-size: 13.5px; margin-top: 8px; text-decoration: none; }
+.av-tools { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.av-btn { border: 1.5px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 10px 14px; font: 700 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 44px; } .av-btn:hover { border-color: var(--primary); background: var(--primary-soft); }
+.av-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px; scrollbar-width: none; margin-bottom: 4px; } .av-tabs::-webkit-scrollbar { display: none; }
+.av-tab { flex: none; padding: 10px 16px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; min-height: 44px; white-space: nowrap; } .av-tab.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.av-panel { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 14px 16px; box-shadow: var(--shadow); }
+.av-lab { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .3px; margin: 14px 0 8px; } .av-lab:first-child { margin-top: 0; }
+.av-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+.av-tile { position: relative; text-align: center; background: var(--bg-soft); border: 2px solid transparent; border-radius: 16px; padding: 8px 4px 8px; cursor: pointer; font-family: inherit; color: var(--text); transition: transform .1s, border-color .15s; } .av-tile:hover { transform: translateY(-2px); border-color: var(--primary); } .av-tile.on { border-color: var(--primary); background: var(--primary-soft); box-shadow: 0 0 0 3px rgba(123,110,246,.18); }
+.av-tile svg { width: 72px; height: 72px; display: block; margin: 0 auto 4px; } .av-tile span { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.25; }
+.av-tile .none { width: 72px; height: 72px; margin: 0 auto 4px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); font-size: 28px; color: var(--text-faint); }
+.av-lock { position: absolute; top: 4px; right: 4px; background: #1f2937; color: #fff; border-radius: 99px; font-size: 11px; font-weight: 800; padding: 2px 8px; } .av-lock.own { background: var(--success); }
+.av-sw { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.av-dot { width: 38px; height: 38px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1.5px var(--border); cursor: pointer; padding: 0; } .av-dot.on { box-shadow: 0 0 0 3px var(--primary); }
+.av-pick { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; } .av-pick input { width: 38px; height: 38px; border: none; padding: 0; background: none; cursor: pointer; border-radius: 50%; }
+.av-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--surface); border-top: 1.5px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 10px; align-items: center; justify-content: center; box-shadow: 0 -6px 20px rgba(0,0,0,.08); }
+.av-bar .msg { flex: 1; font-size: 13px; color: var(--text-muted); max-width: 420px; } .av-bar .msg b { color: var(--text); }
+.av-save { border: none; border-radius: 14px; padding: 13px 26px; background: var(--gradient); color: #fff; font: 800 16px inherit; font-family: inherit; cursor: pointer; min-height: 48px; box-shadow: 0 8px 20px rgba(123,110,246,.35); } .av-save:disabled { opacity: .55; box-shadow: none; }
+.av-toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 92vw; text-align: center; } .av-toast.on { opacity: 1; }
+@media (max-width: 800px) {
+  .av-grid { grid-template-columns: 1fr; gap: 10px; }
+  .av-prev { top: 60px; z-index: 40; padding: 8px 10px; display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: center; text-align: left; border-radius: 18px; }
+  .av-stage svg { width: 112px; height: 112px; animation: none; }
+  .av-name { margin-top: 0; font-size: 16px; } .av-tools { justify-content: flex-start; margin-top: 8px; gap: 6px; } .av-btn { padding: 8px 10px; font-size: 12.5px; min-height: 40px; }
+  .av-h1 { font-size: 22px; }
+  .av-tiles { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .av-stage svg { animation: none; } }
+</style>
+</head>
+<body data-page="avatar" data-guard="auth">
+<div id="site-header"></div>
+<main class="av-wrap">
+  <h1 class="av-h1">🎭 Nhân vật của tôi</h1>
+  <p class="av-sub">Chọn nhân vật, tự phối màu, mặc đồ và thêm phụ kiện thật “chất”. Nhân vật sẽ xuất hiện trên thanh menu, Hồ sơ và bảng xếp hạng lớp. Một số món đặc biệt (🔒) mở khoá bằng <b>xu 🪙</b> kiếm được khi học từ ở mục Luyện từ.</p>
+  <div class="av-grid">
+    <aside class="av-prev" id="prev">
+      <div class="av-stage" id="stage"></div>
+      <div>
+        <div class="av-name" id="nm"></div>
+        <a class="av-coin" id="coin" href="word-hub.html" title="Kiếm thêm xu ở mục Luyện từ">🪙 …</a>
+        <div class="av-tools"><button class="av-btn" id="rnd">🎲 Ngẫu nhiên</button><button class="av-btn" id="undo">↺ Hoàn tác</button><button class="av-btn" id="dl">📥 Tải ảnh</button></div>
+      </div>
+    </aside>
+    <section>
+      <div class="av-tabs" id="tabs"></div>
+      <div class="av-panel" id="panel"></div>
+    </section>
+  </div>
+</main>
+<div class="av-bar"><div class="msg" id="msg">Chỉnh xong nhớ bấm <b>Lưu nhân vật</b> nhé!</div><button class="av-save" id="save">💾 Lưu nhân vật</button></div>
+<div class="av-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=33"></script>
+<script src="js/avatar.js?v=1"></script>
+<script>
+(function () {
+'use strict';
+var A = window.EWTAvatar, $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+var tt; function toast(t, ms) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 2600); }
+function api(url, method, body) { return fetch(url, { method: method || 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; throw e; } return d; }); }); }
+
+var CFG = A.defaults(), SAVED = null, OWNED = {}, COINS = 0, ALL_FREE = false, TAB = 'char', HISTORY = [], DIRTY = false;
+var TABS = [['char', '🐾 Nhân vật'], ['face', '😊 Khuôn mặt'], ['outfit', '👕 Trang phục'], ['hat', '🎩 Mũ'], ['acc', '✨ Phụ kiện'], ['bg', '🖼️ Nền']];
+
+function owned(kind, id) { var it = (A.OPT[kind] || []).filter(function (x) { return x.id === id; })[0]; return !it || !it.price || ALL_FREE || OWNED[A.keyOf(kind, id)]; }
+function setCfg(patch, keepHistory) {
+  if (!keepHistory) { HISTORY.push(JSON.stringify(CFG)); if (HISTORY.length > 40) HISTORY.shift(); }
+  CFG = A.normalize(Object.assign({}, CFG, patch)); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); draw();
+}
+function charName() { return A.CHARS.filter(function (c) { return c.id === CFG.ch; })[0]; }
+
+/* ───── ô chọn ───── */
+function tiles(kind, label, noneIcon) {
+  var cur = CFG[kind];
+  return '<div class="av-lab">' + label + '</div><div class="av-tiles">' + A.OPT[kind].map(function (o) {
+    var prev = o.id === 'none' ? '<div class="none">' + (noneIcon || '∅') + '</div>' : A.render(Object.assign({}, CFG, (function () { var p = {}; p[kind] = o.id; return p; })()), { size: 72, shape: 'round' });
+    var lock = o.price && !owned(kind, o.id) ? '<span class="av-lock">🔒 ' + o.price + '🪙</span>' : (o.price ? '<span class="av-lock own">✓</span>' : '');
+    return '<button class="av-tile' + (cur === o.id ? ' on' : '') + '" data-k="' + kind + '" data-v="' + o.id + '" aria-label="' + esc(o.name) + '">' + lock + prev + '<span>' + esc(o.name) + '</span></button>';
+  }).join('') + '</div>';
+}
+function swatches(field, list, label) {
+  var cur = CFG[field];
+  return '<div class="av-lab">' + label + '</div><div class="av-sw">' + list.map(function (c) { return '<button class="av-dot' + (cur === c.toUpperCase() ? ' on' : '') + '" data-f="' + field + '" data-c="' + c + '" style="background:' + c + '" aria-label="Màu ' + c + '"></button>'; }).join('') + '<label class="av-pick">Màu khác <input type="color" data-f="' + field + '" value="' + cur.toLowerCase() + '" aria-label="Chọn màu tuỳ ý"></label></div>';
+}
+function charTiles() {
+  return '<div class="av-lab">Chọn nhân vật</div><div class="av-tiles">' + A.CHARS.map(function (c) { return '<button class="av-tile' + (CFG.ch === c.id ? ' on' : '') + '" data-k="ch" data-v="' + c.id + '">' + A.render(Object.assign({}, CFG, { ch: c.id }), { size: 72, shape: 'round' }) + '<span>' + c.name + ' · ' + c.sub + '</span></button>'; }).join('') + '</div>';
+}
+function panel() {
+  var h = '';
+  if (TAB === 'char') h = charTiles() + swatches('c1', A.PALETTE, 'Màu lông / da') + swatches('c2', ['#FFF1E0', '#FFFFFF', '#FDE68A', '#FBCFE8', '#BFDBFE', '#BBF7D0', '#E9D5FF', '#FCA5A5'], 'Màu phụ (bụng, tai trong, mõm)');
+  if (TAB === 'face') h = tiles('ex', 'Biểu cảm') + tiles('cheek', 'Má', '∅') + tiles('glasses', 'Kính', '👓');
+  if (TAB === 'outfit') h = tiles('outfit', 'Trang phục', '🚫') + swatches('oc', A.OUTFIT_PALETTE, 'Màu trang phục');
+  if (TAB === 'hat') h = tiles('hat', 'Mũ & phụ kiện đầu', '🚫') + swatches('hc', A.OUTFIT_PALETTE, 'Màu mũ');
+  if (TAB === 'acc') h = tiles('neck', 'Đồ quanh cổ', '🚫') + swatches('nc', A.OUTFIT_PALETTE, 'Màu đồ quanh cổ') + tiles('phones', 'Tai nghe', '🚫') + swatches('pc', A.OUTFIT_PALETTE, 'Màu tai nghe') + tiles('held', 'Cầm trên tay', '🚫');
+  if (TAB === 'bg') h = tiles('bg', 'Hoạ tiết nền') + swatches('bgc', A.BG_PALETTE, 'Màu nền');
+  $('panel').innerHTML = h;
+}
+function draw() {
+  $('stage').innerHTML = A.render(CFG, { size: 260 });
+  var c = charName(); $('nm').innerHTML = esc(c.name) + '<small>' + esc(c.sub) + '</small>';
+  $('tabs').innerHTML = TABS.map(function (t) { return '<button class="av-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
+  panel(); $('coin').textContent = '🪙 ' + COINS + ' xu';
+  $('save').disabled = !DIRTY && !!SAVED; $('msg').innerHTML = DIRTY || !SAVED ? 'Chỉnh xong nhớ bấm <b>Lưu nhân vật</b> nhé!' : '✅ Nhân vật đã được lưu — đang hiện ở Hồ sơ và bảng xếp hạng.';
+}
+
+/* ───── mở khoá ───── */
+function unlock(kind, id) {
+  var it = A.OPT[kind].filter(function (x) { return x.id === id; })[0], key = A.keyOf(kind, id);
+  if (!confirm('Mở khoá “' + it.name + '” với ' + it.price + ' 🪙?\n(Bạn đang có ' + COINS + ' 🪙)')) return;
+  api('/api/avatar/buy', 'POST', { key: key }).then(function (d) {
+    COINS = d.coins; OWNED = {}; (d.owned || []).forEach(function (k) { OWNED[k] = 1; });
+    var p = {}; p[kind] = id; setCfg(p); toast('🎉 Đã mở khoá “' + it.name + '”!');
+  }).catch(function (e) { toast(e.message, 4200); });
+}
+
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); draw(); return; }
+  if ((el = t.closest('.av-tile'))) {
+    var k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), p = {};
+    if (k !== 'ch' && !owned(k, v)) { unlock(k, v); return; }
+    p[k] = v; setCfg(p); return;
+  }
+  if ((el = t.closest('.av-dot'))) { var q = {}; q[el.getAttribute('data-f')] = el.getAttribute('data-c'); setCfg(q); return; }
+});
+document.addEventListener('input', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) { var q = {}; q[t.getAttribute('data-f')] = t.value; setCfg(q, true); } });
+document.addEventListener('change', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) HISTORY.push(JSON.stringify(CFG)); });
+$('rnd').onclick = function () { var r = A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
+$('undo').onclick = function () { if (!HISTORY.length) { toast('Chưa có thay đổi nào để hoàn tác'); return; } CFG = A.normalize(JSON.parse(HISTORY.pop())); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); draw(); };
+$('save').onclick = function () {
+  var b = this; b.disabled = true; b.textContent = 'Đang lưu…';
+  api('/api/me/avatar', 'PUT', { cfg: CFG }).then(function (d) { SAVED = d.cfg; CFG = d.cfg; DIRTY = false; b.textContent = '💾 Lưu nhân vật'; draw(); toast('✅ Đã lưu nhân vật của bạn!'); }).catch(function (err) { b.disabled = false; b.textContent = '💾 Lưu nhân vật'; toast(err.message, 4500); });
+};
+$('dl').onclick = function () {
+  var svg = A.render(CFG, { size: 512 }), img = new Image(), url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+  img.onload = function () { var c = document.createElement('canvas'); c.width = c.height = 512; c.getContext('2d').drawImage(img, 0, 0, 512, 512); URL.revokeObjectURL(url); c.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'nhan-vat-' + CFG.ch + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã tải ảnh nhân vật'); }, 'image/png'); };
+  img.onerror = function () { toast('Không tạo được ảnh, hãy thử lại'); }; img.src = url;
+};
+window.addEventListener('beforeunload', function (e) { if (DIRTY) { e.preventDefault(); e.returnValue = ''; } });
+
+api('/api/me/avatar').then(function (d) {
+  ALL_FREE = !!d.all_free; COINS = d.coins || 0; (d.owned || []).forEach(function (k) { OWNED[k] = 1; });
+  if (d.cfg) { CFG = d.cfg; SAVED = d.cfg; } else { CFG = A.random(); SAVED = null; DIRTY = true; setTimeout(function () { toast('Đây là nhân vật gợi ý cho bạn — hãy chỉnh theo ý thích rồi lưu nhé!', 4200); }, 600); }
+  draw();
+}).catch(function () { draw(); });
+})();
+</script>
+</body>
+</html>

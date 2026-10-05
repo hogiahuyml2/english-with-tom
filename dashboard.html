@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=24">
+<link rel="stylesheet" href="css/style.css?v=25">
 <style>
 /* ── Bộ lọc ── */
 .filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
@@ -401,6 +401,7 @@
 .lb-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; } .lb-head h3 { margin: 0; font-size: 17px; flex: 1; min-width: 160px; }
 .lb-tabs { display: flex; gap: 6px; flex-wrap: wrap; } .lb-tab { padding: 5px 12px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 600 12.5px inherit; font-family: inherit; cursor: pointer; } .lb-tab.on { background: var(--gradient); color: #fff; border-color: transparent; }
 .lb-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 12px; font-size: 14px; } .lb-row.me { background: var(--primary-soft); font-weight: 800; box-shadow: inset 0 0 0 1.5px var(--primary); }
+.lb-av { flex: none; width: 30px; height: 30px; display: inline-grid; place-items: center; } .lb-av svg { width: 30px; height: 30px; }
 .lb-rank { flex: none; width: 34px; text-align: center; font-weight: 800; font-size: 16px; } .lb-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .lb-val { flex: none; font-weight: 800; color: var(--primary); }
 .lb-note { font-size: 12.5px; color: var(--text-muted); margin-top: 8px; }
 </style>
@@ -426,11 +427,13 @@
         <h2 id="pfName">Đang tải...</h2>
         <div class="sub" id="pfRole"></div>
       </div>
-      <a href="account.html" class="btn" style="margin-left:auto;">⚙️ Cài đặt tài khoản</a>
+      <a href="avatar.html" class="btn" style="margin-left:auto;">🎭 Nhân vật</a>
+      <a href="account.html" class="btn">⚙️ Cài đặt tài khoản</a>
     </div>
 
     <!-- Verify banner -->
     <div id="verifyBanner" style="display:none;"></div>
+    <div id="avBanner" style="display:none;"></div>
     <div id="clBanner" style="display:none;"></div>
     <div id="plBanner" style="display:none;"></div>
     <div id="lbCard" style="display:none;"></div>
@@ -573,7 +576,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=32"></script>
+<script src="js/main.js?v=33"></script>
 <script>
 var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị viên' };
 var G_allSubs = [];
@@ -988,6 +991,8 @@ async function loadProgress() {
   document.getElementById('pfName').textContent = u.name;
   document.getElementById('pfRole').textContent = (roleLabel[u.role]||u.role) + ' · ' + u.email;
   document.getElementById('pfAvatar').textContent = (u.name||'?').trim().split(/\s+/).pop().charAt(0).toUpperCase();
+  if (me.avatar) { var pa = document.getElementById('pfAvatar'); pa.style.background = 'none'; pa.style.fontSize = '0'; window.ewtAvatarInto && ewtAvatarInto(pa, me.avatar, 56); }
+  else if (u.role === 'student') { var ab = document.getElementById('avBanner'); if (ab) { ab.className = 'note'; ab.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;background:var(--primary-soft);border-color:transparent;color:var(--text)'; ab.innerHTML = '<span>🎭 <b>Tạo nhân vật của riêng bạn!</b> Chọn mèo, gấu, thỏ, cú, khủng long hay robot rồi tự phối màu, mặc đồ và thêm phụ kiện.</span><a class="btn btn-sm btn-primary" href="avatar.html">Tạo nhân vật</a>'; } }
 
   if (u.role === 'student') {
     fetch('/api/me/classes',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
@@ -1016,6 +1021,7 @@ async function loadProgress() {
           h += (c.anon ? '<div class="lb-note">🙈 Tên các bạn khác được ẩn — chỉ bạn thấy tên của mình.</div>' : '') + '</div>';
         });
         box.innerHTML = h; box.style.display = '';
+        box.querySelectorAll('.lb-av').forEach(function(el){ var a = el.getAttribute('data-av'); if (a) { try { window.ewtAvatarInto && ewtAvatarInto(el, JSON.parse(a), 30); } catch(e){} } else el.style.display = 'none'; });
         box.querySelectorAll('[data-lbm]').forEach(function(b){ b.onclick = function(){ lbMetric = b.getAttribute('data-lbm'); lbLoad(); }; });
       }).catch(function(){});
     }

@@ -171,6 +171,7 @@ safeAlter('PRAGMA table_info(users)', [
   ['reset_code_hash',   'ALTER TABLE users ADD COLUMN reset_code_hash TEXT'],
   ['reset_code_expiry', 'ALTER TABLE users ADD COLUMN reset_code_expiry TEXT'],
   ['reset_code_tries',  'ALTER TABLE users ADD COLUMN reset_code_tries INTEGER NOT NULL DEFAULT 0'],
+  ['avatar',           'ALTER TABLE users ADD COLUMN avatar TEXT'], // cấu hình nhân vật (JSON) — xem js/avatar.js
   ['auto_remind',      'ALTER TABLE users ADD COLUMN auto_remind INTEGER NOT NULL DEFAULT 1'], // giáo viên: 1 = tự động nhắc học sinh về bài mình giao
   ['class_choice',      'ALTER TABLE users ADD COLUMN class_choice TEXT'], // NULL = chưa chọn · free = xác nhận tự do · class = đã chọn lớp
 ]);
