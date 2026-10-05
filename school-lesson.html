@@ -57,8 +57,9 @@
 <div id="site-footer"></div>
 <script src="js/main.js?v=29"></script>
 <script src="data/school/index.js?v=2"></script>
+<script src="js/school-merge.js?v=1"></script>
 <script>
-(function () {
+function __schoolMain() {
   var app = document.getElementById('app');
   var IDX = window.SCHOOL_INDEX || [];
   var params = new URLSearchParams(location.search);
@@ -69,7 +70,7 @@
   function saveProg(key, pct) { try { var P = prog(); var o = P[key] || { best: 0, tries: 0 }; o.best = Math.max(o.best, pct); o.last = pct; o.tries++; o.at = Date.now(); P[key] = o; localStorage.setItem('ewt-school-progress', JSON.stringify(P)); } catch (e) {} }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function speak(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} }
-  function load(grade, cb) { var s = document.createElement('script'); s.src = 'data/school/g' + grade + '.js?v=2'; s.onload = cb; s.onerror = function () { fail('Không tải được dữ liệu bài học. Hãy thử lại.'); }; document.head.appendChild(s); }
+  function load(grade, cb) { var s = document.createElement('script'); s.src = 'data/school/g' + grade + '.js?v=2'; s.onload = function () { SchoolExtra.applyLessons(); cb(); }; s.onerror = function () { fail('Không tải được dữ liệu bài học. Hãy thử lại.'); }; document.head.appendChild(s); }
   function fail(m) { app.innerHTML = '<div class="sl-err"><p>' + esc(m) + '</p><a class="sl-btn" href="school.html">← Về danh sách bài</a></div>'; }
 
   /* ── bộ câu hỏi (dùng chung cho bài học & kiểm tra tổng hợp) ── */
@@ -138,7 +139,7 @@
     document.title = d.title + ' (Lớp ' + d.grade + ') — English With Tom';
     var sameG = IDX.filter(function (l) { return l.grade === d.grade; }), pos = sameG.map(function (l) { return l.id; }).indexOf(id);
     var prev = sameG[pos - 1], next = sameG[pos + 1];
-    app.innerHTML = '<a class="sl-back" href="school.html">← Tiếng Anh phổ thông · Lớp ' + d.grade + '</a>' +
+    app.innerHTML = (window.__SCHOOL_PREVIEW ? '<div class="sl-warn" style="margin-bottom:12px">👁️ <b>Bản xem trước</b> — học sinh chưa nhìn thấy bài này nếu chưa xuất bản. <a href="school-admin.html?id=' + encodeURIComponent(id) + '">← Quay lại trang sửa</a></div>' : '') + '<a class="sl-back" href="school.html">← Tiếng Anh phổ thông · Lớp ' + d.grade + '</a>' +
       '<div class="sl-head"><div class="ico">' + esc(d.icon) + '</div><div><h1>' + esc(d.title) + '</h1><div class="sub">' + esc(d.sub) + ' · Lớp ' + d.grade + ' · ' + esc(d.level) + '</div></div></div>' +
       '<div class="sl-sum">' + md(d.summary) + '</div>' +
       d.sections.map(function (s) { return '<section class="sl-sec"><h2>' + md(s.h) + '</h2>' + s.b.map(renderBlock).join('') + '</section>'; }).join('') +
@@ -149,7 +150,16 @@
     app.querySelectorAll('.sl-spk').forEach(function (b) { b.onclick = function () { speak(d.ex[+b.dataset.k][0].replace(/\*\*/g, '')); }; });
     runQuiz(document.getElementById('qz'), shuffle(d.quiz), id, function () { return next ? '<a class="sl-btn ghost" href="school-lesson.html?id=' + encodeURIComponent(next.id) + '">Bài tiếp theo →</a>' : ''; });
   });
-})();
+}
+SchoolExtra.ready(function () {
+  var q = new URLSearchParams(location.search), pid = q.get('id');
+  if (q.get('preview') && pid) {
+    fetch('/api/school/admin/lesson/' + encodeURIComponent(pid), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (d && d.lesson) { var L = d.lesson; L.id = pid; SchoolExtra.addPreview(pid, L); window.__SCHOOL_PREVIEW = true; }
+      __schoolMain();
+    }).catch(function () { __schoolMain(); });
+  } else __schoolMain();
+});
 </script>
 </body>
 </html>

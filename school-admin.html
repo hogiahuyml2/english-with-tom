@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý bài học ngữ pháp — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=23">
+<style>
+.sa-wrap { max-width: 1280px; margin: 0 auto; padding: 14px 18px 60px; }
+.sa-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.sa-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.sa-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 11px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13.5px inherit; font-family: inherit; cursor: pointer; text-decoration: none; transition: border-color .15s, background .15s, transform .1s; }
+.sa-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); }
+.sa-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; box-shadow: var(--shadow); } .sa-btn.pri:hover:not(:disabled) { background: var(--gradient); filter: brightness(1.06); }
+.sa-btn.dng { color: #dc2626; } .sa-btn.sm { padding: 5px 10px; font-size: 12.5px; border-radius: 9px; } .sa-btn:disabled { opacity: .5; cursor: not-allowed; }
+.sa-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .sa-grid { grid-template-columns: 1fr; } .sa-grid.editing .sa-side { display: none; } .sa-grid:not(.editing) .sa-main { display: none; } }
+.sa-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+.sa-side { position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow: auto; }
+.sa-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.sa-pill { padding: 5px 11px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 12.5px inherit; font-family: inherit; cursor: pointer; } .sa-pill.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.sa-in, .sa-ta, .sa-sel { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; }
+.sa-in:focus, .sa-ta:focus, .sa-sel:focus { outline: none; border-color: var(--primary); }
+.sa-ta { resize: vertical; min-height: 64px; line-height: 1.5; }
+.sa-li { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 12px; cursor: pointer; border: 1.5px solid transparent; }
+.sa-li:hover { background: var(--bg-soft); } .sa-li.on { border-color: var(--primary); background: var(--primary-soft); }
+.sa-li .ico { font-size: 24px; line-height: 1.1; } .sa-li b { display: block; font-size: 14px; line-height: 1.3; } .sa-li small { color: var(--text-muted); font-size: 12px; }
+.sa-chip { display: inline-block; font-size: 10.5px; font-weight: 800; padding: 1px 8px; border-radius: 99px; margin-right: 4px; background: var(--bg-soft); color: var(--text-muted); }
+.sa-chip.draft { background: var(--warning-soft); color: var(--warning); } .sa-chip.pub, .sa-chip.edited { background: var(--success-soft); color: var(--success); } .sa-chip.hidden { background: rgba(239,68,68,.12); color: #ef4444; } .sa-chip.flag { background: #fef3c7; color: #92400e; }
+.sa-bar { position: sticky; top: 64px; z-index: 20; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 12px; box-shadow: var(--shadow); margin-bottom: 12px; }
+.sa-bar .sp { flex: 1; }
+.sa-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+.sa-tab { padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; } .sa-tab.on { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.sa-fld { margin-bottom: 12px; } .sa-fld label { display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+.sa-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .sa-row3 { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; } .sa-row-ico { display: grid; grid-template-columns: 90px 1fr; gap: 10px; }
+@media (max-width: 640px) { .sa-row2, .sa-row3 { grid-template-columns: 1fr; } }
+.sa-sec { border: 1.5px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px; background: var(--bg-soft); }
+.sa-sec-h { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; } .sa-sec-h .sa-in { font-weight: 700; }
+.sa-blk { border: 1.5px dashed var(--border); border-radius: 12px; padding: 10px; margin-bottom: 8px; background: var(--surface); }
+.sa-blk-h { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; font-size: 12.5px; font-weight: 800; color: var(--primary); } .sa-blk-h .sp { flex: 1; }
+.sa-q { border: 1.5px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px; background: var(--surface); }
+.sa-opt { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: center; margin-top: 6px; } .sa-opt input[type=radio] { width: 18px; height: 18px; accent-color: var(--success); }
+.sa-msg { border-radius: 12px; padding: 10px 14px; font-size: 13.5px; line-height: 1.55; margin-bottom: 12px; }
+.sa-msg.err { background: rgba(239,68,68,.1); color: #b91c1c; } .sa-msg.warn { background: var(--warning-soft); color: #92400e; } .sa-msg.ok { background: var(--success-soft); color: #166534; } .sa-msg.info { background: var(--primary-soft); }
+.sa-msg ul { margin: 4px 0 0 18px; padding: 0; }
+.sa-hint { font-size: 12.5px; color: var(--text-muted); margin: 4px 0 8px; line-height: 1.5; }
+.sa-empty { text-align: center; color: var(--text-muted); padding: 50px 10px; }
+.sa-ov { position: fixed; inset: 0; background: rgba(15,12,40,.55); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding: 40px 14px; overflow: auto; } .sa-ov.on { display: flex; }
+.sa-modal { width: 100%; max-width: 640px; background: var(--surface); border-radius: 18px; padding: 20px; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.sa-drop { border: 2.5px dashed var(--border); border-radius: 16px; padding: 24px 14px; text-align: center; cursor: pointer; background: var(--bg-soft); transition: border-color .15s, background .15s; } .sa-drop:hover, .sa-drop.over { border-color: var(--primary); background: var(--primary-soft); }
+.sa-prog { height: 10px; border-radius: 99px; background: var(--border); overflow: hidden; margin: 8px 0; } .sa-prog > i { display: block; height: 100%; background: var(--gradient); transition: width .4s; }
+.sa-code { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; min-height: 380px; }
+.sa-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .sa-toast.on { opacity: 1; }
+</style>
+</head>
+<body data-page="school" data-guard="teacher">
+<div id="site-header"></div>
+<main class="sa-wrap">
+  <div class="sa-top">
+    <h1>✏️ Quản lý bài học ngữ pháp phổ thông</h1>
+    <a class="sa-btn" href="school.html">👁️ Xem trang học sinh</a>
+    <button class="sa-btn" id="btnNew">➕ Bài mới (tự viết)</button>
+    <button class="sa-btn pri" id="btnAI">🤖 Tạo bài từ file lý thuyết (AI)</button>
+  </div>
+  <div class="sa-grid" id="grid">
+    <aside class="sa-side sa-card" id="side"></aside>
+    <section class="sa-main" id="main"><div class="sa-card sa-empty">Chọn một bài ở danh sách bên trái để sửa, hoặc bấm <b>“Tạo bài từ file lý thuyết (AI)”</b> để AI soạn bài nháp từ file của bạn.</div></section>
+  </div>
+</main>
+
+<!-- hộp thoại AI -->
+<div class="sa-ov" id="ovAI"><div class="sa-modal" id="mdAI"></div></div>
+<div class="sa-ov" id="ovHist"><div class="sa-modal" id="mdHist"></div></div>
+<div class="sa-toast" id="toast"></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=29"></script>
+<script>
+(function () {
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function api(method, url, body) {
+  return fetch(url, { method: method, credentials: 'same-origin', headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined })
+    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi kết nối'); e.data = d; e.status = r.status; throw e; } return d; }); });
+}
+var tt; function toast(t) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 2600); }
+var STATE = { builtin: 'Gốc', edited: 'Đã sửa · đang hiển thị', published: 'Đã xuất bản', draft: 'Nháp', hidden: 'Đang ẩn' };
+var CHIP = { builtin: '', edited: 'edited', published: 'pub', draft: 'draft', hidden: 'hidden' };
+
+/* ───────── Danh sách ───────── */
+var LIST = [], F = { g: 0, st: '', q: '' }, CUR = null, DIRTY = false, TAB = 'info';
+function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd'); }
+function loadList() { return api('GET', '/api/school/admin/list').then(function (r) { LIST = r.lessons; renderList(); }).catch(function (e) { $('side').innerHTML = '<div class="sa-msg err">' + esc(e.message) + '</div>'; }); }
+function renderList() {
+  var items = LIST.filter(function (l) { return (!F.g || l.grade === F.g) && (!F.st || l.state === F.st) && (!F.q || norm(l.title + ' ' + l.sub).indexOf(F.q) >= 0); });
+  var h = '<div class="sa-pills">' + [0, 6, 7, 8, 9, 10, 11, 12].map(function (g) { return '<button class="sa-pill' + (F.g === g ? ' on' : '') + '" data-g="' + g + '">' + (g ? 'Lớp ' + g : 'Tất cả') + '</button>'; }).join('') + '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><select class="sa-sel" id="fSt"><option value="">Mọi trạng thái</option>' + Object.keys(STATE).map(function (k) { return '<option value="' + k + '"' + (F.st === k ? ' selected' : '') + '>' + STATE[k] + '</option>'; }).join('') + '</select><input class="sa-in" id="fQ" placeholder="🔍 Tìm bài…" value="' + esc(F.q) + '"></div>' +
+    '<div class="sa-hint">' + items.length + ' / ' + LIST.length + ' bài. Bài “Nháp” chưa hiện với học sinh.</div>';
+  var byG = {}; items.forEach(function (l) { (byG[l.grade] = byG[l.grade] || []).push(l); });
+  h += Object.keys(byG).map(Number).sort(function (a, b) { return a - b; }).map(function (g) {
+    return '<div style="font-weight:800;font-size:13px;margin:10px 0 4px;color:var(--primary)">Lớp ' + g + '</div>' + byG[g].map(function (l) {
+      return '<div class="sa-li' + (CUR && CUR.id === l.id ? ' on' : '') + '" data-id="' + esc(l.id) + '"><div class="ico">' + esc(l.icon) + '</div><div style="flex:1;min-width:0"><b>' + esc(l.title) + '</b><small>' + esc(l.sub) + ' · ' + l.q + ' câu</small><div style="margin-top:3px">' + (l.state !== 'builtin' ? '<span class="sa-chip ' + CHIP[l.state] + '">' + STATE[l.state] + '</span>' : '<span class="sa-chip">Gốc</span>') + (l.flags ? '<span class="sa-chip flag">⚠️ ' + l.flags + '</span>' : '') + '</div></div></div>';
+    }).join('');
+  }).join('');
+  $('side').innerHTML = h;
+  Array.prototype.forEach.call($('side').querySelectorAll('[data-g]'), function (b) { b.onclick = function () { F.g = +b.dataset.g; renderList(); }; });
+  Array.prototype.forEach.call($('side').querySelectorAll('[data-id]'), function (b) { b.onclick = function () { openLesson(b.dataset.id); }; });
+  $('fSt').onchange = function () { F.st = this.value; renderList(); };
+  $('fQ').oninput = function () { F.q = norm(this.value.trim()); var pos = this.selectionStart; renderList(); var el = $('fQ'); el.focus(); try { el.setSelectionRange(pos, pos); } catch (e) {} };
+}
+
+/* ───────── Mở / lưu bài ───────── */
+function confirmLeave() { return !DIRTY || confirm('Bài đang sửa chưa lưu. Rời đi và bỏ các thay đổi?'); }
+function openLesson(id) {
+  if (!confirmLeave()) return;
+  api('GET', '/api/school/admin/lesson/' + encodeURIComponent(id)).then(function (d) {
+    CUR = { id: id, lesson: d.lesson, state: d.state, builtin: d.builtin, hasOverride: d.hasOverride, flags: d.flags || [], versions: d.versions || [], source: d.source || '', msgs: null };
+    ensureShape(CUR.lesson); DIRTY = false; TAB = 'info'; $('grid').classList.add('editing'); renderEditor(); renderList(); history.replaceState(null, '', '?id=' + encodeURIComponent(id)); window.scrollTo(0, 0);
+  }).catch(function (e) { toast(e.message); });
+}
+function ensureShape(L) {
+  L.sections = L.sections || []; L.ex = L.ex || []; L.mis = L.mis || []; L.quiz = L.quiz || [];
+  L.sections.forEach(function (s) { s.b = s.b || []; });
+  L.quiz.forEach(function (q) { q[1] = (q[1] || []).slice(0, 4); while (q[1].length < 4) q[1].push(''); if (!Number.isInteger(q[2])) q[2] = -1; });
+}
+function dirty() { DIRTY = true; var b = $('btnSave'); if (b) b.textContent = '💾 Lưu' + (CUR.state === 'published' || CUR.state === 'edited' ? ' (cập nhật ngay cho học sinh)' : ' nháp') + ' •'; }
+function save(status) {
+  var body = { lesson: CUR.lesson, flags: CUR.flags }; if (status) body.status = status;
+  return api('PUT', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id), body).then(function (r) {
+    DIRTY = false; CUR.state = r.state; CUR.msgs = { errors: r.errors || [], warns: r.warns || [] };
+    return Promise.all([loadList(), api('GET', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id)).then(function (d) { CUR.versions = d.versions; CUR.hasOverride = d.hasOverride; })]).then(function () { renderEditor(); return r; });
+  }).catch(function (e) { CUR.msgs = { errors: (e.data && e.data.errors) || [e.message], warns: (e.data && e.data.warns) || [], failed: true }; renderEditor(); toast(e.message); throw e; });
+}
+
+/* ───────── Giao diện sửa bài ───────── */
+var BLK = { p: '📝 Đoạn văn', f: '🧮 Công thức', t: '📊 Bảng', tip: '💡 Mẹo', warn: '⚠️ Lưu ý / bẫy', ul: '• Danh sách' };
+function blkKind(b) { return b.p != null ? 'p' : b.f ? 'f' : b.t ? 't' : b.tip != null ? 'tip' : b.warn != null ? 'warn' : 'ul'; }
+function tableToText(t) { return [t.h.join(' | ')].concat(t.r.map(function (r) { return r.join(' | '); })).join('\n'); }
+function textToTable(s) { var rows = s.split('\n').map(function (l) { return l.split('|').map(function (c) { return c.trim(); }); }).filter(function (r) { return r.some(Boolean); }); if (!rows.length) return { h: ['Cột 1'], r: [] }; var h = rows[0]; return { h: h, r: rows.slice(1).map(function (r) { r = r.slice(0, h.length); while (r.length < h.length) r.push(''); return r; }) }; }
+function stateButtons() {
+  var live = CUR.state === 'published' || CUR.state === 'edited';
+  var h = '<button class="sa-btn pri" id="btnSave">💾 Lưu' + (live ? ' (cập nhật ngay cho học sinh)' : ' nháp') + '</button>';
+  if (!live && CUR.state !== 'hidden') h += '<button class="sa-btn" id="btnPub">🚀 Xuất bản cho học sinh</button>';
+  if (live) h += '<button class="sa-btn" id="btnUnpub">↩️ Gỡ về nháp</button>';
+  h += '<button class="sa-btn" id="btnPrev">👁️ Xem trước</button><button class="sa-btn" id="btnChk">🤖 Kiểm tra đáp án</button><button class="sa-btn" id="btnHist">🕘 Lịch sử</button>';
+  return h;
+}
+function renderEditor() {
+  var L = CUR.lesson;
+  var h = '<div class="sa-bar"><button class="sa-btn sm" id="btnBack" title="Về danh sách">←</button><b style="font-size:15px">' + esc(L.icon) + ' ' + esc(L.title || '(chưa đặt tên)') + '</b> <span class="sa-chip ' + CHIP[CUR.state] + '">' + STATE[CUR.state] + '</span><span class="sp"></span>' + stateButtons() + '</div>';
+  var m = CUR.msgs;
+  if (m && m.errors && m.errors.length) h += '<div class="sa-msg err"><b>' + (m.failed ? 'Chưa lưu/xuất bản được. ' : '') + 'Cần sửa (' + m.errors.length + '):</b><ul>' + m.errors.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+  if (m && m.warns && m.warns.length) h += '<div class="sa-msg warn"><b>Nên xem lại:</b><ul>' + m.warns.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+  if (m && !m.failed && !(m.errors || []).length) h += '<div class="sa-msg ok">✅ Đã lưu. Bài hợp lệ' + ((CUR.state === 'published' || CUR.state === 'edited') ? ' và đang hiển thị với học sinh.' : '. Bấm “Xuất bản” khi bạn đã duyệt xong.') + '</div>';
+  if (CUR.flags && CUR.flags.length) h += '<div class="sa-msg warn"><b>⚠️ Các điểm AI/hệ thống đề nghị bạn kiểm tra (' + CUR.flags.length + '):</b><ul>' + CUR.flags.map(function (f, i) { return '<li>' + (f.where ? '<b>' + esc(f.where) + ':</b> ' : '') + esc(f.msg) + ' <a href="#" data-clr="' + i + '" style="font-size:12px">[đã xem xong]</a></li>'; }).join('') + '</ul></div>';
+  if (CUR.source) h += '<div class="sa-hint">Nguồn: ' + (/^ai:/.test(CUR.source) ? '🤖 AI phân tích file “' + esc(CUR.source.slice(3)) + '”' : esc(CUR.source)) + '</div>';
+  h += '<div class="sa-tabs">' + [['info', '📌 Thông tin'], ['sections', '📖 Giải thích'], ['ex', '🗣️ Ví dụ (' + L.ex.length + ')'], ['mis', '🚫 Lỗi thường gặp (' + L.mis.length + ')'], ['quiz', '✍️ Luyện tập (' + L.quiz.length + ')'], ['json', '🧾 JSON']].map(function (t) { return '<button class="sa-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>';
+  h += '<div class="sa-card" id="tabBody"></div>';
+  h += '<div class="sa-card" style="margin-top:14px"><b>Thao tác khác</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">' +
+    (CUR.state !== 'hidden' ? '<button class="sa-btn sm" id="btnHide">🙈 Ẩn bài khỏi học sinh</button>' : '<button class="sa-btn sm" id="btnShow">👁️ Hiện lại bài</button>') +
+    (CUR.builtin && CUR.hasOverride ? '<button class="sa-btn sm" id="btnRevert">♻️ Khôi phục bản gốc (bỏ mọi chỉnh sửa)</button>' : '') +
+    (!CUR.builtin ? '<button class="sa-btn sm dng" id="btnDel">🗑️ Xoá bài này</button>' : '') + '</div>' + (CUR.builtin ? '<div class="sa-hint">Bài gốc không bị sửa trong mã nguồn — các chỉnh sửa lưu riêng và có thể khôi phục bất cứ lúc nào.</div>' : '') + '</div>';
+  $('main').innerHTML = h; renderTab(); bindBar();
+}
+function bindBar() {
+  var on = function (id, fn) { var b = $(id); if (b) b.onclick = fn; };
+  on('btnBack', function () { if (!confirmLeave()) return; DIRTY = false; CUR = null; $('grid').classList.remove('editing'); $('main').innerHTML = '<div class="sa-card sa-empty">Chọn một bài ở danh sách để sửa.</div>'; renderList(); history.replaceState(null, '', location.pathname); });
+  on('btnSave', function () { save().then(function () { toast('Đã lưu'); }).catch(function () {}); });
+  on('btnPub', function () { if (!confirm('Xuất bản bài này? Học sinh sẽ nhìn thấy ngay.')) return; save('published').then(function () { toast('Đã xuất bản'); }).catch(function () {}); });
+  on('btnUnpub', function () { if (!confirm('Gỡ bài về nháp? Học sinh sẽ không thấy bản này nữa' + (CUR.builtin ? ' (sẽ hiển thị lại bản gốc).' : '.'))) return; save('draft').then(function () { toast('Đã gỡ về nháp'); }).catch(function () {}); });
+  on('btnPrev', function () { var go = function () { window.open('school-lesson.html?id=' + encodeURIComponent(CUR.id) + '&preview=1', '_blank'); }; if (DIRTY || (CUR.builtin && !CUR.hasOverride && false)) { save().then(go).catch(function () {}); } else go(); });
+  on('btnChk', checkQuiz);
+  on('btnHist', openHist);
+  on('btnHide', function () { if (!confirm('Ẩn bài khỏi trang học sinh?')) return; setStatus('hidden'); });
+  on('btnShow', function () { setStatus(CUR.hasOverride && !CUR.builtin ? 'draft' : 'builtin'); });
+  on('btnRevert', function () { if (!confirm('Bỏ mọi chỉnh sửa và dùng lại bản gốc?')) return; setStatus('builtin', true); });
+  on('btnDel', function () { if (!confirm('Xoá hẳn bài này? (vẫn có thể khôi phục từ lịch sử trong 15 phiên bản gần nhất của bài khác — bài đã xoá thì không)')) return; api('DELETE', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id)).then(function () { DIRTY = false; CUR = null; $('grid').classList.remove('editing'); $('main').innerHTML = '<div class="sa-card sa-empty">Đã xoá.</div>'; return loadList(); }).catch(function (e) { toast(e.message); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-clr]'), function (a) { a.onclick = function (e) { e.preventDefault(); CUR.flags.splice(+a.dataset.clr, 1); dirty(); renderEditor(); }; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function (b) { b.onclick = function () { TAB = b.dataset.tab; renderEditor(); }; });
+}
+function setStatus(st, reload) {
+  api('POST', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id) + '/status', { status: st }).then(function () { DIRTY = false; return loadList().then(function () { return openLesson(CUR.id); }); }).catch(function (e) { toast(e.message); });
+}
+
+/* ───────── Các tab ───────── */
+function renderTab() {
+  var L = CUR.lesson, b = $('tabBody'), h = '';
+  if (TAB === 'info') {
+    h = '<div class="sa-row-ico"><div class="sa-fld"><label>Biểu tượng</label><input class="sa-in" data-f="icon" maxlength="8" value="' + esc(L.icon) + '" style="text-align:center;font-size:22px"></div><div class="sa-fld"><label>Tên bài học (tiếng Việt)</label><input class="sa-in" data-f="title" maxlength="80" value="' + esc(L.title) + '"></div></div>' +
+      '<div class="sa-row3"><div class="sa-fld"><label>Phụ đề (VD: Present Simple)</label><input class="sa-in" data-f="sub" maxlength="90" value="' + esc(L.sub) + '"></div><div class="sa-fld"><label>Mức độ</label><select class="sa-sel" data-f="level">' + ['Cơ bản', 'Trung bình', 'Nâng cao'].map(function (x) { return '<option' + (L.level === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></div><div class="sa-fld"><label>Lớp (gắn với mã bài, không đổi được)</label><input class="sa-in" disabled value="Lớp ' + esc(L.grade) + '"></div></div>' +
+      '<div class="sa-fld"><label>Tóm tắt (hiện ở đầu bài và ở danh sách)</label><textarea class="sa-ta" data-f="summary" maxlength="500">' + esc(L.summary) + '</textarea></div>' +
+      '<div class="sa-hint">Mẹo: dùng <b>**chữ đậm**</b> bằng cách đặt chữ giữa hai dấu sao đôi, ví dụ <code>**goes**</code>.</div>';
+  } else if (TAB === 'sections') {
+    h = '<div class="sa-hint">Mỗi “phần” có tiêu đề và nhiều “khối”: đoạn văn, công thức, bảng, mẹo, lưu ý, danh sách. <b>Bảng</b>: dòng đầu là tiêu đề cột, các cột cách nhau bằng dấu |. <b>Công thức/Danh sách</b>: mỗi dòng một mục.</div>';
+    h += L.sections.map(function (s, si) {
+      return '<div class="sa-sec"><div class="sa-sec-h"><input class="sa-in" data-sec="' + si + '" data-k="h" value="' + esc(s.h) + '" placeholder="Tiêu đề phần, VD: 1. Cách dùng"><button class="sa-btn sm" data-act="secUp" data-i="' + si + '">↑</button><button class="sa-btn sm" data-act="secDn" data-i="' + si + '">↓</button><button class="sa-btn sm dng" data-act="secDel" data-i="' + si + '">✕</button></div>' +
+        s.b.map(function (bk, bi) {
+          var k = blkKind(bk), body = '';
+          if (k === 'p' || k === 'tip' || k === 'warn') body = '<textarea class="sa-ta" data-blk="' + si + '.' + bi + '" data-bk="' + k + '">' + esc(bk[k]) + '</textarea>';
+          else if (k === 'f' || k === 'ul') body = '<textarea class="sa-ta" data-blk="' + si + '.' + bi + '" data-bk="' + k + '" placeholder="Mỗi dòng một mục">' + esc(bk[k].join('\n')) + '</textarea>';
+          else body = '<textarea class="sa-ta" data-blk="' + si + '.' + bi + '" data-bk="t" style="min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:13px" placeholder="Cột 1 | Cột 2 | Cột 3&#10;dòng 1 | … | …">' + esc(tableToText(bk.t)) + '</textarea>';
+          return '<div class="sa-blk"><div class="sa-blk-h"><span>' + BLK[k] + '</span><span class="sp"></span><button class="sa-btn sm" data-act="blkUp" data-i="' + si + '" data-j="' + bi + '">↑</button><button class="sa-btn sm" data-act="blkDn" data-i="' + si + '" data-j="' + bi + '">↓</button><button class="sa-btn sm dng" data-act="blkDel" data-i="' + si + '" data-j="' + bi + '">✕</button></div>' + body + '</div>';
+        }).join('') +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="sa-hint" style="margin:0">Thêm khối:</span>' + Object.keys(BLK).map(function (k) { return '<button class="sa-btn sm" data-act="blkAdd" data-i="' + si + '" data-k="' + k + '">' + BLK[k] + '</button>'; }).join('') + '</div></div>';
+    }).join('') + '<button class="sa-btn" data-act="secAdd">➕ Thêm phần mới</button>';
+  } else if (TAB === 'ex') {
+    h = '<div class="sa-hint">Mỗi ví dụ: câu tiếng Anh + bản dịch tiếng Việt. Cần ít nhất 6 ví dụ. Dán nhanh nhiều dòng ở ô dưới (dạng <code>English | Tiếng Việt</code>).</div>' +
+      L.ex.map(function (e, i) { return '<div class="sa-row2" style="margin-bottom:8px;align-items:center;grid-template-columns:1fr 1fr auto"><input class="sa-in" data-ex="' + i + '.0" value="' + esc(e[0]) + '" placeholder="English sentence"><input class="sa-in" data-ex="' + i + '.1" value="' + esc(e[1]) + '" placeholder="Bản dịch"><button class="sa-btn sm dng" data-act="exDel" data-i="' + i + '">✕</button></div>'; }).join('') +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px"><button class="sa-btn" data-act="exAdd">➕ Thêm ví dụ</button></div><div class="sa-fld"><label>Dán nhiều ví dụ (mỗi dòng: English | Tiếng Việt)</label><textarea class="sa-ta" id="exBulk"></textarea><button class="sa-btn sm" data-act="exBulk" style="margin-top:6px">Thêm các dòng này</button></div>';
+  } else if (TAB === 'mis') {
+    h = '<div class="sa-hint">Lỗi sai phổ biến của học sinh Việt: câu <b>sai</b> → câu <b>đúng</b> + ghi chú vì sao. Cần ít nhất 3 mục.</div>' +
+      L.mis.map(function (m, i) { return '<div class="sa-q"><div class="sa-row3"><div><label class="sa-hint">❌ Câu sai</label><input class="sa-in" data-mis="' + i + '.0" value="' + esc(m[0]) + '"></div><div><label class="sa-hint">✅ Câu đúng</label><input class="sa-in" data-mis="' + i + '.1" value="' + esc(m[1]) + '"></div><div><label class="sa-hint">Ghi chú</label><input class="sa-in" data-mis="' + i + '.2" value="' + esc(m[2]) + '"></div></div><button class="sa-btn sm dng" style="margin-top:8px" data-act="misDel" data-i="' + i + '">✕ Xoá</button></div>'; }).join('') + '<button class="sa-btn" data-act="misAdd">➕ Thêm lỗi thường gặp</button>';
+  } else if (TAB === 'quiz') {
+    h = '<div class="sa-hint">Mỗi câu có đúng 1 chỗ trống <b>___</b> (hoặc là câu hỏi ngắn), 4 đáp án, chọn ⚫ ở đáp án đúng, và lời giải thích. Cần ít nhất 8 câu. Thứ tự đáp án được xáo ngẫu nhiên khi học sinh làm bài.</div>' +
+      L.quiz.map(function (q, i) {
+        return '<div class="sa-q"><div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><b>Câu ' + (i + 1) + '</b><span style="flex:1"></span><button class="sa-btn sm" data-act="qUp" data-i="' + i + '">↑</button><button class="sa-btn sm" data-act="qDn" data-i="' + i + '">↓</button><button class="sa-btn sm" data-act="qDup" data-i="' + i + '">⧉ Nhân đôi</button><button class="sa-btn sm dng" data-act="qDel" data-i="' + i + '">✕</button></div>' +
+          '<textarea class="sa-ta" style="min-height:48px" data-q="' + i + '.0" placeholder="Đề bài, VD: She ___ to school every day.">' + esc(q[0]) + '</textarea>' +
+          [0, 1, 2, 3].map(function (k) { return '<div class="sa-opt"><input type="radio" name="qa' + i + '" data-qa="' + i + '" value="' + k + '"' + (q[2] === k ? ' checked' : '') + '><input class="sa-in" data-qo="' + i + '.' + k + '" value="' + esc(q[1][k]) + '" placeholder="Đáp án ' + 'ABCD'.charAt(k) + '"></div>'; }).join('') +
+          '<textarea class="sa-ta" style="min-height:48px;margin-top:8px" data-q="' + i + '.3" placeholder="Giải thích vì sao đáp án đúng (tiếng Việt)">' + esc(q[3]) + '</textarea></div>';
+      }).join('') + '<button class="sa-btn" data-act="qAdd">➕ Thêm câu luyện tập</button>';
+  } else {
+    h = '<div class="sa-hint">Chế độ nâng cao: toàn bộ bài ở dạng JSON. Sửa xong bấm “Áp dụng”. (Cấu trúc: sections[{h,b[]}], ex[[en,vi]], mis[[sai,đúng,ghi chú]], quiz[[đề,[4 đáp án],chỉ số đúng 0-3,giải thích]].)</div><textarea class="sa-ta sa-code" id="jsonBox">' + esc(JSON.stringify(L, null, 1)) + '</textarea><div style="margin-top:8px"><button class="sa-btn" data-act="jsonApply">✔️ Áp dụng JSON</button></div>';
+  }
+  b.innerHTML = h; bindTab();
+}
+function bindTab() {
+  var L = CUR.lesson, b = $('tabBody');
+  Array.prototype.forEach.call(b.querySelectorAll('[data-f]'), function (el) { el.oninput = el.onchange = function () { L[el.dataset.f] = el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-sec]'), function (el) { el.oninput = function () { L.sections[+el.dataset.sec][el.dataset.k] = el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-blk]'), function (el) {
+    el.oninput = function () { var p = el.dataset.blk.split('.').map(Number), bk = L.sections[p[0]].b[p[1]], k = el.dataset.bk, v = el.value;
+      if (k === 'p' || k === 'tip' || k === 'warn') bk[k] = v; else if (k === 'f' || k === 'ul') bk[k] = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); else bk.t = textToTable(v); dirty(); };
+  });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-ex]'), function (el) { el.oninput = function () { var p = el.dataset.ex.split('.').map(Number); L.ex[p[0]][p[1]] = el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-mis]'), function (el) { el.oninput = function () { var p = el.dataset.mis.split('.').map(Number); L.mis[p[0]][p[1]] = el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-q]'), function (el) { el.oninput = function () { var p = el.dataset.q.split('.').map(Number); L.quiz[p[0]][p[1]] = el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-qo]'), function (el) { el.oninput = function () { var p = el.dataset.qo.split('.').map(Number); L.quiz[p[0]][1][p[1]] = el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-qa]'), function (el) { el.onchange = function () { L.quiz[+el.dataset.qa][2] = +el.value; dirty(); }; });
+  Array.prototype.forEach.call(b.querySelectorAll('[data-act]'), function (el) { el.onclick = function () { act(el.dataset.act, el.dataset); }; });
+}
+function mv(a, i, d) { var j = i + d; if (j < 0 || j >= a.length) return; var t = a[i]; a[i] = a[j]; a[j] = t; }
+function act(a, d) {
+  var L = CUR.lesson, i = +d.i, j = +d.j; var re = true;
+  if (a === 'secAdd') L.sections.push({ h: (L.sections.length + 1) + '. ', b: [{ p: '' }] });
+  else if (a === 'secDel') { if (!confirm('Xoá cả phần này?')) return; L.sections.splice(i, 1); }
+  else if (a === 'secUp') mv(L.sections, i, -1); else if (a === 'secDn') mv(L.sections, i, 1);
+  else if (a === 'blkAdd') { var k = d.k; L.sections[i].b.push(k === 'f' ? { f: [''] } : k === 'ul' ? { ul: [''] } : k === 't' ? { t: { h: ['Cột 1', 'Cột 2'], r: [['', '']] } } : (function () { var o = {}; o[k] = ''; return o; })()); }
+  else if (a === 'blkDel') L.sections[i].b.splice(j, 1); else if (a === 'blkUp') mv(L.sections[i].b, j, -1); else if (a === 'blkDn') mv(L.sections[i].b, j, 1);
+  else if (a === 'exAdd') L.ex.push(['', '']); else if (a === 'exDel') L.ex.splice(i, 1);
+  else if (a === 'exBulk') { var t = $('exBulk').value; t.split('\n').forEach(function (ln) { var p = ln.split('|'); if (p.length >= 2 && p[0].trim()) L.ex.push([p[0].trim(), p.slice(1).join('|').trim()]); }); }
+  else if (a === 'misAdd') L.mis.push(['', '', '']); else if (a === 'misDel') L.mis.splice(i, 1);
+  else if (a === 'qAdd') L.quiz.push(['', ['', '', '', ''], -1, '']); else if (a === 'qDel') { if (!confirm('Xoá câu này?')) return; L.quiz.splice(i, 1); }
+  else if (a === 'qDup') L.quiz.splice(i + 1, 0, JSON.parse(JSON.stringify(L.quiz[i]))); else if (a === 'qUp') mv(L.quiz, i, -1); else if (a === 'qDn') mv(L.quiz, i, 1);
+  else if (a === 'jsonApply') { try { var o = JSON.parse($('jsonBox').value); o.grade = L.grade; ensureShape(o); CUR.lesson = o; } catch (e) { toast('JSON chưa hợp lệ: ' + e.message); return; } }
+  else re = false;
+  if (re) { dirty(); renderEditor(); }
+}
+function checkQuiz() {
+  var b = $('btnChk'); if (b) { b.disabled = true; b.textContent = '⏳ AI đang kiểm tra…'; }
+  api('POST', '/api/school/admin/check-quiz', { lesson: CUR.lesson }).then(function (r) {
+    CUR.flags = (CUR.flags || []).filter(function (f) { return !/^Câu luyện tập/.test(f.where || ''); }).concat(r.flags); dirty();
+    toast(r.flags.length ? 'AI nghi ngờ ' + r.flags.length + ' câu — xem phần ⚠️' : '✅ AI đồng ý với đáp án của cả ' + r.checked + ' câu'); renderEditor();
+  }).catch(function (e) { toast(e.message); renderEditor(); });
+}
+function openHist() {
+  var v = CUR.versions || [];
+  $('mdHist').innerHTML = '<h3 style="margin:0 0 6px">🕘 Lịch sử phiên bản</h3><div class="sa-hint">Mỗi lần lưu, bản trước được cất lại (giữ 15 bản gần nhất). Khôi phục sẽ nạp bản đó vào trang sửa — bạn xem rồi bấm Lưu.</div>' +
+    (v.length ? v.map(function (x) { return '<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--border)"><span style="flex:1;font-size:13.5px">' + esc(new Date(x.saved_at).toLocaleString('vi-VN')) + (x.note ? ' · ' + esc(x.note) : '') + '</span><button class="sa-btn sm" data-rv="' + x.id + '">Nạp bản này</button></div>'; }).join('') : '<div class="sa-hint">Chưa có phiên bản cũ.</div>') + '<div style="text-align:right;margin-top:12px"><button class="sa-btn" id="hClose">Đóng</button></div>';
+  $('ovHist').classList.add('on'); $('hClose').onclick = function () { $('ovHist').classList.remove('on'); };
+  Array.prototype.forEach.call($('mdHist').querySelectorAll('[data-rv]'), function (b) { b.onclick = function () { api('POST', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id) + '/restore', { version_id: +b.dataset.rv }).then(function (r) { r.lesson.grade = CUR.lesson.grade; ensureShape(r.lesson); CUR.lesson = r.lesson; dirty(); $('ovHist').classList.remove('on'); renderEditor(); toast('Đã nạp bản cũ — nhớ bấm Lưu'); }).catch(function (e) { toast(e.message); }); }; });
+}
+
+/* ───────── Bài mới ───────── */
+$('btnNew').onclick = function () {
+  if (!confirmLeave()) return;
+  var g = prompt('Tạo bài cho lớp nào? (6–12)', F.g || '6'); if (g == null) return; g = parseInt(g, 10); if (!(g >= 6 && g <= 12)) { toast('Lớp phải từ 6 đến 12'); return; }
+  var t = prompt('Tên bài học (có thể sửa sau):', ''); if (t == null) return;
+  api('POST', '/api/school/admin/lesson', { grade: g, title: t }).then(function (r) { return loadList().then(function () { DIRTY = false; return openLesson(r.id); }); }).catch(function (e) { toast(e.message); });
+};
+
+/* ───────── AI phân tích file ───────── */
+var poll = null;
+$('btnAI').onclick = function () { openAI(); };
+function openAI() {
+  var m = $('mdAI');
+  m.innerHTML = '<h3 style="margin:0 0 6px">🤖 Tạo bài từ file lý thuyết</h3>' +
+    '<div class="sa-hint">Tải lên file lý thuyết ngữ pháp (Word, PDF, ảnh chụp, Excel hoặc .txt). AI sẽ <b>phân tích, tách chủ điểm và soạn bài nháp</b> gồm giải thích, bảng/công thức, ví dụ song ngữ, lỗi thường gặp và 10 câu luyện tập — đối chiếu với quy tắc ngữ pháp chuẩn trong các giáo trình uy tín (English Grammar in Use, Oxford English Grammar, Azar, Longman, Cambridge/Collins Grammar for IELTS, v.v.). Điểm nào trong file chưa chuẩn sẽ được ghi chú để bạn xem. <b>Bài tạo ra luôn ở trạng thái Nháp</b>, bạn duyệt và sửa rồi mới xuất bản.</div>' +
+    '<div class="sa-drop" id="aiDrop"><div style="font-size:34px">📄</div><b id="aiFileName">Thả file vào đây hoặc bấm để chọn</b><div class="sa-hint" style="margin:4px 0 0">.docx · .pdf · .jpg/.png · .xlsx · .txt — tối đa 8MB</div></div><input type="file" id="aiFile" hidden accept=".docx,.pdf,.jpg,.jpeg,.png,.webp,.xlsx,.txt,.md">' +
+    '<div class="sa-row2" style="margin-top:12px"><div class="sa-fld"><label>Tạo cho lớp</label><select class="sa-sel" id="aiGrade">' + [6, 7, 8, 9, 10, 11, 12].map(function (g) { return '<option value="' + g + '"' + (F.g === g ? ' selected' : '') + '>Lớp ' + g + '</option>'; }).join('') + '</select></div><div class="sa-fld"><label>Số bài tối đa</label><select class="sa-sel" id="aiMax">' + [1, 2, 3, 4, 5, 6, 8].map(function (n) { return '<option' + (n === 4 ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div></div>' +
+    '<div class="sa-fld"><label>Ghi chú cho AI (không bắt buộc)</label><textarea class="sa-ta" id="aiNote" style="min-height:52px" placeholder="VD: chỉ lấy phần thì hiện tại; dùng ví dụ về trường học; mức độ cơ bản…"></textarea></div>' +
+    '<div id="aiOut"></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="sa-btn" id="aiClose">Đóng</button><button class="sa-btn pri" id="aiGo" disabled>🚀 Bắt đầu phân tích</button></div>';
+  $('ovAI').classList.add('on');
+  var file = null, drop = $('aiDrop'), inp = $('aiFile');
+  function setFile(f) { file = f; $('aiFileName').textContent = f ? f.name + ' (' + Math.round(f.size / 1024) + ' KB)' : 'Thả file vào đây hoặc bấm để chọn'; $('aiGo').disabled = !f; }
+  drop.onclick = function () { inp.click(); }; inp.onchange = function () { if (inp.files[0]) setFile(inp.files[0]); };
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) setFile(f); });
+  $('aiClose').onclick = function () { clearInterval(poll); $('ovAI').classList.remove('on'); };
+  $('aiGo').onclick = function () {
+    var fd = new FormData(); fd.append('file', file); fd.append('grade', $('aiGrade').value); fd.append('max', $('aiMax').value); fd.append('note', $('aiNote').value);
+    $('aiGo').disabled = true; $('aiOut').innerHTML = '<div class="sa-msg info">⏳ Đang gửi file…</div>';
+    fetch('/api/school/admin/analyze', { method: 'POST', credentials: 'same-origin', body: fd }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'Không gửi được file.'); return d; }); })
+      .then(function (d) { track(d.job); }).catch(function (e) { $('aiOut').innerHTML = '<div class="sa-msg err">' + esc(e.message) + '</div>'; $('aiGo').disabled = false; });
+  };
+}
+function track(job) {
+  clearInterval(poll);
+  function tick() {
+    api('GET', '/api/school/admin/jobs/' + job).then(function (j) {
+      var pct = j.total ? Math.round(j.done / j.total * 100) : 5;
+      var h = '<div class="sa-msg info"><b>' + esc(j.phase || '') + '</b><div class="sa-prog"><i style="width:' + (j.status === 'done' ? 100 : pct) + '%"></i></div><span class="sa-hint">Quá trình có thể mất vài phút (mỗi bài ~1 phút). Bạn có thể để cửa sổ này mở.</span></div>';
+      if (j.issues && j.issues.length) h += '<div class="sa-msg warn"><b>AI ghi chú về file:</b><ul>' + j.issues.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+      if (j.lessons && j.lessons.length) h += '<div class="sa-msg ok"><b>Bài nháp đã tạo:</b>' + j.lessons.map(function (l) { return l.failed ? '<div>❌ ' + esc(l.title) + ' — AI chưa viết được, hãy thử lại</div>' : '<div style="padding:4px 0"><a href="#" data-open="' + esc(l.id) + '"><b>' + esc(l.title) + '</b></a> ' + (l.flags ? '<span class="sa-chip flag">⚠️ ' + l.flags + ' điểm cần xem</span>' : '<span class="sa-chip pub">không có cảnh báo</span>') + '</div>'; }).join('') + '</div>';
+      if (j.status === 'error') { h += '<div class="sa-msg err">' + esc(j.error || 'Có lỗi.') + '</div>'; clearInterval(poll); $('aiGo').disabled = false; }
+      if (j.status === 'done') { clearInterval(poll); loadList(); h += '<div class="sa-hint">Xong! Bấm vào tên bài để mở, đọc lại, sửa và xuất bản.</div>'; }
+      $('aiOut').innerHTML = h;
+      Array.prototype.forEach.call($('aiOut').querySelectorAll('[data-open]'), function (a) { a.onclick = function (e) { e.preventDefault(); $('ovAI').classList.remove('on'); DIRTY = false; openLesson(a.dataset.open); }; });
+    }).catch(function (e) { clearInterval(poll); $('aiOut').innerHTML = '<div class="sa-msg err">' + esc(e.message) + '</div>'; });
+  }
+  tick(); poll = setInterval(tick, 3000);
+}
+
+window.addEventListener('beforeunload', function (e) { if (DIRTY) { e.preventDefault(); e.returnValue = ''; } });
+loadList().then(function () { var id = new URLSearchParams(location.search).get('id'); if (id) openLesson(id); });
+})();
+</script>
+</body>
+</html>

@@ -59,8 +59,9 @@
 <div id="site-footer"></div>
 <script src="js/main.js?v=29"></script>
 <script src="data/school/index.js?v=2"></script>
+<script src="js/school-merge.js?v=1"></script>
 <script>
-(function () {
+SchoolExtra.ready(function () {
   var IDX = window.SCHOOL_INDEX || [];
   var grade = 0, q = '';
   function prog() { try { return JSON.parse(localStorage.getItem('ewt-school-progress') || '{}'); } catch (e) { return {}; } }
@@ -90,7 +91,11 @@
     }).join('');
   }
   render();
-})();
+  // giáo viên / admin: nút vào trang quản lý bài học
+  fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (d && d.user && d.user.role !== 'student') { var h = document.querySelector('.sc-hero'); if (h) h.insertAdjacentHTML('beforeend', '<p style="margin-top:12px"><a class="btn btn-primary" href="school-admin.html">✏️ Quản lý bài học (sửa / thêm / AI phân tích file)</a></p>'); }
+  }).catch(function () {});
+});
 </script>
 </body>
 </html>
