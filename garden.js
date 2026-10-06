@@ -224,7 +224,18 @@ module.exports = function (app, { db, requireAuth, now }) {
     } catch (e) { console.error('[garden] không nạp được câu hỏi ngữ pháp:', e.message); }
   })();
   const LESSONS = (() => { const m = new Map(); GR.forEach((q) => { if (!m.has(q.lesson)) m.set(q.lesson, { id: q.lesson, grade: q.grade, title: q.title, n: 0 }); m.get(q.lesson).n++; }); return [...m.values()]; })();
-  const pending = new Map(), recent = new Map();
+  const pending = new Map(), recent = new Map(), flips = new Map();
+  function rollCard() {
+    const F = G.FLIP;
+    if (Math.random() < F.special) return { v: F.specialValue, t: F.specialNames[crypto.randomInt(F.specialNames.length)] };
+    const tot = F.normal.reduce((a, x) => a + x[1], 0); let r = Math.random() * tot;
+    for (const [v, w] of F.normal) { if ((r -= w) <= 0) return { v, t: 'coin' }; }
+    return { v: F.normal[0][0], t: 'coin' };
+  }
+  // Thẻ chưa lật (học sinh bỏ qua) → tự nhận ngẫu nhiên một thẻ để không mất thưởng
+  function settleFlips(uid) {
+    for (const [k, f] of flips) if (f.uid === uid) { flips.delete(k); addCoins(uid, f.cards[crypto.randomInt(f.cards.length)].v); }
+  }
   const shuf = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   function remember(uid, key) { const r = recent.get(uid) || []; r.push(key); if (r.length > 40) r.shift(); recent.set(uid, r); }
   function pickGrammar(uid, grade, lesson) {
@@ -258,6 +269,7 @@ module.exports = function (app, { db, requireAuth, now }) {
   }
   app.get('/api/garden/topics', requireAuth, (req, res) => res.json({ lessons: LESSONS, levels: ['KET', 'PET', 'FCE', 'IELTS'], grades: [6, 7, 8, 9, 10, 11, 12] }));
   app.get('/api/garden/quiz', requireAuth, (req, res) => {
+    settleFlips(req.user.id);
     const st = load(req.user), src = req.query.src === 'vocab' ? 'vocab' : 'grammar';
     const q = src === 'vocab' ? pickVocab(req.user.id, String(req.query.level || '')) : pickGrammar(req.user.id, Number(req.query.grade) || 0, String(req.query.lesson || ''));
     if (!q) return bad(res, 'Chưa có câu hỏi phù hợp, hãy chọn mục khác nhé.');
@@ -271,10 +283,24 @@ module.exports = function (app, { db, requireAuth, now }) {
     pending.delete(String(req.body.qid));
     const ok = pick === p.idx, R = G.RULES;
     const out = tx(() => {
-      const st = load(req.user); st.quiz_total++; let xu = 0, wt = 0;
-      if (ok && st.quiz_ok < R.quizCapDay) { st.quiz_ok++; xu = R.quizXu; wt = R.quizWater; addCoins(req.user.id, xu); st.water += wt; }
-      save(st); return { st, xu, wt };
+      const st = load(req.user); st.quiz_total++; let wt = 0, fid = null;
+      if (ok && st.quiz_ok < R.quizCapDay) {
+        st.quiz_ok++; wt = R.quizWater; st.water += wt;
+        fid = crypto.randomBytes(6).toString('hex');
+        flips.set(fid, { uid: req.user.id, ts: Date.now(), cards: Array.from({ length: G.FLIP.cards }, rollCard) });
+      }
+      save(st); return { st, wt, fid };
     });
-    reply(res, req.user, out.st, { correct: ok, answer: p.idx, expl: p.expl, gained: { xu: out.xu, water: out.wt }, capped: ok && out.xu === 0 });
+    for (const [k, v] of flips) if (Date.now() - v.ts > 15 * 60e3) { flips.delete(k); addCoins(v.uid, v.cards[0].v); }
+    reply(res, req.user, out.st, { correct: ok, answer: p.idx, expl: p.expl, gained: { xu: 0, water: out.wt }, flip: out.fid, capped: ok && !out.fid });
+  });
+  // Lật thẻ thưởng: máy chủ đã định sẵn giá trị các thẻ, người chơi chỉ chọn vị trí
+  app.post('/api/garden/quiz/flip', requireAuth, (req, res) => {
+    const f = flips.get(String((req.body || {}).id)), pick = Number((req.body || {}).pick);
+    if (!f || f.uid !== req.user.id) return bad(res, 'Thẻ thưởng đã được nhận hoặc đã hết hạn.');
+    if (!Number.isInteger(pick) || pick < 0 || pick >= f.cards.length) return bad(res, 'Hãy chọn một thẻ.');
+    flips.delete(String(req.body.id));
+    const out = tx(() => { addCoins(req.user.id, f.cards[pick].v); const st = load(req.user); save(st); return st; });
+    reply(res, req.user, out, { cards: f.cards, pick, gained: f.cards[pick].v });
   });
 };

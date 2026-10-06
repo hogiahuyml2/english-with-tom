@@ -55,9 +55,11 @@
     waterCut: 0.25,       // mỗi lần tưới rút ngắn 25% thời gian lớn
     yieldCapDay: 40,      // xu tối đa nhận từ thu hoạch mỗi ngày
     feedXu: 1, feedCapDay: 5, // cho thú cưng ăn: +1 xu / con, tối đa 5 xu mỗi ngày
-    quizXu: 2, quizWater: 1, quizCapDay: 150, // trả lời đúng: +2 xu, +1 lượt tưới; tối đa 150 câu đúng được thưởng mỗi ngày
+    quizWater: 1, quizCapDay: 150, // trả lời đúng: +1 lượt tưới và được lật thẻ thưởng (xem FLIP); tối đa 150 câu đúng được thưởng mỗi ngày
     maxPets: 6, sellBack: 0.5
   };
+  // Thẻ thưởng khi trả lời đúng: lật 1 trong 3 thẻ. Thẻ thường 20–100 xu; thẻ đặc biệt (Double / Triple / Lucky) trúng 1000 xu.
+  var FLIP = { cards: 3, normal: [[20, 34], [30, 26], [40, 16], [50, 10], [60, 6], [80, 3.5], [100, 1.5]], special: 0.03, specialValue: 1000, specialNames: ['double', 'triple', 'lucky'] };
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });
   var PBY = {}; PETS.forEach(function (i) { PBY[i.id] = i; });
 
@@ -77,6 +79,6 @@
     (state.pets || []).forEach(function (p) { b += 5; }); b += (state.size - 5) * 4; return b;
   }
 
-  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
+  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);
