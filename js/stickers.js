@@ -3,7 +3,8 @@
    Dùng: EWTStickers.html('trophy', { size: 64, anim: 'shake' }) · EWTStickers.burst(['star','party-popper']) · EWTStickers.parse('[stk:fire]') */
 (function (root) {
   'use strict';
-  var CATS = [['kid', '🧒 Bạn học bài'], ['hw', '🎃 Halloween'], ['xm', '🎄 Giáng sinh'], ['reward', '🏆 Khen thưởng'], ['feel', '😊 Cảm xúc'], ['study', '📚 Học tập'], ['pal', '🐾 Bạn đồng hành'], ['fun', '🎁 Vui vẻ']];
+  var CATS = [['kid', '🧒 Bạn học bài'], ['hw', '🎃 Halloween'], ['xm', '🎄 Giáng sinh'], ['reward', '🏆 Khen thưởng'], ['feel', '😊 Cảm xúc'], ['study', '📚 Học tập'], ['pal', '🐾 Bạn đồng hành'], ['fun', '🎁 Vui vẻ'],
+    ['fig-elder', '👴 Ông bà'], ['fig-pxjob', '👮 Nghề pixel'], ['fig-pxchibi', '🧑‍🎤 Pixel chibi'], ['fig-rpg', '⚔️ Anh hùng RPG'], ['fig-badge', '🔵 Huy hiệu'], ['fig-alch', '⚗️ Nhà giả kim'], ['fig-gamer', '🎮 Bạn game'], ['fig-hwm', '🧟 Quái Halloween'], ['fig-cutem', '👻 Quái dễ thương']];
   // [id, tên tiếng Việt, nhóm, kiểu chuyển động]
   var LIST = [
     ['trophy', 'Cúp vô địch', 'reward', 'shake'], ['1st-place-medal', 'Huy chương vàng', 'reward', 'swing'], ['sports-medal', 'Huy chương', 'reward', 'swing'], ['crown', 'Vương miện', 'reward', 'bob'],
@@ -33,11 +34,13 @@
     ['xm-santa-boy', 'Ông già Noel nhí (nam)', 'xm', 'bob'], ['xm-santa-girl', 'Ông già Noel nhí (nữ)', 'xm', 'bob'], ['xm-gift', 'Quà Giáng sinh', 'xm', 'pop'], ['xm-snow', 'Bạn tuyết', 'xm', 'swing'],
     ['christmas-tree', 'Cây thông', 'xm', 'twinkle'], ['snowman', 'Người tuyết', 'xm', 'swing'], ['snowman-without-snow', 'Người tuyết vui', 'xm', 'bob'], ['snowflake', 'Bông tuyết', 'xm', 'spin'], ['evergreen-tree', 'Cây thông xanh', 'xm', 'swing'], ['deer', 'Tuần lộc', 'xm', 'bob'],
     ['gloves', 'Găng tay', 'xm', 'wave'], ['scarf', 'Khăn quàng', 'xm', 'swing'], ['socks', 'Tất Giáng sinh', 'xm', 'swing'], ['cookie', 'Bánh quy', 'xm', 'bob'], ['hot-beverage', 'Cacao nóng', 'xm', 'float'], ['chocolate-bar', 'Sô-cô-la', 'xm', 'pop'], ['ribbon', 'Nơ ruy băng', 'xm', 'pop'], ['fireworks', 'Pháo hoa', 'xm', 'twinkle']];
-  LIST = KID_LIST.concat(SEASON_LIST, LIST);
-  var BY = {}; LIST.forEach(function (r) { BY[r[0]] = { id: r[0], name: r[1], cat: r[2], anim: r[3] }; var m = /^kid-(boy|girl)-([a-z]+)$/.exec(r[0]); if (m) { BY[r[0]].who = m[1]; BY[r[0]].pose = m[2]; } if (/^(hw|xm)-/.test(r[0])) BY[r[0]].season = true; });
+  // Bộ nhân vật (js/figures.js): mỗi nhân vật cũng là một sticker
+  var FIG_LIST = []; if (root.EWTFigures) root.EWTFigures.SETS.forEach(function (st) { st.chars.forEach(function (ch) { FIG_LIST.push(['fig-' + st.id + '-' + ch.id, ch.name, 'fig-' + st.id, 'bob']); }); });
+  LIST = KID_LIST.concat(SEASON_LIST, LIST, FIG_LIST);
+  var BY = {}; LIST.forEach(function (r) { BY[r[0]] = { id: r[0], name: r[1], cat: r[2], anim: r[3] }; var m = /^kid-(boy|girl)-([a-z]+)$/.exec(r[0]); if (m) { BY[r[0]].who = m[1]; BY[r[0]].pose = m[2]; } if (/^(hw|xm)-/.test(r[0])) BY[r[0]].season = true; var mf = /^fig-([a-z]+)-(.+)$/.exec(r[0]); if (mf) { BY[r[0]].fig = true; BY[r[0]].figSet = mf[1]; BY[r[0]].figChar = mf[2]; } });
   // Tab mặc định theo mùa: tháng 10 → Halloween, tháng 11–12 → Giáng sinh
   function defaultCat() { var m = new Date().getMonth() + 1; return m === 10 ? 'hw' : m === 11 || m === 12 ? 'xm' : CATS[0][0]; }
-  function kidSvg(s, size) { return !root.EWTKid ? '' : s.season ? root.EWTKid.season(s.id, { size: size, label: s.name }) : root.EWTKid.pose(s.pose, s.who, { size: size, label: s.name }); }
+  function kidSvg(s, size) { if (s.fig) return root.EWTFigures ? root.EWTFigures.svg(s.figSet, s.figChar, { size: size, label: s.name }) : ''; return !root.EWTKid ? '' : s.season ? root.EWTKid.season(s.id, { size: size, label: s.name }) : root.EWTKid.pose(s.pose, s.who, { size: size, label: s.name }); }
   var KINDS = 'bob pop beat spin shake twinkle launch flicker swing clap ring float wave'.split(' ');
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -45,7 +48,7 @@
   function token(id) { return '[stk:' + id + ']'; }
   function html(id, o) {
     var s = BY[id]; if (!s) return ''; o = o || {}; var size = o.size || 64;
-    if (s.who || s.season) { var ka = o.anim === false ? '' : ' ewt-stk-' + (KINDS.indexOf(o.anim) >= 0 ? o.anim : s.anim); return '<span class="ewt-stk' + ka + '" style="width:' + size + 'px;height:' + size + 'px" role="img" aria-label="' + esc(s.name) + '">' + kidSvg(s, size) + '</span>'; }
+    if (s.who || s.season || s.fig) { var ka = o.anim === false ? '' : ' ewt-stk-' + (KINDS.indexOf(o.anim) >= 0 ? o.anim : s.anim); return '<span class="ewt-stk' + ka + '" style="width:' + size + 'px;height:' + size + 'px" role="img" aria-label="' + esc(s.name) + '">' + kidSvg(s, size) + '</span>'; }
     var a = o.anim === false ? '' : ' ewt-stk-' + (KINDS.indexOf(o.anim) >= 0 ? o.anim : s.anim);
     return '<img class="ewt-stk' + a + '" src="images/stickers/' + s.id + '.png" alt="' + esc(s.name) + '" width="' + size + '" height="' + size + '" draggable="false"' + (o.lazy === false ? '' : ' loading="lazy"') + '>';
   }
@@ -77,7 +80,7 @@
     if (o.from && o.from.getBoundingClientRect) { var b = o.from.getBoundingClientRect(); cx = b.left + b.width / 2; cy = b.top + b.height / 2; }
     for (var i = 0; i < n; i++) {
       var el = document.createElement('img'), id = ids[i % ids.length], ang = (-Math.PI / 2) + (Math.random() - 0.5) * 2.2, dist = 120 + Math.random() * Math.min(260, H * 0.4), sz = 28 + Math.random() * 26;
-      el.src = BY[id].who || BY[id].season ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(kidSvg(BY[id], 96)) : 'images/stickers/' + id + '.png'; el.alt = ''; el.setAttribute('aria-hidden', 'true'); el.className = 'ewt-stk-burst'; el.width = el.height = Math.round(sz);
+      el.src = BY[id].who || BY[id].season || BY[id].fig ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(kidSvg(BY[id], 96)) : 'images/stickers/' + id + '.png'; el.alt = ''; el.setAttribute('aria-hidden', 'true'); el.className = 'ewt-stk-burst'; el.width = el.height = Math.round(sz);
       el.style.cssText = '--x0:' + (cx - sz / 2) + 'px;--y0:' + (cy - sz / 2) + 'px;--x1:' + (cx - sz / 2 + Math.cos(ang) * dist) + 'px;--y1:' + (cy - sz / 2 + Math.sin(ang) * dist + 40) + 'px;--s:' + (0.9 + Math.random() * 0.8).toFixed(2) + ';--r:' + Math.round((Math.random() - 0.5) * 120) + 'deg;--d:' + (1.2 + Math.random() * 0.9).toFixed(2) + 's;animation-delay:' + (Math.random() * 0.25).toFixed(2) + 's';
       document.body.appendChild(el); setTimeout(function (e) { return function () { e.remove(); }; }(el), 2600);
     }

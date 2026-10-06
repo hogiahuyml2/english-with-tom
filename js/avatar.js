@@ -50,6 +50,7 @@
   var SEED = /^[A-Za-z0-9]{1,16}$/;
   function randSeed() { var a = 'abcdefghjkmnpqrstuvwxyz23456789', o = ''; for (var i = 0; i < 8; i++) o += a.charAt(Math.floor(Math.random() * a.length)); return o; }
 
+  function figLib() { return root.EWTFigures || (typeof require === 'function' ? require('./figures.js') : null); }
   function kidLib() { return root.EWTKid || (typeof require === 'function' ? require('./kid.js') : null); }
   function defaults() {
     return { ch: 'cat', c1: '#F4A261', c2: '#FFF1E0', ex: 'smile', cheek: 'blush', outfit: 'tee', oc: '#3B82F6', hat: 'none', hc: '#EF4444', glasses: 'none', neck: 'none', nc: '#F59E0B', phones: 'none', pc: '#8B5CF6', held: 'none', bg: 'dots', bgc: '#DBEAFE' };
@@ -68,6 +69,8 @@
       o.ke = pk(K.EYES, c.ke, 'open'); o.km = pk(K.MOUTH, c.km, 'smile'); o.kg = c.kg === 1 ? 1 : 0; o.kb = c.kb === 0 ? 0 : 1;
       o.kt = pk(K.HAT, c.kt, 'none'); o.ko = pk(K.OUTFIT, c.ko, 'tee'); o.kbg = pk(K.BG, c.kbg, 'leaf');
     }
+    var FG = figLib();
+    if (c.st === 'fig' && FG) { var ff = FG.find(c.fs, c.fc) || FG.find('elder', 'ong-kinh'); o.st = 'fig'; o.fs = ff.set.id; o.fc = ff.ch.id; o.fo = c.fo === 1 ? 1 : 0; }
     if (c.st === 'pixel') {
       o.st = 'pixel'; o.pk = PIX.skin.indexOf(c.pk) >= 0 ? c.pk : PIX.skin[1];
       o.ph = PIX.hair.some(function (x) { return x.id === c.ph; }) ? c.ph : 'short'; o.phc = PIX.hairc.indexOf(c.phc) >= 0 ? c.phc : PIX.hairc[0];
@@ -158,6 +161,7 @@
     var cfg = normalize(cfgIn); opts = opts || {}; var uid = 'av' + (++UID), size = opts.size || 160;
     var acls = opts.anim ? ' class="ewt-av ewt-av-' + String(opts.anim).replace(/[^a-z]/g, '') + '"' : '';
     if (cfg.st === 'pixel') return pixelSvg(cfg, size, acls, opts);
+    if (cfg.st === 'fig') { var FL = figLib(); return FL ? FL.avatar(cfg, size, opts.shape || 'circle', acls, opts.label) : ''; }
     if (cfg.st === 'kid') { var KL = kidLib(); return KL ? KL.avatar(cfg, size, opts.shape || 'circle', acls, opts.label) : ''; }
     if (cfg.st === 'human' || cfg.st === 'kenney') {
       var hr = (opts.shape || 'circle') === 'circle' ? 100 : opts.shape === 'round' ? 40 : 0, hl = opts.label || (cfg.st === 'kenney' ? 'Nhân vật thú' : 'Nhân vật người');
