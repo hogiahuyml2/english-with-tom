@@ -862,6 +862,7 @@ app.get('/api/auth/google/callback', async (req, res) => {
     }).then(r => r.json());
 
     const email = (info.email || '').toLowerCase();
+    if (info.verified_email === false) return fail('Email Google này chưa được xác minh, không thể đăng nhập.');
     if (!email) {
       console.error('[Google OAuth] No email in userinfo:', JSON.stringify(info));
       return fail('Không lấy được email từ tài khoản Google.');
@@ -874,7 +875,11 @@ app.get('/api/auth/google/callback', async (req, res) => {
       u = { id: Number(r2.lastInsertRowid) };
       notifyAllStaff('new_student', '🎓 Học sinh mới: ' + cleanName(info.name, email), email + ' vừa đăng ký qua Google.', 'teacher.html?tab=students');
     } else if (!u.email_verified) {
-      db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(u.id);
+      // Tài khoản này từng được đăng ký bằng mật khẩu nhưng chưa xác minh email: có thể do người khác đăng ký trước bằng email của bạn.
+      // Chủ email thật vừa chứng minh qua Google → vô hiệu mật khẩu cũ và đăng xuất mọi phiên cũ.
+      const lock = crypto.randomBytes(24).toString('hex');
+      db.prepare("UPDATE users SET email_verified=1, pass=CASE WHEN pass='google-oauth' THEN pass ELSE ? END WHERE id=?").run('locked:' + lock, u.id);
+      db.prepare('DELETE FROM sessions WHERE user_id=?').run(u.id); dropUserSessionCache(u.id);
     }
     startSession(res, u.id, req);
     res.redirect('/dashboard.html');
@@ -2821,6 +2826,13 @@ app.use(security.errorHandler);
 // Một lỗi bất ngờ ở bất kỳ request nào cũng KHÔNG được làm sập cả website
 process.on('uncaughtException', (e) => console.error('[uncaughtException]', e && e.stack || e));
 process.on('unhandledRejection', (e) => console.error('[unhandledRejection]', e && e.stack || e));
+
+// Phiên đăng nhập hết hạn thật sự sau 30 ngày (cookie đã hết hạn nhưng mã phiên cũ không được còn dùng được nếu bị lộ)
+function purgeOldSessions() {
+  try { const n = db.prepare('DELETE FROM sessions WHERE created_at < ?').run(new Date(Date.now() - 30 * 86400e3).toISOString()).changes; if (n) console.log('[security] Đã xoá ' + n + ' phiên quá 30 ngày.'); }
+  catch (e) { console.error('[security] dọn phiên lỗi:', e.message); }
+}
+purgeOldSessions(); setInterval(purgeOldSessions, 6 * 3600e3).unref();
 
 // Lần chạy đầu sau bản vá bảo mật: đăng xuất toàn bộ phiên cũ một lần (phòng khi có phiên bị chiếm bằng lỗ hổng đã vá)
 try {
