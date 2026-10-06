@@ -34,7 +34,7 @@
 <div id="site-header"></div>
 <main class="td-wrap" id="root"><div class="td-note">⏳ Đang chuẩn bị kế hoạch cho bạn…</div></main>
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
+<script src="js/main.js?v=38"></script>
 <script>
 (function () {
 'use strict';
@@ -52,6 +52,7 @@ function load() {
     });
     h += '<div class="td-note">Kế hoạch được chọn từ chính bài làm của bạn: bài được giao, từ đến hạn ôn, câu sai, kỹ năng yếu… Việc nào xong sẽ tự được tick ✓. Hoàn thành cả ngày để nhận xu và huy hiệu “Đều đặn từng ngày”.</div>';
     root.innerHTML = h;
+    if (d.reward && window.ewtReward) window.ewtReward(1, { title: 'Hoàn thành kế hoạch hôm nay!', sub: '+' + d.reward.coins + ' xu 🪙' });
   }).catch(function () { document.getElementById('root').innerHTML = '<div class="td-note">Không tải được kế hoạch, hãy thử lại sau.</div>'; });
 }
 load();

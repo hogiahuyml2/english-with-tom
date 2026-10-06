@@ -315,9 +315,34 @@
   window.ewtCelebrate = function (ids, opts) {
     function go() { if (window.EWTStickers) window.EWTStickers.burst(ids, opts); }
     if (window.EWTStickers) { go(); return; }
-    if (!_stkLoading) _stkLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/stickers.js?v=1'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    if (!_stkLoading) _stkLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/stickers.js?v=2'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
     _stkLoading.then(go);
   };
+
+  /* ===== Sticker thưởng khi làm bài ===== */
+  // ratio 0..1 = tỉ lệ đúng; hiện thẻ sticker nhỏ ở dưới màn hình, đạt cao thì có chùm sticker ăn mừng
+  window.ewtReward = function (ratio, o) {
+    o = o || {}; if (typeof ratio !== 'number' || isNaN(ratio)) return;
+    var tier = ratio >= 0.9 ? ['trophy', 'Xuất sắc!', 1] : ratio >= 0.7 ? ['clapping-hands', 'Làm tốt lắm!', 1] : ratio >= 0.5 ? ['thumbs-up', 'Khá ổn, cố thêm nhé!', 0] : ['flexed-biceps', 'Đừng nản — lần sau sẽ tốt hơn!', 0];
+    window.ewtCelebrate(null, { count: 0 });
+    var go = function () {
+      var S = window.EWTStickers; if (!S) return;
+      var old = document.getElementById('ewtRw'); if (old) old.remove();
+      if (!document.getElementById('ewtRwCss')) { var st = document.createElement('style'); st.id = 'ewtRwCss'; st.textContent = '#ewtRw{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9998;display:flex;align-items:center;gap:12px;background:var(--surface,#fff);color:var(--text,#1f2937);border:1.5px solid var(--border,#e5e7eb);border-radius:20px;padding:10px 20px 10px 12px;box-shadow:0 12px 36px rgba(60,40,140,.28);font:800 15px/1.3 inherit;font-family:inherit;animation:ewtRwIn .45s cubic-bezier(.3,1.4,.5,1);max-width:calc(100vw - 24px)}#ewtRw small{display:block;font-weight:600;font-size:12.5px;color:var(--text-muted,#6b7280)}@keyframes ewtRwIn{from{opacity:0;transform:translate(-50%,40px) scale(.85)}to{opacity:1;transform:translate(-50%,0) scale(1)}}'; document.head.appendChild(st); }
+      var el = document.createElement('div'); el.id = 'ewtRw'; el.setAttribute('role', 'status');
+      el.innerHTML = S.html(tier[0], { size: 56, lazy: false, anim: ratio >= 0.9 ? 'shake' : 'pop' }) + '<div>' + (o.title || tier[1]) + (o.sub ? '<small>' + o.sub + '</small>' : '') + '</div>';
+      document.body.appendChild(el); if (tier[2]) S.burst(ratio >= 0.9 ? ['trophy', 'star', 'party-popper', 'sparkles', 'glowing-star'] : ['clapping-hands', 'star', 'sparkles'], { from: el, count: ratio >= 0.9 ? 16 : 9 });
+      setTimeout(function () { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 450); }, 4200);
+    };
+    var wait = function () { if (window.EWTStickers) go(); else setTimeout(wait, 80); }; setTimeout(wait, 60);
+  };
+  // Trả lời đúng: sticker nhỏ bay lên; đúng liên tiếp 3/5/10 có sticker đặc biệt
+  var _streak = 0;
+  window.ewtCorrect = function (from) {
+    _streak++; var id = _streak === 10 ? 'trophy' : _streak === 5 ? 'rocket' : _streak === 3 ? 'fire' : ['star', 'thumbs-up', 'sparkles', 'glowing-star'][_streak % 4];
+    window.ewtCelebrate([id], { count: _streak === 3 || _streak === 5 || _streak === 10 ? 7 : 3, from: from });
+  };
+  window.ewtWrong = function () { _streak = 0; };
 
   /* ===== Nhân vật (avatar): nạp thư viện vẽ khi cần, gắn vào thanh menu ===== */
   var _avLoading = null;
@@ -325,7 +350,7 @@
     if (!el || !cfg) return;
     function put() { el.innerHTML = window.EWTAvatar.render(cfg, { size: size || 40, shape: shape || 'circle' }); }
     if (window.EWTAvatar) { put(); return; }
-    if (!_avLoading) _avLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=2'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    if (!_avLoading) _avLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=3'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
     _avLoading.then(function () { if (window.EWTAvatar) put(); });
   };
   function showHeaderAvatar(cfg) {

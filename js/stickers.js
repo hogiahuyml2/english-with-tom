@@ -47,7 +47,7 @@
       '@keyframes stkSwing{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}@keyframes stkClap{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.12) rotate(-8deg)}60%{transform:scale(.96) rotate(6deg)}}' +
       '@keyframes stkRing{0%,50%,100%{transform:rotate(0)}56%{transform:rotate(-14deg)}62%{transform:rotate(12deg)}68%{transform:rotate(-10deg)}74%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}@keyframes stkFloat{0%,100%{transform:translate(0,0);opacity:1}50%{transform:translate(4%,-12%);opacity:.8}}' +
       '@keyframes stkWave{0%,100%{transform:rotate(0)}25%{transform:rotate(18deg)}50%{transform:rotate(-8deg)}75%{transform:rotate(14deg)}}' +
-      '.ewt-stk-burst{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;will-change:transform,opacity;animation:stkBurst var(--d,1.6s) cubic-bezier(.2,.7,.3,1) forwards}' +
+      '.ewt-stk-burst{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;will-change:transform,opacity;animation:stkBurst var(--d,1.6s) cubic-bezier(.2,.7,.3,1) both}' +
       '@keyframes stkBurst{0%{transform:translate(var(--x0),var(--y0)) scale(.3) rotate(0);opacity:0}12%{opacity:1}100%{transform:translate(var(--x1),var(--y1)) scale(var(--s,1)) rotate(var(--r,0deg));opacity:0}}' +
       '@media (prefers-reduced-motion:reduce){.ewt-stk{animation:none!important}.ewt-stk-burst{display:none}}';
     document.head.appendChild(st);

@@ -334,7 +334,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
 <div class="wh-ov" id="whOv"><div class="wh-modal" id="whModal"></div></div>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
+<script src="js/main.js?v=38"></script>
 <script>
 (function () {
 'use strict';
@@ -842,7 +842,7 @@ function recordResult(q, ok) {
 function grade(q, ok) {
   var firstTry = !G.seen[q.id];
   G.shown++;
-  beep(ok);
+  beep(ok); if (window.ewtCorrect) { if (ok) window.ewtCorrect(); else window.ewtWrong(); }
   if (firstTry) recordResult(q, ok); else if (ok) { /* làm lại đúng: không tính điểm, chỉ để nhớ */ }
   if (G.mode === 'boss') bossHit(ok);
   updTop();
@@ -955,7 +955,7 @@ function submit(g) {
   });
 }
 function showResult(g, r) {
-  var x = r.gained, acc = Math.round(x.correct / x.total * 100);
+  var x = r.gained, acc = Math.round(x.correct / x.total * 100); if (window.ewtReward) window.ewtReward(acc / 100);
   var emoji = acc >= 90 ? '🏆' : acc >= 70 ? '🎉' : acc >= 50 ? '👍' : '💪';
   var title = acc >= 90 ? 'Xuất sắc!' : acc >= 70 ? 'Làm tốt lắm!' : acc >= 50 ? 'Khá ổn, cố thêm nhé!' : 'Đừng nản — lần sau sẽ tốt hơn!';
   var miss = g.results.filter(function (q) { return !q.ok; });

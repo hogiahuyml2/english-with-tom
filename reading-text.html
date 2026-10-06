@@ -44,7 +44,7 @@
 <div class="rt-pop" id="pop"></div>
 <div class="rt-toast" id="toast"></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
+<script src="js/main.js?v=38"></script>
 <script>
 (function () {
 'use strict';
@@ -106,7 +106,7 @@ document.addEventListener('change', function (e) {
 });
 document.addEventListener('click', function (e) {
   var t = e.target;
-  if (t.id === 'sub') { t.disabled = true; api('/api/reading/text/' + encodeURIComponent(ID) + '/submit', { answers: A, seconds: Math.round((Date.now() - T0) / 1000) }).then(function (d) { RES = d; PACK = d; loadSaved(); render(); window.scrollTo(0, 0); }).catch(function (x) { toast(x.message); t.disabled = false; }); return; }
+  if (t.id === 'sub') { t.disabled = true; api('/api/reading/text/' + encodeURIComponent(ID) + '/submit', { answers: A, seconds: Math.round((Date.now() - T0) / 1000) }).then(function (d) { RES = d; PACK = d; if (window.ewtReward && d.max) window.ewtReward(d.score / d.max); loadSaved(); render(); window.scrollTo(0, 0); }).catch(function (x) { toast(x.message); t.disabled = false; }); return; }
   if (t.id === 'again') { RES = null; PACK = null; A = T.questions.map(function () { return null; }); T0 = Date.now(); closePop(); render(); window.scrollTo(0, 0); return; }
   if (t.id === 'fz') { BIG = !BIG; $('txt').classList.toggle('big', BIG); return; }
   var nt = t.closest('[data-nt]'); if (nt) { NOTE_TAB = nt.getAttribute('data-nt'); $('notes').innerHTML = notesHtml(); return; }

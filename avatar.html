@@ -82,8 +82,8 @@
 <div class="av-bar"><div class="msg" id="msg">Chỉnh xong nhớ bấm <b>Lưu nhân vật</b> nhé!</div><button class="av-save" id="save">💾 Lưu nhân vật</button></div>
 <div class="av-toast" id="toast"></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
-<script src="js/avatar.js?v=2"></script>
+<script src="js/main.js?v=38"></script>
+<script src="js/avatar.js?v=3"></script>
 <script>
 (function () {
 'use strict';
@@ -95,12 +95,26 @@ function api(url, method, body) { return fetch(url, { method: method || 'GET', c
 var CFG = A.defaults(), SAVED = null, OWNED = {}, COINS = 0, ALL_FREE = false, TAB = 'char', HISTORY = [], DIRTY = false;
 var TABS_ANIMAL = [['char', '🐾 Nhân vật'], ['face', '😊 Khuôn mặt'], ['outfit', '👕 Trang phục'], ['hat', '🎩 Mũ'], ['acc', '✨ Phụ kiện'], ['bg', '🖼️ Nền']];
 var TABS_HUMAN = [['hchar', '🧑 Chọn nhân vật'], ['hbg', '🖼️ Màu nền']];
+var TABS_KEN = [['kchar', '🦁 Chọn thú'], ['hbg', '🖼️ Màu nền']];
+var TABS_PIX = [['pchar', '👾 Gương mặt'], ['pout', '👕 Áo & tóc'], ['hbg', '🖼️ Màu nền']];
 var GRID = [];
 function isHuman() { return CFG.st === 'human'; }
+function mode() { return CFG.st || 'animal'; }
 function humanStyle() { return A.HUMAN.filter(function (x) { return x.id === CFG.hs; })[0] || A.HUMAN[0]; }
 function newGrid() { GRID = []; for (var i = 0; i < 12; i++) GRID.push(A.randSeed()); }
 function modeSwitch() {
-  return '<div class="av-modes"><button class="av-mode' + (!isHuman() ? ' on' : '') + '" data-mode="animal"><b>🐾 Nhân vật thú</b><span>Mèo, gấu, thỏ… tự phối màu, quần áo, phụ kiện</span></button><button class="av-mode' + (isHuman() ? ' on' : '') + '" data-mode="human"><b>🧑 Nhân vật người</b><span>Chọn kiểu vẽ và khuôn mặt bạn thích</span></button></div>';
+  var M = [['animal', '🐾 Thú tự phối', 'Mèo, gấu, thỏ… đổi màu, quần áo, phụ kiện'], ['kenney', '🦁 Thú tròn dễ thương', 'Gấu trúc, cánh cụt, voi… kiểu hoạt hình'], ['human', '🧑 Nhân vật người', 'Chọn kiểu vẽ và khuôn mặt bạn thích'], ['pixel', '👾 Nhân vật pixel', 'Phong cách trò chơi điện tử cổ điển']];
+  return '<div class="av-modes">' + M.map(function (m) { return '<button class="av-mode' + (mode() === m[0] ? ' on' : '') + '" data-mode="' + m[0] + '"><b>' + m[1] + '</b><span>' + m[2] + '</span></button>'; }).join('') + '</div>';
+}
+function kenTiles() {
+  return '<div class="av-lab">Chọn con vật</div><div class="av-tiles">' + A.KEN.map(function (x) { return '<button class="av-tile' + (CFG.ka === x.id ? ' on' : '') + '" data-ka="' + x.id + '">' + A.render(Object.assign({}, CFG, { ka: x.id }), { size: 72, shape: 'round' }) + '<span>' + x.name + '</span></button>'; }).join('') + '</div>' +
+    '<div class="av-lab">Kiểu khuôn mặt</div><div class="av-tiles">' + A.KEN_V.map(function (x) { return '<button class="av-tile' + (CFG.kv === x.id ? ' on' : '') + '" data-kv="' + x.id + '">' + A.render(Object.assign({}, CFG, { kv: x.id }), { size: 72, shape: 'round' }) + '<span>' + x.name + '</span></button>'; }).join('') + '</div>';
+}
+function pixTiles(kind, list, label) {
+  return '<div class="av-lab">' + label + '</div><div class="av-tiles">' + list.map(function (x) { var p = {}; p[kind] = x.id; return '<button class="av-tile' + (CFG[kind] === x.id ? ' on' : '') + '" data-pk="' + kind + '" data-pv="' + x.id + '">' + A.render(Object.assign({}, CFG, p), { size: 72, shape: 'round' }) + '<span>' + x.name + '</span></button>'; }).join('') + '</div>';
+}
+function pixSw(field, list, label) {
+  return '<div class="av-lab">' + label + '</div><div class="av-sw">' + list.map(function (c) { return '<button class="av-dot' + (CFG[field] === c ? ' on' : '') + '" data-pf="' + field + '" data-c="' + c + '" style="background:' + c + '" aria-label="Màu ' + c + '"></button>'; }).join('') + '</div>';
 }
 function humanTiles() {
   if (!GRID.length) newGrid();
@@ -135,6 +149,9 @@ function charTiles() {
 function panel() {
   var h = '';
   if (TAB === 'hchar') h = humanTiles();
+  if (TAB === 'kchar') h = kenTiles();
+  if (TAB === 'pchar') h = pixSw('pk', A.PIX.skin, 'Màu da') + pixTiles('pm', A.PIX.mouth, 'Biểu cảm') + '<div class="av-lab">Kính râm</div><div class="av-tiles"><button class="av-tile' + (!CFG.pg ? ' on' : '') + '" data-pg="0"><div class="none">🚫</div><span>Không</span></button><button class="av-tile' + (CFG.pg ? ' on' : '') + '" data-pg="1">' + A.render(Object.assign({}, CFG, { pg: 1 }), { size: 72, shape: 'round' }) + '<span>Có kính</span></button></div>';
+  if (TAB === 'pout') h = pixTiles('ph', A.PIX.hair, 'Kiểu tóc') + pixSw('phc', A.PIX.hairc, 'Màu tóc') + swatches('oc', A.OUTFIT_PALETTE, 'Màu áo');
   if (TAB === 'hbg') h = swatches('bgc', A.BG_PALETTE, 'Màu nền');
   if (TAB === 'char') h = charTiles() + swatches('c1', A.PALETTE, 'Màu lông / da') + swatches('c2', ['#FFF1E0', '#FFFFFF', '#FDE68A', '#FBCFE8', '#BFDBFE', '#BBF7D0', '#E9D5FF', '#FCA5A5'], 'Màu phụ (bụng, tai trong, mõm)');
   if (TAB === 'face') h = tiles('ex', 'Biểu cảm') + tiles('cheek', 'Má', '∅') + tiles('glasses', 'Kính', '👓');
@@ -146,8 +163,8 @@ function panel() {
 }
 function draw() {
   $('stage').innerHTML = A.render(CFG, { size: 260 });
-  var c = isHuman() ? humanStyle() : charName(); $('nm').innerHTML = esc(c.name) + '<small>' + esc(c.sub) + '</small>';
-  var TABS = isHuman() ? TABS_HUMAN : TABS_ANIMAL; if (!TABS.some(function (t) { return t[0] === TAB; })) TAB = TABS[0][0];
+  var c = mode() === 'human' ? humanStyle() : mode() === 'kenney' ? { name: (A.KEN.filter(function (x) { return x.id === CFG.ka; })[0] || A.KEN[0]).name, sub: 'Thú tròn dễ thương' } : mode() === 'pixel' ? { name: 'Nhân vật pixel', sub: 'Phong cách game' } : charName(); $('nm').innerHTML = esc(c.name) + '<small>' + esc(c.sub) + '</small>';
+  var TABS = { human: TABS_HUMAN, kenney: TABS_KEN, pixel: TABS_PIX }[mode()] || TABS_ANIMAL; if (!TABS.some(function (t) { return t[0] === TAB; })) TAB = TABS[0][0];
   $('modes').innerHTML = modeSwitch();
   $('tabs').innerHTML = TABS.map(function (t) { return '<button class="av-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
   panel(); $('coin').textContent = '🪙 ' + COINS + ' xu';
@@ -167,7 +184,17 @@ function unlock(kind, id) {
 document.addEventListener('click', function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); draw(); return; }
-  if ((el = t.closest('[data-mode]'))) { var hm = el.getAttribute('data-mode') === 'human'; if (hm === isHuman()) return; if (hm) { setCfg({ st: 'human', hs: CFG.hs || 'peeps', seed: CFG.seed || A.randSeed() }); } else { HISTORY.push(JSON.stringify(CFG)); var cc = Object.assign({}, CFG); delete cc.st; CFG = A.normalize(cc); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); } TAB = hm ? 'hchar' : 'char'; draw(); return; }
+  if ((el = t.closest('[data-mode]'))) {
+    var nm = el.getAttribute('data-mode'); if (nm === mode()) return;
+    if (nm === 'animal') { HISTORY.push(JSON.stringify(CFG)); var cc = Object.assign({}, CFG); delete cc.st; CFG = A.normalize(cc); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); }
+    else { var pt = { st: nm }; if (nm === 'human') { pt.hs = CFG.hs || 'peeps'; pt.seed = CFG.seed || A.randSeed(); } if (nm === 'pixel') { pt.pk = CFG.pk; pt.ph = CFG.ph; pt.phc = CFG.phc; pt.pg = CFG.pg; pt.pm = CFG.pm; } setCfg(pt); }
+    TAB = { human: 'hchar', kenney: 'kchar', pixel: 'pchar', animal: 'char' }[nm]; draw(); return;
+  }
+  if ((el = t.closest('[data-ka]'))) { setCfg({ ka: el.getAttribute('data-ka') }); return; }
+  if ((el = t.closest('[data-kv]'))) { setCfg({ kv: el.getAttribute('data-kv') }); return; }
+  if ((el = t.closest('[data-pk]'))) { var pp = {}; pp[el.getAttribute('data-pk')] = el.getAttribute('data-pv'); setCfg(pp); return; }
+  if ((el = t.closest('[data-pg]'))) { setCfg({ pg: +el.getAttribute('data-pg') }); return; }
+  if ((el = t.closest('[data-pf]'))) { var pq = {}; pq[el.getAttribute('data-pf')] = el.getAttribute('data-c'); setCfg(pq); return; }
   if ((el = t.closest('[data-hs]'))) { setCfg({ hs: el.getAttribute('data-hs') }); return; }
   if ((el = t.closest('[data-seed]'))) { setCfg({ seed: el.getAttribute('data-seed') }); return; }
   if (t.closest('#moreFaces')) { newGrid(); draw(); return; }
@@ -181,16 +208,16 @@ document.addEventListener('click', function (e) {
 document.addEventListener('input', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) { var q = {}; q[t.getAttribute('data-f')] = t.value; setCfg(q, true); } });
 document.addEventListener('change', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) HISTORY.push(JSON.stringify(CFG)); });
 $('stage').onclick = function () { var sv = $('stage').firstChild; if (sv && sv.animate) sv.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-18px) scale(1.06,.95)' }, { transform: 'translateY(0) scale(.97,1.03)' }, { transform: 'translateY(0) scale(1)' }], { duration: 650, easing: 'cubic-bezier(.3,.7,.4,1)' }); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'glowing-star'], { from: $('stage'), count: 8 }); };
-$('rnd').onclick = function () { var r = isHuman() ? A.normalize(Object.assign({}, CFG, { hs: A.HUMAN[Math.floor(Math.random() * A.HUMAN.length)].id, seed: A.randSeed(), bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
+$('rnd').onclick = function () { var r = mode() === 'kenney' ? A.normalize(Object.assign({}, CFG, { ka: A.KEN[Math.floor(Math.random() * A.KEN.length)].id, kv: Math.random() < .5 ? 'round' : 'square', bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : mode() === 'pixel' ? A.normalize(Object.assign({}, CFG, { pk: A.PIX.skin[Math.floor(Math.random() * 6)], ph: A.PIX.hair[Math.floor(Math.random() * 6)].id, phc: A.PIX.hairc[Math.floor(Math.random() * 8)], pg: Math.random() < .3 ? 1 : 0, pm: A.PIX.mouth[Math.floor(Math.random() * 3)].id, oc: A.OUTFIT_PALETTE[Math.floor(Math.random() * 10)], bgc: A.BG_PALETTE[Math.floor(Math.random() * 10)] })) : isHuman() ? A.normalize(Object.assign({}, CFG, { hs: A.HUMAN[Math.floor(Math.random() * A.HUMAN.length)].id, seed: A.randSeed(), bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
 $('undo').onclick = function () { if (!HISTORY.length) { toast('Chưa có thay đổi nào để hoàn tác'); return; } CFG = A.normalize(JSON.parse(HISTORY.pop())); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); draw(); };
 $('save').onclick = function () {
   var b = this; b.disabled = true; b.textContent = 'Đang lưu…';
   api('/api/me/avatar', 'PUT', { cfg: CFG }).then(function (d) { SAVED = d.cfg; CFG = d.cfg; DIRTY = false; b.textContent = '💾 Lưu nhân vật'; draw(); toast('✅ Đã lưu nhân vật của bạn!'); }).catch(function (err) { b.disabled = false; b.textContent = '💾 Lưu nhân vật'; toast(err.message, 4500); });
 };
 $('dl').onclick = function () {
-  if (isHuman()) {
-    var hi = new Image(); hi.onload = function () { var c = document.createElement('canvas'); c.width = c.height = 512; var x = c.getContext('2d'); x.fillStyle = CFG.bgc; x.fillRect(0, 0, 512, 512); x.drawImage(hi, 0, 0, 512, 512); c.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'nhan-vat-' + CFG.hs + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã tải ảnh nhân vật'); }, 'image/png'); };
-    hi.onerror = function () { toast('Không tạo được ảnh, hãy thử lại'); }; hi.src = A.humanUrl(CFG); return;
+  if (isHuman() || mode() === 'kenney') {
+    var hi = new Image(); hi.onload = function () { var c = document.createElement('canvas'); c.width = c.height = 512; var x = c.getContext('2d'); x.fillStyle = CFG.bgc; x.fillRect(0, 0, 512, 512); if (mode() === 'kenney') x.drawImage(hi, 66, 66, 380, 380 * hi.naturalHeight / hi.naturalWidth); else x.drawImage(hi, 0, 0, 512, 512); c.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'nhan-vat-' + CFG.hs + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã tải ảnh nhân vật'); }, 'image/png'); };
+    hi.onerror = function () { toast('Không tạo được ảnh, hãy thử lại'); }; hi.src = A.imgUrl(CFG); return;
   }
   var svg = A.render(CFG, { size: 512 }), img = new Image(), url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
   img.onload = function () { var c = document.createElement('canvas'); c.width = c.height = 512; c.getContext('2d').drawImage(img, 0, 0, 512, 512); URL.revokeObjectURL(url); c.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'nhan-vat-' + CFG.ch + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã tải ảnh nhân vật'); }, 'image/png'); };

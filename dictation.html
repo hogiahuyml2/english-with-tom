@@ -52,7 +52,7 @@
 <div id="site-header"></div>
 <main class="dc-wrap" id="root"><div class="dc-empty">⏳ Đang tải…</div></main>
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
+<script src="js/main.js?v=38"></script>
 <script>
 (function () {
 'use strict';
@@ -179,7 +179,7 @@ function step() { I++; if (I >= RUN.items.length) finish(false); else show(); }
 function finish(early) {
   killAudio();
   api('/api/dictation/finish', { run: RUN.run }).then(function (s) {
-    META = null; var listen = s.mode === 'listen';
+    META = null; var listen = s.mode === 'listen'; if (!listen && s.avg != null && window.ewtReward) window.ewtReward(s.avg / 100);
     var h = '<div class="dc-card dc-sum"><div style="font-size:44px">' + (listen ? '👂' : s.avg == null ? '📝' : s.avg >= 85 ? '🏆' : s.avg >= 60 ? '👍' : '💪') + '</div><h2 style="margin:4px 0">' + (early ? 'Đã dừng lượt luyện' : 'Hoàn thành lượt luyện!') + '</h2>' +
       (listen ? '<p class="dc-sub">Bạn đã nghe ' + s.done + '/' + s.total + ' câu có phụ đề.</p>' : '<div class="dc-big" style="color:' + (s.avg == null ? 'var(--text-muted)' : s.avg >= 85 ? '#16a34a' : s.avg >= 60 ? '#d97706' : '#dc2626') + '">' + (s.avg == null ? '—' : s.avg + '%') + '</div><p class="dc-sub">Điểm trung bình · ' + s.perfect + ' câu chính xác hoàn toàn · ' + s.done + '/' + s.total + ' câu đã làm' + (s.assisted ? ' · ' + s.assisted + ' câu xem phụ đề' : '') + '</p>') +
       '<div class="dc-list">' + s.results.map(function (x) {

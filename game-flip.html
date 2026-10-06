@@ -182,7 +182,7 @@ body { background:linear-gradient(150deg,#eef2ff 0%,#e0e7ff 40%,#f5f3ff 100%) fi
 </div>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
+<script src="js/main.js?v=38"></script>
 <script>
 /* ══════════════════════════════════════════════════════
    DATA
@@ -415,6 +415,7 @@ function showResult() {
 
   var movesPerPair = G.moves / total;
   var stars, msg;
+  if (window.ewtReward) window.ewtReward(movesPerPair <= 1.5 ? 1 : movesPerPair <= 2.5 ? 0.75 : 0.4);
   if (movesPerPair <= 1.5) { stars='⭐⭐⭐'; msg='Trí nhớ siêu đẳng! Bạn quá giỏi! 🧠🎉'; }
   else if (movesPerPair <= 2.5) { stars='⭐⭐'; msg='Tốt lắm! Luyện thêm để nhanh hơn! 💪'; }
   else { stars='⭐'; msg='Tiếp tục cố gắng — bạn sẽ làm được! 🌟'; }

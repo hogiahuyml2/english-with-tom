@@ -97,7 +97,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=36"></script>
+<script src="js/main.js?v=38"></script>
 <script>
 (function () {
 'use strict';
@@ -541,7 +541,7 @@ function renderQ() {
 }
 function renderResult() {
   var score = S.questions.reduce(function (s, q, i) { return s + (P.ans[i] === q.answer_index ? 1 : 0); }, 0);
-  P.score = score;
+  P.score = score; if (window.ewtReward && S.questions.length) window.ewtReward(score / S.questions.length);
   $('lvPractice').innerHTML = '<div class="lv-q"><div class="lv-score"><div style="font-size:40px;">' + (score >= 9 ? '🏆' : score >= 7 ? '🎉' : score >= 5 ? '👍' : '💪') + '</div><div class="big">' + score + '/' + S.questions.length + '</div><div class="lv-sub">' + (score >= 9 ? 'Xuất sắc!' : score >= 7 ? 'Làm tốt lắm!' : score >= 5 ? 'Khá ổn, ôn thêm các câu sai nhé!' : 'Hãy xem lại thẻ từ rồi luyện lại nhé!') + '</div></div>' +
     '<div class="lv-actions" style="justify-content:center;margin:10px 0;"><button class="lv-btn" id="lvSend">📨 Gửi kết quả cho giáo viên</button><button class="lv-btn line" id="lvAgain">↺ Luyện lại</button></div><div id="lvSendMsg"></div>' +
     '<div class="lv-rev"><b>Xem lại từng câu:</b>' + S.questions.map(function (q, i) { var ok = P.ans[i] === q.answer_index; return '<div>' + (ok ? '✅' : '❌') + ' <b>' + (i + 1) + '.</b> ' + esc(q.stem.replace('_____', '[' + q.options[q.answer_index] + ']')) + (ok ? '' : '<br><span class="lv-sub">Bạn chọn: ' + (P.ans[i] == null ? '(bỏ trống)' : esc(q.options[P.ans[i]])) + '</span>') + '</div>'; }).join('') + '</div></div>';
