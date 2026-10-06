@@ -131,7 +131,11 @@
 
   var h = document.getElementById('site-header');
   var f = document.getElementById('site-footer');
-  if (h) h.outerHTML = header;
+  if (h) {
+    h.outerHTML = '<div id="ewtClock" class="no-print"></div>' + header;
+    // Đồng hồ + ngày tháng (tiếng Anh) trên đầu trang — nạp sau khi trang dựng xong
+    var ck = document.createElement('script'); ck.src = 'js/clock.js?v=1'; ck.defer = true; document.head.appendChild(ck);
+  }
   if (f) f.outerHTML = footer;
 
   // Thanh tab "Luyện từ" dưới header (chỉ ở các trang thuộc nhóm này)
