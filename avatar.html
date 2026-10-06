@@ -82,10 +82,10 @@
 <div class="av-bar"><div class="msg" id="msg">Chỉnh xong nhớ bấm <b>Lưu nhân vật</b> nhé!</div><button class="av-save" id="save">💾 Lưu nhân vật</button></div>
 <div class="av-toast" id="toast"></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=44"></script>
+<script src="js/main.js?v=45"></script>
 <script src="js/kid.js?v=3"></script>
-<script src="js/figures.js?v=1"></script>
-<script src="js/avatar.js?v=5"></script>
+<script src="js/figures.js?v=2"></script>
+<script src="js/avatar.js?v=6"></script>
 <script>
 (function () {
 'use strict';
@@ -99,7 +99,7 @@ var TABS_ANIMAL = [['char', '🐾 Nhân vật'], ['face', '😊 Khuôn mặt'], 
 var TABS_HUMAN = [['hchar', '🧑 Chọn nhân vật'], ['hbg', '🖼️ Màu nền']];
 var TABS_KEN = [['kchar', '🦁 Chọn thú'], ['hbg', '🖼️ Màu nền']];
 var TABS_KID = [['kface', '🙂 Khuôn mặt'], ['khair', '💇 Tóc & nón'], ['kout', '👕 Áo'], ['kbgt', '🖼️ Nền']];
-var TABS_FIG = [['fset', '🎭 Chọn bộ & nhân vật'], ['fbg', '🖼️ Màu nền']];
+var TABS_FIG = [['fset', '🎭 Chọn bộ & nhân vật'], ['facc', '🎩 Nón, tóc, phụ kiện'], ['fbg', '🖼️ Màu nền']];
 var TABS_PIX = [['pchar', '👾 Gương mặt'], ['pout', '👕 Áo & tóc'], ['hbg', '🖼️ Màu nền']];
 var GRID = [];
 function isHuman() { return CFG.st === 'human'; }
@@ -122,6 +122,17 @@ function gTiles(kind, list, label) {
 }
 function gToggle(kind, label, onName, offName) {
   return '<div class="av-lab">' + label + '</div><div class="av-tiles">' + [[0, offName], [1, onName]].map(function (x) { var p = {}; p[kind] = x[0]; return '<button class="av-tile' + (CFG[kind] === x[0] ? ' on' : '') + '" data-gk="' + kind + '" data-gv="' + x[0] + '">' + A.render(Object.assign({}, CFG, p), { size: 72, shape: 'round' }) + '<span>' + x[1] + '</span></button>'; }).join('') + '</div>';
+}
+function accTiles(key, list, label) {
+  return '<div class="av-lab">' + label + '</div><div class="av-tiles">' + list.map(function (x) { var p = {}; p[key] = x.id; return '<button class="av-tile' + (CFG[key] === x.id ? ' on' : '') + '" data-ak="' + key + '" data-av="' + x.id + '">' + A.render(Object.assign({}, CFG, p), { size: 72, shape: 'round' }) + '<span>' + esc(x.name) + '</span></button>'; }).join('') + '</div>';
+}
+function accPanel() {
+  var Ac = EWTFigures.ACC, h = accTiles('fh', Ac.HAT, 'Nón');
+  if (CFG.fh !== 'none' && CFG.fh !== 'halo') h += pixSw('fhc', Ac.COLORS, 'Màu nón');
+  h += accTiles('fw', Ac.WIG, 'Kiểu tóc (đội lên tóc gốc)'); if (CFG.fw !== 'none') h += pixSw('fwc', Ac.HAIRC, 'Màu tóc');
+  h += accTiles('fg', Ac.GLASS, 'Kính'); h += accTiles('fn', Ac.NECK, 'Cổ'); if (CFG.fn !== 'none') h += pixSw('fnc', Ac.COLORS, 'Màu khăn / nơ');
+  h += accTiles('fa', Ac.OUTFIT, 'Áo'); if (CFG.fa !== 'none') h += pixSw('fac', Ac.COLORS, 'Màu áo');
+  return h + '<div style="margin-top:14px"><button class="av-btn" id="accReset">↺ Bỏ hết phụ kiện</button></div>';
 }
 function figTiles() {
   var Fg = EWTFigures, cur = Fg.find(CFG.fs, CFG.fc) || Fg.find('elder', 'ong-kinh');
@@ -164,6 +175,7 @@ function charTiles() {
 function panel() {
   var h = '';
   if (TAB === 'fset') h = figTiles();
+  if (TAB === 'facc') h = accPanel();
   if (TAB === 'fbg') h = '<div class="av-lab">Nền</div><div class="av-sw"><button class="av-btn" id="figBgOrig">↺ Dùng màu nền gốc của nhân vật</button></div>' + swatches('bgc', A.BG_PALETTE.concat(['#2F2840', '#1E2A3A', '#FFF4E6', '#E8F5E9']), 'Chọn màu nền khác');
   if (TAB === 'hchar') h = humanTiles();
   if (TAB === 'kchar') h = kenTiles();
@@ -211,6 +223,8 @@ document.addEventListener('click', function (e) {
     else { var pt = { st: nm }; if (nm === 'fig') { pt.fs = CFG.fs || 'elder'; pt.fc = CFG.fc || 'ong-kinh'; } if (nm === 'human') { pt.hs = CFG.hs || 'peeps'; pt.seed = CFG.seed || A.randSeed(); } if (nm === 'pixel') { pt.pk = CFG.pk; pt.ph = CFG.ph; pt.phc = CFG.phc; pt.pg = CFG.pg; pt.pm = CFG.pm; pt.pb = CFG.pb; } setCfg(pt); }
     TAB = { human: 'hchar', kenney: 'kchar', pixel: 'pchar', kid: 'kface', fig: 'fset', animal: 'char' }[nm]; draw(); return;
   }
+  if ((el = t.closest('[data-ak]'))) { var ap = {}; ap[el.getAttribute('data-ak')] = el.getAttribute('data-av'); setCfg(ap); return; }
+  if (t.closest('#accReset')) { setCfg({ fh: 'none', fw: 'none', fg: 'none', fn: 'none', fa: 'none' }); return; }
   if ((el = t.closest('[data-fs]'))) { var fsn = el.getAttribute('data-fs'); setCfg({ fs: fsn, fc: EWTFigures.SETS.filter(function (x) { return x.id === fsn; })[0].chars[0].id }); return; }
   if ((el = t.closest('[data-fc]'))) { setCfg({ fc: el.getAttribute('data-fc') }); return; }
   if (t.closest('#figBgOrig')) { setCfg({ fo: 0 }); return; }
@@ -234,7 +248,7 @@ document.addEventListener('input', function (e) { var t = e.target; if (t.type =
 document.addEventListener('change', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) HISTORY.push(JSON.stringify(CFG)); });
 $('stage').onclick = function () { var sv = $('stage').firstChild; if (sv && sv.animate) sv.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-18px) scale(1.06,.95)' }, { transform: 'translateY(0) scale(.97,1.03)' }, { transform: 'translateY(0) scale(1)' }], { duration: 650, easing: 'cubic-bezier(.3,.7,.4,1)' }); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'glowing-star'], { from: $('stage'), count: 8 }); };
 $('rnd').onclick = function () { var rk = function (a) { return a[Math.floor(Math.random() * a.length)]; };
-  var r = mode() === 'fig' ? (function () { var st = rk(EWTFigures.SETS), ch = rk(st.chars); return A.normalize(Object.assign({}, CFG, { fs: st.id, fc: ch.id, fo: 0 })); })() : mode() === 'kid' ? A.normalize(Object.assign({}, CFG, { kk: rk(EWTKid.SKIN), kh: rk(EWTKid.HAIR).id, khc: rk(EWTKid.HAIRC), ke: rk(EWTKid.EYES).id, km: rk(EWTKid.MOUTH).id, kg: Math.random() < .3 ? 1 : 0, kt: Math.random() < .5 ? 'none' : rk(EWTKid.HAT).id, ko: rk(EWTKid.OUTFIT).id, kbg: rk(EWTKid.BG).id, oc: rk(A.OUTFIT_PALETTE), bgc: rk(A.BG_PALETTE) })) : mode() === 'kenney' ? A.normalize(Object.assign({}, CFG, { ka: A.KEN[Math.floor(Math.random() * A.KEN.length)].id, kv: Math.random() < .5 ? 'round' : 'square', bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : mode() === 'pixel' ? A.normalize(Object.assign({}, CFG, { pk: A.PIX.skin[Math.floor(Math.random() * A.PIX.skin.length)], ph: A.PIX.hair[Math.floor(Math.random() * A.PIX.hair.length)].id, pb: A.PIX.beard[Math.floor(Math.random() * 3)].id, phc: A.PIX.hairc[Math.floor(Math.random() * 8)], pg: Math.random() < .3 ? 1 : 0, pm: A.PIX.mouth[Math.floor(Math.random() * 3)].id, oc: A.OUTFIT_PALETTE[Math.floor(Math.random() * 10)], bgc: A.BG_PALETTE[Math.floor(Math.random() * 10)] })) : isHuman() ? A.normalize(Object.assign({}, CFG, { hs: A.HUMAN[Math.floor(Math.random() * A.HUMAN.length)].id, seed: A.randSeed(), bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
+  var r = mode() === 'fig' ? (function () { var st = rk(EWTFigures.SETS), ch = rk(st.chars); var Ac = EWTFigures.ACC, pk = function (l) { return Math.random() < 0.55 ? rk(l).id : 'none'; }; return A.normalize(Object.assign({}, CFG, { fs: st.id, fc: ch.id, fo: 0, fh: pk(Ac.HAT), fhc: rk(Ac.COLORS), fw: Math.random() < 0.3 ? rk(Ac.WIG).id : 'none', fwc: rk(Ac.HAIRC), fg: Math.random() < 0.3 ? rk(Ac.GLASS).id : 'none', fn: pk(Ac.NECK), fnc: rk(Ac.COLORS), fa: pk(Ac.OUTFIT), fac: rk(Ac.COLORS) })); })() : mode() === 'kid' ? A.normalize(Object.assign({}, CFG, { kk: rk(EWTKid.SKIN), kh: rk(EWTKid.HAIR).id, khc: rk(EWTKid.HAIRC), ke: rk(EWTKid.EYES).id, km: rk(EWTKid.MOUTH).id, kg: Math.random() < .3 ? 1 : 0, kt: Math.random() < .5 ? 'none' : rk(EWTKid.HAT).id, ko: rk(EWTKid.OUTFIT).id, kbg: rk(EWTKid.BG).id, oc: rk(A.OUTFIT_PALETTE), bgc: rk(A.BG_PALETTE) })) : mode() === 'kenney' ? A.normalize(Object.assign({}, CFG, { ka: A.KEN[Math.floor(Math.random() * A.KEN.length)].id, kv: Math.random() < .5 ? 'round' : 'square', bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : mode() === 'pixel' ? A.normalize(Object.assign({}, CFG, { pk: A.PIX.skin[Math.floor(Math.random() * A.PIX.skin.length)], ph: A.PIX.hair[Math.floor(Math.random() * A.PIX.hair.length)].id, pb: A.PIX.beard[Math.floor(Math.random() * 3)].id, phc: A.PIX.hairc[Math.floor(Math.random() * 8)], pg: Math.random() < .3 ? 1 : 0, pm: A.PIX.mouth[Math.floor(Math.random() * 3)].id, oc: A.OUTFIT_PALETTE[Math.floor(Math.random() * 10)], bgc: A.BG_PALETTE[Math.floor(Math.random() * 10)] })) : isHuman() ? A.normalize(Object.assign({}, CFG, { hs: A.HUMAN[Math.floor(Math.random() * A.HUMAN.length)].id, seed: A.randSeed(), bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
 $('undo').onclick = function () { if (!HISTORY.length) { toast('Chưa có thay đổi nào để hoàn tác'); return; } CFG = A.normalize(JSON.parse(HISTORY.pop())); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); draw(); };
 $('save').onclick = function () {
   var b = this; b.disabled = true; b.textContent = 'Đang lưu…';

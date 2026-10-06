@@ -70,7 +70,10 @@
       o.kt = pk(K.HAT, c.kt, 'none'); o.ko = pk(K.OUTFIT, c.ko, 'tee'); o.kbg = pk(K.BG, c.kbg, 'leaf');
     }
     var FG = figLib();
-    if (c.st === 'fig' && FG) { var ff = FG.find(c.fs, c.fc) || FG.find('elder', 'ong-kinh'); o.st = 'fig'; o.fs = ff.set.id; o.fc = ff.ch.id; o.fo = c.fo === 1 ? 1 : 0; }
+    if (c.st === 'fig' && FG) { var ff = FG.find(c.fs, c.fc) || FG.find('elder', 'ong-kinh'); o.st = 'fig'; o.fs = ff.set.id; o.fc = ff.ch.id; o.fo = c.fo === 1 ? 1 : 0;
+      var AC = FG.ACC, id1 = function (list, v) { return list.some(function (x) { return x.id === v; }) ? v : 'none'; };
+      o.fh = id1(AC.HAT, c.fh); o.fhc = color(c.fhc, FG.ACC_DEF.fhc); o.fw = id1(AC.WIG, c.fw); o.fwc = color(c.fwc, FG.ACC_DEF.fwc); o.fg = id1(AC.GLASS, c.fg);
+      o.fn = id1(AC.NECK, c.fn); o.fnc = color(c.fnc, FG.ACC_DEF.fnc); o.fa = id1(AC.OUTFIT, c.fa); o.fac = color(c.fac, FG.ACC_DEF.fac); }
     if (c.st === 'pixel') {
       o.st = 'pixel'; o.pk = PIX.skin.indexOf(c.pk) >= 0 ? c.pk : PIX.skin[1];
       o.ph = PIX.hair.some(function (x) { return x.id === c.ph; }) ? c.ph : 'short'; o.phc = PIX.hairc.indexOf(c.phc) >= 0 ? c.phc : PIX.hairc[0];

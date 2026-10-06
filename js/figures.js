@@ -362,6 +362,164 @@
   ];
   var BYSET = {}; SETS.forEach(function (s) { BYSET[s.id] = s; s.chars = s.chars.map(function (c) { return { id: c[0], name: c[1] }; }); });
 
+  /* ─────────── Phụ kiện: nón, tóc, kính, khăn/nơ, áo — dùng chung cho cả 9 bộ ─────────── */
+  var ACC = {
+    HAT: [['none', 'Không'], ['cap', 'Mũ lưỡi trai'], ['party', 'Mũ tiệc'], ['crown', 'Vương miện'], ['witch', 'Mũ phù thuỷ'], ['santa', 'Mũ Noel'], ['beanie', 'Mũ len'], ['top', 'Mũ chóp'], ['cowboy', 'Mũ cao bồi'], ['chef', 'Mũ đầu bếp'], ['grad', 'Mũ tốt nghiệp'], ['halo', 'Hào quang'], ['headband', 'Băng đô']],
+    WIG: [['none', 'Giữ nguyên'], ['short', 'Tóc ngắn'], ['long', 'Tóc dài'], ['curly', 'Tóc xoăn'], ['bun', 'Búi tóc'], ['pigtails', 'Hai bím'], ['mohawk', 'Tóc mào gà'], ['afro', 'Tóc bồng']],
+    GLASS: [['none', 'Không'], ['round', 'Kính tròn'], ['square', 'Kính vuông'], ['sun', 'Kính râm'], ['heart', 'Kính tim']],
+    NECK: [['none', 'Không'], ['scarf', 'Khăn quàng'], ['bowtie', 'Nơ cổ'], ['medal', 'Huy chương'], ['bandana', 'Khăn bandana']],
+    OUTFIT: [['none', 'Giữ nguyên'], ['tee', 'Áo thun'], ['hoodie', 'Áo hoodie'], ['shirt', 'Sơ mi + cà vạt'], ['stripe', 'Áo sọc'], ['overalls', 'Quần yếm'], ['jacket', 'Áo khoác']],
+    COLORS: ['#EF4444', '#F59E0B', '#22C55E', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899', '#1F2937', '#FFFFFF', '#14B8A6'],
+    HAIRC: ['#2B1B12', '#6B3E1E', '#B86F2E', '#F0B73A', '#E2602E', '#C94F7C', '#6C5CE7', '#E8E8E8']
+  };
+  ['HAT', 'WIG', 'GLASS', 'NECK', 'OUTFIT'].forEach(function (k) { ACC[k] = ACC[k].map(function (a) { return { id: a[0], name: a[1] }; }); });
+  var ACC_DEF = { fh: 'none', fhc: '#EF4444', fw: 'none', fwc: '#6B3E1E', fg: 'none', fn: 'none', fnc: '#EF4444', fa: 'none', fac: '#3B82F6' };
+  var STROKES = { elder: null, badge: null, alch: null, rpg: { c: '#3A2E3F', w: 1.6 }, gamer: { c: INK, w: 2.8 }, hwm: { c: INK, w: 2.6 }, cutem: { c: INK, w: 2.2 } };
+  var BADGE_A = { 'phu-thuy': [52, 37, 15, 52], 'tien-ru': [52, 38, 14, 52], 'viking': [54, 38, 16, 52], 'ninja': [48, 26, 22, 49], 'y-ta': [54, 38, 15, 55], 'samurai': [56, 42, 14, 57], 'bang-trang': [52, 35, 17, 56], 'nha-su': [54, 37, 17, 55], 'cuop-bien': [56, 41, 15, 54] };
+  function anchorOf(setId, id) {
+    var A = { cx: 50, top: 17, hw: 21, ey: 40, eg: 7, neck: 58, torso: [36, 56, 64, 78] };
+    if (setId === 'elder') return { cx: 50, top: 20, hw: 22, ey: 45, eg: 9, neck: 78, torso: [20, 84, 80, 102] };
+    if (setId === 'badge') { var b = BADGE_A[id]; return { cx: 50, top: b[1], hw: b[2], ey: b[3], eg: Math.round(b[2] * 0.46), neck: b[0] + b[2] - 2, torso: [28, 78, 72, 102] }; }
+    if (setId === 'alch') return { cx: 50, top: 20, hw: 20, ey: 44, eg: 7, neck: 58, torso: [30, 54, 70, 82] };
+    if (setId === 'gamer' && id === 'bi-ngo') return { cx: 50, top: 14, hw: 27, ey: 38, eg: 8, neck: 62, torso: [36, 58, 64, 82] };
+    if (setId === 'gamer' && id === 'ma') return { cx: 50, top: 18, hw: 28, ey: 46, eg: 10, neck: 80, torso: null };
+    if (setId === 'hwm' && id === 'than-chet') return { cx: 50, top: 26, hw: 16, ey: 40, eg: 6, neck: 56, torso: null };
+    if (setId === 'hwm' && id === 'ma-gian') return { cx: 50, top: 16, hw: 30, ey: 44, eg: 10, neck: 80, torso: null };
+    if (setId === 'cutem' && id === 'ma-no') return { cx: 50, top: 16, hw: 28, ey: 46, eg: 9, neck: 80, torso: null };
+    if (setId === 'cutem' && id === 'mat-than') return { cx: 50, top: 16, hw: 38, ey: 50, eg: 12, neck: 80, torso: null };
+    return A;
+  }
+  function torsoPath(b) { var x1 = b[0], y1 = b[1], x2 = b[2], y2 = b[3], r = Math.min(8, (x2 - x1) / 4); return 'M' + x1 + ' ' + y2 + ' L' + x1 + ' ' + (y1 + r) + ' Q' + x1 + ' ' + y1 + ' ' + (x1 + r) + ' ' + y1 + ' H' + (x2 - r) + ' Q' + x2 + ' ' + y1 + ' ' + x2 + ' ' + (y1 + r) + ' V' + y2 + 'Z'; }
+  function f1(n) { return Math.round(n * 10) / 10; }
+
+  function vAccessories(setId, charId, a) {
+    var A = anchorOf(setId, charId), st = STROKES[setId], h = mk(st), cx = A.cx, t = A.top, w = A.hw, ey = A.ey, eg = A.eg, s = '', dk = '#2A2A38';
+    var P = function (d, fill, n) { return h.p(d, fill, n); };
+    // ── áo ──
+    if (a.fa !== 'none' && A.torso) {
+      var tb = A.torso, c = a.fac, cd = shade(c, -0.22), cw = tb[2] - tb[0], mx = (tb[0] + tb[2]) / 2, ty = tb[1];
+      s += P(torsoPath(tb), c);
+      if (a.fa === 'tee') s += h.l('M' + (mx - 7) + ' ' + ty + ' Q' + mx + ' ' + (ty + 8) + ' ' + (mx + 7) + ' ' + ty, cd, 2.2);
+      if (a.fa === 'hoodie') s += P('M' + (mx - 11) + ' ' + ty + ' Q' + mx + ' ' + (ty + 13) + ' ' + (mx + 11) + ' ' + ty + ' Q' + mx + ' ' + (ty - 3) + ' ' + (mx - 11) + ' ' + ty + 'Z', cd) + h.l('M' + (mx - 4) + ' ' + (ty + 9) + ' V' + (ty + 17) + ' M' + (mx + 4) + ' ' + (ty + 9) + ' V' + (ty + 17), '#fff', 1.6) + P('M' + (mx - 10) + ' ' + (tb[3] - 8) + ' H' + (mx + 10) + ' V' + tb[3] + ' H' + (mx - 10) + 'Z', cd, 1);
+      if (a.fa === 'shirt') s += P('M' + (mx - 9) + ' ' + ty + ' L' + mx + ' ' + (ty + 11) + ' L' + (mx - 3) + ' ' + ty + 'Z M' + (mx + 9) + ' ' + ty + ' L' + mx + ' ' + (ty + 11) + ' L' + (mx + 3) + ' ' + ty + 'Z', '#FFFFFF') + P('M' + (mx - 2.5) + ' ' + (ty + 5) + ' L' + mx + ' ' + (ty + 17) + ' L' + (mx + 2.5) + ' ' + (ty + 5) + ' L' + mx + ' ' + (ty + 3) + 'Z', '#E5484D');
+      if (a.fa === 'stripe') for (var i = 0; i < 4; i++) s += '<rect x="' + tb[0] + '" y="' + (ty + 5 + i * 6) + '" width="' + cw + '" height="3" fill="' + cd + '"/>';
+      if (a.fa === 'overalls') s += P('M' + (mx - 9) + ' ' + (ty + 6) + ' H' + (mx + 9) + ' V' + tb[3] + ' H' + (mx - 9) + 'Z', cd) + h.l('M' + (mx - 7) + ' ' + (ty + 6) + ' L' + (mx - 11) + ' ' + ty + ' M' + (mx + 7) + ' ' + (ty + 6) + ' L' + (mx + 11) + ' ' + ty, cd, 3) + h.c(mx - 5, ty + 9, 1.4, '#F2B93A', 1) + h.c(mx + 5, ty + 9, 1.4, '#F2B93A', 1);
+      if (a.fa === 'jacket') s += h.l('M' + mx + ' ' + (ty + 2) + ' V' + tb[3], cd, 2) + P('M' + (mx - 9) + ' ' + ty + ' L' + (mx - 2) + ' ' + (ty + 10) + ' L' + (mx - 1) + ' ' + ty + 'Z M' + (mx + 9) + ' ' + ty + ' L' + (mx + 2) + ' ' + (ty + 10) + ' L' + (mx + 1) + ' ' + ty + 'Z', cd);
+    }
+    // ── khăn / nơ / huy chương ──
+    var ny = A.neck, nw = Math.min(w * 0.8, 17);
+    if (a.fn !== 'none') {
+      var nc = a.fnc, nd = shade(nc, -0.25);
+      if (a.fn === 'scarf') s += P('M' + (cx - nw) + ' ' + (ny - 3) + ' Q' + cx + ' ' + (ny + 5) + ' ' + (cx + nw) + ' ' + (ny - 3) + ' L' + (cx + nw) + ' ' + (ny + 3) + ' Q' + cx + ' ' + (ny + 11) + ' ' + (cx - nw) + ' ' + (ny + 3) + 'Z', nc) + P('M' + (cx + nw - 7) + ' ' + (ny + 4) + ' L' + (cx + nw) + ' ' + (ny + 3) + ' L' + (cx + nw + 2) + ' ' + (ny + 17) + ' L' + (cx + nw - 6) + ' ' + (ny + 15) + 'Z', nd);
+      if (a.fn === 'bowtie') s += P('M' + cx + ' ' + (ny + 3) + ' L' + (cx - 10) + ' ' + (ny - 3) + ' V' + (ny + 9) + 'Z M' + cx + ' ' + (ny + 3) + ' L' + (cx + 10) + ' ' + (ny - 3) + ' V' + (ny + 9) + 'Z', nc) + h.c(cx, ny + 3, 2.6, nd);
+      if (a.fn === 'medal') s += P('M' + (cx - 7) + ' ' + (ny - 2) + ' L' + cx + ' ' + (ny + 8) + ' L' + (cx + 7) + ' ' + (ny - 2) + ' L' + (cx + 4) + ' ' + (ny - 2) + ' L' + cx + ' ' + (ny + 4) + ' L' + (cx - 4) + ' ' + (ny - 2) + 'Z', nc) + h.c(cx, ny + 11, 5, '#F2B93A') + h.c(cx, ny + 11, 2, '#F7D75B', 1);
+      if (a.fn === 'bandana') s += P('M' + (cx - nw) + ' ' + (ny - 3) + ' Q' + cx + ' ' + (ny + 3) + ' ' + (cx + nw) + ' ' + (ny - 3) + ' L' + cx + ' ' + (ny + 14) + 'Z', nc) + h.c(cx - 3, ny + 3, 1, '#fff', 1) + h.c(cx + 3, ny + 3, 1, '#fff', 1) + h.c(cx, ny + 8, 1, '#fff', 1);
+    }
+    // ── tóc giả ──
+    if (a.fw !== 'none') {
+      var wc = a.fwc, wd = shade(wc, -0.2), top = t, sh = 'M' + f1(cx - w * 1.06) + ' ' + ey + ' C' + f1(cx - w * 1.3) + ' ' + f1(top - w * 0.9) + ' ' + f1(cx + w * 1.3) + ' ' + f1(top - w * 0.9) + ' ' + f1(cx + w * 1.06) + ' ' + ey + ' C' + f1(cx + w * 0.8) + ' ' + f1(top + w * 0.35) + ' ' + f1(cx + w * 0.2) + ' ' + f1(top + w * 0.75) + ' ' + cx + ' ' + f1(top + w * 0.7) + ' C' + f1(cx - w * 0.2) + ' ' + f1(top + w * 0.75) + ' ' + f1(cx - w * 0.8) + ' ' + f1(top + w * 0.35) + ' ' + f1(cx - w * 1.06) + ' ' + ey + 'Z';
+      if (a.fw === 'long') s += P('M' + f1(cx - w * 1.08) + ' ' + ey + ' C' + f1(cx - w * 1.4) + ' ' + f1(ey + w * 0.6) + ' ' + f1(cx - w * 1.3) + ' ' + f1(ey + w * 1.5) + ' ' + f1(cx - w * 0.8) + ' ' + f1(ey + w * 1.7) + ' C' + f1(cx - w * 0.9) + ' ' + f1(ey + w * 0.9) + ' ' + f1(cx - w * 0.95) + ' ' + f1(ey + w * 0.4) + ' ' + f1(cx - w * 0.9) + ' ' + ey + 'Z M' + f1(cx + w * 1.08) + ' ' + ey + ' C' + f1(cx + w * 1.4) + ' ' + f1(ey + w * 0.6) + ' ' + f1(cx + w * 1.3) + ' ' + f1(ey + w * 1.5) + ' ' + f1(cx + w * 0.8) + ' ' + f1(ey + w * 1.7) + ' C' + f1(cx + w * 0.9) + ' ' + f1(ey + w * 0.9) + ' ' + f1(cx + w * 0.95) + ' ' + f1(ey + w * 0.4) + ' ' + f1(cx + w * 0.9) + ' ' + ey + 'Z', wd);
+      if (a.fw === 'bun') s += h.c(cx, f1(top - w * 0.75), f1(w * 0.42), wd);
+      if (a.fw === 'pigtails') s += h.e(f1(cx - w * 1.35), f1(ey + w * 0.5), f1(w * 0.3), f1(w * 0.7), wd, 12) + h.e(f1(cx + w * 1.35), f1(ey + w * 0.5), f1(w * 0.3), f1(w * 0.7), wd, -12) + h.c(f1(cx - w * 1.1), ey, 2.2, '#EC4899', 1) + h.c(f1(cx + w * 1.1), ey, 2.2, '#EC4899', 1);
+      if (a.fw === 'curly' || a.fw === 'afro') {
+        var rr = a.fw === 'afro' ? w * 0.52 : w * 0.38, pts = a.fw === 'afro' ? [[-1.05, 0.1], [-0.7, -0.75], [0, -1.05], [0.7, -0.75], [1.05, 0.1], [-1.15, 0.7], [1.15, 0.7]] : [[-0.95, 0.3], [-0.6, -0.5], [0, -0.78], [0.6, -0.5], [0.95, 0.3]];
+        pts.forEach(function (p) { s += h.c(f1(cx + p[0] * w), f1(top + p[1] * w + w * 0.2), f1(rr), wc); });
+      } else if (a.fw === 'mohawk') s += P('M' + f1(cx - w * 0.2) + ' ' + f1(top + w * 0.6) + ' L' + f1(cx - w * 0.3) + ' ' + f1(top - w * 0.6) + ' L' + f1(cx - w * 0.1) + ' ' + f1(top - w * 0.2) + ' L' + cx + ' ' + f1(top - w * 1.0) + ' L' + f1(cx + w * 0.1) + ' ' + f1(top - w * 0.2) + ' L' + f1(cx + w * 0.3) + ' ' + f1(top - w * 0.6) + ' L' + f1(cx + w * 0.2) + ' ' + f1(top + w * 0.6) + 'Z', wc);
+      else s += P(sh, wc) + h.l('M' + f1(cx - w * 0.5) + ' ' + f1(top + w * 0.05) + ' Q' + f1(cx - w * 0.15) + ' ' + f1(top - w * 0.3) + ' ' + f1(cx + w * 0.2) + ' ' + f1(top - w * 0.2), shade(wc, 0.3), 2);
+    }
+    // ── kính ──
+    if (a.fg !== 'none') {
+      var gr = f1(Math.min(w * 0.36, 9)), gl = eg, ink = '#2A2A38';
+      if (a.fg === 'round') s += '<g fill="#fff" fill-opacity=".28" stroke="' + ink + '" stroke-width="2"><circle cx="' + (cx - gl) + '" cy="' + ey + '" r="' + gr + '"/><circle cx="' + (cx + gl) + '" cy="' + ey + '" r="' + gr + '"/></g>' + h.l('M' + f1(cx - gl + gr) + ' ' + ey + ' H' + f1(cx + gl - gr), ink, 2);
+      if (a.fg === 'square') s += '<g fill="#fff" fill-opacity=".28" stroke="' + ink + '" stroke-width="2"><rect x="' + f1(cx - gl - gr) + '" y="' + f1(ey - gr * 0.8) + '" width="' + f1(gr * 2) + '" height="' + f1(gr * 1.6) + '" rx="2"/><rect x="' + f1(cx + gl - gr) + '" y="' + f1(ey - gr * 0.8) + '" width="' + f1(gr * 2) + '" height="' + f1(gr * 1.6) + '" rx="2"/></g>' + h.l('M' + f1(cx - gl + gr) + ' ' + ey + ' H' + f1(cx + gl - gr), ink, 2);
+      if (a.fg === 'sun') s += '<g fill="' + ink + '"><rect x="' + f1(cx - gl - gr) + '" y="' + f1(ey - gr * 0.75) + '" width="' + f1(gr * 2) + '" height="' + f1(gr * 1.5) + '" rx="3"/><rect x="' + f1(cx + gl - gr) + '" y="' + f1(ey - gr * 0.75) + '" width="' + f1(gr * 2) + '" height="' + f1(gr * 1.5) + '" rx="3"/></g>' + h.l('M' + f1(cx - gl + gr) + ' ' + f1(ey - 1) + ' H' + f1(cx + gl - gr), ink, 2) + h.l('M' + f1(cx - gl - gr + 2) + ' ' + f1(ey - gr * 0.4) + ' l3 -1.5', '#fff', 1.4);
+      if (a.fg === 'heart') [-1, 1].forEach(function (sg) { var X = cx + sg * gl, y = ey - gr * 0.3; s += '<path d="M' + X + ' ' + f1(y + gr * 1.1) + ' C' + f1(X - gr * 1.5) + ' ' + f1(y - gr * 0.1) + ' ' + f1(X - gr * 0.7) + ' ' + f1(y - gr * 1.1) + ' ' + X + ' ' + f1(y - gr * 0.2) + ' C' + f1(X + gr * 0.7) + ' ' + f1(y - gr * 1.1) + ' ' + f1(X + gr * 1.5) + ' ' + f1(y - gr * 0.1) + ' ' + X + ' ' + f1(y + gr * 1.1) + 'Z" fill="#F472B6" fill-opacity=".85" stroke="#9D2A6B" stroke-width="1.6"/>'; });
+    }
+    // ── nón ──
+    if (a.fh !== 'none') {
+      var hc = a.fhc, hd = shade(hc, -0.22);
+      switch (a.fh) {
+        case 'cap': s += P('M' + f1(cx - w * 1.02) + ' ' + f1(t + w * 0.62) + ' C' + f1(cx - w * 1.1) + ' ' + f1(t - w * 0.7) + ' ' + f1(cx + w * 1.1) + ' ' + f1(t - w * 0.7) + ' ' + f1(cx + w * 1.02) + ' ' + f1(t + w * 0.62) + 'Z', hc) + P('M' + cx + ' ' + f1(t + w * 0.5) + ' Q' + f1(cx + w * 1.5) + ' ' + f1(t + w * 0.35) + ' ' + f1(cx + w * 1.5) + ' ' + f1(t + w * 0.75) + ' Q' + f1(cx + w * 0.7) + ' ' + f1(t + w * 0.72) + ' ' + cx + ' ' + f1(t + w * 0.74) + 'Z', hd) + h.c(cx, f1(t - w * 0.14), f1(w * 0.12), hd); break;
+        case 'party': s += P('M' + f1(cx - w * 0.62) + ' ' + f1(t + w * 0.55) + ' L' + cx + ' ' + f1(t - w * 1.7) + ' L' + f1(cx + w * 0.62) + ' ' + f1(t + w * 0.55) + 'Z', hc) + h.l('M' + f1(cx - w * 0.4) + ' ' + f1(t + w * 0.05) + ' L' + f1(cx + w * 0.34) + ' ' + f1(t - w * 0.45) + ' M' + f1(cx - w * 0.2) + ' ' + f1(t - w * 0.6) + ' L' + f1(cx + w * 0.2) + ' ' + f1(t - w * 0.95), '#fff', 2) + h.c(cx, f1(t - w * 1.72), f1(w * 0.2), '#F7D54A'); break;
+        case 'crown': s += P('M' + f1(cx - w * 0.82) + ' ' + f1(t + w * 0.55) + ' L' + f1(cx - w * 0.9) + ' ' + f1(t - w * 0.55) + ' L' + f1(cx - w * 0.45) + ' ' + f1(t - w * 0.05) + ' L' + cx + ' ' + f1(t - w * 0.8) + ' L' + f1(cx + w * 0.45) + ' ' + f1(t - w * 0.05) + ' L' + f1(cx + w * 0.9) + ' ' + f1(t - w * 0.55) + ' L' + f1(cx + w * 0.82) + ' ' + f1(t + w * 0.55) + 'Z', '#F7C531') + h.c(cx, f1(t + w * 0.2), f1(w * 0.14), '#E5484D') + h.c(f1(cx - w * 0.5), f1(t + w * 0.3), f1(w * 0.1), '#38BDF8') + h.c(f1(cx + w * 0.5), f1(t + w * 0.3), f1(w * 0.1), '#38BDF8'); break;
+        case 'witch': s += h.e(cx, f1(t + w * 0.28), f1(w * 1.55), f1(w * 0.3), hd) + P('M' + f1(cx - w * 0.85) + ' ' + f1(t + w * 0.22) + ' C' + f1(cx - w * 0.5) + ' ' + f1(t - w * 0.7) + ' ' + f1(cx + w * 0.1) + ' ' + f1(t - w * 1.1) + ' ' + f1(cx + w * 0.55) + ' ' + f1(t - w * 1.8) + ' C' + f1(cx + w * 0.5) + ' ' + f1(t - w * 0.9) + ' ' + f1(cx + w * 0.7) + ' ' + f1(t - w * 0.2) + ' ' + f1(cx + w * 0.85) + ' ' + f1(t + w * 0.22) + 'Z', hc) + h.r(f1(cx - w * 0.84), f1(t - w * 0.12), f1(w * 1.68), f1(w * 0.3), 1, '#F2B93A'); break;
+        case 'santa': s += P('M' + f1(cx - w * 1.02) + ' ' + f1(t + w * 0.55) + ' C' + f1(cx - w * 1.1) + ' ' + f1(t - w * 0.9) + ' ' + f1(cx + w * 0.1) + ' ' + f1(t - w * 1.3) + ' ' + f1(cx + w * 1.15) + ' ' + f1(t - w * 0.15) + ' L' + f1(cx + w * 1.02) + ' ' + f1(t + w * 0.55) + 'Z', '#E5333B') + h.r(f1(cx - w * 1.1), f1(t + w * 0.3), f1(w * 2.2), f1(w * 0.36), w * 0.18, '#fff') + h.c(f1(cx + w * 1.2), f1(t - w * 0.1), f1(w * 0.2), '#fff'); break;
+        case 'beanie': s += P('M' + f1(cx - w * 1.02) + ' ' + f1(t + w * 0.55) + ' C' + f1(cx - w * 1.1) + ' ' + f1(t - w * 0.9) + ' ' + f1(cx + w * 1.1) + ' ' + f1(t - w * 0.9) + ' ' + f1(cx + w * 1.02) + ' ' + f1(t + w * 0.55) + 'Z', hc) + h.r(f1(cx - w * 1.08), f1(t + w * 0.28), f1(w * 2.16), f1(w * 0.4), w * 0.2, hd) + h.c(cx, f1(t - w * 0.62), f1(w * 0.2), '#fff'); break;
+        case 'top': s += h.e(cx, f1(t + w * 0.4), f1(w * 1.4), f1(w * 0.25), '#2A2A38') + h.r(f1(cx - w * 0.68), f1(t - w * 1.1), f1(w * 1.36), f1(w * 1.5), 2, '#2A2A38') + h.r(f1(cx - w * 0.68), f1(t + w * 0.05), f1(w * 1.36), f1(w * 0.28), 0, hc, 1); break;
+        case 'cowboy': s += h.e(cx, f1(t + w * 0.45), f1(w * 1.75), f1(w * 0.34), hd) + P('M' + f1(cx - w * 0.75) + ' ' + f1(t + w * 0.4) + ' C' + f1(cx - w * 0.9) + ' ' + f1(t - w * 0.9) + ' ' + f1(cx - w * 0.2) + ' ' + f1(t - w * 0.5) + ' ' + cx + ' ' + f1(t - w * 0.45) + ' C' + f1(cx + w * 0.2) + ' ' + f1(t - w * 0.5) + ' ' + f1(cx + w * 0.9) + ' ' + f1(t - w * 0.9) + ' ' + f1(cx + w * 0.75) + ' ' + f1(t + w * 0.4) + 'Z', hc) + h.r(f1(cx - w * 0.76), f1(t + w * 0.12), f1(w * 1.52), f1(w * 0.18), 0, '#5A3A20', 1); break;
+        case 'chef': s += [[-0.62, -0.5, 0.5], [0, -0.85, 0.58], [0.62, -0.5, 0.5]].map(function (q) { return h.c(f1(cx + q[0] * w), f1(t + q[1] * w), f1(q[2] * w), '#fff'); }).join('') + h.r(f1(cx - w * 0.92), f1(t + w * 0.05), f1(w * 1.84), f1(w * 0.55), w * 0.12, '#F4F4F8'); break;
+        case 'grad': s += P('M' + cx + ' ' + f1(t - w * 0.55) + ' L' + f1(cx + w * 1.3) + ' ' + f1(t - w * 0.05) + ' L' + cx + ' ' + f1(t + w * 0.45) + ' L' + f1(cx - w * 1.3) + ' ' + f1(t - w * 0.05) + 'Z', '#2A2A38') + P('M' + f1(cx - w * 0.75) + ' ' + f1(t + w * 0.1) + ' V' + f1(t + w * 0.65) + ' Q' + cx + ' ' + f1(t + w * 0.95) + ' ' + f1(cx + w * 0.75) + ' ' + f1(t + w * 0.65) + ' V' + f1(t + w * 0.1) + ' L' + cx + ' ' + f1(t + w * 0.35) + 'Z', '#3A3A4A') + h.l('M' + f1(cx + w * 1.15) + ' ' + f1(t - w * 0.02) + ' V' + f1(t + w * 0.7), '#F2B93A', 2) + h.c(f1(cx + w * 1.15), f1(t + w * 0.78), f1(w * 0.12), '#F2B93A'); break;
+        case 'halo': s += '<ellipse cx="' + cx + '" cy="' + f1(t - w * 0.45) + '" rx="' + f1(w * 0.8) + '" ry="' + f1(w * 0.22) + '" fill="none" stroke="#F7C531" stroke-width="3.2"/><ellipse cx="' + cx + '" cy="' + f1(t - w * 0.45) + '" rx="' + f1(w * 0.8) + '" ry="' + f1(w * 0.22) + '" fill="none" stroke="#FFF2A8" stroke-width="1" opacity=".8"/>'; break;
+        case 'headband': s += P('M' + f1(cx - w * 1.04) + ' ' + f1(t + w * 0.62) + ' Q' + cx + ' ' + f1(t + w * 0.08) + ' ' + f1(cx + w * 1.04) + ' ' + f1(t + w * 0.62) + ' L' + f1(cx + w * 1.04) + ' ' + f1(t + w * 0.92) + ' Q' + cx + ' ' + f1(t + w * 0.38) + ' ' + f1(cx - w * 1.04) + ' ' + f1(t + w * 0.92) + 'Z', hc) + P('M' + f1(cx + w * 0.55) + ' ' + f1(t + w * 0.28) + ' L' + f1(cx + w * 0.9) + ' ' + f1(t - w * 0.15) + ' L' + f1(cx + w * 0.95) + ' ' + f1(t + w * 0.4) + 'Z M' + f1(cx + w * 0.55) + ' ' + f1(t + w * 0.28) + ' L' + f1(cx + w * 0.3) + ' ' + f1(t - w * 0.2) + ' L' + f1(cx + w * 0.3) + ' ' + f1(t + w * 0.4) + 'Z', hd); break;
+      }
+    }
+    return s;
+  }
+
+  // Pixel: phụ kiện vẽ theo ô (lưới 16×16 như bộ pixel)
+  var PXA = {
+    hat: {
+      cap: ['', '.....KKKKKK.....', '....KHHHHHHK....', '...KHHHHHHHHK...', '...KDDDDDDDDKKK.'],
+      party: ['.......YY.......', '......KHHK......', '.....KHWHHK.....', '....KHHHWHHK....', '...KKKKKKKKKK...'],
+      crown: ['', '....Y..Y..Y.....', '....YYYYYYYY....', '....YRYYYYRY....'],
+      witch: ['......KK........', '.....KHHK.......', '....KHHHHK......', '....KYYYYYYK....', '..KKHHHHHHHHKK..'],
+      santa: ['.............WW.', '.....HHHHHH.WW..', '....HHHHHHHH....', '...HHHHHHHHHH...', '...WWWWWWWWWW...'],
+      beanie: ['......WW........', '....KHHHHHHK....', '...KHHHHHHHHK...', '...KDDDDDDDDK...'],
+      top: ['.....KKKKKK.....', '.....KKKKKK.....', '.....KHHHHK.....', '.....KRRRRK.....', '..KKKKKKKKKKKK..'],
+      cowboy: ['', '....KHHHHHHK....', '....KHHHHHHK....', '.KKKKDDDDDDKKKK.'],
+      chef: ['...WWW.WW.WW....', '..WWWWWWWWWWWW..', '..WWWWWWWWWWWW..', '...WWWWWWWWWW...', '...DDDDDDDDDD...'],
+      grad: ['.....KKKK.......', '..KKKKHHKKKK....', '..KHHHHHHHHHK...', '....KHHHHHK.Y...'],
+      halo: ['....YYYYYYYY....', '...Y........Y...'],
+      headband: ['', '', '', '', '...HHHHHHHHHHH..']
+    },
+    wig: {
+      short: ['', '', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HH......HH...'],
+      long: ['', '', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HH......HH...', '...HH......HH...', '...HH......HH...', '...HH......HH...', '...HHH....HHH...'],
+      curly: ['', '...H.HHHHHH.H...', '..HHHHHHHHHHHH..', '..HHHHHHHHHHHH..', '..HHH......HHH..', '..HHH......HHH..'],
+      bun: ['......HHHH......', '......HHHH......', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HH......HH...'],
+      pigtails: ['', '', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '.HH.HH....HH.HH.', '.HH.HH....HH.HH.', '.HH..........HH.'],
+      mohawk: ['.......HH.......', '.......HH.......', '.......HH.......', '.......HH.......'],
+      afro: ['', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..', '.HHHHHHHHHHHHHH.', '.HHHHHHHHHHHHHH.', '.HHHH......HHHH.', '..HH........HH..']
+    },
+    glass: {
+      round: [null, null, null, null, null, '....KKK..KKK....', '....K.KKKK.K....', '....KKK..KKK....'],
+      square: [null, null, null, null, null, '....KKK..KKK....', '....K.KKKK.K....', '....KKK..KKK....'],
+      sun: [null, null, null, null, null, '....KKK..KKK....', '....KKKKKKKK....', '....KKK..KKK....'],
+      heart: [null, null, null, null, null, '....R.R..R.R....', '....RRR..RRR....', '.....R....R.....']
+    },
+    neck: {
+      scarf: [null, null, null, null, null, null, null, null, null, null, null, '.....CCCCCC.....', '....CCCCCCCC....', '........CC......', '........CC......'],
+      bowtie: [null, null, null, null, null, null, null, null, null, null, null, '................', '.....CCKKCC.....', '.....CCKKCC.....'],
+      medal: [null, null, null, null, null, null, null, null, null, null, null, '................', '......C..C......', '.......CC.......', '.......YY.......', '.......YY.......'],
+      bandana: [null, null, null, null, null, null, null, null, null, null, null, '.....CCCCCC.....', '.....CWCCWC.....', '......CCCC......', '.......CC.......']
+    },
+    outfit: {
+      tee: [null, null, null, null, null, null, null, null, null, null, null, null, '..CCCCSSSSCCCC..', '.CCCCCCCCCCCCCC.', 'CCCCCCCCCCCCCCCC', 'CCCCCCCCCCCCCCCC'],
+      hoodie: [null, null, null, null, null, null, null, null, null, null, null, '.....DDDDDD.....', '..CCDDSSSSDDCC..', '.CCCCCWCCWCCCC..', 'CCCCCCWCCWCCCCCC', 'CCCCDDDDDDDDCCCC'],
+      shirt: [null, null, null, null, null, null, null, null, null, null, null, null, '..CCCWSRRSWCCC..', '.CCCCCCRRCCCCCC.', 'CCCCCCCCRRCCCCCC', 'CCCCCCCCRRCCCCCC'],
+      stripe: [null, null, null, null, null, null, null, null, null, null, null, null, '..CCCCSSSSCCCC..', '.DDDDDDDDDDDDDD.', 'CCCCCCCCCCCCCCCC', 'DDDDDDDDDDDDDDDD'],
+      overalls: [null, null, null, null, null, null, null, null, null, null, null, null, '..CCCWSSSSWCCC..', '.CCWCCCCCCCCWCC.', 'CCCCCCYCCYCCCCCC', 'CCCCCCCCCCCCCCCC'],
+      jacket: [null, null, null, null, null, null, null, null, null, null, null, null, '..CCCDSSSSDCCC..', '.CCCCCCKKCCCCCC.', 'CCCCCCCKKCCCCCCC', 'CCCCCCCKKCCCCCCC']
+    }
+  };
+  function pxAcc(a) {
+    var out = '', pc = function (c) { return { H: c, D: shade(c, -0.25), K: '#2A2A38', Y: '#F5C431', W: '#FFFFFF', R: '#E5484D', C: c, S: '#F5C9A0' }; };
+    function layer(rows, pal, skip) { var s = ''; rows.forEach(function (row, r) { if (!row) return; for (var c = 0; c < row.length; c++) { var ch = row.charAt(c); if (ch === '.' || (skip && skip.indexOf(ch) >= 0)) continue; s += '<rect x="' + c + '" y="' + r + '" width="1.03" height="1.03" fill="' + (pal[ch] || '#f0f') + '"/>'; } }); return s; }
+    // vẽ trong toạ độ ô (c, r) rồi đặt vào cùng hệ biến đổi với nhân vật pixel (lệch +1 ô để có viền)
+    if (a.fa !== 'none' && PXA.outfit[a.fa]) { var op = pc(a.fac); op.S = null; out += layer(PXA.outfit[a.fa], op, 'S'); }
+    if (a.fn !== 'none' && PXA.neck[a.fn]) out += layer(PXA.neck[a.fn], pc(a.fnc));
+    if (a.fw !== 'none' && PXA.wig[a.fw]) out += layer(PXA.wig[a.fw], pc(a.fwc));
+    if (a.fg !== 'none' && PXA.glass[a.fg]) out += layer(PXA.glass[a.fg], { K: '#2A2A38', R: '#E5484D' });
+    if (a.fh !== 'none' && PXA.hat[a.fh]) out += layer(PXA.hat[a.fh], pc(a.fhc));
+    return out ? '<g transform="translate(-1 -1) scale(5.7) translate(1 1)" shape-rendering="crispEdges">' + out + '</g>' : '';
+  }
+  function accessories(setId, charId, a) {
+    a = a || ACC_DEF; var any = ['fh', 'fw', 'fg', 'fn', 'fa'].some(function (k) { return a[k] && a[k] !== 'none'; });
+    if (!any) return '';
+    var f = find(setId, charId); if (!f) return '';
+    return f.set.kind === 'pixel' ? pxAcc(a) : vAccessories(setId, charId, a);
+  }
+
   function find(setId, charId) { var s = BYSET[setId]; if (!s) return null; for (var i = 0; i < s.chars.length; i++) if (s.chars[i].id === charId) return { set: s, ch: s.chars[i], i: i }; return null; }
   function defaultBg(set, i, id) { return set.bg ? set.bg(i, id) : set.bgc; }
   var UID = 0;
@@ -377,11 +535,11 @@
   function avatar(cfg, size, shape, cls, label) {
     var f = find(cfg.fs, cfg.fc); if (!f) return '';
     var uid = 'fa' + (++UID), rad = shape === 'circle' ? 100 : shape === 'round' ? 40 : 0, bg = cfg.fo === 1 ? cfg.bgc : defaultBg(f.set, f.i, cfg.fc), inner = f.set.draw(cfg.fc), vb = f.set.crop;
-    var content = f.set.kind === 'badge' ? badgeBack() + inner : inner;
+    var content = (f.set.kind === 'badge' ? badgeBack() + inner : inner) + accessories(cfg.fs, cfg.fc, cfg);
     // Với bộ badge dùng nền riêng; viewBox con 100×100 được co về 200×200
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '"' + (cls || '') + ' role="img" aria-label="' + (label || f.ch.name) + '"><defs><clipPath id="' + uid + 'c"><rect width="200" height="200" rx="' + rad + '"/></clipPath></defs><g clip-path="url(#' + uid + 'c)"><rect width="200" height="200" fill="' + bg + '"/><svg x="0" y="0" width="200" height="200" viewBox="' + vb + '" preserveAspectRatio="xMidYMid slice">' + content + '</svg></g></svg>';
   }
 
-  var API = { SETS: SETS, find: find, svg: svg, avatar: avatar, defaultBg: defaultBg };
+  var API = { SETS: SETS, find: find, svg: svg, avatar: avatar, defaultBg: defaultBg, ACC: ACC, ACC_DEF: ACC_DEF, accessories: accessories };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTFigures = API;
 })(typeof window !== 'undefined' ? window : this);
