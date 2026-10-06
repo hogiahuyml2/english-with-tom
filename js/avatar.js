@@ -41,14 +41,16 @@
   var KEN_V = [{ id: 'round', name: 'Tròn' }, { id: 'square', name: 'Vuông' }];
   // Hướng 4: nhân vật pixel 16×16 tự vẽ bằng SVG (phong cách game)
   var PIX = {
-    skin: ['#FFDCB8', '#F1C27D', '#E0A370', '#C68642', '#8D5524', '#5C3A21'],
-    hair: [{ id: 'short', name: 'Tóc ngắn' }, { id: 'long', name: 'Tóc dài' }, { id: 'spiky', name: 'Tóc nhọn' }, { id: 'bun', name: 'Búi tóc' }, { id: 'cap', name: 'Mũ lưỡi trai' }, { id: 'none', name: 'Không tóc' }],
+    skin: ['#FFDCB8', '#F1C27D', '#E0A370', '#C68642', '#8D5524', '#5C3A21', '#9BD36A', '#B39DDB'],
+    hair: [{ id: 'short', name: 'Tóc ngắn' }, { id: 'long', name: 'Tóc dài' }, { id: 'spiky', name: 'Tóc nhọn' }, { id: 'bun', name: 'Búi tóc' }, { id: 'none', name: 'Không tóc' }, { id: 'cap', name: 'Mũ lưỡi trai' }, { id: 'wizard', name: 'Mũ phù thuỷ' }, { id: 'crown', name: 'Vương miện' }, { id: 'pirate', name: 'Mũ cướp biển' }, { id: 'cowboy', name: 'Mũ cao bồi' }, { id: 'beanie', name: 'Mũ len' }],
+    beard: [{ id: 'none', name: 'Không' }, { id: 'beard', name: 'Râu' }, { id: 'stache', name: 'Ria mép' }],
     hairc: ['#2B1B12', '#6B3E1E', '#C9822B', '#F2D16B', '#D94A4A', '#7B5CE0', '#2E8BC9', '#E8E8E8'],
     mouth: [{ id: 'smile', name: 'Mỉm cười' }, { id: 'flat', name: 'Bình thường' }, { id: 'wow', name: 'Ngạc nhiên' }]
   };
   var SEED = /^[A-Za-z0-9]{1,16}$/;
   function randSeed() { var a = 'abcdefghjkmnpqrstuvwxyz23456789', o = ''; for (var i = 0; i < 8; i++) o += a.charAt(Math.floor(Math.random() * a.length)); return o; }
 
+  function kidLib() { return root.EWTKid || (typeof require === 'function' ? require('./kid.js') : null); }
   function defaults() {
     return { ch: 'cat', c1: '#F4A261', c2: '#FFF1E0', ex: 'smile', cheek: 'blush', outfit: 'tee', oc: '#3B82F6', hat: 'none', hc: '#EF4444', glasses: 'none', neck: 'none', nc: '#F59E0B', phones: 'none', pc: '#8B5CF6', held: 'none', bg: 'dots', bgc: '#DBEAFE' };
   }
@@ -59,10 +61,17 @@
     o.c1 = color(c.c1, d.c1); o.c2 = color(c.c2, d.c2); o.oc = color(c.oc, d.oc); o.hc = color(c.hc, d.hc); o.nc = color(c.nc, d.nc); o.pc = color(c.pc, d.pc); o.bgc = color(c.bgc, d.bgc);
     ['ex', 'cheek', 'outfit', 'hat', 'glasses', 'neck', 'phones', 'held', 'bg'].forEach(function (k) { o[k] = pick(k, c[k], d[k]); });
     if (c.st === 'kenney') { o.st = 'kenney'; o.ka = KEN.some(function (x) { return x.id === c.ka; }) ? c.ka : 'panda'; o.kv = c.kv === 'square' ? 'square' : 'round'; }
+    var K = kidLib();
+    if (c.st === 'kid' && K) {
+      o.st = 'kid'; var pk = function (list, v, d) { return list.some(function (x) { return x.id === v; }) ? v : d; };
+      o.kk = K.SKIN.indexOf(c.kk) >= 0 ? c.kk : K.SKIN[1]; o.kh = pk(K.HAIR, c.kh, 'short'); o.khc = K.HAIRC.indexOf(c.khc) >= 0 ? c.khc : K.HAIRC[1];
+      o.ke = pk(K.EYES, c.ke, 'open'); o.km = pk(K.MOUTH, c.km, 'smile'); o.kg = c.kg === 1 ? 1 : 0; o.kb = c.kb === 0 ? 0 : 1;
+      o.kt = pk(K.HAT, c.kt, 'none'); o.ko = pk(K.OUTFIT, c.ko, 'tee'); o.kbg = pk(K.BG, c.kbg, 'leaf');
+    }
     if (c.st === 'pixel') {
       o.st = 'pixel'; o.pk = PIX.skin.indexOf(c.pk) >= 0 ? c.pk : PIX.skin[1];
       o.ph = PIX.hair.some(function (x) { return x.id === c.ph; }) ? c.ph : 'short'; o.phc = PIX.hairc.indexOf(c.phc) >= 0 ? c.phc : PIX.hairc[0];
-      o.pg = c.pg === 1 ? 1 : 0; o.pm = PIX.mouth.some(function (x) { return x.id === c.pm; }) ? c.pm : 'smile';
+      o.pg = c.pg === 1 ? 1 : 0; o.pb = PIX.beard.some(function (x) { return x.id === c.pb; }) ? c.pb : 'none'; o.pm = PIX.mouth.some(function (x) { return x.id === c.pm; }) ? c.pm : 'smile';
     }
     if (c.st === 'human') { o.st = 'human'; o.hs = HUMAN.some(function (x) { return x.id === c.hs; }) ? c.hs : 'peeps'; o.seed = typeof c.seed === 'string' && SEED.test(c.seed) ? c.seed : 'tom'; }
     return o;
@@ -96,22 +105,43 @@
     long: ['................', '................', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HH......HH...', '...HH......HH...', '...HH......HH...', '...HH......HH...', '...HH......HH...', '...HHH....HHH...', '...HHH....HHH...'],
     spiky: ['................', '....H..HH..H....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '....HH.HH.HH....'],
     bun: ['......HHHH......', '......HHHH......', '....HHHHHHHH....', '...HHHHHHHHHH...', '...HHHHHHHHHH...', '...HH......HH...'],
-    cap: ['................', '................', '....HHHHHHHH....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..']
+    cap: ['................', '................', '....HHHHHHHH....', '...HHHHHHHHHH...', '..HHHHHHHHHHHH..'],
+    wizard: ['......PP........', '.....PPPP.......', '....PPPPPP......', '....YYYYYYYY....', '..PPPPPPPPPPPP..'],
+    crown: ['................', '....Y..YY..Y....', '....YYYYYYYY....', '....YJYYYYJY....', '....YYYYYYYY....'],
+    pirate: ['................', '.....KKKKKK.....', '....KKKKKKKK....', '...KKKKWWKKKK...', '..KKKKKKKKKKKK..'],
+    cowboy: ['................', '................', '....NNNNNNNN....', '....NNNNNNNN....', '.NNNNNNNNNNNNNN.'],
+    beanie: ['................', '......WWWW......', '....RRRRRRRR....', '...RRRRRRRRRR...', '...RRRRRRRRRR...']
   };
+  var HATPAL = { P: '#7B4FC2', Y: '#F5C431', J: '#E5484D', K: '#2A2A38', W: '#FFFFFF', N: '#8B5A2B', R: '#E5484D' };
   function pixelSvg(cfg, size, acls, opts) {
-    var uid = 'px' + (++UID), rad = (opts.shape || 'circle') === 'circle' ? 100 : opts.shape === 'round' ? 40 : 0, rects = [], od = shade(cfg.oc, -0.22), sk = cfg.pk, r, c;
-    var pal = { S: sk, O: cfg.oc, H: cfg.phc, E: '#2D2A3E', M: '#B04A4A', G: '#2D2A3E', C: '#F59AA8', D: od };
+    var uid = 'px' + (++UID), rad = (opts.shape || 'circle') === 'circle' ? 100 : opts.shape === 'round' ? 40 : 0, rects = [], od = shade(cfg.oc, -0.22), sk = cfg.pk, r, c, N = 18;
+    var pal = { S: sk, O: cfg.oc, H: cfg.phc, E: '#2D2A3E', M: '#B04A4A', G: '#2D2A3E', C: '#F59AA8', D: od, X: '#2D2A3E', L: '#FFFFFF' };
+    Object.keys(HATPAL).forEach(function (k) { pal[k] = HATPAL[k]; });
+    pal.R = cfg.ph === 'beanie' ? cfg.oc : HATPAL.R; pal.W = '#FFFFFF';
     var g = SPR.base.map(function (row) { return row.split(''); });
     function put(y, x, ch) { if (y >= 0 && y < 16 && x >= 0 && x < 16) g[y][x] = ch; }
-    function lay(rows) { rows.forEach(function (row, y) { for (var x = 0; x < 16; x++) if (row.charAt(x) === 'H') put(y, x, 'H'); }); }
+    function lay(rows) { rows.forEach(function (row, y) { for (var x = 0; x < 16; x++) { var ch = row.charAt(x); if (ch !== '.') put(y, x, ch); } }); }
+    var HATS = ['wizard', 'crown', 'pirate', 'cowboy', 'beanie'];
     if (cfg.ph !== 'none') lay(SPR[cfg.ph]);
+    if (HATS.indexOf(cfg.ph) >= 0 && cfg.ph !== 'wizard') { put(5, 3, 'S'); }
     put(8, 4, 'C'); put(8, 11, 'C'); put(11, 5, 'D'); put(11, 10, 'D');
     for (c = 4; c < 12; c++) if (g[12][c] === 'O') g[12][c] = 'D';
+    if (cfg.pb === 'beard') { for (c = 4; c <= 11; c++) put(9, c, 'H'); for (c = 5; c <= 10; c++) put(10, c, 'H'); for (c = 6; c <= 9; c++) put(11, c, 'H'); put(8, 4, 'H'); put(8, 11, 'H'); }
+    if (cfg.pb === 'stache') { for (c = 5; c <= 10; c++) put(8, c, 'H'); }
     if (cfg.pg) { for (c = 4; c <= 6; c++) { put(5, c, 'G'); put(7, c, 'G'); } for (c = 9; c <= 11; c++) { put(5, c, 'G'); put(7, c, 'G'); } put(6, 4, 'G'); put(6, 6, 'G'); put(6, 9, 'G'); put(6, 11, 'G'); put(6, 7, 'G'); put(6, 8, 'G'); }
     put(6, 5, 'E'); put(6, 10, 'E');
-    if (cfg.pm === 'smile') { put(9, 6, 'M'); put(9, 9, 'M'); put(10, 7, 'M'); put(10, 8, 'M'); } else if (cfg.pm === 'flat') { put(9, 7, 'M'); put(9, 8, 'M'); } else { put(9, 7, 'M'); put(9, 8, 'M'); put(10, 7, 'M'); put(10, 8, 'M'); }
-    for (r = 0; r < 16; r++) { c = 0; while (c < 16) { var ch = g[r][c]; if (ch === '.') { c++; continue; } var e = c; while (e < 16 && g[r][e] === ch) e++; rects.push('<rect x="' + c + '" y="' + r + '" width="' + (e - c) + '" height="1" fill="' + pal[ch] + '"/>'); c = e; } }
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '"' + acls + ' role="img" aria-label="' + (opts.label || 'Nhân vật pixel') + '"><defs><clipPath id="' + uid + 'c"><rect width="200" height="200" rx="' + rad + '"/></clipPath></defs><g clip-path="url(#' + uid + 'c)"><rect width="200" height="200" fill="' + cfg.bgc + '"/><g transform="translate(14 14) scale(10.75)" shape-rendering="crispEdges">' + rects.join('') + '</g></g></svg>';
+    if (cfg.ph === 'pirate') { put(6, 5, 'K'); put(5, 4, 'K'); put(5, 5, 'K'); put(5, 6, 'K'); put(7, 4, 'K'); put(7, 5, 'K'); put(7, 6, 'K'); put(6, 4, 'K'); put(6, 6, 'K'); }
+    var mc = cfg.pb === 'beard' ? 'L' : 'M';
+    if (cfg.pm === 'smile') { put(9, 6, mc); put(9, 9, mc); put(10, 7, mc); put(10, 8, mc); } else if (cfg.pm === 'flat') { put(9, 7, mc); put(9, 8, mc); } else { put(9, 7, mc); put(9, 8, mc); put(10, 7, mc); put(10, 8, mc); }
+    // thêm viền đen quanh hình (lưới 18×18, lệch 1 ô)
+    var big = []; for (r = 0; r < N; r++) { big.push([]); for (c = 0; c < N; c++) big[r].push('.'); }
+    for (r = 0; r < 16; r++) for (c = 0; c < 16; c++) big[r + 1][c + 1] = g[r][c];
+    var out = big.map(function (row) { return row.slice(); });
+    for (r = 0; r < N; r++) for (c = 0; c < N; c++) if (big[r][c] === '.') {
+      if ((r > 0 && big[r - 1][c] !== '.') || (r < N - 1 && big[r + 1][c] !== '.') || (c > 0 && big[r][c - 1] !== '.') || (c < N - 1 && big[r][c + 1] !== '.')) out[r][c] = 'X';
+    }
+    for (r = 0; r < N; r++) { c = 0; while (c < N) { var ch = out[r][c]; if (ch === '.') { c++; continue; } var e = c; while (e < N && out[r][e] === ch) e++; rects.push('<rect x="' + c + '" y="' + r + '" width="' + (e - c + 0.02) + '" height="1.02" fill="' + pal[ch] + '"/>'); c = e; } }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '"' + acls + ' role="img" aria-label="' + (opts.label || 'Nhân vật pixel') + '"><defs><clipPath id="' + uid + 'c"><rect width="200" height="200" rx="' + rad + '"/></clipPath></defs><g clip-path="url(#' + uid + 'c)"><rect width="200" height="200" fill="' + cfg.bgc + '"/><g transform="translate(10 12) scale(10)" shape-rendering="crispEdges">' + rects.join('') + '</g></g></svg>';
   }
   function humanUrl(cfg) { return '/api/avatar/human.svg?s=' + cfg.hs + '&seed=' + cfg.seed; }
   // CSS chuyển động cho nhân vật (tự chèn một lần)
@@ -128,6 +158,7 @@
     var cfg = normalize(cfgIn); opts = opts || {}; var uid = 'av' + (++UID), size = opts.size || 160;
     var acls = opts.anim ? ' class="ewt-av ewt-av-' + String(opts.anim).replace(/[^a-z]/g, '') + '"' : '';
     if (cfg.st === 'pixel') return pixelSvg(cfg, size, acls, opts);
+    if (cfg.st === 'kid') { var KL = kidLib(); return KL ? KL.avatar(cfg, size, opts.shape || 'circle', acls, opts.label) : ''; }
     if (cfg.st === 'human' || cfg.st === 'kenney') {
       var hr = (opts.shape || 'circle') === 'circle' ? 100 : opts.shape === 'round' ? 40 : 0, hl = opts.label || (cfg.st === 'kenney' ? 'Nhân vật thú' : 'Nhân vật người');
       return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '"' + acls + ' role="img" aria-label="' + hl + '"><defs><clipPath id="' + uid + 'c"><rect width="200" height="200" rx="' + hr + '"/></clipPath></defs><g clip-path="url(#' + uid + 'c)"><rect width="200" height="200" fill="' + cfg.bgc + '"/><image href="' + imgUrl(cfg) + '" ' + (cfg.st === 'kenney' ? 'x="26" y="26" width="148" height="148" preserveAspectRatio="xMidYMid meet"' : 'width="200" height="200" preserveAspectRatio="xMidYMid slice"') + '/></g></svg>';

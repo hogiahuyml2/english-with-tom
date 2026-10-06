@@ -315,7 +315,7 @@
   window.ewtCelebrate = function (ids, opts) {
     function go() { if (window.EWTStickers) window.EWTStickers.burst(ids, opts); }
     if (window.EWTStickers) { go(); return; }
-    if (!_stkLoading) _stkLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/stickers.js?v=2'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    if (!_stkLoading) _stkLoading = new Promise(function (ok) { var k = document.createElement('script'); k.src = 'js/kid.js?v=1'; k.onload = k.onerror = function () { var sc = document.createElement('script'); sc.src = 'js/stickers.js?v=3'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); }; document.head.appendChild(k); });
     _stkLoading.then(go);
   };
 
@@ -350,7 +350,7 @@
     if (!el || !cfg) return;
     function put() { el.innerHTML = window.EWTAvatar.render(cfg, { size: size || 40, shape: shape || 'circle' }); }
     if (window.EWTAvatar) { put(); return; }
-    if (!_avLoading) _avLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=3'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    if (!_avLoading) _avLoading = new Promise(function (ok) { var k = document.createElement('script'); k.src = 'js/kid.js?v=1'; k.onload = k.onerror = function () { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=4'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); }; document.head.appendChild(k); });
     _avLoading.then(function () { if (window.EWTAvatar) put(); });
   };
   function showHeaderAvatar(cfg) {

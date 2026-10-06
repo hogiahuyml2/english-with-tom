@@ -3,7 +3,7 @@
    Dùng: EWTStickers.html('trophy', { size: 64, anim: 'shake' }) · EWTStickers.burst(['star','party-popper']) · EWTStickers.parse('[stk:fire]') */
 (function (root) {
   'use strict';
-  var CATS = [['reward', '🏆 Khen thưởng'], ['feel', '😊 Cảm xúc'], ['study', '📚 Học tập'], ['pal', '🐾 Bạn đồng hành'], ['fun', '🎁 Vui vẻ']];
+  var CATS = [['kid', '🧒 Bạn học bài'], ['reward', '🏆 Khen thưởng'], ['feel', '😊 Cảm xúc'], ['study', '📚 Học tập'], ['pal', '🐾 Bạn đồng hành'], ['fun', '🎁 Vui vẻ']];
   // [id, tên tiếng Việt, nhóm, kiểu chuyển động]
   var LIST = [
     ['trophy', 'Cúp vô địch', 'reward', 'shake'], ['1st-place-medal', 'Huy chương vàng', 'reward', 'swing'], ['sports-medal', 'Huy chương', 'reward', 'swing'], ['crown', 'Vương miện', 'reward', 'bob'],
@@ -23,14 +23,21 @@
     ['wrapped-gift', 'Quà tặng', 'fun', 'shake'], ['balloon', 'Bóng bay', 'fun', 'float'], ['money-bag', 'Túi tiền', 'fun', 'bob'], ['coin', 'Đồng xu', 'fun', 'spin'], ['key', 'Chìa khoá', 'fun', 'swing'],
     ['bell', 'Chuông', 'fun', 'ring'], ['seedling', 'Mầm cây', 'fun', 'swing'], ['rose', 'Hoa hồng', 'fun', 'swing'], ['sun', 'Mặt trời', 'fun', 'spin'], ['crescent-moon', 'Trăng khuyết', 'fun', 'swing'], ['zzz', 'Zzz', 'fun', 'float']
   ];
-  var BY = {}; LIST.forEach(function (r) { BY[r[0]] = { id: r[0], name: r[1], cat: r[2], anim: r[3] }; });
+  // Bộ "Bạn học bài": nhân vật gốc vẽ bằng SVG (js/kid.js) — 8 trạng thái × 2 bạn
+  var KID_POSES = [['think', 'Đang suy nghĩ', 'swing'], ['idea', 'Nảy ra ý tưởng', 'twinkle'], ['worry', 'Lo lắng', 'shake'], ['fire', 'Cháy hết mình', 'flicker'], ['sleepy', 'Buồn ngủ', 'float'], ['cheer', 'Hoan hô!', 'bob'], ['tired', 'Mệt quá', 'float'], ['hand', 'Em xin phát biểu', 'wave']];
+  var KID_LIST = []; [['boy', 'Bạn nam'], ['girl', 'Bạn nữ']].forEach(function (w) { KID_POSES.forEach(function (p) { KID_LIST.push(['kid-' + w[0] + '-' + p[0], p[1] + ' (' + w[1] + ')', 'kid', p[2]]); }); });
+  LIST = KID_LIST.concat(LIST);
+  var BY = {}; LIST.forEach(function (r) { BY[r[0]] = { id: r[0], name: r[1], cat: r[2], anim: r[3] }; var m = /^kid-(boy|girl)-([a-z]+)$/.exec(r[0]); if (m) { BY[r[0]].who = m[1]; BY[r[0]].pose = m[2]; } });
+  function kidSvg(s, size) { return root.EWTKid ? root.EWTKid.pose(s.pose, s.who, { size: size, label: s.name }) : ''; }
   var KINDS = 'bob pop beat spin shake twinkle launch flicker swing clap ring float wave'.split(' ');
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function parse(text) { var m = /^\[stk:([a-z0-9-]{1,40})\]$/.exec(String(text || '').trim()); return m && BY[m[1]] ? m[1] : null; }
   function token(id) { return '[stk:' + id + ']'; }
   function html(id, o) {
-    var s = BY[id]; if (!s) return ''; o = o || {}; var size = o.size || 64, a = o.anim === false ? '' : ' ewt-stk-' + (KINDS.indexOf(o.anim) >= 0 ? o.anim : s.anim);
+    var s = BY[id]; if (!s) return ''; o = o || {}; var size = o.size || 64;
+    if (s.who) { var ka = o.anim === false ? '' : ' ewt-stk-' + (KINDS.indexOf(o.anim) >= 0 ? o.anim : s.anim); return '<span class="ewt-stk' + ka + '" style="width:' + size + 'px;height:' + size + 'px" role="img" aria-label="' + esc(s.name) + '">' + kidSvg(s, size) + '</span>'; }
+    var a = o.anim === false ? '' : ' ewt-stk-' + (KINDS.indexOf(o.anim) >= 0 ? o.anim : s.anim);
     return '<img class="ewt-stk' + a + '" src="images/stickers/' + s.id + '.png" alt="' + esc(s.name) + '" width="' + size + '" height="' + size + '" draggable="false"' + (o.lazy === false ? '' : ' loading="lazy"') + '>';
   }
 
@@ -61,7 +68,7 @@
     if (o.from && o.from.getBoundingClientRect) { var b = o.from.getBoundingClientRect(); cx = b.left + b.width / 2; cy = b.top + b.height / 2; }
     for (var i = 0; i < n; i++) {
       var el = document.createElement('img'), id = ids[i % ids.length], ang = (-Math.PI / 2) + (Math.random() - 0.5) * 2.2, dist = 120 + Math.random() * Math.min(260, H * 0.4), sz = 28 + Math.random() * 26;
-      el.src = 'images/stickers/' + id + '.png'; el.alt = ''; el.setAttribute('aria-hidden', 'true'); el.className = 'ewt-stk-burst'; el.width = el.height = Math.round(sz);
+      el.src = BY[id].who ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(kidSvg(BY[id], 96)) : 'images/stickers/' + id + '.png'; el.alt = ''; el.setAttribute('aria-hidden', 'true'); el.className = 'ewt-stk-burst'; el.width = el.height = Math.round(sz);
       el.style.cssText = '--x0:' + (cx - sz / 2) + 'px;--y0:' + (cy - sz / 2) + 'px;--x1:' + (cx - sz / 2 + Math.cos(ang) * dist) + 'px;--y1:' + (cy - sz / 2 + Math.sin(ang) * dist + 40) + 'px;--s:' + (0.9 + Math.random() * 0.8).toFixed(2) + ';--r:' + Math.round((Math.random() - 0.5) * 120) + 'deg;--d:' + (1.2 + Math.random() * 0.9).toFixed(2) + 's;animation-delay:' + (Math.random() * 0.25).toFixed(2) + 's';
       document.body.appendChild(el); setTimeout(function (e) { return function () { e.remove(); }; }(el), 2600);
     }
