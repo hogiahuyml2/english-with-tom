@@ -13,12 +13,12 @@
   var OPT = {
     ex: [{ id: 'smile', name: 'Mỉm cười' }, { id: 'grin', name: 'Cười tươi' }, { id: 'wink', name: 'Nháy mắt' }, { id: 'wow', name: 'Ngạc nhiên' }],
     cheek: [{ id: 'none', name: 'Không' }, { id: 'blush', name: 'Má hồng' }, { id: 'freckles', name: 'Tàn nhang' }],
-    outfit: [{ id: 'none', name: 'Không mặc' }, { id: 'tee', name: 'Áo thun' }, { id: 'hoodie', name: 'Áo hoodie' }, { id: 'uniform', name: 'Đồng phục' }, { id: 'dress', name: 'Váy' }, { id: 'overalls', name: 'Yếm', price: 40 }, { id: 'vest', name: 'Áo vest', price: 60 }, { id: 'hero', name: 'Siêu nhân', price: 150 }],
-    hat: [{ id: 'none', name: 'Không' }, { id: 'cap', name: 'Mũ lưỡi trai' }, { id: 'beanie', name: 'Mũ len' }, { id: 'bow', name: 'Nơ' }, { id: 'flower', name: 'Hoa' }, { id: 'party', name: 'Mũ tiệc', price: 40 }, { id: 'grad', name: 'Mũ tốt nghiệp', price: 80 }, { id: 'wizard', name: 'Mũ phù thuỷ', price: 100 }, { id: 'crown', name: 'Vương miện', price: 120 }],
-    glasses: [{ id: 'none', name: 'Không' }, { id: 'round', name: 'Kính tròn' }, { id: 'heart', name: 'Kính tim', price: 40 }, { id: 'sun', name: 'Kính râm', price: 60 }],
-    neck: [{ id: 'none', name: 'Không' }, { id: 'scarf', name: 'Khăn' }, { id: 'bowtie', name: 'Nơ cổ' }, { id: 'pearls', name: 'Vòng ngọc', price: 40 }, { id: 'medal', name: 'Huy chương', price: 80 }],
-    phones: [{ id: 'none', name: 'Không' }, { id: 'on', name: 'Tai nghe', price: 60 }],
-    held: [{ id: 'none', name: 'Không' }, { id: 'book', name: 'Sách' }, { id: 'pencil', name: 'Bút chì' }, { id: 'star', name: 'Ngôi sao', price: 40 }, { id: 'trophy', name: 'Cúp', price: 100 }],
+    outfit: [{ id: 'none', name: 'Không mặc' }, { id: 'tee', name: 'Áo thun' }, { id: 'hoodie', name: 'Áo hoodie' }, { id: 'uniform', name: 'Đồng phục' }, { id: 'dress', name: 'Váy' }, { id: 'overalls', name: 'Yếm', price: 44 }, { id: 'vest', name: 'Áo vest', price: 66 }, { id: 'hero', name: 'Siêu nhân', price: 165 }],
+    hat: [{ id: 'none', name: 'Không' }, { id: 'cap', name: 'Mũ lưỡi trai' }, { id: 'beanie', name: 'Mũ len' }, { id: 'bow', name: 'Nơ' }, { id: 'flower', name: 'Hoa' }, { id: 'party', name: 'Mũ tiệc', price: 44 }, { id: 'grad', name: 'Mũ tốt nghiệp', price: 88 }, { id: 'wizard', name: 'Mũ phù thuỷ', price: 110 }, { id: 'crown', name: 'Vương miện', price: 132 }],
+    glasses: [{ id: 'none', name: 'Không' }, { id: 'round', name: 'Kính tròn' }, { id: 'heart', name: 'Kính tim', price: 44 }, { id: 'sun', name: 'Kính râm', price: 66 }],
+    neck: [{ id: 'none', name: 'Không' }, { id: 'scarf', name: 'Khăn' }, { id: 'bowtie', name: 'Nơ cổ' }, { id: 'pearls', name: 'Vòng ngọc', price: 44 }, { id: 'medal', name: 'Huy chương', price: 88 }],
+    phones: [{ id: 'none', name: 'Không' }, { id: 'on', name: 'Tai nghe', price: 66 }],
+    held: [{ id: 'none', name: 'Không' }, { id: 'book', name: 'Sách' }, { id: 'pencil', name: 'Bút chì' }, { id: 'star', name: 'Ngôi sao', price: 44 }, { id: 'trophy', name: 'Cúp', price: 110 }],
     bg: [{ id: 'solid', name: 'Trơn' }, { id: 'dots', name: 'Chấm bi' }, { id: 'stars', name: 'Ngôi sao' }, { id: 'stripes', name: 'Sọc' }, { id: 'rays', name: 'Tia sáng' }, { id: 'blob', name: 'Đốm màu' }]
   };
   var PALETTE = ['#F4A261', '#E9C46A', '#F28482', '#CDB4DB', '#90CAF9', '#B8E0D2', '#FFF1E0', '#A0522D', '#8D99AE', '#6D597A', '#4A4E69', '#E76F51'];

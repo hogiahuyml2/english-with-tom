@@ -27,18 +27,18 @@ const CHEST_PRICE = 80;
 
 // ── Danh mục trang trí (mua bằng xu) ──
 const ITEMS = [
-  { id: 'av_fox', kind: 'avatar', icon: '🦊', name: 'Cáo lửa', price: 60 },
-  { id: 'av_panda', kind: 'avatar', icon: '🐼', name: 'Gấu trúc', price: 60 },
-  { id: 'av_lion', kind: 'avatar', icon: '🦁', name: 'Sư tử', price: 90 },
-  { id: 'av_octo', kind: 'avatar', icon: '🐙', name: 'Bạch tuộc', price: 90 },
-  { id: 'av_rocket', kind: 'avatar', icon: '🚀', name: 'Phi hành gia', price: 120 },
-  { id: 'av_robot', kind: 'avatar', icon: '🤖', name: 'Robot', price: 120 },
-  { id: 'av_uni', kind: 'avatar', icon: '🦄', name: 'Kỳ lân', price: 150 },
-  { id: 'av_dragon', kind: 'avatar', icon: '🐲', name: 'Rồng thần', price: 200 },
-  { id: 'fr_gold', kind: 'frame', icon: '🟡', name: 'Viền vàng', price: 100 },
-  { id: 'fr_neon', kind: 'frame', icon: '🔵', name: 'Viền neon', price: 100 },
-  { id: 'fr_fire', kind: 'frame', icon: '🔴', name: 'Viền lửa', price: 160 },
-  { id: 'fr_rainbow', kind: 'frame', icon: '🌈', name: 'Viền cầu vồng', price: 220 },
+  { id: 'av_fox', kind: 'avatar', icon: '🦊', name: 'Cáo lửa', price: 66 },
+  { id: 'av_panda', kind: 'avatar', icon: '🐼', name: 'Gấu trúc', price: 66 },
+  { id: 'av_lion', kind: 'avatar', icon: '🦁', name: 'Sư tử', price: 99 },
+  { id: 'av_octo', kind: 'avatar', icon: '🐙', name: 'Bạch tuộc', price: 99 },
+  { id: 'av_rocket', kind: 'avatar', icon: '🚀', name: 'Phi hành gia', price: 132 },
+  { id: 'av_robot', kind: 'avatar', icon: '🤖', name: 'Robot', price: 132 },
+  { id: 'av_uni', kind: 'avatar', icon: '🦄', name: 'Kỳ lân', price: 165 },
+  { id: 'av_dragon', kind: 'avatar', icon: '🐲', name: 'Rồng thần', price: 220 },
+  { id: 'fr_gold', kind: 'frame', icon: '🟡', name: 'Viền vàng', price: 110 },
+  { id: 'fr_neon', kind: 'frame', icon: '🔵', name: 'Viền neon', price: 110 },
+  { id: 'fr_fire', kind: 'frame', icon: '🔴', name: 'Viền lửa', price: 176 },
+  { id: 'fr_rainbow', kind: 'frame', icon: '🌈', name: 'Viền cầu vồng', price: 242 },
 ];
 const ITEM_BY_ID = new Map(ITEMS.map(i => [i.id, i]));
 const MAX_RESULTS = 60;    // tối đa số câu báo lên mỗi phiên
