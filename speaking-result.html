@@ -43,7 +43,7 @@
 <main class="sr-wrap" id="root"><div class="sr-note">⏳ Đang tải…</div></main>
 <div class="sr-toast" id="toast"></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=38"></script>
+<script src="js/main.js?v=39"></script>
 <script src="js/speaking-rec.js?v=1"></script>
 <script>
 (function () {
@@ -76,6 +76,7 @@ function render() {
   if (D.status === 'grading') { $('root').innerHTML = head() + '<div class="sr-box" style="text-align:center;padding:40px 16px"><div class="sr-spin"></div><h2 style="margin:0 0 6px">AI đang nghe và chấm bài…</h2><div class="sr-note">Thường mất 30–90 giây. Bạn có thể ở lại trang này, kết quả sẽ tự hiện ra. (Cũng có thông báo 🔔 khi xong.)</div></div>'; return; }
   if (D.status === 'error') { $('root').innerHTML = head() + '<div class="sr-warn">⚠️ ' + esc(D.error || 'Chấm bài chưa thành công.') + '</div><button class="sr-btn pri" id="regr">🔄 Chấm lại</button>'; $('regr').onclick = function () { this.disabled = true; api('/api/speaking/' + ID + '/regrade', {}).then(load).catch(function (e) { toast(e.message); }); }; return; }
   var R = D.result, o = R.overall, st = R.stats, isT = !D.mine;
+  if (D.mine && window.ewtReward) { try { var rk = 'ewtRwSp' + ID; if (!localStorage.getItem(rk)) { localStorage.setItem(rk, '1'); var sa = 0, sb = 0; R.criteria.forEach(function (c) { sa += +c.score || 0; sb += +c.max || 0; }); if (sb > 0) window.ewtReward(sa / sb, { sub: 'Bài Speaking đã được chấm' }); } } catch (e) {} }
   var h = head();
   if (R.ai && R.ai.mock) h += '<div class="sr-warn">🧪 Đây là kết quả chấm THỬ NGHIỆM trên máy lập trình, không phải AI thật.</div>';
   h += '<div class="sr-hero"><div class="big">' + esc(o.unit === 'Band' ? o.value : o.value) + '<small> ' + (o.unit === 'Band' ? 'band' : o.unit) + '</small></div><div><div class="lb">' + esc(o.label) + '</div><div class="sub">Tổng hợp từ ' + R.criteria.length + ' tiêu chí · ' + st.answered + '/' + st.turns + ' câu đã trả lời' + (R.completion < 1 ? ' (điểm bị giới hạn vì chưa trả lời hết)' : '') + '</div><div class="sub">⚠️ Điểm do AI ước tính để luyện tập, có thể lệch so với giám khảo thật.</div></div></div>';

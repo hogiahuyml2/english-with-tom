@@ -618,7 +618,7 @@
 
 <div id="site-footer"></div>
 <script src="js/editor.js"></script>
-<script src="js/main.js?v=38"></script>
+<script src="js/main.js?v=39"></script>
 <script src="js/exam-guard.js?v=1"></script>
 <script>
 /* ── Utilities ── */
@@ -1121,6 +1121,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
 
   var res = data.result;
   G_submissionId = data.id || null;
+  try { var wr = (function (cr) { var a = 0, b = 0; (cr || []).forEach(function (c) { a += +c.score || 0; b += +c.max || 0; }); return b > 0 ? a / b : null; })(res.criteria); if (wr != null && window.ewtReward) window.ewtReward(wr, { sub: 'Bài viết đã được chấm' }); } catch (e) {}
 
   document.getElementById('overall').textContent = res.overall_score;
   document.getElementById('scaleLabel').textContent = res.scale_label || 'Điểm tổng';

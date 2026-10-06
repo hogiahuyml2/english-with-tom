@@ -172,7 +172,7 @@
 </section>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=38"></script>
+<script src="js/main.js?v=39"></script>
 <script>
 /* ======================================================
    SENTENCE DATA — 10 topics × 3 levels × 10 sentences
@@ -697,6 +697,7 @@ function checkSentence() {
     div.id = 'spResult';
     div.innerHTML = buildResult(d);
     document.getElementById('practiceBody').appendChild(div);
+    if (window.ewtCorrect) { if (d.score >= 70) window.ewtCorrect(div); else window.ewtWrong(); }
 
     // Show finish button if all done
     var allDone = scores.every(function(x){ return x!==null; });
@@ -739,6 +740,7 @@ function showSummary() {
   var validScores = scores.filter(function(x){ return x!==null; });
   var avg = validScores.length ? Math.round(validScores.reduce(function(a,b){return a+b.score;},0)/validScores.length) : 0;
   var good = validScores.filter(function(x){return x.score>=70;}).length;
+  if (window.ewtReward && validScores.length) window.ewtReward(avg / 100, { sub: 'Điểm trung bình ' + avg + '/100' });
 
   document.getElementById('sumTotal').textContent = validScores.length;
   document.getElementById('sumGood').textContent  = good;

@@ -387,7 +387,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
 </footer>
 
 <script src="js/editor.js"></script>
-<script src="js/main.js?v=38"></script>
+<script src="js/main.js?v=39"></script>
 <script>
 /* ────────────────────────────────────────────
    APTIS Writing Test — client logic
@@ -733,6 +733,7 @@ function showPendingResult(){
 
 function showResult(res){
   if(!res) return;
+  try { var wr = (function (cr) { var a = 0, b = 0; (cr || []).forEach(function (c) { a += +c.score || 0; b += +c.max || 0; }); return b > 0 ? a / b : null; })(res.criteria); if (wr != null && window.ewtReward) window.ewtReward(wr, { sub: 'Bài viết đã được chấm' }); } catch (e) {}
   document.getElementById('r-overall').textContent = res.overall_score || '–';
   document.getElementById('r-scale-lbl').textContent = res.scale_label || 'Điểm tổng';
   document.getElementById('r-criteria').innerHTML = (res.criteria||[]).map(function(c){

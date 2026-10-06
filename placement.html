@@ -115,7 +115,7 @@ details.pl-d summary{cursor:pointer;font-weight:700;padding:6px 0}details.pl-d p
 </section>
 <div class="pl-wrap" id="plRoot"><div class="pl-card">Đang tải...</div></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=38"></script>
+<script src="js/main.js?v=39"></script>
 <script>
 (function () {
 'use strict';
@@ -409,6 +409,7 @@ function radar(skills) {
   return '<svg class="pl-radar" viewBox="-30 -4 320 262" role="img" aria-label="Biểu đồ kỹ năng">' + rings + axes + '<polygon points="' + pts.join(' ') + '" fill="rgba(111,88,238,.22)" stroke="#6F58EE" stroke-width="2.5"/>' + pts.map(function (p) { var xy = p.split(','); return '<circle cx="' + xy[0] + '" cy="' + xy[1] + '" r="4" fill="#6F58EE"/>'; }).join('') + labels + '</svg>';
 }
 function showResult(res, attId) {
+  if (window.ewtReward && typeof res.score === 'number') window.ewtReward(Math.max(0, Math.min(1, res.score / 100)), { title: 'Hoàn thành kiểm tra đầu vào!', sub: 'Trình độ của bạn: ' + res.level });
   clearInterval(S.tmr); clearInterval(S.poll); window.onbeforeunload = null; stopAudio();
   var eq = res.equivalents || {}; var plan = res.plan || {};
   var chips = [eq.ielts ? '<span class="pl-chip">🌐 IELTS ' + esc(eq.ielts) + '</span>' : '', eq.cam ? '<span class="pl-chip">🎓 ' + esc(eq.cam) + '</span>' : '', eq.vn ? '<span class="pl-chip">🇻🇳 ' + esc(eq.vn) + ' (khung 6 bậc)</span>' : ''].join('');
