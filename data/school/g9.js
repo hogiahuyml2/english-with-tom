@@ -368,4 +368,168 @@
       ['Doctors advise us to ___ sugar.', ['cut down on', 'cut off', 'cut up', 'cut out of'], 0, 'cut down on = giảm bớt.']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 9 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g9-relative-clauses', {
+    sections: [
+      { h: 'Chọn who, which hay that?', b: [
+        { t: { h: ['Danh từ đứng trước', 'Dùng', 'Ví dụ'], r: [['người', 'who / that', 'The girl **who/that** won the prize is my cousin.'], ['vật / con vật', 'which / that', 'The dog **which/that** barked is mine.'], ['người và vật cùng lúc', 'that', 'We talked about the people and places **that** we visited.'], ['sau all, everything, something, nothing, the only, so sánh nhất, số thứ tự', 'that', 'Everything **that** he said was true.']] } },
+        { warn: 'Với mệnh đề **không xác định** (có dấu phẩy) không dùng **that**: My bike, **which** I bought last year, is broken. (✗ that).' }
+      ] },
+      { h: 'Mệnh đề quan hệ với where, when, why và whose', b: [
+        { ul: ['**where** = in/at which (nơi chốn): **The town where she lives is small.** = The town **in which** she lives is small.', '**when** = on/in which (thời gian): **I remember the day when we met.**', '**why** = for which (lý do), sau danh từ **reason**: **That is the reason why I left.**', '**whose + danh từ**: **The girl whose father is a pilot is my friend.** (✗ whose her father).'] }
+      ] },
+      { h: 'Rút gọn và các lỗi thường gặp', b: [
+        { ul: ['Bỏ đại từ quan hệ là **tân ngữ**: **The man (who/whom) I met was kind.** Không được bỏ khi nó là **chủ ngữ**: The man **who** called you is my uncle.', 'Không lặp lại **chủ ngữ/tân ngữ** sau đại từ quan hệ: ✗ The book which I read **it**. ✗ The man who **he** lives next door.', 'Mệnh đề quan hệ đứng **ngay sau danh từ** mà nó bổ nghĩa.', '**, which** có thể bổ nghĩa cho cả mệnh đề trước: **He passed the exam, which made his parents happy.**'] },
+        { tip: 'Cách làm bài: (1) xem danh từ phía trước là **người / vật / nơi / thời gian**; (2) xem trong mệnh đề quan hệ, từ cần điền là **chủ ngữ, tân ngữ hay sở hữu**.' }
+      ] }
+    ],
+    ex: [
+      ['Everything that he told me was true.', 'Mọi điều anh ấy nói với mình đều đúng.'], ['The reason why she left is a secret.', 'Lý do cô ấy ra đi là một bí mật.'], ['He passed the test, which made his parents happy.', 'Cậu ấy đỗ kỳ thi, điều đó làm bố mẹ vui.'], ['The boy whose dog got lost looked sad.', 'Cậu bé có con chó bị lạc trông rất buồn.']
+    ],
+    mis: [['My bike, that I bought last year, is broken.', 'My bike, which I bought last year, is broken.', 'Không dùng that trong mệnh đề không xác định.'], ['The man whose his car was stolen called the police.', 'The man whose car was stolen called the police.', 'whose + danh từ (không thêm his).'], ['The town where she lives in is small.', 'The town where she lives is small. / The town (that) she lives in is small.', 'where đã gồm giới từ.']],
+    quiz: [
+      ['Everything ___ you said was right.', ['who', 'which', 'that', 'whose'], 2, 'Sau everything dùng that.'],
+      ['That is the reason ___ I was late.', ['why', 'where', 'who', 'whose'], 0, 'reason + why.'],
+      ['The man ___ car is parked outside is a doctor.', ['who', 'whose', 'which', 'that'], 1, 'Sở hữu → whose.'],
+      ['My laptop, ___ I bought last year, is slow.', ['that', 'which', 'who', 'what'], 1, 'Không xác định → which (có phẩy).']
+    ]
+  });
+
+  P('g9-conditional-2-wish', {
+    sections: [
+      { h: 'Câu hỏi, phủ định và trả lời loại 2', b: [
+        { t: { h: ['', 'Cấu trúc', 'Ví dụ'], r: [['Khẳng định', 'If + V2, would/could/might + V', 'If I had a car, I **would drive** to work.'], ['Phủ định', 'If + didn\'t + V, would + V', 'If I **didn\'t have** homework, I **would go** out.'], ['Nghi vấn', 'What/Would + S + do/V + if + V2?', 'What **would you do** if you **won** a million dollars?'], ['Mệnh đề chính', 'would = chắc chắn; could = có thể làm được; might = có thể', 'If I had time, I **could** help you.']] } },
+        { tip: 'Với **be** dùng **were** cho mọi ngôi (trang trọng): **If I were rich…** / **If he were here…**; trong văn nói **was** cũng dùng với I/he/she/it, nhưng **If I were you** thì luôn dùng **were**.' }
+      ] },
+      { h: 'So sánh loại 1 và loại 2', b: [
+        { t: { h: ['', 'Loại 1', 'Loại 2'], r: [['Mức khả năng', 'có thể xảy ra', 'ít hoặc không thể xảy ra / tưởng tượng'], ['If-clause', 'hiện tại đơn', 'quá khứ đơn / were'], ['Main clause', 'will + V', 'would + V'], ['Ví dụ', 'If I win, I\'ll buy a house.', 'If I won, I\'d buy a house. (khó có khả năng thắng)']] } },
+        { p: 'Khi người nói tin chuyện **có thể xảy ra** dùng loại 1; khi nói **tưởng tượng / giả định không có thật** dùng loại 2.' }
+      ] },
+      { h: 'Các mẫu với wish và if only', b: [
+        { ul: ['**wish + V2/were**: điều ước ở hiện tại. **I wish I knew the answer.**', '**wish + would/could**: mong sự việc thay đổi / khả năng. **I wish he would be quiet.** · **I wish I could fly.**', '**If only** mạnh hơn wish: **If only I had more time!**', 'Không dùng **would** sau wish khi chủ ngữ hai vế **cùng một người**: ✗ I wish I would be rich → ✓ I wish I **were** rich.', 'Dùng **were** sau wish cho mọi ngôi: **I wish she were here.**'] }
+      ] }
+    ],
+    ex: [
+      ['What would you do if you won a million dollars?', 'Bạn sẽ làm gì nếu trúng một triệu đô?'], ['If I didn\'t have homework, I would go out with friends.', 'Nếu không có bài tập, mình sẽ đi chơi với bạn.'], ['If only I had more time!', 'Giá mà mình có nhiều thời gian hơn!'], ['I wish she were here.', 'Mình ước cô ấy ở đây.']
+    ],
+    mis: [['If I would be rich, I would buy a house.', 'If I were rich, I would buy a house.', 'Không dùng would trong mệnh đề if.'], ['What will you do if you won the lottery?', 'What would you do if you won the lottery?', 'Loại 2 dùng would.'], ['I wish I would be taller.', 'I wish I were taller.', 'Ước về bản thân dùng were/V2.']],
+    quiz: [
+      ['If I ___ rich, I would travel around the world.', ['am', 'were', 'will be', 'would be'], 1, 'Loại 2: were.'],
+      ['What ___ you do if you saw a snake?', ['will', 'do', 'would', 'did'], 2, 'Loại 2: would.'],
+      ['I wish I ___ the answer. I can\'t remember it.', ['know', 'knew', 'will know', 'would know'], 1, 'wish + V2 (hiện tại không có thật).'],
+      ['If only I ___ more money!', ['have', 'had', 'will have', 'would have'], 1, 'If only + V2.']
+    ]
+  });
+
+  P('g9-reported-questions', {
+    sections: [
+      { h: 'Câu hỏi có từ hỏi làm chủ ngữ', b: [
+        { p: 'Khi từ hỏi (who, what, which) **làm chủ ngữ**, giữ nguyên trật tự và chỉ lùi thì: **"Who called you?" → She asked who had called me.** — **"What happened?" → He asked what had happened.**' },
+        { t: { h: ['Trực tiếp', 'Tường thuật'], r: [['"Who is that boy?"', 'She asked who that boy was.'], ['"Which bus goes to the airport?"', 'He asked which bus went to the airport.'], ['"What is in the box?"', 'She asked what was in the box.']] } }
+      ] },
+      { h: 'Động từ tường thuật cho lời yêu cầu, đề nghị', b: [
+        { t: { h: ['Ý nghĩa', 'Cấu trúc', 'Ví dụ'], r: [['yêu cầu / ra lệnh', 'tell / ask / order + O + (not) to V', 'He **ordered** us **to leave**.'], ['khuyên', 'advise / warn + O + (not) to V', 'She **advised** me **to rest**. He **warned** us **not to touch** it.'], ['gợi ý', 'suggest + V-ing / that + S + (should) V', 'He **suggested going** out. She **suggested that we go** early.'], ['đề nghị giúp', 'offer + to V', 'He **offered to carry** my bag.'], ['mời', 'invite + O + to V', 'She **invited me to join** the club.']] } }
+      ] },
+      { h: 'Chuyển đổi chi tiết và lỗi thường gặp', b: [
+        { ul: ['Bước 1: đổi **đại từ** và **trạng từ** (now → then, here → there, today → that day…).', 'Bước 2: bỏ dấu ?, **không đảo** trợ động từ, bỏ **do/does/did**: ✗ asked me where did I live → ✓ where I lived.', 'Bước 3: lùi thì (khi động từ tường thuật ở quá khứ).', 'Câu hỏi **Yes/No** dùng **if/whether**; câu hỏi **Wh-** giữ từ hỏi.', 'Câu hỏi **"Could you…?"** (nhờ vả) → **asked me to V**: "Could you open the window?" → She asked me to open the window.'] },
+        { warn: 'Không dùng **that** để nối câu hỏi Yes/No: ✗ He asked me that I was tired → ✓ He asked me **if/whether** I was tired.' }
+      ] }
+    ],
+    ex: [
+      ['"Who called you?" → She asked who had called me.', 'Cô ấy hỏi ai đã gọi cho mình.'], ['"Could you open the window?" → She asked me to open the window.', 'Cô ấy nhờ mình mở cửa sổ.'], ['He advised me to see a doctor.', 'Anh ấy khuyên mình đi khám bác sĩ.'], ['She warned us not to touch the wire.', 'Cô ấy cảnh báo chúng mình đừng chạm vào dây điện.']
+    ],
+    mis: [['He asked me that I was tired.', 'He asked me if I was tired.', 'Yes/No → if/whether.'], ['She asked me where did I live.', 'She asked me where I lived.', 'Không đảo trợ động từ.'], ['He suggested to go out.', 'He suggested going out.', 'suggest + V-ing.']],
+    quiz: [
+      ['"What happened?" → She asked what ___.', ['happens', 'had happened', 'did happen', 'was happen'], 1, 'Lùi thì: had happened.'],
+      ['"Could you help me?" → He asked me ___.', ['to help him', 'help him', 'that I help him', 'helping him'], 0, 'ask + O + to V.'],
+      ['She ___ me not to tell anyone.', ['warned', 'suggested', 'said', 'asked that'], 0, 'warn + O + not to V.'],
+      ['He asked me ___ I wanted tea or coffee.', ['that', 'whether', 'what', 'who'], 1, 'Yes/No hoặc lựa chọn → whether.']
+    ]
+  });
+
+  P('g9-passive-extended', {
+    sections: [
+      { h: 'Câu hỏi Wh- và câu có hai tân ngữ ở bị động', b: [
+        { t: { h: ['Chủ động', 'Bị động'], r: [['Who wrote this book?', 'Who was this book written by? / By whom was this book written?'], ['When did they build the bridge?', 'When was the bridge built?'], ['Where do they make these shoes?', 'Where are these shoes made?'], ['Someone has stolen my bike.', 'My bike has been stolen.'], ['They are painting the house.', 'The house is being painted.']] } }
+      ] },
+      { h: 'Have/get something done (thể truyền khiến)', b: [
+        { f: ['have + O + V3 : I **had my hair cut**.', 'get + O + V3 : She **got her car repaired**.'] },
+        { p: 'Dùng khi **nhờ người khác** làm giúp (dịch vụ): **I\'m having my bike repaired.** — **Where do you have your hair cut?** Không dùng khi tự làm: ✗ I had my homework done (ý: tự làm).' },
+        { warn: 'So sánh: **I repaired the bike.** (tự sửa) ≠ **I had the bike repaired.** (nhờ người sửa).' }
+      ] },
+      { h: 'Những điểm cần nhớ và lỗi thường gặp', b: [
+        { ul: ['Bị động của **hiện tại hoàn thành**: **has/have been + V3**; của **tiếp diễn**: **is/are being + V3**; của **modal**: **modal + be + V3**.', 'Có thể dùng **get** thay **be** trong văn nói không trang trọng: **He got hurt.** · **The cup got broken.**', 'Với **say, think, believe** có thể dùng: **It is said that…** (xem lớp 11).', 'Lỗi: ✗ The house has built. → ✓ The house **has been built**. ✗ The road is been repaired → ✓ is **being** repaired.'] }
+      ] }
+    ],
+    ex: [
+      ['Where are these shoes made?', 'Những đôi giày này được sản xuất ở đâu?'], ['I had my hair cut yesterday.', 'Hôm qua mình đi cắt tóc.'], ['She is having her car repaired.', 'Cô ấy đang nhờ người sửa xe.'], ['The cup got broken when we moved the table.', 'Cái cốc bị vỡ khi chúng mình di chuyển cái bàn.']
+    ],
+    mis: [['The house has built recently.', 'The house has been built recently.', 'has been + V3.'], ['I repaired my bike at the shop. (nhờ người sửa)', 'I had my bike repaired at the shop.', 'Nhờ người làm → have + O + V3.'], ['The road is been repaired.', 'The road is being repaired.', 'is being + V3.']],
+    quiz: [
+      ['My phone ___ yesterday.', ['stole', 'was stolen', 'has stolen', 'is stolen'], 1, 'Bị động quá khứ: was stolen.'],
+      ['I ___ my hair cut every month.', ['have', 'am', 'make', 'do'], 0, 'have + O + V3.'],
+      ['The old market ___ right now.', ['is rebuilding', 'is being rebuilt', 'was rebuilt', 'rebuilds'], 1, 'Tiếp diễn bị động: is being rebuilt.'],
+      ['The new library ___ yet.', ['hasn\'t been opened', 'hasn\'t opened been', 'isn\'t being opened', 'wasn\'t opening'], 0, 'hasn\'t been + V3.']
+    ]
+  });
+
+  P('g9-used-to', {
+    sections: [
+      { h: 'Used to và would', b: [
+        { t: { h: ['', 'used to', 'would'], r: [['Thói quen lặp lại', 'có', 'có (không dùng cho trạng thái)'], ['Trạng thái (live, have, be, like)', 'có', 'không'], ['Ví dụ', 'I **used to live** in Hue. · She **used to be** shy.', 'Every summer we **would go** to the beach.']] } },
+        { warn: 'Không dùng would cho **trạng thái**: ✗ I would live in Hue. → ✓ I **used to** live in Hue.' }
+      ] },
+      { h: 'Used to khác với quá khứ đơn', b: [
+        { ul: ['**used to** nhấn mạnh **ngày xưa như vậy, bây giờ không còn**: **I used to play football.** (bây giờ không chơi nữa)', '**quá khứ đơn** nói sự kiện có thời gian xác định: **I played football yesterday.**', '**used to** không dùng với khoảng thời gian cụ thể: ✗ I used to live in Hue for 5 years. → ✓ I **lived** in Hue for 5 years.', 'Hiện tại **không có** "use to" cho thói quen hiện tại; hiện tại dùng **usually**: **I usually get up at 6.**'] }
+      ] },
+      { h: 'Be used to và get used to nâng cao', b: [
+        { t: { h: ['Cấu trúc', 'Nghĩa', 'Ví dụ'], r: [['be used to + V-ing / N', 'đã quen với', 'I\'m used to **the noise**. She is used to **living** alone.'], ['get used to + V-ing / N', 'dần quen', 'I\'m getting used to **the food**.'], ['become used to', 'trở nên quen', 'He became used to the cold.'], ['used to + V', 'thói quen quá khứ', 'I used to **smoke**.']] } },
+        { tip: 'Cách phân biệt: sau **be/get used to** là **V-ing hoặc danh từ**; sau **used to** (không có be/get) là **V nguyên mẫu**.' }
+      ] }
+    ],
+    ex: [
+      ['When I was a child, I would visit my grandma every summer.', 'Hồi nhỏ mình hay đến thăm bà mỗi mùa hè.'], ['I used to be afraid of dogs, but now I love them.', 'Ngày trước mình sợ chó, bây giờ mình lại thích chúng.'], ['She is used to living alone.', 'Cô ấy đã quen sống một mình.'], ['I lived in Hue for five years.', 'Mình đã sống ở Huế năm năm.']
+    ],
+    mis: [['I would live in Hue when I was young.', 'I used to live in Hue when I was young.', 'would không dùng cho trạng thái.'], ['I used to live in Hue for five years.', 'I lived in Hue for five years.', 'Khoảng thời gian xác định → quá khứ đơn.'], ['I\'m used to wake up early.', 'I\'m used to waking up early.', 'be used to + V-ing.']],
+    quiz: [
+      ['Every Sunday we ___ go fishing with Grandpa.', ['would', 'are used to', 'get used to', 'is'], 0, 'Thói quen lặp lại → would.'],
+      ['I ___ shy, but now I\'m confident.', ['would be', 'am used to be', 'used to be', 'get used to being'], 2, 'Trạng thái → used to be.'],
+      ['She isn\'t used ___ in a big city.', ['live', 'living', 'to living', 'lived'], 2, 'be used to + V-ing: not used to living.'],
+      ['He lived in Hanoi ___ ten years.', ['used to for', 'for', 'would for', 'is used to'], 1, 'Khoảng thời gian xác định → quá khứ đơn + for.']
+    ]
+  });
+
+  P('g9-clauses', {
+    sections: [
+      { h: 'Từ nối chỉ kết quả: so, therefore, as a result', b: [
+        { t: { h: ['Từ', 'Vị trí', 'Ví dụ'], r: [['so', 'giữa hai mệnh đề, có dấu phẩy trước so', 'It rained, **so** we stayed in.'], ['therefore / consequently / as a result', 'đầu câu mới, theo sau là dấu phẩy', 'It rained. **Therefore**, we stayed in.'], ['thus', 'trang trọng', 'He was ill. **Thus** he missed class.'], ['that is why', 'nêu kết quả', 'I was ill. **That is why** I stayed in bed.']] } },
+        { warn: 'Không dùng dấu phẩy để nối hai câu độc lập bằng **therefore**: ✗ It rained, therefore we stayed in. → ✓ It rained; **therefore**, we stayed in. / It rained. **Therefore**, we stayed in.' }
+      ] },
+      { h: 'Mục đích: các cách diễn đạt khác', b: [
+        { ul: ['**for + danh từ / V-ing** chỉ **công dụng**: **This knife is for cutting bread.** · **I went there for a rest.**', '**to avoid + V-ing / not to V**: **I left early to avoid being late.**', '**so that + S + will/would/can/could + V**: **I wrote it down so that I wouldn\'t forget.**', '**in order that**: trang trọng hơn so that.'] },
+        { tip: 'Khi hai mệnh đề **cùng chủ ngữ** dùng **to V / in order to / so as to**; khi **khác chủ ngữ** dùng **so that**.' }
+      ] },
+      { h: 'Tương phản và đối lập', b: [
+        { t: { h: ['Từ', 'Theo sau', 'Ví dụ'], r: [['although / though / even though', 'S + V', 'Although it was cold, we went out.'], ['despite / in spite of', 'N / V-ing', 'Despite the cold, we went out.'], ['however / nevertheless', 'dấu phẩy + mệnh đề', 'It was cold. However, we went out.'], ['but / yet', 'giữa hai mệnh đề', 'It was cold, but we went out.'], ['while / whereas', 'đối lập hai vế', 'He likes tea, whereas she likes coffee.']] } },
+        { warn: 'Không nói **despite of**. **Even though** mạnh hơn although: **Even though she was ill, she came.**' }
+      ] }
+    ],
+    ex: [
+      ['It rained heavily. Therefore, the match was cancelled.', 'Trời mưa to. Vì vậy trận đấu bị huỷ.'], ['This tool is for cutting wood.', 'Dụng cụ này dùng để cắt gỗ.'], ['I wrote the address down so that I wouldn\'t forget it.', 'Mình ghi địa chỉ lại để khỏi quên.'], ['He likes tea, whereas his wife likes coffee.', 'Anh ấy thích trà, còn vợ anh thích cà phê.']
+    ],
+    mis: [['It rained, therefore we stayed home.', 'It rained; therefore, we stayed home. / It rained, so we stayed home.', 'therefore cần dấu chấm/chấm phẩy trước.'], ['Despite of the rain, we went out.', 'Despite the rain, we went out.', 'Không có of.'], ['I wrote it down for not forget.', 'I wrote it down so that I wouldn\'t forget.', 'Dùng so that hoặc to V.']],
+    quiz: [
+      ['It was late. ___, we took a taxi.', ['Therefore', 'Although', 'Despite', 'Because'], 0, 'Kết quả → Therefore,.'],
+      ['I got up early ___ I wouldn\'t miss the bus.', ['so as', 'so that', 'in spite', 'because of'], 1, 'so that + S + would + V.'],
+      ['___ the strong wind, the ferry kept running.', ['Although', 'In spite of', 'However', 'But'], 1, 'Sau chỗ trống là danh từ → In spite of.'],
+      ['She likes tea, ___ her sister likes coffee.', ['whereas', 'despite', 'because', 'so that'], 0, 'Đối lập hai vế → whereas.']
+    ]
+  });
 })();

@@ -368,4 +368,171 @@
       ['___ strange noise!', ['What a', 'What an', 'How', 'What'], 0, 'a strange noise (strange bắt đầu bằng phụ âm).']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 7 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g7-past-simple', {
+    sections: [
+      { h: 'Câu phủ định, câu hỏi và trả lời ngắn', b: [
+        { t: { h: ['', 'Cấu trúc', 'Ví dụ'], r: [['Khẳng định', 'S + V2/V-ed', 'She **visited** Hue last year.'], ['Phủ định', 'S + **didn\'t** + V (nguyên mẫu)', 'He **didn\'t go** to school.'], ['Nghi vấn', '**Did** + S + V (nguyên mẫu)?', '**Did** you **see** him?'], ['Wh-', 'Wh-word + did + S + V?', 'Where **did** you **go**?'], ['Trả lời ngắn', 'Yes, S + did. / No, S + didn\'t.', 'Yes, I did. / No, we didn\'t.']] } },
+        { warn: 'Chỉ **một** chỗ chia quá khứ: **did** mang thì, động từ chính về **nguyên mẫu**: ✗ Did you went? ✗ I didn\'t saw. Riêng **to be** không dùng did: **Was he ill?** — He **wasn\'t** ill.' },
+        { tip: 'Hỏi về chủ ngữ giữ động từ ở **V2**, không dùng did: **Who broke the window?** — **What happened?**' }
+      ] },
+      { h: 'Cách đọc đuôi -ed', b: [
+        { t: { h: ['Đọc', 'Sau âm', 'Ví dụ'], r: [['/t/', 'vô thanh: /p, k, f, s, ʃ, tʃ/', 'stopped, worked, laughed, missed, washed, watched'], ['/d/', 'hữu thanh và nguyên âm', 'played, called, lived, opened, cleaned'], ['/ɪd/', 'sau /t/ và /d/', 'wanted, needed, decided, visited']] } },
+        { tip: 'Nghe và nhớ nhóm /t/: stopped, looked, helped, watched; nhóm /ɪd/ luôn là động từ kết thúc bằng t hoặc d: want → wanted.' }
+      ] },
+      { h: 'Thêm động từ bất quy tắc thường dùng', b: [
+        { t: { h: ['V1', 'V2', 'Nghĩa', 'V1', 'V2', 'Nghĩa'], r: [['begin', 'began', 'bắt đầu', 'know', 'knew', 'biết'], ['bring', 'brought', 'mang', 'leave', 'left', 'rời đi'], ['buy', 'bought', 'mua', 'lose', 'lost', 'mất'], ['catch', 'caught', 'bắt', 'run', 'ran', 'chạy'], ['draw', 'drew', 'vẽ', 'sing', 'sang', 'hát'], ['drink', 'drank', 'uống', 'sit', 'sat', 'ngồi'], ['drive', 'drove', 'lái xe', 'sleep', 'slept', 'ngủ'], ['feel', 'felt', 'cảm thấy', 'speak', 'spoke', 'nói'], ['find', 'found', 'tìm thấy', 'swim', 'swam', 'bơi'], ['fly', 'flew', 'bay', 'tell', 'told', 'kể'], ['forget', 'forgot', 'quên', 'think', 'thought', 'nghĩ'], ['give', 'gave', 'cho', 'win', 'won', 'thắng']] } }
+      ] },
+      { h: 'Kể chuyện quá khứ và các từ nối thời gian', b: [
+        { ul: ['Dùng quá khứ đơn để kể một chuỗi sự việc: **I got up at 6, had breakfast and went to school.**', 'Từ nối: **first, then, after that, later, finally, in the end**: First I washed my face. **Then** I had breakfast. **Finally** I left home.', '**when** + quá khứ đơn: **When I was ten, we moved to Hue.**', '**ago**: đứng sau khoảng thời gian: **three days ago** (không dùng với present perfect).'] },
+        { warn: 'Với **used to** hoặc thói quen quá khứ ta có thể dùng quá khứ đơn + thời gian cụ thể: **We often went swimming last summer.**' }
+      ] }
+    ],
+    ex: [
+      ['Where did you go on holiday last summer?', 'Hè năm ngoái bạn đi nghỉ ở đâu?'], ['Who broke the window? — Tom did.', 'Ai làm vỡ cửa sổ? — Tom làm.'], ['First I got up, then I had breakfast and finally I left for school.', 'Đầu tiên mình dậy, sau đó ăn sáng và cuối cùng ra khỏi nhà đến trường.'], ['We lost the match, but we played well.', 'Chúng mình thua trận nhưng chơi tốt.']
+    ],
+    mis: [['Did you went to the party?', 'Did you go to the party?', 'Sau did dùng V nguyên mẫu.'], ['I didn\'t saw him.', 'I didn\'t see him.', 'Sau didn\'t dùng V nguyên mẫu.'], ['Who did break the glass?', 'Who broke the glass?', 'Hỏi chủ ngữ không dùng did.']],
+    quiz: [
+      ['She ___ her keys yesterday.', ['losed', 'lost', 'lose', 'has lost'], 1, 'lose → lost.'],
+      ['"Where ___ you go last weekend?" "I went to Hue."', ['do', 'did', 'were', 'are'], 1, 'Wh- + did + S + V.'],
+      ['Who ___ the cake? It is delicious!', ['did make', 'made', 'make', 'makes'], 1, 'Hỏi chủ ngữ: Who made…?'],
+      ['I ___ a famous singer at the airport last month.', ['seen', 'saw', 'see', 'sawed'], 1, 'see → saw.']
+    ]
+  });
+
+  P('g7-future', {
+    sections: [
+      { h: 'So sánh will và be going to', b: [
+        { t: { h: ['', 'will', 'be going to'], r: [['Quyết định', 'lúc nói (tức thời)', 'đã có từ trước'], ['Dự đoán', 'dựa trên ý kiến (I think…, probably…)', 'dựa trên bằng chứng hiện tại'], ['Lời hứa/đề nghị', 'có (I\'ll help you.)', 'không'], ['Ví dụ', 'I\'m cold. I\'ll close the window.', 'I\'m going to study English at university.']] } },
+        { tip: 'Câu hỏi để chọn: **Có kế hoạch từ trước không?** Có → be going to. **Đang quyết định ngay lúc nói / hứa / đề nghị?** → will.' }
+      ] },
+      { h: 'Các từ đi cùng will: probably, perhaps, I think…', b: [
+        { ul: ['**probably** (có lẽ, đứng sau will): It **will probably** rain. ·  phủ định: It **probably won\'t** rain.', '**perhaps / maybe** đứng đầu câu: **Perhaps** we will win.', '**I think … will / I don\'t think … will**: I **don\'t think** he will come. (✗ I think he won\'t come ít tự nhiên hơn).', '**I hope / I\'m sure / I expect + will**: I\'m sure you\'ll pass.'] }
+      ] },
+      { h: 'Các cách khác nói tương lai', b: [
+        { t: { h: ['Cấu trúc', 'Dùng khi', 'Ví dụ'], r: [['hiện tại tiếp diễn', 'kế hoạch đã sắp xếp', 'I\'m meeting Lan at 5.'], ['hiện tại đơn', 'lịch trình, thời gian biểu', 'The train leaves at 7.'], ['be about to + V', 'sắp sửa', 'The film is about to start.'], ['shall I/we…?', 'đề nghị, xin ý kiến (I, we)', 'Shall I open the window?']] } },
+        { warn: 'Mệnh đề **if/when/as soon as** về tương lai dùng **hiện tại đơn**: **If it rains, we will stay home.** (✗ If it will rain).' }
+      ] }
+    ],
+    ex: [
+      ['I\'m tired. I think I\'ll go to bed early.', 'Mình mệt. Mình nghĩ mình sẽ đi ngủ sớm.'], ['It will probably rain tomorrow.', 'Có lẽ ngày mai trời sẽ mưa.'], ['Shall I carry your bag? — Yes, please.', 'Để mình xách túi cho bạn nhé? — Vâng, cảm ơn.'], ['I\'m sure you will pass the exam.', 'Mình chắc là bạn sẽ đỗ kỳ thi.']
+    ],
+    mis: [['I think he won\'t to come.', 'I don\'t think he will come.', 'Dạng tự nhiên với I think.'], ['If it will rain, we will stay home.', 'If it rains, we will stay home.', 'Mệnh đề if dùng hiện tại đơn.'], ['It will probably not rain. (ít tự nhiên)', 'It probably won\'t rain.', 'probably đứng trước won\'t.']],
+    quiz: [
+      ['A: "There is no milk." B: "I ___ buy some."', ['am going to', 'will', 'am buying', 'buy'], 1, 'Quyết định tức thời → will.'],
+      ['I ___ to be a teacher. I have chosen a university.', ['will', 'am going', 'shall', 'would'], 1, 'Dự định đã có → am going to be.'],
+      ['It ___ rain tomorrow, so take an umbrella.', ['will probably', 'probably will not to', 'is probably', 'does probably'], 0, 'will probably + V.'],
+      ['___ I open the window? It\'s hot in here.', ['Will', 'Shall', 'Do', 'Am'], 1, 'Shall I… = đề nghị.']
+    ]
+  });
+
+  P('g7-comparisons', {
+    sections: [
+      { h: 'Chi tiết quy tắc và các từ đặc biệt', b: [
+        { ul: ['Tính từ **2 âm tiết tận cùng -y, -er, -ow, -le**: thêm -er/-est: happy → happier, clever → cleverer, narrow → narrower, simple → simpler.', 'Một số tính từ **2 âm tiết** có thể dùng cả hai: common → commoner / more common, quiet → quieter / more quiet.', 'Tính từ **dài**: more/most + adj: more interesting, the most dangerous.', 'Đặt **the** trước so sánh nhất; không cần the trước so sánh hơn.', '**than** đi với so sánh hơn: **taller than me** (không dùng "then").'] },
+        { warn: 'Sau **than** ở văn nói dùng **me/him/her/us/them**, văn viết trang trọng dùng **I/he/she…**: He is taller than **me** / than **I** (am).' }
+      ] },
+      { h: 'Mẫu so sánh nâng cao', b: [
+        { t: { h: ['Mẫu', 'Nghĩa', 'Ví dụ'], r: [['**much / a lot / far + so sánh hơn**', 'nhiều hơn hẳn', 'This book is **much more interesting**.'], ['**a bit / slightly + so sánh hơn**', 'hơn một chút', 'Today is **a bit colder**.'], ['**the + so sánh hơn, the + so sánh hơn**', 'càng… càng…', '**The more** you read, **the more** you learn.'], ['**comparative + and + comparative**', 'ngày càng…', 'It is getting **hotter and hotter**.'], ['**one of the + so sánh nhất + danh từ số nhiều**', 'một trong những…nhất', 'Hanoi is **one of the biggest cities** in Viet Nam.']] } }
+      ] },
+      { h: 'So sánh và trạng từ', b: [
+        { ul: ['Trạng từ ngắn: **faster, harder, earlier, later** (không dùng more).', 'Trạng từ dài (đuôi -ly): **more carefully, more slowly, more quickly**.', 'Bất quy tắc: well → **better**, badly → **worse**.', 'Ví dụ: He runs **faster** than me. She speaks **more clearly** than her brother. They play **better** than us.'] },
+        { tip: 'Hỏi so sánh giữa **hai** vật: **Which is bigger, A or B?** Giữa **ba trở lên**: **Which is the biggest?**' }
+      ] }
+    ],
+    ex: [
+      ['This bag is much cheaper than that one.', 'Chiếc túi này rẻ hơn hẳn chiếc kia.'], ['It is getting darker and darker.', 'Trời ngày càng tối.'], ['Hue is one of the most beautiful cities in Viet Nam.', 'Huế là một trong những thành phố đẹp nhất Việt Nam.'], ['She speaks more clearly than her brother.', 'Cô ấy nói rõ ràng hơn anh trai.']
+    ],
+    mis: [['He is taller then me.', 'He is taller than me.', 'than đi với so sánh hơn.'], ['She is the more beautiful girl.', 'She is the most beautiful girl.', 'So sánh nhất dùng the most.'], ['It is getting more and more hot.', 'It is getting hotter and hotter.', 'Tính từ ngắn: hotter and hotter.']],
+    quiz: [
+      ['Today is ___ than yesterday.', ['hot', 'hotter', 'more hot', 'the hottest'], 1, 'hot → hotter.'],
+      ['The ___ you practise, the better you speak.', ['more', 'most', 'many', 'much'], 0, 'The more…, the better…'],
+      ['Hanoi is one of the ___ cities in Viet Nam.', ['bigger', 'biggest', 'more big', 'most big'], 1, 'one of the + so sánh nhất.'],
+      ['She speaks English ___ than me.', ['more fluent', 'more fluently', 'fluentlier', 'fluentest'], 1, 'Trạng từ dài: more fluently.']
+    ]
+  });
+
+  P('g7-quantifiers', {
+    sections: [
+      { h: 'Lượng từ với danh từ đếm được và không đếm được', b: [
+        { t: { h: ['Lượng từ', 'Đếm được số nhiều', 'Không đếm được'], r: [['nhiều', 'many, a lot of, lots of, plenty of', 'much, a lot of, lots of, plenty of'], ['một ít (đủ)', 'a few', 'a little'], ['hầu như không', 'few', 'little'], ['một vài / một ít', 'some', 'some'], ['không có / bất kỳ', 'no, not any', 'no, not any'], ['tất cả', 'all, every (+ số ít)', 'all'], ['nửa / hầu hết', 'most of the + N', 'most of the + N']] } },
+        { warn: '**much** thường dùng trong câu phủ định/câu hỏi; trong câu khẳng định dùng **a lot of**: ✗ I have much money. ✓ I have **a lot of** money. / I don\'t have **much** money.' }
+      ] },
+      { h: 'Đơn vị đo lường cho danh từ không đếm được', b: [
+        { t: { h: ['Danh từ', 'Cách đếm', 'Ví dụ'], r: [['water, tea, milk', 'a glass / cup / bottle of', 'two cups of tea'], ['bread', 'a slice / loaf of', 'a slice of bread'], ['advice, information', 'a piece of', 'a piece of advice'], ['rice, sugar', 'a bowl / spoon / kilo of', 'a bowl of rice'], ['paper', 'a sheet / piece of', 'a sheet of paper'], ['news, furniture', 'a piece of', 'a piece of news']] } }
+      ] },
+      { h: 'Every, each, all, both, either, neither', b: [
+        { ul: ['**every/each + danh từ số ít + động từ số ít**: **Every student has** a book. **Each** child **gets** a gift.', '**all + danh từ số nhiều**: **All students** are here.', '**both + danh từ số nhiều** (hai người/vật): **Both** my parents are teachers.', '**either / neither** + danh từ số ít (trong hai): Either answer is correct. **Neither** boy was late.'] },
+        { tip: '**some** dùng được trong câu hỏi khi **mời hoặc đề nghị**: Would you like **some** tea? Can I have **some** water?' }
+      ] }
+    ],
+    ex: [
+      ['I don\'t have much free time these days.', 'Dạo này mình không có nhiều thời gian rảnh.'], ['Every student has a locker.', 'Mỗi học sinh đều có một tủ đồ.'], ['Both of my parents work in a hospital.', 'Cả bố lẫn mẹ mình đều làm ở bệnh viện.'], ['Can I have a glass of water and a slice of bread?', 'Cho mình một cốc nước và một lát bánh mì được không?']
+    ],
+    mis: [['I have much friends.', 'I have a lot of friends. / I have many friends.', 'friends đếm được → many/a lot of.'], ['Every students are here.', 'Every student is here.', 'every + danh từ số ít + động từ số ít.'], ['I need two breads.', 'I need two slices of bread.', 'bread không đếm được.']],
+    quiz: [
+      ['There isn\'t ___ rice in the bowl.', ['many', 'much', 'a few', 'few'], 1, 'rice không đếm được → much.'],
+      ['___ student has a different book.', ['All', 'Every', 'Both', 'Most'], 1, 'every + số ít.'],
+      ['She gave me ___ useful advice.', ['a', 'an', 'some', 'many'], 2, 'advice không đếm được → some.'],
+      ['I\'d like two ___ of tea, please.', ['cups', 'cup', 'piece', 'slices'], 0, 'two cups of tea.']
+    ]
+  });
+
+  P('g7-modals', {
+    sections: [
+      { h: 'Can, could, may: xin phép và nhờ vả', b: [
+        { t: { h: ['Tình huống', 'Mẫu câu', 'Mức lịch sự'], r: [['Xin phép', '**Can I** …? / **Could I** …? / **May I** …?', 'can (thân mật) < could < may (trang trọng)'], ['Nhờ vả', '**Can you** …? / **Could you** …? / **Would you** …?', 'could/would lịch sự hơn can'], ['Đề nghị', '**Shall I** …? / **Can I** …? / **Would you like me to** …?', '—']] } },
+        { p: 'Trả lời: **Sure. / Of course. / Certainly.** (đồng ý) — **Sorry, I can\'t. / I\'m afraid not.** (từ chối). Ví dụ: **Could you open the window, please?** — **Sure.**' }
+      ] },
+      { h: 'Must, have to, should — bắt buộc và lời khuyên', b: [
+        { t: { h: ['', 'must', 'have to', 'should'], r: [['Nghĩa', 'bắt buộc (ý kiến người nói)', 'bắt buộc (quy định, hoàn cảnh)', 'nên (lời khuyên)'], ['Phủ định', 'mustn\'t = cấm', 'don\'t have to = không cần', 'shouldn\'t = không nên'], ['Quá khứ', 'had to', 'had to', '—'], ['Ví dụ', 'I must call Mum.', 'We have to wear uniforms.', 'You should sleep more.']] } },
+        { warn: '**must** không có thì quá khứ: dùng **had to**: **I had to** stay home yesterday. (✗ I musted).' }
+      ] },
+      { h: 'Be able to, may/might, và các lỗi thường gặp', b: [
+        { ul: ['**can** = **be able to** (có khả năng): I can swim = I am able to swim. Quá khứ: **could** / **was able to**.', '**may / might** + V: khả năng xảy ra (50%): It **may** rain. She **might** be late.', 'Phủ định của **can** là **cannot / can\'t**; viết liền **cannot** (không viết can not).', 'Câu hỏi đảo: **Can** you swim? **Should** I go? (không dùng do).', 'Sau modal là **V nguyên mẫu không to**: ✗ She can to swim.'] }
+      ] }
+    ],
+    ex: [
+      ['May I ask a question? — Of course.', 'Em hỏi một câu được không ạ? — Tất nhiên.'], ['Could you help me carry this box, please?', 'Bạn giúp mình mang cái hộp này được không?'], ['I had to stay at home because I was ill.', 'Mình phải ở nhà vì bị ốm.'], ['He might be late because of the traffic.', 'Có thể anh ấy đến muộn vì tắc đường.']
+    ],
+    mis: [['I musted finish the work yesterday.', 'I had to finish the work yesterday.', 'must không có quá khứ.'], ['Does she can sing?', 'Can she sing?', 'Modal không mượn do/does.'], ['You should to see a doctor.', 'You should see a doctor.', 'Sau should không có to.']],
+    quiz: [
+      ['___ I use your phone, please? (rất lịch sự)', ['May', 'Do', 'Am', 'Will'], 0, 'May I…? lịch sự nhất trong các lựa chọn.'],
+      ['I ___ get up at 5 yesterday because I had an early flight.', ['must', 'have to', 'had to', 'should'], 2, 'Quá khứ của have to/must → had to.'],
+      ['You ___ be late for the exam. It\'s important.', ['mustn\'t', 'don\'t have to', 'needn\'t to', 'might'], 0, 'Không được (cấm) → mustn\'t.'],
+      ['He ___ be at home. His lights are on.', ['may', 'would', 'is', 'does'], 0, 'Khả năng → may.']
+    ]
+  });
+
+  P('g7-adverbs', {
+    sections: [
+      { h: 'Các trạng từ thường gặp khác', b: [
+        { t: { h: ['Loại', 'Ví dụ', 'Vị trí'], r: [['Mức độ', 'very, quite, really, too, so, extremely', 'trước tính từ/trạng từ: **very** good, **quite** tall'], ['Thời gian', 'now, soon, yesterday, today, already, yet, still', 'cuối câu hoặc đầu câu: See you **soon**.'], ['Nơi chốn', 'here, there, outside, upstairs, abroad', 'cuối câu: She lives **abroad**.'], ['Chỉ cách thức', 'slowly, well, carefully', 'sau động từ/ tân ngữ: He speaks **slowly**.']] } }
+      ] },
+      { h: 'Trạng từ và tính từ cùng dạng', b: [
+        { t: { h: ['Từ', 'Là tính từ', 'Là trạng từ'], r: [['fast', 'a fast car', 'He runs fast.'], ['hard', 'a hard exam', 'She works hard.'], ['late', 'a late bus', 'He came late.'], ['early', 'an early flight', 'We left early.'], ['well', 'He is well. (khoẻ)', 'She sings well.'], ['daily / weekly', 'a daily newspaper', 'It is published daily.']] } },
+        { warn: 'Đừng nhầm **hard/hardly**, **late/lately**, **near/nearly**: **He works hard.** ≠ **He hardly works.** · **I arrived late.** ≠ **I haven\'t seen him lately.** (gần đây).' }
+      ] },
+      { h: 'Vị trí và mẹo dùng đúng', b: [
+        { ul: ['Trạng từ cách thức **không đứng giữa động từ và tân ngữ**: ✗ She speaks well English. → ✓ She speaks **English well**.', 'Sau **look, feel, sound, taste, smell** dùng **tính từ**: It tastes **good**. She looks **happy**.', 'Trạng từ tần suất đứng **trước động từ thường, sau be**; **sometimes, usually** có thể đứng đầu câu.', '**enough** đứng **sau** tính từ/ trạng từ: **fast enough**, **clearly enough**.'] }
+      ] }
+    ],
+    ex: [
+      ['The soup tastes delicious.', 'Món súp có vị rất ngon.'], ['He works hard, so he rarely fails.', 'Cậu ấy học hành chăm chỉ nên hiếm khi trượt.'], ['She speaks English very well.', 'Cô ấy nói tiếng Anh rất tốt.'], ['I haven\'t seen him lately.', 'Gần đây mình chưa gặp anh ấy.']
+    ],
+    mis: [['She speaks well English.', 'She speaks English well.', 'Trạng từ cách thức đứng sau tân ngữ.'], ['The cake tastes well.', 'The cake tastes good.', 'Sau taste dùng tính từ.'], ['He hardly works, so he is tired. (ý: làm việc chăm chỉ)', 'He works hard, so he is tired.', 'hard ≠ hardly.']],
+    quiz: [
+      ['She ___ plays the piano. She is a pianist.', ['good', 'well', 'goodly', 'best'], 1, 'Bổ nghĩa cho động từ → well.'],
+      ['The food ___ delicious.', ['tastes', 'tastes well', 'is tasting well', 'tastes goodly'], 0, 'tastes + tính từ.'],
+      ['He ___ studies, so he failed the test.', ['hard', 'hardly', 'harder', 'hardest'], 1, 'hardly = hầu như không.'],
+      ['I haven\'t seen her ___.', ['late', 'lately', 'latest', 'lateness'], 1, 'lately = gần đây.']
+    ]
+  });
 })();

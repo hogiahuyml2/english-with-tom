@@ -359,4 +359,166 @@
       ['___ you won the lottery, what would you do?', ['Suppose', 'Unless', 'Otherwise', 'As long as'], 0, 'Suppose = giả sử.']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 10 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g10-tenses-review', {
+    sections: [
+      { h: 'Phủ định và nghi vấn của từng thì', b: [
+        { t: { h: ['Thì', 'Phủ định', 'Nghi vấn'], r: [['Hiện tại đơn', 'don\'t/doesn\'t + V', 'Do/Does + S + V?'], ['Hiện tại tiếp diễn', 'am/is/are not + V-ing', 'Am/Is/Are + S + V-ing?'], ['Hiện tại hoàn thành', 'haven\'t/hasn\'t + V3', 'Have/Has + S + V3?'], ['Quá khứ đơn', 'didn\'t + V', 'Did + S + V?'], ['Quá khứ tiếp diễn', 'wasn\'t/weren\'t + V-ing', 'Was/Were + S + V-ing?'], ['Quá khứ hoàn thành', 'hadn\'t + V3', 'Had + S + V3?'], ['Tương lai đơn', 'won\'t + V', 'Will + S + V?'], ['Tương lai gần', 'am/is/are not going to + V', 'Am/Is/Are + S + going to + V?']] } }
+      ] },
+      { h: 'Các thì trong đoạn văn và mệnh đề thời gian', b: [
+        { ul: ['**When/while/as** + quá khứ tiếp diễn / quá khứ đơn (hành động dài – ngắn).', '**By the time** + quá khứ đơn, mệnh đề chính **quá khứ hoàn thành**: By the time I arrived, they **had left**.', '**By the time** + hiện tại đơn, mệnh đề chính **will have + V3**: By the time you come, I **will have finished**.', '**since + mốc thời gian** đi với hiện tại hoàn thành; mệnh đề sau since dùng quá khứ đơn: **I have lived here since I was born.**', '**It is the first time + hiện tại hoàn thành**: **It\'s the first time I have eaten sushi.**'] }
+      ] },
+      { h: 'Cách chọn thì khi làm bài', b: [
+        { ul: ['**Bước 1**: tìm **dấu hiệu thời gian** (now, yesterday, since, by the time, for…).', '**Bước 2**: xác định **hành động xảy ra khi nào** (xong hẳn hay còn liên quan hiện tại?).', '**Bước 3**: nếu có hai hành động trong quá khứ, hành động **xảy ra trước** dùng **had V3**.', '**Bước 4**: kiểm tra **chủ ngữ** (số ít/nhiều) và **động từ trạng thái** (không dùng tiếp diễn).'] },
+        { tip: 'Các động từ trạng thái **know, like, want, belong, seem, understand** dùng thì đơn; không nói I am knowing / She is wanting.' }
+      ] }
+    ],
+    ex: [
+      ['By the time you get home, I will have cooked dinner.', 'Lúc bạn về đến nhà thì mình đã nấu xong bữa tối.'], ['It is the first time I have eaten durian.', 'Đây là lần đầu tiên mình ăn sầu riêng.'], ['I have lived here since I was born.', 'Mình sống ở đây từ khi sinh ra.'], ['She was cooking while he was watching TV.', 'Cô ấy nấu ăn trong lúc anh ấy xem TV.']
+    ],
+    mis: [['By the time I arrived, they left.', 'By the time I arrived, they had left.', 'Hành động trước mốc quá khứ → had V3.'], ['This is the first time I eat sushi.', 'This is the first time I have eaten sushi.', 'the first time + hiện tại hoàn thành.'], ['She is wanting a new phone.', 'She wants a new phone.', 'want không dùng tiếp diễn.']],
+    quiz: [
+      ['By the time I arrived at the party, everyone ___.', ['has left', 'had left', 'leaves', 'was leaving'], 1, 'Trước mốc quá khứ → had left.'],
+      ['It\'s the first time he ___ a horse.', ['rides', 'rode', 'has ridden', 'is riding'], 2, 'the first time + present perfect.'],
+      ['By next year, they ___ the bridge.', ['will finish', 'will have finished', 'finish', 'are finishing'], 1, 'by + mốc tương lai → will have finished.'],
+      ['"What ___ you doing at 8 last night?" "I was cooking."', ['did', 'were', 'have', 'are'], 1, 'Quá khứ tiếp diễn: were you doing.']
+    ]
+  });
+
+  P('g10-past-perfect', {
+    sections: [
+      { h: 'Trình tự hai hành động trong quá khứ', b: [
+        { t: { h: ['Câu', 'Thứ tự xảy ra'], r: [['When I got to the cinema, the film **had started**.', 'Phim bắt đầu **trước** → rồi mình đến.'], ['When I got to the cinema, the film **started**.', 'Mình đến **xong** thì phim mới bắt đầu.'], ['After she **had eaten**, she went out.', 'Ăn xong **trước** → rồi mới ra ngoài.'], ['She went out after she **ate** dinner. (nói thông thường)', 'Quá khứ đơn vẫn dùng được nếu thứ tự rõ ràng.']] } },
+        { tip: 'Khi dùng **before/after** mà thứ tự đã rõ, người bản xứ thường dùng **quá khứ đơn**; dùng **had V3** để nhấn mạnh hành động hoàn tất trước.' }
+      ] },
+      { h: 'Các cấu trúc đảo ngữ và cố định', b: [
+        { ul: ['**No sooner + had + S + V3 + than + S + V2**: **No sooner had I sat down than the phone rang.**', '**Hardly/Scarcely + had + S + V3 + when + S + V2**: **Hardly had he left when it started to rain.**', '**It was the first/second time + S + had V3** (trong quá khứ): It was the first time she **had flown**.', '**By the time + quá khứ đơn, S + had V3**.', '**Reported speech**: He said that he **had seen** her. (từ present perfect / past simple).'] }
+      ] },
+      { h: 'Hiện tại hoàn thành tiếp diễn: so sánh và lưu ý', b: [
+        { t: { h: ['', 'have been V-ing', 'have V3'], r: [['Nhấn mạnh', 'quá trình, thời gian kéo dài', 'kết quả, số lượng'], ['Ví dụ', 'I **have been reading** since 7.', 'I **have read** 50 pages.'], ['Kết quả hiện tại', 'There are signs: **You have been crying.**', 'Result: **I have lost my keys.**'], ['Câu hỏi', 'How long have you been waiting?', 'How many pages have you read?']] } },
+        { warn: 'Với **always, live, work, teach** có thể dùng cả hai mà nghĩa gần như giống nhau: **I have lived / have been living here for 5 years.**' }
+      ] }
+    ],
+    ex: [
+      ['Hardly had we sat down when the lights went out.', 'Chúng mình vừa ngồi xuống thì mất điện.'], ['It was the first time she had flown in a plane.', 'Đó là lần đầu tiên cô ấy đi máy bay.'], ['How long have you been waiting here?', 'Bạn đã đợi ở đây bao lâu rồi?'], ['She said she had already seen the film.', 'Cô ấy nói cô ấy đã xem phim đó rồi.']
+    ],
+    mis: [['Hardly he had left when it rained.', 'Hardly had he left when it rained.', 'Đảo ngữ: Hardly had + S + V3.'], ['I have been reading 50 pages today.', 'I have read 50 pages today.', 'Có số lượng/kết quả → have V3.'], ['I had seen him yesterday.', 'I saw him yesterday.', 'Mốc quá khứ xác định, không có hành động khác để so trước – sau → quá khứ đơn.']],
+    quiz: [
+      ['No sooner ___ he arrived than the rain stopped.', ['had', 'has', 'did', 'was'], 0, 'No sooner had + S + V3 + than.'],
+      ['I\'m tired because I ___ all day.', ['worked', 'have been working', 'had worked', 'work'], 1, 'Nhấn quá trình kéo dài đến nay.'],
+      ['It was the first time I ___ snow.', ['have seen', 'had seen', 'saw', 'see'], 1, 'the first time (quá khứ) → had seen.'],
+      ['How many pages have you ___ so far?', ['read', 'reading', 'been read', 'to read'], 0, 'Có số lượng → have read.']
+    ]
+  });
+
+  P('g10-conditional-3', {
+    sections: [
+      { h: 'Câu hỏi, phủ định và trả lời loại 3', b: [
+        { t: { h: ['', 'Cấu trúc', 'Ví dụ'], r: [['Khẳng định', 'If + had V3, would have V3', 'If I had left earlier, I would have caught the bus.'], ['Phủ định', 'If + hadn\'t V3, would have V3', 'If it **hadn\'t rained**, we would have gone out.'], ['Nghi vấn', 'What would + S + have V3 + if + had V3?', 'What would you have done if you had missed the flight?'], ['Khả năng', 'could/might have V3', 'If she had tried, she **could have** won.']] } }
+      ] },
+      { h: 'Điều kiện hỗn hợp', b: [
+        { t: { h: ['Kiểu', 'Cấu trúc', 'Ví dụ'], r: [['Quá khứ → hiện tại', 'If + had V3, would + V', 'If I **had studied** medicine, I **would be** a doctor now.'], ['Hiện tại → quá khứ', 'If + V2/were, would have V3', 'If he **were** smarter, he **would have** passed.'], ['Thói quen/ đặc điểm → quá khứ', 'If + V2, would have V3', 'If she **cared** more, she **would have called**.']] } },
+        { tip: 'Hỏi: **Điều kiện** thuộc thời gian nào? **Kết quả** thuộc thời gian nào? Mỗi vế chọn dạng theo thời gian của riêng nó.' }
+      ] },
+      { h: 'Đảo ngữ và các cách diễn đạt khác', b: [
+        { ul: ['**Had + S + V3**, S + would have V3: **Had I known, I would have told you.** (= If I had known…)', '**Without / But for + danh từ**: **Without your help, I would have failed.** = **If it hadn\'t been for your help…**', '**Wish / If only + had V3**: **I wish I had studied.** · **If only I had listened!**', '**as if / as though + had V3**: **He talked as if he had seen it.**'] },
+        { warn: 'Không dùng **would have** trong mệnh đề **if**: ✗ If I would have known → ✓ If I **had known**.' }
+      ] }
+    ],
+    ex: [
+      ['Had I known about the meeting, I would have come.', 'Nếu mình biết về cuộc họp thì mình đã đến.'], ['Without your help, I would have failed the exam.', 'Không có sự giúp của bạn, mình đã trượt rồi.'], ['If I had studied medicine, I would be a doctor now.', 'Nếu mình học y thì giờ mình là bác sĩ rồi.'], ['If only I had listened to my teacher!', 'Giá mà mình nghe lời thầy cô!']
+    ],
+    mis: [['If I would have known, I would have told you.', 'If I had known, I would have told you.', 'Không dùng would trong if.'], ['Had I would known, I would have told you.', 'Had I known, I would have told you.', 'Đảo ngữ: Had + S + V3.'], ['If she had studied, she would passed.', 'If she had studied, she would have passed.', 'would have + V3.']],
+    quiz: [
+      ['___ I known the truth, I would have acted differently.', ['If', 'Had', 'Would', 'Should'], 1, 'Đảo ngữ loại 3: Had I known.'],
+      ['If it ___ so cold, we would have gone out.', ['wasn\'t', 'hadn\'t been', 'weren\'t', 'isn\'t'], 1, 'If + hadn\'t been.'],
+      ['She could have won if she ___ harder.', ['tried', 'had tried', 'would try', 'tries'], 1, 'could have + V3 + if + had V3.'],
+      ['If he had saved money, he ___ rich now.', ['would have been', 'would be', 'will be', 'is'], 1, 'Hỗn hợp: kết quả hiện tại → would be.']
+    ]
+  });
+
+  P('g10-linking-words', {
+    sections: [
+      { h: 'Từ nối trong bài viết: bổ sung ý, nêu ví dụ, kết luận', b: [
+        { t: { h: ['Chức năng', 'Từ nối'], r: [['Mở đầu ý', 'Firstly, First of all, To begin with'], ['Thêm ý', 'Moreover, Furthermore, In addition, Besides, What\'s more'], ['Đưa ví dụ', 'For example, For instance, such as'], ['Nhấn mạnh', 'In fact, Indeed, Especially'], ['Đối lập', 'However, On the other hand, In contrast'], ['Kết luận', 'In conclusion, To sum up, Overall, In short'], ['Giải thích', 'That is to say, In other words']] } },
+        { tip: 'Đặt **dấu phẩy** sau từ nối đầu câu: **However, we decided to go.** — **For example, many people prefer tea.**' }
+      ] },
+      { h: 'Because / since / as / because of / due to', b: [
+        { t: { h: ['Từ', 'Theo sau', 'Ví dụ'], r: [['because / since / as', 'mệnh đề S + V', '**Since** it was late, we left.'], ['because of / due to / owing to / thanks to', 'danh từ / V-ing', 'We left **because of** the noise.'], ['so / therefore / as a result', 'kết quả', 'It was late; **therefore**, we left.']] } },
+        { warn: '**thanks to** thường mang nghĩa tích cực: **Thanks to your help, I passed.** Khi tiêu cực dùng **because of / due to**: **The flight was cancelled due to the storm.**' }
+      ] },
+      { h: 'Mẫu câu tương phản nâng cao', b: [
+        { ul: ['**Whereas / While** (đối lập hai vế): **While some prefer cities, others like the countryside.**', '**Even though / though** mạnh hơn although.', '**Nevertheless / Nonetheless** (tuy nhiên – trang trọng).', '**Despite the fact that / In spite of the fact that + mệnh đề**.', '**Yet / still** (nhưng vẫn): **He is old, yet he runs every day.**'] }
+      ] }
+    ],
+    ex: [
+      ['First of all, we need to set a clear goal.', 'Trước hết, chúng ta cần đặt mục tiêu rõ ràng.'], ['Thanks to your advice, I passed the test.', 'Nhờ lời khuyên của bạn, mình đã đỗ.'], ['The match was cancelled due to bad weather.', 'Trận đấu bị huỷ do thời tiết xấu.'], ['In conclusion, exercise is good for both body and mind.', 'Kết luận, tập thể dục tốt cho cả thể chất lẫn tinh thần.']
+    ],
+    mis: [['Despite the fact he was ill, he came.', 'Despite the fact that he was ill, he came.', 'Cần that sau the fact.'], ['The flight was cancelled thanks to the storm.', 'The flight was cancelled due to the storm.', 'Việc tiêu cực → due to.'], ['It was late; moreover we went home early.', 'It was late; therefore, we went home early.', 'Kết quả → therefore; moreover là thêm ý.']],
+    quiz: [
+      ['___ your help, I finished the work early.', ['Thanks to', 'Due to', 'Although', 'Despite'], 0, 'Nguyên nhân tích cực → Thanks to.'],
+      ['The trip was postponed ___ the bad weather.', ['because', 'due to', 'although', 'so'], 1, 'Sau chỗ trống là danh từ → due to.'],
+      ['Many students like online classes. ___, some prefer face-to-face ones.', ['Therefore', 'However', 'Because', 'Moreover'], 1, 'Đối lập → However.'],
+      ['He is old, ___ he exercises every day.', ['so', 'yet', 'because', 'therefore'], 1, 'Nhưng vẫn → yet.']
+    ]
+  });
+
+  P('g10-modal-perfect', {
+    sections: [
+      { h: 'Khác biệt giữa các mức độ suy đoán trong quá khứ', b: [
+        { t: { h: ['Mức', 'Cấu trúc', 'Ví dụ'], r: [['Chắc chắn đã xảy ra', 'must have + V3', 'The lights are off. They **must have gone** out.'], ['Có thể đã xảy ra', 'may/might/could have + V3', 'She **might have forgotten** it.'], ['Chắc chắn không xảy ra', 'can\'t/couldn\'t have + V3', 'He **can\'t have taken** it. He was abroad.']] } },
+        { tip: 'Có **bằng chứng rõ** → must have / can\'t have; **chưa chắc** → may/might/could have.' }
+      ] },
+      { h: 'Tiếc nuối và phê bình', b: [
+        { ul: ['**should have + V3**: đáng lẽ nên (nhưng đã không): **You should have called me.**', '**shouldn\'t have + V3**: đáng lẽ không nên: **I shouldn\'t have shouted at her.**', '**ought to have + V3** gần nghĩa should have.', '**could have + V3**: có khả năng nhưng không làm: **We could have won, but we gave up.**', '**needn\'t have + V3**: đã làm mà không cần: **You needn\'t have waited.**'] },
+        { warn: '**didn\'t need to V** (không cần làm, có thể đã không làm) ≠ **needn\'t have V3** (đã làm rồi mà hoá ra không cần).' }
+      ] },
+      { h: 'Câu hỏi và thể tiếp diễn', b: [
+        { ul: ['Câu hỏi: **Could she have missed the bus?** — **Should we have left earlier?** (đảo modal lên trước).', 'Thể tiếp diễn: **must have been + V-ing**: **He must have been sleeping.** (lúc đó chắc đang ngủ)', '**might have been + V-ing**: **They might have been waiting outside.**', 'Phủ định: **may not have / might not have**: **She may not have heard you.**'] }
+      ] }
+    ],
+    ex: [
+      ['Could she have missed the bus?', 'Có thể cô ấy đã lỡ xe buýt không?'], ['He must have been sleeping when I called.', 'Chắc lúc mình gọi anh ấy đang ngủ.'], ['You ought to have told me earlier.', 'Lẽ ra bạn nên nói với mình sớm hơn.'], ['She may not have heard the bell.', 'Có thể cô ấy đã không nghe thấy chuông.']
+    ],
+    mis: [['She must have been to Hue last year. (ý: không chắc)', 'She might have been to Hue last year.', 'Không chắc → might.'], ['You should have called me, didn\'t you?', 'You should have called me.', 'Không cần đuôi sai.'], ['He should had told me.', 'He should have told me.', 'should have + V3.']],
+    quiz: [
+      ['The streets are wet. It ___ last night.', ['must have rained', 'must rain', 'should rain', 'can\'t rain'], 0, 'Có bằng chứng → must have + V3.'],
+      ['I failed. I ___ harder.', ['should have studied', 'must study', 'might study', 'can have studied'], 0, 'Tiếc nuối → should have + V3.'],
+      ['He ___ the news. He looked totally surprised.', ['can\'t have heard', 'must hear', 'should hear', 'might hearing'], 0, 'Chắc chắn không → can\'t have heard.'],
+      ['When I called, she ___ a shower.', ['must have been taking', 'must take', 'should take', 'might to take'], 0, 'must have been + V-ing.']
+    ]
+  });
+
+  P('g10-question-tags', {
+    sections: [
+      { h: 'Cách chọn đuôi cho từng loại động từ', b: [
+        { t: { h: ['Câu chính có', 'Đuôi', 'Ví dụ'], r: [['to be', 'be (đảo ngược khẳng định/ phủ định)', 'You are tired, **aren\'t you**?'], ['trợ động từ (have, will, can, should…)', 'chính trợ động từ đó', 'She can swim, **can\'t she**? He has left, **hasn\'t he**?'], ['động từ thường', 'do / does / did', 'They live here, **don\'t they**? You saw him, **didn\'t you**?'], ['have (sở hữu) nói thông thường', 'haven\'t hoặc don\'t', 'She has a car, **hasn\'t she**? / **doesn\'t she**?'], ['must (suy đoán)', 'mustn\'t → needn\'t / hay đuôi theo have', 'He must be ill, **isn\'t he**?']] } }
+      ] },
+      { h: 'Câu hỏi đuôi trong tình huống đặc biệt', b: [
+        { ul: ['**I am** … → **aren\'t I?** · **I am not** … → **am I?**', '**Let\'s** … → **shall we?** · **Let me** … → **will you?**', 'Mệnh lệnh: **Close the door, will you?** (lịch sự: **would you? / could you?**) · phủ định: **Don\'t move, will you?**', '**There is/are** …, **isn\'t/aren\'t there?**', '**This/That is** … → **isn\'t it?** · **These/Those are** … → **aren\'t they?**', 'Các từ phủ định **no, never, hardly, rarely, seldom, nothing, nobody** → đuôi **khẳng định**: **He never smokes, does he?**'] },
+        { warn: 'Với **everyone, someone, nobody, anyone**: đuôi dùng **they**: **Everyone is here, aren\'t they?** Với **nothing, something, everything, that**: đuôi dùng **it**.' }
+      ] },
+      { h: 'Ngữ điệu và cách trả lời', b: [
+        { t: { h: ['Ngữ điệu', 'Ý nghĩa', 'Ví dụ'], r: [['lên giọng ↗', 'thật sự hỏi (không chắc)', 'You didn\'t lock the door, did you? ↗'], ['xuống giọng ↘', 'xác nhận, mong đồng ý', 'It\'s a lovely day, isn\'t it? ↘']] } },
+        { p: 'Cách trả lời theo **sự thật**: **"You don\'t like fish, do you?" — Yes, I do. / No, I don\'t.** (Yes = có thích; No = không thích).' }
+      ] }
+    ],
+    ex: [
+      ['He never smokes, does he?', 'Anh ấy không bao giờ hút thuốc, đúng không?'], ['Everyone is here, aren\'t they?', 'Mọi người có mặt đủ cả rồi, đúng không?'], ['Don\'t forget the key, will you?', 'Đừng quên chìa khoá nhé?'], ['You have never been to Japan, have you?', 'Bạn chưa từng đến Nhật, đúng không?']
+    ],
+    mis: [['She can swim, doesn\'t she?', 'She can swim, can\'t she?', 'Đuôi dùng chính modal can.'], ['Everyone is here, isn\'t he?', 'Everyone is here, aren\'t they?', 'everyone → they.'], ['I am right, am not I?', 'I am right, aren\'t I?', 'Đuôi đặc biệt: aren\'t I?']],
+    quiz: [
+      ['Open the window, ___?', ['will you', 'shall we', 'do you', 'are you'], 0, 'Câu mệnh lệnh → will you?'],
+      ['She has never been abroad, ___?', ['hasn\'t she', 'has she', 'is she', 'does she'], 1, 'never là phủ định → đuôi khẳng định: has she?'],
+      ['Nobody called, ___?', ['did they', 'didn\'t they', 'did he', 'do they'], 0, 'nobody → they, đuôi khẳng định.'],
+      ['These are your keys, ___?', ['isn\'t it', 'aren\'t they', 'are these', 'don\'t they'], 1, 'These are → aren\'t they?']
+    ]
+  });
 })();

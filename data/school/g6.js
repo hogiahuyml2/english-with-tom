@@ -468,4 +468,228 @@
       ['Mai looks very ___ today.', ['happily', 'happy', 'happiness', 'happier than'], 1, 'Sau look dùng tính từ: looks happy.']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 6 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g6-tobe', {
+    sections: [
+      { h: 'Giới thiệu bản thân và người khác', b: [
+        { t: { h: ['Mục đích', 'Mẫu câu', 'Ví dụ'], r: [['Giới thiệu tên', 'My name is… / I\'m…', 'My name is Lan. I\'m Nam.'], ['Nói quê quán', 'I\'m from… / I come from…', 'I\'m from Hue.'], ['Giới thiệu người khác', 'This is… / These are…', 'This is my friend, Tom.'], ['Hỏi thăm', 'How are you? — I\'m fine, thanks.', 'How are you today?'], ['Gặp lần đầu', 'Nice to meet you. — Nice to meet you, too.', 'Hello, I\'m Mai. Nice to meet you.']] } },
+        { tip: 'Với tên người dùng **My name is Lan** hoặc **I\'m Lan**; nói tuổi dùng **I\'m 12** (không nói "I have 12 years old").' }
+      ] },
+      { h: 'Câu hỏi Wh- với to be', b: [
+        { f: ['Wh-word + **am/is/are** + S + …?'] },
+        { t: { h: ['Câu hỏi', 'Trả lời mẫu'], r: [['What **is** your name?', 'My name is Lan.'], ['How old **are** you?', 'I\'m twelve.'], ['Where **are** you from?', 'I\'m from Viet Nam.'], ['Who **is** that boy?', 'He\'s my brother.'], ['What **are** these?', 'They\'re my books.'], ['How **is** your mother?', 'She\'s fine, thank you.']] } },
+        { warn: 'Viết tắt **What\'s / Who\'s / Where\'s / How\'s** được dùng nhiều trong nói; nhưng ở câu trả lời ngắn **Yes, I am** không viết tắt: ✗ Yes, I\'m.' }
+      ] },
+      { h: 'To be và động từ thường: đừng nhầm', b: [
+        { ul: ['Mỗi câu chỉ có **một động từ chính**: **She is a teacher.** (be) — **She teaches English.** (động từ thường). Không dùng cả hai: ✗ She is teach English.', 'Phủ định của **be** thêm **not**: **I am not tired.** Phủ định động từ thường dùng **don\'t/doesn\'t**: **I don\'t like tea.**', 'Sau **be** thường là danh từ, tính từ hoặc cụm giới từ: He is **a doctor / tall / in the garden**.'] },
+        { t: { h: ['', 'to be', 'động từ thường'], r: [['Câu hỏi', 'Are you tired?', 'Do you like tea?'], ['Phủ định', 'I\'m not tired.', 'I don\'t like tea.'], ['Trả lời ngắn', 'Yes, I am.', 'Yes, I do.']] } }
+      ] }
+    ],
+    ex: [
+      ['My name is Mai and I\'m from Hue.', 'Mình tên Mai và mình đến từ Huế.'], ['How old are you? — I\'m eleven.', 'Bạn bao nhiêu tuổi? — Mình mười một tuổi.'], ['Where are your parents? — They\'re at work.', 'Bố mẹ bạn ở đâu? — Họ đang ở chỗ làm.'], ['Who is that girl? — She\'s my cousin.', 'Cô gái kia là ai? — Chị họ mình.']
+    ],
+    mis: [['How old you are?', 'How old are you?', 'Câu hỏi Wh- với be: Wh + be + S.'], ['I have 12 years old.', 'I am 12 years old.', 'Nói tuổi dùng be, không dùng have.'], ['She is teach English.', 'She teaches English.', 'Không dùng be cùng động từ thường.']],
+    quiz: [
+      ['___ is your name? — My name is Nam.', ['Who', 'What', 'Where', 'How'], 1, 'Hỏi tên → What is your name?'],
+      ['Where ___ you from? — I\'m from Da Nang.', ['is', 'am', 'are', 'do'], 2, 'you → are.'],
+      ['"Are you a student?" "No, I ___."', ['amn\'t', 'isn\'t', 'am not', 'not am'], 2, 'Trả lời ngắn phủ định: No, I am not / I\'m not.'],
+      ['Which sentence is correct?', ['She is like pizza.', 'She likes pizza.', 'She is likes pizza.', 'She does like pizza.'], 1, 'like là động từ thường, không dùng be.']
+    ]
+  });
+
+  P('g6-present-simple', {
+    sections: [
+      { h: 'Câu phủ định và câu hỏi chi tiết', b: [
+        { t: { h: ['Chủ ngữ', 'Phủ định', 'Câu hỏi', 'Trả lời ngắn'], r: [['I / you / we / they', 'don\'t + V', 'Do + S + V?', 'Yes, I do. / No, they don\'t.'], ['he / she / it', 'doesn\'t + V', 'Does + S + V?', 'Yes, she does. / No, it doesn\'t.']] } },
+        { ul: ['Sau **do/does/don\'t/doesn\'t** luôn dùng **V nguyên mẫu** (không thêm s, không chia): **Does she like tea?** (✗ likes).', 'Câu hỏi có từ để hỏi: **Wh-word + do/does + S + V?**: **Where does he work?** — **What do you do?** (hỏi nghề nghiệp).', 'Câu hỏi về **chủ ngữ** không dùng do/does: **Who likes pizza?** — Tom does.'] },
+        { tip: 'Hỏi nghề: **What do you do?** = Bạn làm nghề gì? Trả lời: **I\'m a teacher.** (dùng be, không lặp "do").' }
+      ] },
+      { h: 'Trạng từ tần suất và vị trí', b: [
+        { t: { h: ['Trạng từ', 'Mức độ', 'Ví dụ'], r: [['always', '100%', 'She always gets up at 6.'], ['usually', '~80%', 'I usually walk to school.'], ['often', '~60%', 'We often play football.'], ['sometimes', '~40%', 'He sometimes forgets his keys.'], ['rarely / hardly ever', '~10%', 'They rarely eat out.'], ['never', '0%', 'I never drink coffee.']] } },
+        { ul: ['Đứng **trước động từ thường**: I **often** read books.', 'Đứng **sau to be**: She is **always** late.', 'Cụm từ chỉ tần suất đứng **cuối câu**: **every day, once a week, twice a month, three times a year**.'] },
+        { warn: 'Câu hỏi: **How often do you…?** — trả lời bằng trạng từ hoặc cụm: **Twice a week.** Với **never** không dùng phủ định: ✗ I don\'t never go → ✓ I never go.' }
+      ] },
+      { h: 'Các lỗi và lưu ý quan trọng', b: [
+        { ul: ['**Chủ ngữ số ít** (danh từ số ít, tên riêng, it, he, she) + V-s/es: **My brother plays**. Danh từ số nhiều không thêm s: **My brothers play**.', '**Do/does** là trợ động từ, còn **do/does** làm động từ chính nghĩa "làm": **She does her homework.** (does = làm).', 'Dạng đặc biệt: **go → goes, do → does, have → has, fly → flies, watch → watches, pass → passes, mix → mixes**.', 'Hiện tại đơn cũng dùng cho **lịch trình/thời gian biểu**: The train **leaves** at 9.'] }
+      ] }
+    ],
+    ex: [
+      ['She never eats meat.', 'Cô ấy không bao giờ ăn thịt.'], ['How often do you visit your grandparents? — Once a month.', 'Bao lâu bạn thăm ông bà một lần? — Mỗi tháng một lần.'], ['Does your sister work in a bank? — No, she doesn\'t.', 'Chị bạn làm ở ngân hàng à? — Không.'], ['The train leaves at 9 o\'clock.', 'Tàu khởi hành lúc 9 giờ.']
+    ],
+    mis: [['She always is late.', 'She is always late.', 'Trạng từ tần suất đứng sau to be.'], ['I don\'t never watch TV.', 'I never watch TV.', 'never đã mang nghĩa phủ định.'], ['My brothers plays football.', 'My brothers play football.', 'brothers số nhiều → không thêm s.']],
+    quiz: [
+      ['She ___ gets up late on Sundays.', ['usually', 'usual', 'is usually', 'does usually'], 0, 'Trạng từ tần suất đứng trước động từ thường.'],
+      ['He is ___ late for class.', ['never', 'doesn\'t never', 'not never', 'never is'], 0, 'be + never (He is never late).'],
+      ['What time ___ your mother go to work?', ['do', 'does', 'is', 'did'], 1, 'mother → does.'],
+      ['My uncle ___ in a hospital.', ['work', 'works', 'is work', 'does work'], 1, 'uncle số ít → works.']
+    ]
+  });
+
+  P('g6-present-continuous', {
+    sections: [
+      { h: 'Câu phủ định, câu hỏi và trả lời ngắn', b: [
+        { t: { h: ['', 'Cấu trúc', 'Ví dụ'], r: [['Khẳng định', 'S + am/is/are + V-ing', 'She **is cooking** now.'], ['Phủ định', 'S + am/is/are **not** + V-ing', 'They **aren\'t watching** TV.'], ['Nghi vấn', '**Am/Is/Are** + S + V-ing?', '**Is** he **sleeping**?'], ['Wh-', 'Wh-word + am/is/are + S + V-ing?', 'What **are you doing**?'], ['Trả lời ngắn', 'Yes, S + am/is/are. / No, S + am/is/are + not.', 'Yes, he is. / No, he isn\'t.']] } },
+        { tip: 'Hỏi về chủ ngữ: **Who is singing?** (không cần trợ động từ khác).' }
+      ] },
+      { h: 'Hiện tại tiếp diễn và hiện tại đơn', b: [
+        { t: { h: ['', 'Hiện tại đơn', 'Hiện tại tiếp diễn'], r: [['Ý nghĩa', 'thói quen, sự thật, lịch trình', 'đang xảy ra, tạm thời'], ['Dấu hiệu', 'always, usually, every day, on Mondays', 'now, at the moment, look!, listen!'], ['Ví dụ', 'I **play** football on Sundays.', 'I **am playing** football now.'], ['Câu hỏi', 'Do you play football?', 'Are you playing football?']] } },
+        { p: 'Kết hợp hai thì trong một câu: **I usually walk to school, but today I\'m taking the bus.** (thói quen ≠ việc đặc biệt hôm nay).' }
+      ] },
+      { h: 'Quy tắc thêm -ing và lưu ý', b: [
+        { ul: ['Động từ **một âm tiết** có cấu trúc phụ âm–nguyên âm–phụ âm: gấp đôi phụ âm cuối: **run → running, sit → sitting, swim → swimming, stop → stopping**.', 'Động từ tận cùng **-w, -x, -y** không gấp đôi: **play → playing, fix → fixing, snow → snowing**.', '**be** có hai dạng: **am/is/are being** (cư xử) — chưa học ở lớp 6.', 'Nhớ không dùng **be** thiếu: ✗ She reading → ✓ She **is** reading.'] },
+        { warn: 'Các động từ **know, like, love, want, need, understand, believe, have (sở hữu)** thường **không** dùng ở thì tiếp diễn.' }
+      ] }
+    ],
+    ex: [
+      ['What is she doing? — She is cooking dinner.', 'Cô ấy đang làm gì? — Cô ấy đang nấu bữa tối.'], ['I usually walk to school, but today I\'m taking the bus.', 'Mình thường đi bộ đến trường nhưng hôm nay mình đi xe buýt.'], ['The boys are swimming in the pool.', 'Các cậu bé đang bơi trong hồ.'], ['Who is playing the piano?', 'Ai đang chơi đàn piano thế?']
+    ],
+    mis: [['She reading a book now.', 'She is reading a book now.', 'Thiếu am/is/are.'], ['They are swiming.', 'They are swimming.', 'swim → swimming (gấp đôi m).'], ['Are you work now?', 'Are you working now?', 'Câu hỏi tiếp diễn dùng V-ing.']],
+    quiz: [
+      ['My mother is ___ dinner in the kitchen.', ['cook', 'cooks', 'cooking', 'cooked'], 2, 'is + V-ing.'],
+      ['The children ___ in the garden now.', ['plays', 'is playing', 'are playing', 'play'], 2, 'children số nhiều → are playing.'],
+      ['I usually go by bus, but today I ___ by bike.', ['go', 'am going', 'goes', 'went'], 1, 'Hôm nay tạm thời khác thường lệ → am going.'],
+      ['He is ___ his shoes.', ['putting', 'puting', 'puts', 'put'], 0, 'put → putting (gấp đôi t).']
+    ]
+  });
+
+  P('g6-there-is-are', {
+    sections: [
+      { h: 'Nói về nơi chốn: There is/are + giới từ', b: [
+        { p: 'Thường theo sau là cụm giới từ chỉ vị trí để nói đồ vật **ở đâu**:' },
+        { t: { h: ['Giới từ', 'Ví dụ'], r: [['in / on / under', 'There is a cat **under** the table.'], ['next to / near / opposite', 'There is a bank **next to** the school.'], ['in front of / behind', 'There are two trees **behind** the house.'], ['between', 'There is a lamp **between** the bed and the desk.'], ['on the left / right', 'There is a window **on the left**.']] } },
+        { tip: 'Mô tả phòng/ nhà: bắt đầu bằng **There is/are** rồi thêm chi tiết bằng **It is…** hoặc **They are…**: There is a desk. **It is** next to the window.' }
+      ] },
+      { h: 'There is/are với số lượng', b: [
+        { ul: ['**a / an / one** + danh từ số ít: There is **a** library. · There is **one** bathroom.', 'Số lượng khác 1 + danh từ số nhiều: There are **four** bedrooms.', 'Không đếm được: **some / a lot of / much / any**: There is **a lot of** snow. There isn\'t **much** water.', 'Hỏi số lượng: **How many** + danh từ số nhiều + are there…? / **How much** + danh từ không đếm được + is there…?'] },
+        { t: { h: ['Câu', 'Dạng', 'Ví dụ'], r: [['Khẳng định', 'There is/are (some)', 'There are some pens.'], ['Phủ định', 'There isn\'t/aren\'t (any)', 'There aren\'t any pens.'], ['Nghi vấn', 'Is/Are there (any)…?', 'Are there any pens?']] } }
+      ] },
+      { h: 'There is/are và Have/has — đừng nhầm', b: [
+        { ul: ['**There is/are** = có (tồn tại ở đâu đó): **There is a park near my house.**', '**have/has** = sở hữu (ai có cái gì): **I have a new bike.** — **My house has three rooms.** (nhà gồm có)', 'Không dùng **it has** để nói "có" nơi chốn: ✗ It has a park near my house. ✓ **There is** a park near my house.'] },
+        { warn: 'Danh từ **không đếm được** (water, milk, rice, money, time) dùng **There is**, không dùng There are.' }
+      ] }
+    ],
+    ex: [
+      ['There is a cat under the table.', 'Có một con mèo ở dưới bàn.'], ['There aren\'t any eggs, but there is some milk.', 'Không có quả trứng nào nhưng có ít sữa.'], ['How much water is there in the bottle?', 'Có bao nhiêu nước trong chai?'], ['There is a lot of snow in the mountains in winter.', 'Mùa đông có rất nhiều tuyết ở trên núi.']
+    ],
+    mis: [['There are a lot of water.', 'There is a lot of water.', 'water không đếm được → is.'], ['In my room has a bed.', 'There is a bed in my room.', 'Dùng There is, không dùng has.'], ['Is there any students?', 'Are there any students?', 'students số nhiều → Are there.']],
+    quiz: [
+      ['There ___ a lot of water in the lake.', ['are', 'is', 'have', 'has'], 1, 'water không đếm được → is.'],
+      ['___ there any pencils in your bag?', ['Is', 'Are', 'Do', 'Have'], 1, 'pencils số nhiều → Are there.'],
+      ['"How many rooms are there in your house?" "___ five."', ['It is', 'There are', 'There is', 'They have'], 1, 'There are five.'],
+      ['Which sentence is correct?', ['It has a school near my house.', 'There has a school near my house.', 'There is a school near my house.', 'Have a school near my house.'], 2, 'Nói "có" nơi chốn → There is.']
+    ]
+  });
+
+  P('g6-articles-plurals', {
+    sections: [
+      { h: 'Khi nào dùng the?', b: [
+        { ul: ['Người nghe đã **biết** là cái nào: Open **the** window. (cửa sổ trong phòng)', 'Đã nhắc ở trước: I have a dog. **The** dog is black.', 'Vật **duy nhất**: the sun, the moon, the Earth, the sky, the world.', 'Sau **so sánh nhất** và **số thứ tự**: the best, the first, the tallest.', 'Tên một số địa danh: the Pacific, the Mekong River, the United States; nhạc cụ: play **the** piano/guitar.'] },
+        { t: { h: ['Dùng a/an', 'Dùng the', 'Không dùng mạo từ'], r: [['lần đầu nhắc / nghề nghiệp', 'đã xác định / duy nhất', 'danh từ nói chung, bữa ăn, môn thể thao, ngôn ngữ, tên người'], ['She is **a** teacher.', '**The** teacher is kind.', 'She teaches English. · I like music. · Tom plays football.']] } }
+      ] },
+      { h: 'Danh từ đếm được và không đếm được', b: [
+        { t: { h: ['', 'Đếm được', 'Không đếm được'], r: [['Số ít', 'a book, an apple', 'water, milk, rice, money, information, furniture, advice'], ['Số nhiều', 'books, apples', 'không có dạng số nhiều'], ['Đi với', 'a/an, many, a few, some', 'much, a little, some, a lot of'], ['Đơn vị đo', '—', 'a glass of water, a piece of advice, a bottle of milk']] } },
+        { warn: 'Không thêm **s** vào danh từ không đếm được: ✗ informations, furnitures, advices. Dùng **some information / a piece of information**.' }
+      ] },
+      { h: 'Cách đọc đuôi -s/-es của danh từ số nhiều', b: [
+        { t: { h: ['Đọc', 'Khi nào', 'Ví dụ'], r: [['/s/', 'sau âm vô thanh /p, t, k, f, θ/', 'books, cats, maps, cliffs'], ['/z/', 'sau âm hữu thanh và nguyên âm', 'dogs, pens, bags, boys'], ['/ɪz/', 'sau /s, z, ʃ, ʒ, tʃ, dʒ/', 'buses, boxes, watches, bridges']] } },
+        { ul: ['Danh từ tận cùng -o: nhiều từ +es (tomato → tomatoes, potato → potatoes, hero → heroes) nhưng **photo → photos, piano → pianos, radio → radios**.', 'Danh từ chỉ nhóm người: **people** (số nhiều, không thêm s), **police** (số nhiều), **family/team** (số ít hoặc nhiều).', 'Danh từ chỉ đồ vật có hai phần dùng số nhiều: **glasses, jeans, trousers, scissors** → a pair of jeans.'] }
+      ] }
+    ],
+    ex: [
+      ['I have a dog. The dog is very friendly.', 'Mình có một con chó. Con chó rất thân thiện.'], ['She plays the piano and her brother plays the guitar.', 'Cô ấy chơi piano còn em trai chơi ghi-ta.'], ['We need some information about the course.', 'Chúng mình cần ít thông tin về khoá học.'], ['I bought a pair of jeans and two photos.', 'Mình mua một cái quần jean và hai tấm ảnh.']
+    ],
+    mis: [['I have a dog. A dog is black.', 'I have a dog. The dog is black.', 'Đã nhắc ở trước → the.'], ['She gave me an advice.', 'She gave me some advice. / a piece of advice.', 'advice không đếm được.'], ['I need some informations.', 'I need some information.', 'information không có số nhiều.']],
+    quiz: [
+      ['I have a cat. ___ cat is white.', ['A', 'An', 'The', 'Some'], 2, 'Đã nhắc ở trước → The.'],
+      ['She plays ___ piano very well.', ['a', 'an', 'the', 'no article'], 2, 'play + the + nhạc cụ.'],
+      ['We need some ___ about the trip.', ['informations', 'information', 'an information', 'informing'], 1, 'information không đếm được.'],
+      ['The plural of "tomato" is ___.', ['tomatos', 'tomatoes', 'tomatoies', 'tomati'], 1, 'tomato → tomatoes.']
+    ]
+  });
+
+  P('g6-possessives', {
+    sections: [
+      { h: 'Whose và cách trả lời', b: [
+        { f: ['**Whose** + danh từ + is/are + this/that/these/those? — It\'s / They\'re + \'s / đại từ sở hữu'] },
+        { t: { h: ['Câu hỏi', 'Trả lời mẫu'], r: [['Whose bag is this?', 'It\'s **Lan\'s**. / It\'s **hers**. / It\'s **my** bag.'], ['Whose books are these?', 'They\'re **Tom\'s**. / They\'re **ours**.'], ['Whose is this pen?', 'It\'s **mine**.']] } },
+        { tip: 'Sau **Whose** có thể không có danh từ: **Whose is this?** — It\'s **mine**.' }
+      ] },
+      { h: 'Sở hữu cách \'s — các trường hợp đặc biệt', b: [
+        { ul: ['Hai người sở hữu chung: ghi \'s ở người cuối: **Tom and Anna\'s house** (nhà của cả hai).', 'Mỗi người một vật riêng: **Tom\'s and Anna\'s houses**.', 'Tên tận cùng -s: thêm **\'s** hoặc chỉ **\'**: **James\'s book / James\' book**.', 'Dùng cho người, con vật; với đồ vật dùng **of**: **the door of the room** (✗ the room\'s door ít dùng).', '**\'s** còn là dạng viết tắt của **is/has**: **Tom\'s tall.** (Tom is) / **Tom\'s got a bike.** (Tom has) — dựa vào ngữ cảnh.'] }
+      ] },
+      { h: 'Tính từ sở hữu hay đại từ sở hữu?', b: [
+        { t: { h: ['Dùng khi', 'Tính từ sở hữu', 'Đại từ sở hữu'], r: [['Sau nó có danh từ', 'This is **my** book.', '—'], ['Không có danh từ sau', '—', 'This book is **mine**.'], ['So sánh', '**Her** house is bigger than **our** house.', 'Her house is bigger than **ours**.']] } },
+        { warn: 'Không dùng mạo từ cùng tính từ sở hữu: ✗ the my book, a my friend → ✓ **my book**, **a friend of mine** (một người bạn của mình).' }
+      ] }
+    ],
+    ex: [
+      ['Whose pencil is this? — It\'s Mai\'s.', 'Cây bút chì này của ai? — Của Mai.'], ['Tom and Anna\'s house is near the park.', 'Nhà của Tom và Anna ở gần công viên.'], ['Our classroom is bigger than theirs.', 'Lớp học của chúng mình lớn hơn lớp của họ.'], ['She\'s my friend. She\'s very kind.', 'Cô ấy là bạn của mình. Cô ấy rất tốt bụng.']
+    ],
+    mis: [['The my book is on the table.', 'My book is on the table.', 'Không dùng the cùng tính từ sở hữu.'], ['This is the room of Lan.', 'This is Lan\'s room.', 'Dùng \'s với người.'], ['Their\'s house is big.', 'Their house is big. / The house is theirs.', 'their không có dấu \'.']],
+    quiz: [
+      ['___ shoes are these? — They\'re Tom\'s.', ['Who', 'Whose', 'Who\'s', 'Which'], 1, 'Hỏi sở hữu → Whose.'],
+      ['This isn\'t my pen. It\'s ___.', ['her', 'hers', 'she', 'her\'s'], 1, 'Đại từ sở hữu đứng một mình: hers.'],
+      ['Anna and Tom are friends. That is ___ house.', ['Anna and Tom\'s', 'Anna\'s and Tom', 'Anna and Toms', 'Anna and Tom'], 0, 'Chung một vật → Anna and Tom\'s house.'],
+      ['The ___ room is on the left. (một cậu bé)', ['boys\'', 'boy\'s', 'boys', 'boy'], 1, 'Số ít + \'s.']
+    ]
+  });
+
+  P('g6-prepositions', {
+    sections: [
+      { h: 'Giới từ chỉ chuyển động và hướng', b: [
+        { t: { h: ['Giới từ', 'Nghĩa', 'Ví dụ'], r: [['to', 'đến (một nơi)', 'I go **to** school by bus.'], ['from', 'từ (nơi xuất phát)', 'She comes **from** Hue.'], ['into / out of', 'vào trong / ra khỏi', 'Go **into** the room. Get **out of** the car.'], ['along', 'dọc theo', 'Walk **along** the river.'], ['across', 'băng qua', 'Walk **across** the bridge.'], ['through', 'xuyên qua', 'The train goes **through** a tunnel.'], ['up / down', 'lên / xuống', 'Go **up** the stairs.'], ['past', 'đi ngang qua', 'Go **past** the bank.']] } },
+        { tip: 'Chỉ đường: **Go straight → turn left/right → go past the bank → it\'s on your left / opposite the school**.' }
+      ] },
+      { h: 'Giới từ chỉ thời gian khác', b: [
+        { t: { h: ['Giới từ', 'Dùng với', 'Ví dụ'], r: [['**from … to / until**', 'khoảng thời gian', 'School is open **from** 7 **to** 5.'], ['**for**', 'bao lâu', 'I have lived here **for** three years.'], ['**before / after**', 'trước / sau', 'Wash your hands **before** meals.'], ['**during**', 'trong suốt', 'I slept **during** the film.'], ['**by**', 'chậm nhất lúc', 'Finish it **by** Friday.']] } },
+        { warn: 'Không dùng giới từ trước **tomorrow, yesterday, today, tonight, next week, last year, this morning, every day**: ✗ on tomorrow → ✓ tomorrow.' }
+      ] },
+      { h: 'Giới từ đi với động từ và tính từ quen thuộc', b: [
+        { t: { h: ['Cụm', 'Nghĩa', 'Ví dụ'], r: [['listen to', 'nghe', 'Listen to the teacher.'], ['look at', 'nhìn vào', 'Look at the board.'], ['wait for', 'chờ', 'I\'m waiting for the bus.'], ['good at', 'giỏi', 'She is good at maths.'], ['interested in', 'quan tâm', 'He is interested in music.'], ['arrive in / at', 'đến (thành phố / nơi nhỏ)', 'We arrived in Hanoi at the station.'], ['live in / at', 'sống ở', 'She lives in a big city, at 25 Hang Bac Street.']] } }
+      ] }
+    ],
+    ex: [
+      ['I go to school from Monday to Friday.', 'Mình đi học từ thứ Hai đến thứ Sáu.'], ['Walk along this street and turn left at the bank.', 'Đi dọc con đường này rồi rẽ trái ở ngân hàng.'], ['He is waiting for the bus.', 'Anh ấy đang đợi xe buýt.'], ['She is very good at drawing.', 'Cô ấy vẽ rất giỏi.']
+    ],
+    mis: [['I\'m waiting the bus.', 'I\'m waiting for the bus.', 'wait for.'], ['See you on tomorrow.', 'See you tomorrow.', 'Không dùng giới từ trước tomorrow.'], ['He is good in English.', 'He is good at English.', 'good at.']],
+    quiz: [
+      ['Please listen ___ me carefully.', ['at', 'to', 'for', 'in'], 1, 'listen to.'],
+      ['We arrived ___ Hanoi at 9 a.m.', ['to', 'in', 'on', 'at'], 1, 'arrive in + thành phố.'],
+      ['I\'m not good ___ football.', ['at', 'in', 'on', 'for'], 0, 'good at.'],
+      ['Go ___ the bank and you will see the school.', ['past', 'at', 'on', 'for'], 0, 'go past = đi ngang qua.']
+    ]
+  });
+
+  P('g6-wh-questions', {
+    sections: [
+      { h: 'Những cặp từ để hỏi dễ nhầm', b: [
+        { t: { h: ['Cặp', 'Khác nhau', 'Ví dụ'], r: [['**What** / **Which**', 'What: không giới hạn; Which: có lựa chọn cụ thể', 'What colour do you like? — Which colour do you like, red or blue?'], ['**Who** / **Whose** / **Whom**', 'Who: ai; Whose: của ai', 'Who is she? — Whose is this bag?'], ['**When** / **What time**', 'When: khi nào; What time: mấy giờ', 'When is the party? — What time does it start?'], ['**How** / **What … like**', 'How: tính chất (sức khoẻ, cách thức); What…like: mô tả', 'How is your mother? — What\'s your mother like?'], ['**How long / How far**', 'long: bao lâu/dài; far: khoảng cách', 'How long is the film? — How far is your school?']] } }
+      ] },
+      { h: 'Câu hỏi với giới từ và câu hỏi đuôi chủ ngữ', b: [
+        { ul: ['Giới từ thường đứng **cuối câu**: **Who are you talking to?** — **What are you looking at?** — **Where are you from?**', 'Hỏi về **chủ ngữ** không đảo: **Who called you?** — **What happened?** — **Which team won?**', 'Hỏi về **tân ngữ** cần trợ động từ: **Who did you call?** — **What did you see?**'] },
+        { warn: 'Không dùng **did/do/does** khi hỏi về chủ ngữ: ✗ Who did call you? → ✓ Who called you?' }
+      ] },
+      { h: 'Từ để hỏi + danh từ / what for / how come', b: [
+        { t: { h: ['Mẫu', 'Ví dụ'], r: [['**What** + danh từ', 'What time/kind/sport/colour…?'], ['**Which** + danh từ', 'Which book do you want?'], ['**Whose** + danh từ', 'Whose phone is ringing?'], ['**How many/much** + danh từ', 'How many apples? How much milk?'], ['**What for?**', 'Để làm gì? — What is this knife for? — It\'s for cutting bread.']] } },
+        { tip: 'Mẫu câu giao tiếp lớp học: **What does … mean?** (… nghĩa là gì?), **How do you spell …?** (đánh vần thế nào?), **How do you say … in English?**' }
+      ] }
+    ],
+    ex: [
+      ['Which bag do you prefer, the red one or the blue one?', 'Bạn thích cái túi nào hơn, cái đỏ hay cái xanh?'], ['What are you looking at?', 'Bạn đang nhìn gì thế?'], ['Who called you last night?', 'Tối qua ai gọi cho bạn?'], ['How do you spell your name?', 'Tên bạn đánh vần thế nào?']
+    ],
+    mis: [['Who did call you?', 'Who called you?', 'Hỏi chủ ngữ không dùng did.'], ['Where you are from?', 'Where are you from?', 'Phải đảo trợ động từ trước chủ ngữ.'], ['What time you go to bed?', 'What time do you go to bed?', 'Thiếu trợ động từ do.']],
+    quiz: [
+      ['___ is your favourite colour? — Blue.', ['Who', 'What', 'Where', 'Whose'], 1, 'What + danh từ…'],
+      ['___ is the party? — On Saturday evening.', ['What', 'When', 'Which', 'Whose'], 1, 'Hỏi thời gian → When.'],
+      ['Who ___ you yesterday?', ['did call', 'called', 'do call', 'calls'], 1, 'Hỏi chủ ngữ: Who called you?'],
+      ['What are you looking ___?', ['at', 'to', 'for', 'on'], 0, 'look at.']
+    ]
+  });
 })();

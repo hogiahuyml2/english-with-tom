@@ -353,4 +353,166 @@
       ['Three of the students were late; ___ arrived on time.', ['the others', 'another', 'other', 'others'], 0, 'Những người còn lại (xác định) → the others.']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 11 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g11-participle-clauses', {
+    sections: [
+      { h: 'Bảng chọn dạng phân từ', b: [
+        { t: { h: ['Ý nghĩa', 'Dạng', 'Ví dụ'], r: [['chủ động, cùng lúc', 'V-ing', '**Walking** home, I met Tom.'], ['chủ động, xảy ra trước', 'Having + V3', '**Having finished** the work, she left.'], ['bị động', 'V3 / Being + V3 / Having been + V3', '**Written** in 1900, the book is still popular. · **Having been warned**, he left.'], ['phủ định', 'Not + V-ing / Not having + V3', '**Not knowing** the way, we asked.'], ['mục đích / sau the first, the only…', 'to V', 'He was the **first** person **to arrive**.']] } }
+      ] },
+      { h: 'Các mẫu mệnh đề trạng ngữ rút gọn', b: [
+        { ul: ['**Nguyên nhân** (because/since): **Being tired, he went to bed.** = Because he was tired…', '**Thời gian** (when/while/after/before): **Before leaving, check the doors.** · **On arriving, she called me.**', '**Điều kiện/ nhượng bộ**: **Used properly, this tool is safe.** = If it is used properly… · **Although tired, he kept going.**', '**Kết quả**: **The bomb exploded, killing two people.** (V-ing chỉ kết quả đi theo)', 'Sau **after, before, while, when, on, since** có thể giữ liên từ: **After eating, we left.**'] }
+      ] },
+      { h: 'Lỗi hay gặp: dangling participle', b: [
+        { p: 'Mệnh đề phân từ **phải cùng chủ ngữ** với mệnh đề chính. Sai: **Walking in the park, the rain started.** (mưa không đi bộ). Đúng: **Walking in the park, we were caught in the rain.**' },
+        { ul: ['Có thể giữ chủ ngữ khác bằng **mệnh đề phân từ tuyệt đối**: **The weather being fine, we went out.** (chủ ngữ riêng).', 'Với **there/it** làm chủ ngữ: **It being late, we went home.**', 'Rút gọn quan hệ **bị động**: **The cake made by Mum is delicious.** Không rút gọn mệnh đề quan hệ không xác định khi có dấu phẩy nhiều chủ ngữ riêng.'] },
+        { tip: 'Hỏi: ai/gì thực hiện hành động phân từ? Nếu **cùng chủ ngữ chính** thì được; nếu không, viết lại câu.' }
+      ] }
+    ],
+    ex: [
+      ['Having been warned about the storm, we stayed at home.', 'Vì đã được cảnh báo về cơn bão, chúng mình ở nhà.'], ['Used properly, this machine is safe.', 'Dùng đúng cách thì máy này an toàn.'], ['The weather being fine, we went for a picnic.', 'Vì thời tiết đẹp nên chúng mình đi dã ngoại.'], ['The bomb exploded, killing two people.', 'Quả bom nổ, làm hai người thiệt mạng.']
+    ],
+    mis: [['Walking in the park, the rain started.', 'Walking in the park, we were caught in the rain.', 'Chủ ngữ không trùng.'], ['Having finish the work, he left.', 'Having finished the work, he left.', 'Having + V3.'], ['The book writing by him is famous.', 'The book written by him is famous.', 'Bị động → V3.']],
+    quiz: [
+      ['___ the news, she burst into tears.', ['Hearing', 'Heard', 'To hear', 'Having hearing'], 0, 'Chủ động, cùng lúc → V-ing.'],
+      ['___ by the teacher, the student felt proud.', ['Praising', 'Praised', 'To praise', 'Being praise'], 1, 'Bị động → V3.'],
+      ['___ the work, he went home.', ['Finish', 'Having finished', 'Having finishing', 'To finish'], 1, 'Xảy ra trước → having finished.'],
+      ['The letter ___ yesterday has not arrived.', ['posting', 'posted', 'to post', 'being post'], 1, 'Rút gọn quan hệ bị động.']
+    ]
+  });
+
+  P('g11-inversion', {
+    sections: [
+      { h: 'Các mẫu đảo ngữ khác', b: [
+        { t: { h: ['Mẫu', 'Ví dụ'], r: [['**Scarcely/Hardly … when**', 'Scarcely had he gone out when it rained.'], ['**Not only … but also** (đảo ở vế đầu)', 'Not only is she kind, but she is also clever.'], ['**Only by / Only in this way / Only then**', 'Only by working hard can you succeed.'], ['**On no account / In no case / By no means**', 'On no account must you open the door.'], ['**Rarely / Seldom / Hardly ever**', 'Seldom does he speak in public.'], ['**Here / There + V + S** (S là danh từ)', 'Here comes the bus. · There goes my chance!'], ['**Adv. of place + V + S**', 'In the corner stood an old clock.']] } },
+        { warn: 'Với **đại từ làm chủ ngữ** sau Here/There không đảo: **Here he comes!** (✗ Here comes he).' }
+      ] },
+      { h: 'Đảo ngữ với so, such, neither, nor', b: [
+        { ul: ['**So + adj + be + S + that…**: **So tired was he that he fell asleep.**', '**Such + be + N + that…**: **Such was the noise that nobody could sleep.**', '**So + trợ động từ + S** (cũng vậy): **I like tea. — So do I.**', '**Neither/Nor + trợ động từ + S** (cũng không): **She can\'t swim. — Neither can I.**', '**Not until + mệnh đề/ N + trợ động từ + S + V**: **Not until she left did I understand.**'] }
+      ] },
+      { h: 'Đảo ngữ trong điều kiện và cách làm bài', b: [
+        { t: { h: ['Câu thường', 'Đảo ngữ'], r: [['If you should need help, call me.', 'Should you need help, call me.'], ['If I were you, I would apologise.', 'Were I you, I would apologise.'], ['If she had known, she would have come.', 'Had she known, she would have come.'], ['If it were not for your help, I would fail.', 'Were it not for your help, I would fail.'], ['If it hadn\'t been for the rain, we would have gone.', 'Had it not been for the rain, we would have gone.']] } },
+        { tip: 'Công thức: **trạng từ phủ định/hạn chế** + **trợ động từ** + **S** + **V**. Chỉ **sau cụm đứng đầu** mới đảo; vế còn lại giữ trật tự thường: **Not only is he rich, but he is also kind.**' }
+      ] }
+    ],
+    ex: [
+      ['Seldom does he speak in public.', 'Hiếm khi anh ấy phát biểu trước đám đông.'], ['Only by working hard can you succeed.', 'Chỉ bằng cách làm việc chăm chỉ bạn mới thành công.'], ['She can\'t swim. — Neither can I.', 'Cô ấy không biết bơi. — Mình cũng vậy.'], ['Were it not for your help, I would fail.', 'Nếu không có sự giúp của bạn, mình đã trượt rồi.']
+    ],
+    mis: [['Seldom he speaks in public.', 'Seldom does he speak in public.', 'Cần đảo trợ động từ.'], ['Only by working hard you can succeed.', 'Only by working hard can you succeed.', 'Đảo sau Only by….'], ['Here comes he!', 'Here he comes!', 'Đại từ không đảo.']],
+    quiz: [
+      ['Seldom ___ such kindness.', ['I have seen', 'have I seen', 'I saw', 'saw I'], 1, 'Seldom + have + S + V3.'],
+      ['Only by studying hard ___ pass the exam.', ['you can', 'can you', 'you will', 'do you'], 1, 'Đảo ngữ: can you.'],
+      ['"I don\'t like fish." "___."', ['So do I', 'Neither do I', 'Nor I do', 'So I don\'t'], 1, 'Neither + trợ động từ + S.'],
+      ['___ her father had advised her did she realise the truth.', ['Not until', 'Hardly', 'Seldom', 'Only if'], 0, 'Not until… did she realise.']
+    ]
+  });
+
+  P('g11-subjunctive-causative', {
+    sections: [
+      { h: 'Câu giả định: các động từ và tính từ đi kèm', b: [
+        { t: { h: ['Loại', 'Từ', 'Cấu trúc'], r: [['động từ', 'suggest, recommend, propose, insist, demand, require, request, advise, ask, order', 'S + V + (that) + S + (should) + V nguyên mẫu'], ['tính từ', 'important, essential, vital, necessary, imperative, crucial', 'It + be + adj + (that) + S + (should) + V nguyên mẫu'], ['danh từ', 'suggestion, recommendation, demand, requirement, insistence', 'The suggestion that he **go**…']] } },
+        { warn: 'Động từ trong mệnh đề that **không chia** theo ngôi/thì (kể cả he/she): **He suggested that she go.** (✗ goes) · phủ định: **that she not go**.' }
+      ] },
+      { h: 'Các cấu trúc giả định với thì quá khứ', b: [
+        { ul: ['**wish / if only** + V2/had V3 (xem bài điều kiện).', '**would rather + S + V2** (hiện tại/tương lai) / **had V3** (quá khứ): **I\'d rather you had told me.**', '**It\'s (high) time + S + V2**: **It\'s high time he found a job.**', '**as if / as though** + V2 / had V3: **She acts as if she owned the place.**', '**suppose / supposing** + V2: **Suppose you won the prize, what would you do?**'] }
+      ] },
+      { h: 'Thể truyền khiến (causative) chi tiết', b: [
+        { t: { h: ['Cấu trúc', 'Nghĩa', 'Ví dụ'], r: [['have + O (người) + V', 'nhờ/ thuê ai làm', 'I **had** the mechanic **repair** my car.'], ['have + O (vật) + V3', 'nhờ làm giúp vật gì', 'I **had** my car **repaired**.'], ['get + O (người) + to V', 'thuyết phục/nhờ ai làm', 'She **got** him **to wash** the car.'], ['get + O (vật) + V3', 'như have + V3', 'I **got** my hair **cut**.'], ['make + O + V', 'bắt ai làm', 'The boss **made** them **work** late.'], ['let + O + V', 'cho phép', 'My parents **let** me **go**.'], ['help + O + (to) V', 'giúp ai làm', 'She **helped** me (to) finish.']] } },
+        { tip: 'Bị động của make: **They were made to work late.** (thêm to); bị động của let: **be allowed to**: **I was allowed to go.**' }
+      ] }
+    ],
+    ex: [
+      ['The teacher insisted that he apologise.', 'Cô giáo khăng khăng yêu cầu cậu ấy xin lỗi.'], ['It is vital that every student attend the meeting.', 'Điều thiết yếu là mọi học sinh đều dự họp.'], ['I\'d rather you had told me earlier.', 'Mình mong bạn đã nói với mình sớm hơn.'], ['She got her brother to repair the bike.', 'Cô ấy nhờ em trai sửa xe đạp.']
+    ],
+    mis: [['The teacher insisted that he does it.', 'The teacher insisted that he do it.', 'Giả định dùng V nguyên mẫu.'], ['She made me to do it.', 'She made me do it.', 'make + O + V.'], ['I had my homework done by myself.', 'I did my homework by myself.', 'Tự làm không dùng have + V3.']],
+    quiz: [
+      ['The doctor recommended that she ___ more water.', ['drinks', 'drink', 'drank', 'drinking'], 1, 'Giả định: V nguyên mẫu.'],
+      ['It is essential that he ___ on time.', ['is', 'be', 'was', 'being'], 1, 'It is essential that he be…'],
+      ['I\'d rather you ___ here.', ['don\'t smoke', 'didn\'t smoke', 'won\'t smoke', 'not to smoke'], 1, 'would rather + S + V2.'],
+      ['I ___ my teeth checked yesterday.', ['had', 'made', 'let', 'did'], 0, 'have + O + V3.']
+    ]
+  });
+
+  P('g11-reporting-verbs', {
+    sections: [
+      { h: 'Phân loại đầy đủ các mẫu', b: [
+        { t: { h: ['Mẫu', 'Động từ', 'Ví dụ'], r: [['V + that-clause', 'say, explain, claim, state, announce, point out', 'She explained that she was ill.'], ['V + O + that-clause', 'tell, inform, assure, convince, remind, warn', 'He assured me that he would come.'], ['V + V-ing', 'admit, deny, suggest, recommend, mention, regret', 'He denied breaking it.'], ['V + to V', 'promise, offer, refuse, agree, threaten, claim, decide', 'They refused to help.'], ['V + O + to V', 'advise, ask, order, tell, warn, remind, invite, encourage', 'She reminded me to call.'], ['V + O + prep + V-ing', 'accuse sb of, blame sb for, congratulate sb on, thank sb for, criticise sb for', 'He blamed her for losing it.'], ['V + prep + V-ing', 'apologise for, insist on, object to, complain about', 'She complained about being kept waiting.']] } }
+      ] },
+      { h: 'Chuyển các loại câu', b: [
+        { t: { h: ['Lời nói trực tiếp', 'Tường thuật'], r: [['"Let\'s go swimming," he said.', 'He suggested going swimming.'], ['"I\'ll definitely call you," she said.', 'She promised to call me.'], ['"You must not touch it," he said.', 'He warned me not to touch it.'], ['"It was my fault," Tom said.', 'Tom admitted that it was his fault.'], ['"Don\'t forget the key," Mum said.', 'Mum reminded me not to forget the key.']] } }
+      ] },
+      { h: 'Những lỗi cần tránh', b: [
+        { ul: ['✗ suggest + O + to V → ✓ **suggest + V-ing** hoặc **suggest that S (should) V**.', '✗ explain + O → ✓ **explain (sth) to sb**.', '✗ admit to V → ✓ **admit + V-ing** (hoặc admit that…).', '**deny** + V-ing; **refuse** + to V.', 'Động từ tường thuật có **nghĩa cảm xúc/ thái độ** (accuse, blame, criticise, congratulate, apologise) thường theo mẫu **giới từ + V-ing**.'] },
+        { tip: 'Cách học: gom theo **mẫu theo sau** thay vì học từng từ riêng lẻ.' }
+      ] }
+    ],
+    ex: [
+      ['He assured me that he would come.', 'Anh ấy bảo đảm với mình rằng anh sẽ đến.'], ['She complained about being kept waiting.', 'Cô ấy phàn nàn vì bị bắt chờ.'], ['They refused to help us.', 'Họ từ chối giúp chúng mình.'], ['Tom admitted that it was his fault.', 'Tom thừa nhận đó là lỗi của cậu ấy.']
+    ],
+    mis: [['He suggested me to go home.', 'He suggested that I go home. / He suggested going home.', 'suggest không + O + to V.'], ['She admitted to steal.', 'She admitted stealing.', 'admit + V-ing.'], ['He explained me the rule.', 'He explained the rule to me.', 'explain sth to sb.']],
+    quiz: [
+      ['"Let\'s go for a walk," she said. → She suggested ___ for a walk.', ['to go', 'going', 'me going', 'that go'], 1, 'suggest + V-ing.'],
+      ['She ___ him of cheating in the exam.', ['accused', 'admitted', 'refused', 'advised'], 0, 'accuse sb of V-ing.'],
+      ['"I won\'t go," he said. → He refused ___.', ['going', 'to go', 'go', 'that he go'], 1, 'refuse + to V.'],
+      ['The teacher ___ them for being late.', ['criticised', 'suggested', 'agreed', 'promised'], 0, 'criticise sb for V-ing.']
+    ]
+  });
+
+  P('g11-cleft-sentences', {
+    sections: [
+      { h: 'It-cleft: các dạng nhấn mạnh', b: [
+        { t: { h: ['Nhấn mạnh', 'Câu gốc', 'Câu chẻ'], r: [['chủ ngữ (người)', 'Lan won the prize.', 'It was Lan **who/that** won the prize.'], ['chủ ngữ (vật)', 'The noise woke me up.', 'It was the noise **that** woke me up.'], ['tân ngữ', 'I saw Tom there.', 'It was Tom **that/whom** I saw there.'], ['trạng ngữ nơi chốn', 'I met her in Hue.', 'It was in Hue **that** I met her.'], ['trạng ngữ thời gian', 'It happened in 2010.', 'It was in 2010 **that** it happened.']] } },
+        { ul: ['Thì của **be** theo thì câu gốc: **It was… that** (quá khứ) / **It is… that** (hiện tại).', 'Dạng phủ định: **It wasn\'t Tom who broke it.** (không phải Tom).', 'Câu hỏi: **Was it Lan who called?**'] }
+      ] },
+      { h: 'Câu chẻ với what, all, the thing/person that', b: [
+        { ul: ['**What** + S + V + **is/was** + danh từ / to V / mệnh đề: **What I want is a rest.** · **What she did was (to) call the police.**', '**All** (that) + S + V + is/was…: **All I need is your support.**', '**The thing/person/place that…**: **The person who helped me was Tom.**', 'Đảo ngược (reverse): **A rest is what I want.** · **Tom is the one who called.**'] },
+        { warn: 'Khi chủ ngữ là mệnh đề **what**, động từ be hòa hợp với **bổ ngữ**: **What I need is time.** · **What I need are more books.**' }
+      ] },
+      { h: 'Cách dùng trong bài viết và nói', b: [
+        { ul: ['Nhấn mạnh **thông tin mới / điều bất ngờ**: It was **not until midnight** that she came home.', 'Làm rõ lựa chọn: **It was the second option that I chose.**', 'Trong bài viết học thuật dùng **what-cleft** để nêu vấn đề: **What this shows is that…**', 'Không lạm dụng: dùng vừa phải để câu không nặng nề.'] }
+      ] }
+    ],
+    ex: [
+      ['It wasn\'t Tom who broke the vase.', 'Không phải Tom làm vỡ bình.'], ['All I need is your support.', 'Điều mình cần chỉ là sự ủng hộ của bạn.'], ['What she did was call the police.', 'Điều cô ấy làm là gọi cảnh sát.'], ['It was not until midnight that she came home.', 'Mãi đến nửa đêm cô ấy mới về nhà.']
+    ],
+    mis: [['It was in 1990 when he was born.', 'It was in 1990 that he was born.', 'Dùng that, không dùng when.'], ['What I need are time.', 'What I need is time.', 'Be hòa hợp với danh từ bổ ngữ (time số ít).'], ['It was Tom what broke it.', 'It was Tom who/that broke it.', 'Không dùng what.']],
+    quiz: [
+      ['It was my teacher ___ encouraged me to study abroad.', ['which', 'who', 'what', 'whose'], 1, 'Nhấn mạnh người → who/that.'],
+      ['It was in 2015 ___ I first visited Japan.', ['when', 'that', 'which', 'what'], 1, 'It was … that.'],
+      ['___ I want is a cup of tea.', ['What', 'That', 'Which', 'It'], 0, 'What-cleft.'],
+      ['It wasn\'t the price ___ worried me; it was the quality.', ['what', 'that', 'who', 'when'], 1, 'It wasn\'t … that.']
+    ]
+  });
+
+  P('g11-agreement-parallel', {
+    sections: [
+      { h: 'Các trường hợp hòa hợp đặc biệt', b: [
+        { t: { h: ['Chủ ngữ', 'Động từ', 'Ví dụ'], r: [['**each / every / everyone / nobody / anything…**', 'số ít', 'Everyone **is** here.'], ['**the + adj** (the rich, the poor, the young)', 'số nhiều', 'The poor **need** help.'], ['**a pair of / a group of / a series of**', 'theo danh từ trung tâm (pair, group → số ít)', 'A pair of shoes **is** on the floor.'], ['**police, people, cattle**', 'số nhiều', 'The police **are** here.'], ['**news, mathematics, physics, economics, measles**', 'số ít', 'Mathematics **is** difficult.'], ['**the majority/ the rest / most of + N**', 'theo N sau of', 'Most of the water **is** clean. · Most of the students **are** here.'], ['**a lot of / plenty of / some / half / all + N**', 'theo N sau of', 'A lot of money **is** needed.'], ['**Phân số / phần trăm**', 'theo N sau of', 'Two-thirds of the cake **has** gone.']] } },
+        { tip: 'Khoảng cách, thời gian, tiền bạc dùng số ít: **Five years is a long time.** · **Fifty miles is far.**' }
+      ] },
+      { h: 'Cấu trúc song song trong câu dài', b: [
+        { ul: ['Các vế của **so sánh** phải cùng loại: ✗ The climate here is warmer than Hanoi. → ✓ …warmer than **that of** Hanoi.', 'Cặp liên từ: **either…or**, **not only…but also**, **both…and**, **neither…nor** – hai vế cùng dạng.', 'Liệt kê **danh từ – danh từ – danh từ**, **V-ing – V-ing – V-ing**, **to V – to V – to V** (có thể lược bỏ to ở vế sau).', 'Mệnh đề liệt kê cùng thì/ cùng chủ ngữ: **He came, saw and conquered.**'] },
+        { warn: 'Sai: **She likes to swim, hiking and to read.** Đúng: She likes **swimming, hiking and reading**. / She likes **to swim, to hike and to read**.' }
+      ] },
+      { h: 'Hòa hợp đại từ và các lỗi thường gặp', b: [
+        { ul: ['Đại từ phải **cùng số** với danh từ nó thay thế: **Each student must bring his or her (their) own book.**', 'Chủ ngữ bị ngăn cách bởi cụm xen: **The box of chocolates is on the table.** (box là chủ ngữ).', 'Mệnh đề quan hệ: động từ hợp với danh từ phía trước: **a man who works / men who work**.', 'Câu hỏi: **Where are my keys?** · **Is there any milk?**', 'Tên sách/phim/quốc gia số nhiều: **The United States is…**, **"Gulliver\'s Travels" is a classic.**'] }
+      ] }
+    ],
+    ex: [
+      ['The poor need our support.', 'Người nghèo cần sự hỗ trợ của chúng ta.'], ['Mathematics is my favourite subject.', 'Toán là môn học yêu thích của mình.'], ['The climate here is warmer than that of Hanoi.', 'Khí hậu ở đây ấm hơn khí hậu Hà Nội.'], ['Most of the students are present, but the rest are absent.', 'Phần lớn học sinh có mặt nhưng số còn lại vắng.']
+    ],
+    mis: [['The box of chocolates are on the table.', 'The box of chocolates is on the table.', 'Chủ ngữ là box.'], ['The climate here is warmer than Hanoi.', 'The climate here is warmer than that of Hanoi.', 'So sánh hai vế cùng loại.'], ['She likes to swim, hiking and to read.', 'She likes swimming, hiking and reading.', 'Song song.']],
+    quiz: [
+      ['The rich ___ not always happy.', ['is', 'are', 'does', 'was'], 1, 'the + adj → số nhiều.'],
+      ['Fifty miles ___ too far to walk.', ['are', 'is', 'were', 'have'], 1, 'Khoảng cách → số ít.'],
+      ['The population of this city ___ increasing.', ['are', 'is', 'were', 'have been'], 1, 'Chủ ngữ population số ít.'],
+      ['Most of the information ___ useful.', ['are', 'is', 'were', 'have been'], 1, 'information không đếm được.']
+    ]
+  });
 })();

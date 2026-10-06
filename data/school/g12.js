@@ -348,4 +348,164 @@
       ['After the long exam, it was ___ of cake! (rất dễ)', ['a piece', 'a part', 'a bit', 'a slice'], 0, 'a piece of cake.']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 12 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g12-sequence-tenses', {
+    sections: [
+      { h: 'Phối hợp thì trong câu tường thuật và câu điều kiện', b: [
+        { t: { h: ['Cấu trúc', 'Mệnh đề phụ', 'Mệnh đề chính', 'Ví dụ'], r: [['Tường thuật (động từ ở quá khứ)', 'lùi một thì', 'said/told + …', 'He said he **had finished**.'], ['Điều kiện loại 1', 'hiện tại đơn', 'will + V', 'If it rains, we **will stay** home.'], ['Điều kiện loại 2', 'quá khứ đơn', 'would + V', 'If I **had** time, I **would help**.'], ['Điều kiện loại 3', 'quá khứ hoàn thành', 'would have V3', 'If I **had known**, I **would have told** you.'], ['wish (hiện tại)', 'quá khứ đơn', 'wish', 'I **wish** I **knew**.'], ['As if (không thật)', 'quá khứ đơn', 'hiện tại đơn', 'He **talks** as if he **knew** everything.']] } }
+      ] },
+      { h: 'Các mốc thời gian đi với mỗi thì', b: [
+        { t: { h: ['Mốc', 'Thì thường dùng', 'Ví dụ'], r: [['for / since', 'hiện tại hoàn thành (tiếp diễn)', 'I have worked here **since** 2018.'], ['ago, last, yesterday, in 2019', 'quá khứ đơn', 'I moved here **three years ago**.'], ['by + mốc quá khứ', 'quá khứ hoàn thành', '**By 8 p.m.**, they had left.'], ['by + mốc tương lai', 'tương lai hoàn thành', '**By 2030**, she will have graduated.'], ['at this time tomorrow', 'tương lai tiếp diễn', 'This time tomorrow I will be flying.'], ['while / when (hai hành động song song)', 'quá khứ tiếp diễn', 'While I was cooking, he was reading.'], ['just / already / yet / ever / never', 'hiện tại hoàn thành', 'I have **just** finished.']] } }
+      ] },
+      { h: 'Ba trường hợp dễ nhầm', b: [
+        { ul: ['**since / for**: **since** + mốc (2020, Monday), **for** + khoảng (3 years, a week).', '**It is the first time + hiện tại hoàn thành** vs **It was the first time + quá khứ hoàn thành**.', '**by the time**: xác định mệnh đề chính sau đó: (quá khứ đơn → had V3), (hiện tại đơn → will have V3).', 'Sau **hardly/scarcely … when**, **no sooner … than** dùng **quá khứ hoàn thành ở vế trước** và **quá khứ đơn ở vế sau**.', 'Với **when** nối hai hành động nối tiếp trong quá khứ dùng **quá khứ đơn cả hai**: **When he arrived, I left.**'] },
+        { warn: 'Không chia **will** trong mệnh đề **if/when/as soon as/before/until/by the time** khi nói tương lai.' }
+      ] }
+    ],
+    ex: [
+      ['He said he had already finished the report.', 'Anh ấy nói anh đã làm xong báo cáo rồi.'], ['By 2030, she will have graduated.', 'Đến năm 2030, cô ấy sẽ tốt nghiệp.'], ['When he arrived, I left.', 'Khi anh ấy đến thì mình đi.'], ['Hardly had I arrived when it started to rain.', 'Mình vừa đến thì trời đổ mưa.']
+    ],
+    mis: [['I have lived here since five years.', 'I have lived here for five years.', 'for + khoảng thời gian.'], ['By 2030, she will graduate.', 'By 2030, she will have graduated.', 'by + mốc tương lai → will have V3.'], ['It was the first time I saw snow.', 'It was the first time I had seen snow.', 'It was the first time + had V3.']],
+    quiz: [
+      ['By the end of this month, I ___ the whole book.', ['will read', 'will have read', 'read', 'am reading'], 1, 'by + mốc tương lai → will have read.'],
+      ['He said that he ___ the work already.', ['finished', 'had finished', 'has finished', 'will finish'], 1, 'Tường thuật → had finished.'],
+      ['I\'ll wait here until you ___ back.', ['will come', 'come', 'came', 'would come'], 1, 'until + hiện tại đơn.'],
+      ['She has been learning English ___ six years.', ['since', 'for', 'ago', 'during'], 1, 'for + khoảng thời gian.']
+    ]
+  });
+
+  P('g12-word-formation', {
+    sections: [
+      { h: 'Bảng họ từ thường gặp trong đề', b: [
+        { t: { h: ['Danh từ', 'Tính từ', 'Trạng từ', 'Động từ'], r: [['success', 'successful', 'successfully', 'succeed'], ['help', 'helpful / helpless', 'helpfully', 'help'], ['care', 'careful / careless', 'carefully / carelessly', 'care'], ['beauty', 'beautiful', 'beautifully', 'beautify'], ['danger', 'dangerous', 'dangerously', 'endanger'], ['decision', 'decisive', 'decisively', 'decide'], ['economy', 'economic / economical', 'economically', 'economise'], ['environment', 'environmental', 'environmentally', '—'], ['create / creation', 'creative', 'creatively', 'create'], ['peace', 'peaceful', 'peacefully', '—'], ['strength', 'strong', 'strongly', 'strengthen'], ['length', 'long', 'long', 'lengthen']] } },
+        { warn: 'Cặp dễ nhầm: **economic** (thuộc kinh tế) ≠ **economical** (tiết kiệm); **historic** (có tầm quan trọng lịch sử) ≠ **historical** (thuộc lịch sử); **childish** (trẻ con, xấu) ≠ **childlike** (ngây thơ).' }
+      ] },
+      { h: 'Danh từ chỉ người, danh từ trừu tượng và từ phủ định', b: [
+        { ul: ['**Người**: -er/-or (teacher, visitor), -ist (scientist, artist), -ian (musician), -ant/-ent (assistant, student), -ee (employee).', '**Trừu tượng**: -tion/-sion, -ment, -ness, -ity, -ance/-ence, -ship, -hood: (information, agreement, kindness, ability, importance, friendship, childhood).', '**Phủ định**: **un-** (unhappy, unfair), **in-** (incorrect), **im-** (impossible, impolite), **il-** (illegal), **ir-** (irregular), **dis-** (dislike, disagree), **non-** (nonsense), **mis-** (misunderstand).', 'Một từ có thể có **hai dạng phủ định tương ứng hai nghĩa**: **independent / dependent**.'] }
+      ] },
+      { h: 'Mẹo làm bài điền từ', b: [
+        { ul: ['**Vị trí trước, nghĩa sau**: xác định từ cần điền là N/Adj/Adv/V theo vị trí; **sau đó** mới xem nghĩa (tích cực/ tiêu cực, số nhiều/số ít).', 'Sau **a/an/the/this/some/many/…** có thể là **danh từ** hoặc **tính từ + danh từ**.', 'Trước danh từ có thể cần **tính từ** hoặc **danh từ ghép** (e.g. **a tourist attraction**).', 'Số nhiều hay số ít: nếu trước chỗ trống có **many, several, two**, danh từ cần **số nhiều**: **many opportunities**.', 'Kiểm tra **nghĩa phủ định** của ngữ cảnh: "…to him because he was **un**…".'] },
+        { tip: 'Làm bài: đặt từ vào câu và đọc lại; nếu câu có "unluckily", "impossible" cần xét nghĩa phủ định.' }
+      ] }
+    ],
+    ex: [
+      ['Her creativity impressed the judges.', 'Sự sáng tạo của cô ấy gây ấn tượng với ban giám khảo.'], ['This is an economical way to travel.', 'Đây là cách đi lại tiết kiệm.'], ['The government plans to strengthen the economy.', 'Chính phủ dự định củng cố nền kinh tế.'], ['He was unable to attend because of his illness.', 'Anh ấy không thể tham dự vì bị bệnh.']
+    ],
+    mis: [['She is a very success businesswoman.', 'She is a very successful businesswoman.', 'Trước danh từ cần tính từ.'], ['The meeting was an economical success.', 'The meeting was an economic success.', 'economic = thuộc kinh tế.'], ['He is dependence on his parents.', 'He is dependent on his parents.', 'be + tính từ.']],
+    quiz: [
+      ['Many young people have ___ opportunities nowadays. (employ)', ['employ', 'employment', 'employing', 'employed'], 1, 'Trong ngữ cảnh: employment opportunities (danh từ ghép) — chọn employment.'],
+      ['It is ___ to finish this in an hour. (possible)', ['possible', 'impossible', 'possibly', 'possibility'], 1, 'Nghĩa phủ định: impossible.'],
+      ['He solved the problem ___. (clever)', ['clever', 'cleverly', 'cleverness', 'cleverer'], 1, 'Bổ nghĩa cho động từ → trạng từ.'],
+      ['The ___ of the new law surprised everyone. (introduce)', ['introduce', 'introduction', 'introductory', 'introduced'], 1, 'Sau the → danh từ.']
+    ]
+  });
+
+  P('g12-articles-prepositions', {
+    sections: [
+      { h: 'Mạo từ: các trường hợp đặc biệt', b: [
+        { t: { h: ['Dùng the', 'Không dùng the'], r: [['the Netherlands, the UK, the USA, the Philippines', 'Vietnam, France, Japan, Hue, Asia'], ['the Mekong, the Nile, the Pacific, the Alps, the Himalayas', 'Mount Everest, Lake Hoan Kiem'], ['the + nhạc cụ: play **the** guitar', 'play + môn thể thao/trò chơi: play football, chess'], ['in the morning/afternoon/evening', 'at night, at noon; **by** bus; **at** home'], ['the + adj: the elderly, the young', 'go to school/bed/work/hospital (mục đích chính)'], ['the + so sánh nhất / số thứ tự', 'danh từ số nhiều/không đếm được nói chung']] } },
+        { tip: 'So sánh: **go to school** (đi học) ≠ **go to the school** (đến toà nhà trường, ví dụ để họp); **in hospital** (nằm viện) ≠ **in the hospital** (ở toà nhà bệnh viện).' }
+      ] },
+      { h: 'Giới từ đi với danh từ và cụm cố định', b: [
+        { t: { h: ['Danh từ + giới từ', 'Ví dụ'], r: [['reason for', 'the reason for his absence'], ['solution to', 'a solution to the problem'], ['increase/decrease in', 'an increase in prices'], ['demand for', 'a demand for workers'], ['key to', 'the key to success'], ['advantage / disadvantage of', 'the advantages of travelling'], ['difference between', 'the difference between A and B'], ['effect/impact on', 'the effect of pollution on health']] } },
+        { ul: ['**in** + year/month/century; **on** + date/day; **at** + time/ night/ weekend.', 'Cụm cố định: **in fact, in general, in particular, at first, at last, on purpose, by accident, by mistake, on the whole, on average, under pressure, out of order, in charge of, on behalf of**.'] }
+      ] },
+      { h: 'Lỗi giới từ hay gặp', b: [
+        { ul: ['✗ discuss **about** → ✓ discuss sth (talk **about**).', '✗ depend **of** → ✓ depend **on**.', '✗ good **in** → ✓ good **at**; ✗ interested **on** → ✓ interested **in**.', '✗ arrive **to** Hanoi → ✓ arrive **in** Hanoi / **at** the station.', '✗ married **with** → ✓ married **to** / marry sb.', '✗ different **than** (văn trang trọng) → ✓ different **from**.', '✗ explain **me** → ✓ explain **to** me.'] }
+      ] }
+    ],
+    ex: [
+      ['There has been an increase in the number of tourists.', 'Số lượng khách du lịch đã tăng lên.'], ['She is in charge of the marketing team.', 'Cô ấy phụ trách nhóm tiếp thị.'], ['I deleted the file by mistake.', 'Mình xoá nhầm tập tin.'], ['He was taken to hospital after the accident.', 'Anh ấy được đưa vào viện sau tai nạn.']
+    ],
+    mis: [['We arrived to Hanoi at night.', 'We arrived in Hanoi at night.', 'arrive in + thành phố.'], ['She is married with a doctor.', 'She is married to a doctor.', 'married to.'], ['The reason of his absence is unknown.', 'The reason for his absence is unknown.', 'reason for.']],
+    quiz: [
+      ['There is an increase ___ the price of oil.', ['of', 'in', 'on', 'for'], 1, 'an increase in.'],
+      ['We bumped into each other ___ accident.', ['by', 'in', 'on', 'at'], 0, 'by accident.'],
+      ['The Mekong is ___ longest river in Southeast Asia.', ['a', 'an', 'the', 'no article'], 2, 'So sánh nhất → the.'],
+      ['He is the person who is ___ charge of this project.', ['at', 'in', 'on', 'by'], 1, 'in charge of.']
+    ]
+  });
+
+  P('g12-advanced-comparison', {
+    sections: [
+      { h: 'So sánh bằng và so sánh gấp nhiều lần', b: [
+        { t: { h: ['Mẫu', 'Ví dụ'], r: [['**twice / three times / half + as + adj + as**', 'This bag is **twice as heavy as** that one.'], ['**as + many/much + N + as**', 'She has **as many books as** I do.'], ['**the same + N + as**', 'My brother is **the same age as** me.'], ['**as … as possible / as … as one can**', 'Come **as soon as possible**.'], ['**not so/as … as**', 'He isn\'t **as tall as** his brother.'], ['**no more … than** / **no less … than**', 'He is **no more intelligent than** his brother.']] } },
+        { tip: 'Có thể dùng **times** + **as … as** hoặc **times** + so sánh hơn + **than**: three times as big as = three times bigger than (đều chấp nhận trong nói).' }
+      ] },
+      { h: 'So sánh kép và so sánh dần', b: [
+        { ul: ['**The + so sánh hơn, the + so sánh hơn**: **The harder you work, the more you earn.**', 'Có thể lược chủ ngữ + be: **The sooner, the better.**', '**Comparative + and + comparative**: **more and more important / better and better**.', '**more and more + adj dài / adj-er and adj-er**: more and more expensive; colder and colder.', 'Dạng đảo: **The more** + S + V, **the more** + S + V: **The more he studies, the more he knows.**'] }
+      ] },
+      { h: 'So sánh nhất và các mẫu nhấn mạnh', b: [
+        { ul: ['**the + so sánh nhất + (N) + (that) + S + have/has ever + V3**: **It is the best film I have ever seen.**', '**one of the + so sánh nhất + N số nhiều**: one of the most famous singers.', '**by far / easily + the + so sánh nhất**: **She is by far the best student.**', '**not … any + so sánh hơn**: **I can\'t walk any faster.**', '**far / much / a great deal / considerably + so sánh hơn**; **a bit / slightly / a little** (chút ít).'] },
+        { warn: 'So sánh **hai** đối tượng dùng so sánh hơn: **Which is bigger, A or B?**; từ **ba** trở lên dùng so sánh nhất.' }
+      ] }
+    ],
+    ex: [
+      ['The sooner, the better.', 'Càng sớm càng tốt.'], ['He is no more intelligent than his brother.', 'Anh ấy cũng không thông minh hơn em trai.'], ['She is by far the best student in the class.', 'Cô ấy là học sinh giỏi nhất lớp với khoảng cách xa.'], ['Please come as soon as possible.', 'Hãy đến sớm nhất có thể.']
+    ],
+    mis: [['The harder you work, you earn more.', 'The harder you work, the more you earn.', 'Cần cặp the…, the….'], ['Which is more big, A or B?', 'Which is bigger, A or B?', 'big → bigger.'], ['It is the best film I have ever saw.', 'It is the best film I have ever seen.', 'ever + V3.']],
+    quiz: [
+      ['This bag is three times ___ as that one.', ['expensive', 'more expensive', 'as expensive', 'the most expensive'], 2, 'three times as expensive as.'],
+      ['The ___ you leave, the better.', ['early', 'earlier', 'earliest', 'more early'], 1, 'The + so sánh hơn.'],
+      ['She is ___ the best player in the team.', ['by far', 'so far', 'as far', 'far from'], 0, 'by far + the best.'],
+      ['It is getting more and ___ difficult.', ['more', 'much', 'most', 'many'], 0, 'more and more + adj dài.']
+    ]
+  });
+
+  P('g12-sentence-transformation', {
+    sections: [
+      { h: 'Thêm các cặp tương đương quan trọng', b: [
+        { t: { h: ['Cấu trúc gốc', 'Cấu trúc viết lại'], r: [['I haven\'t seen her for two years.', 'The last time I saw her was two years ago.'], ['He started learning English five years ago.', 'He has been learning English for five years.'], ['"Shall we go swimming?" she said.', 'She suggested going swimming.'], ['It is not necessary to bring a gift.', 'You needn\'t bring a gift.'], ['People believe that he is honest.', 'He is believed to be honest.'], ['I regret not studying harder.', 'I wish I had studied harder.'], ['Without your help, I would fail.', 'If it were not for your help, I would fail.'], ['She worked so hard that she passed.', 'She worked hard in order to pass.'], ['I\'d prefer you to stay.', 'I\'d rather you stayed.'], ['His house is bigger than mine.', 'My house is not as big as his.']] } }
+      ] },
+      { h: 'Nhóm cấu trúc theo chủ điểm', b: [
+        { ul: ['**Bị động**: She is painting the wall. → The wall is being painted. · They say… → It is said that…', '**Tường thuật**: "I will help you," he said. → He promised to help me.', '**Điều kiện**: If you don\'t hurry, you will be late. → Unless you hurry…; If I were you… → Were I you…', '**Câu ước**: I\'m sorry I didn\'t come. → I wish I had come.', '**So sánh**: A is taller than B. → B is not as tall as A. · He is the tallest. → No one is taller than him.', '**Mệnh đề quan hệ rút gọn**: The man who is standing there → The man standing there…', '**Tương phản**: Although he was ill → Despite being ill / In spite of his illness.', '**Nhấn mạnh**: He didn\'t realise it until later. → Not until later did he realise it.'] }
+      ] },
+      { h: 'Lưu ý khi viết lại câu', b: [
+        { ul: ['Giữ **nghĩa** và **sắc thái**; không thêm/bớt thông tin.', 'Giữ **thì** (trừ khi cấu trúc buộc đổi).', 'Kiểm tra **chủ ngữ** và **động từ** hòa hợp sau khi đổi.', 'Tránh lặp lại **từ đã gợi ý** nếu đề bắt đầu sẵn bằng một từ.', '**Dấu câu** và **hoa thường** đúng; dùng **từ phủ định** (not, never) đúng chỗ.'] },
+        { tip: 'Hỏi bản thân: "Đề muốn kiểm tra cấu trúc nào?" Ghi lại cặp tương đương trước khi viết.' }
+      ] }
+    ],
+    ex: [
+      ['She wishes she had told him the truth. ← She regrets not telling him the truth.', 'Cô ấy tiếc vì đã không nói sự thật với anh ấy.'], ['The last time I saw him was in 2019. → I haven\'t seen him since 2019.', 'Lần cuối mình gặp anh ấy là năm 2019.'], ['He didn\'t realise the danger until later. → Not until later did he realise the danger.', 'Mãi sau anh ấy mới nhận ra nguy hiểm.'], ['His house is bigger than mine. → My house is not as big as his.', 'Nhà anh ấy to hơn nhà mình.']
+    ],
+    mis: [['The last time I saw her was two years. (viết lại)', 'The last time I saw her was two years ago.', 'Thiếu ago.'], ['Not until he left, I understood.', 'Not until he left did I understand.', 'Đảo ngữ sau Not until.'], ['She suggested me to go swimming.', 'She suggested going swimming.', 'suggest + V-ing.']],
+    quiz: [
+      ['I haven\'t seen her for two years. → The last time I ___ her was two years ago.', ['saw', 'have seen', 'see', 'had seen'], 0, 'The last time I saw… was…'],
+      ['"Let\'s go to the beach," she said. → She suggested ___ to the beach.', ['go', 'going', 'to go', 'that we going'], 1, 'suggest + V-ing.'],
+      ['People believe that he is honest. → He ___ to be honest.', ['believes', 'is believed', 'was believing', 'believed'], 1, 'Bị động: is believed to be.'],
+      ['He is the tallest student in the class. → No other student in the class is ___ than him.', ['tall', 'taller', 'tallest', 'as tall'], 1, 'No one is taller than him.']
+    ]
+  });
+
+  P('g12-error-spotting', {
+    sections: [
+      { h: 'Danh sách lỗi hay gặp theo cấu trúc', b: [
+        { t: { h: ['Chủ điểm', 'Lỗi mẫu', 'Sửa'], r: [['so sánh', 'He is the most tallest.', 'the tallest'], ['bị động', 'The window was broke.', 'was broken'], ['to V / V-ing', 'She enjoys to read.', 'enjoys reading'], ['điều kiện', 'If I will see her, I will tell her.', 'If I see her'], ['tường thuật', 'He told that he was busy.', 'He said (that) / He told me (that)'], ['quan hệ', 'The man which lives next door…', 'who'], ['liên từ', 'Although he is poor but he is happy.', 'bỏ but'], ['từ nối', 'Despite of the rain…', 'Despite the rain'], ['đại từ', 'Everyone should do their best, doesn\'t he?', 'don\'t they'], ['thì', 'I live here since 2015.', 'have lived']] } }
+      ] },
+      { h: 'Lỗi về từ loại và vị trí', b: [
+        { ul: ['**Tính từ ↔ trạng từ**: ✗ She sings beautiful. → ✓ beautifully; ✗ He is a good-looked man → ✓ good-looking.', '**Danh từ ↔ tính từ**: ✗ She is a success woman. → ✓ successful.', '**Tính từ -ed/-ing**: ✗ The film was bored. → ✓ boring; ✗ I am boring. → ✓ bored.', '**Số nhiều**: ✗ two informations / many advices / a furnitures.', '**Thứ tự từ**: ✗ I don\'t know where is he. → ✓ where he is.'] }
+      ] },
+      { h: 'Chiến lược khi làm bài tìm lỗi', b: [
+        { ul: ['**Đọc nhanh cả câu** lấy nghĩa, rồi quay lại tìm chủ ngữ – động từ – mốc thời gian.', 'Chú ý **ngữ pháp cố định**: look forward to + V-ing, be used to + V-ing, in spite of + N, so/such, too/enough.', 'Kiểm tra **hòa hợp**: the number of/ a number of; each/every + số ít; news, information.', 'Phần **không bị gạch chân** thường đúng; tập trung vào ô A, B, C, D.', 'Nếu phân vân giữa hai phần, hỏi: **lỗi này có tên gọi ngữ pháp rõ ràng không?**'] },
+        { warn: 'Đừng sửa phần chỉ "nghe lạ" mà đúng ngữ pháp; tìm **lỗi có quy tắc**.' }
+      ] }
+    ],
+    ex: [
+      ['The window was broken by the storm.', 'Cửa sổ bị vỡ do cơn bão.'], ['He said that he was busy.', 'Anh ấy nói anh bận.'], ['Everyone should do their best.', 'Mọi người nên cố gắng hết sức.'], ['She sings beautifully.', 'Cô ấy hát rất hay.']
+    ],
+    mis: [['The film was bored.', 'The film was boring.', 'Vật gây cảm giác → -ing.'], ['He is the most tallest boy.', 'He is the tallest boy.', 'Không dùng most cùng -est.'], ['I don\'t know where is he.', 'I don\'t know where he is.', 'Không đảo trong mệnh đề danh từ.']],
+    quiz: [
+      ['She (A) enjoys (B) to read (C) novels (D) in her free time. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 1, 'enjoy + V-ing: "reading".', 1],
+      ['If (A) it (B) will rain (C) tomorrow, we (D) will stay home. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 1, 'Mệnh đề if dùng hiện tại đơn: "rains".', 1],
+      ['The film (A) was (B) so (C) bored (D) that we left. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'Vật gây cảm giác: "boring".', 1],
+      ['He (A) told (B) that (C) he (D) was tired. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 0, 'told cần tân ngữ: "told me that…" hoặc dùng "said".', 1]
+    ]
+  });
 })();

@@ -366,4 +366,169 @@
       ['She was born in Hue but ___ in Hanoi.', ['grew up', 'took up', 'woke up', 'got off'], 0, 'grew up = lớn lên.']
     ]
   });
+
+  /* ───── Làm sâu các bài lớp 8 ───── */
+  function P(id, d) {
+    var l = S.lessons[id]; if (!l) throw new Error('Không thấy bài ' + id);
+    (d.sections || []).forEach(function (s) { s.h = (l.sections.length + 1) + '. ' + s.h; l.sections.push(s); });
+    ['ex', 'mis', 'quiz'].forEach(function (k) { if (d[k]) l[k] = l[k].concat(d[k]); });
+  }
+
+  P('g8-present-perfect', {
+    sections: [
+      { h: 'Trạng từ thường dùng và vị trí', b: [
+        { t: { h: ['Trạng từ', 'Nghĩa', 'Vị trí', 'Ví dụ'], r: [['ever', 'đã từng (câu hỏi)', 'giữa have và V3', 'Have you **ever** been to Japan?'], ['never', 'chưa bao giờ', 'giữa have và V3', 'I have **never** seen snow.'], ['already', 'đã rồi', 'giữa have và V3 hoặc cuối câu', 'I have **already** eaten.'], ['just', 'vừa mới', 'giữa have và V3', 'She has **just** left.'], ['yet', 'chưa / rồi (câu hỏi)', 'cuối câu', 'Have you finished **yet**? I haven\'t finished **yet**.'], ['still', 'vẫn chưa (nhấn mạnh)', 'trước haven\'t', 'I **still** haven\'t finished.'], ['recently / lately', 'gần đây', 'cuối câu hoặc giữa', 'I have seen him **recently**.']] } }
+      ] },
+      { h: 'For, since và How long', b: [
+        { t: { h: ['', 'for', 'since'], r: [['Theo sau', 'khoảng thời gian', 'mốc thời gian'], ['Ví dụ', 'for two years, for a week, for ages', 'since 2020, since Monday, since I was five'], ['Câu hỏi', '**How long** have you lived here?', '']] } },
+        { p: 'Câu trả lời: **I have lived here for five years.** / **I have lived here since 2020.** Dùng **since + mệnh đề quá khứ đơn**: **since I was a child**.' },
+        { warn: 'Động từ trạng thái dùng được hiện tại hoàn thành để nói kéo dài đến nay: **I have known him for years.** (✗ I know him for years).' }
+      ] },
+      { h: 'Động từ bất quy tắc V3 thường gặp', b: [
+        { t: { h: ['V1', 'V2', 'V3', 'V1', 'V2', 'V3'], r: [['be', 'was/were', 'been', 'know', 'knew', 'known'], ['begin', 'began', 'begun', 'see', 'saw', 'seen'], ['break', 'broke', 'broken', 'speak', 'spoke', 'spoken'], ['choose', 'chose', 'chosen', 'swim', 'swam', 'swum'], ['drive', 'drove', 'driven', 'take', 'took', 'taken'], ['eat', 'ate', 'eaten', 'wear', 'wore', 'worn'], ['give', 'gave', 'given', 'write', 'wrote', 'written'], ['go', 'went', 'gone / been', 'buy', 'bought', 'bought'], ['do', 'did', 'done', 'make', 'made', 'made']] } }
+      ] }
+    ],
+    ex: [
+      ['Have you ever tried Vietnamese coffee? — Yes, I have.', 'Bạn đã từng thử cà phê Việt Nam chưa? — Rồi.'], ['I have already finished my project.', 'Mình đã làm xong dự án rồi.'], ['She hasn\'t replied to my message yet.', 'Cô ấy vẫn chưa trả lời tin nhắn của mình.'], ['How long have you known Lan? — Since we were in primary school.', 'Bạn quen Lan bao lâu rồi? — Từ hồi tiểu học.']
+    ],
+    mis: [['I have just finish my homework.', 'I have just finished my homework.', 'have + V3.'], ['She has been to Hue yesterday.', 'She went to Hue yesterday.', 'yesterday là mốc quá khứ → quá khứ đơn.'], ['How long do you live here?', 'How long have you lived here?', 'Hỏi thời gian kéo dài đến nay → present perfect.']],
+    quiz: [
+      ['I have ___ finished my homework, so I can play now.', ['already', 'yet', 'ago', 'last'], 0, 'already đứng giữa have và V3.'],
+      ['She has worked here ___ 2019.', ['for', 'since', 'ago', 'in'], 1, 'since + mốc thời gian.'],
+      ['"Have you finished your report ___?" "Not yet."', ['already', 'yet', 'just', 'never'], 1, 'yet trong câu hỏi.'],
+      ['I have ___ been to Europe. I want to go next year.', ['ever', 'never', 'yet', 'ago'], 1, 'never = chưa bao giờ.']
+    ]
+  });
+
+  P('g8-past-continuous', {
+    sections: [
+      { h: 'Quá khứ tiếp diễn và quá khứ đơn', b: [
+        { t: { h: ['', 'Quá khứ đơn', 'Quá khứ tiếp diễn'], r: [['Ý nghĩa', 'hành động ngắn, xong, xảy ra một lần', 'hành động đang diễn ra, kéo dài tại một thời điểm'], ['Ví dụ', 'The phone **rang**.', 'I **was cooking**.'], ['Kết hợp', 'When the phone **rang**,', 'I **was cooking**.']] } },
+        { p: '**Hành động dài (tiếp diễn) bị hành động ngắn (đơn) xen vào**: **I was walking home when it started to rain.** Hai hành động ngắn nối tiếp nhau dùng quá khứ đơn: **When I got home, I made dinner.**' },
+        { tip: 'So sánh: **When I arrived, she was cooking.** (cô ấy đang nấu khi tôi đến) ≠ **When I arrived, she cooked.** (tôi đến rồi cô ấy mới nấu).' }
+      ] },
+      { h: 'When, while, as', b: [
+        { ul: ['**while / as + quá khứ tiếp diễn** (hành động kéo dài): **While/As I was reading, he came in.**', '**when + quá khứ đơn** (hành động xen vào): **He came in when I was reading.**', '**while** nối hai hành động song song: **While I was cooking, she was setting the table.**', 'Đặt dấu phẩy khi mệnh đề phụ đứng đầu câu.'] }
+      ] },
+      { h: 'Các động từ không dùng tiếp diễn và chính tả -ing', b: [
+        { ul: ['Động từ trạng thái dùng quá khứ đơn: **I knew the answer.** (✗ I was knowing). **She had a car.** (sở hữu).', 'Quy tắc thêm -ing giống hiện tại tiếp diễn: run → running, write → writing, lie → lying.', 'Dấu hiệu: **at 8 p.m. yesterday, at that time, all day yesterday, this time last week, while, when**.'] },
+        { warn: 'Khi hai hành động **liên tiếp** dùng cùng quá khứ đơn: **She opened the door and walked in.** — không dùng tiếp diễn.' }
+      ] }
+    ],
+    ex: [
+      ['What were you doing when I called you?', 'Bạn đang làm gì khi mình gọi?'], ['I was walking home when it started to rain.', 'Mình đang đi bộ về nhà thì trời đổ mưa.'], ['While we were having dinner, the lights went out.', 'Trong lúc chúng mình ăn tối thì mất điện.'], ['This time last week, we were flying to Phu Quoc.', 'Giờ này tuần trước chúng mình đang bay đến Phú Quốc.']
+    ],
+    mis: [['I was watch TV when she came.', 'I was watching TV when she came.', 'was + V-ing.'], ['When I was crossing the street, I saw an accident. (ý: sau đó mới thấy)', 'When I crossed the street, I saw an accident.', 'Hai hành động nối tiếp dùng quá khứ đơn.'], ['I was knowing him very well.', 'I knew him very well.', 'know không dùng tiếp diễn.']],
+    quiz: [
+      ['She ___ breakfast when I arrived.', ['was having', 'had', 'has', 'is having'], 0, 'Đang làm thì bị xen vào → was having.'],
+      ['I ___ the dishes while my brother was watching TV.', ['washed', 'was washing', 'wash', 'am washing'], 1, 'Hai hành động song song → was washing.'],
+      ['When I got home, I ___ the door and went in.', ['was opening', 'opened', 'am opening', 'open'], 1, 'Hành động nối tiếp → opened.'],
+      ['At 9 last night I ___ a film.', ['watched', 'was watching', 'am watching', 'watch'], 1, 'Mốc thời gian xác định → was watching.']
+    ]
+  });
+
+  P('g8-conditional-1', {
+    sections: [
+      { h: 'Các cách kết thúc mệnh đề chính', b: [
+        { t: { h: ['Mệnh đề chính', 'Ví dụ'], r: [['will + V (kết quả chắc chắn)', 'If you heat ice, it will melt.'], ['can / may / might + V (khả năng)', 'If you study, you **might** pass.'], ['mệnh lệnh', 'If you see Tom, **tell** him to call me.'], ['should + V (lời khuyên)', 'If you feel sick, you **should** see a doctor.'], ['hiện tại đơn (sự thật)', 'If you mix red and blue, you **get** purple.']] } }
+      ] },
+      { h: 'Điều kiện loại 0 và loại 1', b: [
+        { t: { h: ['', 'Loại 0', 'Loại 1'], r: [['Dùng', 'sự thật, quy luật luôn đúng', 'khả năng thật ở tương lai'], ['Cấu trúc', 'If + hiện tại đơn, hiện tại đơn', 'If + hiện tại đơn, will + V'], ['Ví dụ', 'If you heat water to 100°C, it **boils**.', 'If it rains tomorrow, we **will stay** home.']] } },
+        { tip: 'Với loại 0 có thể thay **if** bằng **when**: **When you heat water to 100°C, it boils.**' }
+      ] },
+      { h: 'Các từ nối điều kiện khác', b: [
+        { ul: ['**unless** = if … not: **Unless you hurry, you\'ll be late.**', '**as long as / provided that** = miễn là: **You can go out as long as you finish your homework.**', '**in case** = phòng khi: **Take an umbrella in case it rains.** (khác if: bạn mang ô trước khi mưa).', '**when** dùng cho việc chắc chắn xảy ra; **if** cho việc có thể xảy ra: **When I get home, I\'ll call you.** (chắc chắn về nhà) / **If I see him, I\'ll tell him.** (chưa chắc gặp).'] },
+        { warn: 'Không dùng **will** trong mệnh đề **unless / when / as soon as / before / after** khi nói về tương lai: **I\'ll call you when I arrive.**' }
+      ] }
+    ],
+    ex: [
+      ['If you mix red and blue, you get purple.', 'Nếu trộn đỏ với xanh, bạn được màu tím.'], ['If you feel sick, you should see a doctor.', 'Nếu thấy mệt thì bạn nên đi khám bác sĩ.'], ['You can borrow my bike as long as you take care of it.', 'Bạn mượn xe mình được, miễn là giữ gìn nó.'], ['Take an umbrella in case it rains.', 'Mang theo ô phòng khi trời mưa.']
+    ],
+    mis: [['If I will have time, I will help you.', 'If I have time, I will help you.', 'Không dùng will trong mệnh đề if.'], ['I\'ll call you when I will arrive.', 'I\'ll call you when I arrive.', 'when + hiện tại đơn.'], ['If you will study hard, you will pass.', 'If you study hard, you will pass.', 'if + hiện tại đơn.']],
+    quiz: [
+      ['If you ___ ice, it melts.', ['heat', 'will heat', 'heated', 'are heating'], 0, 'Loại 0: hiện tại đơn.'],
+      ['I\'ll wait here ___ you finish your homework.', ['until', 'unless', 'although', 'because'], 0, 'until = cho đến khi.'],
+      ['Take a sweater ___ it gets cold.', ['unless', 'in case', 'if will', 'although'], 1, 'in case = phòng khi.'],
+      ['If you see Tom, ___ him to call me.', ['will tell', 'tell', 'told', 'telling'], 1, 'Mệnh lệnh ở mệnh đề chính.']
+    ]
+  });
+
+  P('g8-passive-simple', {
+    sections: [
+      { h: 'Bị động ở các thì và dạng câu', b: [
+        { t: { h: ['Dạng', 'Cấu trúc', 'Ví dụ'], r: [['Hiện tại đơn', 'am/is/are + V3', 'The room **is cleaned** every day.'], ['Quá khứ đơn', 'was/were + V3', 'The thief **was caught** yesterday.'], ['Tương lai đơn', 'will be + V3', 'The result **will be announced** tomorrow.'], ['Phủ định', 'S + be + not + V3', 'The book **wasn\'t written** by him.'], ['Nghi vấn', 'Be + S + V3?', '**Was** the window **broken** by the boys?'], ['Wh-', 'Wh-word + be + S + V3?', 'When **was** the bridge **built**?'], ['Với modal', 'can/must/should + be + V3', 'Homework **must be finished** on time.']] } }
+      ] },
+      { h: 'Khi nào dùng bị động?', b: [
+        { ul: ['Không biết hoặc không cần nói ai làm: **My bike was stolen.**', 'Nhấn mạnh **đối tượng chịu tác động**: **The Mona Lisa was painted by Leonardo.**', 'Văn bản khoa học, thông báo, tin tức: **Rice is grown in the Mekong Delta.**', 'Dùng **by** khi tác nhân quan trọng; bỏ khi là **people, they, someone** hoặc không cần nhắc.'] },
+        { tip: 'Cách chuyển nhanh: (1) tìm tân ngữ (O) → làm chủ ngữ mới; (2) xác định thì → chia **be**; (3) động từ chính → **V3**; (4) chủ ngữ cũ → **by + O** (nếu cần).' }
+      ] },
+      { h: 'Bị động với hai tân ngữ và các lỗi hay gặp', b: [
+        { ul: ['Động từ có hai tân ngữ (give, send, show, tell, lend…): **She gave me a book.** → **I was given a book.** / **A book was given to me.**', 'Câu hỏi bị động: **Is English spoken in Canada?** — không dùng do/does.', 'Một số động từ **không** có bị động: **happen, arrive, die, appear, seem, sleep, fall, exist** (nội động từ).', 'Nhớ chia đúng **be**: ✗ The cake is make by my mother. → ✓ The cake **is made** by my mother.'] },
+        { warn: 'Các động từ có **V2 khác V3** cần nhớ: write–wrote–**written**, take–took–**taken**, break–broke–**broken**, do–did–**done**.' }
+      ] }
+    ],
+    ex: [
+      ['The rooms are cleaned every morning.', 'Các phòng được dọn mỗi sáng.'], ['When was the telephone invented?', 'Điện thoại được phát minh khi nào?'], ['I was given a ticket by my uncle.', 'Mình được chú tặng một vé.'], ['Homework must be finished before 8 p.m.', 'Bài tập phải được hoàn thành trước 8 giờ tối.']
+    ],
+    mis: [['The accident was happened yesterday.', 'The accident happened yesterday.', 'happen không có bị động.'], ['The letter was write by Tom.', 'The letter was written by Tom.', 'was + V3 (written).'], ['Is English speak in Canada?', 'Is English spoken in Canada?', 'Be + V3.']],
+    quiz: [
+      ['When ___ this bridge built?', ['is', 'was', 'did', 'has'], 1, 'Quá khứ bị động: was built.'],
+      ['The new school ___ next year.', ['is building', 'will be built', 'built', 'will build'], 1, 'will be + V3.'],
+      ['The report ___ by the manager yesterday.', ['wrote', 'was written', 'is written', 'has write'], 1, 'was written.'],
+      ['Which verb has NO passive form?', ['build', 'happen', 'give', 'make'], 1, 'happen là nội động từ.']
+    ]
+  });
+
+  P('g8-gerund-infinitive', {
+    sections: [
+      { h: 'Động từ + tân ngữ + to V và bare infinitive', b: [
+        { t: { h: ['Mẫu', 'Động từ', 'Ví dụ'], r: [['V + O + **to V**', 'want, ask, tell, advise, allow, invite, expect, would like', 'My mother **wants me to study** harder.'], ['V + O + **V (không to)**', 'make, let, help (có thể có to)', 'She **made me wait**. Mum **let me go**.'], ['V + O + **V-ing**', 'see, hear, watch, notice', 'I **saw him crossing** the street.']] } },
+        { warn: 'Sau **make / let** dùng V nguyên mẫu không to; sau **help** dùng được cả hai: **help me (to) do it**.' }
+      ] },
+      { h: 'to V chỉ mục đích và cấu trúc It + adj + to V', b: [
+        { ul: ['Mục đích: **I went to the shop to buy some milk.** · **in order to / so as to**: She studies hard **in order to** pass the exam. (phủ định: **in order not to**)', '**It + be + adj + to V**: **It is important to learn English.** · **It is dangerous to swim here.**', '**too + adj + to V** (quá… không thể): **He is too young to drive.**', '**adj + enough + to V**: **She is old enough to vote.**', '**be + adj + to V**: **I\'m happy to see you.** · **It\'s easy to make a mistake.**'] }
+      ] },
+      { h: 'V-ing làm chủ ngữ và sau một số cụm', b: [
+        { ul: ['V-ing đứng đầu câu như danh từ: **Swimming is good for your health.** · **Learning English takes time.**', 'Sau **cụm cố định**: **it\'s no use / it\'s worth / be busy / can\'t help / spend time + V-ing**: **It\'s worth visiting Hue.** · **I spent two hours doing my homework.**', 'Sau **go**: **go swimming, go shopping, go fishing, go camping**.'] },
+        { tip: 'Phân biệt: **to** là **giới từ** (V-ing theo sau): look forward **to meeting**, be used **to getting up**; còn **to** của động từ nguyên mẫu (V theo sau): want **to meet**.' }
+      ] }
+    ],
+    ex: [
+      ['My parents want me to study harder.', 'Bố mẹ muốn mình học chăm hơn.'], ['It is important to learn English.', 'Học tiếng Anh là điều quan trọng.'], ['She is old enough to drive.', 'Cô ấy đủ tuổi để lái xe.'], ['We went swimming last weekend.', 'Cuối tuần trước chúng mình đi bơi.']
+    ],
+    mis: [['My mother made me to clean my room.', 'My mother made me clean my room.', 'make + O + V không to.'], ['I look forward to see you.', 'I look forward to seeing you.', 'to là giới từ → V-ing.'], ['It is dangerous swimming here.', 'It is dangerous to swim here.', 'It + adj + to V.']],
+    quiz: [
+      ['She wants me ___ her tomorrow.', ['help', 'helping', 'to help', 'helped'], 2, 'want + O + to V.'],
+      ['Mum let me ___ to the party.', ['to go', 'go', 'going', 'went'], 1, 'let + O + V.'],
+      ['It is easy ___ a mistake.', ['making', 'make', 'to make', 'made'], 2, 'It + adj + to V.'],
+      ['We spent the whole afternoon ___ the room.', ['to clean', 'clean', 'cleaning', 'cleaned'], 2, 'spend time + V-ing.']
+    ]
+  });
+
+  P('g8-reported-statements', {
+    sections: [
+      { h: 'Khi nào không lùi thì', b: [
+        { ul: ['Động từ tường thuật ở **hiện tại / hiện tại hoàn thành / tương lai**: **She says (that) she is tired.** · **He has told me that he likes music.**', 'Điều được nói là **sự thật hiển nhiên / vẫn còn đúng**: **The teacher said that the Earth goes around the Sun.**', 'Lời nói ở quá khứ nhưng **vẫn còn đúng ở hiện tại**: **He said he lives in Hue.** (anh ấy vẫn sống ở Huế).', 'Các động từ khuyết thiếu **would, could, should, might, ought to** giữ nguyên: **"You should rest," he said. → He said I should rest.**'] },
+        { warn: 'Khi **không chắc** thì nên lùi thì — luôn đúng ngữ pháp trong bài thi: ✓ She said she **was** tired.' }
+      ] },
+      { h: 'Say, tell và các động từ tường thuật', b: [
+        { t: { h: ['Động từ', 'Cấu trúc', 'Ví dụ'], r: [['say', 'say (to sb) (that) + mệnh đề', 'She said (to me) that she was busy.'], ['tell', 'tell + sb + (that) + mệnh đề', 'She told me that she was busy.'], ['say + that', 'không có tân ngữ trực tiếp', '✗ She said me that…'], ['ask', 'ask + sb + if/whether… (xem bài sau)', 'He asked me if I was tired.']] } },
+        { tip: 'Trong tường thuật, **that** thường được lược bỏ: **She said she was tired.**' }
+      ] },
+      { h: 'Các bước chuyển và ví dụ mẫu', b: [
+        { ul: ['Bước 1: đổi **đại từ** theo người nói/nghe: **"I like your hat," Tom said to me.** → Tom said **he** liked **my** hat.', 'Bước 2: **lùi thì** nếu cần.', 'Bước 3: đổi **trạng từ** thời gian/nơi chốn: now → then; today → that day; tomorrow → the next day; here → there.'] },
+        { t: { h: ['Trực tiếp', 'Tường thuật'], r: [['"I\'m leaving tonight," she said.', 'She said she was leaving that night.'], ['"We have finished," they said.', 'They said they had finished.'], ['"I\'ll help you tomorrow," he said to me.', 'He told me he would help me the next day.'], ['"I didn\'t see the film," Lan said.', 'Lan said she hadn\'t seen the film.']] } }
+      ] }
+    ],
+    ex: [
+      ['She says she is tired, so let her rest.', 'Cô ấy nói mình mệt nên hãy để cô ấy nghỉ.'], ['"I\'m leaving tonight," she said. → She said she was leaving that night.', 'Cô ấy nói tối đó cô ấy sẽ đi.'], ['He said he lives in Hue. (vẫn đúng ở hiện tại)', 'Anh ấy nói anh ấy sống ở Huế.'], ['"We have finished," they said. → They said they had finished.', 'Họ nói là họ đã xong.']
+    ],
+    mis: [['She said me that she was busy.', 'She told me that she was busy. / She said that she was busy.', 'say không có tân ngữ trực tiếp.'], ['He said he is tired. (khi nói ở quá khứ, lời chỉ lúc đó)', 'He said he was tired.', 'Cần lùi thì.'], ['She said she would come tomorrow. (người tường thuật nói ngày hôm sau)', 'She said she would come the next day.', 'Đổi tomorrow → the next day.']],
+    quiz: [
+      ['"I\'m tired," Mai said. → Mai said she ___ tired.', ['is', 'was', 'were', 'has been'], 1, 'Lùi thì: am → was.'],
+      ['"I\'ll call you tomorrow," he said. → He said he would call me ___.', ['tomorrow', 'the next day', 'yesterday', 'today'], 1, 'tomorrow → the next day.'],
+      ['She ___ me that she liked music.', ['said', 'told', 'says', 'tell'], 1, 'told + O.'],
+      ['"We have finished," they said. → They said they ___ finished.', ['have', 'had', 'were', 'will'], 1, 'present perfect → past perfect.']
+    ]
+  });
 })();
