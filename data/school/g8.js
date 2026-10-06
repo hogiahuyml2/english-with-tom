@@ -27,10 +27,10 @@
       ['I have never ___ a kangaroo.', ['saw', 'seen', 'see', 'seeing'], 1, 'have never + V3: seen.'],
       ['We have been friends ___ ten years.', ['since', 'for', 'ago', 'in'], 1, 'ten years là khoảng thời gian → for.'],
       ['Have you done your homework ___?', ['since', 'yet', 'ago', 'last night'], 1, 'Câu hỏi hiện tại hoàn thành, hỏi "đã … chưa" → yet đứng cuối câu.'],
-      ['I ___ my keys. I cannot open the door.', ['lose', 'lost', 'have lost', 'am losing'], 2, 'Kết quả ở hiện tại (không mở được cửa) → have lost.'],
+      ['I ___ my keys. I cannot open the door.', ['lose', 'losed', 'have lost', 'am losing'], 2, 'Kết quả ở hiện tại (không mở được cửa) → have lost.'],
       ['They ___ to London last year.', ['have gone', 'went', 'have been', 'go'], 1, 'last year là mốc quá khứ → quá khứ đơn: went.'],
       ['This is the first time she ___ sushi.', ['eats', 'ate', 'has eaten', 'is eating'], 2, 'This is the first time + hiện tại hoàn thành.'],
-      ['Mr Nam is not here. He ___ to the post office.', ['has been', 'has gone', 'went', 'goes'], 1, 'Đã đi và chưa về → has gone to.']
+      ['Mr Nam is not here. He ___ to the post office.', ['has been', 'has gone', 'going', 'goes'], 1, 'Đã đi và chưa về → has gone to.']
     ]
   });
 
@@ -51,13 +51,13 @@
     ex: [['At 8 p.m. yesterday, I was doing my homework.', 'Lúc 8 giờ tối qua, mình đang làm bài tập.'], ['I was cooking when the phone rang.', 'Mình đang nấu ăn thì điện thoại reo.'], ['While she was reading, her brother was playing games.', 'Trong lúc cô ấy đọc sách thì em trai chơi game.'], ['They were walking home when it started to rain.', 'Họ đang đi bộ về nhà thì trời bắt đầu mưa.'], ['What were you doing at 9 o\'clock last night?', 'Lúc 9 giờ tối qua bạn đang làm gì?'], ["It wasn't raining when we left.", 'Lúc chúng mình rời đi thì trời không mưa.'], ['The students were talking when the teacher came in.', 'Học sinh đang nói chuyện thì cô giáo bước vào.'], ['Was he sleeping at that time?', 'Lúc đó anh ấy đang ngủ à?']],
     mis: [['While I watched TV, he came in.', 'While I was watching TV, he came in.', 'Hành động đang diễn ra dùng quá khứ tiếp diễn.'], ['I was having dinner when the phone was ringing.', 'I was having dinner when the phone rang.', 'Hành động xen vào dùng quá khứ đơn.'], ['She were reading a book.', 'She was reading a book.', 'She đi với was.'], ['I was knowing the answer.', 'I knew the answer.', 'know là động từ chỉ trạng thái.']],
     quiz: [
-      ['I ___ TV when the lights went out.', ['watched', 'was watching', 'were watching', 'watch'], 1, 'Hành động đang diễn ra bị xen vào → was watching.'],
-      ['While my mother ___ dinner, I was doing my homework.', ['cooked', 'was cooking', 'cooks', 'is cooking'], 1, 'Hai hành động song song → quá khứ tiếp diễn.'],
-      ['What ___ at 7 o\'clock last night?', ['did you do', 'were you doing', 'are you doing', 'was you doing'], 1, 'You → were; at 7 o\'clock last night → were you doing.'],
-      ['They ___ football when it started to rain.', ['played', 'was playing', 'were playing', 'play'], 2, 'They → were playing; started to rain là hành động xen vào.'],
+      ['I ___ TV when the lights went out.', ['watching', 'was watching', 'were watching', 'watch'], 1, 'Hành động đang diễn ra bị xen vào → was watching.'],
+      ['While my mother ___ dinner, I was doing my homework.', ['cook', 'was cooking', 'cooks', 'is cooking'], 1, 'Hai hành động song song → quá khứ tiếp diễn.'],
+      ['What ___ at 7 o\'clock last night?', ['you did do', 'were you doing', 'are you doing', 'was you doing'], 1, 'You → were; at 7 o\'clock last night → were you doing.'],
+      ['They ___ football when it started to rain.', ['playing', 'was playing', 'were playing', 'play'], 2, 'They → were playing; started to rain là hành động xen vào.'],
       ['When the teacher came in, the students ___.', ['talk', 'were talking', 'was talking', 'talks'], 1, 'students số nhiều → were talking.'],
       ['He ___ asleep when I called him.', ['is', 'were', 'was', 'be'], 2, 'He → was (asleep là tính từ, dùng to be).'],
-      ['She broke her arm while she ___ a bike.', ['rode', 'was riding', 'were riding', 'rides'], 1, 'while + quá khứ tiếp diễn.'],
+      ['She broke her arm while she ___ a bike.', ['ride', 'was riding', 'were riding', 'rides'], 1, 'while + quá khứ tiếp diễn.'],
       ['At this time yesterday we ___ at the beach.', ['was lying', 'lie', 'were lying', 'are lying'], 2, 'we → were lying.']
     ]
   });
@@ -84,7 +84,7 @@
       ['___ you hurry, you will be late.', ['If', 'Unless', 'Although', 'Because'], 1, 'Unless = if not: Unless you hurry...'],
       ['If I ___ time tomorrow, I will call you.', ['have', 'had', 'will have', 'would have'], 0, 'Loại 1: If + hiện tại đơn.'],
       ['If he ___ the bus, he will be late for school.', ['misses', 'missed', 'will miss', 'would miss'], 0, 'he → misses.'],
-      ['We ___ a picnic if the weather is fine.', ['have', 'will have', 'would have', 'had'], 1, 'Mệnh đề chính loại 1: will + V.'],
+      ['We ___ a picnic if the weather is fine.', ['having', 'will have', 'would have', 'had'], 1, 'Mệnh đề chính loại 1: will + V.'],
       ["Unless it ___, we will have a picnic.", ['rains', "doesn't rain", "won't rain", "didn't rain"], 0, 'Unless + động từ khẳng định (rains).']
     ]
   });
@@ -108,7 +108,7 @@
     quiz: [
       ['English ___ in many countries.', ['speaks', 'is spoken', 'is speaking', 'spoke'], 1, 'English là đối tượng chịu tác động → is spoken.'],
       ['The window ___ by the boys yesterday.', ['broke', 'is broken', 'was broken', 'were broken'], 2, 'Quá khứ đơn, window số ít → was broken.'],
-      ['A new school ___ next year.', ['will build', 'will be built', 'is built', 'was built'], 1, 'Tương lai đơn bị động: will be built.'],
+      ['A new school ___ next year.', ['will build', 'will be built', 'is build', 'was built'], 1, 'Tương lai đơn bị động: will be built.'],
       ['These books ___ by many students every day.', ['read', 'are read', 'is read', 'were read'], 1, 'books số nhiều, hiện tại đơn → are read.'],
       ['My phone ___ last week.', ['was stolen', 'is stolen', 'stole', 'has stolen'], 0, 'last week → was stolen.'],
       ['Chuyển sang bị động: "They clean the classrooms every day."', ['The classrooms clean every day.', 'The classrooms are cleaned every day.', 'The classrooms is cleaned every day.', 'The classrooms were cleaned every day.'], 1, 'classrooms số nhiều, hiện tại đơn → are cleaned.'],
@@ -167,11 +167,11 @@
       ['"I am hungry," Tom said. → Tom said that he ___ hungry. (lùi thì)', ['is', 'was', 'were', 'will be'], 1, 'am/is → was.'],
       ['"We will visit you," they said. → They said they ___ visit me. (lùi thì)', ['will', 'would', 'can', 'did'], 1, 'will → would.'],
       ['"I can swim," she said. → She said she ___ swim. (lùi thì)', ['can', 'could', 'may', 'would'], 1, 'can → could.'],
-      ['"I am leaving tomorrow," he said. → He said he was leaving ___.', ['tomorrow', 'the next day', 'yesterday', 'today'], 1, 'tomorrow → the next day.'],
+      ['"I am leaving tomorrow," he said. → He said he was leaving ___.', ['next tomorrow', 'the next day', 'yesterday', 'today'], 1, 'tomorrow → the next day.'],
       ['She ___ me that she was busy.', ['said', 'told', 'spoke', 'talked'], 1, 'tell + O + that.'],
-      ['"I live here," he said. → He said that he lived ___.', ['here', 'there', 'now', 'this'], 1, 'here → there.'],
-      ['"We watched a film yesterday," they said. → They said they ___ a film the day before.', ['watched', 'had watched', 'have watched', 'would watch'], 1, 'Quá khứ đơn → quá khứ hoàn thành: had watched.'],
-      ['The teacher said that water ___ at 100°C. (sự thật hiển nhiên)', ['boiled', 'boils', 'had boiled', 'would boil'], 1, 'Sự thật hiển nhiên giữ nguyên thì hiện tại đơn.']
+      ['"I live here," he said. → He said that he lived ___.', ['where', 'there', 'now', 'this'], 1, 'here → there.'],
+      ['"We watched a film yesterday," they said. → They said they ___ a film the day before.', ['watch', 'had watched', 'have watched', 'would watch'], 1, 'Quá khứ đơn → quá khứ hoàn thành: had watched.'],
+      ['The teacher said that water ___ at 100°C. (sự thật hiển nhiên)', ['boil', 'boils', 'had boiled', 'would boil'], 1, 'Sự thật hiển nhiên giữ nguyên thì hiện tại đơn.']
     ]
   });
 
@@ -246,7 +246,7 @@
       ['Please drive ___. The road is wet.', ['careful', 'more careful', 'more carefully', 'carefully than'], 2, 'Cần trạng từ so sánh: more carefully.'],
       ['The ___ you practise, the better you speak.', ['more', 'most', 'many', 'much'], 0, 'The more…, the better…'],
       ['He is not as ___ as his father.', ['taller', 'tall', 'tallest', 'more tall'], 1, 'not as + adj nguyên mẫu + as.'],
-      ['Tom ran ___ in the race.', ['fast', 'the fastest', 'more fast', 'fastly'], 1, 'So sánh nhất trạng từ: the fastest.'],
+      ['Tom ran ___ in the race.', ['faster than', 'the fastest', 'more fast', 'fastly'], 1, 'So sánh nhất trạng từ: the fastest.'],
       ['This bag is twice as ___ as that one.', ['expensive', 'more expensive', 'expensiver', 'most expensive'], 0, 'twice as + adj + as.'],
       ['She plays tennis ___ than I do.', ['badly', 'worse', 'worst', 'more bad'], 1, 'badly → worse.']
     ]
@@ -279,12 +279,12 @@
     ],
     quiz: [
       ['The lights are on, so he ___ be at home.', ['can\'t', 'must', 'mustn\'t', 'doesn\'t'], 1, 'Tin chắc dựa trên dấu hiệu → must.'],
-      ['"Where\'s Lan?" "I\'m not sure. She ___ be in the library."', ['must', 'might', 'can\'t', 'should'], 1, 'Không chắc → might.'],
+      ['"Where\'s Lan?" "I\'m not sure. She ___ be in the library."', ['must', 'might', 'can\'t', 'shoulds'], 1, 'Không chắc → might.'],
       ['That ___ be Tom. He is in Singapore now.', ['must', 'might', 'can\'t', 'may'], 2, 'Chắc chắn không → can\'t.'],
       ['It ___ rain later, so take an umbrella.', ['must', 'could', 'can\'t', 'mustn\'t'], 1, 'Có khả năng → could.'],
-      ['He has worked 12 hours. He ___ be exhausted.', ['must', 'could', 'might not', 'can\'t'], 0, 'Suy đoán chắc chắn → must.'],
+      ['He has worked 12 hours. He ___ be exhausted.', ['must', 'can', 'might not', 'can\'t'], 0, 'Suy đoán chắc chắn → must.'],
       ['Which sentence is correct?', ['She must to be late.', 'She might be late.', 'She mights be late.', 'She might being late.'], 1, 'might + V nguyên mẫu.'],
-      ['The shop is closed. They ___ be on holiday.', ['can\'t', 'may', 'don\'t', 'doesn\'t'], 1, 'Khả năng → may.'],
+      ['The shop is closed. They ___ be on holiday.', ['cans', 'may', 'don\'t', 'doesn\'t'], 1, 'Khả năng → may.'],
       ['It is 3 a.m. Everyone ___ be sleeping now.', ['must', 'can\'t', 'mustn\'t', 'doesn\'t'], 0, 'Tin chắc dựa trên giờ giấc → must be + V-ing.'],
       ['I\'m not sure about the answer. It ___ be B.', ['must', 'can\'t', 'might', 'mustn\'t'], 2, 'Không chắc → might.']
     ]
@@ -319,7 +319,7 @@
       ['I can\'t find my wallet ___. It\'s gone.', ['somewhere', 'anywhere', 'nowhere', 'everywhere'], 1, 'Phủ định → anywhere.'],
       ['___ is ready. Let\'s start the meeting.', ['Everyone', 'No one', 'Anyone', 'Someone'], 0, 'Tất cả sẵn sàng → Everyone.'],
       ['There isn\'t ___ in the fridge.', ['something', 'anything', 'nothing', 'everything'], 1, 'Phủ định → anything.'],
-      ['Would you like ___ to drink?', ['anything', 'something', 'nothing', 'anyone'], 1, 'Lời mời → something.'],
+      ['Would you like ___ to drink?', ['nothing', 'something', 'everything', 'anyone'], 1, 'Lời mời → something.'],
       ['___ knows where he lives. It\'s a secret.', ['Everybody', 'Nobody', 'Anybody', 'Somebody'], 1, 'Bí mật → Nobody.'],
       ['Everybody ___ happy at the party.', ['was', 'were', 'are', 'be'], 0, 'Everybody + động từ số ít.'],
       ['I need ___ cold to drink.', ['something', 'cold something', 'somewhere', 'someone'], 0, 'something + tính từ.'],
@@ -357,7 +357,7 @@
     quiz: [
       ['Please ___ your shoes before you enter the house.', ['take off', 'take away', 'take after', 'take for'], 0, 'take off = cởi (giày, áo).'],
       ['I can\'t find my phone. I\'m ___ it everywhere.', ['looking after', 'looking for', 'looking up', 'looking at'], 1, 'look for = tìm kiếm.'],
-      ['It\'s dark here. Can you ___ the light?', ['turn on', 'turn up', 'turn after', 'turn back'], 0, 'turn on the light = bật đèn.'],
+      ['It\'s dark here. Can you ___ the light?', ['turn on', 'turn at', 'turn after', 'turn back'], 0, 'turn on the light = bật đèn.'],
       ['Don\'t ___! Keep trying and you\'ll succeed.', ['give up', 'give out', 'give off', 'give away'], 0, 'give up = từ bỏ.'],
       ['My grandmother ___ us when our parents are at work.', ['looks for', 'looks after', 'looks up', 'looks like'], 1, 'look after = chăm sóc.'],
       ['The light is on. Please turn ___ off.', ['it', 'its', 'itself', 'of it'], 0, 'Turn it off (đại từ ở giữa).'],
@@ -395,7 +395,7 @@
     quiz: [
       ['I have ___ finished my homework, so I can play now.', ['already', 'yet', 'ago', 'last'], 0, 'already đứng giữa have và V3.'],
       ['She has worked here ___ 2019.', ['for', 'since', 'ago', 'in'], 1, 'since + mốc thời gian.'],
-      ['"Have you finished your report ___?" "Not yet."', ['already', 'yet', 'just', 'never'], 1, 'yet trong câu hỏi.'],
+      ['"Have you finished your report ___?" "Not yet."', ['ago', 'yet', 'just', 'never'], 1, 'yet trong câu hỏi.'],
       ['I have ___ been to Europe. I want to go next year.', ['ever', 'never', 'yet', 'ago'], 1, 'never = chưa bao giờ.']
     ]
   });
@@ -420,10 +420,10 @@
     ],
     mis: [['I was watch TV when she came.', 'I was watching TV when she came.', 'was + V-ing.'], ['When I was crossing the street, I saw an accident. (ý: sau đó mới thấy)', 'When I crossed the street, I saw an accident.', 'Hai hành động nối tiếp dùng quá khứ đơn.'], ['I was knowing him very well.', 'I knew him very well.', 'know không dùng tiếp diễn.']],
     quiz: [
-      ['She ___ breakfast when I arrived.', ['was having', 'had', 'has', 'is having'], 0, 'Đang làm thì bị xen vào → was having.'],
-      ['I ___ the dishes while my brother was watching TV.', ['washed', 'was washing', 'wash', 'am washing'], 1, 'Hai hành động song song → was washing.'],
+      ['She ___ breakfast when I arrived.', ['was having', 'having', 'has', 'is having'], 0, 'Đang làm thì bị xen vào → was having.'],
+      ['I ___ the dishes while my brother was watching TV.', ['washing', 'was washing', 'wash', 'am washing'], 1, 'Hai hành động song song → was washing.'],
       ['When I got home, I ___ the door and went in.', ['was opening', 'opened', 'am opening', 'open'], 1, 'Hành động nối tiếp → opened.'],
-      ['At 9 last night I ___ a film.', ['watched', 'was watching', 'am watching', 'watch'], 1, 'Mốc thời gian xác định → was watching.']
+      ['At 9 last night I ___ a film.', ['watching', 'was watching', 'am watching', 'watch'], 1, 'Mốc thời gian xác định → was watching.']
     ]
   });
 
@@ -525,10 +525,10 @@
     ],
     mis: [['She said me that she was busy.', 'She told me that she was busy. / She said that she was busy.', 'say không có tân ngữ trực tiếp.'], ['He said he is tired. (khi nói ở quá khứ, lời chỉ lúc đó)', 'He said he was tired.', 'Cần lùi thì.'], ['She said she would come tomorrow. (người tường thuật nói ngày hôm sau)', 'She said she would come the next day.', 'Đổi tomorrow → the next day.']],
     quiz: [
-      ['"I\'m tired," Mai said. → Mai said she ___ tired.', ['is', 'was', 'were', 'has been'], 1, 'Lùi thì: am → was.'],
-      ['"I\'ll call you tomorrow," he said. → He said he would call me ___.', ['tomorrow', 'the next day', 'yesterday', 'today'], 1, 'tomorrow → the next day.'],
+      ['"I\'m tired," Mai said. → Mai said she ___ tired.', ['be', 'was', 'were', 'has been'], 1, 'Lùi thì: am → was.'],
+      ['"I\'ll call you tomorrow," he said. → He said he would call me ___.', ['next tomorrow', 'the next day', 'yesterday', 'today'], 1, 'tomorrow → the next day.'],
       ['She ___ me that she liked music.', ['said', 'told', 'says', 'tell'], 1, 'told + O.'],
-      ['"We have finished," they said. → They said they ___ finished.', ['have', 'had', 'were', 'will'], 1, 'present perfect → past perfect.']
+      ['"We have finished," they said. → They said they ___ finished.', ['has', 'had', 'were', 'will'], 1, 'present perfect → past perfect.']
     ]
   });
 })();

@@ -19,10 +19,10 @@
     mis: [['I have seen him yesterday.', 'I saw him yesterday.', 'yesterday → quá khứ đơn.'], ['I will call you when I will arrive.', 'I will call you when I arrive.', 'Mệnh đề thời gian dùng hiện tại đơn cho tương lai.'], ['When I arrived, they already left.', 'When I arrived, they had already left.', 'Việc xảy ra trước một mốc quá khứ → quá khứ hoàn thành.'], ['He is knowing the answer.', 'He knows the answer.', 'know là động từ chỉ trạng thái.']],
     quiz: [
       ['Look! The children ___ in the garden.', ['play', 'are playing', 'have played', 'played'], 1, 'Look! → hiện tại tiếp diễn.'],
-      ['I ___ my keys three times this month.', ['lost', 'have lost', 'was losing', 'lose'], 1, 'this month là khoảng thời gian chưa kết thúc → hiện tại hoàn thành: have lost.'],
+      ['I ___ my keys three times this month.', ['losing', 'have lost', 'was losing', 'lose'], 1, 'this month là khoảng thời gian chưa kết thúc → hiện tại hoàn thành: have lost.'],
       ['By the time I got to the station, the train ___.', ['left', 'has left', 'had left', 'was leaving'], 2, 'Việc xảy ra trước mốc quá khứ → quá khứ hoàn thành.'],
       ['I ___ you as soon as I get there.', ['will call', 'would call', 'called', 'have called'], 0, 'Tương lai (as soon as + hiện tại đơn): will call.'],
-      ['She ___ English for five years.', ['studies', 'is studying', 'has been studying', 'studied'], 2, 'for five years + còn tiếp diễn → has been studying.'],
+      ['She ___ English for five years now.', ['studies', 'is studying', 'has been studying', 'studied'], 2, 'for five years + còn tiếp diễn → has been studying.'],
       ['He ___ his leg while he was playing football yesterday.', ['breaks', 'broke', 'has broken', 'was breaking'], 1, 'yesterday → quá khứ đơn.'],
       ['We ___ to the beach next week.', ['did go', 'are going', 'went', 'have gone'], 1, 'next week → tương lai; kế hoạch → are going.'],
       ['Mr Lee ___ in Hue since he was a child.', ['lives', 'lived', 'has lived', 'is living'], 2, 'since + mốc thời gian → has lived.']
@@ -48,12 +48,12 @@
     mis: [['When I arrived, the film already started.', 'When I arrived, the film had already started.', 'Việc xảy ra trước mốc quá khứ → had + V3.'], ['After he finished, he had gone home.', 'After he had finished, he went home.', 'Hành động xảy ra trước dùng had + V3.'], ['I have been knowing him for years.', 'I have known him for years.', 'know là động từ chỉ trạng thái.'], ['No sooner he had arrived than it rained.', 'No sooner had he arrived than it rained.', 'Đảo ngữ sau No sooner.']],
     quiz: [
       ['When I got home, my mother ___ dinner.', ['would already cook', 'had already cooked', 'has already cooked', 'was already cook'], 1, 'Nấu xong trước khi mình về → had already cooked.'],
-      ['She told me that she ___ the film twice before.', ['saw', 'had seen', 'has seen', 'was seeing'], 1, 'Việc xem phim xảy ra trước thời điểm nói trong quá khứ (twice before) → had seen.'],
+      ['She told me that she ___ the film twice before.', ['see', 'had seen', 'has seen', 'was seeing'], 1, 'Việc xem phim xảy ra trước thời điểm nói trong quá khứ (twice before) → had seen.'],
       ['After they ___ dinner, they went for a walk.', ['had finished', 'have finished', 'finish', 'were finishing'], 0, 'Hành động xảy ra trước: had finished.'],
-      ['I ___ for you for an hour. Where have you been?', ['wait', 'waited', 'have been waiting', 'am waiting'], 2, 'for an hour + kéo dài đến hiện tại → have been waiting.'],
+      ['I ___ for you for an hour. Where have you been?', ['wait', 'waiting', 'have been waiting', 'am waiting'], 2, 'for an hour + kéo dài đến hiện tại → have been waiting.'],
       ['No sooner ___ the house than it began to rain.', ['he left', 'had he left', 'he had left', 'did he left'], 1, 'No sooner + đảo ngữ: had he left.'],
-      ['Her eyes are red. She ___.', ['cries', 'has been crying', 'cried', 'is cry'], 1, 'Dấu vết còn ở hiện tại → has been crying.'],
-      ['By the time we reached the cinema, the film ___.', ['started', 'had started', 'has started', 'starts'], 1, 'By the time + quá khứ đơn, mệnh đề kia dùng had + V3.'],
+      ['Her eyes are red. She ___.', ['cries', 'has been crying', 'crying', 'is cry'], 1, 'Dấu vết còn ở hiện tại → has been crying.'],
+      ['By the time we reached the cinema, the film ___.', ['start', 'had started', 'has started', 'starts'], 1, 'By the time + quá khứ đơn, mệnh đề kia dùng had + V3.'],
       ['We ___ each other since 2015.', ['know', 'knew', 'have known', 'have been knowing'], 2, 'know không dùng tiếp diễn; since → have known.']
     ]
   });
@@ -108,7 +108,7 @@
       ['___ he is rich, he is not happy.', ['Despite', 'Although', 'Because of', 'Therefore'], 1, 'Although + mệnh đề.'],
       ['I like tea, ___ my brother prefers coffee.', ['whereas', 'because', 'so', 'in spite of'], 0, 'Đối lập hai đối tượng → whereas.'],
       ['The film was long. ___, it was interesting.', ['Because', 'However', 'So', 'Although'], 1, 'Tương phản giữa hai câu → However,'],
-      ['___ being tired, he finished the work.', ['Although', 'Because', 'In spite of', 'However'], 2, 'In spite of + V-ing.']
+      ['___ being tired, he finished the work.', ['But', 'Because', 'In spite of', 'However'], 2, 'In spite of + V-ing.']
     ]
   });
 
@@ -200,7 +200,7 @@
       ['The chef ___ the sauce to check the flavour.', ['tastes', 'is tasting', 'taste', 'has tasted'], 1, 'Hành động nếm → is tasting.'],
       ['I ___ you\'re tired. You look pale.', ['am believing', 'believe', 'believing', 'was believing'], 1, 'believe → dạng đơn.'],
       ['Which sentence is correct?', ['I am liking this song.', 'I like this song.', 'I am wanting a drink.', 'I am knowing him.'], 1, 'like là động từ trạng thái.'],
-      ['"What are you doing?" "I ___ a book on the table."', ['am seeing', 'see', 'am looking at', 'look'], 2, 'Đang nhìn → am looking at.']
+      ['"What are you doing?" "I ___ a book on the table."', ['am seeing', 'seeing', 'am looking at', 'look'], 2, 'Đang nhìn → am looking at.']
     ]
   });
 
@@ -312,12 +312,12 @@
     quiz: [
       ['I wish I ___ a car. Then I could drive to work.', ['have', 'had', 'will have', 'would have'], 1, 'Ước ở hiện tại → had.'],
       ['I wish I ___ the exam last week. I failed.', ['passed', 'had passed', 'pass', 'would pass'], 1, 'Ước ở quá khứ → had passed.'],
-      ['He behaves as if he ___ everything.', ['know', 'knows', 'knew', 'has known'], 2, 'as if + V2 (trái hiện tại).'],
+      ['He behaves as if he ___ everything.', ['know', 'knowing', 'knew', 'has known'], 2, 'as if + V2 (trái hiện tại).'],
       ['It\'s high time you ___ to bed.', ['go', 'went', 'will go', 'going'], 1, 'It\'s high time + V2.'],
       ['I\'d rather ___ at home than go out.', ['to stay', 'staying', 'stay', 'stayed'], 2, 'would rather + V.'],
       ['I\'d rather you ___ so loudly.', ['don\'t talk', 'didn\'t talk', 'won\'t talk', 'not talking'], 1, 'would rather + S + V2.'],
       ['I wish it ___ stop raining. I want to go out.', ['will', 'would', 'did', 'has'], 1, 'wish + would (mong thay đổi).'],
-      ['She looks as if she ___ a ghost.', ['saw', 'has seen', 'had seen', 'sees'], 2, 'as if + had V3 (trái quá khứ).'],
+      ['She looked as if she ___ a ghost.', ['see', 'has seen', 'had seen', 'sees'], 2, 'as if + had V3 (trái quá khứ).'],
       ['If only I ___ tall enough to join the team!', ['am', 'were', 'was being', 'will be'], 1, 'If only giống wish: were.']
     ]
   });
@@ -412,7 +412,7 @@
     mis: [['Hardly he had left when it rained.', 'Hardly had he left when it rained.', 'Đảo ngữ: Hardly had + S + V3.'], ['I have been reading 50 pages today.', 'I have read 50 pages today.', 'Có số lượng/kết quả → have V3.'], ['I had seen him yesterday.', 'I saw him yesterday.', 'Mốc quá khứ xác định, không có hành động khác để so trước – sau → quá khứ đơn.']],
     quiz: [
       ['No sooner ___ he arrived than the rain stopped.', ['had', 'has', 'did', 'was'], 0, 'No sooner had + S + V3 + than.'],
-      ['I\'m tired because I ___ all day.', ['worked', 'have been working', 'had worked', 'work'], 1, 'Nhấn quá trình kéo dài đến nay.'],
+      ['I\'m tired because I ___ all day.', ['working', 'have been working', 'had worked', 'work'], 1, 'Nhấn quá trình kéo dài đến nay.'],
       ['It was the first time I ___ snow.', ['have seen', 'had seen', 'saw', 'see'], 1, 'the first time (quá khứ) → had seen.'],
       ['How many pages have you ___ so far?', ['read', 'reading', 'been read', 'to read'], 0, 'Có số lượng → have read.']
     ]
@@ -463,7 +463,7 @@
     ],
     mis: [['Despite the fact he was ill, he came.', 'Despite the fact that he was ill, he came.', 'Cần that sau the fact.'], ['The flight was cancelled thanks to the storm.', 'The flight was cancelled due to the storm.', 'Việc tiêu cực → due to.'], ['It was late; moreover we went home early.', 'It was late; therefore, we went home early.', 'Kết quả → therefore; moreover là thêm ý.']],
     quiz: [
-      ['___ your help, I finished the work early.', ['Thanks to', 'Due to', 'Although', 'Despite'], 0, 'Nguyên nhân tích cực → Thanks to.'],
+      ['___ your help, I finished the work early.', ['Thanks to', 'Because', 'Although', 'Despite'], 0, 'Nguyên nhân tích cực → Thanks to.'],
       ['The trip was postponed ___ the bad weather.', ['because', 'due to', 'although', 'so'], 1, 'Sau chỗ trống là danh từ → due to.'],
       ['Many students like online classes. ___, some prefer face-to-face ones.', ['Therefore', 'However', 'Because', 'Moreover'], 1, 'Đối lập → However.'],
       ['He is old, ___ he exercises every day.', ['so', 'yet', 'because', 'therefore'], 1, 'Nhưng vẫn → yet.']
@@ -517,7 +517,7 @@
     quiz: [
       ['Open the window, ___?', ['will you', 'shall we', 'do you', 'are you'], 0, 'Câu mệnh lệnh → will you?'],
       ['She has never been abroad, ___?', ['hasn\'t she', 'has she', 'is she', 'does she'], 1, 'never là phủ định → đuôi khẳng định: has she?'],
-      ['Nobody called, ___?', ['did they', 'didn\'t they', 'did he', 'do they'], 0, 'nobody → they, đuôi khẳng định.'],
+      ['Nobody called, ___?', ['did they', 'didn\'t they', 'did it', 'do they'], 0, 'nobody → they, đuôi khẳng định.'],
       ['These are your keys, ___?', ['isn\'t it', 'aren\'t they', 'are these', 'don\'t they'], 1, 'These are → aren\'t they?']
     ]
   });

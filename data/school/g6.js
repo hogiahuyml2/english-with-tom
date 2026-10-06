@@ -342,7 +342,7 @@
       ['We bought some apples ___ oranges.', ['and', 'but', 'so', 'because'], 0, 'Thêm ý → and.'],
       ['It was sunny, ___ we went to the beach.', ['because', 'so', 'but', 'or'], 1, 'Kết quả → so.'],
       ['He passed the test ___ he studied hard.', ['so', 'but', 'because', 'or'], 2, 'Lý do của việc đỗ → because.'],
-      ['The bag is old, ___ it is still useful.', ['so', 'but', 'because', 'and'], 1, 'Cũ nhưng vẫn hữu ích → but.'],
+      ['The bag is old, ___ it is still useful.', ['so', 'but', 'because', 'or'], 1, 'Cũ nhưng vẫn hữu ích → but.'],
       ['Which sentence is correct?', ['Because it was cold, so I wore a coat.', 'Because it was cold, I wore a coat.', 'It was cold because, I wore a coat.', 'Because it was cold but I wore a coat.'], 1, 'Chỉ dùng một liên từ: Because…, + mệnh đề chính.']
     ]
   });
@@ -380,8 +380,8 @@
       ['He doesn\'t ___ washing the dishes.', ['likes', 'like', 'liking', 'to like'], 1, 'doesn\'t + V nguyên mẫu: like.'],
       ['"___ you like a sandwich?" "Yes, please."', ['Do', 'Are', 'Would', 'Does'], 2, 'Lời mời lịch sự → Would you like…?'],
       ['I\'d like ___ a doctor when I grow up.', ['be', 'being', 'to be', 'am'], 2, 'I\'d like + to V.'],
-      ['They ___ playing computer games.', ['enjoys', 'enjoy', 'would enjoy', 'enjoying'], 1, 'They + enjoy (hiện tại đơn).'],
-      ['She hates ___ in crowded places.', ['to be', 'being', 'be', 'is'], 1, 'hate + V-ing (đã học ở bài này).'],
+      ['They ___ playing computer games.', ['enjoys', 'enjoy', 'is enjoy', 'enjoying'], 1, 'They + enjoy (hiện tại đơn).'],
+      ['She hates ___ in crowded places.', ['been', 'being', 'be', 'is'], 1, 'hate + V-ing (đã học ở bài này).'],
       ['Which sentence is polite when you order food?', ['I want a burger.', 'Give me a burger.', 'I\'d like a burger, please.', 'A burger!'], 2, 'I\'d like… please là cách lịch sự.'],
       ['Do you mind ___ the window?', ['open', 'opening', 'to open', 'opens'], 1, 'mind + V-ing.']
     ]
@@ -554,7 +554,7 @@
     quiz: [
       ['My mother is ___ dinner in the kitchen.', ['cook', 'cooks', 'cooking', 'cooked'], 2, 'is + V-ing.'],
       ['The children ___ in the garden now.', ['plays', 'is playing', 'are playing', 'play'], 2, 'children số nhiều → are playing.'],
-      ['I usually go by bus, but today I ___ by bike.', ['go', 'am going', 'goes', 'went'], 1, 'Hôm nay tạm thời khác thường lệ → am going.'],
+      ['I usually go by bus, but at the moment I ___ by bike.', ['go', 'am going', 'goes', 'gone'], 1, 'Hôm nay tạm thời khác thường lệ → am going.'],
       ['He is ___ his shoes.', ['putting', 'puting', 'puts', 'put'], 0, 'put → putting (gấp đôi t).']
     ]
   });

@@ -99,6 +99,10 @@
 .gd-fb { margin-top: 10px; padding: 10px 12px; border-radius: 12px; font-size: 14px; line-height: 1.5; } .gd-fb.ok { background: #DCFCE7; color: #166534; } .gd-fb.bad { background: #FEE2E2; color: #991B1B; }
 .gd-act { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; } .gd-btn { border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 10px 16px; font: 800 14px inherit; font-family: inherit; cursor: pointer; min-height: 44px; } .gd-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; }
 .gd-toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; } .gd-toast.on { opacity: 1; }
+.gd-visit { display: none; background: #FFF4D1; border: 2px solid #F5D77A; color: #7A4A0B; border-radius: 16px; padding: 10px 14px; margin-top: 14px; font-weight: 700; font-size: 14px; align-items: center; gap: 10px; flex-wrap: wrap; } body.visit .gd-visit { display: flex; } .gd-visit .gd-btn { margin-left: auto; }
+body.visit .gd-shop, body.visit .gd-tools, body.visit .gd-stats .mine, body.visit .gd-lvnote, body.visit #gname .ed { display: none; } body.visit .gd-main { grid-template-columns: 1fr; } body.visit #gname { cursor: default; } body.visit .gt, body.visit .gd-pet { cursor: default; } body.visit .gt:hover { box-shadow: none; }
+.gd-field-in { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 10px 12px; font: 600 15px inherit; font-family: inherit; background: var(--surface); color: var(--text); min-height: 44px; box-sizing: border-box; }
+.gd-linkrow { display: flex; gap: 6px; margin: 6px 0 10px; } .gd-linkrow input { flex: 1; min-width: 0; font-size: 13px; }
 @media (max-width: 900px) { .gd-lv { padding-right: 22px; } .gd-main { grid-template-columns: 1fr; } .gd-shop { position: static; } .gd-items { max-height: none; grid-template-columns: repeat(3, 1fr); } .gd-gardener { display: none; } .gd-logo h1 { font-size: 25px; } .gd-stats { margin-left: 0; } }
 @media (max-width: 480px) { .gd-items { grid-template-columns: repeat(2, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-gardener .av, .gd-spin, .gt .ready { animation: none !important; } .gd-pet { transition-duration: 0s; } }
@@ -118,16 +122,19 @@
         <svg class="mk" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#FFF8D6"/><path d="M32 54 V30" stroke="#2E8B57" stroke-width="4" stroke-linecap="round"/><path d="M32 40 Q18 38 14 26 Q28 24 32 38Z" fill="#4FAE4A"/><path d="M32 36 Q46 34 50 22 Q36 20 32 34Z" fill="#7FD36B"/><circle cx="32" cy="22" r="8" fill="#FF8FB8"/><circle cx="32" cy="22" r="3.4" fill="#FFD23F"/></svg>
         <h1>EWT <span>Garden</span></h1>
       </div>
-      <button class="gd-gname" id="gname" title="Đổi tên khu vườn">🌷 <span id="gnameT">Khu vườn của bạn</span> ✏️</button>
+      <button class="gd-gname" id="gname" title="Đổi tên khu vườn">🌷 <span id="gnameT">Khu vườn của bạn</span> <span class="ed">✏️</span></button>
       <div class="gd-stats">
-        <span class="gd-pill xu" title="Xu — dùng chung với phần Luyện từ">🪙 <span id="xu">0</span></span>
-        <span class="gd-pill" title="Lượt tưới nước còn lại hôm nay">💧 <span id="wt">0</span></span>
-        <button class="gd-earn" id="earn">✨ Kiếm xu</button>
+        <span class="gd-pill xu mine" title="Xu — dùng chung với phần Luyện từ">🪙 <span id="xu">0</span></span>
+        <span class="gd-pill mine" title="Lượt tưới nước còn lại hôm nay">💧 <span id="wt">0</span></span>
+        <button class="gd-pill mine" id="friend" style="border:none;cursor:pointer;font-family:inherit">👀 Thăm bạn</button>
+        <button class="gd-earn mine" id="earn">✨ Kiếm xu</button>
       </div>
     </div>
     <div class="gd-lv"><span class="gd-lvb" id="lvb">Cấp 1</span><div class="gd-bar" title="Điểm đẹp của khu vườn"><i id="lvbar" style="width:0"></i></div><span class="gd-lvb" id="lvnx" style="background:rgba(255,255,255,.8)"></span></div>
     <div class="gd-gardener"><div class="gd-bubble" id="bubble">Chạm vào ô đất để trồng hoa nhé!</div><div class="av" id="gav"></div></div>
   </section>
+
+  <div class="gd-visit" id="vbar"><span id="vtxt"></span><button class="gd-btn pri" id="vback">🌷 Về vườn của mình</button></div>
 
   <div class="gd-main">
     <section class="gd-field">
@@ -156,23 +163,35 @@
   <div id="qbody"></div>
   <div class="gd-act"><button class="gd-btn" id="qclose">Đóng</button></div>
 </div></div>
+<div class="gd-modal" id="frm"><div class="gd-box" style="max-width:460px">
+  <h3>👀 Thăm vườn của bạn bè</h3>
+  <p class="gd-sub">Nhập email tài khoản của bạn bè để ghé xem khu vườn (chỉ xem, không sửa được).</p>
+  <div class="gd-linkrow"><input class="gd-field-in" id="femail" type="email" placeholder="email-cua-ban@gmail.com" autocomplete="off"><button class="gd-btn pri" id="fgo">Thăm</button></div>
+  <div id="fmsg" class="gd-sub" style="color:#b91c1c;min-height:18px"></div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
+  <h3 style="font-size:16px">🔗 Mời bạn xem vườn của mình</h3>
+  <p class="gd-sub">Gửi link này cho bạn bè (bạn cần đăng nhập EWT để xem).</p>
+  <div class="gd-linkrow"><input class="gd-field-in" id="flink" readonly><button class="gd-btn" id="fcopy">Sao chép</button></div>
+  <label style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700"><input type="checkbox" id="fopen" style="width:20px;height:20px"> Cho phép bạn bè xem vườn của mình (bằng email hoặc link)</label>
+  <div class="gd-act"><button class="gd-btn" id="frenew" title="Link cũ sẽ không còn dùng được">🔄 Đổi link mới</button><button class="gd-btn" id="fclose">Đóng</button></div>
+</div></div>
 <div class="gd-modal" id="petm"><div class="gd-box" style="max-width:380px"><div id="petbody"></div><div class="gd-act"><button class="gd-btn" id="petclose">Đóng</button></div></div></div>
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=1"></script>
+<script src="js/garden-data.js?v=2"></script>
 <script src="js/garden-art.js?v=3"></script>
 <script>
 (function () {
 'use strict';
 var D = window.EWTGardenData, A = window.EWTGardenArt, $ = function (id) { return document.getElementById(id); };
-var S = null, COINS = 0, SKEW = 0, TOOL = null, TAB = 'plant', SEL = null, PETPOS = {}, LAST_LEVEL = 0, TOPICS = null;
+var VISIT = null, S = null, COINS = 0, SKEW = 0, TOOL = null, TAB = 'plant', SEL = null, PETPOS = {}, LAST_LEVEL = 0, TOPICS = null;
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 var tt; function toast(t, ms) { var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 2600); }
 function api(url, body) { return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; throw e; } return d; }); }); }
 function NOW() { return Date.now() + SKEW; }
 function fmtT(ms) { var m = Math.ceil(ms / 60000); if (m < 1) return '<1 ph'; if (m < 60) return m + ' ph'; var h = Math.floor(m / 60); return h + 'g' + (m % 60 ? (m % 60) + 'p' : ''); }
-function setState(d) { S = d.garden; COINS = d.coins; SKEW = (S.now || Date.now()) - Date.now(); render(); }
+function setState(d) { S = d.garden; if (!VISIT) COINS = d.coins; SKEW = (S.now || Date.now()) - Date.now(); render(); }
 
 /* ───────── vẽ khu vườn ───────── */
 function layout() {
@@ -201,6 +220,7 @@ function render() {
   g.innerHTML = h; renderPets(ts); renderShop(); renderTools();
 }
 function renderTools() {
+  if (VISIT) { $('hint').textContent = ''; return; }
   [].forEach.call(document.querySelectorAll('[data-tool]'), function (b) { b.classList.toggle('on', TOOL === b.getAttribute('data-tool')); });
   var hint = '';
   if (TOOL === 'water') hint = '💧 Chạm vào hoa/cây đang lớn để tưới (rút ngắn 25% thời gian, tối đa ' + D.RULES.waterMax + ' lần/cây). Còn ' + S.water + ' lượt hôm nay.';
@@ -216,7 +236,7 @@ var BRUSH = null; function SEL_ITEM() { return BRUSH; }
 /* ───────── thú cưng đi dạo ───────── */
 function renderPets(ts) {
   var el = $('pets'), n = S.size, h = '';
-  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (n - 1), y: Math.random() * (n - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
+  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (n - 1), y: Math.random() * (n - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
   el.innerHTML = h;
 }
 function wander() {
@@ -250,6 +270,7 @@ function run(p, el, okMsg) {
 }
 function tileEl(i) { return document.querySelector('.gt[data-i="' + i + '"]'); }
 function onTile(i) {
+  if (VISIT) return;
   closePop(); var t = S.tiles[i], it = t && D.BY[t.k];
   if (TOOL === 'water') { if (!it) return toast('Ô này đang trống.'); return api('/api/garden/water', { i: i }).then(function (d) { setState(d); var e = tileEl(i); if (e) floatText(e, '💧 -25%'); }).catch(function (e) { toast(e.message, 3600); }); }
   if (TOOL === 'harvest') return doHarvest(i);
@@ -281,7 +302,7 @@ function setBubble() {
   var tips = ['Hoa nở nhớ thu hoạch để nhận xu nhé!', 'Tưới nước 💧 giúp hoa lớn nhanh hơn đó!', 'Hết xu? Bấm “Kiếm xu” để trả lời câu hỏi nha!', 'Cho thú cưng ăn mỗi ngày để chúng vui vẻ 💗', 'Vườn càng đẹp, cấp càng cao, món mới càng nhiều!'];
   $('bubble').textContent = tips[Math.floor(Math.random() * tips.length)];
 }
-setInterval(setBubble, 9000);
+setInterval(function () { if (!VISIT) setBubble(); }, 9000);
 
 document.addEventListener('click', function (e) {
   var t = e.target, el;
@@ -298,9 +319,15 @@ document.addEventListener('click', function (e) {
   }
   if (t.closest('#harvAll')) { api('/api/garden/harvest-all', {}).then(function (d) { setState(d); toast('🧺 Thu hoạch ' + d.count + ' cây, nhận ' + d.gained + ' 🪙'); if (window.ewtCelebrate) window.ewtCelebrate(['star', 'sparkles', 'coin'], { count: 10, from: $('xu') }); }).catch(function (er) { toast(er.message); }); return; }
   if (t.closest('#expand')) { var nx = S.nextSize; if (nx && confirm('Mở rộng vườn lên ' + nx.n + '×' + nx.n + ' với giá ' + nx.cost + ' 🪙?')) api('/api/garden/expand', {}).then(function (d) { setState(d); toast('🏡 Vườn rộng hơn rồi!'); }).catch(function (er) { toast(er.message, 3600); }); return; }
-  if (t.closest('#gname')) { var nm = prompt('Đặt tên cho khu vườn của bạn:', S.name); if (nm && nm.trim()) api('/api/garden/name', { name: nm }).then(setState).catch(function (er) { toast(er.message); }); return; }
+  if (t.closest('#gname') && !VISIT) { var nm = prompt('Đặt tên cho khu vườn của bạn:', S.name); if (nm && nm.trim()) api('/api/garden/name', { name: nm }).then(setState).catch(function (er) { toast(er.message); }); return; }
   if ((el = t.closest('.gd-pet'))) { openPet(el.getAttribute('data-pid')); return; }
   if (t.closest('#earn')) { openQuiz(); return; }
+  if (t.closest('#friend')) { openFriend(); return; }
+  if (t.closest('#fclose') || t.id === 'frm') { $('frm').classList.remove('on'); return; }
+  if (t.closest('#fgo')) { goVisit(); return; }
+  if (t.closest('#fcopy')) { var fl = $('flink'); fl.select(); try { navigator.clipboard.writeText(fl.value); } catch (er) { document.execCommand('copy'); } toast('Đã sao chép link 🔗'); return; }
+  if (t.closest('#frenew')) { if (confirm('Đổi link mới? Link cũ sẽ không còn dùng được.')) api('/api/garden/share', { renew: true }).then(drawShare); return; }
+  if (t.closest('#vback')) { location.href = 'garden.html'; return; }
   if (t.closest('#qclose')) { $('quiz').classList.remove('on'); return; }
   if (t.closest('#petclose') || t.id === 'petm') { $('petm').classList.remove('on'); return; }
 });
@@ -308,6 +335,7 @@ document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { cl
 
 /* ───────── thú cưng: thẻ chăm sóc ───────── */
 function openPet(pid) {
+  if (VISIT) return;
   var p = S.pets.filter(function (x) { return x.id === pid; })[0]; if (!p) return; var pt = D.PBY[p.k];
   $('petbody').innerHTML = '<div style="text-align:center"><div style="width:120px;height:120px;margin:0 auto">' + A.petSvg(pt, '100%') + '</div><h3 style="margin:6px 0 2px">' + esc(p.name) + '</h3><p class="gd-sub">' + esc(pt.name) + ' · ' + (p.fed ? '💗 Đã được ăn hôm nay, bé rất vui!' : '🍪 Bé đang đói, cho ăn nhé (+' + D.RULES.feedXu + ' 🪙).') + '</p></div><div class="gd-act" style="justify-content:center"><button class="gd-btn pri" id="pfeed"' + (p.fed ? ' disabled' : '') + '>🍪 Cho ăn</button><button class="gd-btn" id="pren">✏️ Đổi tên</button><button class="gd-btn" id="prel">👋 Tạm biệt</button></div>';
   $('petm').classList.add('on');
@@ -349,9 +377,23 @@ function answer(i) {
   }).catch(function (e) { toast(e.message); QLOCK = false; });
 }
 
-/* ───────── khởi động ───────── */
+/* ───────── tham quan vườn bạn bè ───────── */
+function drawShare(d) { $('flink').value = location.origin + '/garden.html?visit=' + d.token; $('fopen').checked = !!d.open; }
+function openFriend() { $('frm').classList.add('on'); $('fmsg').textContent = ''; api('/api/garden/share').then(drawShare).catch(function () {}); setTimeout(function () { $('femail').focus(); }, 50); }
+function goVisit() { var em = $('femail').value.trim(); if (!em) { $('fmsg').textContent = 'Hãy nhập email của bạn bè nhé.'; return; } location.href = 'garden.html?email=' + encodeURIComponent(em); }
+$('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') goVisit(); });
+$('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
+var QP = new URLSearchParams(location.search), VQ = QP.get('visit') ? 'token=' + encodeURIComponent(QP.get('visit')) : QP.get('email') ? 'email=' + encodeURIComponent(QP.get('email')) : '';
+if (VQ) {
+  VISIT = true; document.body.classList.add('visit'); document.title = 'Tham quan vườn — EWT Garden';
+  api('/api/garden/visit?' + VQ).then(function (d) {
+    VISIT = d.owner; setState(d); $('vtxt').textContent = d.owner.me ? '👀 Đây là khu vườn của chính bạn (chế độ xem).' : '👀 Bạn đang tham quan khu vườn của ' + d.owner.name + ' — chỉ xem thôi nhé!';
+    $('bubble').textContent = d.owner.me ? 'Vườn của bạn đây!' : 'Chào bạn! Mình là ' + d.owner.name + ' 🌷'; if (d.owner.avatar && window.ewtAvatarInto) window.ewtAvatarInto($('gav'), d.owner.avatar, 72); else $('gav').textContent = '🧑‍🌾';
+  }).catch(function (e) { VISIT = true; $('vtxt').textContent = '😕 ' + e.message; $('sky').style.display = 'none'; document.querySelector('.gd-main').style.display = 'none'; });
+} else {
 api('/api/garden').then(function (d) { setState(d); setBubble(); }).catch(function (e) { $('hint').textContent = e.message; });
 fetch('/api/me/avatar', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (d && d.cfg && window.ewtAvatarInto) window.ewtAvatarInto($('gav'), d.cfg, 72); else $('gav').textContent = '🧑‍🌾'; }).catch(function () {});
+}
 setInterval(function () { if (S && !document.hidden) { var keep = SEL, p = $('pop'); if (!p) render(); } }, 20000);
 window.addEventListener('resize', function () { if (S) render(); });
 })();

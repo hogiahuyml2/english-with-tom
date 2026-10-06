@@ -137,7 +137,7 @@
     quiz: [
       ['When I was a child, I ___ in a small village.', ['used to live', 'am used to living', 'got used to live', 'use to living'], 0, 'Thói quen/trạng thái trong quá khứ → used to live.'],
       ["I am used to ___ up early.", ['get', 'getting', 'got', 'gets'], 1, 'be used to + V-ing.'],
-      ["She ___ like spicy food, but now she loves it.", ["didn't used to", "didn't use to", "doesn't use to", "isn't used to"], 1, "Phủ định của used to: didn't use to."],
+      ["She ___ like spicy food, but now she loves it.", ["didn't using to", "didn't use to", "doesn't use to", "isn't used to"], 1, "Phủ định của used to: didn't use to."],
       ['It was difficult at first, but now I have got used ___ the cold weather.', ['to', 'for', 'with', 'of'], 0, 'get used to + N/V-ing.'],
       ['My grandfather ___ smoke, but he stopped ten years ago.', ['was used to', 'used to', 'is used to', 'uses to'], 1, 'Thói quen quá khứ nay đã bỏ → used to smoke.'],
       ['___ you use to play the piano when you were young?', ['Do', 'Did', 'Are', 'Were'], 1, 'Câu hỏi: Did you use to ...?'],
@@ -395,7 +395,7 @@
     ],
     mis: [['My bike, that I bought last year, is broken.', 'My bike, which I bought last year, is broken.', 'Không dùng that trong mệnh đề không xác định.'], ['The man whose his car was stolen called the police.', 'The man whose car was stolen called the police.', 'whose + danh từ (không thêm his).'], ['The town where she lives in is small.', 'The town where she lives is small. / The town (that) she lives in is small.', 'where đã gồm giới từ.']],
     quiz: [
-      ['Everything ___ you said was right.', ['who', 'which', 'that', 'whose'], 2, 'Sau everything dùng that.'],
+      ['Everything ___ you said was right.', ['who', 'what', 'that', 'whose'], 2, 'Sau everything dùng that.'],
       ['That is the reason ___ I was late.', ['why', 'where', 'who', 'whose'], 0, 'reason + why.'],
       ['The man ___ car is parked outside is a doctor.', ['who', 'whose', 'which', 'that'], 1, 'Sở hữu → whose.'],
       ['My laptop, ___ I bought last year, is slow.', ['that', 'which', 'who', 'what'], 1, 'Không xác định → which (có phẩy).']

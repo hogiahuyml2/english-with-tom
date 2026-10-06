@@ -50,10 +50,10 @@
     ex: [["It's cold. I'll close the window.", 'Trời lạnh. Mình sẽ đóng cửa sổ.'], ['We are going to visit my grandparents this weekend.', 'Cuối tuần này chúng mình sẽ đi thăm ông bà.'], ["I promise I won't be late.", 'Mình hứa sẽ không đến muộn.'], ['Look at the sky! It is going to rain.', 'Nhìn bầu trời kìa! Sắp mưa rồi.'], ['Will you come to my party tomorrow?', 'Mai bạn sẽ đến bữa tiệc của mình chứ?'], ['She is going to study medicine at university.', 'Cô ấy dự định học y ở đại học.'], ['I think people will travel to Mars in the future.', 'Mình nghĩ trong tương lai con người sẽ du hành đến sao Hỏa.'], ["I'll carry that bag for you.", 'Để mình xách cái túi đó giúp bạn.']],
     mis: [['I will to go to school tomorrow.', 'I will go to school tomorrow.', 'Sau will dùng động từ nguyên mẫu, không có to.'], ['She will goes to Hue.', 'She will go to Hue.', 'Sau will không thêm s.'], ['Look at those black clouds! It will rain.', 'Look at those black clouds! It is going to rain.', 'Có bằng chứng ở hiện tại → be going to.'], ['He will not to come.', 'He will not come.', 'Sau will not dùng động từ nguyên mẫu, không có to.']],
     quiz: [
-      ['The phone is ringing. I ___ answer it.', ["am going to", "will", "am", "would to"], 1, 'Quyết định tức thời lúc nói → will.'],
-      ['We have bought the tickets. We ___ visit Da Nang next week.', ['will', 'are going to', 'visit', 'are visiting to'], 1, 'Kế hoạch đã chuẩn bị → be going to.'],
+      ['The phone is ringing. I ___ answer it.', ["going to", "will", "am", "would to"], 1, 'Quyết định tức thời lúc nói → will.'],
+      ['We have bought the tickets. We ___ to visit Da Nang next week.', ['will', 'are going', 'visit', 'are visiting'], 1, 'Kế hoạch đã chuẩn bị → are going to visit.'],
       ['Look at the sky! It ___ rain.', ['will', 'is going to', 'would', 'rains'], 1, 'Có bằng chứng (nhìn bầu trời) → is going to.'],
-      ['I promise I ___ call you tonight.', ['am going to', 'will', 'am', 'can to'], 1, 'Lời hứa → will.'],
+      ['I promise I ___ call you tonight.', ['going to', 'will', 'am', 'can to'], 1, 'Lời hứa → will.'],
       ['She ___ be a doctor when she grows up. (cô ấy dự định)', ['is going to', 'goes to', 'will to', 'going to'], 0, 'is going to + V.'],
       ['I think it ___ be hot tomorrow.', ['is', 'will', 'does', 'was'], 1, 'I think + dự đoán → will be.'],
       ['___ you help me with this exercise, please?', ['Do', 'Will', 'Are', 'Did'], 1, 'Will you ...? dùng để nhờ vả/đề nghị.'],
@@ -107,7 +107,7 @@
       ["We don't have ___ bread.", ['some', 'any', 'many', 'a few'], 1, 'Phủ định, bread không đếm được → any.'],
       ['How ___ eggs do you need?', ['much', 'many', 'any', 'a little'], 1, 'eggs đếm được số nhiều → many.'],
       ['There is ___ juice in the glass.', ['a few', 'many', 'a little', 'few'], 2, 'juice không đếm được; có một ít → a little.'],
-      ['Would you like ___ coffee?', ['any', 'some', 'many', 'few'], 1, 'Lời mời dùng some.'],
+      ['Would you like ___ coffee?', ['much', 'some', 'many', 'few'], 1, 'Lời mời dùng some.'],
       ['She has ___ friends in this city, so she feels lonely.', ['a few', 'few', 'a little', 'much'], 1, 'few = rất ít, nghĩa tiêu cực (cảm thấy cô đơn).'],
       ['I have ___ homework to do tonight.', ['many', 'a lot of', 'a few', 'any'], 1, 'homework không đếm được; câu khẳng định → a lot of.'],
       ['How ___ money do you have?', ['many', 'much', 'few', 'a few'], 1, 'money không đếm được → much.'],
@@ -134,7 +134,7 @@
       ['You ___ drink more water. It is good for your health.', ['can\'t', 'should', 'mustn\'t', 'might not'], 1, 'Lời khuyên → should.'],
       ['Students ___ run in the corridor. It is dangerous.', ["don't have to", "mustn't", "can", "should to"], 1, 'Cấm đoán → mustn\'t.'],
       ['Tomorrow is Sunday. We ___ go to school.', ["mustn't", "don't have to", "must", "can't to"], 1, 'Không cần thiết → don\'t have to.'],
-      ['___ I use your dictionary, please?', ['Must', 'Should', 'Can', 'Do'], 2, 'Xin phép → Can I ...?'],
+      ['___ I use your dictionary, please?', ['Must', 'Would', 'Can', 'Do'], 2, 'Xin phép → Can I ...?'],
       ['She ___ play the piano very well when she was five.', ['can', 'could', 'should', 'must'], 1, 'Khả năng trong quá khứ → could.'],
       ['It ___ rain this evening, so take an umbrella.', ['might', 'must to', 'does', 'cans'], 0, 'Khả năng → might.'],
       ['He ___ wear a helmet when he rides a motorbike. It is the law.', ['has to', 'have to', 'having to', 'haves to'], 0, 'He → has to (quy định bắt buộc).'],
@@ -316,15 +316,15 @@
       ['Look at those clouds! It is raining soon.', 'Look at those clouds! It\'s going to rain.', 'Dự đoán có dấu hiệu → be going to.'], ['What you are doing tonight?', 'What are you doing tonight?', 'Trợ động từ đứng trước chủ ngữ.']
     ],
     quiz: [
-      ['I ___ my cousin at the airport at 6 tomorrow. (đã hẹn)', ['meet', 'am meeting', 'met', 'meets'], 1, 'Kế hoạch đã sắp xếp → am meeting.'],
+      ['I ___ my cousin at the airport at 6 tomorrow. (đã hẹn)', ['meeting', 'am meeting', 'met', 'meets'], 1, 'Kế hoạch đã sắp xếp → am meeting.'],
       ['What ___ you doing this Sunday?', ['do', 'are', 'did', 'will'], 1, 'Present continuous: What are you doing…?'],
-      ['She ___ to Singapore next week. She has the ticket.', ['is flying', 'flies', 'flew', 'fly'], 0, 'Đã có vé → is flying.'],
+      ['She ___ to Singapore next week. She has the ticket.', ['is flying', 'flying', 'flew', 'fly'], 0, 'Đã có vé → is flying.'],
       ['Look at the dark sky! It ___ rain.', ['is raining', 'is going to', 'rains', 'rained'], 1, 'Cần "is going to rain".'],
-      ['They ___ a party tonight, so don\'t be late.', ['have', 'are having', 'had', 'having'], 1, 'Kế hoạch tối nay → are having.'],
+      ['They ___ a party tonight, so don\'t be late.', ['has', 'are having', 'had', 'having'], 1, 'Kế hoạch tối nay → are having.'],
       ['He ___ tomorrow. He\'s on holiday.', ['isn\'t working', 'doesn\'t working', 'not working', 'don\'t work'], 0, 'Phủ định tiếp diễn: isn\'t working.'],
       ['___ your parents picking you up at school today?', ['Do', 'Are', 'Did', 'Is'], 1, 'parents số nhiều + V-ing → Are.'],
       ['Which sentence is about a future plan?', ['I\'m reading a book now.', 'I\'m leaving for Hue tomorrow.', 'I read books every day.', 'I was reading yesterday.'], 1, 'tomorrow → kế hoạch tương lai.'],
-      ['We ___ out for dinner on Friday evening.', ['are going', 'go', 'went', 'were going'], 0, 'Kế hoạch ngày thứ Sáu → are going.']
+      ['We ___ out for dinner on Friday evening.', ['are going', 'goes', 'went', 'were going'], 0, 'Kế hoạch ngày thứ Sáu → are going.']
     ]
   });
 
@@ -426,7 +426,7 @@
     ],
     mis: [['I think he won\'t to come.', 'I don\'t think he will come.', 'Dạng tự nhiên với I think.'], ['If it will rain, we will stay home.', 'If it rains, we will stay home.', 'Mệnh đề if dùng hiện tại đơn.'], ['It will probably not rain. (ít tự nhiên)', 'It probably won\'t rain.', 'probably đứng trước won\'t.']],
     quiz: [
-      ['A: "There is no milk." B: "I ___ buy some."', ['am going to', 'will', 'am buying', 'buy'], 1, 'Quyết định tức thời → will.'],
+      ['A: "There is no milk." B: "I ___ buy some."', ['going to', 'will', 'am buying', 'buy'], 1, 'Quyết định tức thời → will.'],
       ['I ___ to be a teacher. I have chosen a university.', ['will', 'am going', 'shall', 'would'], 1, 'Dự định đã có → am going to be.'],
       ['It ___ rain tomorrow, so take an umbrella.', ['will probably', 'probably will not to', 'is probably', 'does probably'], 0, 'will probably + V.'],
       ['___ I open the window? It\'s hot in here.', ['Will', 'Shall', 'Do', 'Am'], 1, 'Shall I… = đề nghị.']
@@ -506,7 +506,7 @@
     quiz: [
       ['___ I use your phone, please? (rất lịch sự)', ['May', 'Do', 'Am', 'Will'], 0, 'May I…? lịch sự nhất trong các lựa chọn.'],
       ['I ___ get up at 5 yesterday because I had an early flight.', ['must', 'have to', 'had to', 'should'], 2, 'Quá khứ của have to/must → had to.'],
-      ['You ___ be late for the exam. It\'s important.', ['mustn\'t', 'don\'t have to', 'needn\'t to', 'might'], 0, 'Không được (cấm) → mustn\'t.'],
+      ['You ___ be late for the exam. It\'s important.', ['mustn\'t', 'don\'t have to', 'needn\'t to', 'would'], 0, 'Không được (cấm) → mustn\'t.'],
       ['He ___ be at home. His lights are on.', ['may', 'would', 'is', 'does'], 0, 'Khả năng → may.']
     ]
   });

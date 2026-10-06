@@ -19,8 +19,8 @@
     mis: [['I will call you when I will arrive.', 'I will call you when I arrive.', 'Mệnh đề thời gian dùng hiện tại đơn.'], ['It is the first time I visit Hue.', 'It is the first time I have visited Hue.', 'It is the first time + hiện tại hoàn thành.'], ['By the time I got there, the film already started.', 'By the time I got there, the film had already started.', 'by the time + quá khứ đơn → mệnh đề kia dùng quá khứ hoàn thành.'], ['I know her since 2015.', 'I have known her since 2015.', 'since → hiện tại hoàn thành.']],
     quiz: [
       ['I will phone you as soon as I ___ home.', ['will get', 'get', 'got', 'am getting to'], 1, 'Mệnh đề thời gian chỉ tương lai dùng hiện tại đơn.'],
-      ['By the time he arrives, we ___ dinner.', ['will finish', 'will have finished', 'finished', 'are finishing'], 1, 'by the time + hiện tại đơn → tương lai hoàn thành.'],
-      ['By the time I got to the airport, the plane ___.', ['took off', 'had taken off', 'has taken off', 'was taken off'], 1, 'by the time + quá khứ đơn → quá khứ hoàn thành.'],
+      ['By the time he arrives, we ___ dinner.', ['will finished', 'will have finished', 'finished', 'are finishing'], 1, 'by the time + hiện tại đơn → tương lai hoàn thành.'],
+      ['By the time I got to the airport, the plane ___.', ['take off', 'had taken off', 'has taken off', 'was taken off'], 1, 'by the time + quá khứ đơn → quá khứ hoàn thành.'],
       ['It is the first time she ___ abroad.', ['travels', 'travelled', 'has travelled', 'will travel'], 2, 'It is the first time + hiện tại hoàn thành.'],
       ['She ___ here since she was ten.', ['lives', 'lived', 'has lived', 'is living'], 2, 'since + quá khứ đơn → has lived.'],
       ['This time next week, we ___ on the beach.', ['lie', 'will be lying', 'would lie', 'have lain'], 1, 'This time next week → tương lai tiếp diễn.'],
@@ -74,7 +74,7 @@
       ['We depend ___ tourism for our income.', ['of', 'in', 'on', 'at'], 2, 'depend on.'],
       ['He is afraid ___ spiders.', ['of', 'from', 'with', 'about'], 0, 'afraid of.'],
       ['We ___ the plan yesterday.', ['discussed about', 'discussed', 'discussed on', 'discussed for'], 1, 'discuss không đi với giới từ.'],
-      ['The train arrived ___ time, so we weren\'t late.', ['in', 'on', 'at', 'by'], 1, 'on time = đúng giờ.'],
+      ['The train arrived ___ time, so we weren\'t late.', ['of', 'on', 'at', 'by'], 1, 'on time = đúng giờ.'],
       ['___ Pacific Ocean is the largest ocean in the world.', ['A', 'An', 'The', '(không cần mạo từ)'], 2, 'Tên đại dương dùng the.'],
       ['My brother plays ___ football every weekend.', ['a', 'the', 'an', '(không cần mạo từ)'], 3, 'Môn thể thao không dùng mạo từ.'],
       ['She apologised ___ being late.', ['for', 'of', 'to', 'about'], 0, 'apologise for + V-ing.']
@@ -103,7 +103,7 @@
       ['This laptop is twice ___ as that one.', ['as expensive', 'more expensive', 'expensiver', 'the most expensive'], 0, 'twice + as + adj + as.'],
       ['There are ___ cars on the road than before, so the air is cleaner.', ['less', 'fewer', 'little', 'much'], 1, 'cars đếm được số nhiều → fewer.'],
       ['She is ___ taller than her sister.', ['very', 'much', 'more', 'too'], 1, 'much + so sánh hơn.'],
-      ['It is the best book I ___ read.', ['ever', 'have ever', 'am ever', 'did ever'], 1, 'so sánh nhất + have ever + V3.'],
+      ['It is the best book I ___ read.', ['never', 'have ever', 'am ever', 'did ever'], 1, 'so sánh nhất + have ever + V3.'],
       ['The older he gets, ___ he becomes.', ['the wiser', 'wiser', 'the wisest', 'more wiser'], 0, 'The older ..., the wiser ...'],
       ['I have ___ homework than my brother.', ['less', 'fewer', 'many', 'a few'], 0, 'homework không đếm được → less.']
     ]
@@ -226,12 +226,12 @@
     ],
     quiz: [
       ['"Would you mind turning down the music?" — "___"', ['Yes, of course.', 'Not at all. Sorry.', 'You\'re welcome.', 'Never mind.'], 1, 'Mind = phiền; Not at all = không phiền → đồng ý.'],
-      ['"Thank you for the lovely gift." — "___"', ['That\'s OK.', 'My pleasure.', 'I agree.', 'Yes, I do.'], 1, 'Đáp lại lời cảm ơn.'],
+      ['"Thank you for the lovely gift." — "___"', ['That\'s a pity.', 'My pleasure.', 'I agree.', 'Yes, I do.'], 1, 'Đáp lại lời cảm ơn.'],
       ['"I\'m sorry I forgot your book." — "___"', ['That\'s all right.', 'Thanks a lot.', 'You\'re welcome.', 'Good idea.'], 0, 'Đáp lại lời xin lỗi.'],
       ['"Would you like to join our club?" — "___"', ['No, I don\'t.', 'I\'d love to, but I\'m busy.', 'Yes, I would not.', 'You\'re welcome.'], 1, 'Từ chối lời mời lịch sự.'],
       ['"You look wonderful today!" — "___"', ['I\'m sorry to hear that.', 'Thank you. That\'s very kind of you.', 'No, I don\'t think so.', 'Not at all.'], 1, 'Nhận lời khen: Thank you.'],
       ['"Why don\'t we go to the cinema?" — "___"', ['Yes, we don\'t.', 'That\'s a good idea.', 'You\'re welcome.', 'I\'m fine, thanks.'], 1, 'Đáp lại lời gợi ý.'],
-      ['"Good luck with your interview!" — "___"', ['Same to you.', 'Thanks.', 'Never mind.', 'It\'s my pleasure.'], 1, 'Cảm ơn lời chúc.'],
+      ['"Good luck with your interview!" — "___"', ['Good luck to me.', 'Thanks.', 'Never mind.', 'It\'s my pleasure.'], 1, 'Cảm ơn lời chúc.'],
       ['"Can I speak to Mr. Nam, please?" — "___"', ['Speaking.', 'You\'re welcome.', 'I\'m sorry to hear that.', 'Not at all.'], 0, 'Trên điện thoại, người nghe là người cần gặp → Speaking.'],
       ['"Shall I carry your bag?" — "___"', ['Yes, please. That\'s very kind.', 'It doesn\'t matter.', 'You\'re welcome.', 'No problem at all, I do.'], 0, 'Chấp nhận lời đề nghị.']
     ]
@@ -266,7 +266,7 @@
       ['The match was ___ because of the storm.', ['called off', 'called on', 'called for', 'called in'], 0, 'call off = huỷ.'],
       ['I\'m looking ___ to the new school year.', ['forward', 'after', 'into', 'down'], 0, 'look forward to + danh từ/V-ing.'],
       ['Our teacher ___ our English essays carefully.', ['went over', 'went off', 'went on', 'went up'], 0, 'go over = xem lại.'],
-      ['They decided to ___ the old system.', ['do away with', 'get on with', 'look up to', 'put up with'], 0, 'do away with = loại bỏ.'],
+      ['They decided to ___ the old system.', ['do away with', 'get on for', 'look up to', 'put up for'], 0, 'do away with = loại bỏ.'],
       ['It was hard to ___ the fast pace of the course.', ['keep up with', 'give in', 'break out', 'take after'], 0, 'keep up with = theo kịp.'],
       ['I\'ll ___ you at 7 if you give me your address.', ['pick up', 'get over', 'break down', 'run out'], 0, 'pick up = đón.'],
       ['The thief ___ the house through the window.', ['broke into', 'broke up', 'broke out', 'broke down'], 0, 'break into = đột nhập.'],
@@ -308,7 +308,7 @@
       ['I wish I ___ speak Japanese. It would help me at work.', ['can', 'could', 'will', 'would'], 1, 'wish + could.'],
       ['___ your help, we couldn\'t have finished on time.', ['Without', 'Unless', 'If', 'Should'], 0, 'Without = nếu không có.'],
       ['If it ___ rain tomorrow, we will have the picnic in the hall.', ['will', 'would', 'should', 'did'], 2, 'if it should rain = nếu lỡ trời mưa.'],
-      ['If you heat water to 100°C, it ___.', ['will boil', 'boils', 'would boil', 'boiled'], 1, 'Loại 0 (sự thật): hiện tại đơn.']
+      ['If you heat water to 100°C, it ___.', ['will boils', 'boils', 'would boil', 'boiled'], 1, 'Loại 0 (sự thật): hiện tại đơn.']
     ]
   });
 
@@ -337,11 +337,11 @@
       ['He is afraid from spiders.', 'He is afraid of spiders.', 'afraid of.'], ['I\'m interested on music.', 'I\'m interested in music.', 'interested in.']
     ],
     quiz: [
-      ['Don\'t forget to ___ attention to the instructions.', ['pay', 'make', 'give', 'do'], 0, 'pay attention.'],
+      ['Don\'t forget to ___ attention to the instructions.', ['pay', 'make', 'take', 'do'], 0, 'pay attention.'],
       ['They ___ a mistake when they signed the contract.', ['did', 'took', 'made', 'had'], 2, 'make a mistake.'],
       ['Let\'s ___ in touch after graduation.', ['keep', 'hold', 'make', 'have'], 0, 'keep in touch.'],
       ['Smoking can ___ serious damage to your health.', ['make', 'do', 'take', 'have'], 1, 'do damage.'],
-      ['There was ___ rain last night, so the streets were flooded.', ['strong', 'heavy', 'big', 'hard'], 1, 'heavy rain.'],
+      ['There was ___ rain last night, so the streets were flooded.', ['strong', 'heavy', 'big', 'hardly'], 1, 'heavy rain.'],
       ['The meeting ___ place in the main hall.', ['made', 'took', 'did', 'held'], 1, 'took place.'],
       ['She is very good ___ solving problems.', ['in', 'at', 'on', 'with'], 1, 'good at.'],
       ['The new rule may ___ in better results.', ['result', 'lead', 'cause', 'bring'], 0, 'result in (đáp án duy nhất đi với in).'],
@@ -374,8 +374,8 @@
     ],
     mis: [['I have lived here since five years.', 'I have lived here for five years.', 'for + khoảng thời gian.'], ['By 2030, she will graduate.', 'By 2030, she will have graduated.', 'by + mốc tương lai → will have V3.'], ['It was the first time I saw snow.', 'It was the first time I had seen snow.', 'It was the first time + had V3.']],
     quiz: [
-      ['By the end of this month, I ___ the whole book.', ['will read', 'will have read', 'read', 'am reading'], 1, 'by + mốc tương lai → will have read.'],
-      ['He said that he ___ the work already.', ['finished', 'had finished', 'has finished', 'will finish'], 1, 'Tường thuật → had finished.'],
+      ['By the end of this month, I ___ the whole book.', ['will reading', 'will have read', 'read', 'am reading'], 1, 'by + mốc tương lai → will have read.'],
+      ['He said that he ___ the work already.', ['finish', 'had finished', 'has finished', 'will finish'], 1, 'Tường thuật → had finished.'],
       ['I\'ll wait here until you ___ back.', ['will come', 'come', 'came', 'would come'], 1, 'until + hiện tại đơn.'],
       ['She has been learning English ___ six years.', ['since', 'for', 'ago', 'during'], 1, 'for + khoảng thời gian.']
     ]
@@ -401,7 +401,7 @@
     mis: [['She is a very success businesswoman.', 'She is a very successful businesswoman.', 'Trước danh từ cần tính từ.'], ['The meeting was an economical success.', 'The meeting was an economic success.', 'economic = thuộc kinh tế.'], ['He is dependence on his parents.', 'He is dependent on his parents.', 'be + tính từ.']],
     quiz: [
       ['Many young people have ___ opportunities nowadays. (employ)', ['employ', 'employment', 'employing', 'employed'], 1, 'Trong ngữ cảnh: employment opportunities (danh từ ghép) — chọn employment.'],
-      ['It is ___ to finish this in an hour. (possible)', ['possible', 'impossible', 'possibly', 'possibility'], 1, 'Nghĩa phủ định: impossible.'],
+      ['It is ___ to finish this in an hour; we need at least three. (possible)', ['possible', 'impossible', 'possibly', 'possibility'], 1, 'Nghĩa phủ định: impossible.'],
       ['He solved the problem ___. (clever)', ['clever', 'cleverly', 'cleverness', 'cleverer'], 1, 'Bổ nghĩa cho động từ → trạng từ.'],
       ['The ___ of the new law surprised everyone. (introduce)', ['introduce', 'introduction', 'introductory', 'introduced'], 1, 'Sau the → danh từ.']
     ]

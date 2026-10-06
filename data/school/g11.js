@@ -21,8 +21,8 @@
       ['The girl ___ next to me is my cousin.', ['sit', 'sitting', 'sat', 'to sit'], 1, 'who is sitting → sitting (chủ động).'],
       ['The cars ___ in this factory are exported.', ['making', 'made', 'make', 'to make'], 1, 'which are made → made (bị động).'],
       ['___ the letter, she burst into tears.', ['Reading', 'Read', 'To read', 'Having been read'], 0, 'Hai hành động gần nhau, cùng chủ ngữ, chủ động → Reading.'],
-      ['___ dinner, we went for a walk.', ['Having finished', 'Finishing', 'Finished', 'To finish'], 0, 'Hoàn thành trước khi đi dạo → Having finished.'],
-      ['He was the last student ___ the room.', ['leave', 'leaving', 'to leave', 'left'], 2, 'the last + to V.'],
+      ['___ dinner, we went for a walk.', ['Having finished', 'Finish', 'Finished', 'To finish'], 0, 'Hoàn thành trước khi đi dạo → Having finished.'],
+      ['He was the last student ___ the room.', ['leave', 'leaves', 'to leave', 'left'], 2, 'the last + to V.'],
       ['___ the answer, he kept silent.', ['Not knowing', 'Knowing not', 'Don\'t know', 'Not known'], 0, 'Phủ định rút gọn: Not + V-ing.'],
       ['___ in 1950, the house needs repairing.', ['Building', 'Built', 'Having built', 'To build'], 1, 'Bị động: Built in 1950.'],
       ['Which sentence is correct?', ['Walking in the park, the rain started.', 'Walking in the park, we were caught in the rain.', 'Walking in the park, it started to rain on us.', 'Having walked in the park, the rain started.'], 1, 'Chủ ngữ của "walking" phải là người đi bộ: we.']
@@ -128,9 +128,9 @@
     mis: [['It was my brother which broke the vase.', 'It was my brother who/that broke the vase.', 'Người → who/that, không dùng which.'], ['It was in 2010 when he moved to Hue.', 'It was in 2010 that he moved to Hue.', 'Dùng that, không dùng when.'], ['What I need are more time.', 'What I need is more time.', 'Cấu trúc What + S + V + is.'], ['It was in the park where we first met.', 'It was in the park that we first met.', 'Trong câu chẻ dùng that cho trạng ngữ nơi chốn, không dùng where.']],
     quiz: [
       ['It was Mai ___ won the first prize.', ['which', 'who', 'whom', 'where'], 1, 'Nhấn mạnh người làm chủ ngữ → who/that.'],
-      ['It was last night ___ I saw the accident.', ['when', 'that', 'which', 'what'], 1, 'Nhấn mạnh trạng ngữ thời gian → that.'],
+      ['It was last night ___ I saw the accident.', ['whom', 'that', 'which', 'what'], 1, 'Nhấn mạnh trạng ngữ thời gian → that.'],
       ['___ I need most is a good sleep.', ['That', 'What', 'Which', 'Who'], 1, 'What-cleft: What I need most is...'],
-      ['It was in this park ___ we first met.', ['where', 'that', 'when', 'what'], 1, 'Nhấn mạnh trạng ngữ nơi chốn → that.'],
+      ['It was in this park ___ we first met.', ['whom', 'that', 'when', 'what'], 1, 'Nhấn mạnh trạng ngữ nơi chốn → that.'],
       ['All she wants ___ to be left alone.', ['are', 'is', 'were', 'be'], 1, 'All she wants is ...'],
       ['It was a book ___ she gave me for my birthday.', ['who', 'that', 'where', 'whose'], 1, 'Nhấn mạnh vật → that.'],
       ['Which sentence emphasises "yesterday"?', ['It was yesterday that she called.', 'Yesterday she called it.', 'What she called was yesterday.', 'It was she who yesterday called.'], 0, 'It was yesterday that ...'],
@@ -190,14 +190,14 @@
       ['The film is about start.', 'The film is about to start.', 'be about to + V.'], ['This time tomorrow I will fly to Paris. (đang bay)', 'This time tomorrow I will be flying to Paris.', 'Đang diễn ra tại thời điểm tương lai → will be V-ing.']
     ],
     quiz: [
-      ['At 9 p.m. tonight, I ___ my favourite series.', ['will watch', 'will be watching', 'will have watched', 'watch'], 1, 'Đang diễn ra lúc 9 giờ tối → will be watching.'],
-      ['By next month, we ___ the project.', ['will complete', 'will have completed', 'are completing', 'completed'], 1, 'by + mốc tương lai → will have completed.'],
+      ['At 9 p.m. tonight, I ___ my favourite series.', ['watching', 'will be watching', 'will have watched', 'watch'], 1, 'Đang diễn ra lúc 9 giờ tối → will be watching.'],
+      ['By next month, we ___ the project.', ['will completed', 'will have completed', 'are completing', 'completed'], 1, 'by + mốc tương lai → will have completed.'],
       ['By the time he ___ home, dinner will have been ready.', ['will get', 'gets', 'got', 'will have got'], 1, 'by the time + hiện tại đơn.'],
-      ['The bus ___ to leave in five minutes.', ['is due', 'is about', 'will due', 'is going'], 0, 'be due to + V (theo lịch).'],
-      ['Look! The man ___ jump into the river!', ['is about to', 'will have', 'was due', 'is to'], 0, 'be about to = sắp sửa ngay.'],
+      ['The bus ___ to leave in five minutes.', ['is due', 'is willing', 'will due', 'is going'], 0, 'be due to + V (theo lịch).'],
+      ['Look! The man ___ jump into the river!', ['is about to', 'will have', 'was due', 'is jump'], 0, 'be about to = sắp sửa ngay.'],
       ['She ___ for this company for 15 years by next year.', ['will work', 'will have been working', 'is working', 'works'], 1, 'Nhấn mạnh quá trình kéo dài → will have been working.'],
       ['I\'ll text you as soon as I ___.', ['will arrive', 'arrive', 'arrived', 'am going to arrive'], 1, 'as soon as + hiện tại đơn.'],
-      ['"___ the car tomorrow?" "No, you can use it."', ['Will you use', 'Will you be using', 'Are you use', 'Do you using'], 1, 'Hỏi lịch sự về kế hoạch → Will you be using…?'],
+      ['"___ the car tomorrow?" "No, you can use it."', ['Will you using', 'Will you be using', 'Are you use', 'Do you using'], 1, 'Hỏi lịch sự về kế hoạch → Will you be using…?'],
       ['He is ___ to win; he practises every day.', ['bound', 'about', 'due', 'being'], 0, 'be bound to = chắc chắn sẽ.']
     ]
   });
@@ -234,7 +234,7 @@
       ['She is believed ___ the country two years ago.', ['to leave', 'to have left', 'leaving', 'having left to'], 1, 'Xảy ra trước → to have left.'],
       ['The new law is expected ___ effect next month.', ['take', 'to take', 'taking', 'to taking'], 1, 'is expected + to V.'],
       ['I had my car ___ yesterday.', ['repair', 'repairing', 'repaired', 'to repair'], 2, 'have + object + V3.'],
-      ['He was seen ___ the building at night.', ['enter', 'entering', 'to enter', 'entered'], 2, 'Bị động sau see → to V (hoặc V-ing).'],
+      ['He was seen ___ the building at night.', ['enter', 'enters', 'to enter', 'entered'], 2, 'Bị động của see + V → to V: was seen to enter.'],
       ['They ___ to have been in the accident.', ['say', 'are said', 'said', 'is said'], 1, 'Chủ ngữ số nhiều → are said to have been.'],
       ['It ___ that the singer was ill.', ['is thought', 'thinks', 'was thinking', 'think'], 0, 'It is thought that…'],
       ['The workers ___ to stay late.', ['made', 'were made', 'make', 'was made'], 1, 'Bị động: were made to stay.']
@@ -270,8 +270,8 @@
       ['I\'ll never forget ___ my grandparents for the first time.', ['to meet', 'meeting', 'meet', 'met'], 1, 'Quên/nhớ việc đã xảy ra → V-ing.'],
       ['He stopped ___ because he wanted to be healthier.', ['to smoke', 'smoking', 'smoke', 'smoked'], 1, 'Bỏ hẳn → stop V-ing.'],
       ['We stopped ___ some water at the shop.', ['to buy', 'buying', 'buy', 'bought'], 0, 'Dừng lại để làm việc khác → to V.'],
-      ['I tried ___ the window, but it was stuck.', ['opening', 'to open', 'open', 'opened'], 1, 'Cố gắng → try to V.'],
-      ['If you have a headache, try ___ some water.', ['drinking', 'to drink', 'drink', 'drank'], 0, 'Thử xem sao → try V-ing.'],
+      ['I tried ___ the window, but it was stuck.', ['to opening', 'to open', 'open', 'opened'], 1, 'Cố gắng → try to V.'],
+      ['If you have a headache, try ___ some water.', ['drinking', 'to drinking', 'drink', 'drank'], 0, 'Thử xem sao → try V-ing.'],
       ['The teacher ___ us to use dictionaries during the test.', ['allowed', 'let', 'made', 'enjoyed'], 0, 'allow + O + to V (let/make + O + V không có to).'],
       ['She promised ___ me with my homework.', ['helping', 'to help', 'help', 'helped'], 1, 'promise + to V.'],
       ['I regret ___ you that your application was unsuccessful.', ['to tell', 'telling', 'tell', 'told'], 0, 'regret to + V (thông báo tin xấu).']
@@ -310,7 +310,7 @@
       ['She is hard-working, ___ her brother is lazy.', ['whereas', 'despite', 'because', 'so that'], 0, 'Đối lập hai vế → whereas.'],
       ['___ you go, I\'ll find you.', ['However', 'Whatever', 'Wherever', 'Whoever'], 2, 'Dù đi đâu → Wherever.'],
       ['No matter ___ he says, I won\'t believe him.', ['that', 'what', 'how', 'if'], 1, 'No matter what + S + V.'],
-      ['___ being tired, she attended the party.', ['Although', 'Despite', 'However', 'Even though'], 1, 'Sau chỗ trống là V-ing → Despite.'],
+      ['___ being tired, she attended the party.', ['Because', 'Despite', 'However', 'Even though'], 1, 'Sau chỗ trống là V-ing → Despite.'],
       ['Rich ___ he was, he wasn\'t happy.', ['but', 'as', 'so', 'because'], 1, 'Adj + as + S + V (nhượng bộ).'],
       ['She won ___ the fact that she was injured.', ['despite', 'in spite', 'although', 'however'], 0, 'despite the fact that + mệnh đề.']
     ]
@@ -349,8 +349,8 @@
       ['Some students walk to school; ___ ride bikes.', ['other', 'another', 'others', 'the other'], 2, 'others (không có danh từ theo sau).'],
       ['Nobody helped me. I did it ___.', ['by me', 'myself', 'me', 'mine'], 1, 'Tự mình làm → myself.'],
       ['I don\'t like these shoes. Do you have any cheaper ___?', ['one', 'ones', 'another', 'other'], 1, 'shoes số nhiều → ones.'],
-      ['We should help ___ in difficult times.', ['us', 'ourselves', 'each other', 'themselves'], 2, 'Giúp lẫn nhau → each other.'],
-      ['Three of the students were late; ___ arrived on time.', ['the others', 'another', 'other', 'others'], 0, 'Những người còn lại (xác định) → the others.']
+      ['We should help ___ in difficult times.', ['us', 'ourself', 'each other', 'themselves'], 2, 'Giúp lẫn nhau → each other.'],
+      ['Three of the students were late; ___ arrived on time.', ['the others', 'another', 'other', 'the another'], 0, 'Những người còn lại (xác định) → the others.']
     ]
   });
 
@@ -484,7 +484,7 @@
     mis: [['It was in 1990 when he was born.', 'It was in 1990 that he was born.', 'Dùng that, không dùng when.'], ['What I need are time.', 'What I need is time.', 'Be hòa hợp với danh từ bổ ngữ (time số ít).'], ['It was Tom what broke it.', 'It was Tom who/that broke it.', 'Không dùng what.']],
     quiz: [
       ['It was my teacher ___ encouraged me to study abroad.', ['which', 'who', 'what', 'whose'], 1, 'Nhấn mạnh người → who/that.'],
-      ['It was in 2015 ___ I first visited Japan.', ['when', 'that', 'which', 'what'], 1, 'It was … that.'],
+      ['It was in 2015 ___ I first visited Japan.', ['whom', 'that', 'which', 'what'], 1, 'It was … that.'],
       ['___ I want is a cup of tea.', ['What', 'That', 'Which', 'It'], 0, 'What-cleft.'],
       ['It wasn\'t the price ___ worried me; it was the quality.', ['what', 'that', 'who', 'when'], 1, 'It wasn\'t … that.']
     ]

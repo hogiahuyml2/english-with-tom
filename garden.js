@@ -18,6 +18,8 @@ module.exports = function (app, { db, requireAuth, now }) {
     water INTEGER NOT NULL DEFAULT 10, water_day TEXT, yield_day TEXT, yield_xu INTEGER NOT NULL DEFAULT 0, feed_day TEXT, feed_xu INTEGER NOT NULL DEFAULT 0,
     quiz_day TEXT, quiz_ok INTEGER NOT NULL DEFAULT 0, quiz_total INTEGER NOT NULL DEFAULT 0, created_at TEXT, updated_at TEXT)`);
 
+  for (const c of ['share TEXT', 'open INTEGER NOT NULL DEFAULT 1']) { try { db.exec('ALTER TABLE garden ADD COLUMN ' + c); } catch (_) {} }
+
   const givenName = (n) => String(n || 'bạn').trim().split(/\s+/).slice(-1)[0] || 'bạn';
   const coinsOf = (uid) => { db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(uid); return one('SELECT coins FROM word_game WHERE user_id=?', uid).coins; };
   const addCoins = (uid, n) => db.prepare('UPDATE word_game SET coins=coins+? WHERE user_id=?').run(n, uid);
@@ -180,6 +182,38 @@ module.exports = function (app, { db, requireAuth, now }) {
     save(st); reply(res, req.user, st);
   });
 
+  /* ───── Tham quan vườn của bạn (chỉ xem): nhập email của bạn hoặc dùng link được chia sẻ ───── */
+  const newToken = () => crypto.randomBytes(9).toString('base64url');
+  function myShare(user) {
+    if (!one('SELECT 1 FROM garden WHERE user_id=?', user.id)) save(load(user));
+    let r = one('SELECT share, open FROM garden WHERE user_id=?', user.id);
+    if (!r.share) { db.prepare('UPDATE garden SET share=? WHERE user_id=?').run(newToken(), user.id); r = one('SELECT share, open FROM garden WHERE user_id=?', user.id); }
+    return { token: r.share, open: !!r.open };
+  }
+  app.get('/api/garden/share', requireAuth, (req, res) => res.json(myShare(req.user)));
+  app.post('/api/garden/share', requireAuth, (req, res) => {
+    const b = req.body || {}; myShare(req.user);
+    if (b.renew) db.prepare('UPDATE garden SET share=? WHERE user_id=?').run(newToken(), req.user.id);
+    if (typeof b.open === 'boolean') db.prepare('UPDATE garden SET open=? WHERE user_id=?').run(b.open ? 1 : 0, req.user.id);
+    res.json(myShare(req.user));
+  });
+  const visitTries = new Map();
+  app.get('/api/garden/visit', requireAuth, (req, res) => {
+    const k = req.user.id, t = Date.now(), arr = (visitTries.get(k) || []).filter((x) => t - x < 60e3); arr.push(t); visitTries.set(k, arr);
+    if (arr.length > 20) return bad(res, 'Bạn thử nhiều lần quá, chờ một phút rồi thử lại nhé.', 429);
+    const token = String(req.query.token || '').trim(), email = String(req.query.email || '').trim().toLowerCase();
+    const Q = 'SELECT g.*, u.name AS uname, u.avatar AS uavatar FROM garden g JOIN users u ON u.id=g.user_id WHERE ';
+    let row = null;
+    if (token) row = one(Q + 'g.share=?', token);
+    else if (email) row = one(Q + 'lower(u.email)=?', email);
+    else return bad(res, 'Hãy nhập email của bạn bè nhé.');
+    if (!row || !row.open) return bad(res, 'Không tìm thấy khu vườn nào. Hãy kiểm tra lại email, hoặc bạn ấy chưa mở khu vườn.', 404);
+    const st = { uid: row.user_id, name: row.name, size: row.size, tiles: J(row.tiles, []), pets: J(row.pets, []), quiz_total: 0, yield_xu: 0, feed_xu: 0, quiz_ok: 0 };
+    const v = view(st); v.left = { yield: 0, feed: 0, quiz: 0 };
+    let av = null; try { av = row.uavatar ? require('./js/avatar.js').normalize(JSON.parse(row.uavatar)) : null; } catch (_) {}
+    res.json({ garden: v, owner: { name: givenName(row.uname), avatar: av, me: row.user_id === req.user.id }, readonly: true });
+  });
+
   /* ───── Kiếm xu bằng câu hỏi ───── */
   const GR = [];
   (function loadGrammar() {
@@ -201,15 +235,25 @@ module.exports = function (app, { db, requireAuth, now }) {
     const order = q.fixed ? q.opts.map((_, i) => i) : shuf(q.opts.map((_, i) => i));
     return { src: 'grammar', topic: 'Lớp ' + q.grade + ' · ' + q.title, q: q.q, opts: order.map((i) => q.opts[i]), idx: order.indexOf(q.idx), expl: q.expl };
   }
+  // Tách nghĩa tiếng Việt thành các ý nhỏ để so trùng nghĩa (tránh 2 đáp án cùng đúng).
+  const meaningBits = (m) => String(m || '').toLowerCase().replace(/\([^)]*\)/g, ' ').split(/[,;/]|\bhoặc\b/).map((x) => x.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const sameMeaning = (a, b) => {
+    const x = meaningBits(a.meaning_vi), y = meaningBits(b.meaning_vi);
+    return x.some((p) => y.some((q) => p === q || (p.length >= 4 && q.length >= 4 && (p.indexOf(q) >= 0 || q.indexOf(p) >= 0))));
+  };
   function pickVocab(uid, level) {
     const lv = ['KET', 'PET', 'FCE', 'IELTS'].includes(level) ? level : 'KET';
-    const rows = db.prepare('SELECT id, word, pos, meaning_vi, topic FROM vocab_words WHERE level=? ORDER BY RANDOM() LIMIT 24').all(lv);
+    const rows = db.prepare('SELECT id, word, pos, meaning_vi, topic FROM vocab_words WHERE level=? ORDER BY RANDOM() LIMIT 60').all(lv);
     if (rows.length < 4) return null;
     const rc = recent.get(uid) || [], w = rows.find((r) => rc.indexOf('v' + r.id) < 0) || rows[0]; remember(uid, 'v' + w.id);
-    const others = rows.filter((r) => r.id !== w.id && r.meaning_vi !== w.meaning_vi && r.word !== w.word);
-    const wordMode = Math.random() < 0.5;
-    if (wordMode) { const d = shuf(others).slice(0, 3), opts = shuf([w].concat(d)); return { src: 'vocab', topic: lv + ' · ' + w.topic, q: 'Nghĩa của từ "' + w.word + '"' + (w.pos ? ' (' + w.pos + ')' : '') + ' là gì?', opts: opts.map((o) => o.meaning_vi), idx: opts.indexOf(w), expl: w.word + ' = ' + w.meaning_vi + '.' }; }
-    const d = shuf(others).slice(0, 3), opts = shuf([w].concat(d));
+    // Đáp án nhiễu: khác từ, khác nghĩa, ưu tiên cùng loại từ, và không trùng nghĩa với nhau.
+    const pool = shuf(rows.filter((r) => r.id !== w.id && r.word.toLowerCase() !== w.word.toLowerCase() && !sameMeaning(r, w)));
+    pool.sort((p, q) => (q.pos === w.pos) - (p.pos === w.pos));
+    const d = [];
+    for (const r of pool) { if (d.length >= 3) break; if (!d.some((x) => sameMeaning(x, r) || x.word.toLowerCase() === r.word.toLowerCase())) d.push(r); }
+    if (d.length < 3) return null;
+    const opts = shuf([w].concat(d));
+    if (Math.random() < 0.5) return { src: 'vocab', topic: lv + ' · ' + w.topic, q: 'Nghĩa của từ "' + w.word + '"' + (w.pos ? ' (' + w.pos + ')' : '') + ' là gì?', opts: opts.map((o) => o.meaning_vi), idx: opts.indexOf(w), expl: w.word + ' = ' + w.meaning_vi + '.' };
     return { src: 'vocab', topic: lv + ' · ' + w.topic, q: 'Từ tiếng Anh nào có nghĩa "' + w.meaning_vi + '"?', opts: opts.map((o) => o.word), idx: opts.indexOf(w), expl: w.meaning_vi + ' = ' + w.word + '.' };
   }
   app.get('/api/garden/topics', requireAuth, (req, res) => res.json({ lessons: LESSONS, levels: ['KET', 'PET', 'FCE', 'IELTS'], grades: [6, 7, 8, 9, 10, 11, 12] }));
