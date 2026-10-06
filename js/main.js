@@ -284,7 +284,7 @@
     var h = '<button type="button" class="js-palette">🎨 Màu &amp; hiệu ứng</button><button type="button" id="mtDark">' + (isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối') + '</button>';
     if (user && (user.role === 'teacher' || user.role === 'admin')) h += '<a href="teacher.html">👨‍🏫 Khu vực giáo viên</a>';
     if (user && user.role === 'admin') h += '<a href="admin.html">⚙️ Quản trị</a>';
-    if (user) h += '<a href="reading.html">📖 Đọc hiểu</a><a href="speaking.html">🎤 Luyện Speaking</a><a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
+    if (user) h += '<a href="reading.html">📖 Đọc hiểu</a><a href="speaking.html">🎤 Luyện Speaking</a><a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="stickers.html">🎟️ Bộ sticker</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
     else h += '<a href="login.html">Đăng nhập</a><a href="login.html#register" style="background:var(--gradient);color:#fff;border-color:transparent">Đăng ký</a>';
     box.innerHTML = h;
     var d = document.getElementById('mtDark'); if (d) d.onclick = function () { applyTheme(!isDark()); d.innerHTML = isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối'; };
@@ -306,9 +306,18 @@
       var st = document.getElementById('achToastCss'); if (!st) { st = document.createElement('style'); st.id = 'achToastCss'; st.textContent = '@keyframes achIn{from{opacity:0;transform:translateY(30px) scale(.92)}to{opacity:1;transform:none}}#achToast{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:9500;max-width:min(360px,calc(100vw - 32px));display:flex;gap:12px;align-items:center;background:var(--surface,#fff);color:var(--text,#2E2B45);border:2px solid #fbbf24;border-radius:18px;padding:12px 16px;box-shadow:0 14px 34px rgba(0,0,0,.22);text-decoration:none;animation:achIn .5s cubic-bezier(.2,.9,.3,1.3) both}#achToast .i{font-size:34px;line-height:1}#achToast b{display:block;font-size:14.5px}#achToast span{font-size:12.5px;color:var(--text-muted,#6B6880)}@media (prefers-reduced-motion:reduce){#achToast{animation:none}}'; document.head.appendChild(st); }
       var el = document.createElement('a'); el.id = 'achToast'; el.href = 'achievements.html';
       el.innerHTML = '<div class="i">' + top.icon + '</div><div><b>🏅 Huy hiệu mới: ' + top.name + '!</b><span>' + (top.coins ? '+' + top.coins + ' xu 🪙' : '') + (top.item ? ' · ' + top.item : '') + extra + ' — bấm để xem</span></div>';
-      document.body.appendChild(el); setTimeout(function () { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 450); }, 9000);
+      document.body.appendChild(el); window.ewtCelebrate(['trophy', 'star', 'party-popper', 'sparkles', 'glowing-star'], { from: el, count: 12 }); setTimeout(function () { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 450); }, 9000);
     }).catch(function () {});
   }
+
+  /* ===== Sticker chuyển động: nạp khi cần (js/stickers.js) ===== */
+  var _stkLoading = null;
+  window.ewtCelebrate = function (ids, opts) {
+    function go() { if (window.EWTStickers) window.EWTStickers.burst(ids, opts); }
+    if (window.EWTStickers) { go(); return; }
+    if (!_stkLoading) _stkLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/stickers.js?v=1'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    _stkLoading.then(go);
+  };
 
   /* ===== Nhân vật (avatar): nạp thư viện vẽ khi cần, gắn vào thanh menu ===== */
   var _avLoading = null;
@@ -316,7 +325,7 @@
     if (!el || !cfg) return;
     function put() { el.innerHTML = window.EWTAvatar.render(cfg, { size: size || 40, shape: shape || 'circle' }); }
     if (window.EWTAvatar) { put(); return; }
-    if (!_avLoading) _avLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=1'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
+    if (!_avLoading) _avLoading = new Promise(function (ok) { var sc = document.createElement('script'); sc.src = 'js/avatar.js?v=2'; sc.onload = ok; sc.onerror = ok; document.head.appendChild(sc); });
     _avLoading.then(function () { if (window.EWTAvatar) put(); });
   };
   function showHeaderAvatar(cfg) {

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bộ sticker — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.sk-wrap { max-width: 1000px; margin: 0 auto; padding: 14px 16px 60px; }
+.sk-h1 { font-size: 26px; margin: 4px 0 4px; } .sk-sub { color: var(--text-muted); font-size: 14.5px; margin: 0 0 14px; line-height: 1.6; }
+.sk-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px; scrollbar-width: none; } .sk-tabs::-webkit-scrollbar { display: none; }
+.sk-tab { flex: none; padding: 10px 16px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 14px inherit; font-family: inherit; cursor: pointer; min-height: 44px; white-space: nowrap; } .sk-tab.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.sk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 12px; }
+.sk-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 14px 6px 10px; text-align: center; cursor: pointer; font-family: inherit; color: var(--text); box-shadow: var(--shadow); min-height: 44px; transition: transform .12s; } .sk-card:hover { transform: translateY(-2px); }
+.sk-card span { display: block; font-size: 12.5px; font-weight: 700; margin-top: 6px; line-height: 1.3; }
+.sk-big { position: fixed; inset: 0; z-index: 120; background: rgba(15,12,40,.55); display: none; place-items: center; padding: 16px; } .sk-big.on { display: grid; }
+.sk-box { background: var(--surface); border-radius: 24px; padding: 22px 26px 18px; text-align: center; max-width: 340px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.35); } .sk-box h3 { margin: 10px 0 2px; font-size: 18px; } .sk-box p { margin: 0 0 14px; color: var(--text-muted); font-size: 13.5px; }
+.sk-btn { border: 1.5px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 10px 14px; font: 700 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 44px; margin: 3px; } .sk-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; }
+.sk-credit { margin-top: 26px; font-size: 12.5px; color: var(--text-faint); line-height: 1.6; }
+</style>
+</head>
+<body data-page="stickers">
+<div id="site-header"></div>
+<main class="sk-wrap">
+  <h1 class="sk-h1">🎟️ Bộ sticker</h1>
+  <p class="sk-sub">Sticker 3D chuyển động để thể hiện cảm xúc. Bạn có thể gửi sticker cho giáo viên ở mục <a href="chat.html">💬 Tin nhắn</a>. Chạm vào sticker để xem nó “biểu diễn” và thử hiệu ứng ăn mừng!</p>
+  <div class="sk-tabs" id="tabs"></div>
+  <div class="sk-grid" id="grid"></div>
+  <p class="sk-credit">Hình sticker: <a href="https://github.com/microsoft/fluentui-emoji" target="_blank" rel="noopener">Microsoft Fluent Emoji</a> (giấy phép MIT). Nhân vật người: DiceBear — Open Peeps (Pablo Stanley), Lorelei (Lisa Wischofsky), Notionists (Zoish), Thumbs — giấy phép CC0.</p>
+</main>
+<div class="sk-big" id="big"><div class="sk-box"><div id="bigImg"></div><h3 id="bigName"></h3><p>Sticker chuyển động</p><button class="sk-btn pri" id="bigFx">🎉 Ăn mừng!</button><button class="sk-btn" id="bigClose">Đóng</button></div></div>
+<div id="site-footer"></div>
+<script src="js/main.js?v=36"></script>
+<script src="js/stickers.js?v=1"></script>
+<script>
+(function () {
+var S = window.EWTStickers, $ = function (id) { return document.getElementById(id); }, CAT = S.CATS[0][0], CUR = null;
+function draw() {
+  $('tabs').innerHTML = S.CATS.map(function (c) { return '<button class="sk-tab' + (CAT === c[0] ? ' on' : '') + '" data-cat="' + c[0] + '">' + c[1] + '</button>'; }).join('');
+  $('grid').innerHTML = S.LIST.filter(function (r) { return r[2] === CAT; }).map(function (r) { return '<button class="sk-card" data-id="' + r[0] + '">' + S.html(r[0], { size: 72 }) + '<span>' + r[1] + '</span></button>'; }).join('');
+}
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-cat]'))) { CAT = el.getAttribute('data-cat'); draw(); return; }
+  if ((el = t.closest('[data-id]'))) { CUR = el.getAttribute('data-id'); $('bigImg').innerHTML = S.html(CUR, { size: 180, lazy: false }); $('bigName').textContent = S.BY[CUR].name; $('big').classList.add('on'); S.burst([CUR], { count: 8, from: $('bigImg') }); return; }
+  if (t.id === 'bigFx') { S.burst([CUR, 'star', 'sparkles', 'party-popper'], { count: 18, from: $('bigImg') }); return; }
+  if (t.id === 'bigClose' || t.id === 'big') $('big').classList.remove('on');
+});
+draw();
+})();
+</script>
+</body>
+</html>

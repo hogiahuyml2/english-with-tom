@@ -44,7 +44,10 @@
 .av-bar .msg { flex: 1; font-size: 13px; color: var(--text-muted); max-width: 420px; } .av-bar .msg b { color: var(--text); }
 .av-save { border: none; border-radius: 14px; padding: 13px 26px; background: var(--gradient); color: #fff; font: 800 16px inherit; font-family: inherit; cursor: pointer; min-height: 48px; box-shadow: 0 8px 20px rgba(123,110,246,.35); } .av-save:disabled { opacity: .55; box-shadow: none; }
 .av-toast { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 92vw; text-align: center; } .av-toast.on { opacity: 1; }
+.av-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.av-mode { text-align: left; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 16px; padding: 12px 14px; cursor: pointer; font-family: inherit; min-height: 44px; } .av-mode b { display: block; font-size: 15px; } .av-mode span { display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.35; } .av-mode.on { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft, rgba(123,110,246,.18)); }
 @media (max-width: 800px) {
+  .av-modes { gap: 8px; } .av-mode { padding: 10px; } .av-mode span { display: none; }
   .av-grid { grid-template-columns: 1fr; gap: 10px; }
   .av-prev { top: 60px; z-index: 40; padding: 8px 10px; display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: center; text-align: left; border-radius: 18px; }
   .av-stage svg { width: 112px; height: 112px; animation: none; }
@@ -70,6 +73,7 @@
       </div>
     </aside>
     <section>
+      <div id="modes"></div>
       <div class="av-tabs" id="tabs"></div>
       <div class="av-panel" id="panel"></div>
     </section>
@@ -78,8 +82,8 @@
 <div class="av-bar"><div class="msg" id="msg">Chỉnh xong nhớ bấm <b>Lưu nhân vật</b> nhé!</div><button class="av-save" id="save">💾 Lưu nhân vật</button></div>
 <div class="av-toast" id="toast"></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=35"></script>
-<script src="js/avatar.js?v=1"></script>
+<script src="js/main.js?v=36"></script>
+<script src="js/avatar.js?v=2"></script>
 <script>
 (function () {
 'use strict';
@@ -89,7 +93,21 @@ var tt; function toast(t, ms) { var el = $('toast'); el.textContent = t; el.clas
 function api(url, method, body) { return fetch(url, { method: method || 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; throw e; } return d; }); }); }
 
 var CFG = A.defaults(), SAVED = null, OWNED = {}, COINS = 0, ALL_FREE = false, TAB = 'char', HISTORY = [], DIRTY = false;
-var TABS = [['char', '🐾 Nhân vật'], ['face', '😊 Khuôn mặt'], ['outfit', '👕 Trang phục'], ['hat', '🎩 Mũ'], ['acc', '✨ Phụ kiện'], ['bg', '🖼️ Nền']];
+var TABS_ANIMAL = [['char', '🐾 Nhân vật'], ['face', '😊 Khuôn mặt'], ['outfit', '👕 Trang phục'], ['hat', '🎩 Mũ'], ['acc', '✨ Phụ kiện'], ['bg', '🖼️ Nền']];
+var TABS_HUMAN = [['hchar', '🧑 Chọn nhân vật'], ['hbg', '🖼️ Màu nền']];
+var GRID = [];
+function isHuman() { return CFG.st === 'human'; }
+function humanStyle() { return A.HUMAN.filter(function (x) { return x.id === CFG.hs; })[0] || A.HUMAN[0]; }
+function newGrid() { GRID = []; for (var i = 0; i < 12; i++) GRID.push(A.randSeed()); }
+function modeSwitch() {
+  return '<div class="av-modes"><button class="av-mode' + (!isHuman() ? ' on' : '') + '" data-mode="animal"><b>🐾 Nhân vật thú</b><span>Mèo, gấu, thỏ… tự phối màu, quần áo, phụ kiện</span></button><button class="av-mode' + (isHuman() ? ' on' : '') + '" data-mode="human"><b>🧑 Nhân vật người</b><span>Chọn kiểu vẽ và khuôn mặt bạn thích</span></button></div>';
+}
+function humanTiles() {
+  if (!GRID.length) newGrid();
+  return '<div class="av-lab">Phong cách vẽ</div><div class="av-tiles">' + A.HUMAN.map(function (x) { return '<button class="av-tile' + (CFG.hs === x.id ? ' on' : '') + '" data-hs="' + x.id + '">' + A.render(Object.assign({}, CFG, { hs: x.id }), { size: 72, shape: 'round' }) + '<span>' + x.name + '</span></button>'; }).join('') + '</div>' +
+    '<div class="av-lab">Khuôn mặt — chạm để chọn</div><div class="av-tiles">' + GRID.map(function (sd) { return '<button class="av-tile' + (CFG.seed === sd ? ' on' : '') + '" data-seed="' + sd + '" aria-label="Chọn khuôn mặt này">' + A.render(Object.assign({}, CFG, { seed: sd }), { size: 72, shape: 'round' }) + '</button>'; }).join('') + '</div>' +
+    '<div style="margin-top:12px"><button class="av-btn" id="moreFaces">🎲 Xem thêm 12 khuôn mặt khác</button></div>';
+}
 
 function owned(kind, id) { var it = (A.OPT[kind] || []).filter(function (x) { return x.id === id; })[0]; return !it || !it.price || ALL_FREE || OWNED[A.keyOf(kind, id)]; }
 function setCfg(patch, keepHistory) {
@@ -116,6 +134,8 @@ function charTiles() {
 }
 function panel() {
   var h = '';
+  if (TAB === 'hchar') h = humanTiles();
+  if (TAB === 'hbg') h = swatches('bgc', A.BG_PALETTE, 'Màu nền');
   if (TAB === 'char') h = charTiles() + swatches('c1', A.PALETTE, 'Màu lông / da') + swatches('c2', ['#FFF1E0', '#FFFFFF', '#FDE68A', '#FBCFE8', '#BFDBFE', '#BBF7D0', '#E9D5FF', '#FCA5A5'], 'Màu phụ (bụng, tai trong, mõm)');
   if (TAB === 'face') h = tiles('ex', 'Biểu cảm') + tiles('cheek', 'Má', '∅') + tiles('glasses', 'Kính', '👓');
   if (TAB === 'outfit') h = tiles('outfit', 'Trang phục', '🚫') + swatches('oc', A.OUTFIT_PALETTE, 'Màu trang phục');
@@ -126,7 +146,9 @@ function panel() {
 }
 function draw() {
   $('stage').innerHTML = A.render(CFG, { size: 260 });
-  var c = charName(); $('nm').innerHTML = esc(c.name) + '<small>' + esc(c.sub) + '</small>';
+  var c = isHuman() ? humanStyle() : charName(); $('nm').innerHTML = esc(c.name) + '<small>' + esc(c.sub) + '</small>';
+  var TABS = isHuman() ? TABS_HUMAN : TABS_ANIMAL; if (!TABS.some(function (t) { return t[0] === TAB; })) TAB = TABS[0][0];
+  $('modes').innerHTML = modeSwitch();
   $('tabs').innerHTML = TABS.map(function (t) { return '<button class="av-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
   panel(); $('coin').textContent = '🪙 ' + COINS + ' xu';
   $('save').disabled = !DIRTY && !!SAVED; $('msg').innerHTML = DIRTY || !SAVED ? 'Chỉnh xong nhớ bấm <b>Lưu nhân vật</b> nhé!' : '✅ Nhân vật đã được lưu — đang hiện ở Hồ sơ và bảng xếp hạng.';
@@ -145,6 +167,10 @@ function unlock(kind, id) {
 document.addEventListener('click', function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); draw(); return; }
+  if ((el = t.closest('[data-mode]'))) { var hm = el.getAttribute('data-mode') === 'human'; if (hm === isHuman()) return; if (hm) { setCfg({ st: 'human', hs: CFG.hs || 'peeps', seed: CFG.seed || A.randSeed() }); } else { HISTORY.push(JSON.stringify(CFG)); var cc = Object.assign({}, CFG); delete cc.st; CFG = A.normalize(cc); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); } TAB = hm ? 'hchar' : 'char'; draw(); return; }
+  if ((el = t.closest('[data-hs]'))) { setCfg({ hs: el.getAttribute('data-hs') }); return; }
+  if ((el = t.closest('[data-seed]'))) { setCfg({ seed: el.getAttribute('data-seed') }); return; }
+  if (t.closest('#moreFaces')) { newGrid(); draw(); return; }
   if ((el = t.closest('.av-tile'))) {
     var k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), p = {};
     if (k !== 'ch' && !owned(k, v)) { unlock(k, v); return; }
@@ -154,13 +180,18 @@ document.addEventListener('click', function (e) {
 });
 document.addEventListener('input', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) { var q = {}; q[t.getAttribute('data-f')] = t.value; setCfg(q, true); } });
 document.addEventListener('change', function (e) { var t = e.target; if (t.type === 'color' && t.getAttribute('data-f')) HISTORY.push(JSON.stringify(CFG)); });
-$('rnd').onclick = function () { var r = A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
+$('stage').onclick = function () { var sv = $('stage').firstChild; if (sv && sv.animate) sv.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-18px) scale(1.06,.95)' }, { transform: 'translateY(0) scale(.97,1.03)' }, { transform: 'translateY(0) scale(1)' }], { duration: 650, easing: 'cubic-bezier(.3,.7,.4,1)' }); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'glowing-star'], { from: $('stage'), count: 8 }); };
+$('rnd').onclick = function () { var r = isHuman() ? A.normalize(Object.assign({}, CFG, { hs: A.HUMAN[Math.floor(Math.random() * A.HUMAN.length)].id, seed: A.randSeed(), bgc: A.BG_PALETTE[Math.floor(Math.random() * A.BG_PALETTE.length)] })) : A.random(); HISTORY.push(JSON.stringify(CFG)); CFG = r; DIRTY = true; draw(); };
 $('undo').onclick = function () { if (!HISTORY.length) { toast('Chưa có thay đổi nào để hoàn tác'); return; } CFG = A.normalize(JSON.parse(HISTORY.pop())); DIRTY = JSON.stringify(CFG) !== JSON.stringify(SAVED); draw(); };
 $('save').onclick = function () {
   var b = this; b.disabled = true; b.textContent = 'Đang lưu…';
   api('/api/me/avatar', 'PUT', { cfg: CFG }).then(function (d) { SAVED = d.cfg; CFG = d.cfg; DIRTY = false; b.textContent = '💾 Lưu nhân vật'; draw(); toast('✅ Đã lưu nhân vật của bạn!'); }).catch(function (err) { b.disabled = false; b.textContent = '💾 Lưu nhân vật'; toast(err.message, 4500); });
 };
 $('dl').onclick = function () {
+  if (isHuman()) {
+    var hi = new Image(); hi.onload = function () { var c = document.createElement('canvas'); c.width = c.height = 512; var x = c.getContext('2d'); x.fillStyle = CFG.bgc; x.fillRect(0, 0, 512, 512); x.drawImage(hi, 0, 0, 512, 512); c.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'nhan-vat-' + CFG.hs + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã tải ảnh nhân vật'); }, 'image/png'); };
+    hi.onerror = function () { toast('Không tạo được ảnh, hãy thử lại'); }; hi.src = A.humanUrl(CFG); return;
+  }
   var svg = A.render(CFG, { size: 512 }), img = new Image(), url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
   img.onload = function () { var c = document.createElement('canvas'); c.width = c.height = 512; c.getContext('2d').drawImage(img, 0, 0, 512, 512); URL.revokeObjectURL(url); c.toBlob(function (bl) { var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'nhan-vat-' + CFG.ch + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); toast('Đã tải ảnh nhân vật'); }, 'image/png'); };
   img.onerror = function () { toast('Không tạo được ảnh, hãy thử lại'); }; img.src = url;

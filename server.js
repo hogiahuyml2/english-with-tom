@@ -2620,9 +2620,13 @@ app.get('/api/messages/contacts', requireAuth, (req, res) => {
   const seen = new Set(contacts.map(c => c.id));
   msgContacts.forEach(c => { if (!seen.has(c.id)) { seen.add(c.id); contacts.push(c); } });
   contacts.sort((a, b) => (b.last_at || '').localeCompare(a.last_at || '') || a.name.localeCompare(b.name));
+  contacts.forEach((c) => { c.avatar = avatarCfgOf(c.id); });
   res.json({ contacts });
 });
 
+// Cấu hình nhân vật (avatar) đã làm sạch của một người dùng — hiện trong tin nhắn
+const _avLib = require('./js/avatar.js');
+function avatarCfgOf(id) { try { const r = db.prepare('SELECT avatar FROM users WHERE id=?').get(id); return r && r.avatar ? _avLib.normalize(JSON.parse(r.avatar)) : null; } catch (_) { return null; } }
 // Tổng số tin nhắn chưa đọc
 app.get('/api/messages/unread-count', requireAuth, (req, res) => {
   const row = db.prepare('SELECT COUNT(*) AS cnt FROM messages WHERE receiver_id=? AND read_at IS NULL').get(req.user.id);
@@ -2675,7 +2679,8 @@ app.get('/api/messages/:userId', requireAuth, (req, res) => {
   db.prepare('UPDATE messages SET read_at=? WHERE receiver_id=? AND sender_id=? AND read_at IS NULL')
     .run(new Date().toISOString(), me, other);
   const otherUser = db.prepare('SELECT id, name, role FROM users WHERE id=?').get(other);
-  res.json({ messages: msgs, other: otherUser });
+  if (otherUser) otherUser.avatar = avatarCfgOf(other);
+  res.json({ messages: msgs, other: otherUser, me_avatar: avatarCfgOf(me) });
 });
 
 // Gửi tin nhắn
@@ -2694,7 +2699,8 @@ app.post('/api/messages/:userId', requireAuth, (req, res) => {
   const msg = db.prepare('SELECT * FROM messages WHERE id=?').get(r.lastInsertRowid);
   // Push notification cho người nhận
   const assignLink = (process.env.BASE_URL || 'https://engwithtom.online') + '/chat.html?u=' + me;
-  sendPushToUser(other, '💬 ' + req.user.name, content.trim().slice(0, 80), assignLink).catch(() => {});
+  const pushBody = /^\[stk:[a-z0-9-]{1,40}\]$/.test(content.trim()) ? '🎟️ Đã gửi một sticker' : content.trim().slice(0, 80);
+  sendPushToUser(other, '💬 ' + req.user.name, pushBody, assignLink).catch(() => {});
   res.json({ ok: true, message: msg });
 });
 

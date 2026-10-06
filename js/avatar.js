@@ -31,6 +31,14 @@
   function color(v, d) { return typeof v === 'string' && HEX.test(v) ? v.toUpperCase() : d; }
   function pick(kind, v, d) { return find(kind, v) ? v : d; }
 
+  // Nhân vật NGƯỜI (hướng 2): vẽ sẵn bởi DiceBear — chỉ dùng các phong cách giấy phép CC0 (không cần ghi công)
+  var HUMAN = [
+    { id: 'peeps', name: 'Open Peeps', sub: 'Nét vẽ tay vui nhộn' }, { id: 'lorelei', name: 'Lorelei', sub: 'Chân dung nghệ thuật' },
+    { id: 'notion', name: 'Notionists', sub: 'Tối giản, hiện đại' }, { id: 'thumbs', name: 'Thumbs', sub: 'Mặt tròn dễ thương' }
+  ];
+  var SEED = /^[A-Za-z0-9]{1,16}$/;
+  function randSeed() { var a = 'abcdefghjkmnpqrstuvwxyz23456789', o = ''; for (var i = 0; i < 8; i++) o += a.charAt(Math.floor(Math.random() * a.length)); return o; }
+
   function defaults() {
     return { ch: 'cat', c1: '#F4A261', c2: '#FFF1E0', ex: 'smile', cheek: 'blush', outfit: 'tee', oc: '#3B82F6', hat: 'none', hc: '#EF4444', glasses: 'none', neck: 'none', nc: '#F59E0B', phones: 'none', pc: '#8B5CF6', held: 'none', bg: 'dots', bgc: '#DBEAFE' };
   }
@@ -40,11 +48,12 @@
     o.ch = CHARS.some(function (x) { return x.id === c.ch; }) ? c.ch : d.ch;
     o.c1 = color(c.c1, d.c1); o.c2 = color(c.c2, d.c2); o.oc = color(c.oc, d.oc); o.hc = color(c.hc, d.hc); o.nc = color(c.nc, d.nc); o.pc = color(c.pc, d.pc); o.bgc = color(c.bgc, d.bgc);
     ['ex', 'cheek', 'outfit', 'hat', 'glasses', 'neck', 'phones', 'held', 'bg'].forEach(function (k) { o[k] = pick(k, c[k], d[k]); });
+    if (c.st === 'human') { o.st = 'human'; o.hs = HUMAN.some(function (x) { return x.id === c.hs; }) ? c.hs : 'peeps'; o.seed = typeof c.seed === 'string' && SEED.test(c.seed) ? c.seed : 'tom'; }
     return o;
   }
   // Các món CÓ GIÁ mà cấu hình đang dùng: [{ key, kind, id, name, price }]
   function paidItems(cfg) {
-    cfg = normalize(cfg); var out = [];
+    cfg = normalize(cfg); var out = []; if (cfg.st === 'human') return out;
     ['outfit', 'hat', 'glasses', 'neck', 'phones', 'held'].forEach(function (k) { var it = find(k, cfg[k]); if (it && it.price) out.push({ key: keyOf(k, it.id), kind: k, id: it.id, name: it.name, price: it.price }); });
     return out;
   }
@@ -64,9 +73,24 @@
   var INK = '#2D2A3E';
 
   var UID = 0;
+  function humanUrl(cfg) { return '/api/avatar/human.svg?s=' + cfg.hs + '&seed=' + cfg.seed; }
+  // CSS chuyển động cho nhân vật (tự chèn một lần)
+  if (typeof document !== 'undefined' && !document.getElementById('ewt-av-css')) {
+    var st = document.createElement('style'); st.id = 'ewt-av-css';
+    st.textContent = '.ewt-av{transform-origin:50% 90%}.ewt-av-idle{animation:ewtAvIdle 3.2s ease-in-out infinite}.ewt-av-bounce{animation:ewtAvBounce 1.1s cubic-bezier(.3,.7,.4,1) infinite}.ewt-av-wiggle{animation:ewtAvWiggle 1.6s ease-in-out infinite}.ewt-av-float{animation:ewtAvFloat 3.6s ease-in-out infinite}' +
+      '@keyframes ewtAvIdle{0%,100%{transform:scale(1,1)}50%{transform:scale(1.025,.975)}}@keyframes ewtAvBounce{0%,100%{transform:translateY(0) scale(1,1)}12%{transform:translateY(0) scale(1.06,.92)}45%{transform:translateY(-9%) scale(.97,1.04)}80%{transform:translateY(0) scale(1.02,.98)}}' +
+      '@keyframes ewtAvWiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg)}40%{transform:rotate(5deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}}@keyframes ewtAvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}' +
+      '@media (prefers-reduced-motion:reduce){.ewt-av{animation:none!important}}';
+    document.head.appendChild(st);
+  }
   /* ───────────── vẽ ───────────── */
   function render(cfgIn, opts) {
     var cfg = normalize(cfgIn); opts = opts || {}; var uid = 'av' + (++UID), size = opts.size || 160;
+    var acls = opts.anim ? ' class="ewt-av ewt-av-' + String(opts.anim).replace(/[^a-z]/g, '') + '"' : '';
+    if (cfg.st === 'human') {
+      var hr = (opts.shape || 'circle') === 'circle' ? 100 : opts.shape === 'round' ? 40 : 0, hl = opts.label || 'Nhân vật người';
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '"' + acls + ' role="img" aria-label="' + hl + '"><defs><clipPath id="' + uid + 'c"><rect width="200" height="200" rx="' + hr + '"/></clipPath></defs><g clip-path="url(#' + uid + 'c)"><rect width="200" height="200" fill="' + cfg.bgc + '"/><image href="' + humanUrl(cfg) + '" width="200" height="200" preserveAspectRatio="xMidYMid slice"/></g></svg>';
+    }
     var c1 = cfg.c1, c2 = cfg.c2, dk = shade(c1, -0.18), ch = cfg.ch, s = [];
     var shape = opts.shape || 'circle', rad = shape === 'circle' ? 100 : shape === 'round' ? 40 : 0;
 
@@ -191,9 +215,9 @@
     if (hs.length) s.push('<g transform="translate(-26 -14) scale(1.08)">' + hs.join('') + '</g>');
     s.push('</g></g>');
     var label = opts.label || 'Nhân vật ' + (CHARS.filter(function (x) { return x.id === ch; })[0] || {}).name;
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '" role="img" aria-label="' + label + '">' + s.join('') + '</svg>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="' + size + '" height="' + size + '"' + acls + ' role="img" aria-label="' + label + '">' + s.join('') + '</svg>';
   }
 
-  var API = { CHARS: CHARS, OPT: OPT, PALETTE: PALETTE, OUTFIT_PALETTE: OUTFIT_PALETTE, BG_PALETTE: BG_PALETTE, defaults: defaults, normalize: normalize, random: random, render: render, paidItems: paidItems, priceOfKey: priceOfKey, keyOf: keyOf, shade: shade };
+  var API = { CHARS: CHARS, OPT: OPT, PALETTE: PALETTE, OUTFIT_PALETTE: OUTFIT_PALETTE, BG_PALETTE: BG_PALETTE, defaults: defaults, normalize: normalize, random: random, randSeed: randSeed, HUMAN: HUMAN, humanUrl: humanUrl, render: render, paidItems: paidItems, priceOfKey: priceOfKey, keyOf: keyOf, shade: shade };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTAvatar = API;
 })(typeof window !== 'undefined' ? window : this);

@@ -3,7 +3,29 @@
 // Danh mục + vẽ SVG nằm ở js/avatar.js (dùng chung trình duyệt và máy chủ để kiểm tra dữ liệu hợp lệ).
 const AV = require('./js/avatar.js');
 
+// Nhân vật người: DiceBear (MIT) + 4 phong cách đều giấy phép CC0 (Open Peeps, Lorelei, Notionists, Thumbs) — không cần ghi công
+const { createAvatar } = require('@dicebear/core');
+const HUMAN_STYLES = { peeps: require('@dicebear/open-peeps'), lorelei: require('@dicebear/lorelei'), notion: require('@dicebear/notionists'), thumbs: require('@dicebear/thumbs') };
+const humanCache = new Map();
+function humanSvg(style, seed) {
+  const key = style + ':' + seed; let svg = humanCache.get(key);
+  if (!svg) {
+    svg = createAvatar(HUMAN_STYLES[style], { seed, backgroundColor: ['transparent'] }).toString();
+    if (humanCache.size > 3000) humanCache.clear();
+    humanCache.set(key, svg);
+  }
+  return svg;
+}
+
 module.exports = function (app, { db, requireAuth, now }) {
+  // Ảnh SVG nhân vật người — công khai, kết quả theo (style, seed) luôn cố định nên cho cache lâu
+  app.get('/api/avatar/human.svg', (req, res) => {
+    const s = String(req.query.s || ''), seed = String(req.query.seed || '');
+    if (!HUMAN_STYLES[s] || !/^[A-Za-z0-9]{1,16}$/.test(seed)) return res.status(400).type('text/plain').send('bad request');
+    res.set({ 'Content-Type': 'image/svg+xml; charset=utf-8', 'Cache-Control': 'public, max-age=31536000, immutable', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox" });
+    res.send(humanSvg(s, seed));
+  });
+
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
   const isStaff = (u) => u.role === 'teacher' || u.role === 'admin';
   const ownedKeys = (uid) => db.prepare("SELECT item_id FROM word_inventory WHERE user_id=? AND item_id LIKE 'ac\\_%' ESCAPE '\\'").all(uid).map((r) => r.item_id.slice(3));
