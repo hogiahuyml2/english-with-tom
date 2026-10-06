@@ -164,4 +164,199 @@
       ["There aren't any eggs left, ___?", ["aren't there", "are there", "do there", "are they"], 1, 'There aren\'t → are there?']
     ]
   });
+
+  L('g10-stative-verbs', {
+    grade: 10, icon: '🧠', title: 'Động từ chỉ trạng thái và động từ có hai nghĩa', sub: 'Stative vs Dynamic verbs', level: 'Trung bình',
+    summary: 'Biết những động từ thường không dùng thì tiếp diễn (know, like, want…) và các động từ đổi nghĩa khi dùng tiếp diễn (think, have, see, taste…).',
+    sections: [
+      { h: '1. Hai loại động từ', b: [
+        { p: '**Động từ hành động (dynamic)** diễn tả việc làm có thể xảy ra từng phần: run, eat, study → dùng được ở thì tiếp diễn. **Động từ trạng thái (stative)** diễn tả suy nghĩ, cảm xúc, sở hữu, giác quan → **thường không dùng tiếp diễn**.' },
+        { t: { h: ['Nhóm', 'Động từ'], r: [['Suy nghĩ', 'know, understand, believe, remember, forget, mean, doubt'], ['Cảm xúc', 'like, love, hate, prefer, want, need, wish'], ['Sở hữu', 'have (= có), own, belong, possess, contain'], ['Giác quan', 'see, hear, smell, taste, sound, look (= có vẻ), seem, appear']] } },
+        { p: '✓ I **know** the answer. ✗ I am knowing the answer. · ✓ She **loves** music. ✗ She is loving music.' }
+      ] },
+      { h: '2. Động từ đổi nghĩa khi dùng tiếp diễn', b: [
+        { t: { h: ['Động từ', 'Nghĩa trạng thái (đơn)', 'Nghĩa hành động (tiếp diễn)'], r: [['think', 'I **think** it\'s a good idea. (cho rằng)', 'I\'**m thinking** about my holiday. (đang suy nghĩ)'], ['have', 'She **has** a car. (có)', 'She\'**s having** lunch. (đang ăn); having a good time'], ['see', 'I **see** what you mean. (hiểu)', 'I\'**m seeing** the doctor. (đang gặp/khám)'], ['taste', 'The soup **tastes** good. (có vị)', 'He\'**s tasting** the soup. (đang nếm)'], ['be', 'He **is** kind. (bản chất)', 'He **is being** silly. (đang cư xử như vậy)'], ['look', 'You **look** tired. (trông có vẻ)', 'She\'**s looking** at the sky. (đang nhìn)']] } },
+        { tip: 'Khi muốn nhấn mạnh cảm xúc **đang** thay đổi, một số động từ cảm xúc cho phép dùng tiếp diễn trong văn nói: **I\'m loving this song!** — nhưng ở bài thi, hãy dùng dạng đơn.' }
+      ] },
+      { h: '3. Mẹo làm bài', b: [
+        { ul: ['Gặp **know, like, want, need, believe, belong, seem** → chọn **hiện tại đơn**.', 'Gặp **have lunch / have a bath / have a good time / have a meeting** (nghĩa "ăn, tắm, trải qua") → có thể **tiếp diễn**.', 'Với **see / hear / smell**, dùng **can** để diễn tả đang cảm nhận: **I can hear music.** (✗ I am hearing music.)'] }
+      ] }
+    ],
+    ex: [
+      ['I know the answer, but I don\'t want to say it.', 'Mình biết đáp án nhưng không muốn nói.'], ['She owns two houses in Da Nang.', 'Cô ấy sở hữu hai ngôi nhà ở Đà Nẵng.'], ['This soup tastes delicious.', 'Món súp này có vị rất ngon.'],
+      ['Why are you tasting the soup? Is it too salty?', 'Sao bạn nếm súp thế? Có mặn quá không?'], ['I think you are right.', 'Mình nghĩ bạn đúng.'], ['I\'m thinking about changing my job.', 'Mình đang nghĩ đến chuyện đổi việc.'],
+      ['We\'re having a great time in Hue!', 'Chúng mình đang có một khoảng thời gian tuyệt vời ở Huế!'], ['He has a new bike.', 'Anh ấy có một chiếc xe đạp mới.'], ['I can hear someone singing in the next room.', 'Mình nghe thấy ai đó hát ở phòng bên.']
+    ],
+    mis: [
+      ['I am knowing her very well.', 'I know her very well.', 'know là động từ trạng thái.'], ['She is wanting a new phone.', 'She wants a new phone.', 'want không dùng tiếp diễn.'], ['I am hearing a strange noise.', 'I can hear a strange noise.', 'hear dùng với can.'],
+      ['He is having a car.', 'He has a car.', 'have = sở hữu → dạng đơn.'], ['This cake is tasting wonderful.', 'This cake tastes wonderful.', 'taste = có vị → dạng đơn.']
+    ],
+    quiz: [
+      ['I ___ what you mean.', ['am understanding', 'understand', 'understanding', 'was understanding'], 1, 'understand là động từ trạng thái.'],
+      ['Right now she ___ a shower.', ['has', 'is having', 'have', 'having'], 1, 'have a shower = hành động → is having.'],
+      ['This perfume ___ lovely.', ['is smelling', 'smells', 'smelling', 'smell'], 1, 'smell (có mùi) → dạng đơn.'],
+      ['He ___ a lot of money, so he can buy anything.', ['has', 'is having', 'are having', 'having'], 0, 'have = có → dạng đơn.'],
+      ['I ___ about my future at the moment.', ['think', 'am thinking', 'thinks', 'thought'], 1, 'Đang suy nghĩ → am thinking.'],
+      ['The chef ___ the sauce to check the flavour.', ['tastes', 'is tasting', 'taste', 'has tasted'], 1, 'Hành động nếm → is tasting.'],
+      ['I ___ you\'re tired. You look pale.', ['am believing', 'believe', 'believing', 'was believing'], 1, 'believe → dạng đơn.'],
+      ['Which sentence is correct?', ['I am liking this song.', 'I like this song.', 'I am wanting a drink.', 'I am knowing him.'], 1, 'like là động từ trạng thái.'],
+      ['"What are you doing?" "I ___ a book on the table."', ['am seeing', 'see', 'am looking at', 'look'], 2, 'Đang nhìn → am looking at.']
+    ]
+  });
+
+  L('g10-noun-clauses', {
+    grade: 10, icon: '💬', title: 'Mệnh đề danh từ: that, wh-, if / whether', sub: 'Noun clauses', level: 'Trung bình',
+    summary: 'Mệnh đề đóng vai trò danh từ (chủ ngữ, tân ngữ, bổ ngữ): I know that…, I wonder where…, I don\'t know if…',
+    sections: [
+      { h: '1. Ba dạng mệnh đề danh từ', b: [
+        { t: { h: ['Loại', 'Từ nối', 'Ví dụ'], r: [['that-clause', '**that** (có thể bỏ khi là tân ngữ)', 'I think **(that)** he is right.'], ['wh-clause', '**what, where, when, why, how, who, which**', 'Do you know **where he lives**?'], ['if / whether-clause', '**if / whether** (cho câu hỏi Yes/No)', 'I wonder **if/whether** she knows.']] } },
+        { warn: 'Trong mệnh đề danh từ **không đảo trợ động từ** (trật tự như câu khẳng định): ✗ I don\'t know where is he. → ✓ I don\'t know **where he is**.' }
+      ] },
+      { h: '2. Chức năng trong câu', b: [
+        { ul: ['**Chủ ngữ**: **What he said** surprised everyone. / **That she passed** is great news.', '**Tân ngữ**: I don\'t know **what she wants**. / She said **that she was tired**.', '**Bổ ngữ**: The problem is **that we have no time**. / This is **what I need**.', '**Sau giới từ**: We talked about **how we can help**. (không dùng that sau giới từ)'] },
+        { tip: 'Chủ ngữ là mệnh đề danh từ thì động từ chính **chia số ít**: What he said **was** true.' }
+      ] },
+      { h: '3. Câu hỏi gián tiếp (embedded questions)', b: [
+        { p: 'Để hỏi lịch sự, nhúng câu hỏi vào mệnh đề danh từ: **Where is the station?** → **Could you tell me where the station is?** · **Does he like tea?** → **I wonder if he likes tea.** (không dùng do/does trong mệnh đề danh từ).' },
+        { t: { h: ['Câu hỏi trực tiếp', 'Câu hỏi gián tiếp'], r: [['What time does the train leave?', 'Do you know **what time the train leaves**?'], ['Is she at home?', 'I\'m not sure **whether she is at home**.'], ['Why did he leave?', 'Nobody knows **why he left**.']] } },
+        { tip: '**whether** dùng được ở mọi vị trí (kể cả đầu câu, sau giới từ, trước to V); **if** chủ yếu dùng ở vị trí tân ngữ: ✓ **Whether** he comes doesn\'t matter. ✗ If he comes doesn\'t matter.' }
+      ] }
+    ],
+    ex: [
+      ['I think that English is very useful.', 'Mình nghĩ tiếng Anh rất hữu ích.'], ['Do you know where the post office is?', 'Bạn có biết bưu điện ở đâu không?'], ['I wonder whether he will come.', 'Mình tự hỏi liệu cậu ấy có đến không.'],
+      ['What she told me was a secret.', 'Điều cô ấy nói với mình là một bí mật.'], ['The problem is that we don\'t have enough time.', 'Vấn đề là chúng ta không đủ thời gian.'], ['Could you tell me how much this costs?', 'Bạn cho mình biết cái này giá bao nhiêu được không?'],
+      ['She asked me if I liked spicy food.', 'Cô ấy hỏi mình có thích đồ cay không.'], ['We talked about what we would do next year.', 'Chúng mình nói về việc sẽ làm gì vào năm sau.'], ['Whether you win or lose doesn\'t matter.', 'Thắng hay thua không quan trọng.']
+    ],
+    mis: [
+      ['I don\'t know where is the bank.', 'I don\'t know where the bank is.', 'Không đảo trật tự trong mệnh đề danh từ.'], ['Could you tell me what time does the film start?', 'Could you tell me what time the film starts?', 'Không dùng does trong mệnh đề danh từ.'],
+      ['I wonder that he is ill.', 'I wonder if/whether he is ill.', 'Câu hỏi Yes/No → if/whether.'], ['If he comes is not important.', 'Whether he comes is not important.', 'Mệnh đề làm chủ ngữ dùng whether.'], ['We talked about that we should do.', 'We talked about what we should do.', 'Sau giới từ dùng wh-clause, không dùng that.']
+    ],
+    quiz: [
+      ['Do you know ___ the library opens?', ['when', 'when does', 'when did', 'does when'], 0, 'Trật tự khẳng định: when the library opens.'],
+      ['I\'m not sure ___ he will accept the offer.', ['that', 'whether', 'what', 'which'], 1, 'Câu hỏi Yes/No → whether.'],
+      ['___ she said made me very happy.', ['That', 'What', 'If', 'Whether'], 1, 'Mệnh đề chủ ngữ = điều mà → What.'],
+      ['He asked me ___ I had finished the test.', ['that', 'if', 'what', 'where'], 1, 'Yes/No question → if.'],
+      ['Could you tell me ___?', ['where is the station', 'where the station is', 'where does the station', 'where the station does be'], 1, 'Câu hỏi gián tiếp: where the station is.'],
+      ['The truth is ___ nobody knows the answer.', ['that', 'what', 'whether', 'who'], 0, 'Bổ ngữ: The truth is that…'],
+      ['___ he wins or loses is not important.', ['If', 'Whether', 'That', 'What'], 1, 'Đầu câu với "or" → Whether.'],
+      ['I\'d like to know ___ you think about the plan.', ['what', 'that', 'whether', 'where'], 0, 'what you think = bạn nghĩ gì.'],
+      ['She told us ___ she was moving to Canada.', ['that', 'whether', 'what', 'where is'], 0, 'Tường thuật khẳng định → that.']
+    ]
+  });
+
+  L('g10-relative-clauses-advanced', {
+    grade: 10, icon: '🔗', title: 'Mệnh đề quan hệ nâng cao', sub: 'Advanced relative clauses', level: 'Nâng cao',
+    summary: 'Giới từ + whom/which, whose, where/when/why, mệnh đề quan hệ bổ nghĩa cho cả câu và khi nào lược bỏ đại từ quan hệ.',
+    sections: [
+      { h: '1. Giới từ + whom / which', b: [
+        { f: ['Danh từ chỉ người + **giới từ + whom**: the man **to whom** I spoke', 'Danh từ chỉ vật + **giới từ + which**: the house **in which** I live'] },
+        { p: 'Cách nói trang trọng. Văn nói thường đưa giới từ về cuối: **the man (whom/who/that) I spoke to**; **the house (which/that) I live in**. Khi có giới từ đứng trước: **chỉ dùng whom / which** (không dùng who/that).' },
+        { warn: '✗ the girl with who I work → ✓ the girl **with whom** I work. ✗ the pen with that I write → ✓ the pen **with which** I write.' }
+      ] },
+      { h: '2. Whose, where, when, why', b: [
+        { t: { h: ['Từ', 'Thay cho', 'Ví dụ'], r: [['**whose** + danh từ', 'sở hữu (người/vật)', 'The boy **whose bike was stolen** called the police.'], ['**where**', 'nơi chốn (= in/at which)', 'This is the town **where I was born**.'], ['**when**', 'thời gian (= on/in which)', 'I remember the day **when we met**.'], ['**why**', 'lý do (= for which)', 'Tell me the reason **why you left**.']] } },
+        { tip: 'Sau **whose** luôn có **danh từ**: the girl **whose father** is a doctor. Không dùng **whose** với đại từ như "whose she".' }
+      ] },
+      { h: '3. Mệnh đề quan hệ bổ nghĩa cả câu và lược bỏ', b: [
+        { ul: ['**, which** thay cho **cả mệnh đề trước**: He passed the exam, **which** surprised everyone. (việc anh ấy đỗ gây ngạc nhiên) — luôn có dấu phẩy.', '**Lược bỏ** who/which/that khi nó là **tân ngữ** của mệnh đề quan hệ xác định: The book **(that)** I bought is great. Không được bỏ khi nó là **chủ ngữ**: The man **who** lives next door…', 'Mệnh đề **không xác định** (có dấu phẩy) **không dùng that** và không thể bỏ đại từ: My brother, **who lives in Hue**, is a nurse.', 'Sau **all, everything, something, anything, nothing, the only, the first, the best** dùng **that**: Everything **that** she said was true.'] }
+      ] }
+    ],
+    ex: [
+      ['The teacher to whom I spoke was very helpful.', 'Cô giáo mà mình đã nói chuyện rất nhiệt tình.'], ['This is the house in which my grandparents lived.', 'Đây là ngôi nhà nơi ông bà mình từng sống.'], ['She is the girl whose father is a famous singer.', 'Cô ấy là cô gái có bố là một ca sĩ nổi tiếng.'],
+      ['That is the café where we first met.', 'Đó là quán cà phê nơi chúng mình gặp nhau lần đầu.'], ['I can\'t forget the day when I won the prize.', 'Mình không thể quên ngày mình giành giải.'], ['Please tell me the reason why you are late.', 'Hãy cho mình biết lý do bạn đến muộn.'],
+      ['He didn\'t come, which made her angry.', 'Anh ấy không đến, điều đó khiến cô ấy tức giận.'], ['The book I borrowed from you is excellent.', 'Quyển sách mình mượn của bạn rất hay.'], ['Everything that he said was true.', 'Mọi điều anh ấy nói đều đúng.']
+    ],
+    mis: [
+      ['The man with who I work is kind.', 'The man with whom I work is kind.', 'Sau giới từ dùng whom.'], ['The girl whose she is my friend is tall.', 'The girl who is my friend is tall.', 'whose phải đi với danh từ.'], ['My sister, that lives in Hue, is a doctor.', 'My sister, who lives in Hue, is a doctor.', 'Không dùng that trong mệnh đề không xác định.'],
+      ['The town which I was born is small.', 'The town where I was born is small. (hoặc in which)', 'Chỉ nơi chốn → where / in which.'], ['He failed, that surprised us.', 'He failed, which surprised us.', 'Dùng , which thay cả mệnh đề trước.']
+    ],
+    quiz: [
+      ['The woman ___ I met yesterday is a doctor.', ['whom', 'whose', 'which', 'where'], 0, 'whom làm tân ngữ chỉ người (có thể lược bỏ).'],
+      ['This is the room ___ we have meetings.', ['which', 'who', 'where', 'whose'], 2, 'Nơi chốn → where.'],
+      ['The boy ___ bike was stolen is crying.', ['who', 'whom', 'whose', 'which'], 2, 'Sở hữu → whose.'],
+      ['She is the person with ___ I work.', ['who', 'whom', 'whose', 'that'], 1, 'Giới từ + whom.'],
+      ['He passed the exam, ___ made his parents proud.', ['that', 'what', 'which', 'who'], 2, '", which" thay cả mệnh đề.'],
+      ['All ___ I want is a quiet place to study.', ['which', 'what', 'that', 'who'], 2, 'Sau all dùng that.'],
+      ['I remember the summer ___ we travelled to Da Nang.', ['where', 'when', 'which', 'why'], 1, 'Thời gian → when.'],
+      ['Tell me the reason ___ you didn\'t come.', ['when', 'why', 'where', 'whose'], 1, 'Lý do → why.'],
+      ['My neighbour, ___ is a pilot, is away a lot.', ['that', 'who', 'which', 'whose'], 1, 'Mệnh đề không xác định về người → who.']
+    ]
+  });
+
+  L('g10-wish-as-if-would-rather', {
+    grade: 10, icon: '💭', title: 'wish, as if / as though, would rather, it\'s time', sub: 'Unreal situations', level: 'Nâng cao',
+    summary: 'Diễn đạt điều ước, sự so sánh không có thật và sở thích/yêu cầu với wish, as if, would rather, it\'s (high) time.',
+    sections: [
+      { h: '1. Wish (ước)', b: [
+        { t: { h: ['Ước về', 'Cấu trúc', 'Ví dụ'], r: [['hiện tại', 'S + wish + S + **V2 / were**', 'I wish I **had** a bike. / I wish I **were** taller.'], ['quá khứ', 'S + wish + S + **had V3**', 'I wish I **had studied** harder.'], ['tương lai / phàn nàn', 'S + wish + S + **would V**', 'I wish it **would stop** raining.'], ['khả năng', 'S + wish + S + **could V**', 'I wish I **could swim**.']] } },
+        { tip: 'Với wish, **be** thường dùng **were** cho mọi ngôi: I wish he **were** here. Dùng **would** khi mong người/việc thay đổi (không dùng với I/we khi ước mình): ✗ I wish I would be rich → ✓ I wish I **were** rich.' }
+      ] },
+      { h: '2. As if / as though và it\'s time', b: [
+        { f: ['**as if / as though** + **V2/were** (trái với hiện tại): He talks **as if he knew** everything. (thực ra không biết)', '**as if** + **had V3** (trái với quá khứ): She looked **as if she had seen** a ghost.', '**It\'s (high) time** + S + **V2**: It\'s time **we left**. (đã đến lúc đi rồi)'] },
+        { p: 'Nếu điều so sánh **có thể đúng**, dùng thì thường: **It looks as if it is going to rain.** (có khả năng mưa).' }
+      ] },
+      { h: '3. Would rather và prefer', b: [
+        { t: { h: ['Cấu trúc', 'Ví dụ'], r: [['S + would rather + **V** (+ than + V)', 'I would rather **stay** home than **go** out.'], ['S + would rather + S + **V2** (hiện/tương lai)', 'I\'d rather you **didn\'t smoke** here.'], ['S + would rather + S + **had V3** (quá khứ)', 'I\'d rather you **had told** me the truth.'], ['S + would prefer + **to V** (than/rather than V)', 'I would prefer **to walk** than take the bus.']] } },
+        { warn: 'Chủ ngữ hai vế **cùng người**: would rather + V nguyên mẫu. **Khác người**: would rather + S2 + V2 (hiện tại/tương lai).' }
+      ] }
+    ],
+    ex: [
+      ['I wish I had more free time.', 'Giá mà mình có nhiều thời gian rảnh hơn.'], ['She wishes she were taller.', 'Cô ấy ước mình cao hơn.'], ['I wish I had listened to your advice.', 'Giá mà mình đã nghe lời khuyên của bạn.'],
+      ['I wish it would stop raining.', 'Mình ước trời ngừng mưa.'], ['He acts as if he were the boss.', 'Anh ta cư xử như thể mình là sếp.'], ['It\'s time we went home.', 'Đã đến lúc chúng ta về nhà.'],
+      ['I\'d rather stay at home tonight than go out.', 'Tối nay mình thích ở nhà hơn là ra ngoài.'], ['I\'d rather you didn\'t tell anyone.', 'Mình mong bạn đừng nói với ai.'], ['She looked as if she had seen a ghost.', 'Cô ấy trông như thể vừa nhìn thấy ma.']
+    ],
+    mis: [
+      ['I wish I am taller.', 'I wish I were taller.', 'Điều ước hiện tại → V2/were.'], ['I wish I studied harder last year.', 'I wish I had studied harder last year.', 'Quá khứ → had V3.'], ['She talks as if she is the manager. (thực ra không phải)', 'She talks as if she were the manager.', 'Trái thực tế → were.'],
+      ['I would rather to go home.', 'I would rather go home.', 'would rather + V không to.'], ['It\'s time we go home.', 'It\'s time we went home.', 'It\'s time + S + V2.']
+    ],
+    quiz: [
+      ['I wish I ___ a car. Then I could drive to work.', ['have', 'had', 'will have', 'would have'], 1, 'Ước ở hiện tại → had.'],
+      ['I wish I ___ the exam last week. I failed.', ['passed', 'had passed', 'pass', 'would pass'], 1, 'Ước ở quá khứ → had passed.'],
+      ['He behaves as if he ___ everything.', ['know', 'knows', 'knew', 'has known'], 2, 'as if + V2 (trái hiện tại).'],
+      ['It\'s high time you ___ to bed.', ['go', 'went', 'will go', 'going'], 1, 'It\'s high time + V2.'],
+      ['I\'d rather ___ at home than go out.', ['to stay', 'staying', 'stay', 'stayed'], 2, 'would rather + V.'],
+      ['I\'d rather you ___ so loudly.', ['don\'t talk', 'didn\'t talk', 'won\'t talk', 'not talking'], 1, 'would rather + S + V2.'],
+      ['I wish it ___ stop raining. I want to go out.', ['will', 'would', 'did', 'has'], 1, 'wish + would (mong thay đổi).'],
+      ['She looks as if she ___ a ghost.', ['saw', 'has seen', 'had seen', 'sees'], 2, 'as if + had V3 (trái quá khứ).'],
+      ['If only I ___ tall enough to join the team!', ['am', 'were', 'was being', 'will be'], 1, 'If only giống wish: were.']
+    ]
+  });
+
+  L('g10-conditional-alternatives', {
+    grade: 10, icon: '🔀', title: 'Cách khác để diễn đạt điều kiện', sub: 'unless, provided, as long as, otherwise…', level: 'Nâng cao',
+    summary: 'Thay "if" bằng unless, as long as, provided/providing that, in case, otherwise, or else và các mẫu rút gọn.',
+    sections: [
+      { h: '1. Các từ thay cho if', b: [
+        { t: { h: ['Từ', 'Nghĩa', 'Ví dụ'], r: [['**unless** (= if … not)', 'trừ khi', '**Unless** you hurry, you\'ll be late. = If you don\'t hurry…'], ['**as long as / so long as**', 'miễn là', 'You can go out **as long as** you finish your homework.'], ['**provided / providing (that)**', 'với điều kiện là', 'I\'ll lend you the money **provided that** you pay it back.'], ['**in case**', 'phòng khi', 'Take an umbrella **in case** it rains.'], ['**suppose / supposing**', 'giả sử', '**Suppose** you won a million, what would you do?'], ['**on condition that**', 'với điều kiện', 'I\'ll join **on condition that** the work is part-time.']] } },
+        { warn: '**unless** đã mang nghĩa phủ định; không thêm "not": ✗ Unless you don\'t study → ✓ **Unless you study**. Và **in case** nghĩa "phòng khi" (chưa xảy ra), khác với **if**.' }
+      ] },
+      { h: '2. Otherwise và or else', b: [
+        { f: ['Câu mệnh lệnh / lời khuyên + **, otherwise / or (else)** + S + will/would + V'] },
+        { p: '**Hurry up, otherwise we\'ll miss the bus.** = If you don\'t hurry, we\'ll miss the bus. · **Study hard, or else you will fail.** · Quá khứ: **I took a taxi; otherwise I would have been late.**' }
+      ] },
+      { h: '3. Rút gọn và thể giả định', b: [
+        { ul: ['**Rút gọn if-clause**: **If possible** = if it is possible; **If necessary**, call me; **If in doubt**, ask.', '**Without / But for + danh từ** (= nếu không có): **Without your help**, I would have failed. = If it hadn\'t been for your help…', '**Should** + S + V (trang trọng, loại 1): **Should you need help**, call me. = If you need help…', 'Cả ba loại điều kiện (1, 2, 3) đều có thể dùng với các từ thay thế ở trên (ở loại 2/3 dùng với would / would have).'] }
+      ] }
+    ],
+    ex: [
+      ['Unless you study hard, you won\'t pass the exam.', 'Trừ khi bạn học chăm, bạn sẽ không đỗ.'], ['You can borrow my bike as long as you take care of it.', 'Bạn mượn xe mình được, miễn là bạn giữ gìn nó.'], ['I\'ll lend you the book provided that you return it on Monday.', 'Mình cho bạn mượn sách với điều kiện thứ Hai trả.'],
+      ['Take a sweater in case it gets cold.', 'Mang theo áo len phòng khi trời lạnh.'], ['Hurry up, otherwise we\'ll miss the train.', 'Nhanh lên, không thì chúng ta lỡ tàu.'], ['Without your help, I couldn\'t have finished the project.', 'Không có sự giúp đỡ của bạn, mình không thể hoàn thành dự án.'],
+      ['Should you need any help, please contact me.', 'Nếu bạn cần giúp đỡ, hãy liên hệ mình.'], ['If necessary, we can change the plan.', 'Nếu cần, chúng ta có thể đổi kế hoạch.'], ['Suppose you lost your phone, what would you do?', 'Giả sử bạn mất điện thoại, bạn sẽ làm gì?']
+    ],
+    mis: [
+      ['Unless you don\'t hurry, you will be late.', 'Unless you hurry, you will be late.', 'unless đã có nghĩa phủ định.'], ['I\'ll take an umbrella if it will rain.', 'I\'ll take an umbrella in case it rains.', 'Mục đích phòng ngừa → in case + hiện tại đơn.'], ['You can use my laptop as long you are careful.', 'You can use my laptop as long as you are careful.', 'Đủ cụm: as long as.'],
+      ['Study hard, otherwise you pass.', 'Study hard, otherwise you will fail.', 'otherwise đưa ra hậu quả xấu.']
+    ],
+    quiz: [
+      ['___ you hurry, you will miss the bus.', ['Unless', 'If', 'As long as', 'Provided'], 0, 'unless = if … not: Unless you hurry = If you don\'t hurry.'],
+      ['You can stay out late ___ you call us.', ['unless', 'as long as', 'otherwise', 'in case'], 1, 'as long as = miễn là.'],
+      ['Take a map ___ you get lost.', ['unless', 'in case', 'provided', 'otherwise'], 1, 'in case = phòng khi.'],
+      ['Leave now, ___ you will be late.', ['otherwise', 'unless', 'as long as', 'provided'], 0, 'otherwise = nếu không thì.'],
+      ['___ your help, we couldn\'t have won.', ['With', 'Without', 'Unless', 'In case'], 1, 'Without = nếu không có.'],
+      ['___ you need help, call me.', ['Should', 'Unless', 'Otherwise', 'Provided'], 0, 'Should + S + V (trang trọng) = If you need.'],
+      ['I\'ll go ___ the weather is good.', ['unless', 'provided that', 'otherwise', 'in case of'], 1, 'provided that = với điều kiện.'],
+      ['"Unless it rains" has the same meaning as ___.', ['if it rains', 'if it doesn\'t rain', 'in case it rains', 'as long as it rains'], 1, 'unless = if … not.'],
+      ['___ you won the lottery, what would you do?', ['Suppose', 'Unless', 'Otherwise', 'As long as'], 0, 'Suppose = giả sử.']
+    ]
+  });
 })();

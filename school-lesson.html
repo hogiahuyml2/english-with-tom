@@ -60,7 +60,7 @@
 <main class="sl-wrap" id="app"><div class="sl-err">Đang tải…</div></main>
 <div id="site-footer"></div>
 <script src="js/main.js?v=43"></script>
-<script src="data/school/index.js?v=2"></script>
+<script src="data/school/index.js?v=3"></script>
 <script src="js/school-merge.js?v=1"></script>
 <script>
 function __schoolMain() {
@@ -74,7 +74,7 @@ function __schoolMain() {
   function saveProg(key, pct) { try { var P = prog(); var o = P[key] || { best: 0, tries: 0 }; o.best = Math.max(o.best, pct); o.last = pct; o.tries++; o.at = Date.now(); P[key] = o; localStorage.setItem('ewt-school-progress', JSON.stringify(P)); } catch (e) {} }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function speak(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} }
-  function load(grade, cb) { var s = document.createElement('script'); s.src = 'data/school/g' + grade + '.js?v=2'; s.onload = function () { SchoolExtra.applyLessons(); cb(); }; s.onerror = function () { fail('Không tải được dữ liệu bài học. Hãy thử lại.'); }; document.head.appendChild(s); }
+  function load(grade, cb) { var s = document.createElement('script'); s.src = 'data/school/g' + grade + '.js?v=3'; s.onload = function () { SchoolExtra.applyLessons(); cb(); }; s.onerror = function () { fail('Không tải được dữ liệu bài học. Hãy thử lại.'); }; document.head.appendChild(s); }
   function fail(m) { app.innerHTML = '<div class="sl-err"><p>' + esc(m) + '</p><a class="sl-btn" href="school.html">← Về danh sách bài</a></div>'; }
 
   /* ── bộ câu hỏi (dùng chung cho bài học & kiểm tra tổng hợp) ── */

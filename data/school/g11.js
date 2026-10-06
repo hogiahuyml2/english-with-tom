@@ -163,4 +163,194 @@
       ['Both Tom and Lan ___ good at English.', ['is', 'are', 'was', 'be'], 1, 'both ... and → số nhiều.']
     ]
   });
+
+  L('g11-future-advanced', {
+    grade: 11, icon: '🚀', title: 'Tương lai tiếp diễn, tương lai hoàn thành và các cách nói tương lai khác', sub: 'Future continuous, future perfect & other future forms', level: 'Nâng cao',
+    summary: 'Diễn tả hành động sẽ đang diễn ra (will be V-ing), sẽ hoàn tất trước một mốc (will have V3) và các cấu trúc be about to, be to, be due to.',
+    sections: [
+      { h: '1. Future continuous và Future perfect', b: [
+        { t: { h: ['Thì', 'Cấu trúc', 'Dùng khi', 'Ví dụ'], r: [['Future continuous', 'will be + V-ing', 'hành động đang diễn ra tại một thời điểm trong tương lai', 'At 8 p.m. tomorrow, I **will be watching** the final.'], ['Future perfect', 'will have + V3', 'hành động hoàn tất **trước** một mốc tương lai', 'By next June, she **will have graduated**.'], ['Future perfect continuous', 'will have been + V-ing', 'nhấn mạnh **độ dài** của quá trình đến một mốc', 'By 2030, he **will have been working** here for 20 years.']] } },
+        { p: 'Dấu hiệu future perfect: **by + mốc tương lai** (by tomorrow, by 2030, by the time + hiện tại đơn), **before** … Ví dụ: **By the time you arrive, I will have cooked dinner.**' },
+        { tip: 'Future continuous cũng dùng để hỏi lịch sự về kế hoạch: **Will you be using the car tonight?** (hỏi nhẹ nhàng hơn "Will you use…?")' }
+      ] },
+      { h: '2. Các cấu trúc tương lai khác', b: [
+        { t: { h: ['Cấu trúc', 'Nghĩa', 'Ví dụ'], r: [['**be about to + V**', 'sắp sửa (ngay lập tức)', 'The film **is about to start**.'], ['**be due to + V**', 'dự kiến (theo lịch)', 'The train **is due to arrive** at 9.'], ['**be to + V**', 'theo kế hoạch/mệnh lệnh chính thức', 'The president **is to visit** Japan next month.'], ['**be likely to + V**', 'có khả năng', 'It **is likely to rain** tonight.'], ['**be bound to + V**', 'chắc chắn sẽ', 'You **are bound to pass** if you work hard.']] } }
+      ] },
+      { h: '3. Mệnh đề thời gian và điều kiện', b: [
+        { ul: ['Sau **when, as soon as, before, after, until, by the time, if, unless** về tương lai: dùng **hiện tại đơn / hiện tại hoàn thành** (không dùng will): **I\'ll call you as soon as I have arrived.**', '**By the time** + hiện tại đơn, mệnh đề chính **will have V3**: By the time he **gets** home, we **will have left**.', 'Với **will be V-ing** không dùng cho hành động tức thì mới quyết định: ✗ "I\'ll be calling you now."'] }
+      ] }
+    ],
+    ex: [
+      ['This time next week, I will be lying on a beach in Phu Quoc.', 'Giờ này tuần sau mình sẽ đang nằm trên bãi biển Phú Quốc.'], ['By the end of this year, she will have saved enough money.', 'Đến cuối năm nay cô ấy sẽ tiết kiệm đủ tiền.'], ['By the time you arrive, we will have finished dinner.', 'Lúc bạn đến thì chúng mình đã ăn tối xong.'],
+      ['In June, he will have been teaching for ten years.', 'Đến tháng Sáu, thầy ấy đã dạy được mười năm.'], ['The concert is about to begin.', 'Buổi hoà nhạc sắp bắt đầu.'], ['The plane is due to land at 5 p.m.', 'Máy bay dự kiến hạ cánh lúc 5 giờ chiều.'],
+      ['Will you be using your laptop tonight?', 'Tối nay bạn có dùng laptop không?'], ['We are bound to meet again.', 'Chắc chắn chúng ta sẽ gặp lại.'], ['I will call you when I have finished my homework.', 'Mình sẽ gọi bạn khi làm xong bài tập.']
+    ],
+    mis: [
+      ['By 2030 I will study here for ten years.', 'By 2030 I will have been studying here for ten years.', 'Mốc by + thời gian → future perfect (continuous).'], ['I will call you when I will arrive.', 'I will call you when I arrive.', 'Mệnh đề thời gian tương lai → hiện tại đơn.'], ['By the time she will arrive, we will have left.', 'By the time she arrives, we will have left.', 'by the time + hiện tại đơn.'],
+      ['The film is about start.', 'The film is about to start.', 'be about to + V.'], ['This time tomorrow I will fly to Paris. (đang bay)', 'This time tomorrow I will be flying to Paris.', 'Đang diễn ra tại thời điểm tương lai → will be V-ing.']
+    ],
+    quiz: [
+      ['At 9 p.m. tonight, I ___ my favourite series.', ['will watch', 'will be watching', 'will have watched', 'watch'], 1, 'Đang diễn ra lúc 9 giờ tối → will be watching.'],
+      ['By next month, we ___ the project.', ['will complete', 'will have completed', 'are completing', 'completed'], 1, 'by + mốc tương lai → will have completed.'],
+      ['By the time he ___ home, dinner will have been ready.', ['will get', 'gets', 'got', 'will have got'], 1, 'by the time + hiện tại đơn.'],
+      ['The bus ___ to leave in five minutes.', ['is due', 'is about', 'will due', 'is going'], 0, 'be due to + V (theo lịch).'],
+      ['Look! The man ___ jump into the river!', ['is about to', 'will have', 'was due', 'is to'], 0, 'be about to = sắp sửa ngay.'],
+      ['She ___ for this company for 15 years by next year.', ['will work', 'will have been working', 'is working', 'works'], 1, 'Nhấn mạnh quá trình kéo dài → will have been working.'],
+      ['I\'ll text you as soon as I ___.', ['will arrive', 'arrive', 'arrived', 'am going to arrive'], 1, 'as soon as + hiện tại đơn.'],
+      ['"___ the car tomorrow?" "No, you can use it."', ['Will you use', 'Will you be using', 'Are you use', 'Do you using'], 1, 'Hỏi lịch sự về kế hoạch → Will you be using…?'],
+      ['He is ___ to win; he practises every day.', ['bound', 'about', 'due', 'being'], 0, 'be bound to = chắc chắn sẽ.']
+    ]
+  });
+
+  L('g11-passive-reporting', {
+    grade: 11, icon: '📰', title: 'Bị động với động từ tường thuật: It is said that…', sub: 'Passive reporting structures', level: 'Nâng cao',
+    summary: 'Cấu trúc bị động phổ biến trong tin tức: It is said/believed/thought that… và He is said to be… ; cùng bị động của câu mệnh lệnh, nhờ vả, cảm giác.',
+    sections: [
+      { h: '1. Hai mẫu cơ bản', b: [
+        { f: ['Mẫu 1: **It + is/was + V3 (said, believed, thought, reported, expected, known…) + that + S + V**', 'Mẫu 2: **S + is/was + V3 + to V / to have V3**'] },
+        { t: { h: ['Chủ động', 'Bị động mẫu 1', 'Bị động mẫu 2'], r: [['People say that he is a genius.', 'It **is said that** he is a genius.', 'He **is said to be** a genius.'], ['They believe that she left yesterday.', 'It **is believed that** she left yesterday.', 'She **is believed to have left** yesterday.'], ['People think that the building is old.', 'It **is thought that** the building is old.', 'The building **is thought to be** old.']] } },
+        { tip: 'Nếu động từ trong mệnh đề **xảy ra trước** động từ tường thuật → dùng **to have V3** (to have left). Nếu **cùng thời điểm** hoặc tương lai → **to V** (to be, to leave).' }
+      ] },
+      { h: '2. Các động từ thường dùng', b: [
+        { ul: ['**say, think, believe, report, expect, know, consider, claim, suppose, understand, rumour, allege**', 'Thì của động từ bị động theo thời điểm nói: **is said** (hiện tại) / **was said** (quá khứ): He **was said to have been** ill.', 'Với **continuous**: **is thought to be living** abroad = Người ta nghĩ anh ấy đang sống ở nước ngoài.'] }
+      ] },
+      { h: '3. Một số cấu trúc bị động đặc biệt', b: [
+        { t: { h: ['Loại', 'Chủ động', 'Bị động'], r: [['Mệnh lệnh', 'Open the door.', '**Let the door be opened.** / The door should be opened.'], ['Nhờ vả (causative)', 'I had them repair my car.', 'I had my car **repaired**.'], ['Giác quan', 'They saw him steal the bag.', 'He was seen **to steal** the bag.'], ['Cho phép / buộc', 'They made him pay.', 'He was made **to pay**.']] } },
+        { warn: 'Sau **make, see, hear, watch** ở chủ động dùng V nguyên mẫu không to (They made him **pay**). Khi chuyển bị động **thêm to**: He was made **to pay**.' }
+      ] }
+    ],
+    ex: [
+      ['It is said that this restaurant serves the best pho in town.', 'Người ta nói quán này phục vụ phở ngon nhất thành phố.'], ['He is believed to be the richest man in the country.', 'Ông ấy được cho là người giàu nhất nước.'], ['She is said to have won three gold medals.', 'Cô ấy được cho là đã giành ba huy chương vàng.'],
+      ['It was reported that the fire had started in the kitchen.', 'Có thông tin rằng đám cháy bắt đầu từ nhà bếp.'], ['The building is thought to be 200 years old.', 'Toà nhà được cho là đã 200 năm tuổi.'], ['The singer is expected to arrive at noon.', 'Ca sĩ được dự kiến sẽ đến vào buổi trưa.'],
+      ['I had my hair cut yesterday.', 'Hôm qua mình đi cắt tóc.'], ['He was seen to leave the house at midnight.', 'Người ta thấy anh ta rời khỏi nhà lúc nửa đêm.'], ['They were made to wait for two hours.', 'Họ bị bắt đợi hai tiếng.']
+    ],
+    mis: [
+      ['He is said that he is clever.', 'It is said that he is clever. / He is said to be clever.', 'Hai mẫu không được trộn lẫn.'], ['She is believed to leave last night.', 'She is believed to have left last night.', 'Việc xảy ra trước → to have V3.'], ['He was made pay the fine.', 'He was made to pay the fine.', 'Bị động sau make → thêm to.'],
+      ['It is thought him to be rich.', 'He is thought to be rich. / It is thought that he is rich.', 'Không dùng "It is thought him".']
+    ],
+    quiz: [
+      ['It ___ that the road will be closed next week.', ['is reported', 'reports', 'is reporting', 'reported'], 0, 'It is reported that…'],
+      ['The man is said ___ a millionaire.', ['to be', 'being', 'be', 'that he is'], 0, 'be said + to V.'],
+      ['She is believed ___ the country two years ago.', ['to leave', 'to have left', 'leaving', 'having left to'], 1, 'Xảy ra trước → to have left.'],
+      ['The new law is expected ___ effect next month.', ['take', 'to take', 'taking', 'to taking'], 1, 'is expected + to V.'],
+      ['I had my car ___ yesterday.', ['repair', 'repairing', 'repaired', 'to repair'], 2, 'have + object + V3.'],
+      ['He was seen ___ the building at night.', ['enter', 'entering', 'to enter', 'entered'], 2, 'Bị động sau see → to V (hoặc V-ing).'],
+      ['They ___ to have been in the accident.', ['say', 'are said', 'said', 'is said'], 1, 'Chủ ngữ số nhiều → are said to have been.'],
+      ['It ___ that the singer was ill.', ['is thought', 'thinks', 'was thinking', 'think'], 0, 'It is thought that…'],
+      ['The workers ___ to stay late.', ['made', 'were made', 'make', 'was made'], 1, 'Bị động: were made to stay.']
+    ]
+  });
+
+  L('g11-gerund-infinitive-meaning', {
+    grade: 11, icon: '🔁', title: 'V-ing hay to V: những động từ đổi nghĩa', sub: 'remember, forget, stop, try, regret, go on…', level: 'Nâng cao',
+    summary: 'Một số động từ đi với cả V-ing và to V nhưng nghĩa khác nhau; cùng các mẫu need/want/allow + tân ngữ + to V.',
+    sections: [
+      { h: '1. Đổi nghĩa khi đổi dạng', b: [
+        { t: { h: ['Động từ', '+ V-ing (việc đã xảy ra / quá trình)', '+ to V (việc sẽ xảy ra / mục đích)'], r: [['**remember**', 'nhớ **đã làm**: I remember **meeting** her. (nhớ đã gặp)', 'nhớ **phải làm**: Remember **to lock** the door.'], ['**forget**', 'quên **đã làm**: I\'ll never forget **seeing** the sea.', 'quên **phải làm**: I forgot **to buy** milk.'], ['**stop**', 'dừng hẳn việc đang làm: He stopped **smoking**.', 'dừng lại để làm việc khác: He stopped **to smoke**.'], ['**try**', 'thử xem sao: Try **adding** more salt.', 'cố gắng: I tried **to open** the door.'], ['**regret**', 'hối tiếc **đã làm**: I regret **telling** her.', 'tiếc phải (thông báo): I regret **to inform** you…'], ['**go on**', 'tiếp tục việc đang làm: He went on **talking**.', 'chuyển sang việc tiếp theo: He went on **to talk** about sport.'], ['**mean**', 'nghĩa là / kéo theo: This means **working** harder.', 'định, có ý: I didn\'t mean **to hurt** you.']] } }
+      ] },
+      { h: '2. Không đổi nghĩa (gần như)', b: [
+        { ul: ['**like, love, hate, prefer + V-ing hoặc to V**: I like swimming ≈ I like to swim. (V-ing nói sở thích chung; **would like/love/hate + to V** nói mong muốn cụ thể).', '**begin, start, continue** + V-ing/to V ≈ cùng nghĩa. Nhưng nếu động từ đứng trước đã ở V-ing thì dùng to V: **It was starting to rain.**', '**can\'t bear, can\'t stand**: V-ing/to V.'] }
+      ] },
+      { h: '3. Động từ + tân ngữ + to V', b: [
+        { t: { h: ['Mẫu', 'Động từ', 'Ví dụ'], r: [['V + O + **to V**', 'want, ask, tell, advise, allow, order, invite, expect, persuade, warn, remind', 'My parents **allowed me to go** out.'], ['V + O + **V (bare)**', 'make, let, see, hear, watch, help', 'She **made me laugh**. / Mum **let me go**.'], ['V + O + **V-ing**', 'see, hear, watch, catch, keep, imagine', 'I **saw him running**.']] } },
+        { warn: 'Sau **suggest, enjoy, avoid, finish, mind, consider, practise** chỉ dùng **V-ing**; sau **decide, hope, plan, promise, refuse, manage, agree** chỉ dùng **to V**.' }
+      ] }
+    ],
+    ex: [
+      ['I remember turning off the lights. (đã tắt)', 'Mình nhớ là đã tắt đèn rồi.'], ['Remember to turn off the lights. (chưa tắt)', 'Nhớ tắt đèn nhé.'], ['She stopped to buy some bread on her way home.', 'Cô ấy dừng lại để mua bánh mì trên đường về.'],
+      ['He stopped eating junk food to lose weight.', 'Anh ấy ngừng ăn đồ ăn vặt để giảm cân.'], ['I tried calling him, but nobody answered.', 'Mình đã thử gọi cho anh ấy nhưng không ai nghe.'], ['I tried to call him, but my phone had no signal.', 'Mình đã cố gọi cho anh ấy nhưng điện thoại không có sóng.'],
+      ['I regret telling him the secret.', 'Mình hối hận vì đã kể bí mật cho anh ấy.'], ['The teacher allowed us to use dictionaries.', 'Cô giáo cho phép chúng mình dùng từ điển.'], ['My mother made me tidy my room.', 'Mẹ bắt mình dọn phòng.']
+    ],
+    mis: [
+      ['I forgot buying milk, so we have none.', 'I forgot to buy milk, so we have none.', 'Quên làm việc cần làm → forget to V.'], ['She stopped to smoking last year.', 'She stopped smoking last year.', 'Bỏ hẳn thói quen → stop V-ing.'], ['My parents let me to go out.', 'My parents let me go out.', 'let + O + V nguyên mẫu.'],
+      ['I enjoy to swim.', 'I enjoy swimming.', 'enjoy + V-ing.'], ['He decided buying a car.', 'He decided to buy a car.', 'decide + to V.']
+    ],
+    quiz: [
+      ['Remember ___ the door when you leave.', ['locking', 'to lock', 'lock', 'locked'], 1, 'Nhớ phải làm → remember to V.'],
+      ['I\'ll never forget ___ my grandparents for the first time.', ['to meet', 'meeting', 'meet', 'met'], 1, 'Quên/nhớ việc đã xảy ra → V-ing.'],
+      ['He stopped ___ because he wanted to be healthier.', ['to smoke', 'smoking', 'smoke', 'smoked'], 1, 'Bỏ hẳn → stop V-ing.'],
+      ['We stopped ___ some water at the shop.', ['to buy', 'buying', 'buy', 'bought'], 0, 'Dừng lại để làm việc khác → to V.'],
+      ['I tried ___ the window, but it was stuck.', ['opening', 'to open', 'open', 'opened'], 1, 'Cố gắng → try to V.'],
+      ['If you have a headache, try ___ some water.', ['drinking', 'to drink', 'drink', 'drank'], 0, 'Thử xem sao → try V-ing.'],
+      ['The teacher ___ us to use dictionaries during the test.', ['allowed', 'let', 'made', 'enjoyed'], 0, 'allow + O + to V (let/make + O + V không có to).'],
+      ['She promised ___ me with my homework.', ['helping', 'to help', 'help', 'helped'], 1, 'promise + to V.'],
+      ['I regret ___ you that your application was unsuccessful.', ['to tell', 'telling', 'tell', 'told'], 0, 'regret to + V (thông báo tin xấu).']
+    ]
+  });
+
+  L('g11-concession-contrast', {
+    grade: 11, icon: '⚔️', title: 'Nhượng bộ và tương phản nâng cao', sub: 'although, in spite of, however, whereas, no matter…', level: 'Nâng cao',
+    summary: 'Phân biệt although/in spite of/despite, however/nevertheless, whereas/while, no matter + wh-, whatever/whoever, as/though đảo.',
+    sections: [
+      { h: '1. Although / In spite of / Despite', b: [
+        { t: { h: ['Từ', 'Theo sau', 'Ví dụ'], r: [['**although / though / even though**', 'mệnh đề (S + V)', '**Although** it was raining, we went out.'], ['**in spite of / despite**', 'danh từ / V-ing / the fact that + mệnh đề', '**In spite of** the rain, we went out. / **Despite** being tired, he worked.'], ['**However / Nevertheless**', 'dấu phẩy + mệnh đề mới (đầu câu mới)', 'It was raining. **However**, we went out.'], ['**whereas / while**', 'mệnh đề (đối lập hai vế)', 'He is outgoing, **whereas** his brother is shy.'], ['**but / yet**', 'liên từ giữa hai mệnh đề', 'It was cold, **but** we went swimming.']] } },
+        { warn: 'Không dùng **although + but** cùng câu, không dùng **despite of**: ✗ Despite of the rain → ✓ **Despite the rain / In spite of the rain**.' }
+      ] },
+      { h: '2. No matter / -ever', b: [
+        { f: ['**No matter** + what / who / where / when / how + S + V , mệnh đề chính', '**Whatever / Whoever / Wherever / Whenever / However** + … (cùng nghĩa)'] },
+        { p: '**No matter what you say**, I won\'t change my mind. = **Whatever you say**, … · **No matter how hard** he tried, he couldn\'t lift it. = **However hard** he tried, … · **Wherever you go**, I\'ll follow you.' }
+      ] },
+      { h: '3. Mẫu đảo ngữ nhượng bộ', b: [
+        { ul: ['**Adj/Adv + as/though + S + V**, mệnh đề chính: **Tired as he was**, he went on working. = Although he was tired, he went on working.', '**Much as** I like it, I can\'t buy it. = Although I like it very much, I can\'t buy it.', 'Chuyển đổi: **Although he is poor, he is happy.** = **Despite being poor, he is happy.** = **In spite of the fact that he is poor, he is happy.**'] }
+      ] }
+    ],
+    ex: [
+      ['Although she was tired, she kept studying.', 'Dù mệt, cô ấy vẫn tiếp tục học.'], ['In spite of the heavy traffic, we arrived on time.', 'Mặc dù tắc đường nặng, chúng mình vẫn đến đúng giờ.'], ['Despite feeling ill, he went to work.', 'Dù thấy ốm, anh ấy vẫn đi làm.'],
+      ['The test was difficult. Nevertheless, everyone passed.', 'Bài kiểm tra khó. Tuy nhiên ai cũng đỗ.'], ['My sister loves spicy food, whereas I can\'t eat it.', 'Chị mình thích đồ cay, trong khi mình không ăn được.'], ['No matter how hard I try, I can\'t solve it.', 'Dù mình cố thế nào, mình cũng không giải được.'],
+      ['Whatever you decide, I\'ll support you.', 'Bạn quyết định thế nào mình cũng ủng hộ.'], ['Tired as he was, he finished the report.', 'Dù mệt, anh ấy vẫn hoàn thành báo cáo.'], ['Wherever you go, remember to call me.', 'Dù bạn đi đâu, nhớ gọi cho mình.']
+    ],
+    mis: [
+      ['Despite of the rain, we played football.', 'Despite the rain, we played football.', 'Không có "of" sau despite.'], ['Although it was cold, but we went out.', 'Although it was cold, we went out.', 'Không dùng although và but cùng câu.'], ['In spite of he was ill, he went to school.', 'In spite of being ill / although he was ill, he went to school.', 'In spite of + danh từ/V-ing, không + mệnh đề.'],
+      ['It was late. However we stayed.', 'It was late. However, we stayed.', 'However thường có dấu phẩy.'], ['No matter what do you say, I won\'t change.', 'No matter what you say, I won\'t change.', 'Không đảo trợ động từ.']
+    ],
+    quiz: [
+      ['___ the bad weather, the match went ahead.', ['Although', 'In spite of', 'However', 'Because'], 1, 'Sau chỗ trống là danh từ → In spite of.'],
+      ['___ he was tired, he finished the work.', ['Despite', 'In spite of', 'Although', 'However'], 2, 'Sau chỗ trống là mệnh đề → Although.'],
+      ['He didn\'t study. ___, he passed the test.', ['Although', 'Nevertheless', 'Because', 'Despite'], 1, 'Đầu câu mới → Nevertheless, + mệnh đề.'],
+      ['She is hard-working, ___ her brother is lazy.', ['whereas', 'despite', 'because', 'so that'], 0, 'Đối lập hai vế → whereas.'],
+      ['___ you go, I\'ll find you.', ['However', 'Whatever', 'Wherever', 'Whoever'], 2, 'Dù đi đâu → Wherever.'],
+      ['No matter ___ he says, I won\'t believe him.', ['that', 'what', 'how', 'if'], 1, 'No matter what + S + V.'],
+      ['___ being tired, she attended the party.', ['Although', 'Despite', 'However', 'Even though'], 1, 'Sau chỗ trống là V-ing → Despite.'],
+      ['Rich ___ he was, he wasn\'t happy.', ['but', 'as', 'so', 'because'], 1, 'Adj + as + S + V (nhượng bộ).'],
+      ['She won ___ the fact that she was injured.', ['despite', 'in spite', 'although', 'however'], 0, 'despite the fact that + mệnh đề.']
+    ]
+  });
+
+  L('g11-reflexive-reciprocal-pronouns', {
+    grade: 11, icon: '🪞', title: 'Đại từ phản thân, đại từ tương hỗ và other / another', sub: 'Reflexive pronouns, each other, one/ones, other(s)', level: 'Nâng cao',
+    summary: 'Dùng myself/herself…, each other/one another, one/ones, another/other/others/the other/the others một cách chính xác.',
+    sections: [
+      { h: '1. Đại từ phản thân (reflexive)', b: [
+        { t: { h: ['Ngôi', 'Phản thân', 'Ví dụ'], r: [['I', 'myself', 'I cut **myself**.'], ['you (số ít / nhiều)', 'yourself / yourselves', 'Enjoy **yourselves**!'], ['he / she / it', 'himself / herself / itself', 'She taught **herself** English.'], ['we / they', 'ourselves / themselves', 'They blamed **themselves**.']] } },
+        { ul: ['Chủ ngữ và tân ngữ **cùng một người**: He looked at **himself** in the mirror.', 'Nhấn mạnh: I **myself** saw it. / I did it **myself**. (tự mình làm)', '**by + reflexive** = một mình / không ai giúp: She lives **by herself**. He fixed it **by himself**.', 'Một số động từ **không** cần reflexive trong tiếng Anh: wash, shave, dress, relax, meet… (He washed. = He washed himself.)'] }
+      ] },
+      { h: '2. Each other / one another', b: [
+        { p: '**each other / one another** = **lẫn nhau**, hai bên cùng tác động: **They love each other.** (A yêu B và B yêu A) ≠ **They love themselves.** (mỗi người yêu chính mình).' },
+        { warn: 'Sở hữu cách: **each other\'s**: They borrowed **each other\'s** books. (✗ each others)' }
+      ] },
+      { h: '3. Other, another, the other, one/ones', b: [
+        { t: { h: ['Từ', 'Dùng với', 'Ví dụ'], r: [['**another**', 'một cái nữa (số ít, không xác định)', 'Would you like **another** cup of tea?'], ['**other** + danh từ số nhiều', 'những cái khác', 'Some students like maths; **other students** prefer art.'], ['**others**', 'những người/cái khác (không có danh từ)', 'Some like tea, **others** prefer coffee.'], ['**the other**', 'cái còn lại (trong hai)', 'I have two pens: one is red; **the other** is blue.'], ['**the others**', 'những cái còn lại (xác định)', 'Three of them left; **the others** stayed.'], ['**one / ones**', 'thay danh từ đã nhắc', 'I like the red **one**. Those **ones** are cheaper.']] } }
+      ] }
+    ],
+    ex: [
+      ['She taught herself to play the guitar.', 'Cô ấy tự học chơi ghi-ta.'], ['Be careful, or you\'ll hurt yourself.', 'Cẩn thận, kẻo bạn bị thương đấy.'], ['The children enjoyed themselves at the zoo.', 'Bọn trẻ đã vui chơi thoải mái ở sở thú.'],
+      ['Tom and Anna looked at each other and smiled.', 'Tom và Anna nhìn nhau mỉm cười.'], ['We help one another with homework.', 'Chúng mình giúp nhau làm bài tập.'], ['Can I have another piece of cake?', 'Cho mình thêm một miếng bánh nữa được không?'],
+      ['Some people prefer cats; others like dogs.', 'Có người thích mèo, người khác thích chó.'], ['I have two sisters. One lives in Hanoi; the other lives in Hue.', 'Mình có hai chị gái. Một người ở Hà Nội, người kia ở Huế.'], ['I don\'t like this bag. Show me a bigger one.', 'Mình không thích cái túi này. Cho mình xem cái to hơn.']
+    ],
+    mis: [
+      ['He cut him while shaving.', 'He cut himself while shaving.', 'Chủ ngữ = tân ngữ → himself.'], ['They helped themselves each other.', 'They helped each other.', 'Lẫn nhau → each other.'], ['Would you like other cup of tea?', 'Would you like another cup of tea?', 'another + danh từ số ít.'],
+      ['Tom and Mary borrowed each others\' books.', 'Tom and Mary borrowed each other\'s books.', 'each other\'s.'], ['I have two brothers. One is a doctor and another is a teacher.', 'I have two brothers. One is a doctor and the other is a teacher.', 'Hai người → one … the other.']
+    ],
+    quiz: [
+      ['She looked at ___ in the mirror.', ['her', 'herself', 'she', 'hers'], 1, 'Cùng một người → herself.'],
+      ['The two friends have known ___ since childhood.', ['themselves', 'each other', 'another', 'others'], 1, 'Lẫn nhau → each other.'],
+      ['Would you like ___ cup of coffee?', ['other', 'another', 'others', 'the other'], 1, 'another + danh từ số ít.'],
+      ['I have two bags. One is black; ___ is brown.', ['another', 'other', 'the other', 'others'], 2, 'Cái còn lại trong hai → the other.'],
+      ['Some students walk to school; ___ ride bikes.', ['other', 'another', 'others', 'the other'], 2, 'others (không có danh từ theo sau).'],
+      ['Nobody helped me. I did it ___.', ['by me', 'myself', 'me', 'mine'], 1, 'Tự mình làm → myself.'],
+      ['I don\'t like these shoes. Do you have any cheaper ___?', ['one', 'ones', 'another', 'other'], 1, 'shoes số nhiều → ones.'],
+      ['We should help ___ in difficult times.', ['us', 'ourselves', 'each other', 'themselves'], 2, 'Giúp lẫn nhau → each other.'],
+      ['Three of the students were late; ___ arrived on time.', ['the others', 'another', 'other', 'others'], 0, 'Những người còn lại (xác định) → the others.']
+    ]
+  });
 })();

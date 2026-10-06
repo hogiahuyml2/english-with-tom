@@ -170,4 +170,202 @@
       ['He can ___ swim across the river.', ['easy', 'easily', 'ease', 'easier'], 1, 'Bổ nghĩa cho động từ swim → trạng từ easily.']
     ]
   });
+
+  L('g7-past-be-there-was', {
+    grade: 7, icon: '⏪', title: 'Quá khứ của to be và There was / There were', sub: 'Past of "be" & There was/were', level: 'Cơ bản',
+    summary: 'Dùng was/were để nói về trạng thái, vị trí, cảm xúc trong quá khứ và There was/were để nói "đã có" cái gì.',
+    sections: [
+      { h: '1. Was / Were', b: [
+        { t: { h: ['Chủ ngữ', 'Khẳng định', 'Phủ định', 'Nghi vấn'], r: [['I, he, she, it', 'was', 'was not (**wasn\'t**)', '**Was** he…?'], ['you, we, they', 'were', 'were not (**weren\'t**)', '**Were** you…?']] } },
+        { p: 'Dùng với thời gian quá khứ: **yesterday, last week, in 2020, two days ago, when I was a child.** Ví dụ: **I was at home yesterday. They weren\'t late. Were you tired?**' },
+        { tip: 'Trả lời ngắn: **Yes, I was. / No, they weren\'t.** Không dùng "did" với was/were: ✗ Did you were at home?' }
+      ] },
+      { h: '2. There was / There were', b: [
+        { f: ['(+) There **was** + danh từ số ít / không đếm được', '(+) There **were** + danh từ số nhiều', '(−) There wasn\'t / weren\'t (any) …', '(?) **Was** there …? / **Were** there …?'] },
+        { p: 'Ví dụ: **There was a big tree in front of the house.** · **There were three students in the room.** · **Was there any milk in the fridge? — No, there wasn\'t.**' },
+        { warn: 'Động từ theo **danh từ đứng sau**, không theo "there": There **was** a book and two pens (danh từ đầu tiên là a book → was) — văn nói đôi khi dùng were, nhưng ở bài thi hãy làm theo danh từ gần nhất.' }
+      ] },
+      { h: '3. Câu hỏi với was/were', b: [
+        { ul: ['**Where were you** last night? — I was at my grandma\'s.', '**What was** the weather like? — It was sunny.', '**How was** your trip? — It was great!', '**Who was** your first teacher? — It was Mrs. Lan.'] }
+      ] }
+    ],
+    ex: [
+      ['I was very tired yesterday.', 'Hôm qua mình rất mệt.'], ['She wasn\'t at school last Monday.', 'Thứ Hai tuần trước cô ấy không ở trường.'], ['We were in Da Nang two years ago.', 'Hai năm trước chúng mình ở Đà Nẵng.'],
+      ['Were you at home last night? — No, I wasn\'t.', 'Tối qua bạn có ở nhà không? — Không.'], ['There was a small garden behind the house.', 'Phía sau nhà có một khu vườn nhỏ.'], ['There were many people at the festival.', 'Có rất nhiều người ở lễ hội.'],
+      ['Was there a library in your old school? — Yes, there was.', 'Trường cũ của bạn có thư viện không? — Có.'], ['How was the film? — It was exciting.', 'Bộ phim thế nào? — Hấp dẫn lắm.'], ['The exam wasn\'t difficult.', 'Bài thi không khó.']
+    ],
+    mis: [
+      ['I were at home yesterday.', 'I was at home yesterday.', 'I → was.'], ['They was happy.', 'They were happy.', 'they → were.'], ['Did you were tired?', 'Were you tired?', 'Câu hỏi với was/were không mượn did.'],
+      ['There were a cat in the garden.', 'There was a cat in the garden.', 'a cat số ít → was.'], ['Was there any students?', 'Were there any students?', 'students số nhiều → were.']
+    ],
+    quiz: [
+      ['My parents ___ at home last night.', ['was', 'were', 'is', 'did'], 1, 'parents số nhiều → were.'],
+      ['___ she at the party yesterday?', ['Did', 'Was', 'Were', 'Is'], 1, 'she → Was.'],
+      ['There ___ a lot of rain last week.', ['were', 'was', 'are', 'did'], 1, 'rain là danh từ không đếm được → was.'],
+      ['We ___ in the park, so we didn\'t see the match.', ['wasn\'t', 'weren\'t', 'didn\'t', 'isn\'t'], 1, 'we → weren\'t.'],
+      ['"___ there any eggs?" "No, there weren\'t."', ['Was', 'Were', 'Did', 'Are'], 1, 'eggs số nhiều, quá khứ → Were there…?'],
+      ['How ___ your holiday?', ['is', 'did', 'was', 'were'], 2, 'holiday số ít → was.'],
+      ['I ___ ten years old in 2020.', ['am', 'was', 'were', 'did'], 1, 'I + quá khứ → was.'],
+      ['There ___ two bikes outside the school.', ['was', 'were', 'is', 'be'], 1, 'two bikes → were.'],
+      ['Which is correct?', ['Did he was late?', 'Was he late?', 'Were he late?', 'Does he was late?'], 1, 'Câu hỏi với was: Was he late?']
+    ]
+  });
+
+  L('g7-compound-sentences', {
+    grade: 7, icon: '🧩', title: 'Câu đơn, câu ghép và dấu câu', sub: 'Simple & Compound Sentences', level: 'Cơ bản',
+    summary: 'Nối hai câu đơn thành câu ghép bằng for, and, nor, but, or, yet, so (FANBOYS) hoặc dấu chấm phẩy; dùng dấu phẩy đúng chỗ.',
+    sections: [
+      { h: '1. Câu đơn và câu ghép', b: [
+        { p: '**Câu đơn** có một mệnh đề (một chủ ngữ + một động từ chính): **I study English.** **Câu ghép** nối hai mệnh đề ngang hàng bằng liên từ: **I study English, and my brother studies French.**' },
+        { t: { h: ['Liên từ (FANBOYS)', 'Ý nghĩa', 'Ví dụ'], r: [['**F**or', 'vì (trang trọng)', 'He stayed home, **for** he was ill.'], ['**A**nd', 'và', 'She sings, **and** he plays the guitar.'], ['**N**or', 'cũng không', 'I don\'t eat meat, **nor** do I drink milk.'], ['**B**ut', 'nhưng', 'I was tired, **but** I finished the work.'], ['**O**r', 'hoặc', 'Hurry up, **or** we\'ll miss the bus.'], ['**Y**et', 'tuy nhiên', 'It was cold, **yet** they went swimming.'], ['**S**o', 'vì vậy', 'It rained, **so** we stayed in.']] } }
+      ] },
+      { h: '2. Dấu câu trong câu ghép', b: [
+        { f: ['Mệnh đề 1 **,** + liên từ + mệnh đề 2', 'Mệnh đề 1 **;** mệnh đề 2 (không có liên từ)', 'Mệnh đề 1 **; however,** mệnh đề 2'] },
+        { ul: ['Có **dấu phẩy** trước liên từ khi mỗi vế có chủ ngữ + động từ riêng: **I wanted to go, but it was raining.**', 'Không cần phẩy nếu hai động từ chung chủ ngữ: **I opened the door and walked in.**', 'Dấu chấm phẩy (;) nối hai câu có ý gần nhau: **He loves music; she loves painting.**'] },
+        { warn: 'Lỗi **comma splice** (nối hai câu chỉ bằng dấu phẩy): ✗ It was late, we went home. → ✓ It was late, **so** we went home. / It was late; we went home.' }
+      ] },
+      { h: '3. Chọn liên từ đúng', b: [
+        { t: { h: ['Muốn nói', 'Dùng', 'Ví dụ'], r: [['thêm ý', 'and', 'He is kind, and he is clever.'], ['đối lập', 'but / yet', 'The test was hard, but I passed.'], ['kết quả', 'so', 'I was thirsty, so I drank water.'], ['lựa chọn / cảnh báo', 'or', 'Study hard, or you will fail.'], ['lý do', 'for / because', 'I was happy, for I got a gift.']] } }
+      ] }
+    ],
+    ex: [
+      ['I like football, but my sister prefers tennis.', 'Mình thích bóng đá nhưng em gái mình thích quần vợt hơn.'], ['We can go by bus, or we can walk.', 'Chúng ta có thể đi xe buýt hoặc đi bộ.'], ['It was late, so we took a taxi.', 'Đã muộn nên chúng mình đi taxi.'],
+      ['He worked hard, and he passed the exam.', 'Cậu ấy học chăm và đã đỗ kỳ thi.'], ['She was ill, yet she went to school.', 'Cô ấy ốm nhưng vẫn đến trường.'], ['I didn\'t call him, nor did I send a message.', 'Mình không gọi cho anh ấy mà cũng không nhắn tin.'],
+      ['He opened the window and looked outside.', 'Cậu ấy mở cửa sổ và nhìn ra ngoài.'], ['Take an umbrella, or you will get wet.', 'Hãy mang ô, nếu không bạn sẽ ướt.'], ['Mum cooked dinner; Dad washed the dishes.', 'Mẹ nấu bữa tối; bố rửa bát.']
+    ],
+    mis: [
+      ['It was late, we went home.', 'It was late, so we went home.', 'Hai mệnh đề cần liên từ (comma splice).'], ['I was tired but, I kept working.', 'I was tired, but I kept working.', 'Dấu phẩy đứng trước but.'],
+      ['He is rich so he is not happy.', 'He is rich, but he is not happy.', 'Quan hệ đối lập → but.'], ['She sings, and dances. (hai việc chung chủ ngữ)', 'She sings and dances.', 'Chung chủ ngữ thì không cần phẩy trước and.']
+    ],
+    quiz: [
+      ['It was raining, ___ we stayed at home.', ['but', 'so', 'or', 'yet'], 1, 'Kết quả → so.'],
+      ['I wanted to buy it, ___ it was too expensive.', ['so', 'but', 'and', 'for'], 1, 'Đối lập → but.'],
+      ['Hurry up, ___ you will be late.', ['and', 'but', 'or', 'so'], 2, 'Cảnh báo "nếu không" → or.'],
+      ['Which sentence is punctuated correctly?', ['I like tea, I don\'t like coffee.', 'I like tea, but I don\'t like coffee.', 'I like tea but, I don\'t like coffee.', 'I like tea but I, don\'t like coffee.'], 1, 'Dấu phẩy trước but khi hai vế có chủ ngữ riêng.'],
+      ['He didn\'t study, ___ did he go to class.', ['and', 'or', 'nor', 'yet'], 2, 'Phủ định + nor + đảo ngữ.'],
+      ['She was very tired, ___ she kept working.', ['so', 'yet', 'for', 'nor'], 1, 'Tương phản bất ngờ → yet.'],
+      ['Which sentence is correct?', ['I opened the door, and walked in.', 'I opened the door and walked in.', 'I opened the door, so walked in.', 'I opened the door or, walked in.'], 1, 'Chung chủ ngữ → không cần dấu phẩy trước and.'],
+      ['Which sentence uses a semicolon correctly?', ['Tom plays football; Anna plays tennis.', 'Tom plays; football Anna plays tennis.', 'Tom; plays football Anna plays tennis.', 'Tom plays football Anna; plays tennis.'], 0, 'Dấu chấm phẩy nối hai mệnh đề độc lập có ý gần nhau.'],
+      ['He stayed home, ___ he was ill. (trang trọng)', ['for', 'nor', 'but', 'or'], 0, 'for = because (trang trọng).']
+    ]
+  });
+
+  L('g7-how-questions', {
+    grade: 7, icon: '📏', title: 'Câu hỏi về mức độ, khoảng cách, thời gian: How…?', sub: 'How questions & "It takes"', level: 'Trung bình',
+    summary: 'Dùng How long / far / often / much / many / old / tall… để hỏi và trả lời về thời gian, khoảng cách, tần suất, số lượng.',
+    sections: [
+      { h: '1. Các câu hỏi với How', b: [
+        { t: { h: ['Câu hỏi', 'Hỏi về', 'Trả lời mẫu'], r: [['**How long** …?', 'thời gian kéo dài / độ dài', 'For two hours. / It takes 20 minutes. / About one metre.'], ['**How far** …?', 'khoảng cách', 'About 3 kilometres.'], ['**How often** …?', 'tần suất', 'Twice a week. / Every day.'], ['**How much** + không đếm được / giá tiền', 'lượng, giá', 'How much milk? — A litre. / How much is it? — 50,000 dong.'], ['**How many** + danh từ đếm được số nhiều', 'số lượng', 'Three.'], ['**How old** …?', 'tuổi', 'I\'m 12.'], ['**How tall / high / heavy / deep** …?', 'chiều cao, cân nặng…', 'He is 1.5 metres tall.']] } }
+      ] },
+      { h: '2. It takes … to V', b: [
+        { f: ['It takes (+ người) + thời gian + **to V**', 'How long does it take (+ người) **to V**?'] },
+        { p: '**It takes me 15 minutes to walk to school.** (Mình mất 15 phút đi bộ đến trường.) · **How long does it take you to get there?** · It takes **about** an hour.' },
+        { tip: 'Động từ **take** chia theo it: **takes** (hiện tại), **took** (quá khứ): It took us two hours to finish the project.' }
+      ] },
+      { h: '3. Phân biệt dễ nhầm', b: [
+        { ul: ['**How long** (bao lâu) ≠ **How far** (bao xa): How **long** is the film? — Two hours. How **far** is the cinema? — 2 km.', '**How much** + danh từ không đếm được: How much water? — **How many** + danh từ số nhiều: How many books?', '**How often** hỏi tần suất, trả lời bằng trạng từ tần suất hoặc cụm: always, twice a month, every Sunday.'] }
+      ] }
+    ],
+    ex: [
+      ['How long is the lesson? — It\'s 45 minutes.', 'Tiết học kéo dài bao lâu? — 45 phút.'], ['How far is your school from here? — About two kilometres.', 'Trường bạn cách đây bao xa? — Khoảng hai ki-lô-mét.'], ['How often do you go swimming? — Twice a week.', 'Bạn đi bơi bao lâu một lần? — Hai lần một tuần.'],
+      ['How much is this T-shirt? — It\'s 150,000 dong.', 'Chiếc áo này giá bao nhiêu? — 150.000 đồng.'], ['How many students are there in your class? — There are 40.', 'Lớp bạn có bao nhiêu học sinh? — 40 bạn.'], ['How tall is your brother? — He is 1 metre 60.', 'Anh bạn cao bao nhiêu? — 1 mét 60.'],
+      ['It takes me 20 minutes to get to school by bike.', 'Mình mất 20 phút đi xe đạp đến trường.'], ['How long does it take to cook this soup? — About an hour.', 'Nấu món súp này mất bao lâu? — Khoảng một tiếng.'], ['It took us three hours to drive to Hue.', 'Chúng mình mất ba tiếng lái xe tới Huế.']
+    ],
+    mis: [
+      ['How many water do you drink?', 'How much water do you drink?', 'water không đếm được → much.'], ['How long is it from your house to school? (hỏi khoảng cách)', 'How far is it from your house to school?', 'Khoảng cách → How far.'],
+      ['It takes me 20 minutes walking to school.', 'It takes me 20 minutes to walk to school.', 'take + thời gian + to V.'], ['How often are you go to the gym?', 'How often do you go to the gym?', 'Động từ thường dùng do.'], ['How much students are there?', 'How many students are there?', 'students đếm được → many.']
+    ],
+    quiz: [
+      ['___ is it from Hanoi to Hai Phong? — About 100 km.', ['How long', 'How far', 'How often', 'How much'], 1, 'Khoảng cách → How far.'],
+      ['___ do you have English lessons? — Three times a week.', ['How long', 'How many', 'How often', 'How far'], 2, 'Tần suất → How often.'],
+      ['___ sugar do you need? — Two spoons.', ['How many', 'How much', 'How long', 'How often'], 1, 'sugar không đếm được → How much.'],
+      ['It ___ me an hour to do my homework.', ['takes', 'take', 'spends', 'costs'], 0, 'It takes + người + thời gian.'],
+      ['___ does it take to get there by train?', ['How far', 'How long', 'How much', 'How many'], 1, 'Thời gian → How long.'],
+      ['___ books do you read a month? — Two or three.', ['How much', 'How many', 'How often', 'How far'], 1, 'books đếm được → How many.'],
+      ['It ___ us two hours to finish the project yesterday.', ['takes', 'took', 'taken', 'is taking'], 1, 'yesterday → quá khứ took.'],
+      ['"___ is that bridge?" "About 50 metres."', ['How long', 'How old', 'How often', 'How many'], 0, 'Độ dài → How long.'],
+      ['"___ is your grandfather?" "He\'s 70."', ['How tall', 'How old', 'How long', 'How many'], 1, 'Tuổi → How old.']
+    ]
+  });
+
+  L('g7-present-continuous-future', {
+    grade: 7, icon: '📅', title: 'Hiện tại tiếp diễn nói về kế hoạch tương lai', sub: 'Present Continuous for future plans', level: 'Trung bình',
+    summary: 'Dùng thì hiện tại tiếp diễn để nói về kế hoạch đã sắp xếp chắc chắn trong tương lai gần.',
+    sections: [
+      { h: '1. Cấu trúc và cách dùng', b: [
+        { f: ['S + am/is/are + V-ing + **thời gian tương lai**', 'Ví dụ: **I\'m meeting** Linh tomorrow. They **are flying** to Da Nang next week.'] },
+        { p: 'Dùng khi **kế hoạch đã được sắp xếp** (đã đặt vé, hẹn giờ, báo cho người khác). Thường kèm: **tomorrow, tonight, next week/month, on Saturday, this weekend, at 8 o\'clock.**' },
+        { tip: 'So sánh: **I am playing football now.** (đang xảy ra) và **I am playing football tomorrow.** (kế hoạch). Thời gian trong câu cho biết nghĩa.' }
+      ] },
+      { h: '2. So sánh với be going to và will', b: [
+        { t: { h: ['', 'Present continuous', 'be going to', 'will'], r: [['Ý nghĩa', 'kế hoạch đã sắp xếp (có giờ, nơi, người)', 'dự định / dự đoán có căn cứ', 'quyết định tức thì, lời hứa, dự đoán'], ['Ví dụ', 'We\'re having a party on Friday at 7.', 'I\'m going to study abroad one day.', 'I\'ll help you with that bag.']] } },
+        { p: 'Nhiều khi present continuous và be going to có thể thay cho nhau khi nói kế hoạch: **I\'m visiting / I\'m going to visit** my aunt this weekend. Nhưng với dự đoán có dấu hiệu: **Look at the clouds! It\'s going to rain.** (không dùng present continuous).' }
+      ] },
+      { h: '3. Câu hỏi và phủ định', b: [
+        { f: ['(−) I\'m **not** working tomorrow.', '(?) **What are you doing** this weekend? — I\'m visiting my grandparents.', '(?) **Is** she **coming** to the party? — Yes, she is.'] },
+        { warn: 'Các động từ chỉ trạng thái (know, like, want, have = sở hữu) không dùng ở tiếp diễn. Với kế hoạch dùng động từ hành động: go, meet, play, visit, have (a party)…' }
+      ] }
+    ],
+    ex: [
+      ['I\'m meeting my friends at the cinema tonight.', 'Tối nay mình sẽ gặp bạn ở rạp chiếu phim.'], ['We\'re going to Hue next month.', 'Tháng sau chúng mình sẽ đi Huế.'], ['She\'s taking an English exam on Saturday.', 'Thứ Bảy cô ấy sẽ thi tiếng Anh.'],
+      ['What are you doing this weekend?', 'Cuối tuần này bạn định làm gì?'], ['They aren\'t coming to the party tomorrow.', 'Ngày mai họ sẽ không đến bữa tiệc.'], ['Is your brother visiting you this summer? — Yes, he is.', 'Hè này anh bạn có đến thăm bạn không? — Có.'],
+      ['The match starts at 3, so we\'re leaving at 2.', 'Trận đấu bắt đầu lúc 3 giờ nên chúng mình sẽ đi lúc 2 giờ.'], ['I\'m having dinner with my grandparents on Sunday.', 'Chủ nhật mình sẽ ăn tối với ông bà.'], ['He\'s not working next Friday.', 'Thứ Sáu tuần sau anh ấy không đi làm.']
+    ],
+    mis: [
+      ['I meet my friend tomorrow. (kế hoạch đã hẹn)', 'I\'m meeting my friend tomorrow.', 'Kế hoạch đã sắp xếp → present continuous.'], ['We are go to the zoo on Sunday.', 'We are going to the zoo on Sunday.', 'am/is/are + V-ing.'],
+      ['Look at those clouds! It is raining soon.', 'Look at those clouds! It\'s going to rain.', 'Dự đoán có dấu hiệu → be going to.'], ['What you are doing tonight?', 'What are you doing tonight?', 'Trợ động từ đứng trước chủ ngữ.']
+    ],
+    quiz: [
+      ['I ___ my cousin at the airport at 6 tomorrow. (đã hẹn)', ['meet', 'am meeting', 'met', 'meets'], 1, 'Kế hoạch đã sắp xếp → am meeting.'],
+      ['What ___ you doing this Sunday?', ['do', 'are', 'did', 'will'], 1, 'Present continuous: What are you doing…?'],
+      ['She ___ to Singapore next week. She has the ticket.', ['is flying', 'flies', 'flew', 'fly'], 0, 'Đã có vé → is flying.'],
+      ['Look at the dark sky! It ___ rain.', ['is raining', 'is going to', 'rains', 'rained'], 1, 'Cần "is going to rain".'],
+      ['They ___ a party tonight, so don\'t be late.', ['have', 'are having', 'had', 'having'], 1, 'Kế hoạch tối nay → are having.'],
+      ['He ___ tomorrow. He\'s on holiday.', ['isn\'t working', 'doesn\'t working', 'not working', 'don\'t work'], 0, 'Phủ định tiếp diễn: isn\'t working.'],
+      ['___ your parents picking you up at school today?', ['Do', 'Are', 'Did', 'Is'], 1, 'parents số nhiều + V-ing → Are.'],
+      ['Which sentence is about a future plan?', ['I\'m reading a book now.', 'I\'m leaving for Hue tomorrow.', 'I read books every day.', 'I was reading yesterday.'], 1, 'tomorrow → kế hoạch tương lai.'],
+      ['We ___ out for dinner on Friday evening.', ['are going', 'go', 'went', 'were going'], 0, 'Kế hoạch ngày thứ Sáu → are going.']
+    ]
+  });
+
+  L('g7-exclamatory-sentences', {
+    grade: 7, icon: '❗', title: 'Câu cảm thán: What…! và How…!', sub: 'Exclamatory sentences', level: 'Trung bình',
+    summary: 'Diễn đạt cảm xúc mạnh (ngạc nhiên, thán phục, thất vọng) bằng What + danh từ và How + tính từ/trạng từ.',
+    sections: [
+      { h: '1. What + (a/an) + (adj) + noun', b: [
+        { f: ['What **a/an** + (adj) + danh từ số ít đếm được (+ S + V)!', 'What + (adj) + danh từ số nhiều / không đếm được (+ S + V)!'] },
+        { p: '**What a beautiful day!** · **What an interesting film!** · **What lovely flowers!** · **What terrible weather!**' },
+        { warn: 'Chọn **a/an** theo từ ngay sau: **a** beautiful day, **an** amazing story. Danh từ số nhiều và không đếm được **không dùng a/an**.' }
+      ] },
+      { h: '2. How + adj / adv', b: [
+        { f: ['How + **tính từ** (+ S + V)!', 'How + **trạng từ** (+ S + V)!'] },
+        { p: '**How beautiful!** · **How kind you are!** · **How fast he runs!** · **How well she speaks English!**' },
+        { t: { h: ['', 'What…!', 'How…!'], r: [['Cấu trúc', 'What + (a/an) + adj + noun', 'How + adj/adv'], ['Ví dụ', 'What a smart boy!', 'How smart he is!'], ['Có danh từ?', 'Có', 'Không (chỉ tính từ/trạng từ)']] } }
+      ] },
+      { h: '3. Chuyển đổi và lưu ý', b: [
+        { ul: ['**What a tall boy!** = **How tall the boy is!** (cùng nghĩa, khác cấu trúc).', 'Trong văn nói, thường bỏ phần "S + V": **What a pity!** **How awful!**', 'Câu cảm thán kết thúc bằng **dấu chấm than (!)**.'] },
+        { tip: 'Câu cảm thán khác câu hỏi: **How tall is he?** (hỏi chiều cao) ≠ **How tall he is!** (thán phục).' }
+      ] }
+    ],
+    ex: [
+      ['What a lovely garden!', 'Khu vườn đáng yêu làm sao!'], ['What an exciting football match!', 'Trận bóng đá hấp dẫn quá!'], ['What beautiful flowers!', 'Những bông hoa đẹp quá!'],
+      ['What terrible weather!', 'Thời tiết tệ quá!'], ['How kind you are!', 'Bạn tốt bụng quá!'], ['How fast the train goes!', 'Tàu chạy nhanh quá!'],
+      ['How well she sings!', 'Cô ấy hát hay quá!'], ['What a pity! You can\'t come.', 'Tiếc quá! Bạn không đến được.'], ['How delicious this cake is!', 'Chiếc bánh này ngon quá!']
+    ],
+    mis: [
+      ['What beautiful day!', 'What a beautiful day!', 'day số ít đếm được → cần a.'], ['What a lovely flowers!', 'What lovely flowers!', 'flowers số nhiều → không dùng a.'], ['How a nice room!', 'What a nice room!', 'Có danh từ → dùng What.'],
+      ['What clever he is!', 'How clever he is!', 'Không có danh từ → dùng How.'], ['How fast does he run!', 'How fast he runs!', 'Câu cảm thán không đảo trợ động từ.']
+    ],
+    quiz: [
+      ['___ nice weather we have today!', ['How', 'What', 'What a', 'How a'], 1, 'weather không đếm được → What, không có a.'],
+      ['___ interesting story!', ['What', 'What an', 'How', 'How an'], 1, 'story số ít, interesting bắt đầu nguyên âm → What an.'],
+      ['___ clever the boy is!', ['What', 'What a', 'How', 'Which'], 2, 'Không có danh từ ngay sau → How.'],
+      ['___ delicious food!', ['What a', 'What an', 'How', 'What'], 3, 'food không đếm được → What.'],
+      ['___ well she plays the piano!', ['What', 'What a', 'How', 'Which'], 2, 'Trạng từ well → How.'],
+      ['"___ pity!" he said when he heard the news.', ['What', 'What a', 'How', 'How a'], 1, 'What a pity!'],
+      ['___ beautiful girls!', ['What a', 'What an', 'How', 'What'], 3, 'girls số nhiều → What (không a).'],
+      ['Which sentence has the same meaning as "What a big house!"?', ['How big the house is!', 'How big is the house?', 'What big the house is!', 'How a big house!'], 0, 'What a + adj + noun = How + adj + S + be.'],
+      ['___ strange noise!', ['What a', 'What an', 'How', 'What'], 0, 'a strange noise (strange bắt đầu bằng phụ âm).']
+    ]
+  });
 })();

@@ -224,4 +224,248 @@
       ['___ lives in this house?', ['Who', 'Who does', 'Whom does', 'Where'], 0, 'Câu hỏi về chủ ngữ: Who + V(s).']
     ]
   });
+
+  L('g6-demonstratives-pronouns', {
+    grade: 6, icon: '👆', title: 'This / That / These / Those và đại từ nhân xưng', sub: 'Demonstratives & Personal pronouns', level: 'Cơ bản',
+    summary: 'Chỉ người/vật ở gần – xa, số ít – số nhiều; dùng đúng đại từ chủ ngữ (I, you, he…) và tân ngữ (me, you, him…).',
+    sections: [
+      { h: '1. This, that, these, those', b: [
+        { t: { h: ['', 'Gần người nói', 'Xa người nói'], r: [['Số ít', '**this** (cái này)', '**that** (cái kia)'], ['Số nhiều', '**these** (những cái này)', '**those** (những cái kia)']] } },
+        { f: ['This/That + is/\'s + danh từ số ít: **This is my book.**', 'These/Those + are + danh từ số nhiều: **Those are my shoes.**'] },
+        { p: 'Khi hỏi: **What\'s this/that?** — It\'s a … ; **What are these/those?** — They\'re … . Hỏi người: **Who\'s that?** — That\'s my teacher.' },
+        { tip: 'Khi nghe điện thoại, người Anh nói **This is Mai** (tôi là Mai) và hỏi **Who is that?** (ai đấy?) — không dùng "I am Mai" nếu muốn lịch sự trong cuộc gọi.' }
+      ] },
+      { h: '2. Đại từ nhân xưng: chủ ngữ và tân ngữ', b: [
+        { t: { h: ['Chủ ngữ (đứng trước động từ)', 'Tân ngữ (đứng sau động từ/giới từ)', 'Nghĩa'], r: [['I', 'me', 'tôi'], ['you', 'you', 'bạn / các bạn'], ['he', 'him', 'anh ấy'], ['she', 'her', 'cô ấy'], ['it', 'it', 'nó'], ['we', 'us', 'chúng tôi/ta'], ['they', 'them', 'họ / chúng nó']] } },
+        { p: 'Chủ ngữ: **She** likes music. Tân ngữ: I like **her**. — Sau giới từ cũng dùng tân ngữ: Listen to **me**. Come with **us**.' },
+        { warn: 'Không nói "Her likes music" hay "I like she". Chủ ngữ → I/he/she…, tân ngữ → me/him/her…' }
+      ] },
+      { h: '3. Dùng đại từ để tránh lặp từ', b: [
+        { p: 'Thay danh từ đã nhắc: **Mai** is my friend. **She** is kind. I often help **her**.' },
+        { ul: ['Chỉ **it** cho đồ vật, con vật, sự việc: I have a cat. **It** is cute.', 'Nhiều người/vật: **they/them**: My parents are teachers. I love **them**.', 'Gộp mình và người khác: **we/us**: Tom and I → **we**; Tom and me → hỏi **us**.'] }
+      ] }
+    ],
+    ex: [
+      ['This is my classroom.', 'Đây là lớp học của mình.'], ['That is our teacher over there.', 'Kia là giáo viên của chúng mình.'], ['These are my new notebooks.', 'Đây là những quyển vở mới của mình.'],
+      ['Those boys are my classmates.', 'Mấy cậu bé kia là bạn cùng lớp của mình.'], ['What\'s that? — It\'s a rabbit.', 'Kia là gì? — Là một con thỏ.'], ['Who are those girls? — They are my cousins.', 'Mấy bạn gái kia là ai? — Họ là chị em họ của mình.'],
+      ['He is my brother. I love him very much.', 'Anh ấy là anh trai mình. Mình rất yêu anh ấy.'], ['Please help us with this exercise.', 'Làm ơn giúp chúng em bài tập này.'], ['Mai lives near me, and I walk to school with her.', 'Mai sống gần mình và mình đi bộ đến trường cùng bạn ấy.']
+    ],
+    mis: [
+      ['This are my friends.', 'These are my friends.', 'friends là số nhiều → these/those.'], ['That boys are tall.', 'Those boys are tall.', 'boys số nhiều → those.'],
+      ['I like she very much.', 'I like her very much.', 'Sau động từ dùng tân ngữ her.'], ['Him is my brother.', 'He is my brother.', 'Làm chủ ngữ dùng he, không dùng him.'], ['Listen to I, please.', 'Listen to me, please.', 'Sau giới từ to dùng tân ngữ me.']
+    ],
+    quiz: [
+      ['___ is my pen, and those are my pencils.', ['These', 'This', 'Those', 'They'], 1, 'my pen số ít, ở gần → This.'],
+      ['Look at ___ birds in the tree over there!', ['this', 'that', 'those', 'it'], 2, 'birds số nhiều, ở xa → those.'],
+      ['My sister is shy, so I talk to ___ slowly.', ['she', 'her', 'hers', 'him'], 1, 'Sau giới từ to dùng tân ngữ her.'],
+      ['___ are my parents. Do you know them?', ['That', 'This', 'They', 'These'], 3, 'parents số nhiều, gần → These are…'],
+      ['Tom and I are friends. ___ study in the same class.', ['We', 'Us', 'They', 'Our'], 0, 'Tom and I = chúng tôi, làm chủ ngữ → We.'],
+      ['"What\'s ___?" "It\'s a dictionary." (vật ở xa, số ít)', ['this', 'that', 'these', 'those'], 1, 'Vật số ít ở xa → that.'],
+      ['I have two dogs. I take ___ for a walk every morning.', ['it', 'they', 'them', 'their'], 2, 'two dogs → them (tân ngữ số nhiều).'],
+      ['Is ___ your bag over there?', ['this', 'that', 'these', 'they'], 1, 'Một cái túi ở xa → that.'],
+      ['My brother is eight. ___ plays football every day.', ['Him', 'He', 'His', 'Her'], 1, 'Chủ ngữ nam số ít → He.'],
+      ['These are Anna and Ben. I know ___ well.', ['they', 'them', 'their', 'she'], 1, 'know + tân ngữ → them.']
+    ]
+  });
+
+  L('g6-imperatives-suggestions', {
+    grade: 6, icon: '📣', title: 'Câu mệnh lệnh và lời đề nghị', sub: 'Imperatives & Suggestions', level: 'Cơ bản',
+    summary: 'Ra lệnh, nhắc nhở, hướng dẫn (Open the door!) và rủ rê, gợi ý (Let\'s…, Why don\'t we…, How about…?).',
+    sections: [
+      { h: '1. Câu mệnh lệnh (Imperatives)', b: [
+        { f: ['(+) V (nguyên mẫu) + …: **Open** your books.', '(−) **Don\'t** + V + …: **Don\'t talk** in class.', 'Lịch sự: **Please** + V / V + **please**: **Please sit down.**'] },
+        { p: 'Câu mệnh lệnh **không có chủ ngữ** (người nghe là "you"). Dùng cho nội quy, chỉ đường, công thức, biển báo: **Turn left. Don\'t run in the corridor. Add some salt.**' },
+        { tip: 'Muốn nói nhẹ nhàng, thêm **please** hoặc dùng "Could you…?" ở các lớp trên. Không bao giờ thêm "to": ✗ To open the door.' }
+      ] },
+      { h: '2. Rủ rê và gợi ý', b: [
+        { t: { h: ['Mẫu câu', 'Theo sau', 'Ví dụ'], r: [['**Let\'s** (= Let us)', 'V nguyên mẫu', 'Let\'s play badminton.'], ['**Why don\'t we** …?', 'V nguyên mẫu', 'Why don\'t we go swimming?'], ['**How about** …? / **What about** …?', 'V-ing hoặc danh từ', 'How about going to the zoo?'], ['**Shall we** …?', 'V nguyên mẫu', 'Shall we meet at 7?'], ['**Would you like to** …?', 'to + V', 'Would you like to join us?']] } },
+        { p: 'Đồng ý: **Good idea! / Great! / OK, let\'s do it.** Từ chối nhẹ: **Sorry, I can\'t. I have to do my homework.** / **I\'d love to, but…**' }
+      ] },
+      { h: '3. Phân biệt nhanh', b: [
+        { ul: ['**Let\'s + V** (rủ cả mình và người nghe): Let\'s go!', '**Let me + V** (để tôi làm): Let me help you.', '**How about + V-ing** (không dùng to V): How about **playing** chess?', 'Phủ định của Let\'s: **Let\'s not** talk about it.'] }
+      ] }
+    ],
+    ex: [
+      ['Close the window, please.', 'Làm ơn đóng cửa sổ lại.'], ['Don\'t be late for school.', 'Đừng đi học muộn.'], ['Listen and repeat after me.', 'Hãy nghe và lặp lại theo cô/thầy.'],
+      ['Let\'s have lunch at the school canteen.', 'Chúng mình ăn trưa ở căng-tin trường nhé.'], ['Why don\'t we visit Grandma this weekend?', 'Sao chúng mình không thăm bà vào cuối tuần này nhỉ?'],
+      ['How about watching a film tonight?', 'Tối nay xem phim thì sao nhỉ?'], ['Shall we start now? — Yes, let\'s.', 'Chúng ta bắt đầu nhé? — Ừ, bắt đầu thôi.'], ['Don\'t touch the paintings.', 'Không được chạm vào các bức tranh.'],
+      ['Turn right at the corner, then go straight.', 'Rẽ phải ở góc phố rồi đi thẳng.']
+    ],
+    mis: [
+      ['To open your book.', 'Open your book.', 'Câu mệnh lệnh dùng V nguyên mẫu, không có to.'], ['Not run in the corridor.', 'Don\'t run in the corridor.', 'Phủ định mệnh lệnh = Don\'t + V.'],
+      ['Let\'s going to the park.', 'Let\'s go to the park.', 'Sau Let\'s dùng V nguyên mẫu.'], ['How about to play chess?', 'How about playing chess?', 'Sau How about dùng V-ing.'], ['Why we don\'t go swimming?', 'Why don\'t we go swimming?', 'Trật tự: Why don\'t we + V?']
+    ],
+    quiz: [
+      ['___ talk in the library. It\'s quiet here.', ['Not', 'Don\'t', 'Doesn\'t', 'No'], 1, 'Câu cấm đoán: Don\'t + V.'],
+      ['Let\'s ___ to the cinema tonight.', ['going', 'to go', 'go', 'goes'], 2, 'Let\'s + V nguyên mẫu.'],
+      ['How about ___ a picnic on Sunday?', ['have', 'having', 'to have', 'has'], 1, 'How about + V-ing.'],
+      ['"Why don\'t we play table tennis?" — "___"', ['Yes, I don\'t.', 'Good idea!', 'No, we aren\'t.', 'I play it.'], 1, 'Trả lời lời rủ: Good idea!'],
+      ['___ your hands before meals, please.', ['Washing', 'To wash', 'Wash', 'Washes'], 2, 'Mệnh lệnh khẳng định = V nguyên mẫu.'],
+      ['Shall we ___ at the bus stop at 7?', ['meeting', 'meet', 'to meet', 'meets'], 1, 'Shall we + V nguyên mẫu.'],
+      ['Don\'t ___ the grass! (Cấm giẫm lên cỏ)', ['walk on', 'walking on', 'to walk on', 'walks on'], 0, 'Don\'t + V nguyên mẫu (walk on).'],
+      ['Which sentence is an invitation?', ['Sit down.', 'Don\'t shout.', 'Would you like to come to my party?', 'Open the door.'], 2, 'Would you like to… dùng để mời.'],
+      ['"What about ___ ice cream?" (Ăn kem thì sao?)', ['eat', 'eating', 'ate', 'eats'], 1, 'What about + V-ing.']
+    ]
+  });
+
+  L('g6-conjunctions-basic', {
+    grade: 6, icon: '🔗', title: 'Liên từ cơ bản: and, but, so, because, or', sub: 'Basic Conjunctions', level: 'Cơ bản',
+    summary: 'Nối từ và nối câu để nói ý dài hơn: thêm ý (and), đối lập (but), kết quả (so), lý do (because), lựa chọn (or).',
+    sections: [
+      { h: '1. Năm liên từ thường dùng', b: [
+        { t: { h: ['Liên từ', 'Ý nghĩa', 'Ví dụ'], r: [['**and**', 'và, thêm ý', 'I like tea **and** coffee.'], ['**but**', 'nhưng (đối lập)', 'He is small **but** strong.'], ['**or**', 'hoặc (lựa chọn)', 'Do you want milk **or** juice?'], ['**so**', 'vì vậy (kết quả)', 'It was cold, **so** I wore a coat.'], ['**because**', 'bởi vì (lý do)', 'I wore a coat **because** it was cold.']] } }
+      ] },
+      { h: '2. Nối hai câu hoàn chỉnh', b: [
+        { f: ['Câu 1 **, and / but / so / or** + câu 2 (có dấu phẩy khi mỗi vế có chủ ngữ riêng)', 'Câu chính + **because** + lý do (thường không có dấu phẩy)'] },
+        { p: '**I was tired, so I went to bed early.** (kết quả đứng sau so) = **I went to bed early because I was tired.** (lý do đứng sau because)' },
+        { warn: '**so** và **because** đối nghịch vị trí: so + KẾT QUẢ, because + LÝ DO. Không dùng cả hai trong cùng một câu: ✗ Because it rained, so we stayed home.' }
+      ] },
+      { h: '3. Mẹo dùng đúng', b: [
+        { ul: ['Có thể bắt đầu câu bằng **Because**, nhưng khi đó phải có dấu phẩy: **Because it rained, we stayed home.**', 'Nối nhiều từ: A, B **and** C (and đứng trước từ cuối): I have a pen, a ruler **and** an eraser.', '**but** ≠ **and**: and cùng hướng ý, but ngược hướng ý.', 'Trả lời câu hỏi **Why…?** bắt đầu bằng **Because…**: Why are you happy? — Because it\'s my birthday.'] }
+      ] }
+    ],
+    ex: [
+      ['I have a brother and a sister.', 'Mình có một anh trai và một chị gái.'], ['She likes cats, but she doesn\'t like dogs.', 'Cô ấy thích mèo nhưng không thích chó.'], ['Would you like to walk or take a bus?', 'Bạn muốn đi bộ hay đi xe buýt?'],
+      ['It was raining, so we stayed at home.', 'Trời mưa nên chúng mình ở nhà.'], ['I love summer because I can swim every day.', 'Mình yêu mùa hè vì mình có thể bơi mỗi ngày.'], ['Why are you late? — Because I missed the bus.', 'Sao bạn đến muộn? — Vì mình lỡ chuyến xe buýt.'],
+      ['The film was long, but it was interesting.', 'Bộ phim dài nhưng thú vị.'], ['He is hungry, so he is making a sandwich.', 'Cậu ấy đói nên đang làm bánh mì kẹp.'], ['Because it is late, we must go home.', 'Vì muộn rồi nên chúng ta phải về nhà.']
+    ],
+    mis: [
+      ['Because I was ill, so I stayed in bed.', 'Because I was ill, I stayed in bed. (hoặc: I was ill, so I stayed in bed.)', 'Không dùng because và so cùng lúc.'],
+      ['I like tea but coffee.', 'I like tea and coffee.', 'Thêm ý cùng hướng → and.'], ['I was hungry because I ate a big lunch.', 'I was hungry, so I ate a big lunch.', 'Ăn là kết quả của đói → so.'],
+      ['Do you want rice and noodles? (hỏi chọn một)', 'Do you want rice or noodles?', 'Lựa chọn → or.']
+    ],
+    quiz: [
+      ['I was very tired, ___ I went to bed early.', ['because', 'but', 'so', 'or'], 2, 'Đi ngủ sớm là kết quả → so.'],
+      ['She doesn\'t go out ___ it is raining.', ['so', 'because', 'but', 'and'], 1, 'Nêu lý do → because.'],
+      ['I like pizza, ___ my sister doesn\'t.', ['so', 'because', 'but', 'or'], 2, 'Hai ý trái ngược → but.'],
+      ['Would you like tea ___ coffee?', ['and', 'but', 'so', 'or'], 3, 'Lựa chọn → or.'],
+      ['We bought some apples ___ oranges.', ['and', 'but', 'so', 'because'], 0, 'Thêm ý → and.'],
+      ['It was sunny, ___ we went to the beach.', ['because', 'so', 'but', 'or'], 1, 'Kết quả → so.'],
+      ['He passed the test ___ he studied hard.', ['so', 'but', 'because', 'or'], 2, 'Lý do của việc đỗ → because.'],
+      ['The bag is old, ___ it is still useful.', ['so', 'but', 'because', 'and'], 1, 'Cũ nhưng vẫn hữu ích → but.'],
+      ['Which sentence is correct?', ['Because it was cold, so I wore a coat.', 'Because it was cold, I wore a coat.', 'It was cold because, I wore a coat.', 'Because it was cold but I wore a coat.'], 1, 'Chỉ dùng một liên từ: Because…, + mệnh đề chính.']
+    ]
+  });
+
+  L('g6-like-would-like', {
+    grade: 6, icon: '❤️', title: 'Nói về sở thích: like / love / hate + V-ing và would like', sub: 'Likes, dislikes & Would like', level: 'Cơ bản',
+    summary: 'Nói điều mình thích/không thích (like, love, enjoy, hate + V-ing) và đề nghị/yêu cầu lịch sự (would like).',
+    sections: [
+      { h: '1. Like / love / enjoy / hate + V-ing', b: [
+        { f: ['S + like / love / enjoy / hate / don\'t mind + **V-ing**', 'Ví dụ: I **love** playing football. She **hates** getting up early.'] },
+        { t: { h: ['Mức độ', 'Động từ', 'Ví dụ'], r: [['Rất thích', 'love, enjoy, be fond of', 'I **love** swimming.'], ['Thích', 'like', 'He **likes** reading comics.'], ['Không ngại', 'don\'t mind', 'I **don\'t mind** cooking.'], ['Không thích', 'don\'t like', 'We **don\'t like** waiting.'], ['Ghét', 'hate', 'She **hates** doing housework.']] } },
+        { tip: 'Thì hiện tại đơn: he/she/it → **likes / loves / hates**; câu hỏi: **Do you like dancing?** — Yes, I do. / No, I don\'t.' }
+      ] },
+      { h: '2. Would like — lời mời, lời đề nghị lịch sự', b: [
+        { f: ['I **would like** (I\'d like) + **to V** / + danh từ', 'Would you like + **to V** / + danh từ**?**'] },
+        { p: '**I\'d like a glass of water.** (Tôi muốn một cốc nước — lịch sự) · **Would you like to come to my party?** (Bạn có muốn đến dự tiệc không?) · Trả lời: **Yes, please. / No, thanks.** / **Yes, I\'d love to.**' },
+        { warn: '**would like** luôn đi với **to V** (không dùng V-ing) và **không thêm s** cho he/she: ✗ She would likes. ✓ She would like to go.' }
+      ] },
+      { h: '3. Phân biệt like và would like', b: [
+        { t: { h: ['', 'like', 'would like'], r: [['Nghĩa', 'sở thích nói chung', 'mong muốn/lời mời ở hiện tại'], ['Theo sau', 'V-ing / danh từ', 'to V / danh từ'], ['Ví dụ', 'I like tea. (Mình hay thích trà.)', 'I\'d like some tea. (Cho mình xin trà.)'], ['Câu hỏi', 'Do you like tea?', 'Would you like some tea?']] } }
+      ] }
+    ],
+    ex: [
+      ['I like listening to music in my free time.', 'Mình thích nghe nhạc lúc rảnh.'], ['My brother loves playing video games.', 'Em/anh mình rất thích chơi điện tử.'], ['She doesn\'t like getting up early.', 'Cô ấy không thích dậy sớm.'],
+      ['Do you enjoy cooking? — Yes, I do.', 'Bạn có thích nấu ăn không? — Có.'], ['I don\'t mind walking to school.', 'Mình không ngại đi bộ đến trường.'], ['I\'d like a cup of tea, please.', 'Làm ơn cho mình một tách trà.'],
+      ['Would you like to join our club?', 'Bạn có muốn tham gia câu lạc bộ của bọn mình không?'], ['What would you like to drink? — I\'d like orange juice.', 'Bạn muốn uống gì? — Cho mình nước cam.'], ['He hates doing homework at night.', 'Cậu ấy ghét làm bài tập vào buổi tối.']
+    ],
+    mis: [
+      ['I like to playing chess.', 'I like playing chess. (hoặc I like to play chess.)', 'Không kết hợp to + V-ing.'], ['She would likes an ice cream.', 'She would like an ice cream.', 'would like không thêm s.'], ['Would you like going out?', 'Would you like to go out?', 'would like + to V.'],
+      ['He don\'t like swimming.', 'He doesn\'t like swimming.', 'he → doesn\'t.']
+    ],
+    quiz: [
+      ['My sister loves ___ pictures.', ['draw', 'drawing', 'to drawing', 'draws'], 1, 'love + V-ing.'],
+      ['Would you like ___ some more rice?', ['have', 'having', 'to have', 'has'], 2, 'would like + to V.'],
+      ['He doesn\'t ___ washing the dishes.', ['likes', 'like', 'liking', 'to like'], 1, 'doesn\'t + V nguyên mẫu: like.'],
+      ['"___ you like a sandwich?" "Yes, please."', ['Do', 'Are', 'Would', 'Does'], 2, 'Lời mời lịch sự → Would you like…?'],
+      ['I\'d like ___ a doctor when I grow up.', ['be', 'being', 'to be', 'am'], 2, 'I\'d like + to V.'],
+      ['They ___ playing computer games.', ['enjoys', 'enjoy', 'would enjoy', 'enjoying'], 1, 'They + enjoy (hiện tại đơn).'],
+      ['She hates ___ in crowded places.', ['to be', 'being', 'be', 'is'], 1, 'hate + V-ing (đã học ở bài này).'],
+      ['Which sentence is polite when you order food?', ['I want a burger.', 'Give me a burger.', 'I\'d like a burger, please.', 'A burger!'], 2, 'I\'d like… please là cách lịch sự.'],
+      ['Do you mind ___ the window?', ['open', 'opening', 'to open', 'opens'], 1, 'mind + V-ing.']
+    ]
+  });
+
+  L('g6-time-dates-numbers', {
+    grade: 6, icon: '🗓️', title: 'Giờ giấc, ngày tháng và số đếm – số thứ tự', sub: 'Time, Dates & Numbers', level: 'Cơ bản',
+    summary: 'Nói giờ, đọc ngày tháng, dùng số đếm (cardinal) và số thứ tự (ordinal) đúng cách trong giao tiếp hằng ngày.',
+    sections: [
+      { h: '1. Nói giờ', b: [
+        { t: { h: ['Giờ', 'Cách nói', 'Ví dụ'], r: [['Giờ đúng', 'It\'s + số + o\'clock', '7:00 → It\'s seven o\'clock.'], ['Giờ hơn (1–30 phút)', 'số phút + **past** + giờ', '7:10 → ten **past** seven; 7:15 → a quarter past seven; 7:30 → half past seven'], ['Giờ kém (31–59 phút)', 'số phút còn thiếu + **to** + giờ kế', '7:40 → twenty **to** eight; 7:45 → a quarter to eight'], ['Cách nói số', 'giờ + phút', '7:25 → seven twenty-five']] } },
+        { p: 'Hỏi giờ: **What time is it? / What\'s the time?** Hỏi lúc mấy giờ ra sao: **What time do you get up? — At six thirty.** Dùng **at** trước giờ: **at 6:30**, **at noon**, **at midnight**. Nói sáng/chiều: **a.m.** (trước 12 trưa) – **p.m.** (sau 12 trưa).' }
+      ] },
+      { h: '2. Số đếm và số thứ tự', b: [
+        { t: { h: ['Số đếm', 'Số thứ tự', 'Cách viết'], r: [['one', '**first**', '1st'], ['two', '**second**', '2nd'], ['three', '**third**', '3rd'], ['four', 'fourth', '4th'], ['five', '**fifth**', '5th'], ['eight', '**eighth**', '8th'], ['nine', '**ninth**', '9th'], ['twelve', '**twelfth**', '12th'], ['twenty', '**twentieth**', '20th'], ['twenty-one', 'twenty-**first**', '21st']] } },
+        { tip: 'Quy tắc: thêm **-th** vào số đếm (four → fourth) nhưng nhớ các số bất quy tắc: **first, second, third, fifth, eighth, ninth, twelfth**; số tận cùng -y đổi thành **-ieth** (twenty → twentieth).' }
+      ] },
+      { h: '3. Ngày tháng', b: [
+        { p: 'Cách nói thường gặp (Anh – Anh): **the + số thứ tự + of + tháng**: **the fifth of May**; (Anh – Mỹ): **May the fifth / May 5th**. Cách viết: **5th May** hoặc **May 5th**; năm đọc theo cặp số: **1999 → nineteen ninety-nine; 2025 → twenty twenty-five**.' },
+        { ul: ['Hỏi ngày: **What\'s the date today? — It\'s the 10th of October.** Hỏi thứ: **What day is it today? — It\'s Monday.**', 'Giới từ: **on** + ngày (on Monday, on 5th May), **in** + tháng/năm (in May, in 2025), **at** + giờ (at 7).', 'Tên tháng và thứ **viết hoa chữ cái đầu**: January, Monday.'] },
+        { warn: 'Nhớ **12 tháng** và **7 thứ**: January, February, March, April, May, June, July, August, September, October, November, December · Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.' }
+      ] }
+    ],
+    ex: [
+      ['It\'s half past six. Time to get up!', 'Sáu giờ rưỡi rồi. Đến giờ dậy rồi!'], ['The lesson starts at a quarter past seven.', 'Tiết học bắt đầu lúc bảy giờ mười lăm.'], ['It\'s ten to nine. We\'re late!', 'Chín giờ kém mười rồi. Chúng ta muộn rồi!'],
+      ['My birthday is on the 15th of March.', 'Sinh nhật mình vào ngày 15 tháng Ba.'], ['Today is Friday, the second of June.', 'Hôm nay là thứ Sáu, ngày mùng hai tháng Sáu.'], ['Tet usually comes in January or February.', 'Tết thường đến vào tháng Giêng hoặc tháng Hai (dương lịch).'],
+      ['I was born in 2013.', 'Mình sinh năm 2013.'], ['She lives on the third floor.', 'Cô ấy sống ở tầng ba.'], ['What time do you go to bed? — At nine thirty.', 'Bạn đi ngủ lúc mấy giờ? — Lúc chín giờ rưỡi.']
+    ],
+    mis: [
+      ['My birthday is in 5th May.', 'My birthday is on 5th May.', 'Ngày cụ thể → on; tháng/năm → in.'], ['It\'s five past to seven.', 'It\'s five past seven. / It\'s five to seven.', 'Chỉ dùng past (hơn) hoặc to (kém), không dùng cả hai.'],
+      ['He lives on the twoth floor.', 'He lives on the second floor.', 'two → second (bất quy tắc).'], ['I get up in 6 o\'clock.', 'I get up at 6 o\'clock.', 'Giờ giấc dùng at.'], ['monday and tuesday', 'Monday and Tuesday', 'Tên thứ viết hoa.']
+    ],
+    quiz: [
+      ['It\'s 7:30. We say: It\'s ___ seven.', ['half to', 'half past', 'a quarter past', 'thirty to'], 1, '30 phút = half past.'],
+      ['It\'s 8:45. We say: It\'s a quarter ___ nine.', ['past', 'to', 'at', 'in'], 1, 'Còn 15 phút nữa tới 9 giờ → a quarter to nine.'],
+      ['The ordinal number of "three" is ___.', ['threeth', 'third', 'thirth', 'thrid'], 1, 'three → third.'],
+      ['My birthday is ___ October.', ['on', 'at', 'in', 'of'], 2, 'Tháng → in.'],
+      ['We have English ___ Monday morning.', ['in', 'at', 'on', 'to'], 2, 'Thứ trong tuần → on.'],
+      ['The ordinal number of "twelve" is ___.', ['twelveth', 'twelfth', 'twelfeth', 'twelvth'], 1, 'twelve → twelfth.'],
+      ['Which sentence is correct?', ['My birthday is in 5th May.', 'My birthday is on 5th May.', 'My birthday is at 5th May.', 'My birthday is by 5th May.'], 1, 'Ngày cụ thể → on.'],
+      ['What time is 3:10?', ['ten past three', 'ten to three', 'three to ten', 'half past three'], 0, '10 phút sau 3 giờ → ten past three.'],
+      ['She was born ___ 2012.', ['on', 'at', 'in', 'by'], 2, 'Năm → in.'],
+      ['The 21st is read as "the twenty-___".', ['one', 'first', 'oneth', 'ones'], 1, '21st → twenty-first.']
+    ]
+  });
+
+  L('g6-adjectives-position', {
+    grade: 6, icon: '🎨', title: 'Tính từ: vị trí, thứ tự và tính từ tận cùng -ed/-ing', sub: 'Adjectives: position & order', level: 'Cơ bản',
+    summary: 'Tính từ đứng ở đâu trong câu, không đổi theo số nhiều, thứ tự khi có nhiều tính từ và các tính từ mô tả người/vật thường gặp.',
+    sections: [
+      { h: '1. Hai vị trí của tính từ', b: [
+        { f: ['**Trước danh từ**: a **nice** house, **red** flowers, an **interesting** book', 'Sau **to be / look / feel / seem…**: The house is **nice**. She looks **happy**.'] },
+        { ul: ['Tính từ **không thêm -s** khi danh từ số nhiều: ✓ two **big** dogs (✗ bigs).', 'Trước tính từ bắt đầu bằng nguyên âm dùng **an**: **an** old man, **an** interesting film.', 'Mẫu câu: **S + be + adj** (She is tall) và **S + have/has + a/an + adj + noun** (She has a long hair ✗ → She has **long hair**).'] },
+        { tip: 'Tính từ không đứng sau danh từ như tiếng Việt ("nhà đẹp"). Tiếng Anh: **beautiful house** (đẹp trước, nhà sau).' }
+      ] },
+      { h: '2. Thứ tự khi có nhiều tính từ (cơ bản)', b: [
+        { p: 'Khi dùng 2–3 tính từ trước danh từ, thường theo thứ tự: **ý kiến → kích thước → tuổi/hình dạng → màu sắc → nguồn gốc → chất liệu → danh từ**.' },
+        { t: { h: ['Ý kiến', 'Kích thước', 'Màu sắc', 'Chất liệu / nguồn gốc', 'Danh từ'], r: [['lovely', 'small', 'white', 'cotton', 'T-shirt'], ['a beautiful', 'big', 'old', 'Vietnamese', 'house'], ['two nice', 'little', 'brown', 'wooden', 'chairs']] } },
+        { p: 'Ví dụ: **a lovely small white cotton T-shirt**. Trong thực tế bài lớp 6, chủ yếu gặp **ý kiến + kích thước + màu**: **a nice big red balloon.**' }
+      ] },
+      { h: '3. Tính từ -ed và -ing', b: [
+        { t: { h: ['', '-ing (mô tả vật/việc gây ra cảm giác)', '-ed (mô tả cảm giác của người)'], r: [['bore', 'a **boring** film (bộ phim chán)', 'I am **bored** (mình thấy chán)'], ['interest', 'an **interesting** book', 'She is **interested** in music.'], ['excite', 'an **exciting** game', 'We are **excited**.'], ['tire', 'a **tiring** day', 'He feels **tired**.']] } },
+        { warn: 'Nhớ: **-ing = làm người khác cảm thấy…**, **-ed = người ta cảm thấy…**. "I am boring" nghĩa là "mình là người nhàm chán"!' }
+      ] }
+    ],
+    ex: [
+      ['She has long black hair.', 'Cô ấy có mái tóc đen dài.'], ['This is a very interesting book.', 'Đây là một quyển sách rất thú vị.'], ['The flowers in the garden are beautiful.', 'Những bông hoa trong vườn rất đẹp.'],
+      ['My bedroom is small but comfortable.', 'Phòng ngủ của mình nhỏ nhưng thoải mái.'], ['I bought a nice new blue bag.', 'Mình mua một chiếc cặp xanh mới rất đẹp.'], ['The film was boring, so we were bored.', 'Bộ phim chán nên chúng mình thấy chán.'],
+      ['He is an honest and friendly boy.', 'Cậu ấy là một cậu bé trung thực và thân thiện.'], ['They live in a big old wooden house.', 'Họ sống trong một ngôi nhà gỗ cũ kỹ rộng lớn.'], ['I\'m very excited about the school trip.', 'Mình rất háo hức về chuyến đi học tập.']
+    ],
+    mis: [
+      ['I have two bigs dogs.', 'I have two big dogs.', 'Tính từ không thêm s.'], ['She has a long hair.', 'She has long hair.', 'hair thường là danh từ không đếm được trong nghĩa "tóc"; không dùng a.'],
+      ['It is a house beautiful.', 'It is a beautiful house.', 'Tính từ đứng trước danh từ.'], ['I am boring in this class.', 'I am bored in this class.', 'Người cảm thấy chán → bored.'], ['an red apple', 'a red apple', 'red bắt đầu bằng phụ âm → a.']
+    ],
+    quiz: [
+      ['She is wearing a ___ dress.', ['beautifully', 'beautiful', 'beautifuls', 'beauty'], 1, 'Trước danh từ dress cần tính từ: a beautiful dress.'],
+      ['The story is very ___. I can\'t stop reading.', ['interested', 'interesting', 'interest', 'interests'], 1, 'Vật gây hứng thú → interesting.'],
+      ['I\'m ___ because the lesson is too long.', ['bored', 'boring', 'bore', 'boredom'], 0, 'Cảm giác của người → bored.'],
+      ['Which order is correct?', ['a brown small bag', 'a small brown bag', 'a bag small brown', 'a brown bag small'], 1, 'Kích thước trước màu sắc: small brown.'],
+      ['They have two ___ cats.', ['cutes', 'cute', 'cuteness', 'cuter'], 1, 'Tính từ không thêm s: two cute cats.'],
+      ['It was an ___ day, so we went to bed early.', ['tiring', 'tired', 'tire', 'tiredness'], 0, 'Ngày làm người ta mệt → tiring.'],
+      ['I have ___ eyes.', ['a big blue', 'big blue', 'blue big a', 'bigs blue'], 1, 'eyes số nhiều, không dùng a: big blue eyes.'],
+      ['The park is ___.', ['a clean', 'cleans', 'clean', 'cleanly'], 2, 'Sau to be dùng tính từ: is clean.'],
+      ['Mai looks very ___ today.', ['happily', 'happy', 'happiness', 'happier than'], 1, 'Sau look dùng tính từ: looks happy.']
+    ]
+  });
 })();

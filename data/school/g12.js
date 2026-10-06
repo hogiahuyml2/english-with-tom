@@ -160,4 +160,192 @@
       ["I'm (A) looking forward (B) to (C) meet (D) you soon. — Tìm lỗi sai.", ['A', 'B', 'C', 'D'], 2, 'look forward to + V-ing: "meeting" (phần (C) meet là phần sai).', 1]
     ]
   });
+
+  L('g12-pronunciation-stress', {
+    grade: 12, icon: '🔊', title: 'Phát âm đuôi -ed, -s/-es và quy tắc trọng âm', sub: 'Pronunciation & Word stress', level: 'Nâng cao',
+    summary: 'Quy tắc đọc đuôi -ed (/t/, /d/, /ɪd/), đuôi -s/-es (/s/, /z/, /ɪz/) và các quy tắc trọng âm hay ra trong đề thi.',
+    sections: [
+      { h: '1. Đuôi -ed', b: [
+        { t: { h: ['Đọc là', 'Khi động từ kết thúc bằng âm', 'Ví dụ'], r: [['**/ɪd/**', '/t/ hoặc /d/', 'wanted, needed, decided, visited'], ['**/t/**', 'âm vô thanh: /p/, /k/, /f/, /s/, /ʃ/, /tʃ/, /θ/', 'stopped, worked, laughed, missed, washed, watched'], ['**/d/**', 'âm hữu thanh còn lại và nguyên âm', 'played, called, loved, opened, cleaned, lived']] } },
+        { tip: 'Mẹo nhớ nhóm /t/: **"Thử Phải Khó Sống Sót Cho Thật Hết Fan"** ≈ /θ/, /p/, /k/, /s/, /ʃ/, /tʃ/, /f/. Một số tính từ đuôi -ed đọc **/ɪd/**: naked, wicked, beloved, learned, ragged, rugged, crooked, wretched, aged (adj).' }
+      ] },
+      { h: '2. Đuôi -s / -es', b: [
+        { t: { h: ['Đọc là', 'Khi từ kết thúc bằng âm', 'Ví dụ'], r: [['**/ɪz/**', '/s/, /z/, /ʃ/, /ʒ/, /tʃ/, /dʒ/', 'watches, washes, boxes, buses, judges, garages'], ['**/s/**', 'âm vô thanh: /p/, /t/, /k/, /f/, /θ/', 'stops, cats, books, laughs, months'], ['**/z/**', 'âm hữu thanh còn lại và nguyên âm', 'dogs, plays, bags, rooms, lives']] } }
+      ] },
+      { h: '3. Trọng âm', b: [
+        { ul: ['**Danh từ và tính từ 2 âm tiết**: thường nhấn âm **1**: **TA**ble, **PEN**cil, **HAP**py. **Động từ 2 âm tiết**: thường nhấn âm **2**: re**PLY**, ad**MIT**, de**CIDE**. Ngoại lệ: **VIsit**, **EN**ter, **O**pen, **LIS**ten, **TRAV**el (động từ nhấn âm 1).', '**Đuôi -tion, -sion, -ic, -ical, -ity, -ify, -ial, -ious, -ular**: nhấn **âm ngay trước đuôi**: eduCAtion, deCIsion, ecoNOMic, aBILity, persoNALity, maTErial.', '**Đuôi -ee, -eer, -ese, -ique, -esque, -ette**: nhấn **chính đuôi đó**: employEE, enginEER, JapanESE, techNIQUE.', '**Đuôi -al, -ate, -ize, -ise, -ish, -ment, -ness, -er, -or, -ing, -ful, -less, -able, -ous** thường **không đổi trọng âm** của từ gốc: DEvelop → deVElopment.', 'Danh từ ghép: nhấn **từ đầu** (BLACKboard); cụm tính từ/ động từ ghép: nhấn **từ sau** (bad-TEMpered, well-KNOWN).'] },
+        { warn: 'Cặp danh từ – động từ: **REcord (n) – reCORD (v)**, **PREsent (n) – preSENT (v)**, **IMport (n) – imPORT (v)**, **CONtract (n) – conTRACT (v)**.' }
+      ] }
+    ],
+    ex: [
+      ['She wanted to stop and call him. — wanted /ɪd/, stopped /t/, called /d/', 'Cô ấy muốn dừng lại và gọi anh ấy.'], ['He watched TV and washed the dishes.', 'Anh ấy xem TV và rửa bát. (watched /t/, washed /t/)'], ['They visited their grandparents.', 'Họ thăm ông bà. (visited /ɪd/)'],
+      ['The boxes were on the buses.', 'Những chiếc hộp ở trên xe buýt. (boxes, buses /ɪz/)'], ['She loves books and cats.', 'Cô ấy thích sách và mèo. (books /s/, cats /s/)'], ['The dogs played in the garden.', 'Những chú chó chơi trong vườn. (dogs /z/, played /d/)'],
+      ['Teacher ➜ TEAcher (nhấn âm 1).', 'Giáo viên (danh từ 2 âm tiết, nhấn âm 1).'], ['Decide ➜ deCIDE (nhấn âm 2).', 'Quyết định (động từ 2 âm tiết, nhấn âm 2).'], ['Education ➜ eduCAtion (nhấn âm trước -tion).', 'Giáo dục.']
+    ],
+    mis: [
+      ['"Wanted" /wɒntɪt/', '"Wanted" /ˈwɒntɪd/', 'Kết thúc /t/ → đọc /ɪd/.'], ['"Missed" /mɪsɪd/', '"Missed" /mɪst/', 'Kết thúc /s/ vô thanh → /t/.'], ['"Watches" /ˈwɒtʃs/', '"Watches" /ˈwɒtʃɪz/', 'Kết thúc /tʃ/ → /ɪz/.'],
+      ['"Employee" nhấn âm 1: EMployee', '"Employee": emploYEE', 'Đuôi -ee nhấn chính nó.']
+    ],
+    quiz: [
+      ['Which word ends with the sound /ɪd/?', ['looked', 'wanted', 'played', 'helped'], 1, 'wanted kết thúc /t/ nên đọc /ɪd/.'],
+      ['Which word has the ending pronounced /t/?', ['needed', 'stopped', 'played', 'decided'], 1, 'stopped: /p/ vô thanh → /t/.'],
+      ['Which word has the ending pronounced /ɪz/?', ['books', 'dogs', 'watches', 'cats'], 2, 'watches kết thúc /tʃ/ → /ɪz/.'],
+      ['Which word has the ending pronounced /z/?', ['laughs', 'stops', 'plays', 'works'], 2, 'plays kết thúc bằng nguyên âm → /z/.'],
+      ['Which word has a different stress pattern?', ['teacher', 'table', 'reply', 'pencil'], 2, 'reply nhấn âm 2; các từ còn lại nhấn âm 1.'],
+      ['In "education" (ed-u-ca-tion), the stressed syllable is the ___ syllable.', ['first', 'second', 'third', 'fourth'], 2, 'Nhấn âm ngay trước -tion: ed-u-CA-tion → âm thứ ba.'],
+      ['Which word is stressed on the LAST syllable?', ['engineer', 'enter', 'visit', 'open'], 0, 'engineer có đuôi -eer → nhấn chính nó.'],
+      ['The noun "present" is stressed on the ___ syllable.', ['first', 'second', 'third', 'no stress'], 0, 'PREsent (n) nhấn âm 1.'],
+      ['Which word\'s ending is NOT pronounced /ɪd/?', ['decided', 'visited', 'missed', 'needed'], 2, 'missed kết thúc /s/ → /t/.']
+    ]
+  });
+
+  L('g12-communicative-expressions', {
+    grade: 12, icon: '🗣️', title: 'Hoàn thành hội thoại và tình huống giao tiếp', sub: 'Communicative functions', level: 'Nâng cao',
+    summary: 'Các mẫu câu giao tiếp thường gặp trong đề thi: xin phép, đề nghị, cảm ơn, xin lỗi, khen ngợi, đồng ý/không đồng ý, mời, gợi ý, an ủi.',
+    sections: [
+      { h: '1. Cặp hỏi – đáp thông dụng', b: [
+        { t: { h: ['Tình huống', 'Câu nói', 'Đáp lại phù hợp'], r: [['Cảm ơn', 'Thank you very much.', 'You\'re welcome. / Not at all. / My pleasure. / No problem.'], ['Xin lỗi', 'I\'m sorry I\'m late.', 'That\'s OK. / Never mind. / No worries.'], ['Khen ngợi', 'You look great today!', 'Thank you. / Thanks, that\'s nice of you to say so.'], ['Xin phép', 'Do you mind if I open the window?', 'Not at all. / Please do. / Sorry, I\'d rather you didn\'t.'], ['Nhờ vả', 'Could you help me with this bag?', 'Sure. / Of course. / Sorry, I\'m busy now.'], ['Đề nghị giúp', 'Shall I carry that for you?', 'Yes, please. That\'s very kind. / No, thanks. I can manage.'], ['Mời', 'Would you like to come to my party?', 'I\'d love to. / Yes, that would be great. / Sorry, I can\'t.'], ['Gợi ý', 'Why don\'t we go swimming?', 'Good idea! / That sounds great. / I\'d rather not.']] } },
+        { warn: 'Với **Do you mind if I…?** / **Would you mind…?**, trả lời **Not at all** nghĩa là **đồng ý** (không phiền). **Yes, I do mind** là từ chối.' }
+      ] },
+      { h: '2. Đồng ý, không đồng ý, nêu ý kiến', b: [
+        { ul: ['Đồng ý: **I agree. / Exactly. / You\'re right. / I couldn\'t agree more. / That\'s true.**', 'Không đồng ý lịch sự: **I\'m afraid I don\'t agree. / I see what you mean, but… / I\'m not sure about that.**', 'Nêu ý kiến: **In my opinion, … / As far as I\'m concerned, … / I think/believe that …**', 'Hỏi ý kiến: **What do you think of …? / How do you feel about …? / What\'s your opinion on …?**'] }
+      ] },
+      { h: '3. Tình huống đặc biệt', b: [
+        { t: { h: ['Tình huống', 'Cách nói'], r: [['Chúc mừng', 'Congratulations! / Well done! → **Thank you.**'], ['An ủi', 'I\'m sorry to hear that. / Cheer up! → **Thanks for your kind words.**'], ['Chúc', 'Good luck! / Have a nice trip! → **Thanks. Same to you.**'], ['Hỏi đường', 'Excuse me, could you tell me the way to …? → **Go straight and turn left.**'], ['Gọi điện', 'Can I speak to …? → **Speaking. / Hold on, please.**'], ['Cảnh báo', 'Watch out! / Be careful! → **Thanks for warning me.**']] } },
+        { tip: 'Cách làm bài: (1) xác định **chức năng** của câu nói; (2) loại các đáp án **không cùng chức năng** (ví dụ lời cảm ơn mà trả lời "I\'m sorry"); (3) chọn câu **tự nhiên, lịch sự** nhất.' }
+      ] }
+    ],
+    ex: [
+      ['A: Thank you for your help. — B: You\'re welcome.', 'A: Cảm ơn bạn đã giúp. — B: Không có gì.'], ['A: I\'m sorry I broke your cup. — B: Never mind.', 'A: Xin lỗi mình làm vỡ cái cốc. — B: Không sao.'], ['A: Do you mind if I sit here? — B: Not at all. Please do.', 'A: Mình ngồi đây được không? — B: Được chứ, mời bạn.'],
+      ['A: Would you like some tea? — B: Yes, please.', 'A: Bạn uống trà không? — B: Có, cảm ơn.'], ['A: Could you pass me the salt? — B: Sure, here you are.', 'A: Đưa giúp mình lọ muối nhé? — B: Chắc chắn rồi, đây.'], ['A: You have a lovely dress! — B: Thank you. I bought it yesterday.', 'A: Váy của bạn đẹp quá! — B: Cảm ơn bạn. Mình mới mua hôm qua.'],
+      ['A: I\'m afraid I disagree. — B: Really? Why?', 'A: Mình e là mình không đồng ý. — B: Thế à? Tại sao?'], ['A: Good luck with your exam! — B: Thanks.', 'A: Chúc bạn thi tốt! — B: Cảm ơn.'], ['A: Shall we go for a walk? — B: That sounds great!', 'A: Mình đi dạo nhé? — B: Nghe tuyệt đấy!']
+    ],
+    mis: [
+      ['A: Thank you. — B: Thank you too.', 'A: Thank you. — B: You\'re welcome.', 'Đáp lại lời cảm ơn là You\'re welcome / Not at all.'], ['A: Would you mind opening the window? — B: Yes, of course. (muốn đồng ý)', 'A: Would you mind opening the window? — B: No, not at all.', 'Mind = phiền; đồng ý phải nói No/Not at all.'], ['A: Congratulations! — B: Congratulations to you.', 'A: Congratulations! — B: Thank you.', 'Được chúc mừng thì cảm ơn.'],
+      ['A: I\'m sorry. — B: Thank you.', 'A: I\'m sorry. — B: That\'s all right.', 'Đáp lời xin lỗi: That\'s all right / Never mind.']
+    ],
+    quiz: [
+      ['"Would you mind turning down the music?" — "___"', ['Yes, of course.', 'Not at all. Sorry.', 'You\'re welcome.', 'Never mind.'], 1, 'Mind = phiền; Not at all = không phiền → đồng ý.'],
+      ['"Thank you for the lovely gift." — "___"', ['That\'s OK.', 'My pleasure.', 'I agree.', 'Yes, I do.'], 1, 'Đáp lại lời cảm ơn.'],
+      ['"I\'m sorry I forgot your book." — "___"', ['That\'s all right.', 'Thanks a lot.', 'You\'re welcome.', 'Good idea.'], 0, 'Đáp lại lời xin lỗi.'],
+      ['"Would you like to join our club?" — "___"', ['No, I don\'t.', 'I\'d love to, but I\'m busy.', 'Yes, I would not.', 'You\'re welcome.'], 1, 'Từ chối lời mời lịch sự.'],
+      ['"You look wonderful today!" — "___"', ['I\'m sorry to hear that.', 'Thank you. That\'s very kind of you.', 'No, I don\'t think so.', 'Not at all.'], 1, 'Nhận lời khen: Thank you.'],
+      ['"Why don\'t we go to the cinema?" — "___"', ['Yes, we don\'t.', 'That\'s a good idea.', 'You\'re welcome.', 'I\'m fine, thanks.'], 1, 'Đáp lại lời gợi ý.'],
+      ['"Good luck with your interview!" — "___"', ['Same to you.', 'Thanks.', 'Never mind.', 'It\'s my pleasure.'], 1, 'Cảm ơn lời chúc.'],
+      ['"Can I speak to Mr. Nam, please?" — "___"', ['Speaking.', 'You\'re welcome.', 'I\'m sorry to hear that.', 'Not at all.'], 0, 'Trên điện thoại, người nghe là người cần gặp → Speaking.'],
+      ['"Shall I carry your bag?" — "___"', ['Yes, please. That\'s very kind.', 'It doesn\'t matter.', 'You\'re welcome.', 'No problem at all, I do.'], 0, 'Chấp nhận lời đề nghị.']
+    ]
+  });
+
+  L('g12-phrasal-verbs-exam', {
+    grade: 12, icon: '🧷', title: 'Cụm động từ trọng tâm ôn thi THPT', sub: 'Phrasal verbs for the exam', level: 'Nâng cao',
+    summary: 'Nhóm cụm động từ hay gặp trong đề thi tốt nghiệp: get, take, put, look, turn, come, go, bring, make, set, run, break, carry, call, give…',
+    sections: [
+      { h: '1. Nhóm động từ chính', b: [
+        { t: { h: ['Động từ', 'Cụm', 'Nghĩa'], r: [['get', 'get along/on with; get over; get through; get away with; get by', 'hòa hợp; vượt qua (bệnh/khó khăn); hoàn thành/ vượt qua; thoát tội; xoay xở'], ['take', 'take after; take up; take over; take on; take off; take in', 'giống; bắt đầu theo đuổi; tiếp quản; nhận (việc); cất cánh/cởi ra; hiểu/lừa'], ['put', 'put off; put up with; put out; put forward; put on weight', 'hoãn; chịu đựng; dập tắt; đề xuất; tăng cân'], ['look', 'look after; look up to; look down on; look into; look out; look forward to', 'chăm sóc; kính trọng; coi thường; điều tra; cẩn thận; mong chờ'], ['turn', 'turn down; turn up; turn into; turn out; turn over', 'từ chối / vặn nhỏ; xuất hiện / vặn to; trở thành; hoá ra; lật'], ['come', 'come across; come up with; come down with; come out; come about', 'tình cờ gặp; nghĩ ra; mắc bệnh; xuất bản / lộ ra; xảy ra'], ['go', 'go on; go off; go through; go up; go over', 'tiếp tục / xảy ra; nổ / reo; trải qua; tăng; xem lại'], ['bring', 'bring up; bring about; bring back; bring out', 'nuôi dưỡng; gây ra; mang trả / gợi nhớ; ra mắt'], ['make', 'make up; make out; make for', 'bịa ra / làm lành; nhìn ra; tiến về'], ['run', 'run out of; run into; run over', 'cạn; tình cờ gặp; đâm / cán phải'], ['break', 'break down; break up; break out; break into', 'hỏng; chia tay / giải tán; bùng nổ; đột nhập'], ['carry', 'carry on; carry out', 'tiếp tục; thực hiện'], ['give', 'give up; give in; give out; give away', 'từ bỏ; nhượng bộ; phân phát; cho đi / làm lộ'], ['call', 'call off; call for; call on', 'huỷ; kêu gọi / đòi hỏi; ghé thăm']] } }
+      ] },
+      { h: '2. Cách học và cách làm bài', b: [
+        { ul: ['**Học theo cụm + ví dụ**, không học nghĩa từng từ. Nhớ **tách / không tách** (put **it** off, look after **her**).', 'Đề thi thường cho **tình huống + chọn giới từ/trạng từ**: gặp "illness" → **come down with / get over**; gặp "meeting" → **put off / call off**; gặp "problem" → **deal with / sort out / come up with**.', 'Cẩn thận các cụm **ba từ**: **put up with** (chịu), **look forward to** (+ V-ing), **get on with**, **come up with**, **run out of**, **catch up with**, **keep up with**, **cut down on**.'] },
+        { warn: 'Nhiều cụm có **nhiều nghĩa**: **take off** (cất cánh / cởi ra / nghỉ), **turn out** (hoá ra / sản xuất), **put out** (dập tắt / xuất bản). Hãy dựa vào ngữ cảnh.' }
+      ] },
+      { h: '3. Thành ngữ gần với cụm động từ', b: [
+        { t: { h: ['Cụm', 'Ví dụ'], r: [['**catch up with** (đuổi kịp)', 'I must catch up with my classmates after being ill.'], ['**keep up with** (theo kịp)', 'It is hard to keep up with the latest technology.'], ['**deal with** (giải quyết)', 'How do you deal with stress?'], ['**do away with** (loại bỏ)', 'The school did away with uniforms.'], ['**face up to** (đối mặt)', 'You must face up to the truth.']] } }
+      ] }
+    ],
+    ex: [
+      ['She is getting over the flu.', 'Cô ấy đang hồi phục sau trận cúm.'], ['I can\'t put up with this noise any longer.', 'Mình không thể chịu tiếng ồn này thêm nữa.'], ['The meeting has been put off until next week.', 'Cuộc họp bị hoãn sang tuần sau.'],
+      ['He takes after his father in everything.', 'Anh ấy giống bố ở mọi mặt.'], ['We came across an old photo while cleaning.', 'Chúng mình tình cờ thấy một tấm ảnh cũ khi dọn dẹp.'], ['She came down with a bad cold.', 'Cô ấy bị cảm nặng.'],
+      ['The firefighters put out the fire in an hour.', 'Lính cứu hoả dập tắt đám cháy trong một giờ.'], ['The experiment turned out to be a success.', 'Thí nghiệm hoá ra thành công.'], ['War broke out in 1939.', 'Chiến tranh nổ ra năm 1939.']
+    ],
+    mis: [
+      ['I look forward to see you.', 'I look forward to seeing you.', 'to là giới từ → V-ing.'], ['Please put on it.', 'Please put it on.', 'Đại từ đứng giữa.'], ['She got over from the illness.', 'She got over the illness.', 'get over + tân ngữ (không có from).'],
+      ['He takes up his mother.', 'He takes after his mother.', 'Giống = take after.']
+    ],
+    quiz: [
+      ['She is ___ a bad cold, so she can\'t come.', ['coming down with', 'getting on with', 'putting up with', 'looking after'], 0, 'come down with = mắc bệnh.'],
+      ['The match was ___ because of the storm.', ['called off', 'called on', 'called for', 'called in'], 0, 'call off = huỷ.'],
+      ['I\'m looking ___ to the new school year.', ['forward', 'after', 'into', 'down'], 0, 'look forward to + danh từ/V-ing.'],
+      ['Our teacher ___ our English essays carefully.', ['went over', 'went off', 'went on', 'went up'], 0, 'go over = xem lại.'],
+      ['They decided to ___ the old system.', ['do away with', 'get on with', 'look up to', 'put up with'], 0, 'do away with = loại bỏ.'],
+      ['It was hard to ___ the fast pace of the course.', ['keep up with', 'give in', 'break out', 'take after'], 0, 'keep up with = theo kịp.'],
+      ['I\'ll ___ you at 7 if you give me your address.', ['pick up', 'get over', 'break down', 'run out'], 0, 'pick up = đón.'],
+      ['The thief ___ the house through the window.', ['broke into', 'broke up', 'broke out', 'broke down'], 0, 'break into = đột nhập.'],
+      ['She was ___ by her grandparents.', ['brought up', 'brought about', 'brought in', 'brought out'], 0, 'bring up = nuôi dưỡng.']
+    ]
+  });
+
+  L('g12-conditionals-wishes-review', {
+    grade: 12, icon: '🎯', title: 'Tổng ôn câu điều kiện, câu ước và đảo ngữ điều kiện', sub: 'Conditionals & wishes review', level: 'Nâng cao',
+    summary: 'Hệ thống lại điều kiện loại 0–3, hỗn hợp, câu ước, as if/ it\'s time, đảo ngữ điều kiện (Should/Were/Had) để làm bài chính xác.',
+    sections: [
+      { h: '1. Bảng tổng hợp', b: [
+        { t: { h: ['Loại', 'If-clause', 'Main clause', 'Ví dụ'], r: [['0 (sự thật)', 'If + hiện tại đơn', 'hiện tại đơn', 'If you heat ice, it melts.'], ['1 (có thể xảy ra)', 'If + hiện tại đơn', 'will/can/may + V', 'If it rains, we will stay home.'], ['2 (không có thật ở hiện tại)', 'If + V2 / were', 'would/could/might + V', 'If I were you, I would apologise.'], ['3 (không có thật ở quá khứ)', 'If + had V3', 'would/could/might + have V3', 'If I had studied, I would have passed.'], ['Hỗn hợp (quá khứ → hiện tại)', 'If + had V3', 'would + V', 'If I had taken that job, I would be rich now.'], ['Hỗn hợp (hiện tại → quá khứ)', 'If + V2', 'would have V3', 'If he were smarter, he would have solved it.']] } },
+        { tip: 'Xác định **loại câu** bằng thời gian + mức độ thật: hiện tại không thật → loại 2; quá khứ không thật → loại 3.' }
+      ] },
+      { h: '2. Đảo ngữ điều kiện', b: [
+        { t: { h: ['Loại', 'Câu thường', 'Đảo ngữ (bỏ if)'], r: [['1', 'If you need help, call me.', '**Should** you need help, call me.'], ['2', 'If I were rich, I would travel.', '**Were** I rich, I would travel.'], ['3', 'If she had known, she would have come.', '**Had** she known, she would have come.']] } },
+        { warn: 'Đảo ngữ phủ định: **Were it not for** your help… / **Had it not been for** your help… / **Should you not** agree…' }
+      ] },
+      { h: '3. Ước muốn và các cấu trúc liên quan', b: [
+        { ul: ['**wish + V2/were** (hiện tại), **wish + had V3** (quá khứ), **wish + would V** (tương lai/phàn nàn); **If only** dùng giống wish.', '**as if / as though** + V2/were (hiện tại không thật), + had V3 (quá khứ).', '**It\'s (high) time + S + V2**; **would rather + S + V2/had V3**.', '**Unless = if…not**, **as long as**, **provided (that)**, **in case**, **otherwise**, **but for / without** + danh từ.', 'Câu điều kiện với **be + to**: If you are to succeed, you must work hard. (ý định); **happen to**: If you **should** meet him, say hello.'] }
+      ] }
+    ],
+    ex: [
+      ['If you mix blue and yellow, you get green.', 'Trộn xanh dương với vàng thì được xanh lá.'], ['If it rains tomorrow, we will cancel the picnic.', 'Nếu mai trời mưa, chúng ta sẽ huỷ buổi dã ngoại.'], ['If I were you, I would take that job.', 'Nếu mình là bạn, mình sẽ nhận công việc đó.'],
+      ['If she had worked harder, she would have passed the exam.', 'Nếu cô ấy học chăm hơn thì đã đỗ.'], ['If I had met her earlier, I would be happier now.', 'Nếu mình gặp cô ấy sớm hơn thì giờ mình hạnh phúc hơn.'], ['Should you need any help, don\'t hesitate to ask.', 'Nếu bạn cần giúp, đừng ngần ngại hỏi.'],
+      ['Were I in your position, I wouldn\'t say that.', 'Nếu mình ở vị trí của bạn, mình sẽ không nói thế.'], ['Had we left earlier, we wouldn\'t have missed the train.', 'Nếu chúng ta đi sớm hơn thì đã không lỡ tàu.'], ['I wish I could speak French fluently.', 'Giá mà mình nói được tiếng Pháp trôi chảy.']
+    ],
+    mis: [
+      ['If I would have time, I would help you.', 'If I had time, I would help you.', 'Không dùng would trong mệnh đề if.'], ['If she studied harder, she would pass last year.', 'If she had studied harder, she would have passed last year.', 'Quá khứ không thật → loại 3.'], ['Had you called me, I will help you.', 'Had you called me, I would have helped you.', 'Đảo ngữ loại 3 + would have V3.'],
+      ['Unless you don\'t hurry, you\'ll be late.', 'Unless you hurry, you\'ll be late.', 'unless đã phủ định.'], ['Were I am rich, I would travel.', 'Were I rich, I would travel.', 'Were + S + adj (không thêm am).']
+    ],
+    quiz: [
+      ['If I ___ you, I would accept the offer.', ['am', 'was being', 'were', 'will be'], 2, 'Loại 2: If I were you.'],
+      ['If she ___ harder, she would have passed.', ['studies', 'studied', 'had studied', 'would study'], 2, 'Loại 3: had V3.'],
+      ['___ you need any help, please call me.', ['Should', 'Were', 'Had', 'Did'], 0, 'Đảo ngữ loại 1: Should + S + V.'],
+      ['___ I known about the traffic, I would have left earlier.', ['If', 'Had', 'Were', 'Should'], 1, 'Đảo ngữ loại 3: Had + S + V3.'],
+      ['If he ___ the key yesterday, he would be inside now. (hỗn hợp)', ['had found', 'found', 'finds', 'would find'], 0, 'If + had V3 (quá khứ) → would + V (hiện tại).'],
+      ['I wish I ___ speak Japanese. It would help me at work.', ['can', 'could', 'will', 'would'], 1, 'wish + could.'],
+      ['___ your help, we couldn\'t have finished on time.', ['Without', 'Unless', 'If', 'Should'], 0, 'Without = nếu không có.'],
+      ['If it ___ rain tomorrow, we will have the picnic in the hall.', ['will', 'would', 'should', 'did'], 2, 'if it should rain = nếu lỡ trời mưa.'],
+      ['If you heat water to 100°C, it ___.', ['will boil', 'boils', 'would boil', 'boiled'], 1, 'Loại 0 (sự thật): hiện tại đơn.']
+    ]
+  });
+
+  L('g12-collocations-expressions', {
+    grade: 12, icon: '🧲', title: 'Kết hợp từ (collocations) và thành ngữ thường gặp', sub: 'Collocations & fixed expressions', level: 'Nâng cao',
+    summary: 'Các cặp từ đi cùng nhau tự nhiên (make a decision, take a risk, heavy rain…) và thành ngữ phổ biến trong bài thi.',
+    sections: [
+      { h: '1. make, do, take, have', b: [
+        { t: { h: ['Động từ', 'Hay đi với', 'Ví dụ'], r: [['**make**', 'a decision, a mistake, progress, an effort, a suggestion, money, a noise, friends, a plan, a living', 'He **made a mistake**. · She **made progress**.'], ['**do**', 'homework, housework, research, business, one\'s best, a favour, damage, harm, the shopping', 'Please **do me a favour**. · Smoking **does harm**.'], ['**take**', 'a risk, a chance, advantage of, part in, place, care of, notice of, responsibility, a break, a photo', 'We **took a risk**. · The event **took place** in May.'], ['**have**', 'a look, a rest, a meal, a talk, fun, a chat, a bath, a headache, difficulty (in)', 'We **had fun**. · She **has difficulty (in) sleeping**.'], ['**pay**', 'attention, a visit, a compliment, respect', '**Pay attention** to the board.'], ['**keep**', 'in touch, a promise, a secret, calm, silent', 'Let\'s **keep in touch**.']] } }
+      ] },
+      { h: '2. Tính từ + danh từ, trạng từ + tính từ', b: [
+        { t: { h: ['Loại', 'Ví dụ'], r: [['Thời tiết', 'heavy rain, strong wind, thick fog, torrential rain, bitterly cold'], ['Cảm xúc/ mức độ', 'deeply grateful, utterly ridiculous, highly recommended, fully aware, bitterly disappointed'], ['Danh từ + giới từ', 'a reason for, an increase in, a solution to, a lack of, an interest in, a demand for, damage to'], ['Tính từ + giới từ', 'good at, interested in, afraid of, responsible for, famous for, keen on, capable of'], ['Động từ + giới từ', 'depend on, rely on, consist of, result in, suffer from, apologise for, object to, contribute to']] } },
+        { warn: 'Hầu hết collocations **không dịch từng từ**: "mạnh mưa" ✗ → **heavy rain** ✓; "làm bài tập" → **do homework** (✗ make homework).' }
+      ] },
+      { h: '3. Thành ngữ hay gặp', b: [
+        { t: { h: ['Thành ngữ', 'Nghĩa', 'Ví dụ'], r: [['a piece of cake', 'rất dễ', 'The test was a piece of cake.'], ['once in a blue moon', 'rất hiếm khi', 'He visits us once in a blue moon.'], ['break the ice', 'phá vỡ sự ngượng ngập', 'A joke helped break the ice.'], ['on the other hand', 'mặt khác', 'It is cheap; on the other hand, it is slow.'], ['by heart', 'thuộc lòng', 'She learned the poem by heart.'], ['in the long run', 'về lâu dài', 'Exercise pays off in the long run.'], ['at the end of the day', 'cuối cùng thì', 'At the end of the day, it\'s your decision.'], ['the more … the more …', 'càng … càng …', 'The more you practise, the better you get.']] } }
+      ] }
+    ],
+    ex: [
+      ['You should make a decision before Friday.', 'Bạn nên đưa ra quyết định trước thứ Sáu.'], ['She does her best to help everyone.', 'Cô ấy cố hết sức để giúp mọi người.'], ['We took a risk by investing in the project.', 'Chúng mình đã liều khi đầu tư vào dự án.'],
+      ['The festival takes place every autumn.', 'Lễ hội diễn ra vào mỗi mùa thu.'], ['I have difficulty in understanding fast speech.', 'Mình gặp khó khăn khi hiểu người nói nhanh.'], ['Heavy rain caused serious flooding.', 'Mưa lớn gây ra lũ lụt nghiêm trọng.'],
+      ['He is responsible for organising the event.', 'Anh ấy chịu trách nhiệm tổ chức sự kiện.'], ['Smoking can result in serious illnesses.', 'Hút thuốc có thể dẫn đến các bệnh nghiêm trọng.'], ['The exam was a piece of cake.', 'Bài thi dễ như ăn bánh.']
+    ],
+    mis: [
+      ['She made her homework.', 'She did her homework.', 'do homework.'], ['We did a mistake.', 'We made a mistake.', 'make a mistake.'], ['Strong rain fell all day.', 'Heavy rain fell all day.', 'heavy rain.'],
+      ['He is afraid from spiders.', 'He is afraid of spiders.', 'afraid of.'], ['I\'m interested on music.', 'I\'m interested in music.', 'interested in.']
+    ],
+    quiz: [
+      ['Don\'t forget to ___ attention to the instructions.', ['pay', 'make', 'give', 'do'], 0, 'pay attention.'],
+      ['They ___ a mistake when they signed the contract.', ['did', 'took', 'made', 'had'], 2, 'make a mistake.'],
+      ['Let\'s ___ in touch after graduation.', ['keep', 'hold', 'make', 'have'], 0, 'keep in touch.'],
+      ['Smoking can ___ serious damage to your health.', ['make', 'do', 'take', 'have'], 1, 'do damage.'],
+      ['There was ___ rain last night, so the streets were flooded.', ['strong', 'heavy', 'big', 'hard'], 1, 'heavy rain.'],
+      ['The meeting ___ place in the main hall.', ['made', 'took', 'did', 'held'], 1, 'took place.'],
+      ['She is very good ___ solving problems.', ['in', 'at', 'on', 'with'], 1, 'good at.'],
+      ['The new rule may ___ in better results.', ['result', 'lead', 'cause', 'bring'], 0, 'result in (đáp án duy nhất đi với in).'],
+      ['After the long exam, it was ___ of cake! (rất dễ)', ['a piece', 'a part', 'a bit', 'a slice'], 0, 'a piece of cake.']
+    ]
+  });
 })();
