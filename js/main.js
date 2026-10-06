@@ -59,7 +59,8 @@
     { href: 'practice.html', label: '✍️ Luyện câu', pages: ['practice'] },
     { href: 'dictation.html', label: '🎧 Chép chính tả', pages: ['dictation'] },
     { href: 'reading.html', label: '📖 Đọc hiểu', pages: ['reading', 'reading-text'] },
-    { href: 'lesson-vocab.html', label: '📘 Bộ từ được giao', pages: ['lesson-vocab'] }
+    { href: 'lesson-vocab.html', label: '📘 Bộ từ được giao', pages: ['lesson-vocab'] },
+    { href: 'garden.html', label: '🌷 EWT Garden', pages: ['garden'] }
   ];
   var inVocab = VOCAB_TABS.some(function (t) { return t.pages.indexOf(page) >= 0; });
 
@@ -202,11 +203,29 @@
     }
   });
 
+  /* ===== Lời mời vào EWT Garden: hiện mỗi lần đăng nhập / mở web (một lần mỗi phiên) ===== */
+  function gardenHello() {
+    var pg = location.pathname.split('/').pop().replace('.html', '');
+    if (['login', 'garden', 'placement', 'mcq', 'aptis-writing-test', 'forgot-password', 'reset-password', 'verify', 'offline'].indexOf(pg) >= 0 || document.getElementById('gdHello')) return;
+    try { if (sessionStorage.getItem('ewtGardenHi')) return; sessionStorage.setItem('ewtGardenHi', '1'); } catch (e) {}
+    var st = document.createElement('style');
+    st.textContent = '@keyframes gdHiIn{0%{opacity:0;transform:translateY(40px) scale(.92)}60%{opacity:1;transform:translateY(-6px) scale(1.02)}100%{opacity:1;transform:none}}@keyframes gdHiSway{50%{transform:rotate(8deg)}}' +
+      '#gdHello{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:9000;max-width:340px;background:linear-gradient(135deg,#ECFDF3,#F0FBFF);border:2px solid #A7E3B5;border-radius:20px;box-shadow:0 14px 36px rgba(30,110,60,.28);padding:14px 16px;display:flex;gap:12px;align-items:center;animation:gdHiIn .6s cubic-bezier(.2,.9,.3,1.2);color:#164B2E;font-family:inherit}' +
+      '#gdHello .i{font-size:36px;flex:none;animation:gdHiSway 2.4s ease-in-out infinite;transform-origin:50% 90%}#gdHello b{display:block;font-size:14.5px;line-height:1.4}#gdHello a{display:inline-block;margin-top:8px;background:linear-gradient(135deg,#34C759,#16A34A);color:#fff;font-weight:800;font-size:13px;padding:8px 14px;border-radius:99px;text-decoration:none;min-height:36px;line-height:20px}' +
+      '#gdHello button{position:absolute;right:8px;top:6px;border:none;background:none;font-size:16px;cursor:pointer;color:#4B7A5A;min-width:28px;min-height:28px}';
+    document.head.appendChild(st);
+    var el = document.createElement('div'); el.id = 'gdHello'; el.setAttribute('role', 'status');
+    el.innerHTML = '<div class="i">🌷</div><div><b>Tham gia tạo nên khu vườn tại EWT của riêng bạn nhé!</b><a href="garden.html">🌱 Vào EWT Garden</a></div><button type="button" aria-label="Đóng">✕</button>';
+    document.body.appendChild(el);
+    var close = function () { el.style.transition = 'opacity .35s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 400); };
+    el.querySelector('button').onclick = close; setTimeout(close, 14000);
+  }
+
   /* ===== Trạng thái đăng nhập + chặn quyền ===== */
   var roleLabel = { student: 'Học sinh', teacher: 'Giáo viên', admin: 'Quản trị' };
   fetch('/api/me', { credentials: 'same-origin' })
     .then(function (r) { return r.ok ? r.json() : { user: null }; })
-    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); if (d.user && d.avatar) showHeaderAvatar(d.avatar); if (d.user && d.user.role === 'student') achCheck(); })
+    .then(function (d) { applyAuth(d.user); if (d.user && d.class_nudge) classNudge(); if (d.user && d.user.role === 'student') gardenHello(); if (d.user && d.avatar) showHeaderAvatar(d.avatar); if (d.user && d.user.role === 'student') achCheck(); })
     .catch(function () { applyAuth(null); }); // chạy trên GitHub Pages (không có API) -> coi như chưa đăng nhập
 
 
@@ -288,7 +307,7 @@
     var h = '<button type="button" class="js-palette">🎨 Màu &amp; hiệu ứng</button><button type="button" id="mtDark">' + (isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối') + '</button>';
     if (user && (user.role === 'teacher' || user.role === 'admin')) h += '<a href="teacher.html">👨‍🏫 Khu vực giáo viên</a>';
     if (user && user.role === 'admin') h += '<a href="admin.html">⚙️ Quản trị</a>';
-    if (user) h += '<a href="reading.html">📖 Đọc hiểu</a><a href="speaking.html">🎤 Luyện Speaking</a><a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="stickers.html">🎟️ Bộ sticker</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
+    if (user) h += '<a href="garden.html">🌷 EWT Garden</a><a href="reading.html">📖 Đọc hiểu</a><a href="speaking.html">🎤 Luyện Speaking</a><a href="chat.html">💬 Tin nhắn</a><a href="notebook.html">📒 Sổ lỗi sai</a><a href="achievements.html">🏅 Thành tích</a><a href="avatar.html">🎭 Nhân vật của tôi</a><a href="stickers.html">🎟️ Bộ sticker</a><a href="account.html">👤 Tài khoản</a><button type="button" id="mtLogout">🚪 Đăng xuất</button>';
     else h += '<a href="login.html">Đăng nhập</a><a href="login.html#register" style="background:var(--gradient);color:#fff;border-color:transparent">Đăng ký</a>';
     box.innerHTML = h;
     var d = document.getElementById('mtDark'); if (d) d.onclick = function () { applyTheme(!isDark()); d.innerHTML = isDark() ? '☀️ Chế độ sáng' : '🌙 Chế độ tối'; };

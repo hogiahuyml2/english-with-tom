@@ -118,7 +118,7 @@
 </section>
 <div class="ar-wrap" id="arRoot"><div class="ar-card">Đang tải...</div></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=46"></script>
+<script src="js/main.js?v=47"></script>
 <script src="js/arcade-games.js?v=7"></script>
 <script>
 (function () {
@@ -244,6 +244,7 @@ function viewHub() {
   stopCur();
   var me = ME || {};
   var h = '<div class="ar-stats"><span class="ar-chip">⭐ Cấp ' + (me.level || 1) + ' · ' + (me.xp || 0) + ' XP</span><span class="ar-chip">🪙 ' + (me.coins || 0) + '</span><span class="ar-chip">🔥 ' + (me.streak || 0) + ' ngày</span><a class="ar-chip" href="word-hub.html" style="text-decoration:none;">📚 Học & ôn từ</a><button class="ar-pill" id="arMute">' + (muted ? '🔇 Âm thanh: tắt' : '🔊 Âm thanh: bật') + '</button></div>';
+  h += '<a href="garden.html" class="ar-card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:#164B2E;background:linear-gradient(135deg,#E6F9EC,#E8F6FF);border-color:#A7E3B5;"><span style="font-size:42px;">🌷</span><span style="flex:1;"><b style="font-size:17px;">EWT Garden — khu vườn của riêng bạn</b><br><span style="font-size:13px;">Trồng hoa, trồng cây, nuôi thú cưng bằng xu kiếm được khi làm bài. Hết xu? Trả lời câu hỏi để kiếm thêm!</span></span><span style="font-weight:800;background:#16A34A;color:#fff;border-radius:99px;padding:8px 16px;">Vào vườn ▶</span></a>';
   h += '<div class="ar-lv"><b style="font-size:13px;">Chọn cấp độ từ:</b>' + ['all', 'KET', 'PET', 'FCE', 'IELTS'].map(function (l) { return '<button class="ar-pill' + (l === LEVEL ? ' on' : '') + '" data-l="' + l + '">' + (l === 'all' ? 'Tất cả' : l) + '</button>'; }).join('') + '</div>';
   h += '<div class="ar-grid">' + GAMES.map(function (g) { return '<button class="ar-game ' + g.cls + '" data-g="' + g.id + '"><span class="tag">' + g.tag + '</span><div class="ic">' + g.ic + '</div><h3>' + g.name + '</h3><p>' + g.desc + '</p></button>'; }).join('') + '</div>';
   h += '<div class="ar-card" style="margin-top:16px;font-size:13.5px;color:var(--text-muted);">💡 Từ nào bạn trả lời đúng sẽ được ôn lại theo lịch (ngày mai, 3 ngày, 1 tuần…), từ sai sẽ được nhắc sớm. Mỗi từ chỉ cộng XP tối đa 3 lần đúng/ngày để công bằng cho mọi bạn.</div>';

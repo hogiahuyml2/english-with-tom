@@ -2291,6 +2291,7 @@ require('./notebook')(app, { db, requireAuth, now });
 require('./achievements')(app, { db, requireAuth, now });
 require('./reading')(app, { db, requireAuth, now });
 require('./today')(app, { db, requireAuth, now });
+require('./garden')(app, { db, requireAuth, now });
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./speaking')(app, { db, requireAuth, requireRole, now, notifyUser, upload, checkUpload, uploadsDir });
