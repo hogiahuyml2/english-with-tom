@@ -225,16 +225,21 @@ module.exports = function (app, { db, requireAuth, now }) {
   })();
   const LESSONS = (() => { const m = new Map(); GR.forEach((q) => { if (!m.has(q.lesson)) m.set(q.lesson, { id: q.lesson, grade: q.grade, title: q.title, n: 0 }); m.get(q.lesson).n++; }); return [...m.values()]; })();
   const pending = new Map(), recent = new Map(), flips = new Map();
+  function pickW(list) { const tot = list.reduce((x, y) => x + y[1], 0); let r = Math.random() * tot; for (const [k, w] of list) { if ((r -= w) <= 0) return k; } return list[0][0]; }
   function rollCard() {
-    const F = G.FLIP;
-    if (Math.random() < F.special) return { v: F.specialValue, t: F.specialNames[crypto.randomInt(F.specialNames.length)] };
-    const tot = F.normal.reduce((a, x) => a + x[1], 0); let r = Math.random() * tot;
-    for (const [v, w] of F.normal) { if ((r -= w) <= 0) return { v, t: 'coin' }; }
-    return { v: F.normal[0][0], t: 'coin' };
+    const F = G.FLIP, t = pickW(F.types);
+    if (t === 'coin') return { t, v: pickW(F.normal) };
+    if (F.big[t]) return { t, v: F.big[t] };
+    return { t, v: 0 }; // ×2 / ×3: tính theo số xu lúc lật
+  }
+  // Số xu thật sự nhận được của một thẻ (thẻ nhân tính trên số xu hiện có, có mức tối thiểu và tối đa)
+  function cardGain(uid, c) {
+    const m = G.FLIP.mult[c.t]; if (!m) return c.v;
+    return Math.max(G.FLIP.multMin, Math.min(G.FLIP.multCap, coinsOf(uid) * (m - 1)));
   }
   // Thẻ chưa lật (học sinh bỏ qua) → tự nhận ngẫu nhiên một thẻ để không mất thưởng
   function settleFlips(uid) {
-    for (const [k, f] of flips) if (f.uid === uid) { flips.delete(k); addCoins(uid, f.cards[crypto.randomInt(f.cards.length)].v); }
+    for (const [k, f] of flips) if (f.uid === uid) { flips.delete(k); addCoins(uid, cardGain(uid, f.cards[crypto.randomInt(f.cards.length)])); }
   }
   const shuf = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   function remember(uid, key) { const r = recent.get(uid) || []; r.push(key); if (r.length > 40) r.shift(); recent.set(uid, r); }
@@ -291,7 +296,7 @@ module.exports = function (app, { db, requireAuth, now }) {
       }
       save(st); return { st, wt, fid };
     });
-    for (const [k, v] of flips) if (Date.now() - v.ts > 15 * 60e3) { flips.delete(k); addCoins(v.uid, v.cards[0].v); }
+    for (const [k, v] of flips) if (Date.now() - v.ts > 15 * 60e3) { flips.delete(k); addCoins(v.uid, cardGain(v.uid, v.cards[0])); }
     reply(res, req.user, out.st, { correct: ok, answer: p.idx, expl: p.expl, gained: { xu: 0, water: out.wt }, flip: out.fid, capped: ok && !out.fid });
   });
   // Lật thẻ thưởng: máy chủ đã định sẵn giá trị các thẻ, người chơi chỉ chọn vị trí
@@ -300,7 +305,8 @@ module.exports = function (app, { db, requireAuth, now }) {
     if (!f || f.uid !== req.user.id) return bad(res, 'Thẻ thưởng đã được nhận hoặc đã hết hạn.');
     if (!Number.isInteger(pick) || pick < 0 || pick >= f.cards.length) return bad(res, 'Hãy chọn một thẻ.');
     flips.delete(String(req.body.id));
-    const out = tx(() => { addCoins(req.user.id, f.cards[pick].v); const st = load(req.user); save(st); return st; });
-    reply(res, req.user, out, { cards: f.cards, pick, gained: f.cards[pick].v });
+    let gained = 0;
+    const out = tx(() => { gained = cardGain(req.user.id, f.cards[pick]); addCoins(req.user.id, gained); const st = load(req.user); save(st); return st; });
+    reply(res, req.user, out, { cards: f.cards, pick, gained });
   });
 };

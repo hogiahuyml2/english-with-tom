@@ -58,8 +58,9 @@
     quizWater: 1, quizCapDay: 150, // trả lời đúng: +1 lượt tưới và được lật thẻ thưởng (xem FLIP); tối đa 150 câu đúng được thưởng mỗi ngày
     maxPets: 6, sellBack: 0.5
   };
-  // Thẻ thưởng khi trả lời đúng: lật 1 trong 3 thẻ. Thẻ thường 20–100 xu; thẻ đặc biệt (Double / Triple / Lucky) trúng 1000 xu.
-  var FLIP = { cards: 3, normal: [[20, 34], [30, 26], [40, 16], [50, 10], [60, 6], [80, 3.5], [100, 1.5]], special: 0.03, specialValue: 1000, specialNames: ['double', 'triple', 'lucky'] };
+  // Thẻ thưởng khi trả lời đúng: lật 1 trong 3 thẻ. Thẻ thường 20–100 xu; thẻ lớn +500 / +1000 xu; thẻ nhân ×2 / ×3 số xu hiện có (có mức tối đa).
+  var FLIP = { cards: 3, normal: [[20, 34], [30, 26], [40, 16], [50, 10], [60, 6], [80, 3.5], [100, 1.5]],
+    types: [['coin', 60], ['b500', 14], ['b1000', 7], ['x2', 12], ['x3', 7]], big: { b500: 500, b1000: 1000 }, mult: { x2: 2, x3: 3 }, multCap: 2000, multMin: 100 };
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });
   var PBY = {}; PETS.forEach(function (i) { PBY[i.id] = i; });
 
