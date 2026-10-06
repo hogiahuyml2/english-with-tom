@@ -34,16 +34,17 @@
 <main class="sk-wrap">
   <h1 class="sk-h1">🎟️ Bộ sticker</h1>
   <p class="sk-sub">Sticker 3D chuyển động để thể hiện cảm xúc. Bạn có thể gửi sticker cho giáo viên ở mục <a href="chat.html">💬 Tin nhắn</a>. Chạm vào sticker để xem nó “biểu diễn” và thử hiệu ứng ăn mừng!</p>
+  <div id="meCard" style="display:none;align-items:center;gap:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:12px 16px;margin-bottom:14px;box-shadow:var(--shadow)"><span id="meAv" style="width:84px;height:84px;display:block;flex:none"></span><div><b>⭐ Avatar của tôi</b><div style="font-size:13px;color:var(--text-muted);margin-top:2px;line-height:1.5">Ở mục Tin nhắn, bấm 😀 rồi chọn ô avatar đầu tiên để gửi nhân vật của bạn như một sticker. <a href="avatar.html">Đổi nhân vật</a></div></div></div>
   <div class="sk-tabs" id="tabs"></div>
   <div class="sk-grid" id="grid"></div>
   <p class="sk-credit">Bộ "Bạn học bài", avatar "Bạn nhỏ hoạt hình" và 9 bộ nhân vật (ông bà, pixel, RPG, huy hiệu, giả kim, quái vật…) là nhân vật gốc do English With Tom thiết kế. Các sticker còn lại: <a href="https://github.com/microsoft/fluentui-emoji" target="_blank" rel="noopener">Microsoft Fluent Emoji</a> (giấy phép MIT). Thú tròn: Kenney Animal Pack (CC0). Nhân vật người: DiceBear — Open Peeps (Pablo Stanley), Lorelei (Lisa Wischofsky), Notionists (Zoish), Thumbs — giấy phép CC0.</p>
 </main>
 <div class="sk-big" id="big"><div class="sk-box"><div id="bigImg"></div><h3 id="bigName"></h3><p>Sticker chuyển động</p><button class="sk-btn pri" id="bigFx">🎉 Ăn mừng!</button><button class="sk-btn" id="bigClose">Đóng</button></div></div>
 <div id="site-footer"></div>
-<script src="js/main.js?v=45"></script>
+<script src="js/main.js?v=46"></script>
 <script src="js/kid.js?v=3"></script>
-<script src="js/figures.js?v=2"></script>
-<script src="js/stickers.js?v=5"></script>
+<script src="js/figures.js?v=3"></script>
+<script src="js/stickers.js?v=6"></script>
 <script>
 (function () {
 var S = window.EWTStickers, $ = function (id) { return document.getElementById(id); }, CAT = S.defaultCat(), CUR = null;
@@ -59,6 +60,7 @@ document.addEventListener('click', function (e) {
   if (t.id === 'bigClose' || t.id === 'big') $('big').classList.remove('on');
 });
 draw();
+fetch('/api/me/avatar', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (!d || !d.cfg || !window.ewtAvatarInto) return; $('meCard').style.display = 'flex'; window.ewtAvatarInto($('meAv'), d.cfg, 84); setTimeout(function () { var sv = $('meAv').firstChild; if (sv && sv.setAttribute) sv.setAttribute('class', 'ewt-av ewt-av-bounce'); }, 600); }).catch(function () {});
 })();
 </script>
 </body>

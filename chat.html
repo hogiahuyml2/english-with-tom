@@ -251,18 +251,18 @@
 </div>
 
 <div id="site-footer"></div>
-<script src="js/main.js?v=45"></script>
+<script src="js/main.js?v=46"></script>
 <script src="js/kid.js?v=3"></script>
-<script src="js/figures.js?v=2"></script>
+<script src="js/figures.js?v=3"></script>
 <script src="js/avatar.js?v=6"></script>
-<script src="js/stickers.js?v=5"></script>
+<script src="js/stickers.js?v=6"></script>
 <script>
 var _me = null;
 var _contacts = [];
 var _activeUserId = null;
 var _pollTimer = null;
 var _lastMsgId = 0;
-var _otherAv = null;
+var _otherAv = null, _meAv = null;
 var _roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị' };
 
 /* ===== INIT ===== */
@@ -303,7 +303,7 @@ var _stkCat = window.EWTStickers.defaultCat();
 function stkDraw() {
   var S = window.EWTStickers;
   document.getElementById('stkTabs').innerHTML = S.CATS.map(function(c){ return '<button type="button" data-cat="'+c[0]+'" class="'+(c[0]===_stkCat?'on':'')+'">'+c[1]+'</button>'; }).join('');
-  document.getElementById('stkGrid').innerHTML = S.LIST.filter(function(r){ return r[2]===_stkCat; }).map(function(r){ return '<button type="button" data-stk="'+r[0]+'" aria-label="'+r[1]+'">'+S.html(r[0],{size:52,anim:false,lazy:false})+'</button>'; }).join('');
+  document.getElementById('stkGrid').innerHTML = '<button type="button" data-stk="me" aria-label="Gửi avatar của tôi" title="Avatar của tôi">'+(_meAv ? window.EWTAvatar.render(_meAv,{size:52,shape:'round'}) : '<span style="font-size:30px">⭐</span>')+'</button>' + S.LIST.filter(function(r){ return r[2]===_stkCat; }).map(function(r){ return '<button type="button" data-stk="'+r[0]+'" aria-label="'+r[1]+'">'+S.html(r[0],{size:52,anim:false,lazy:false})+'</button>'; }).join('');
 }
 document.addEventListener('click', function(e){
   var t = e.target, pick = document.getElementById('stkPick'), el;
@@ -400,7 +400,7 @@ function loadThread(userId, reset) {
       // Header
       var init = (other.name||'?').trim().split(/\s+/).slice(-1)[0].charAt(0).toUpperCase();
       var ha = document.getElementById('chatHeadAvatar'); ha.classList.toggle('has', !!other.avatar); if (other.avatar) ha.innerHTML = window.EWTAvatar.render(other.avatar,{size:38}); else ha.textContent = init;
-      _otherAv = other.avatar || null;
+      _otherAv = other.avatar || null; _meAv = d.me_avatar || null;
       document.getElementById('chatHeadName').textContent = other.name;
       document.getElementById('chatHeadRole').textContent = _roleLabel[other.role]||other.role;
 
@@ -421,7 +421,7 @@ function loadThread(userId, reset) {
       container.innerHTML = renderMessages(msgs);
       if (shouldScroll) container.scrollTop = container.scrollHeight;
       var lastM = msgs[msgs.length-1];
-      if (!reset && lastM.sender_id !== _me.id && window.EWTStickers.parse(lastM.content)) window.EWTStickers.burst([window.EWTStickers.parse(lastM.content)], { count: 6 });
+      if (!reset && lastM.sender_id !== _me.id && window.EWTStickers.parse(lastM.content) && window.EWTStickers.parse(lastM.content) !== 'me') window.EWTStickers.burst([window.EWTStickers.parse(lastM.content)], { count: 6 });
 
       // Cập nhật badge unread về 0 trong danh sách liên hệ
       var contact = _contacts.find(function(c){ return c.id === userId; });
@@ -460,7 +460,7 @@ function renderMessages(msgs) {
     html += '<div class="msg-row '+(mine?'mine':'theirs')+'">' +
       (mine ? '' : (_otherAv ? '<div class="msg-av-img">'+window.EWTAvatar.render(_otherAv,{size:28})+'</div>' : '<div class="msg-avatar">'+init+'</div>')) +
       '<div>' +
-        (stk ? '<div class="msg-bubble stk">'+window.EWTStickers.html(stk,{size:96,lazy:false})+'</div>' : '<div class="msg-bubble">'+esc(m.content)+'</div>') +
+        (stk ? '<div class="msg-bubble stk">'+(stk==='me' ? (function(){ var cfg = mine ? _meAv : _otherAv; return cfg ? window.EWTAvatar.render(cfg,{size:110,shape:'round',anim:'bounce'}) : '<span style="font-size:48px">🙂</span>'; })() : window.EWTStickers.html(stk,{size:96,lazy:false}))+'</div>' : '<div class="msg-bubble">'+esc(m.content)+'</div>') +
         '<div class="msg-time">'+timeStr+'</div>' +
       '</div>' +
     '</div>';

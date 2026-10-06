@@ -44,7 +44,7 @@
   var KINDS = 'bob pop beat spin shake twinkle launch flicker swing clap ring float wave'.split(' ');
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function parse(text) { var m = /^\[stk:([a-z0-9-]{1,40})\]$/.exec(String(text || '').trim()); return m && BY[m[1]] ? m[1] : null; }
+  function parse(text) { if (/^\[stk:me\]$/.test(String(text || '').trim())) return 'me'; var m = /^\[stk:([a-z0-9-]{1,40})\]$/.exec(String(text || '').trim()); return m && BY[m[1]] ? m[1] : null; }
   function token(id) { return '[stk:' + id + ']'; }
   function html(id, o) {
     var s = BY[id]; if (!s) return ''; o = o || {}; var size = o.size || 64;
