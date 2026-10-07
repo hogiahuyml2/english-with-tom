@@ -156,6 +156,19 @@
 .gd-lawn.z-ocean { --bed: #6EC7F1; --bed2: #5FB9E6; --bedl: rgba(255,255,255,.5); background: repeating-linear-gradient(90deg, #2B7FC0 0 10px, #1E5F9A 10px 12px); border-color: #7CC8F0; box-shadow: inset 0 0 0 3px #A8E0FF, 0 14px 0 -2px rgba(10,40,90,.4), 0 22px 34px rgba(10,40,90,.5); }
 .gd-lawn.z-sky { --bed: #E8F4FF; --bed2: #D9ECFF; --bedl: rgba(130,170,220,.5); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px, #CFE3F7 10px 12px); border-color: #BBD5F2; }
 .gd-lawn.z-space { --bed: #3B4088; --bed2: #30357A; --bedl: rgba(170,180,255,.5); background: repeating-linear-gradient(90deg, #5A6288 0 10px, #343B5E 10px 12px); border-color: #8FA0FF; box-shadow: inset 0 0 0 3px #B7C2FF, 0 0 26px 6px rgba(110,130,255,.45), 0 14px 0 -2px rgba(10,10,40,.5), 0 22px 34px rgba(10,10,50,.55); }
+.gd-dot { background: #EF4444; color: #fff; border-radius: 99px; font-size: 11px; line-height: 1; padding: 3px 6px; margin-left: 2px; }
+.gd-tabs2 { display: flex; gap: 6px; margin: 4px 0 12px; flex-wrap: wrap; } .gd-tabs2 button { border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 7px 14px; font: 800 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 38px; } .gd-tabs2 button.on { background: var(--gradient); color: #fff; border-color: transparent; }
+.gd-streak { display: flex; gap: 12px; align-items: center; background: linear-gradient(135deg, #FFF1D6, #FFD9A0); border: 2px solid #F2A32C; border-radius: 16px; padding: 10px 14px; margin-bottom: 10px; } .gd-streak .fl { font-size: 34px; } .gd-streak b { font-size: 16px; color: #8A4B00; display: block; } .gd-streak small { color: #8A5A1E; line-height: 1.4; display: block; } .gd-streak small b { display: inline; font-size: inherit; color: inherit; }
+.gd-miles { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; } .gd-ms { border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 6px 10px; font: 700 12px inherit; font-family: inherit; text-align: left; line-height: 1.35; } .gd-ms b { display: block; font-size: 13px; } .gd-ms.ready { border-color: #22C55E; background: #DCFCE7; cursor: pointer; } .gd-ms.got { opacity: .55; }
+.gd-h { font: 800 14px inherit; font-family: inherit; margin: 10px 0 6px; color: var(--text); }
+.gd-qr { display: flex; gap: 10px; align-items: center; border: 2px solid var(--border); border-radius: 14px; padding: 9px 12px; margin-bottom: 8px; background: var(--surface); } .gd-qr.dn { border-color: #22C55E; background: #F0FDF4; } .gd-qr.cl { opacity: .6; } .gd-qr .qt { flex: 1; min-width: 0; } .gd-qr .qt b { display: block; font-size: 14px; } .gd-qr .qt small { color: var(--text-muted); font-size: 12px; }
+.gd-pb { position: relative; height: 16px; background: #E5E7EB; border-radius: 99px; overflow: hidden; margin-top: 6px; } .gd-pb i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #34D399, #22C55E); border-radius: 99px; } .gd-pb span { position: relative; display: block; text-align: center; font: 800 11px/16px inherit; font-family: inherit; color: #1F2937; }
+.gd-gift { display: flex; gap: 10px; align-items: center; border: 2px solid #C4B5FD; background: #F5F3FF; border-radius: 14px; padding: 9px 12px; margin-bottom: 8px; } .gd-gift .qt { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.45; }
+.gd-proj { border: 2px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 10px; background: var(--surface); } .gd-proj h4 { margin: 0 0 4px; font-size: 15px; } .gd-proj .row { display: flex; gap: 6px; margin-top: 8px; } .gd-proj input { flex: 1; min-width: 0; border: 2px solid var(--border); border-radius: 10px; padding: 8px; font: 700 14px inherit; font-family: inherit; background: var(--surface); color: var(--text); }
+.gd-pass { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; } .gd-pc { position: relative; border: 2px solid var(--border); border-radius: 14px; padding: 8px 6px 10px; text-align: center; background: var(--surface); cursor: pointer; font-family: inherit; color: var(--text); } .gd-pc svg { width: 84px; height: auto; max-height: 56px; display: block; margin: 0 auto 6px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); } .gd-pc b { display: block; font-size: 12.5px; line-height: 1.3; } .gd-pc small { color: var(--text-muted); font-size: 11px; } .gd-pc.lock b, .gd-pc.lock small { opacity: .6; } .gd-pc .stp { position: absolute; right: 4px; top: 4px; width: 38px; height: 38px; border: 3px solid #DC2626; border-radius: 50%; color: #DC2626; font: 800 9px/1.1 inherit; font-family: inherit; display: grid; place-items: center; transform: rotate(-14deg); background: rgba(255,255,255,.8); }
+.gd-cul h3 { font-size: 22px; margin: 0; } .gd-cul .vi { color: var(--text-muted); font-weight: 700; margin-bottom: 8px; } .gd-cul .fact { background: var(--bg-soft); border-radius: 14px; padding: 10px 12px; font-size: 16px; line-height: 1.55; margin: 8px 0; } .gd-cul .fact small { display: block; color: var(--text-muted); font-size: 13px; margin-top: 4px; } .gd-sp { border: 2px solid var(--border); background: var(--surface); border-radius: 99px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; vertical-align: middle; }
+.gd-words { display: grid; gap: 6px; margin: 8px 0; } .gd-words div { display: flex; align-items: center; gap: 8px; border: 2px solid var(--border); border-radius: 12px; padding: 6px 10px; font-size: 14px; } .gd-words b { font-size: 15px; } .gd-words span { color: var(--text-muted); flex: 1; }
+.gd-cq { margin: 12px 0; } .gd-cq .qq { font-weight: 800; margin-bottom: 6px; } .gd-cq button { display: block; width: 100%; text-align: left; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 9px 12px; margin-bottom: 6px; font: 700 14.5px inherit; font-family: inherit; cursor: pointer; min-height: 42px; } .gd-cq button.sel { border-color: var(--primary); background: var(--bg-soft); } .gd-cq button.ok { background: #DCFCE7; border-color: #22C55E; } .gd-cq button.bad { background: #FEE2E2; border-color: #EF4444; } .gd-cq .ex { font-size: 12.5px; color: var(--text-muted); }
 .gd-lawn.z-bamboo { --bed: #CFE8B0; --bed2: #BEDD9C; --bedl: rgba(70,130,50,.4); background: repeating-linear-gradient(90deg, #7FB05A 0 12px, #5A8A3C 12px 14px); border-color: #5A8A3C; }
 .gd-lawn.z-savanna { --bed: #F0DC98; --bed2: #E6CE80; --bedl: rgba(160,120,40,.45); background: repeating-linear-gradient(90deg, #D9B866 0 12px, #B8923F 12px 14px); border-color: #A8812F; }
 .gd-lawn.z-jungle { --bed: #6BB06E; --bed2: #58A05C; --bedl: rgba(20,70,35,.45); background: repeating-linear-gradient(90deg, #3C7A48 0 12px, #2A5E36 12px 14px); border-color: #2A5E36; }
@@ -347,6 +360,8 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
         <span class="gd-pill mine" title="Xu — dùng chung với phần Luyện từ"><i class="coin"></i> <span id="xu">0</span></span>
         <span class="gd-pill mine" title="Lượt tưới nước còn lại">💧 <span id="wt">0</span></span>
         <button class="gd-pill btn mine" id="friend"><i class="ic" data-ic="visit"></i>Thăm bạn</button>
+        <button class="gd-pill btn mine" id="questBtn" title="Nhiệm vụ, quà từ thầy cô và dự án của lớp">🎯 Nhiệm vụ <b class="gd-dot" id="questDot" style="display:none">0</b></button>
+        <button class="gd-pill btn mine" id="passBtn" title="Hộ chiếu văn hoá: học tiếng Anh qua các khu quốc gia">🛂 Hộ chiếu</button>
         <button class="gd-earn mine" id="earn"><i class="ic" data-ic="star"></i>Kiếm xu</button>
       </div>
     </div>
@@ -393,6 +408,17 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
   <label style="display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700"><input type="checkbox" id="fopen" style="width:20px;height:20px"> Cho phép bạn bè xem vườn của mình (bằng email hoặc link)</label>
   <div class="gd-act"><button class="gd-btn" id="frenew" title="Link cũ sẽ không còn dùng được">🔄 Đổi link mới</button><button class="gd-btn" id="fclose">Đóng</button></div>
 </div></div>
+<div class="gd-modal" id="qstm"><div class="gd-box">
+  <h3>🎯 Nhiệm vụ &amp; quà tặng</h3>
+  <div class="gd-tabs2" id="qsttabs"></div><div id="qstbody"></div>
+  <div class="gd-act"><button class="gd-btn" id="qstclose">Đóng</button></div>
+</div></div>
+<div class="gd-modal" id="pspm"><div class="gd-box" style="max-width:640px">
+  <h3>🛂 Hộ chiếu văn hoá</h3><p class="gd-sub" id="pspsub"></p>
+  <div class="gd-pass" id="pspgrid"></div>
+  <div class="gd-act"><button class="gd-btn" id="pspclose">Đóng</button></div>
+</div></div>
+<div class="gd-modal" id="culm"><div class="gd-box gd-cul" style="max-width:520px"><div id="culbody"></div><div class="gd-act"><button class="gd-btn" id="culclose">Đóng</button></div></div></div>
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
@@ -409,6 +435,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-world5.js?v=1"></script>
 <script src="js/garden-world6.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
+<script src="js/garden-culture.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -421,7 +448,7 @@ var tt; function toast(t, ms) { var el = $('toast'); el.innerHTML = H(t); el.cla
 function api(url, body) { return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; throw e; } return d; }); }); }
 function NOW() { return Date.now() + SKEW; }
 function fmtT(ms) { var m = Math.ceil(ms / 60000); if (m < 1) return '<1 ph'; if (m < 60) return m + ' ph'; var h = Math.floor(m / 60); return h + 'g' + (m % 60 ? (m % 60) + 'p' : ''); }
-function setState(d) { S = d.garden; if (!VISIT) COINS = d.coins; SKEW = (S.now || Date.now()) - Date.now(); render(); }
+function setState(d) { S = d.garden; if (!VISIT) COINS = d.coins; if (typeof d.inbox === 'number') INBOX = d.inbox; SKEW = (S.now || Date.now()) - Date.now(); render(); if (window.updDots) window.updDots(); }
 
 /* ───────── biểu tượng vẽ tay (thay emoji) ───────── */
 var ICONS = {
@@ -571,6 +598,7 @@ function askUnlock(z) {
   if (!confirm('Mở khu "' + z.name + '" với giá ' + z.cost + ' xu?\n(Bạn đang có ' + COINS + ' xu)')) return;
   api('/api/garden/zone/unlock', { zone: z.id }).then(function (d) { setState(d); toast('🎉 Đã mở khu "' + z.name + '"!', 3200); if (window.ewtCelebrate) window.ewtCelebrate(['party-popper', 'star', 'sparkles'], { count: 16, from: $('xu') }); enterZone(z.id); }).catch(function (e) { toast(e.message, 3600); if (e.data && e.data.need) $('earn').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 600 }); });
 }
+function CULT() { return (window.EWTCulture || {}).CULTURE || {}; }
 function brushLabel() { var it = D.BY[BRUSH.id], p = priceOf(it, it.kind), b = bagN(it.id); return 'Đã chọn ' + it.name + (b ? ' (🧺 dùng từ giỏ, còn ' + b + ')' : p ? ' (' + p + ' 🪙)' : it.cost ? ' (🎟️ phiếu miễn phí)' : ' (miễn phí)'); }
 function renderTools() {
   [].forEach.call(document.querySelectorAll('[data-tool]'), function (b) { b.classList.toggle('on', TOOL === b.getAttribute('data-tool')); });
@@ -582,14 +610,14 @@ function renderTools() {
   else if (TOOL === 'remove') hint = '🧹 Chạm vào món muốn dọn. Món đã mua sẽ tự vào 🧺 Giỏ để dùng lại, không mất xu.';
   else if (BRUSH && BRUSH.kind === 'big') hint = brushLabel() + ' — chạm vào ô góc trên-trái, cần đủ ' + D.BY[BRUSH.id].w + '×' + D.BY[BRUSH.id].h + ' ô trống liền nhau.';
   else if (BRUSH) hint = brushLabel() + ' — chạm vào ô đất trống để đặt. (Bấm lại món trong cửa hàng để bỏ chọn)';
-  else hint = innerWidth < 640 ? 'Chọn món ở khay bên dưới rồi chạm ô đất 🌱' : 'Chọn một món ở khay cửa hàng bên dưới rồi chạm vào ô đất trống để trồng nhé 🌱';
+  else hint = (CULT()[VIEW] ? '🛂 Chạm vào công trình để học từ vựng tiếng Anh về nơi này. ' : '') + (innerWidth < 640 ? 'Chọn món ở khay bên dưới rồi chạm ô đất 🌱' : 'Chọn một món ở khay cửa hàng bên dưới rồi chạm vào ô đất trống để trồng nhé 🌱');
   $('hint').innerHTML = H(hint);
 }
 
 /* ───────── thú cưng đi dạo ───────── */
 function renderPets(ts) {
   var el = $('pets'), h = '', dm = zdim(D.ZBY[VIEW]);
-  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 , farm: [['pf', 6], ['lf', 3]], sakura: [['pf', 16], ['lf', 4]], autumn: [['lf', 16], ['pf', 3]], mountain: [['gl', 7], ['pf', 3]], desert: [['gl', 6]], candy: [['pt', 10], ['gl', 6]], ocean: [['gl', 16]], sky: [['pt', 8], ['gl', 8]], space: [['gl', 18]]}; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
+  S.pets.filter(function (p) { return p.z === VIEW; }).forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
   el.innerHTML = h;
 }
 function wander() {
@@ -635,7 +663,7 @@ function renderShop() {
   $('items').scrollLeft = keep;
   var fv = Object.keys(CLSN).filter(function (k) { return bg.free && bg.free[k] > 0; }).map(function (k) { return CLSN[k] + ' ×' + bg.free[k]; });
   $('note').innerHTML = H(TAB === 'bag' ? '🧺 Chọn món trong giỏ rồi chạm ô đất trống để đặt (không tốn xu).' + (fv.length ? ' 🎟️ Phiếu miễn phí: ' + fv.join(' · ') + ' — tự dùng khi bạn mua món cùng loại.' : '')
-    : TAB === 'big' ? '🏠 Công trình lớn chiếm nhiều ô liền nhau: chọn món rồi chạm vào ô góc trên-trái của chỗ muốn đặt (rê chuột để xem trước).' : TAB === 'pet' ? '🐾 Cho ăn mỗi ngày +1 🪙/bé (tối đa ' + D.RULES.feedCapDay + '/ngày). Vườn có ' + S.pets.length + '/' + S.slots + ' chỗ — lên cấp để có thêm chỗ.' : '🌱 Hoa/cây lớn theo thời gian thật, kể cả khi bạn không online. Tưới 💧 hoặc ⚡ cho lớn ngay. Món miễn phí luôn có sẵn!' + (fv.length ? ' 🎟️ ' + fv.join(' · ') : ''));
+    : TAB === 'big' ? '🏠 Công trình lớn chiếm nhiều ô liền nhau: chọn món rồi chạm vào ô góc trên-trái của chỗ muốn đặt (rê chuột để xem trước).' : TAB === 'pet' ? '🐾 Mỗi bé chỉ sống ở MỘT khu — nhận nuôi ở khu nào thì bé ở khu đó (qua khu khác cần nhận bé khác). Khu này có ' + S.pets.filter(function (p) { return p.z === VIEW; }).length + '/' + S.slots + ' chỗ. Cho ăn mỗi ngày +1 🪙/bé (tối đa ' + D.RULES.feedCapDay + '/ngày).' : '🌱 Hoa/cây lớn theo thời gian thật, kể cả khi bạn không online. Tưới 💧 hoặc ⚡ cho lớn ngay. Món miễn phí luôn có sẵn!' + (fv.length ? ' 🎟️ ' + fv.join(' · ') : ''));
 }
 
 /* ───────── thao tác ───────── */
@@ -644,6 +672,7 @@ function tileEl(i) { return document.querySelector('.gt[data-i="' + i + '"]'); }
 function onTile(i) {
   if (VISIT) return;
   closePop(); var t = S.tiles[i]; if (t && t.ref != null) { i = t.ref; t = S.tiles[i]; } var it = t && D.BY[t.k];
+  if (!it && !TOOL && !BRUSH && D.isBlocked(i) && openCulture(i)) return;
   if (TOOL === 'water') { if (!it) return toast('Ô này đang trống.'); return api('/api/garden/water', { i: i }).then(function (d) { setState(d); var e = tileEl(i); if (e) floatText(e, '💧 -25%'); }).catch(function (e) { toast(e.message, 3600); }); }
   if (TOOL === 'harvest') return doHarvest(i);
   if (TOOL === 'remove') { if (!it) return toast('Ô này đang trống.'); return api('/api/garden/remove', { i: i }).then(function (d) { setState(d); if (d.stored) toast('🧺 Đã cất ' + d.stored + ' vào giỏ — dùng lại ở tab Giỏ nhé.', 3000); }).catch(function (e) { toast(e.message); }); }
@@ -689,7 +718,7 @@ document.addEventListener('click', function (e) {
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
   if ((el = t.closest('[data-pick]'))) {
     var id = el.getAttribute('data-pick'), kind = el.getAttribute('data-kind');
-    if (kind === 'pet') { var pt = D.PBY[id], pc = priceOf(pt, 'pet'); if (pt.lvl > S.level && !bagPetN(id)) return toast('Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.'); if (!confirm(bagPetN(id) ? 'Nhận nuôi ' + pt.name + ' từ giỏ (miễn phí)?' : pc ? 'Nhận nuôi ' + pt.name + ' với giá ' + pt.cost + ' xu?' : 'Nhận nuôi ' + pt.name + ' bằng phiếu miễn phí?')) return; return api('/api/garden/pet/adopt', { id: id }).then(function (d) { setState(d); toast('🎉 Chào mừng ' + pt.name + ' đến khu vườn!'); }).catch(function (er) { toast(er.message, 3600); }); }
+    if (kind === 'pet') { if (!D.ZBY[VIEW]) return toast('Hãy vào một khu rồi nhận nuôi thú cưng ở đó nhé — mỗi bé chỉ sống ở một khu.', 3600); var pt = D.PBY[id], pc = priceOf(pt, 'pet'); if (pt.lvl > S.level && !bagPetN(id)) return toast('Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.'); if (!confirm(bagPetN(id) ? 'Nhận nuôi ' + pt.name + ' từ giỏ (miễn phí)?' : pc ? 'Nhận nuôi ' + pt.name + ' với giá ' + pt.cost + ' xu?' : 'Nhận nuôi ' + pt.name + ' bằng phiếu miễn phí?')) return; return api('/api/garden/pet/adopt', { id: id, zone: VIEW }).then(function (d) { setState(d); toast('🎉 Chào mừng ' + pt.name + ' đến khu "' + D.ZBY[VIEW].name + '"!'); }).catch(function (er) { toast(er.message, 3600); }); }
     var it = D.BY[id]; if (it.lvl > S.level && !bagN(id)) return toast('Cần vườn cấp ' + it.lvl + ' để mở món này. Hãy trang trí thêm để lên cấp nhé!', 3400);
     BRUSH = BRUSH && BRUSH.id === id ? null : { id: id, kind: kind }; TOOL = null; render(); return;
   }
@@ -801,6 +830,104 @@ function openFriend() { $('frm').classList.add('on'); $('fmsg').textContent = ''
 function goVisit() { var em = $('femail').value.trim(); if (!em) { $('fmsg').textContent = 'Hãy nhập email của bạn bè nhé.'; return; } location.href = 'garden.html?email=' + encodeURIComponent(em); }
 $('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') goVisit(); });
 $('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
+
+/* ───────── nhiệm vụ · quà thầy cô · lớp học ───────── */
+var INBOX = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch' };
+function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch (e) {} }
+function claimable() { var q = S && S.quests; if (!q) return 0; var n = 0; q.daily.concat(q.weekly).forEach(function (x) { if (x.p >= x.goal && !x.claimed) n++; }); q.streak.miles.forEach(function (m) { if (m.ready) n++; }); return n; }
+window.updDots = function () { var n = (S && !VISIT ? claimable() : 0) + INBOX, d = $('questDot'); if (d) { d.textContent = n; d.style.display = n ? '' : 'none'; } };
+function bar(p, g) { return '<div class="gd-pb"><i style="width:' + Math.round(p / g * 100) + '%"></i><span>' + p + '/' + g + '</span></div>'; }
+function qrow(kind, x) { var done = x.p >= x.goal; return '<div class="gd-qr' + (x.claimed ? ' cl' : done ? ' dn' : '') + '"><div class="qt"><b>' + esc(x.title) + '</b><small>Thưởng: ' + H(x.rw) + '</small>' + bar(x.p, x.goal) + '</div><button class="gd-btn' + (done && !x.claimed ? ' pri' : '') + '" data-qc="' + kind + ':' + x.id + '"' + (done && !x.claimed ? '' : ' disabled') + '>' + (x.claimed ? '✅ Đã nhận' : done ? '🎁 Nhận' : 'Chưa xong') + '</button></div>'; }
+function openQuests(tab) { if (tab) QTAB = tab; $('qstm').classList.add('on'); drawQst(); }
+function drawQst() {
+  var T = [['q', '🎯 Nhiệm vụ'], ['g', '🎁 Quà' + (INBOX ? ' (' + INBOX + ')' : '')], ['c', '🏫 Lớp học']];
+  $('qsttabs').innerHTML = T.map(function (t) { return '<button data-qtab="' + t[0] + '"' + (QTAB === t[0] ? ' class="on"' : '') + '>' + t[1] + '</button>'; }).join('');
+  var b = $('qstbody');
+  if (QTAB === 'q') {
+    var q = S.quests, st = q.streak, h = '<div class="gd-streak"><div class="fl">🔥</div><div><b>Chuỗi ' + st.n + ' ngày chăm chỉ</b><small>' + (st.today ? '✅ Hôm nay bạn đã giữ được chuỗi!' : 'Hoàn thành ít nhất <b>2 nhiệm vụ</b> hôm nay để giữ chuỗi (đã xong ' + st.doneToday + '/2).') + (st.best ? ' Kỷ lục: ' + st.best + ' ngày.' : '') + '</small></div></div>';
+    h += '<div class="gd-miles">' + st.miles.map(function (m) { return '<' + (m.ready ? 'button data-qc="s:' + m.d + '"' : 'div') + ' class="gd-ms' + (m.ready ? ' ready' : m.got ? ' got' : '') + '"><b>' + (m.got ? '✅ ' : m.ready ? '🎁 ' : '🔒 ') + m.d + ' ngày</b>' + H(m.rw) + '</' + (m.ready ? 'button' : 'div') + '>'; }).join('') + '</div>';
+    h += '<div class="gd-h">📅 Hôm nay</div>' + q.daily.map(function (x) { return qrow('d', x); }).join('') + '<div class="gd-h">🗓️ Tuần này</div>' + q.weekly.map(function (x) { return qrow('w', x); }).join('');
+    b.innerHTML = h;
+  } else if (QTAB === 'g') {
+    b.innerHTML = '<p class="gd-sub">Đang tải…</p>';
+    api('/api/garden/inbox').then(function (d) {
+      if (!d.gifts.length) { b.innerHTML = '<p class="gd-sub">Chưa có quà nào. 🎁 Hoàn thành bài tập, bài trắc nghiệm hoặc bộ từ mà thầy cô giao để nhận <b>50 xu + 1 rương quà</b>; thầy cô cũng có thể tặng quà thưởng cho bạn.</p>'; return; }
+      b.innerHTML = '<div class="gd-act" style="margin:0 0 8px"><button class="gd-btn pri" id="gcAll">🎁 Nhận tất cả (' + d.gifts.length + ')</button></div>' + d.gifts.map(function (g) {
+        var parts = []; if (g.xu) parts.push(g.xu + ' 🪙'); if (g.chests) parts.push(g.chests + ' rương quà'); if (g.item) parts.push('công trình ' + g.item.name);
+        return '<div class="gd-gift"><div class="qt"><b>' + esc(g.label || 'Quà tặng') + '</b><br><small>Từ ' + esc(g.from || 'EWT') + ' · ' + H(parts.join(' + ')) + '</small></div><button class="gd-btn pri" data-gc="' + g.id + '">Nhận</button></div>';
+      }).join('');
+    }).catch(function (e) { b.innerHTML = '<p class="gd-sub">' + esc(e.message) + '</p>'; });
+  } else {
+    b.innerHTML = '<p class="gd-sub">Đang tải…</p>';
+    api('/api/garden/class').then(function (d) {
+      if (!d.joined) { b.innerHTML = '<p class="gd-sub">Bạn chưa tham gia lớp nào. Vào <b>Hồ sơ</b> để chọn lớp, rồi cả lớp có thể cùng góp xu xây công trình chung nhé!</p>'; return; }
+      if (!d.projects.length) { b.innerHTML = '<p class="gd-sub">🏫 Lớp của bạn chưa có dự án nào. Khi thầy cô tạo một dự án (ví dụ xây Tháp Eiffel), cả lớp sẽ cùng góp xu ở đây — xong là <b>mọi bạn trong lớp đều nhận công trình</b>!</p>'; return; }
+      b.innerHTML = d.projects.map(function (p) {
+        var done = p.status === 'done';
+        return '<div class="gd-proj"><h4>🏗️ ' + esc(p.item.name) + ' — lớp ' + esc(p.group) + '</h4><small class="gd-sub" style="display:block;margin:0">' + (done ? '🎉 Cả lớp đã xây xong! Công trình đã được gửi vào mục Quà của mỗi bạn.' : 'Cả lớp cùng góp xu. Bạn đã góp: <b>' + p.mine + ' 🪙</b>') + '</small>' + bar(p.raised, p.target) +
+          (p.top.length ? '<small class="gd-sub" style="display:block;margin:6px 0 0">🏅 Góp nhiều nhất: ' + p.top.map(function (t) { return esc(t.name) + ' (' + t.amount + ')'; }).join(' · ') + '</small>' : '') +
+          (done ? '' : '<div class="row"><input type="number" min="1" max="5000" value="50" id="cin' + p.id + '" aria-label="Số xu muốn góp"><button class="gd-btn pri" data-cc="' + p.id + '">Góp xu</button></div>') + '</div>';
+      }).join('');
+    }).catch(function (e) { b.innerHTML = '<p class="gd-sub">' + esc(e.message) + '</p>'; });
+  }
+}
+function celebrate(n) { if (window.ewtCelebrate) window.ewtCelebrate(['party-popper', 'star', 'sparkles', 'coin'], { count: n || 12, from: $('xu') }); }
+function claimQ(s) { var a = s.split(':'); api('/api/garden/quests/claim', { kind: a[0], id: a[1] }).then(function (d) { setState(d); toast('🎉 Đã nhận: ' + (d.reward || []).join(' · '), 5200); celebrate(); drawQst(); }).catch(function (e) { toast(e.message, 3400); }); }
+function claimG(body) { api('/api/garden/inbox/claim', body).then(function (d) { setState(d); toast('🎁 Đã nhận: ' + (d.reward || []).join(' · '), 5200); celebrate(18); drawQst(); }).catch(function (e) { toast(e.message, 3400); }); }
+function contribute(pid) { var v = +($('cin' + pid) || {}).value; if (!(v >= 1)) return toast('Hãy nhập số xu muốn góp.'); api('/api/garden/class/contribute', { project_id: pid, amount: v }).then(function (d) { COINS = d.coins; $('xu').textContent = COINS; toast(d.done ? '🎉 Cả lớp đã xây xong công trình! Hãy nhận ở mục Quà.' : '💛 Bạn đã góp ' + d.gave + ' xu cho lớp!', 4200); if (d.done) { INBOX++; celebrate(24); } drawQst(); }).catch(function (e) { toast(e.message, 3400); }); }
+
+/* ───────── Hộ chiếu văn hoá ───────── */
+function stamped(zid) { return (S.passport || []).indexOf(zid) >= 0; }
+function openPassport() {
+  var ids = Object.keys(CULT()).sort(function (a, b) { return D.ZBY[a].lvl - D.ZBY[b].lvl || D.ZBY[a].cost - D.ZBY[b].cost; }), n = ids.filter(stamped).length, nx = n < 5 ? 5 : n < 10 ? 10 : n < 15 ? 15 : 0;
+  $('pspsub').innerHTML = 'Chạm vào công trình trong các khu quốc gia để học từ vựng và câu tiếng Anh, rồi làm mini-quiz để nhận <b>dấu hộ chiếu</b> + quà. Bạn đã có <b>' + n + '/' + ids.length + '</b> dấu.' + (nx ? ' Đủ ' + nx + ' dấu sẽ có quà lớn!' : ' 🏅 Bạn đã đủ tất cả!');
+  $('pspgrid').innerHTML = ids.map(function (id) {
+    var z = D.ZBY[id], open = S.zones.indexOf(id) >= 0, fl = FLAGOF[id], r = EWTFlags.RATIO[fl];
+    return '<button class="gd-pc' + (open ? '' : ' lock') + '" data-pz="' + id + '"><svg viewBox="0 0 100 ' + (100 * r).toFixed(1) + '">' + EWTFlags.draw(fl, 0, 0, 100) + '</svg><b>' + esc(CULT()[id].vi) + '</b><small>' + (open ? (stamped(id) ? 'Đã đóng dấu' : 'Chưa có dấu') : '🔒 Cấp ' + z.lvl + ' · ' + z.cost + ' xu') + '</small>' + (stamped(id) ? '<span class="stp">ĐÃ<br>ĐẾN</span>' : '') + '</button>';
+  }).join('');
+  $('pspm').classList.add('on');
+}
+function openCulture(i) {
+  var z = D.zoneOfCell(i), C = z && CULT()[z.id]; if (!C) return false;
+  var c = i % D.PER, col = c % D.MAXC, row = Math.floor(c / D.MAXC), blk = null;
+  z.blocks.forEach(function (b) { if (!b.nb && col >= b.x && col < b.x + b.w && row >= b.y && row < b.y + b.h) blk = b; });
+  var sp = blk && C.spots[blk.k]; if (!sp) return false;
+  var h = '<h3>🛂 ' + esc(sp[0]) + ' <button class="gd-sp" data-say="' + esc(sp[0]) + '" aria-label="Nghe phát âm">🔊</button></h3><div class="vi">' + esc(sp[1]) + ' · ' + esc(C.vi) + '</div>';
+  h += '<div class="fact">' + esc(sp[2]) + ' <button class="gd-sp" data-say="' + esc(sp[2]) + '" aria-label="Nghe cả câu">🔊</button><small>' + esc(sp[3]) + '</small></div><div class="gd-words">' + sp[4].map(function (w) { return '<div><b>' + esc(w[0]) + '</b><span>' + esc(w[1]) + '</span><button class="gd-sp" data-say="' + esc(w[0]) + '" aria-label="Nghe từ">🔊</button></div>'; }).join('') + '</div>';
+  h += '<div class="gd-act" style="justify-content:space-between;align-items:center"><small class="gd-sub" style="margin:0">' + (stamped(z.id) ? '✅ Bạn đã có dấu hộ chiếu của ' + esc(C.vi) + '.' : 'Làm mini-quiz 3 câu (đúng ≥ 2 câu) để nhận dấu + quà.') + '</small><button class="gd-btn pri" data-cqs="' + z.id + '">📝 Mini-quiz</button></div>';
+  $('culbody').innerHTML = h; $('culm').classList.add('on'); say(sp[0]); return true;
+}
+var CQ = null;
+function drawCulQuiz() {
+  var C = CULT()[CQ.zone], h = '<h3>📝 Mini-quiz: ' + esc(C.country) + '</h3><p class="gd-sub">Chọn đáp án đúng cho cả 3 câu rồi bấm Nộp bài.</p>';
+  CQ.qs.forEach(function (q, qi) {
+    h += '<div class="gd-cq"><div class="qq">' + (qi + 1) + '. ' + esc(q.q) + '</div>' + q.opts.map(function (o, oi) {
+      var cls = CQ.res ? (CQ.res[qi].answer === oi ? ' ok' : CQ.ans[qi] === oi ? ' bad' : '') : (CQ.ans[qi] === oi ? ' sel' : '');
+      return '<button class="' + cls.trim() + '" data-cq="' + qi + ':' + oi + '"' + (CQ.res ? ' disabled' : '') + '>' + esc(o) + '</button>';
+    }).join('') + (CQ.res ? '<div class="ex">' + (CQ.res[qi].ok ? '✅ ' : '❌ ') + esc(CQ.res[qi].expl) + '</div>' : '') + '</div>';
+  });
+  if (CQ.res) h += '<div class="gd-fb ' + (CQ.passed ? 'ok' : 'bad') + '">' + (CQ.passed ? '🎉 Bạn đúng ' + CQ.correct + '/3!' + (CQ.reward && CQ.reward.length ? '<br>Nhận: ' + H(CQ.reward.join(' · ')) : '') : '😅 Bạn đúng ' + CQ.correct + '/3 — cần ít nhất 2 câu. Thử lại nhé!') + '</div><div class="gd-act"><button class="gd-btn pri" data-cqs="' + CQ.zone + '">🔄 Làm lại</button></div>';
+  else h += '<div class="gd-act"><button class="gd-btn pri" id="cqSubmit"' + (CQ.ans.filter(function (x) { return x != null; }).length < CQ.qs.length ? ' disabled' : '') + '>Nộp bài</button></div>';
+  $('culbody').innerHTML = h;
+}
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if (t.closest('#questBtn')) { openQuests(); return; }
+  if (t.closest('#passBtn')) { openPassport(); return; }
+  if (t.closest('#qstclose') || t.id === 'qstm') { $('qstm').classList.remove('on'); return; }
+  if (t.closest('#pspclose') || t.id === 'pspm') { $('pspm').classList.remove('on'); return; }
+  if (t.closest('#culclose') || t.id === 'culm') { $('culm').classList.remove('on'); try { window.speechSynthesis.cancel(); } catch (er) {} return; }
+  if ((el = t.closest('[data-qtab]'))) { QTAB = el.getAttribute('data-qtab'); drawQst(); return; }
+  if ((el = t.closest('[data-qc]'))) { if (!el.disabled) claimQ(el.getAttribute('data-qc')); return; }
+  if ((el = t.closest('[data-gc]'))) { claimG({ id: +el.getAttribute('data-gc') }); return; }
+  if (t.closest('#gcAll')) { claimG({ all: true }); return; }
+  if ((el = t.closest('[data-cc]'))) { contribute(+el.getAttribute('data-cc')); return; }
+  if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
+  if ((el = t.closest('[data-pz]'))) { var zid = el.getAttribute('data-pz'); if (S.zones.indexOf(zid) < 0) return toast('Khu này cần vườn cấp ' + D.ZBY[zid].lvl + ' và ' + D.ZBY[zid].cost + ' xu để mở.', 3600); $('pspm').classList.remove('on'); enterZone(zid); return; }
+  if ((el = t.closest('[data-cqs]'))) { var z2 = el.getAttribute('data-cqs'); api('/api/garden/culture/quiz?zone=' + z2).then(function (d) { CQ = { zone: z2, qs: d.questions, ans: [], res: null }; drawCulQuiz(); }).catch(function (er) { toast(er.message, 3400); }); return; }
+  if ((el = t.closest('[data-cq]')) && CQ && !CQ.res) { var a = el.getAttribute('data-cq').split(':'); CQ.ans[+a[0]] = +a[1]; drawCulQuiz(); return; }
+  if (t.closest('#cqSubmit') && CQ) { api('/api/garden/culture/answer', { zone: CQ.zone, answers: CQ.ans }).then(function (d) { CQ.res = d.results; CQ.passed = d.passed; CQ.correct = d.correct; CQ.reward = d.reward; setState(d); drawCulQuiz(); if (d.passed) celebrate(d.first ? 24 : 10); }).catch(function (er) { toast(er.message, 3400); }); return; }
+});
 
 /* ───────── khởi động ───────── */
 buildScene(); paintIcons(); gfxInit(); timeOfDay(); setInterval(timeOfDay, 60000);

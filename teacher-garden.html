@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Thưởng & dự án EWT Garden — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=25">
+<style>
+.pp-wrap { max-width: 1100px; margin: 0 auto; padding: 14px 16px 70px; }
+.pp-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .pp-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.pp-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; min-height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .pp-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-soft); } .pp-btn.pri { background: var(--primary); color: #fff; border-color: var(--primary); } .pp-btn:disabled { opacity: .5; cursor: default; }
+.pp-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.pp-in, .pp-sel, .pp-ta { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; width: 100%; min-width: 0; box-sizing: border-box; } .pp-in:focus, .pp-ta:focus, .pp-sel:focus { outline: none; border-color: var(--primary); }
+.pp-sel { width: auto; }
+.pp-how { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; } .pp-how b { color: var(--text); }
+.pp-warn { background: var(--warning-soft); color: #92400e; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; margin-bottom: 12px; }
+.pp-row { display: grid; grid-template-columns: minmax(150px, 1.1fr) minmax(180px, 1.4fr) minmax(130px, 1fr) auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.pp-row:last-child { border-bottom: 0; }
+.pp-nm b { display: block; } .pp-nm small { color: var(--text-faint); font-size: 12px; word-break: break-all; }
+.pp-sw { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; } .pp-sw input { width: 20px; height: 20px; }
+.pp-more { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.pp-more .pp-ta { flex: 1 1 260px; min-height: 40px; height: 40px; resize: vertical; }
+.pp-st { font-size: 12px; color: var(--text-muted); } .pp-st.bad { color: #dc2626; font-weight: 700; } .pp-st.ok { color: #059669; }
+.pp-modal { position: fixed; inset: 0; background: rgba(17,24,39,.55); z-index: 300; display: none; align-items: flex-start; justify-content: center; padding: 20px 12px; overflow: auto; } .pp-modal.on { display: flex; }
+.pp-sheet { background: #fff; border-radius: 16px; width: 100%; max-width: 660px; padding: 14px; } .pp-sheet h3 { margin: 0 0 8px; }
+.pp-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .pp-toast.on { opacity: 1; }
+@media (max-width: 760px) { .pp-row { grid-template-columns: 1fr; gap: 8px; } }
+</style>
+<style>
+.gg-m { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; } .gg-m:last-child { border-bottom: 0; } .gg-m input { width: 20px; height: 20px; }
+.gg-f { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin: 8px 0; } .gg-f label { display: grid; gap: 4px; font-size: 13px; font-weight: 700; } .gg-f .pp-in { width: 130px; }
+.gg-bar { height: 16px; background: #E5E7EB; border-radius: 99px; overflow: hidden; margin: 6px 0; } .gg-bar i { display: block; height: 100%; background: linear-gradient(90deg, #34D399, #22C55E); }
+</style>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="pp-wrap">
+  <div class="pp-top">
+    <h1>🌷 Thưởng &amp; dự án EWT Garden</h1>
+    <select class="pp-sel" id="clsSel" aria-label="Chọn lớp"></select>
+    <a class="pp-btn" href="teacher.html">← Khu vực giáo viên</a>
+  </div>
+  <div class="pp-box pp-how">
+    <b>Học sinh tự nhận thưởng khi hoàn thành bài bạn giao</b> (bài tập, đề trắc nghiệm, bộ từ theo bài): mỗi bài <b>50 xu + 1 rương quà</b> trong khu vườn EWT Garden, chỉ tính các bài hoàn thành từ khi tính năng này bật. Ngoài ra bạn có thể <b>tặng thêm xu thưởng</b> cho học sinh giỏi và tạo <b>dự án cả lớp</b> để cả lớp cùng góp xu xây một công trình lớn.
+  </div>
+  <div class="pp-box">
+    <h3 style="margin:0 0 6px">🎁 Tặng quà thưởng</h3>
+    <div class="pp-how">Chọn học sinh (hoặc cả lớp), nhập số xu (tối đa 500/lần) và/hoặc số rương quà (tối đa 3/lần). Học sinh sẽ thấy quà ở mục <b>🎯 Nhiệm vụ → Quà</b> trong EWT Garden.</div>
+    <div class="gg-f">
+      <label>Số xu<input class="pp-in" id="gXu" type="number" min="0" max="500" value="100"></label>
+      <label>Rương quà<input class="pp-in" id="gCh" type="number" min="0" max="3" value="0"></label>
+      <label style="flex:1;min-width:200px">Lời nhắn (hiện cho học sinh)<input class="pp-in" id="gNote" maxlength="80" placeholder="Ví dụ: Em làm bài rất tốt!" style="width:100%"></label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pp-btn pri" id="gSel">🎁 Tặng cho học sinh đã chọn</button><button class="pp-btn" id="gAll">🎁 Tặng cho cả lớp</button><button class="pp-btn" id="gPick">☑️ Chọn tất cả / bỏ chọn</button></div>
+    <div id="mem" style="margin-top:10px"></div>
+  </div>
+  <div class="pp-box">
+    <h3 style="margin:0 0 6px">🏗️ Dự án cả lớp</h3>
+    <div class="pp-how">Cả lớp cùng góp xu (từ xu mỗi bạn tự kiếm) để xây một công trình lớn. Khi đủ xu, <b>mọi học sinh trong lớp đều nhận công trình đó</b> vào mục Quà. Mỗi lớp chỉ có một dự án đang mở.</div>
+    <div class="gg-f">
+      <label>Công trình<select class="pp-sel" id="pItem"></select></label>
+      <label>Số xu mục tiêu<input class="pp-in" id="pTarget" type="number" min="100" max="200000"></label>
+      <button class="pp-btn pri" id="pMake">➕ Tạo dự án</button>
+    </div>
+    <div id="projs"></div>
+  </div>
+</main>
+<div class="pp-toast" id="toast"></div>
+<script src="js/track.js?v=1" defer></script>
+<script src="js/main.js?v=47"></script>
+<script src="js/garden-data.js?v=14"></script>
+<script>
+(function () {
+var $ = function (id) { return document.getElementById(id); }, CUR = 0, MEM = [], D = window.EWTGardenData;
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function toast(t) { var e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { e.classList.remove('on'); }, 3200); }
+function api(u, b) { return fetch(u, { method: b === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: b === undefined ? undefined : JSON.stringify(b) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || ('Lỗi ' + r.status)); return d; }); }); }
+var bigs = D.ITEMS.filter(function (i) { return i.kind === 'big'; }).sort(function (a, b) { return a.cost - b.cost; });
+$('pItem').innerHTML = bigs.map(function (i) { return '<option value="' + i.id + '" data-c="' + i.cost + '">' + esc(i.name) + ' (' + i.cost + ' xu)</option>'; }).join('');
+function syncTarget() { var o = $('pItem').selectedOptions[0]; $('pTarget').value = o ? o.getAttribute('data-c') : ''; } $('pItem').onchange = syncTarget; syncTarget();
+api('/api/groups').then(function (d) { $('clsSel').innerHTML = (d.groups || []).map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + ' (' + g.member_count + ' HS)</option>'; }).join(''); CUR = +$('clsSel').value || 0; loadClass(); }).catch(function (e) { toast(e.message); });
+$('clsSel').onchange = function () { CUR = +$('clsSel').value; loadClass(); };
+function loadClass() {
+  if (!CUR) { $('mem').innerHTML = '<div class="pp-how">Chưa có lớp nào.</div>'; return; }
+  api('/api/groups/' + CUR + '/members').then(function (d) {
+    MEM = (d.members || []).filter(function (m) { return m.user_id; });
+    $('mem').innerHTML = MEM.length ? MEM.map(function (m) { return '<label class="gg-m"><input type="checkbox" data-u="' + m.user_id + '"> <b>' + esc(m.name || m.invited_email) + '</b> <small style="color:var(--text-faint)">' + esc(m.email || '') + '</small></label>'; }).join('') : '<div class="pp-how">Lớp này chưa có học sinh đã đăng ký.</div>';
+  }).catch(function (e) { toast(e.message); });
+  loadProjects();
+}
+function loadProjects() {
+  api('/api/garden/teacher/projects?group_id=' + CUR).then(function (d) {
+    $('projs').innerHTML = (d.projects || []).length ? d.projects.map(function (p) {
+      var pc = Math.min(100, Math.round(p.raised / p.target * 100));
+      return '<div class="pp-box" style="margin:8px 0"><b>' + esc(p.item.name) + '</b> — ' + (p.status === 'open' ? '🟢 Đang mở' : p.status === 'done' ? '✅ Đã hoàn thành' : '⛔ Đã huỷ') + '<div class="gg-bar"><i style="width:' + pc + '%"></i></div>' + p.raised + ' / ' + p.target + ' xu' + (p.top.length ? ' · Góp nhiều nhất: ' + p.top.map(function (t) { return esc(t.name) + ' (' + t.amount + ')'; }).join(', ') : '') +
+        (p.status === 'open' ? '<div style="margin-top:8px"><button class="pp-btn" data-cancel="' + p.id + '">⛔ Huỷ dự án (hoàn xu cho các bạn)</button></div>' : '') + '</div>';
+    }).join('') : '<div class="pp-how">Lớp này chưa có dự án nào.</div>';
+  }).catch(function () {});
+}
+function gift(body) {
+  body.xu = +$('gXu').value || 0; body.chests = +$('gCh').value || 0; body.note = $('gNote').value;
+  api('/api/garden/teacher/gift', body).then(function (d) { toast('Đã tặng quà cho ' + d.count + ' học sinh 🎁'); }).catch(function (e) { toast(e.message); });
+}
+$('gSel').onclick = function () { var ids = [].map.call(document.querySelectorAll('#mem input:checked'), function (c) { return +c.getAttribute('data-u'); }); if (!ids.length) return toast('Hãy tick chọn học sinh trước.'); gift({ user_ids: ids }); };
+$('gAll').onclick = function () { if (!CUR) return; if (confirm('Tặng quà cho TẤT CẢ ' + MEM.length + ' học sinh trong lớp?')) gift({ group_id: CUR }); };
+$('gPick').onclick = function () { var cs = document.querySelectorAll('#mem input'), on = [].some.call(cs, function (c) { return !c.checked; }); [].forEach.call(cs, function (c) { c.checked = on; }); };
+$('pMake').onclick = function () { api('/api/garden/teacher/project', { group_id: CUR, item_id: $('pItem').value, target: +$('pTarget').value }).then(function () { toast('Đã tạo dự án cho lớp 🏗️'); loadProjects(); }).catch(function (e) { toast(e.message); }); };
+$('projs').onclick = function (e) { var b = e.target.closest('[data-cancel]'); if (!b) return; if (confirm('Huỷ dự án? Xu đã góp sẽ được hoàn lại cho từng bạn.')) api('/api/garden/teacher/project/cancel', { id: +b.getAttribute('data-cancel') }).then(function () { toast('Đã huỷ dự án'); loadProjects(); }).catch(function (x) { toast(x.message); }); };
+})();
+</script>
+</body>
+</html>

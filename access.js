@@ -51,6 +51,7 @@ const RULES = [
   ['POST', /^\/api\/garden\/quiz\/answer$/, 'game', 'EWT Garden: trả lời câu hỏi'], ['POST', /^\/api\/garden\/quiz\/flip$/, 'game', 'EWT Garden: lật thẻ thưởng'],
   ['POST', /^\/api\/garden\/(place|remove|water|harvest|harvest-all|zone\/unlock)$/, 'game', 'EWT Garden: chăm vườn'], ['POST', /^\/api\/garden\/pet\/.+$/, 'game', 'EWT Garden: thú cưng'],
   ['POST', /^\/api\/garden\/(name|share)$/, 'game', 'EWT Garden: đặt tên / chia sẻ vườn'],
+  ['POST', /^\/api\/garden\/(quests\/claim|inbox\/claim|class\/contribute|culture\/answer)$/, 'game', 'EWT Garden: nhiệm vụ / quà / hộ chiếu'],
   ['POST', /^\/api\/messages\/\d+$/, 'social', 'Gửi tin nhắn'], ['POST', /^\/api\/student-message$/, 'social', 'Gửi tin nhắn cho giáo viên'], ['POST', /^\/api\/upload(-recording)?$/, 'submit', 'Tải tệp / bản ghi âm lên'],
   ['POST', /^\/api\/assignments$/, 'teach', 'Giao bài tập'], ['POST', /^\/api\/exercises$/, 'teach', 'Tạo bài tập'], ['PUT', /^\/api\/exercises\/\d+$/, 'teach', 'Sửa bài tập'], ['DELETE', /^\/api\/exercises\/\d+$/, 'teach', 'Xoá bài tập'],
   ['POST', /^\/api\/mcq$/, 'teach', 'Tạo đề trắc nghiệm'], ['POST', /^\/api\/mcq\/\d+\/(assign|reset)$/, 'teach', 'Giao thêm / cho làm lại đề trắc nghiệm'], ['PATCH', /^\/api\/mcq\/\d+$/, 'teach', 'Đổi cài đặt đề trắc nghiệm'], ['DELETE', /^\/api\/mcq\/\d+$/, 'teach', 'Xoá đề trắc nghiệm'],
