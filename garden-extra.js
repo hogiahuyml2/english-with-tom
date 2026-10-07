@@ -219,6 +219,81 @@ module.exports = function (app, C) {
     if (out.err) return bad(res, out.err); res.json({ ok: true });
   });
 
+  /* ───────────────────────── Sự kiện theo mùa (Tết, Trung thu, Giáng sinh) ───────────────────────── */
+  const EV = G.EV;
+  const evForce = () => { try { return JSON.parse((one("SELECT v FROM garden_meta WHERE k='ev_force'") || {}).v || '{}') || {}; } catch (_) { return {}; } };
+  const evActive = () => EV.activeOn(vnDay(), evForce());
+  const evIsActive = (id) => evActive().some((e) => e.id === id);
+  const evRec = (st, key) => { if (!st.q.ev || typeof st.q.ev !== 'object') st.q.ev = {}; const r = st.q.ev[key] || (st.q.ev[key] = { d: '', n: 0, own: [], m: [] }); if (!Array.isArray(r.own)) r.own = []; if (!Array.isArray(r.m)) r.m = []; return r; };
+  // Ghi nhận món sự kiện học sinh vừa có (đặt / nhận nuôi / nhận từ bạn): tính vào bộ sưu tập của đợt sự kiện đang diễn ra
+  function evOwn(st, itemId) {
+    const it = G.BY[itemId] || G.PBY[itemId]; if (!it || !it.ev) return;
+    evActive().filter((e) => e.id === it.ev).forEach((e) => { const r = evRec(st, e.key); if (r.own.indexOf(itemId) < 0) r.own.push(itemId); });
+  }
+  function eventsView(st) {
+    const act = evActive(), nx = EV.upcomingOn(vnDay());
+    return {
+      active: act.map((a) => {
+        const e = EV.EBY[a.id], base = { id: e.id, key: a.key, name: e.name, short: e.short, icon: e.icon, en: e.en, from: a.from, to: a.to, left: a.left, forced: a.forced, col: e.col };
+        if (!st) return base;
+        const r = evRec(st, a.key), all = EV.itemsOf(e.id);
+        return Object.assign(base, { blurb: e.blurb, gift: e.gift, vocab: e.vocab, claimed: r.d === vnDay(), days: r.n, own: r.own.filter((x) => all.indexOf(x) >= 0), total: all.length, items: all,
+          miles: EV.MILES.map((m) => ({ n: m[0], label: m[2], rw: rwText(m[1]), got: r.m.indexOf(m[0]) >= 0, ready: r.own.length >= m[0] && r.m.indexOf(m[0]) < 0 })) });
+      }),
+      next: nx ? { id: nx.id, name: EV.EBY[nx.id].name, icon: EV.EBY[nx.id].icon, days: nx.days } : null
+    };
+  }
+  const evGift = (id, rnd) => {   // quà đăng nhập mỗi ngày trong sự kiện
+    if (id === 'tet') { const x = rnd(); return { xu: x < .5 ? 30 : x < .8 ? 60 : x < .95 ? 100 : 200 }; }
+    return { xu: 50, water: 2 };
+  };
+  app.post('/api/garden/event/daily', requireAuth, (req, res) => {
+    const id = String((req.body || {}).id || '');
+    const out = tx(() => {
+      const a = evActive().find((x) => x.id === id); if (!a) return { err: 'Sự kiện này hiện chưa diễn ra.' };
+      const st = load(req.user), r = evRec(st, a.key), today = vnDay();
+      if (r.d === today) return { err: 'Hôm nay bạn đã nhận quà sự kiện rồi — mai quay lại nhé!' };
+      r.d = today; r.n = (r.n | 0) + 1;
+      const rw = evGift(id, seeded(st.uid + ':' + a.key + ':' + today));
+      if (id === 'noel' && r.n % 5 === 0) rw.chest = 1;
+      const got = grant(st, req.user.id, rw); track(st, 'login', 0); save(st); return { st, got };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { reward: out.got });
+  });
+  app.post('/api/garden/event/milestone', requireAuth, (req, res) => {
+    const id = String((req.body || {}).id || ''), n = Number((req.body || {}).n);
+    const out = tx(() => {
+      const a = evActive().find((x) => x.id === id), m = EV.MILES.find((x) => x[0] === n); if (!a || !m) return { err: 'Mốc thưởng này không còn nữa.' };
+      const st = load(req.user), r = evRec(st, a.key), all = EV.itemsOf(id);
+      if (r.own.filter((x) => all.indexOf(x) >= 0).length < n) return { err: 'Bạn chưa sưu tầm đủ ' + n + ' món của sự kiện này.' };
+      if (r.m.indexOf(n) >= 0) return { err: 'Bạn đã nhận phần thưởng mốc này rồi.' };
+      r.m.push(n); const got = grant(st, req.user.id, m[1]); save(st); return { st, got };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { reward: out.got });
+  });
+  // Thầy cô: xem lịch, mở sớm / đóng / trả về lịch tự động
+  const evAdminList = () => {
+    const f = evForce(), today = vnDay(), act = evActive();
+    return EV.EVENTS.map((e) => {
+      const a = act.find((x) => x.id === e.id), ws = EV.windowsOf(e.id).filter((w) => w.to >= today), nxw = ws[0] || null;
+      return { id: e.id, name: e.name, icon: e.icon, active: !!a, forced: !!(f[e.id] && !f[e.id].closed && a && a.forced), closed: !!(f[e.id] && f[e.id].closed), until: a ? a.to : null, next: nxw ? { from: nxw.from, to: nxw.to } : null };
+    });
+  };
+  app.get('/api/garden/teacher/events', requireRole('teacher', 'admin'), (req, res) => res.json({ events: evAdminList(), today: vnDay() }));
+  app.post('/api/garden/teacher/event', requireRole('teacher', 'admin'), (req, res) => {
+    const b = req.body || {}, id = String(b.id || ''), act = String(b.action || '');
+    if (!EV.EBY[id]) return bad(res, 'Sự kiện không tồn tại.');
+    const f = evForce();
+    if (act === 'open') { const days = Math.max(1, Math.min(60, Math.floor(Number(b.days) || 7))); f[id] = { from: vnDay(), to: new Date(Date.now() + 7 * 3600e3 + (days - 1) * 86400e3).toISOString().slice(0, 10) }; }
+    else if (act === 'close') f[id] = { closed: true };
+    else if (act === 'auto') delete f[id];
+    else return bad(res, 'Thao tác không hợp lệ.');
+    db.prepare('INSERT INTO garden_meta (k,v) VALUES (?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v').run('ev_force', JSON.stringify(f));
+    res.json({ ok: true, events: evAdminList() });
+  });
+
   /* ───────────────────────── Hộ chiếu văn hoá ───────────────────────── */
   const pend = new Map();
   const shuf = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = crypto.randomInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -252,5 +327,5 @@ module.exports = function (app, C) {
     reply(res, req.user, out.st, { results, correct, passed: correct >= 2, first: out.first, reward: out.got });
   });
 
-  return { track, questsView, scanHomework, inboxCount };
+  return { track, questsView, scanHomework, inboxCount, eventsView, evIsActive, evOwn };
 };

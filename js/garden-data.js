@@ -407,6 +407,7 @@
   // Kho đặc sản từng khu (5 hoa · 5 cây · 5 trang trí · 5 công trình · 5 thú cưng cho MỖI khu): xem js/garden-catalog.js + garden-cat-*.js
   var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
   if (CAT) CAT.build({ zones: ZONES, items: ITEMS, pets: PETS });
+  var EV = root.EWTGardenEvents || (typeof require === 'function' ? require('./garden-events.js') : null); if (EV) EV.build({ items: ITEMS, pets: PETS });   // món giới hạn theo sự kiện
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });
   var PBY = {}; PETS.forEach(function (i) { PBY[i.id] = i; });
 
@@ -428,6 +429,6 @@
     Object.keys(state.land || {}).forEach(function (k) { b += (state.land[k] | 0) * 2; }); return b;
   }
 
-  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
+  var API = { EV: EV, ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);

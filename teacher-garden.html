@@ -55,6 +55,11 @@
     <b>Học sinh tự nhận thưởng khi hoàn thành bài bạn giao</b> (bài tập, đề trắc nghiệm, bộ từ theo bài): mỗi bài <b>50 xu + 1 rương quà</b> trong khu vườn EWT Garden, chỉ tính các bài hoàn thành từ khi tính năng này bật. Ngoài ra bạn có thể <b>tặng thêm xu thưởng</b> cho học sinh giỏi và tạo <b>dự án cả lớp</b> để cả lớp cùng góp xu xây một công trình lớn.
   </div>
   <div class="pp-box">
+    <h3 style="margin:0 0 6px">🎉 Sự kiện theo mùa</h3>
+    <div class="pp-how">Tết, Trung thu và Giáng sinh <b>tự mở theo lịch</b> (có đồ giới hạn, quà mỗi ngày, hiệu ứng trong vườn). Bạn có thể <b>mở sớm</b> để cho học sinh xem thử hoặc kéo dài, hoặc <b>đóng</b> sớm. Đồ học sinh đã mua vẫn giữ nguyên sau sự kiện.</div>
+    <div id="evList" style="margin-top:8px"></div>
+  </div>
+  <div class="pp-box">
     <h3 style="margin:0 0 6px">🎁 Tặng quà thưởng</h3>
     <div class="pp-how">Chọn học sinh (hoặc cả lớp), nhập số xu (tối đa 500/lần) và/hoặc số rương quà (tối đa 3/lần). Học sinh sẽ thấy quà ở mục <b>🎯 Nhiệm vụ → Quà</b> trong EWT Garden.</div>
     <div class="gg-f">
@@ -117,6 +122,23 @@ $('gAll').onclick = async function () { if (!CUR) return; if ((await ewtConfirm(
 $('gPick').onclick = function () { var cs = document.querySelectorAll('#mem input'), on = [].some.call(cs, function (c) { return !c.checked; }); [].forEach.call(cs, function (c) { c.checked = on; }); };
 $('pMake').onclick = function () { api('/api/garden/teacher/project', { group_id: CUR, item_id: $('pItem').value, target: +$('pTarget').value }).then(function () { toast('Đã tạo dự án cho lớp 🏗️'); loadProjects(); }).catch(function (e) { toast(e.message); }); };
 $('projs').onclick = async function (e) { var b = e.target.closest('[data-cancel]'); if (!b) return; if ((await ewtConfirm('Huỷ dự án? Xu đã góp sẽ được hoàn lại cho từng bạn.'))) api('/api/garden/teacher/project/cancel', { id: +b.getAttribute('data-cancel') }).then(function () { toast('Đã huỷ dự án'); loadProjects(); }).catch(function (x) { toast(x.message); }); };
+/* ───── sự kiện theo mùa ───── */
+function fmtD(d) { return d ? d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4) : ''; }
+function drawEvents(list) {
+  $('evList').innerHTML = list.map(function (e) {
+    var st = e.closed ? '<span class="pp-st bad">⛔ Đang đóng (do bạn đóng)</span>' : e.active ? '<span class="pp-st ok">🟢 Đang diễn ra đến ' + fmtD(e.until) + (e.forced ? ' (bạn mở)' : '') + '</span>' : '<span class="pp-st">⏳ Kỳ tới: ' + (e.next ? fmtD(e.next.from) + ' → ' + fmtD(e.next.to) : 'chưa có') + '</span>';
+    return '<div class="pp-row" style="grid-template-columns:minmax(150px,1fr) minmax(200px,1.4fr) auto"><div class="pp-nm"><b>' + e.icon + ' ' + esc(e.name) + '</b></div><div>' + st + '</div><div style="display:flex;gap:6px;flex-wrap:wrap"><select class="pp-sel" data-d="' + e.id + '"><option value="3">3 ngày</option><option value="7" selected>7 ngày</option><option value="14">14 ngày</option><option value="30">30 ngày</option></select><button class="pp-btn" data-ev="open:' + e.id + '">▶ Mở ngay</button><button class="pp-btn" data-ev="close:' + e.id + '">⏹ Đóng</button><button class="pp-btn" data-ev="auto:' + e.id + '" title="Trả về lịch tự động">↺ Theo lịch</button></div></div>';
+  }).join('');
+}
+function loadEvents() { api('/api/garden/teacher/events').then(function (d) { drawEvents(d.events); }).catch(function () {}); }
+$('evList').onclick = async function (e) {
+  var b = e.target.closest('[data-ev]'); if (!b) return; var a = b.getAttribute('data-ev').split(':'), id = a[1], act = a[0];
+  if (act === 'open' && !(await ewtConfirm('Mở sự kiện này cho TẤT CẢ học sinh ngay bây giờ?'))) return;
+  if (act === 'close' && !(await ewtConfirm('Đóng sự kiện này ngay? Học sinh sẽ không mua thêm món giới hạn được nữa.'))) return;
+  var sel = document.querySelector('select[data-d="' + id + '"]');
+  api('/api/garden/teacher/event', { id: id, action: act, days: sel ? +sel.value : 7 }).then(function (d) { drawEvents(d.events); toast(act === 'open' ? 'Đã mở sự kiện 🎉' : act === 'close' ? 'Đã đóng sự kiện' : 'Đã trả về lịch tự động'); }).catch(function (er) { toast(er.message); });
+};
+loadEvents();
 })();
 </script>
 </body>

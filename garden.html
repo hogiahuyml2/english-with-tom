@@ -217,6 +217,29 @@
 .gd-visit { display: none; position: absolute; z-index: 12; left: 50%; transform: translateX(-50%); bottom: 14px; background: #FFF4D1; border: 3px solid #F5D77A; color: #7A4A0B; border-radius: 18px; padding: 10px 16px; font-weight: 700; font-size: 14px; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 8px 20px rgba(60,30,5,.35); max-width: calc(100% - 24px); justify-content: center; }
 body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray, body.visit .gd-zbar .tomod, body.visit .gd-res .mine, body.visit .gd-hint { display: none !important; } body.visit .gd-stage { --tray: 70px; } body.visit .gd-stage.map { --tray: 70px; } body.visit .gd-play { left: 22px; } body.visit .gd-gname { cursor: default; } body.visit .gt, body.visit .gd-pet { cursor: default; } body.visit .gt:hover { box-shadow: none; }
 /* ───────── Hộp thoại ───────── */
+/* ───────── sự kiện theo mùa ───────── */
+.gd-evfx { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; border-radius: 26px; } .gd-evfx i { position: absolute; display: block; }
+.ev-tet .gd-evfx .pt { width: 10px; height: 7px; border-radius: 100% 0 100% 0; background: linear-gradient(135deg, #FFD0E2, #FF8FB8); top: -20px; animation: evFall linear infinite; } .ev-tet .gd-evfx .pt.y { background: linear-gradient(135deg, #FFF1A8, #FFD23F); }
+.ev-tet .gd-evfx .cord { top: calc(var(--top) + 2px); width: 31%; height: 12px; border-bottom: 2px solid #C98A00; border-radius: 0 0 100% 100% / 0 0 12px 12px; } .ev-tet .gd-evfx .cord.l { left: 0; } .ev-tet .gd-evfx .cord.r { right: 0; }
+.ev-tet .gd-evfx .ln { top: calc(var(--top) + 12px); width: 24px; transform-origin: 50% 0; animation: evSway 4.2s ease-in-out infinite; } .ev-tet .gd-evfx .ln::before { content: ""; display: block; width: 2px; height: var(--h, 24px); background: #C98A00; margin: 0 auto; }
+.ev-tet .gd-evfx .ln b { display: block; width: 24px; height: 28px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FF6A78, #D6212F 60%, #8E1228); border-top: 4px solid #FFD23F; border-bottom: 4px solid #FFD23F; box-shadow: 0 4px 10px rgba(214,33,47,.5); position: relative; } .ev-tet .gd-evfx .ln b::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 2px; height: 11px; background: #FFD23F; }
+.ev-trungthu .gd-evfx .fl { bottom: -40px; width: 15px; height: 19px; border-radius: 42% 42% 48% 48%; background: radial-gradient(circle at 50% 72%, #FFF3B0, #FF9A1F 72%); box-shadow: 0 0 14px 6px rgba(255,170,40,.5); animation: evRise linear infinite; } .ev-trungthu .gd-evfx .fl:nth-child(3n) { background: radial-gradient(circle at 50% 72%, #FFE0F0, #EC407A 72%); box-shadow: 0 0 14px 6px rgba(236,64,122,.4); } .ev-trungthu .gd-evfx .fl:nth-child(4n) { background: radial-gradient(circle at 50% 72%, #E8F8FF, #4FB4FF 72%); box-shadow: 0 0 14px 6px rgba(79,180,255,.4); }
+.ev-trungthu .gd-evfx .mn { right: 5%; top: 12%; width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 38% 34%, #FFFBE0, #FFE9A0 70%); box-shadow: 0 0 40px 16px rgba(255,236,160,.4); opacity: .85; }
+.ev-noel .gd-evfx .sn { top: -10px; width: 6px; height: 6px; border-radius: 50%; background: #fff; opacity: .9; animation: evSnow linear infinite; }
+.ev-noel .gd-evfx .lights { left: 0; right: 0; top: 0; height: 14px; background: radial-gradient(circle at 12px 8px, #FF5A5A 3.4px, transparent 4.4px) 0 0 / 48px 14px repeat-x, radial-gradient(circle at 24px 8px, #FFD23F 3.4px, transparent 4.4px) 0 0 / 48px 14px repeat-x, radial-gradient(circle at 36px 8px, #4FD6FF 3.4px, transparent 4.4px) 0 0 / 48px 14px repeat-x; animation: evTw 1.6s ease-in-out infinite; filter: drop-shadow(0 0 4px rgba(255,255,255,.7)); } .ev-noel .gd-evfx .lights::before { content: ""; position: absolute; left: 0; right: 0; top: 2px; height: 2px; background: rgba(40,80,50,.6); }
+@keyframes evFall { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: .95; } 100% { transform: translate(-70px, 640px) rotate(420deg); opacity: 0; } }
+@keyframes evSway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes evRise { 0% { transform: translate(0, 0) scale(.8); opacity: 0; } 12% { opacity: .95; } 100% { transform: translate(40px, -640px) scale(1.1); opacity: 0; } }
+@keyframes evSnow { 0% { transform: translate(0, 0); opacity: 0; } 8% { opacity: .9; } 100% { transform: translate(-40px, 640px); opacity: 0; } }
+@keyframes evTw { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+.gd-stage:not(.gd-hq) .gd-evfx .pt, .gd-stage:not(.gd-hq) .gd-evfx .sn:nth-child(2n), .gd-stage:not(.gd-hq) .gd-evfx .fl:nth-child(2n) { display: none; }
+@media (prefers-reduced-motion: reduce) { .gd-evfx i { animation: none !important; } .gd-evfx .pt, .gd-evfx .sn, .gd-evfx .fl { display: none; } }
+#evBtn.pulse { animation: evPulse 1.8s ease-in-out infinite; } #evBtn small { font-size: .78em; opacity: .85; font-weight: 700; } @keyframes evPulse { 50% { box-shadow: 0 0 0 5px rgba(255,210,63,.5); } }
+.gd-tab.ev { background: #FFE7B8; border-color: #C98E55; color: #7A3B0B; } .gd-tab.ev.on { background: #E5334B; border-color: #A81E30; color: #fff; }
+.evb { display: inline-block; background: #E5334B; color: #fff; border-radius: 99px; font-size: 10px; font-weight: 800; padding: 1px 7px; }
+.gd-evh { display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 18px; color: #fff; background: linear-gradient(135deg, var(--c1), var(--c2)); margin-bottom: 10px; } .gd-evh .ic { font-size: 46px; line-height: 1; } .gd-evh h3 { margin: 0; color: #fff; font-size: 21px; } .gd-evh .en { font-size: 13px; opacity: .92; font-weight: 700; } .gd-evh .lf { margin-top: 4px; font-weight: 800; font-size: 13.5px; background: rgba(0,0,0,.22); display: inline-block; border-radius: 99px; padding: 2px 10px; }
+.gd-evi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; margin: 8px 0 12px; } .gd-evi { border: 2px solid var(--border); border-radius: 14px; text-align: center; padding: 6px 4px 7px; background: var(--surface); font-size: 11.5px; line-height: 1.25; } .gd-evi.got { border-color: #22C55E; background: #F0FDF4; } .gd-evi svg { display: block; margin: 0 auto; height: 52px; width: auto; max-width: 100%; } .gd-evi b { display: block; font-size: 11.5px; margin-top: 2px; } .gd-evi small { color: var(--text-muted); font-weight: 700; }
+.gd-evv { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; margin: 6px 0; } .gd-evv button { display: flex; align-items: center; gap: 8px; text-align: left; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 7px 10px; cursor: pointer; font: 700 13px inherit; font-family: inherit; min-height: 42px; } .gd-evv button small { display: block; color: var(--text-muted); font-weight: 600; }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
 .gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
 .gd-box h3 { margin: 0 0 4px; font-size: 20px; } .gd-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
@@ -349,6 +372,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
     </svg>
     <div class="gd-vig"></div>
     <div class="gd-dim"></div>
+    <div class="gd-evfx" id="evfx" aria-hidden="true"></div>
     <div class="gd-bfly" style="left:22%;top:58%">🦋</div><div class="gd-bfly" style="left:62%;top:74%;animation-delay:-6s;animation-duration:17s">🦋</div>
 
     <div class="gd-top">
@@ -362,6 +386,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
         <span class="gd-pill mine" title="Xu — dùng chung với phần Luyện từ"><i class="coin"></i> <span id="xu">0</span></span>
         <span class="gd-pill mine" title="Lượt tưới nước còn lại">💧 <span id="wt">0</span></span>
         <button class="gd-pill btn mine" id="friend"><i class="ic" data-ic="visit"></i>Thăm bạn</button>
+        <button class="gd-pill btn mine" id="evBtn" style="display:none" title="Sự kiện theo mùa: quà mỗi ngày và món giới hạn"></button>
         <button class="gd-pill btn mine" id="questBtn" title="Nhiệm vụ, quà từ thầy cô và dự án của lớp">🎯 Nhiệm vụ <b class="gd-dot" id="questDot" style="display:none">0</b></button>
         <button class="gd-pill btn mine" id="passBtn" title="Hộ chiếu văn hoá: học tiếng Anh qua các khu quốc gia">🛂 Hộ chiếu</button>
         <button class="gd-earn mine" id="earn"><i class="ic" data-ic="star"></i>Kiếm xu</button>
@@ -415,6 +440,10 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
   <div class="gd-tabs2" id="qsttabs"></div><div id="qstbody"></div>
   <div class="gd-act"><button class="gd-btn" id="qstclose">Đóng</button></div>
 </div></div>
+<div class="gd-modal" id="evm"><div class="gd-box" style="max-width:640px">
+  <div id="evbody"></div>
+  <div class="gd-act"><button class="gd-btn" id="evclose">Đóng</button></div>
+</div></div>
 <div class="gd-modal" id="pspm"><div class="gd-box" style="max-width:640px">
   <h3>🛂 Hộ chiếu văn hoá</h3><p class="gd-sub" id="pspsub"></p>
   <div class="gd-pass" id="pspgrid"></div>
@@ -430,7 +459,8 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-cat-b.js?v=1"></script>
 <script src="js/garden-cat-c.js?v=1"></script>
 <script src="js/garden-cat-d.js?v=1"></script>
-<script src="js/garden-data.js?v=15"></script>
+<script src="js/garden-events.js?v=1"></script>
+<script src="js/garden-data.js?v=16"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
 <script src="js/garden-art3.js?v=2"></script>
@@ -447,6 +477,8 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-gen2.js?v=1"></script>
 <script src="js/garden-gen3.js?v=1"></script>
 <script src="js/garden-gen4.js?v=1"></script>
+<script src="js/garden-events-art.js?v=1"></script>
+<script src="js/garden-events-art2.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -578,7 +610,7 @@ function render() {
   var cur = D.LEVELS[S.level - 1].at, nx = S.next ? S.next.need + S.beauty : null; $('lvbar').style.width = (nx ? Math.min(100, Math.round((S.beauty - cur) / (nx - cur) * 100)) : 100) + '%';
   $('lvnx').textContent = S.next ? 'Còn ' + S.next.need + ' điểm đẹp → cấp ' + S.next.level : '🏆 Cấp cao nhất!';
   if (LAST_LEVEL && S.level > LAST_LEVEL) { toast('🎉 Vườn lên cấp ' + S.level + ': ' + S.levelTitle + '! Mở thêm món và khu mới.', 4200); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'party-popper', 'glowing-star'], { count: 18, from: $('lvb') }); }
-  LAST_LEVEL = S.level;
+  LAST_LEVEL = S.level; renderEvent();
   var z = VIEW === 'map' ? null : D.ZBY[VIEW];
   $('stage').classList.toggle('map', !z);
   if (!z) { renderMap(); renderTools(); return; }
@@ -654,13 +686,15 @@ function bagCount() { var b = bagOf(), n = b.pets.length; Object.keys(b.items).f
 function priceOf(it, kind) { return bagN(it.id) > 0 || bagPetN(it.id) > 0 || (it.cost > 0 && freeN(kind) > 0) ? 0 : it.cost; }
 function renderShop() {
   var bg = bagOf(), nb = VISIT ? 0 : bagCount();
-  var zin = !!D.ZBY[VIEW], mode = zin ? SMODE : 'basic', zn = zin ? D.ZBY[VIEW].name : '';
-  var inShop = function (o) { return mode === 'zone' ? o.z === VIEW : !o.z; };
-  $('tabs').innerHTML = (VISIT ? '' : (zin ? '<button class="gd-tab sm' + (mode === 'zone' ? ' on' : '') + '" data-sm="zone" title="Đặc sản chỉ có ở khu này">🌟 Khu này</button>' : '') + '<button class="gd-tab sm' + (mode === 'basic' ? ' on' : '') + '" data-sm="basic" title="Món cơ bản dùng được ở mọi khu">🌱 Cơ bản</button>') + TABS.filter(function (t) { return !(VISIT && t[0] === 'bag'); }).map(function (t) { return '<button class="gd-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[0] === 'bag' && nb ? ' <b class="gd-badge">' + nb + '</b>' : '') + '</button>'; }).join('');
+  var zin = !!D.ZBY[VIEW], evs = (S.events && S.events.active) || [], evId = SMODE.indexOf('ev:') === 0 ? SMODE.slice(3) : '';
+  if (evId && !evs.some(function (e) { return e.id === evId; })) { SMODE = 'zone'; evId = ''; }
+  var mode = evId ? 'ev' : zin ? SMODE : 'basic', zn = zin ? D.ZBY[VIEW].name : '', evo = evId ? evs.filter(function (e) { return e.id === evId; })[0] : null;
+  var inShop = function (o) { return mode === 'ev' ? o.ev === evId : mode === 'zone' ? o.z === VIEW : (!o.z && !o.ev); };
+  $('tabs').innerHTML = (VISIT ? '' : (zin ? '<button class="gd-tab sm' + (mode === 'zone' ? ' on' : '') + '" data-sm="zone" title="Đặc sản chỉ có ở khu này">🌟 Khu này</button>' : '') + '<button class="gd-tab sm' + (mode === 'basic' ? ' on' : '') + '" data-sm="basic" title="Món cơ bản dùng được ở mọi khu">🌱 Cơ bản</button>') + evs.map(function (e) { return '<button class="gd-tab sm ev' + (mode === 'ev' && evId === e.id ? ' on' : '') + '" data-sm="ev:' + e.id + '" title="Món giới hạn của sự kiện — chỉ mua được trong lúc sự kiện diễn ra">' + e.icon + ' ' + esc(e.short) + '</button>'; }).join('') + TABS.filter(function (t) { return !(VISIT && t[0] === 'bag'); }).map(function (t) { return '<button class="gd-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[0] === 'bag' && nb ? ' <b class="gd-badge">' + nb + '</b>' : '') + '</button>'; }).join('');
   var keep = $('items').scrollLeft;
   var byPrice = function (x, y) { return x.lvl - y.lvl || x.cost - y.cost; };
-  var mkItem = function (i) { return { cx: i.cx, z: i.z, kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; };
-  var mkPet = function (p, nm) { return { cx: p.cx, z: p.z, kind: 'pet', id: p.id, name: nm || p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; };
+  var mkItem = function (i) { return { ev: i.ev, cx: i.cx, z: i.z, kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; };
+  var mkPet = function (p, nm) { return { ev: p.ev, cx: p.cx, z: p.z, kind: 'pet', id: p.id, name: nm || p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; };
   var list, i;
   if (TAB === 'bag') {
     list = [];
@@ -671,6 +705,7 @@ function renderShop() {
   $('items').innerHTML = list.length ? list.map(function (x) {
     var inb = x.kind === 'pet' ? bagPetN(x.id) : bagN(x.id), lock = x.lvl > S.level && !inb, on = BRUSH && BRUSH.id === x.id, fr = !inb && x.cost > 0 && freeN(x.kind) > 0;
     var info = x.kind === 'pet' ? (x.cx ? '<span class="cxs">' + '★'.repeat(x.cx) + '</span>' : '') : x.size ? '📐 ' + x.size : (x.grow ? '⏱ ' + fmtT(x.grow * 60000) + (x.y ? ' · +' + x.y + COIN : '') : '');
+    if (x.ev) info = '<span class="evb">🎉 Giới hạn</span> ' + info;
     var price = x.bag ? '<span class="free">🧺 ×' + x.n + (x.kind === 'pet' ? ' · nhận nuôi' : ' · đặt ngay') + '</span>' : inb ? '<span class="free">🧺 ×' + inb + ' trong giỏ</span>' : fr ? '<s class="cost">' + x.cost + '</s> <span class="free">Miễn phí 🎟️</span>' : (x.cost ? '<span class="cost">' + x.cost + ' ' + COIN + '</span>' : '<span class="free">Miễn phí</span>');
     return '<button class="gd-it' + (lock ? ' lock' : '') + (on ? ' on' : '') + '" data-pick="' + x.id + '" data-kind="' + x.kind + '">' + (lock ? '<span class="lk">🔒 Cấp ' + x.lvl + '</span>' : '') + x.svg + '<b>' + esc(x.name) + '</b><small>' + price + '</small>' + (info ? '<small>' + info + '</small>' : '') + '</button>';
   }).join('') : '<p class="gd-sub" style="padding:14px;margin:0">🧺 Giỏ đang trống. Món đã mua mà bạn dọn đi sẽ tự vào đây để dùng lại; thẻ thưởng cũng có thể tặng thú cưng, phiếu miễn phí…</p>';
@@ -678,6 +713,7 @@ function renderShop() {
   var fv = Object.keys(CLSN).filter(function (k) { return bg.free && bg.free[k] > 0; }).map(function (k) { return CLSN[k] + ' ×' + bg.free[k]; });
   $('note').innerHTML = H(TAB === 'bag' ? '🧺 Chọn món trong giỏ rồi chạm ô đất trống để đặt (không tốn xu).' + (fv.length ? ' 🎟️ Phiếu miễn phí: ' + fv.join(' · ') + ' — tự dùng khi bạn mua món cùng loại.' : '')
     : TAB === 'big' ? '🏠 Công trình lớn chiếm nhiều ô liền nhau: chọn món rồi chạm vào ô góc trên-trái của chỗ muốn đặt (rê chuột để xem trước).' : TAB === 'pet' ? '🐾 Mỗi bé chỉ sống ở MỘT khu — nhận nuôi ở khu nào thì bé ở khu đó (qua khu khác cần nhận bé khác). Khu này có ' + S.pets.filter(function (p) { return p.z === VIEW; }).length + '/' + S.slots + ' chỗ. Cho ăn mỗi ngày +1 🪙/bé (tối đa ' + D.RULES.feedCapDay + '/ngày).' : '🌱 Hoa/cây lớn theo thời gian thật, kể cả khi bạn không online. Tưới 💧 hoặc ⚡ cho lớn ngay. Món miễn phí luôn có sẵn!' + (fv.length ? ' 🎟️ ' + fv.join(' · ') : ''));
+  if (mode === 'ev' && evo && TAB !== 'bag') $('note').innerHTML = H('🎉 ' + evo.name + ': món GIỚI HẠN — chỉ mua được đến hết ' + fmtD(evo.to) + ' (' + (evo.left ? 'còn ' + evo.left + ' ngày' : 'hôm nay là ngày cuối') + '). Mua rồi thì giữ mãi và dùng được ở mọi khu!');
 }
 
 /* ───────── thao tác ───────── */
@@ -763,7 +799,7 @@ document.addEventListener('mouseover', function (e) {
   var i = +c.getAttribute('data-i'), fp = D.footprint(i, D.BY[BRUSH.id], zlv(D.zoneOfCell(i))), ok = !!fp && fp.every(function (k) { return !D.isBlocked(k) && !S.tiles[k]; });
   (fp || [i]).forEach(function (k) { var el = tileEl(k); if (el) { el.classList.add(ok ? 'pv-ok' : 'pv-bad'); PV.push(el); } });
 });
-document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePop(); $('quiz').classList.remove('on'); $('petm').classList.remove('on'); $('frm').classList.remove('on'); } if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('gt')) { e.preventDefault(); onTile(+e.target.getAttribute('data-i')); } });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePop(); $('quiz').classList.remove('on'); $('petm').classList.remove('on'); $('frm').classList.remove('on'); $('evm').classList.remove('on'); } if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('gt')) { e.preventDefault(); onTile(+e.target.getAttribute('data-i')); } });
 
 /* ───────── thú cưng: thẻ chăm sóc ───────── */
 function openPet(pid) {
@@ -942,6 +978,53 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-cqs]'))) { var z2 = el.getAttribute('data-cqs'); api('/api/garden/culture/quiz?zone=' + z2).then(function (d) { CQ = { zone: z2, qs: d.questions, ans: [], res: null }; drawCulQuiz(); }).catch(function (er) { toast(er.message, 3400); }); return; }
   if ((el = t.closest('[data-cq]')) && CQ && !CQ.res) { var a = el.getAttribute('data-cq').split(':'); CQ.ans[+a[0]] = +a[1]; drawCulQuiz(); return; }
   if (t.closest('#cqSubmit') && CQ) { api('/api/garden/culture/answer', { zone: CQ.zone, answers: CQ.ans }).then(function (d) { CQ.res = d.results; CQ.passed = d.passed; CQ.correct = d.correct; CQ.reward = d.reward; setState(d); drawCulQuiz(); if (d.passed) celebrate(d.first ? 24 : 10); }).catch(function (er) { toast(er.message, 3400); }); return; }
+});
+
+/* ───────── sự kiện theo mùa ───────── */
+var EVK = '', EVSEL = '';
+function fmtD(d) { return d ? d.slice(8, 10) + '/' + d.slice(5, 7) : ''; }
+function evFxBuild(evs) {
+  var st = $('stage'), el = $('evfx'), h = '', i, seed = 11, rr = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  ['tet', 'trungthu', 'noel'].forEach(function (k) { st.classList.remove('ev-' + k); });
+  if (!evs.length) { el.innerHTML = ''; return; }
+  var id = evs[0].id; st.classList.add('ev-' + id);
+  if (id === 'tet') { for (i = 0; i < 16; i++) h += '<i class="pt' + (i % 3 === 0 ? ' y' : '') + '" style="left:' + (rr() * 98).toFixed(1) + '%;animation-delay:' + (-rr() * 12).toFixed(1) + 's;animation-duration:' + (9 + rr() * 6).toFixed(1) + 's"></i>'; h += '<i class="cord l"></i><i class="cord r"></i>'; [4, 12, 20, 80, 88, 95].forEach(function (x, k) { h += '<i class="ln" style="left:' + x + '%;--h:' + (2 + (k % 3) * 5) + 'px;animation-delay:' + (-k * .7) + 's"><b></b></i>'; }); }
+  else if (id === 'trungthu') { h += '<i class="mn"></i>'; for (i = 0; i < 10; i++) h += '<i class="fl" style="left:' + (rr() * 94).toFixed(1) + '%;animation-delay:' + (-rr() * 16).toFixed(1) + 's;animation-duration:' + (13 + rr() * 8).toFixed(1) + 's"></i>'; }
+  else if (id === 'noel') { for (i = 0; i < 26; i++) h += '<i class="sn" style="left:' + (rr() * 98).toFixed(1) + '%;width:' + (4 + rr() * 4).toFixed(1) + 'px;height:' + (4 + rr() * 4).toFixed(1) + 'px;animation-delay:' + (-rr() * 10).toFixed(1) + 's;animation-duration:' + (7 + rr() * 6).toFixed(1) + 's"></i>'; h += '<i class="lights"></i>'; }
+  el.innerHTML = h;
+}
+function renderEvent() {
+  var evs = (S && S.events && S.events.active) || [], b = $('evBtn'), key = evs.map(function (e) { return e.key; }).join('|');
+  if (key !== EVK) { EVK = key; evFxBuild(evs); }
+  if (VISIT || !evs.length) { b.style.display = 'none'; return; }
+  var e = evs[0], todo = evs.some(function (x) { return !x.claimed || (x.miles || []).some(function (m) { return m.ready; }); });
+  b.style.display = ''; b.classList.toggle('pulse', todo);
+  b.innerHTML = e.icon + ' ' + esc(e.short) + (evs.length > 1 ? ' +' + (evs.length - 1) : '') + ' <small>' + (e.left ? 'còn ' + e.left + ' ngày' : 'ngày cuối') + '</small>' + (todo ? ' <b class="gd-dot">!</b>' : '');
+}
+function evThumb(id) { var it = D.BY[id]; if (it) return it.kind === 'big' ? W.bigSvg(id) : A.itemSvg(it, 3, 52); var p = D.PBY[id]; return p ? A.petSvg(p, 52) : ''; }
+function openEvent() { var evs = (S.events && S.events.active) || []; if (!evs.length) return; if (!evs.some(function (e) { return e.id === EVSEL; })) EVSEL = evs[0].id; $('evm').classList.add('on'); drawEvent(); }
+function drawEvent() {
+  var evs = S.events.active, e = evs.filter(function (x) { return x.id === EVSEL; })[0] || evs[0], own = e.own || [], h = '';
+  if (evs.length > 1) h += '<div class="gd-tabs2">' + evs.map(function (x) { return '<button data-evt="' + x.id + '" class="' + (x.id === e.id ? 'on' : '') + '">' + x.icon + ' ' + esc(x.short) + '</button>'; }).join('') + '</div>';
+  h += '<div class="gd-evh" style="--c1:' + e.col[0] + ';--c2:' + e.col[1] + '"><div class="ic">' + e.icon + '</div><div><h3>' + esc(e.name) + '</h3><div class="en">' + esc(e.en) + '</div><div class="lf">⏳ ' + (e.left ? 'Còn ' + e.left + ' ngày (đến ' + fmtD(e.to) + ')' : 'Hôm nay là ngày cuối!') + '</div></div></div>';
+  h += '<p class="gd-sub">' + esc(e.blurb) + '</p>';
+  h += '<div class="gd-qr' + (e.claimed ? ' cl' : ' dn') + '"><div class="qt"><b>🎁 ' + esc(e.gift) + ' mỗi ngày</b><small>' + (e.claimed ? 'Hôm nay bạn đã nhận rồi — mai quay lại nhé! (đã nhận ' + e.days + ' ngày)' : 'Mỗi ngày trong sự kiện nhận một phần quà.') + '</small></div>' + (e.claimed ? '' : '<button class="gd-btn pri" data-evd="' + e.id + '">Nhận quà</button>') + '</div>';
+  h += '<h4 style="margin:12px 0 2px;font-size:15px">📖 Bộ sưu tập: ' + own.length + '/' + e.total + ' món giới hạn</h4>' + bar(own.length, e.total);
+  e.miles.forEach(function (m) { h += '<div class="gd-qr' + (m.got ? ' cl' : m.ready ? ' dn' : '') + '"><div class="qt"><b>' + (m.got ? '✅ ' : '🏅 ') + 'Sưu tầm ' + m.label + '</b><small>Thưởng: ' + H(m.rw) + '</small></div>' + (m.ready ? '<button class="gd-btn pri" data-evm="' + e.id + ':' + m.n + '">Nhận</button>' : '') + '</div>'; });
+  h += '<div class="gd-evi-grid">' + e.items.map(function (id) { var o = D.BY[id] || D.PBY[id], g = own.indexOf(id) >= 0; return '<div class="gd-evi' + (g ? ' got' : '') + '">' + evThumb(id) + '<b>' + esc(o.name) + '</b><small>' + (g ? '✔ đã có' : H(o.cost + ' 🪙')) + '</small></div>'; }).join('') + '</div>';
+  h += '<div class="gd-act" style="justify-content:flex-start;margin:0 0 8px"><button class="gd-btn pri" data-evgo="' + e.id + '">🛍️ Đến cửa hàng sự kiện</button></div>';
+  h += '<h4 style="margin:12px 0 2px;font-size:15px">🔤 Từ vựng tiếng Anh của lễ hội (bấm để nghe)</h4><div class="gd-evv">' + e.vocab.map(function (v) { return '<button data-say="' + esc(v[0]) + '">🔊 <span><b>' + esc(v[0]) + '</b><small>' + esc(v[1]) + '</small></span></button>'; }).join('') + '</div>';
+  $('evbody').innerHTML = h;
+}
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if (t.closest('#evBtn')) { openEvent(); return; }
+  if (t.closest('#evclose')) { $('evm').classList.remove('on'); return; }
+  if (t === $('evm')) { $('evm').classList.remove('on'); return; }
+  if ((el = t.closest('[data-evt]'))) { EVSEL = el.getAttribute('data-evt'); drawEvent(); return; }
+  if ((el = t.closest('[data-evd]'))) { api('/api/garden/event/daily', { id: el.getAttribute('data-evd') }).then(function (d) { setState(d); drawEvent(); toast('🎁 Đã nhận: ' + (d.reward || []).join(', '), 3600); celebrate(10); }).catch(function (er) { toast(er.message, 3400); }); return; }
+  if ((el = t.closest('[data-evm]'))) { var a = el.getAttribute('data-evm').split(':'); api('/api/garden/event/milestone', { id: a[0], n: +a[1] }).then(function (d) { setState(d); drawEvent(); toast('🏅 Đã nhận: ' + (d.reward || []).join(', '), 3800); celebrate(18); }).catch(function (er) { toast(er.message, 3400); }); return; }
+  if ((el = t.closest('[data-evgo]'))) { SMODE = 'ev:' + el.getAttribute('data-evgo'); var ev0 = S.events.active.filter(function (x) { return x.id === el.getAttribute('data-evgo'); })[0]; $('evm').classList.remove('on'); $('stage').classList.remove('fold'); try { localStorage.removeItem('ewt-garden-fold'); } catch (e2) {} $('fold').textContent = '▾'; renderShop(); toast(VIEW === 'map' ? 'Hãy vào một khu của bạn rồi đặt món sự kiện ' + (ev0 ? ev0.icon : '') + ' nhé!' : 'Đây là cửa hàng sự kiện ' + (ev0 ? ev0.icon : '') + ' — chọn món rồi chạm ô đất trống.', 3400); return; }
 });
 
 /* ───────── khởi động ───────── */

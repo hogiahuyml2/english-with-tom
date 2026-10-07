@@ -103,7 +103,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
     return {
       name: st.name, zones: st.zones, land: st.land, bag: st.bag, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, z: p.z, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
       next: nl ? { level: nl.n, need: nl.at - beauty, title: nl.title } : null, slots: G.petSlots(level),
-      quests: X ? X.questsView(st) : null, passport: Object.keys(st.passport || {}).filter((k) => st.passport[k] && st.passport[k].stamp),
+      quests: X ? X.questsView(st) : null, events: X ? X.eventsView(st) : null, passport: Object.keys(st.passport || {}).filter((k) => st.passport[k] && st.passport[k].stamp),
       left: { yield: Math.max(0, R.yieldCapDay - st.yield_xu), feed: Math.max(0, R.feedCapDay - st.feed_xu), quiz: Math.max(0, R.quizCapDay - st.quiz_ok) }, now: t, quizTotal: st.quiz_total
     };
   }
@@ -136,12 +136,14 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
         if (st.tiles[i]) return { err: 'Ô này đã có đồ — hãy dọn trước nhé.' };
         const cls = FREE_CLS[it.kind], inBag = (st.bag.items[it.id] | 0) > 0; let used = null;
         if (!inBag && it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mở món này.' };
+        if (it.ev && !inBag && !X.evIsActive(it.ev)) return { err: 'Món này là đồ giới hạn của sự kiện "' + G.EV.EBY[it.ev].name + '" — đã hết mùa rồi, hẹn bạn mùa sau nhé! 🎉' };
         if (inBag) { if (--st.bag.items[it.id] <= 0) delete st.bag.items[it.id]; used = 'bag'; }
         else if (it.cost > 0 && st.bag.free[cls] > 0) { st.bag.free[cls]--; used = 'free'; }
         else if (it.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(it.cost, req.user.id, it.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!', need: it.cost }; }
         st.tiles[i] = { k: it.id, at: Date.now(), w: 0 };
         if (it.kind === 'big') fp.forEach((k) => { if (k !== i) st.tiles[k] = { ref: i }; });
         X.track(st, it.kind === 'plant' || it.kind === 'tree' ? 'plant' : 'deco', 1);
+        X.evOwn(st, it.id);
         save(st); return { st, used };
       });
       if (out.err) return bad(res, out.err);
@@ -263,10 +265,11 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
       if (bi >= 0) { nm = st.bag.pets[bi].name || pt.name; st.bag.pets.splice(bi, 1); used = 'bag'; }
       else {
         if (pt.lvl > lvl) return { err: 'Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.' };
+        if (pt.ev && !X.evIsActive(pt.ev)) return { err: 'Bé này là thú cưng giới hạn của sự kiện "' + G.EV.EBY[pt.ev].name + '" — đã hết mùa rồi, hẹn bạn mùa sau nhé! 🎉' };
         if (pt.cost > 0 && st.bag.free.pet > 0) { st.bag.free.pet--; used = 'free'; }
         else { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(pt.cost, req.user.id, pt.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + pt.cost + ' 🪙).' }; }
       }
-      st.pets.push({ id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: nm, z: zid, fed: null }); save(st); return { st, used };
+      st.pets.push({ id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: nm, z: zid, fed: null }); X.evOwn(st, pt.id); save(st); return { st, used };
     });
     if (out.err) return bad(res, out.err);
     reply(res, req.user, out.st, { used: out.used });
@@ -324,7 +327,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
     if (!row || !row.open) return bad(res, 'Không tìm thấy khu vườn nào. Hãy kiểm tra lại email, hoặc bạn ấy chưa mở khu vườn.', 404);
     try { const me = load(req.user); X.track(me, 'visit', 1); save(me); } catch (e) { /* bỏ qua */ }
     const st = Object.assign(fromRow(row), { quiz_total: 0, yield_xu: 0, feed_xu: 0, quiz_ok: 0 });
-    const v = view(st); v.left = { yield: 0, feed: 0, quiz: 0 }; v.bag = null;
+    const v = view(st); v.left = { yield: 0, feed: 0, quiz: 0 }; v.bag = null; v.events = X.eventsView(null); v.quests = null;
     let av = null; try { av = row.uavatar ? require('./js/avatar.js').normalize(JSON.parse(row.uavatar)) : null; } catch (_) {}
     res.json({ garden: v, owner: { name: givenName(row.uname), avatar: av, me: row.user_id === req.user.id }, readonly: true });
   });
