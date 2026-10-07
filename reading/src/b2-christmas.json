@@ -29,87 +29,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What was Christmas like in the United States in the first half of the 19th century?",
+   "q": "What can be concluded about Christmas in America in the early nineteenth century?",
    "options": [
-    "Everyone celebrated it in the same way",
-    "There was no set way of celebrating it, and communities honored it differently",
-    "It was already an official federal holiday",
-    "No one celebrated it"
+    "It was already a national holiday that every state observed in the same way",
+    "There was no single way of keeping it, and some places ignored it completely",
+    "It was forbidden by law in most places, so people celebrated it in secret",
+    "Almost every community kept it quietly as a purely religious day of prayer"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “there was no set way of celebrating the day, which was not yet an official holiday.”"
+   "explain": "Đoạn 1–2: “no set way of celebrating”, “not yet an official holiday”; có nơi cầu nguyện, có nơi tiệc tùng, có nơi không ăn mừng. Chỉ phái Calvin cấm (đoạn 6), nên “forbidden in most places” sai."
   },
   {
    "type": "mcq",
-   "q": "What did Washington Irving’s essays describe?",
+   "q": "What was Washington Irving’s attitude to the Christmas described in his 1819 essays?",
    "options": [
-    "A poor family who could not celebrate",
-    "A wealthy British landowner who invites his farm workers into his home to celebrate Christmas",
-    "A city parade in New York",
-    "A religious service in a church"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 4: “a wealthy British landowner who invites his farm workers into his home to celebrate Christmas.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Why did Irving praise looking back to ancient traditions?",
-   "options": [
-    "He wanted to sell more books",
-    "He liked the idea of different levels of society coming together for a peaceful holiday",
-    "He did not like modern America",
-    "He wanted to ban Christmas"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 4: “He liked the idea of different levels of society coming together to enjoy a festive and peaceful holiday.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Which group of Christians banned the celebration of Christmas?",
-   "options": [
-    "Episcopalians",
-    "Moravians",
-    "Calvinists",
-    "Immigrants from Germany"
+    "He feared it was becoming far too religious for modern readers",
+    "He criticised it as an old custom that people ought to forget",
+    "He admired it because it brought rich and poor together",
+    "He thought it was too expensive for ordinary families to copy at home"
    ],
    "answer": 2,
-   "explain": "Đoạn 6: “Calvinist Christians banned the celebration of Christmas.”"
+   "explain": "Đoạn 4: Irving “praised” việc nhìn lại truyền thống cổ và “liked the idea of different levels of society coming together” → ông ngưỡng mộ vì nó gắn kết các tầng lớp."
   },
   {
    "type": "mcq",
-   "q": "Who brought the tradition of putting lights, sweets and toys on evergreen trees?",
+   "q": "According to Penne Restad, why did Christmas mean different things to different Americans?",
    "options": [
-    "Dutch immigrants",
-    "German immigrants",
-    "British landowners",
-    "American writers"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 7: “German immigrants brought their tradition of putting lights, sweets and toys on the branches of evergreen trees.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Which state first declared Christmas a state holiday?",
-   "options": [
-    "New York",
-    "Pennsylvania",
-    "Louisiana",
-    "Massachusetts"
+    "Most families refused to follow any customs that came from Europe",
+    "The government kept changing the date of the holiday from year to year",
+    "The population included people from many different cultures and faiths",
+    "Shops advertised the holiday in a different way in each region"
    ],
    "answer": 2,
-   "explain": "Đoạn 9: “Louisiana was the first state to make the move in 1837.”"
+   "explain": "Đoạn 5: Giáng sinh có ý nghĩa khác nhau với người Mỹ “who came from different cultural and religious backgrounds”; nhiều dân nhập cư mang theo tập quán riêng."
+  },
+  {
+   "type": "mcq",
+   "q": "How did the Episcopalians and Moravians differ from the Calvinists over Christmas?",
+   "options": [
+    "They marked the day with church services and decorations, which the Calvinists would not allow",
+    "They gave up celebrating the day, while the Calvinists decorated their homes with candles",
+    "They held parties with music and drinking, while the Calvinists attended church",
+    "They gave presents to children, while the Calvinists preferred to travel abroad"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: Calvinists “banned the celebration”; Episcopalians và Moravians “honored the day with religious services and seasonal decorations”."
+  },
+  {
+   "type": "mcq",
+   "q": "What was one result of the spread of Christmas trees and gift-giving in American homes?",
+   "options": [
+    "Families stopped celebrating Christmas at home and met in public places",
+    "State governments ended their official recognition of the holiday",
+    "Shops and companies connected with the holiday did more business",
+    "Immigrants gave up the customs they had brought from their own countries"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 8: khi các truyền thống này phổ biến “the modern trade and business linked to Christmas also grew”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which statement about Christmas becoming an official holiday is supported by the text?",
+   "options": [
+    "The federal government declared it before any state had done so",
+    "Louisiana made it a holiday in the same year as the federal government",
+    "Fifteen states had recognised the day before the federal government did",
+    "Louisiana was the only state to recognise it before the year 1870"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 9: Louisiana năm 1837 + “14 other states” đến 1860 = 15 bang; liên bang chỉ công nhận năm 1870 (Tổng thống Grant)."
   },
   {
    "type": "tf",
-   "q": "Christmas became a federal holiday in 1870 under President Ulysses Grant.",
+   "q": "Washington Irving had mentioned Saint Nicholas in a book that appeared ten years before his Christmas essays.",
    "answer": "T",
-   "explain": "Đoạn 9: “It was not until 1870 that President Ulysses Grant made Christmas a federal holiday.”"
+   "explain": "Đoạn 12: “History of New York” (1809) nhắc đến Saint Nicholas; đoạn 3: các bài tiểu luận về Giáng sinh xuất bản năm 1819 → cách nhau mười năm."
   },
   {
    "type": "tf",
-   "q": "The Sketchbook of Geoffrey Crayon, Gent. sold more than a million copies.",
+   "q": "The words of “Jingle Bells” were written by a religious leader.",
    "answer": "NG",
-   "explain": "Bài chỉ nói Washington Irving viết một loạt 5 bài tiểu luận trong cuốn sách này; không nhắc đến số lượng bán ra."
+   "explain": "Đoạn 10 nói hai bài hát khác do các nhà lãnh đạo tôn giáo viết lời, còn “Jingle Bells” chỉ được nói là “appeared seven years later”, không nêu tác giả."
   }
  ],
  "notes": {

@@ -21,87 +21,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "How is the circular economy defined in the first paragraph?",
+   "q": "In paragraph 1, the phrase “in contradistinction to” suggests that the circular economy is",
    "options": [
-    "In contradistinction to the traditional linear economy",
-    "As a type of agricultural system",
-    "As a form of international trade",
-    "As a government tax"
+    "described by showing how it differs from the linear economy",
+    "a model that depends on the linear economy to function",
+    "another name for the traditional way of producing goods",
+    "a later stage in the development of the linear economy"
    ],
    "answer": 0,
-   "explain": "Đoạn 1: “Circular economy is defined in contradistinction to the traditional linear economy.”"
+   "explain": "Đoạn 1: “defined in contradistinction to the traditional linear economy” = được xác định bằng cách đối lập/tương phản với kinh tế tuyến tính."
   },
   {
    "type": "mcq",
-   "q": "Why has the circular economy been gaining popularity?",
+   "q": "According to paragraph 1, what is the main reason for the growing interest in the circular economy?",
    "options": [
-    "It can help minimize carbon emissions and the consumption of raw materials, open up new market prospects and increase sustainability",
-    "It makes products more expensive",
-    "It increases the use of fossil fuels",
-    "It reduces the number of businesses"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 1: “it can help to minimize carbon emissions and the consumption of raw materials, open up new market prospects, and … increase the sustainability of consumption.”"
-  },
-  {
-   "type": "mcq",
-   "q": "According to the text, how much CO2 equivalent can be reduced by implementing circular strategies in just five sectors?",
-   "options": [
-    "9.3 billion metric tons",
-    "22.8 million tons",
-    "100 billion tonnes",
-    "39 tonnes"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 1: “9.3 billion metric tons of CO2 equivalent … can be reduced.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What role do business models play in a circular economy?",
-   "options": [
-    "A minor role",
-    "A crucial role in enabling the shift from linear to circular processes",
-    "No role",
-    "They only affect governments"
+    "It lowers the price of every product that people buy in ordinary shops",
+    "It can make the way goods are consumed more sustainable, among other benefits",
+    "It allows governments to avoid action on the problem of global warming",
+    "It requires factories to use more raw materials with every year that passes"
    ],
    "answer": 1,
-   "explain": "Đoạn 2: “business models play a crucial role in enabling the shift from linear to circular processes.”"
+   "explain": "Đoạn 1: kinh tế tuần hoàn giảm khí thải, giảm tiêu thụ nguyên liệu, mở thị trường mới và “principally, increase the sustainability of consumption”."
   },
   {
    "type": "mcq",
-   "q": "How is the linear economy often summarized?",
+   "q": "What comparison does the writer use to show the possible effect of circular strategies in five sectors?",
    "options": [
-    "“Reduce, reuse, recycle”",
-    "“Take, make, waste”",
-    "“Buy, sell, profit”",
-    "“Plan, build, repair”"
+    "The emissions avoided would remove all the emissions of cement and steel",
+    "The emissions avoided would equal everything that transport now produces",
+    "The emissions avoided would equal 39% of all the emissions of 2019",
+    "The emissions avoided would equal the present output of the food industry"
    ],
    "answer": 1,
-   "explain": "Đoạn 3: “This process is often summarized as “take, make, waste.””"
+   "explain": "Đoạn 1: 9,3 tỉ tấn CO2 tương đương “all current emissions from transportation”. Con số 39% (22,8 tỉ tấn) là nếu áp dụng trên toàn cầu, không phải riêng năm ngành."
   },
   {
    "type": "mcq",
-   "q": "What is industrial symbiosis?",
+   "q": "What role do business models play in the circular economy, according to paragraph 2?",
    "options": [
-    "A strategy where waste from one industry becomes an input for another",
-    "A way of making products last longer",
-    "A government law about taxes",
-    "A type of renewable energy"
+    "They guarantee a profit for every company that recycles any of its materials",
+    "They apply only to firms whose main business is the recycling of waste",
+    "They make government policy on waste unnecessary for most of the companies",
+    "They help organisations move away from the old, one-way style of production"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: mô hình kinh doanh “play a crucial role in enabling the shift from linear to circular processes”."
+  },
+  {
+   "type": "mcq",
+   "q": "How does the circular approach differ from the “take, make, waste” pattern?",
+   "options": [
+    "Materials stay in use or feed other processes rather than ending up as waste",
+    "Waste is collected and then sent away to be buried in distant regions",
+    "Natural resources are replaced by artificial materials made in factories",
+    "Fewer products are made, so that nobody is able to buy new items at all"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “industrial symbiosis is a strategy where waste from one industry becomes an input for another”."
+   "explain": "Đoạn 3: mô hình tuần hoàn “keep products, materials… in use for longer”; chất thải và năng lượng trở thành đầu vào cho quy trình khác (waste valorization)."
+  },
+  {
+   "type": "mcq",
+   "q": "What do the figures in the final paragraph imply?",
+   "options": [
+    "The circular approach is still rare, and most materials used each year are lost",
+    "Cities are the only places where circular ideas can be put into practice",
+    "More than ninety per cent of the materials used are recycled each year",
+    "Most economies already work in a circular way, and waste is falling fast"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: dưới 10% hoạt động kinh tế là tuần hoàn; mỗi năm dùng khoảng 100 tỉ tấn vật liệu và hơn 90% bị lãng phí → còn rất hiếm và lãng phí lớn."
   },
   {
    "type": "tf",
-   "q": "Less than 10% of economic activity worldwide in 2022 and 2023 is circular.",
+   "q": "In industrial symbiosis, the waste of one industry becomes a resource for another.",
    "answer": "T",
-   "explain": "Đoạn 4: nội dung này được nói trực tiếp."
+   "explain": "Đoạn 4: “waste from one industry becomes an input for another”."
   },
   {
    "type": "tf",
-   "q": "The text states that more than 90% of the materials used each year are reused.",
-   "answer": "F",
-   "explain": "Đoạn 4: hơn 90% vật liệu bị lãng phí (“more than 90% of them being wasted”)."
+   "q": "The European Parliament was the first organisation to define the circular economy.",
+   "answer": "NG",
+   "explain": "Đoạn 1 nêu định nghĩa của Nghị viện châu Âu và đoạn 3 nêu định nghĩa của Ellen MacArthur Foundation nhưng không nói ai định nghĩa trước."
   }
  ],
  "notes": {

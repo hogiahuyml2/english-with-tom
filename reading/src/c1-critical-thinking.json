@@ -21,87 +21,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What is the goal of critical thinking?",
+   "q": "What does the writer mean by saying that critical thinking “is not a natural process”?",
    "options": [
-    "To memorize as many facts as possible",
-    "To form a judgment through rational, skeptical and unbiased analyses and evaluations",
-    "To win every argument",
-    "To follow the opinions of experts"
+    "It is used most when people are not thinking about anything",
+    "It does not develop by itself and has to be deliberately encouraged",
+    "It can only be practised by people with a natural talent for it",
+    "It develops in a person at a fixed age without any effort"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “The goal of critical thinking is to form a judgment through the application of rational, skeptical, and unbiased analyses and evaluations.”"
+   "explain": "Đoạn 1: “Critical thinking is not a natural process; it must be induced, and ownership of the process must be taken”."
   },
   {
    "type": "mcq",
-   "q": "According to Richard W. Paul, critical thinking and analysis are…",
+   "q": "What is the aim of critical thinking, according to paragraph 1?",
    "options": [
-    "natural talents that cannot be taught",
-    "competencies that can be learned or trained",
-    "skills only for philosophers",
-    "habits of old people"
+    "To prove that other people’s opinions are always mistaken",
+    "To collect as many facts as possible without drawing a conclusion",
+    "To reach a reasoned judgment that is not distorted by personal prejudice",
+    "To follow the advice of experts without questioning them"
    ],
-   "answer": 1,
-   "explain": "Đoạn 1: “critical thinking and analysis are competencies that can be learned or trained.”"
+   "answer": 2,
+   "explain": "Đoạn 1: mục đích là hình thành phán đoán qua phân tích “rational, skeptical, and unbiased”."
   },
   {
    "type": "mcq",
-   "q": "What does the text say about whether critical thinking is a natural process?",
+   "q": "What does the text imply about a person’s ability to think critically?",
    "options": [
-    "It is a natural process",
-    "It is not natural; it must be induced",
-    "It happens only in childhood",
-    "It is mostly instinct"
+    "It depends only on how clever a person happens to be from one year to the next",
+    "It can be improved by training and also depends partly on what the person knows",
+    "It improves only when a person has studied the philosophers of ancient Greece",
+    "It is fixed at birth and nothing that a person learns can ever change it"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “Critical thinking is not a natural process; it must be induced”."
+   "explain": "Đoạn 1: Richard Paul cho rằng đây là năng lực có thể học/rèn luyện; mức độ xuất sắc “varies according to the individual’s knowledge base”."
   },
   {
    "type": "mcq",
-   "q": "What did Plato indicate about the teachings of Socrates?",
+   "q": "Why does Plato’s account of Socrates matter for the history of critical thinking?",
    "options": [
-    "They were the earliest records of what is today called critical thinking",
-    "They were wrong",
-    "They were never written down",
-    "They were copied from Egypt"
+    "It preserves the oldest known examples of the questioning we now call critical thinking",
+    "It proves that Socrates and John Dewey used exactly the same phrase",
+    "It shows Socrates escaping from prison with the help of some of his friends",
+    "It gives the first formal definition that was issued by a national council"
    ],
    "answer": 0,
-   "explain": "Đoạn 2: “the teachings of Socrates … are the earliest records of what today is called critical thinking.”"
+   "explain": "Đoạn 2: Plato cho rằng lời dạy của Socrates là “the earliest records of what today is called critical thinking”; trong đối thoại ông chọn không trốn khỏi nhà tù."
   },
   {
    "type": "mcq",
    "q": "What did Socrates establish about authority figures?",
    "options": [
-    "That they always possess true knowledge",
-    "That they are unreliable as possessors of knowledge",
-    "That they should be obeyed",
-    "That they should be removed"
+    "Only they are able to ask the critical questions that matter",
+    "Their main task is to provide evidence for ordinary people",
+    "Their advice should always be followed by people who want a good life",
+    "Their position does not prove that they really possess knowledge"
    ],
-   "answer": 1,
-   "explain": "Đoạn 3: “Socrates established the unreliability of authority and authority figures as possessors of knowledge”."
+   "answer": 3,
+   "explain": "Đoạn 3: Socrates “established the unreliability of authority and authority figures as possessors of knowledge”."
   },
   {
    "type": "mcq",
-   "q": "In which book did John Dewey coin the phrase “critical thinking” in modern times, according to paragraph 4?",
+   "q": "What does “a guide to belief and action” in the 1987 definition tell us?",
    "options": [
-    "How We Think",
-    "The Republic",
-    "Critical Questions",
-    "Pragmatism Today"
+    "The purpose of evaluating information is to decide what to believe and what to do",
+    "Information should be accepted only when it comes from experience",
+    "Beliefs are more important than actions in the process of reasoning",
+    "Critical thinking is a set of rules that only teachers should follow"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “the phrase critical thinking was coined by Pragmatist philosopher John Dewey in his book How We Think.”"
+   "explain": "Đoạn 4: quá trình đánh giá thông tin được dùng “as a guide to belief and action” ≈ để quyết định tin điều gì và làm gì."
   },
   {
    "type": "tf",
-   "q": "In an early dialogue by Plato, Socrates debates the ethical matter of escaping from prison.",
-   "answer": "T",
-   "explain": "Đoạn 2: nội dung này được nói trực tiếp."
-  },
-  {
-   "type": "tf",
-   "q": "Critical thinking requires no commitment to overcoming egocentrism and sociocentrism.",
+   "q": "The text says critical thinking requires no effort to overcome self-centred or group-centred ways of thinking.",
    "answer": "F",
-   "explain": "Đoạn 1: “Critical thinking presupposes a rigorous commitment to overcoming egocentrism and sociocentrism”."
+   "explain": "Đoạn 1: critical thinking “presupposes a rigorous commitment to overcoming egocentrism and sociocentrism”."
+  },
+  {
+   "type": "tf",
+   "q": "Socrates wrote down his own teachings in a book.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói Plato ghi lại lời dạy của Socrates; không nói Socrates có tự viết hay không."
   }
  ],
  "notes": {

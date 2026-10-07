@@ -29,75 +29,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What does a “green thumb” mean?",
+   "q": "A goalkeeper says, “I will shoulder the responsibility for this defeat.” What does he mean?",
    "options": [
-    "To be good at growing plants",
-    "To be very expensive",
-    "To have a lot of friends",
-    "To be a good cook"
+    "He accepts that he is the one who must take the blame",
+    "He thinks he is a better player than all of the others",
+    "He wants someone to comfort him after the match has ended",
+    "He plans to learn from the champions of earlier years"
    ],
    "answer": 0,
-   "explain": "Đoạn 1: “a green thumb means to be good at growing vegetables, flowers and other plants.”"
+   "explain": "Đoạn 3–5: to shoulder something = nhận trách nhiệm/chịu lỗi (ví dụ: trưởng dự án “shouldered the blame”)."
   },
   {
    "type": "mcq",
-   "q": "What does “to shoulder something” mean?",
+   "q": "According to the writer, why is a friend with “a good shoulder to cry on” valuable?",
    "options": [
-    "To carry it on your back",
-    "To accept it as your responsibility or take the blame",
-    "To throw it away",
-    "To ask for help"
+    "Such a friend helps you to win competitions and to be better than others",
+    "Such a friend always gives clever advice and tells you exactly what to do",
+    "Such a friend pays for expensive things when you do not have the money",
+    "Such a friend gives comfort by listening without asking many questions"
    ],
-   "answer": 1,
-   "explain": "Đoạn 3: “If you shoulder something, you accept it as your responsibility; you give support, or you take the blame.”"
+   "answer": 3,
+   "explain": "Đoạn 8: những người bạn đó “don’t ask questions. They just listen and let us cry”."
   },
   {
    "type": "mcq",
-   "q": "What is “a shoulder to cry on”?",
+   "q": "A scientist says, “My discovery was possible because I am standing on the shoulders of giants.” What is she saying?",
    "options": [
-    "A person who is there to support you",
-    "A pillow",
-    "A person who makes you cry",
-    "A place to sit"
+    "She is much taller than any of the colleagues she works with",
+    "She has succeeded completely on her own, without any help",
+    "Her success is built on the work of earlier researchers",
+    "She is afraid of being blamed for a failure in her laboratory"
    ],
-   "answer": 0,
-   "explain": "Đoạn 7: “When we cry on someone’s shoulder, they are there for support.”"
+   "answer": 2,
+   "explain": "Đoạn 9: standing on the shoulders of giants = thành công nhờ học từ những người đi trước, không phải tự mình làm nên."
   },
   {
    "type": "mcq",
-   "q": "What does “standing on the shoulders of giants” mean?",
+   "q": "Which person has “a good head on his shoulders”?",
    "options": [
-    "You are very tall",
-    "You have learned from others who had earlier successes",
-    "You are famous in science",
-    "You work alone"
+    "A young man who always tells friends his problems",
+    "A boy who beat all other competitors by a long way",
+    "A student who takes the blame for his team’s mistakes",
+    "A sensible teenager whom adults trust to make wise choices"
    ],
-   "answer": 1,
-   "explain": "Đoạn 9: “You have not succeeded on your own. You have learned from others in the same field who had earlier successes.”"
+   "answer": 3,
+   "explain": "Đoạn 10: a good head on your shoulders = chín chắn, thông minh, làm điều đúng và người khác tin cậy được."
   },
   {
    "type": "mcq",
-   "q": "What does “head and shoulders above the rest” mean?",
+   "q": "What does the job-application example show about “head and shoulders above” the others?",
    "options": [
-    "Much better than others",
-    "Taller than others",
-    "Late for the race",
-    "Very tired"
+    "The applicant needs help from a friend",
+    "The applicant is much taller than the others",
+    "The applicant has little experience for the job",
+    "The applicant is clearly better qualified than the rest"
    ],
-   "answer": 0,
-   "explain": "Đoạn 11: “This means you are much better than those in a similar field or competition.”"
+   "answer": 3,
+   "explain": "Đoạn 11–12: người có nhiều học vấn và kinh nghiệm hơn hẳn → “head and shoulders above the other candidates” = vượt trội rõ rệt."
   },
   {
    "type": "tf",
-   "q": "If you have a good head on your shoulders, you are thoughtful and smart.",
+   "q": "Some English idioms use parts of the body to talk about things that have nothing to do with the body.",
    "answer": "T",
-   "explain": "Đoạn 10: “you are thoughtful and smart.”"
+   "explain": "Đoạn 1: nhiều thành ngữ dùng bộ phận cơ thể để miêu tả những điều không liên quan đến cơ thể."
   },
   {
    "type": "tf",
-   "q": "The expression “a shoulder to cry on” comes from an old story.",
+   "q": "The expression “a shoulder to cry on” is used more often in American English than in British English.",
    "answer": "NG",
-   "explain": "Bài không nói về nguồn gốc của cách nói này."
+   "explain": "Bài không so sánh cách dùng giữa tiếng Anh Mỹ và Anh."
   }
  ],
  "notes": {

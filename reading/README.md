@@ -15,3 +15,10 @@
 1. Tạo `src/<id>.json` theo mẫu các bài có sẵn (id dạng `b1-xxx`; level A1|A2|B1|B2|C1).
 2. `python3 reading/tools/build.py` → sinh lại `bank.json`.
 3. Commit cả `src/` và `bank.json`.
+
+## Chuẩn viết câu hỏi từ B1 trở lên (theo PET/FCE/CAE)
+- **Diễn đạt lại (paraphrase):** câu hỏi và đáp án đúng KHÔNG chép cụm từ trong bài (không trùng cụm 4 từ liên tiếp); học sinh phải nhận ra từ đồng/gần nghĩa và cách nói tương đương.
+- **Đáp án nhiễu hợp lí:** dùng chữ/ý có trong bài nhưng sai về ý (so sánh ngược, quá mức, lẫn chi tiết đoạn khác), không có “all/none of the above”.
+- **Đa dạng kĩ năng:** ý chính, suy luận, mục đích đoạn/tác giả, thái độ hoặc độ chắc chắn của người viết, từ trong ngữ cảnh, ví dụ áp dụng, so sánh/nguyên nhân–kết quả; 2 câu Đúng/Sai/Not Given (NG = bài không nói đến).
+- **Cân bằng:** các đáp án dài gần bằng nhau (đáp án đúng không dài hơn rõ rệt), vị trí đáp án đúng xáo trộn.
+- **Giải thích tiếng Việt** nêu đoạn nào và cặp từ/ý tương đương (ví dụ “desire or urge” ≈ strong wish).

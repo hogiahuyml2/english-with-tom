@@ -33,87 +33,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What did a recent survey find about students and social media?",
+   "q": "What does the survey in the first paragraph suggest about young people?",
    "options": [
-    "Students sometimes want to turn off their devices to get away from the pressure",
-    "Students want to use social media all the time",
-    "Students never use phones",
-    "Teachers use social media more than students"
+    "They believe that social media brings friends closer than meeting in person",
+    "Some feel under pressure and would like a break from their devices",
+    "They think that teachers should forbid the use of social media in school",
+    "They would like to spend even more of their free time on social media"
    ],
-   "answer": 0,
-   "explain": "Đoạn 1: “students sometimes want to turn off their electronic devices to get away from the pressure to take part in social media.”"
+   "answer": 1,
+   "explain": "Đoạn 1: học sinh “sometimes want to turn off their electronic devices to get away from the pressure to take part in social media”."
   },
   {
    "type": "mcq",
-   "q": "What did eight out of ten students say?",
+   "q": "What do the results in paragraph 3 suggest?",
    "options": [
-    "Some people think too much about their posts and always try to be perfect",
-    "They never post",
-    "Social media is boring",
-    "They do not like school"
+    "Students see pressure to look perfect, and some accept an image that is not honest",
+    "A third of the students said that they had been bullied online",
+    "Eight out of ten students refuse to have an account of any kind",
+    "Most students post only completely honest information about their lives"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “Eight out of ten students said that \"some people think too much about their social media posts and are always trying to be perfect.\"”"
+   "explain": "Đoạn 3: 8/10 nói nhiều người “always trying to be perfect”; khoảng một phần ba cho rằng chấp nhận được việc đăng hình ảnh “not 100 percent real”."
   },
   {
    "type": "mcq",
-   "q": "How does Common Sense Media define digital citizenship?",
+   "q": "Which of the following would count as “digital drama”?",
    "options": [
-    "Thinking critically, behaving safely and participating responsibly in the digital world",
-    "Using social media as much as possible",
-    "Learning to write code",
-    "Owning many devices"
+    "A class makes a poster about staying safe when using the internet",
+    "Two friends argue about something said in a group chat",
+    "A stranger posts comments full of hatred for a particular religious group",
+    "A teacher posts the homework instructions for the coming week"
    ],
-   "answer": 0,
-   "explain": "Đoạn 5: “thinking critically, behaving safely, and participating responsibly in the digital world.”"
+   "answer": 1,
+   "explain": "Đoạn 9: digital drama = tranh cãi thường ngày và vấn đề nhỏ giữa bạn bè qua mạng/tin nhắn. Đăng lời căm ghét một nhóm người là hate speech (đoạn 10)."
   },
   {
    "type": "mcq",
-   "q": "What does “digital drama” mean?",
+   "q": "Why did Bayly DiPilato decide not to use Facebook with her students?",
    "options": [
-    "Everyday arguments and small problems between friends or people you know online",
-    "A film shown online",
-    "A new social media app",
-    "Hateful speech against a group"
+    "Her school had banned all teachers from using the site",
+    "She felt it was too personal for contact between teacher and class",
+    "She found it much too slow for sharing homework with a class",
+    "Her students were not old enough to open accounts on the site"
    ],
-   "answer": 0,
-   "explain": "Đoạn 9: ““Digital drama” is the everyday arguments and small problems that come up between friends or with other people you know online”."
+   "answer": 1,
+   "explain": "Đoạn 12: cô không muốn dùng Facebook “because it is too personal”."
   },
   {
    "type": "mcq",
-   "q": "Why did the teacher Bayly DiPilato choose Twitter instead of Facebook?",
+   "q": "What does DiPilato believe using Twitter allows her to do?",
    "options": [
-    "Facebook is too personal, and Twitter lets her share information quickly in a professional way",
-    "Twitter is older",
-    "Her students do not know Facebook",
-    "Twitter has no rules"
+    "Avoid the need to set any limits on when she answers questions",
+    "Share information fast while showing a sensible, professional style of use",
+    "Keep a private record of every student’s marks and attendance",
+    "Replace the lessons in class with discussions held online"
    ],
-   "answer": 0,
-   "explain": "Đoạn 12–13: Facebook “too personal”; Twitter giúp chia sẻ thông tin nhanh và dùng mạng xã hội theo cách chuyên nghiệp."
+   "answer": 1,
+   "explain": "Đoạn 13: Twitter cho phép cô “share information quickly and show how to use social media in a professional, healthy way”."
   },
   {
    "type": "mcq",
-   "q": "What should teachers do to protect students’ privacy?",
+   "q": "Why do experts suggest teachers say they will only answer questions until nine at night?",
    "options": [
-    "Post pictures of students’ work but not of the students themselves",
-    "Post all photos of students",
-    "Share students’ addresses",
-    "Delete all homework"
+    "It encourages students to finish their homework earlier in the day",
+    "It shows students that adults also need time away from their screens",
+    "Students are not allowed to ask their teachers questions at night",
+    "The school computer network is switched off after that time every night"
    ],
-   "answer": 0,
-   "explain": "Đoạn 15: “post pictures of students’ work but not of the students themselves.”"
+   "answer": 1,
+   "explain": "Đoạn 14: giáo viên cần đặt giới hạn thời gian và giải thích rằng “adults, too, need to ‘unplug’ sometimes”."
   },
   {
    "type": "tf",
-   "q": "The text suggests teachers set time limits when using social media with students.",
+   "q": "Teachers are advised to post photos of students’ work rather than photos of the students themselves.",
    "answer": "T",
-   "explain": "Đoạn 14: “teachers need to set time limits for using social media with students.”"
+   "explain": "Đoạn 15: “post pictures of students’ work but not of the students themselves” để bảo vệ quyền riêng tư."
   },
   {
    "type": "tf",
-   "q": "Researchers led discussions with young people in classes in the United States.",
-   "answer": "T",
-   "explain": "Đoạn 2: “researchers led a series of discussions at classes in the United States. They asked young people what they thought about social media.”"
+   "q": "Most teachers in the United States already use Twitter to give out homework.",
+   "answer": "NG",
+   "explain": "Bài chỉ kể ví dụ một giáo viên (DiPilato); không nói có bao nhiêu giáo viên dùng Twitter."
   }
  ],
  "notes": {

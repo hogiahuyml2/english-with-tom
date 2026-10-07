@@ -29,87 +29,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What did the Wright brothers prove?",
+   "q": "What did the Wright brothers show through their invention?",
    "options": [
-    "That flight without the aid of gas-filled balloons was possible",
-    "That balloons were safer than planes",
-    "That kites could carry people across oceans",
-    "That bicycles could fly"
+    "Powered flight was possible without gas-filled balloons",
+    "An engine could be built entirely from bicycle parts",
+    "Balloons were safer than any machine that has an engine",
+    "Gliders could carry more passengers than aeroplanes could"
    ],
    "answer": 0,
-   "explain": "Đoạn 1: “They proved that flight without the aid of gas-filled balloons was possible.”"
+   "explain": "Đoạn 1: họ “proved that flight without the aid of gas-filled balloons was possible”."
   },
   {
    "type": "mcq",
-   "q": "Which earlier experiments gave them ideas?",
+   "q": "Where did the brothers’ ideas for their flying machine come from?",
    "options": [
-    "A toy helicopter, kites, the printing machine and bicycles",
-    "Cars and trains",
-    "Ships and submarines",
-    "Telephones and radios"
+    "They were copied from plans supplied by a French company",
+    "They were taken from the books of earlier inventors of the aeroplane",
+    "They came from watching birds fly along the Atlantic coast",
+    "They grew out of earlier work with toys and everyday machines"
    ],
-   "answer": 0,
-   "explain": "Đoạn 3: “a toy helicopter, kites, the printing machine and bicycles.”"
+   "answer": 3,
+   "explain": "Đoạn 3: họ dùng ý tưởng từ các thí nghiệm trước với trực thăng đồ chơi, diều, máy in và xe đạp."
   },
   {
    "type": "mcq",
-   "q": "Why did they choose Kill Devil Hill near Kitty Hawk?",
+   "q": "Why did the brothers choose a stretch of sandy coast for their tests?",
    "options": [
-    "It had the best wind conditions",
-    "It was near their home",
-    "It was cheap",
-    "It had many visitors"
+    "It was close to their family home and workshop in the state of Ohio",
+    "Many newspaper reporters lived in the villages that were nearby",
+    "The winds there suited their experiments better than other places",
+    "The soft sand made crash landings much less dangerous for the pilot"
    ],
-   "answer": 0,
-   "explain": "Đoạn 4: “The best place with the best wind conditions seemed to be a piece of sandy land in North Carolina.”"
+   "answer": 2,
+   "explain": "Đoạn 4: “The best place with the best wind conditions seemed to be a piece of sandy land in North Carolina”. Bài không nói cát giúp đáp xuống an toàn."
   },
   {
    "type": "mcq",
-   "q": "How long was Orville in the air on the first flight in 1903?",
+   "q": "How did the world react to the first flights in December 1903?",
    "options": [
-    "12 seconds",
-    "12 minutes",
-    "36 seconds",
-    "90 seconds"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 7: “He was in the air for 12 seconds.”"
-  },
-  {
-   "type": "mcq",
-   "q": "When did the Wright brothers become famous?",
-   "options": [
-    "Immediately after the first flight",
-    "About five years later, in 1908",
-    "In 1912",
-    "In 1948"
+    "Crowds of reporters travelled to the coast to describe the event at length",
+    "Few people noticed, since only a handful saw them and few papers reported them",
+    "Several photographers sold pictures of the flights to the big magazines",
+    "The government decided at once to buy the aeroplane for its army"
    ],
    "answer": 1,
-   "explain": "Đoạn 9: “It was almost five years before the Wright brothers became famous.”"
+   "explain": "Đoạn 8: chỉ bốn người chứng kiến, một người chụp ảnh và “Few newspapers, however, noted the event”."
   },
   {
    "type": "mcq",
-   "q": "Where is their first airplane today?",
+   "q": "What brought the brothers fame?",
    "options": [
-    "In the Air and Space Museum in Washington, D.C.",
-    "In Dayton, Ohio",
-    "In France",
-    "In Kitty Hawk"
+    "Public flights abroad and at home, about five years after the first one",
+    "Newspaper reports that appeared on the day after their very first flight",
+    "A race in which their aeroplane beat a gas-filled balloon over the sea",
+    "A prize that the War Department awarded to them in the year 1903"
    ],
    "answer": 0,
-   "explain": "Đoạn 12: “the Wright brothers’ first airplane is in the Air and Space Museum in Washington, D.C.”"
+   "explain": "Đoạn 9–10: gần năm năm sau mới nổi tiếng; năm 1908 Wilbur bay biểu diễn ở Pháp, Orville bay thành công ở Mỹ và Bộ Chiến tranh đồng ý mua máy bay."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer suggest about the brothers’ attitude to fame?",
+   "options": [
+    "They enjoyed being world heroes and travelled widely to meet fans",
+    "They hoped to become rich by selling their planes to governments",
+    "Improving their planes and teaching others mattered more to them",
+    "They wanted to keep their ideas secret from other inventors"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 10: “the brothers were not seeking fame. They returned to Dayton where they continued to improve their airplanes. They taught many others how to fly.”"
   },
   {
    "type": "tf",
-   "q": "Many newspapers wrote about the first flights in 1903.",
-   "answer": "F",
-   "explain": "Đoạn 8: “Few newspapers, however, noted the event.”"
-  },
-  {
-   "type": "tf",
-   "q": "Orville Wright was born in Dayton, Ohio.",
+   "q": "Wilbur and Orville Wright were born in different towns.",
    "answer": "T",
-   "explain": "Đoạn 2: “His brother Orville was born four years later in Dayton, Ohio.”"
+   "explain": "Đoạn 2: Wilbur sinh gần Melville, bang Indiana; Orville sinh ở Dayton, bang Ohio."
+  },
+  {
+   "type": "tf",
+   "q": "The brothers’ first aeroplane was badly damaged in a crash soon after its first flights.",
+   "answer": "NG",
+   "explain": "Bài không nói máy bay bị hỏng hay rơi sau những chuyến bay đầu tiên."
   }
  ],
  "notes": {

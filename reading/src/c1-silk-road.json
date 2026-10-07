@@ -21,87 +21,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "Where does the name “Silk Road” come from?",
+   "q": "What does the text imply about the extension of the Great Wall?",
    "options": [
-    "From the highly lucrative trade of silk textiles produced mainly in China",
-    "From a road made of silk",
-    "From a Roman emperor",
-    "From a famous traveller"
+    "It was paid for by merchants who wanted lower taxes",
+    "It was a way of connecting China with the Mediterranean",
+    "It was meant to protect the trade route and the goods on it",
+    "It was built to keep traders from the West out of China"
    ],
-   "answer": 0,
-   "explain": "Đoạn 1: “The Silk Road derives its name from the highly lucrative trade of silk textiles that were primarily produced in China.”"
+   "answer": 2,
+   "explain": "Đoạn 1: người Trung Quốc quan tâm đến an ninh hàng hóa của mình và “extended the Great Wall… to ensure the protection of the trade route”."
   },
   {
    "type": "mcq",
-   "q": "Why did the Chinese extend the Great Wall?",
+   "q": "Why did few people travel the whole length of the Silk Road?",
    "options": [
-    "To ensure the protection of the trade route",
-    "To keep silk secret",
-    "To stop all trade",
-    "To mark the end of the Han dynasty"
+    "Goods mostly passed through middlemen, and the trip was dangerous",
+    "Governments allowed only soldiers to use the long routes",
+    "Silk was too heavy for travellers to carry across mountains",
+    "The road was closed to foreigners for most of its history"
    ],
    "answer": 0,
-   "explain": "Đoạn 1: “extended the Great Wall of China to ensure the protection of the trade route.”"
+   "explain": "Đoạn 2: ít người đi hết chiều dài vì dựa vào “a succession of middlemen” ở các điểm dừng và vì nguy cơ cướp bóc, địa hình khắc nghiệt."
   },
   {
    "type": "mcq",
-   "q": "What did the Silk Road network lack, according to paragraph 2?",
+   "q": "Besides goods, what travelled along the network?",
    "options": [
-    "Strong central organization and security",
-    "Goods to sell",
-    "Travelers",
-    "Camels"
+    "Religious and scientific ideas, and sometimes diseases too",
+    "Money that was collected in the form of taxes",
+    "Armies that were sent to protect important cities",
+    "Only sacred objects and teachers from one religion"
    ],
    "answer": 0,
-   "explain": "Đoạn 2: “The network was highly decentralized, and security was sparse”."
+   "explain": "Đoạn 2: ngoài hàng hóa còn có trao đổi tư tưởng tôn giáo (đặc biệt Phật giáo), triết học, khoa học; bệnh dịch như dịch hạch cũng lan theo."
   },
   {
    "type": "mcq",
-   "q": "Why did few individuals travel the entire length of the Silk Road?",
+   "q": "What does paragraph 3 say about the popular picture of the Silk Road?",
    "options": [
-    "They relied on a succession of middlemen at stopping points",
-    "It was forbidden",
-    "It was too short",
-    "It had no towns"
+    "It is misleading: there was a web of routes, and trade was limited before the Mongols",
+    "It is accurate, because Marco Polo described it in detail in his book",
+    "It is correct, because one single road joined China to the Mediterranean",
+    "It is outdated, because trade was completely free in all earlier centuries"
    ],
    "answer": 0,
-   "explain": "Đoạn 2: “Few individuals traveled the entire length … instead relying on a succession of middlemen”."
+   "explain": "Đoạn 3: “never a singular east-west trade route… nor was there unrestricted trade before the Mongol Empire. It was a network of routes.”"
   },
   {
    "type": "mcq",
-   "q": "What does paragraph 3 say about the popular idea of the Silk Road?",
+   "q": "According to Warwick Ball, which trade mattered more to the Roman economy?",
    "options": [
-    "It was never a single east–west route but a network of routes, and trade was not unrestricted before the Mongol Empire",
-    "It was one straight road from China to Rome",
-    "It was built by the Mongols",
-    "It did not exist"
+    "The exchange of gold with merchants who lived in the eastern lands",
+    "The spice trade carried by ships across the Indian Ocean region",
+    "The trading of horses and camels with the peoples of Persia and Asia",
+    "Overland trade in silk textiles that came from the lands of China"
    ],
-   "answer": 0,
-   "explain": "Đoạn 3: “Silk Road was never a singular east-west trade route … It was a network of routes.”"
+   "answer": 1,
+   "explain": "Đoạn 4: Ball cho rằng thương mại gia vị đường biển với Ấn Độ và Ả Rập “far more consequential” cho kinh tế La Mã hơn tơ lụa."
   },
   {
    "type": "mcq",
-   "q": "What does Warwick Ball argue?",
+   "q": "What does the word “detractors” in paragraph 4 suggest?",
    "options": [
-    "The maritime spice trade was more consequential for the Roman economy than the silk trade, and the Silk Road is a modern “myth”",
-    "Silk was the only trade good",
-    "The Silk Road began in 1877",
-    "Marco Polo invented the name"
+    "Several writers admired the work of Marco Polo and Gibbon",
+    "Merchants were against any form of trade between nations",
+    "Some scholars disagree with using the label “Silk Road” at all",
+    "Many travellers wrote about the dangers of the Silk Road"
    ],
-   "answer": 0,
-   "explain": "Đoạn 4: Ball cho rằng thương mại gia vị đường biển quan trọng hơn tơ lụa và gọi toàn bộ là “myth” của giới học thuật hiện đại."
+   "answer": 2,
+   "explain": "Đoạn 4: “The use of the term ‘Silk Road’ is not without its detractors” – có học giả phản đối cách dùng thuật ngữ này."
   },
   {
    "type": "tf",
-   "q": "Many people traveled the whole length of the Silk Road.",
+   "q": "Marco Polo used the term “Silk Road” in his writing.",
    "answer": "F",
-   "explain": "Đoạn 2: “Few individuals traveled the entire length of the Silk Road”."
+   "explain": "Đoạn 3–4: Marco Polo “never used the term”."
   },
   {
    "type": "tf",
-   "q": "The text says Marco Polo used the term “Silk Road” in his writing.",
-   "answer": "F",
-   "explain": "Đoạn 3: Marco Polo “never used the term”."
+   "q": "Silk was the most profitable product that was sold along the network.",
+   "answer": "NG",
+   "explain": "Bài nói buôn bán lụa rất sinh lợi nhưng không so sánh mức lợi nhuận với các mặt hàng khác."
   }
  ],
  "notes": {

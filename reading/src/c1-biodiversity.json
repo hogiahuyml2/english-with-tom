@@ -21,87 +21,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "According to the text, where is biodiversity greatest?",
+   "q": "What does the first paragraph suggest about climate and biodiversity?",
    "options": [
-    "In the polar regions",
-    "In the tropics",
-    "In deserts",
-    "In the deep sea only"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 1: “it is greater in the tropics as a result of the warm climate and high primary productivity”."
-  },
-  {
-   "type": "mcq",
-   "q": "What share of the world’s species do tropical forest ecosystems contain?",
-   "options": [
-    "About 5%",
-    "About 20%",
-    "About 50%",
-    "About 90%"
-   ],
-   "answer": 2,
-   "explain": "Đoạn 1: chiếm “less than one-fifth of Earth’s terrestrial area and contain about 50% of the world’s species”."
-  },
-  {
-   "type": "mcq",
-   "q": "How many major mass extinctions have there been since life began on Earth?",
-   "options": [
-    "Two",
-    "Four",
-    "Six",
-    "Ten"
-   ],
-   "answer": 2,
-   "explain": "Đoạn 2: “six major mass extinctions”."
-  },
-  {
-   "type": "mcq",
-   "q": "Which event does the text describe as the worst?",
-   "options": [
-    "The Cambrian explosion",
-    "The Permian–Triassic extinction event",
-    "The Carboniferous rainforest collapse",
-    "The Holocene extinction"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 2: “The Permian–Triassic extinction event, 251 million years ago, was the worst”."
-  },
-  {
-   "type": "mcq",
-   "q": "What is described as a key reason why biodiversity is decreasing today?",
-   "options": [
-    "Destroying habitats for farming",
-    "Too many volcanoes",
-    "The growth of forests",
-    "A cooler climate"
+    "A warm climate near the equator goes together with a richer variety of life",
+    "Tropical forests cover more than half of the land area of the planet",
+    "Variety of life is spread evenly across all parts of the Earth",
+    "Most of the world’s species are found in the coldest parts of the planet"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “Destroying habitats for farming is a key reason why biodiversity is decreasing today.”"
+   "explain": "Đoạn 1: đa dạng sinh học lớn hơn ở vùng nhiệt đới do khí hậu ấm và năng suất sơ cấp cao gần xích đạo; không phân bố đều."
   },
   {
    "type": "mcq",
-   "q": "What does the text say about the definition of biodiversity?",
+   "q": "What is remarkable about tropical forests, according to paragraph 1?",
    "options": [
-    "It is simple and fixed",
-    "There is no concrete definition, and it continues to be redefined",
-    "It is defined only by the WHO",
-    "It refers only to plants"
+    "They take up a small part of the land but hold a very large share of species",
+    "They contain mainly species that are also found in cooler regions",
+    "They take up most of the land but hold only a modest number of species",
+    "They hold fewer species than the oceans, even though they are very large"
    ],
-   "answer": 1,
-   "explain": "Đoạn 4: “there is no concrete definition for biodiversity, as its definition continues to be reimagined and redefined.”"
+   "answer": 0,
+   "explain": "Đoạn 1: rừng nhiệt đới chiếm “less than one-fifth” diện tích đất liền nhưng chứa “about 50%” số loài."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer imply about the Permian–Triassic extinction event?",
+   "options": [
+    "It was the first of the six major mass extinctions in the history of life",
+    "It happened soon after the Cambrian explosion and ended the growth in species",
+    "It was caused by the collapse of the rainforests of the Carboniferous",
+    "It was the worst of all, and vertebrates took exceptionally long to recover"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: “was the worst; vertebrate recovery took 30 million years”. Sự sụp đổ rừng mưa thuộc kỉ Carbon, không phải nguyên nhân được nêu cho Permi–Trias."
+  },
+  {
+   "type": "mcq",
+   "q": "Which cause of today’s biodiversity loss does the text emphasise most?",
+   "options": [
+    "Hunting large animals for sport in the modern age",
+    "Overfishing in the tropical seas that lie near the equator",
+    "Clearing natural habitats in order to create farmland",
+    "The spread of large cities across deserts and mountains"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3: “Destroying habitats for farming is a key reason why biodiversity is decreasing today.” Biến đổi khí hậu chỉ được nêu thêm là “also plays a role”."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer suggest about the beginnings of human-caused extinction?",
+   "options": [
+    "It is certain that early farming caused the first extinctions in history",
+    "It started with the Industrial Revolution and the use of powerful machines",
+    "It may be far older than industry, perhaps linked to overhunting in the ice age",
+    "It began only in 2007, when scientists first managed to measure species loss"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3: tuyệt chủng do con người “may have started toward the end of the Pleistocene”; một số nghiên cứu cho rằng việc săn bắn quá mức “partly resulted” – cách diễn đạt dè dặt (may, some studies suggest)."
+  },
+  {
+   "type": "mcq",
+   "q": "What point does the writer make about the definition of biodiversity?",
+   "options": [
+    "It refers only to the number of different species living in one place",
+    "The United Nations and the World Health Organization use exactly the same wording",
+    "It is a precise, long-established term that is now being replaced by “species richness”",
+    "No single agreed definition exists; organisations describe it broadly but differently"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 4: “there is no concrete definition”; FAO và WHO đưa ra hai định nghĩa khác nhau về câu chữ nhưng đều rộng. Thuật ngữ này thay thế “species diversity/richness”, không phải ngược lại."
   },
   {
    "type": "tf",
-   "q": "The Phanerozoic aeon marked a rapid growth in biodiversity via the Cambrian explosion.",
+   "q": "Biodiversity can be measured at more than one level, for example genes and ecosystems.",
    "answer": "T",
-   "explain": "Đoạn 2: nội dung này được nói trực tiếp."
+   "explain": "Đoạn 1: đo ở nhiều cấp độ – genetic variability, species diversity, ecosystem diversity…"
   },
   {
    "type": "tf",
-   "q": "The text claims that climate change plays no role in the current loss of biodiversity.",
-   "answer": "F",
-   "explain": "Đoạn 3: “Climate change also plays a role.”"
+   "q": "The Cambrian explosion produced more species than any later period in the history of life.",
+   "answer": "NG",
+   "explain": "Đoạn 2 chỉ nói đó là giai đoạn tăng trưởng nhanh khi phần lớn các ngành đa bào xuất hiện; không so sánh số loài với các giai đoạn sau."
   }
  ],
  "notes": {

@@ -31,87 +31,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "When is Thanksgiving celebrated in the United States?",
+   "q": "What does the writer say about Thanksgiving in comparison with other cultures?",
    "options": [
-    "On the first Monday in October",
-    "On the fourth Thursday in November",
-    "On December 25",
-    "On the last day of summer"
+    "Many societies mark the end of the harvest with a festival",
+    "Thanksgiving is the only harvest celebration that exists anywhere in the world",
+    "Other cultures celebrate their harvest only through religious services",
+    "Harvest festivals take place in the spring in most countries"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Thanksgiving is an autumn harvest festival like those found in many cultures around the world.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How is the stuffing for a Thanksgiving turkey made?",
+   "options": [
+    "Potatoes and cream are baked together in a separate dish",
+    "Bread, celery, onion and spices are cooked inside the bird",
+    "The meat is covered with a sauce made from the cooking fat",
+    "Fruit and nuts are baked inside a crust with sugar"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “celebrated every year on the fourth Thursday in November.”"
+   "explain": "Đoạn 4: gà tây được nướng nhiều giờ “with a mix of celery, bread, onions and spices inside the bird. This mix becomes stuffing”. Nước sốt là gravy (đoạn 6)."
   },
   {
    "type": "mcq",
-   "q": "What is usually the “star” of Thanksgiving dinners?",
+   "q": "Why is the Sunday after Thanksgiving the busiest day for travel?",
    "options": [
-    "A roasted turkey",
-    "A large cake",
-    "Rice and fish",
-    "Hot dogs"
+    "People are coming back from spending the holiday with their families",
+    "Shops offer special prices to travellers on that day only",
+    "Schools reopen and children return to their boarding houses",
+    "Many people start their long winter holidays on that particular day"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “The star of most Thanksgiving dinners is a roasted turkey.”"
+   "explain": "Đoạn 8: nhiều người đi xa để về với gia đình; Chủ nhật sau lễ là lúc họ trở về nhà."
   },
   {
    "type": "mcq",
-   "q": "What is stuffing?",
+   "q": "Why do some young people living in cities celebrate “Friendsgiving”?",
    "options": [
-    "A kind of pie",
-    "A mix of celery, bread, onions and spices cooked inside the turkey",
-    "A sauce made from fruit",
-    "A drink"
+    "Their universities require them to organise a meal together",
+    "They do not enjoy the traditional food that their families serve",
+    "Restaurants offer special free meals for groups of friends",
+    "They cannot always go home, so they share a meal with friends"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 9: những người trẻ sống xa quê không về được nên tổ chức bữa ăn cùng bạn bè, mỗi người mang món đến (potluck)."
+  },
+  {
+   "type": "mcq",
+   "q": "Why did workers at Macy’s organise the first parade in 1924?",
+   "options": [
+    "The city government had asked for an event to celebrate a new holiday",
+    "Many were immigrants who missed the big parades of Europe",
+    "They hoped to raise money for the animals at the New York zoo",
+    "The store wanted to advertise its toys before the Christmas season"
    ],
    "answer": 1,
-   "explain": "Đoạn 4: “a mix of celery, bread, onions and spices inside the bird. This mix becomes stuffing.”"
+   "explain": "Đoạn 10: nhiều nhân viên là dân nhập cư và “wanted to hold a big parade like the ones in Europe”."
   },
   {
    "type": "mcq",
-   "q": "What is “Friendsgiving”?",
+   "q": "What does the quotation from O. Henry suggest about Thanksgiving?",
    "options": [
-    "A Thanksgiving meal with friends instead of family",
-    "A holiday in spring",
-    "A parade in New York",
-    "A cooking competition"
+    "It is the oldest holiday that is celebrated in both Europe and America",
+    "It is a religious holiday kept by only one group of Americans",
+    "It is a day when only members of a family may take part",
+    "It belongs to every person in the country, whatever their background"
    ],
-   "answer": 0,
-   "explain": "Đoạn 9: “a Thanksgiving meal with their friends instead of their family.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Why was the first Macy’s parade held in 1924?",
-   "options": [
-    "The workers were mostly immigrants who wanted a big parade like those in Europe",
-    "The government asked for it",
-    "There was a football game",
-    "It was the store’s birthday"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 10: “Many of the workers were immigrants and wanted to hold a big parade like the ones in Europe.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What do runners do in “Turkey Trot” races?",
-   "options": [
-    "Run in costumes, usually for about five kilometers",
-    "Cook turkeys while running",
-    "Run for 24 hours",
-    "Race against turkeys"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 11: “runners dressing up in a Thanksgiving-related costume and running a short distance -- usually five kilometers.”"
+   "answer": 3,
+   "explain": "Đoạn 14: O. Henry gọi đây là ngày lễ thuần Mỹ, “not linked to a religion or a certain group”; ai ở Mỹ cũng được chào đón."
   },
   {
    "type": "tf",
-   "q": "The Sunday after Thanksgiving is the busiest travel day of the entire year in the United States.",
+   "q": "Some Turkey Trot races ask the runners to bring food for charity.",
    "answer": "T",
-   "explain": "Đoạn 8: nội dung này được nói trực tiếp."
+   "explain": "Đoạn 12: nhiều cuộc chạy “urge runners to bring canned food to donate to local food banks”."
   },
   {
    "type": "tf",
-   "q": "Most Americans travel by plane to visit their families at Thanksgiving.",
+   "q": "Thanksgiving was first celebrated in the seventeenth century.",
    "answer": "NG",
-   "explain": "Bài chỉ nói một số người Mỹ phải đi xa để về với gia đình; không nói họ dùng phương tiện gì."
+   "explain": "Bài không nói gì về thời điểm hay nguồn gốc lịch sử của lễ Tạ ơn."
   }
  ],
  "notes": {

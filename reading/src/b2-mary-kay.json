@@ -30,87 +30,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "How much money did Mary Kay use to start the business?",
+   "q": "What does the text suggest about Mary Kay’s early life?",
    "options": [
-    "$500",
-    "$5,000",
-    "$50,000",
-    "$1 million"
+    "She grew up in a wealthy family that owned a restaurant in Texas",
+    "She left her home state as a teenager to study business",
+    "She had family duties to carry out while still a child",
+    "She trained as a beautician before she was old enough to marry"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: bà chăm cha bị bệnh trong khi mẹ làm việc nhiều giờ ở nhà hàng → phải gánh trách nhiệm gia đình từ nhỏ."
+  },
+  {
+   "type": "mcq",
+   "q": "Why did Mary Kay begin looking for work?",
+   "options": [
+    "Her husband had asked her to help him to run his business after the war",
+    "She had to support her children by herself after her marriage ended",
+    "She had just finished her studies and was looking for a career",
+    "She wanted to open a restaurant of her own like the one her mother worked in"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “One woman started the business in the 1960s with an investment of $5,000.”"
+   "explain": "Đoạn 3: sau khi hôn nhân kết thúc “Mary Kay looked for a job so she could support her children”."
   },
   {
    "type": "mcq",
-   "q": "Why did Mary Kay look for a job after her marriage ended?",
+   "q": "How did Mary Kay come to sell the skin care products that made her company?",
    "options": [
-    "To support her children",
-    "To travel",
-    "To open a school",
-    "To study"
+    "She liked some homemade creams shown at a party and then paid to own the formulas",
+    "She copied the recipe from a magazine and tested it on her friends",
+    "She inherited the products from the woman who had invited her to the party",
+    "She invented the formula herself while she was looking after her sick father"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “Mary Kay looked for a job so she could support her children.”"
+   "explain": "Đoạn 4–5: bà dùng thử sản phẩm tự làm tại buổi giới thiệu, thích nó rồi “bought the rights … for $500” và lập công ty."
   },
   {
    "type": "mcq",
-   "q": "How did she get the skin care products she later sold?",
+   "q": "How did the independent sales representatives earn their money?",
    "options": [
-    "She bought the rights to products developed by J.W. Heath",
-    "She invented them herself in a laboratory",
-    "She copied them from a book",
-    "She was given them by the government"
+    "They were paid a fixed monthly salary directly by the company",
+    "They received a share of the founder’s own personal earnings",
+    "They charged customers a fee for coming to each demonstration",
+    "They resold the company’s goods to customers at a higher price"
    ],
-   "answer": 0,
-   "explain": "Đoạn 5: “She bought the rights to Heath’s skin care products”, giá $500."
+   "answer": 3,
+   "explain": "Đoạn 6: đại diện độc lập mua sản phẩm của công ty rồi bán lại “at higher prices”."
   },
   {
    "type": "mcq",
-   "q": "How did independent sales representatives earn money?",
+   "q": "Why did Mary Kay let representatives share in the earnings of the people they brought in?",
    "options": [
-    "They bought products from the company and sold them at higher prices",
-    "They got a fixed salary",
-    "They worked only in shops",
-    "They sold only to friends"
+    "So that the company could spend much less money on advertising",
+    "So that representatives would not leave to join competing firms",
+    "So that new recruits would pay for their own training courses",
+    "So that experienced sellers would have a reason to teach the newcomers"
    ],
-   "answer": 0,
-   "explain": "Đoạn 6: “Independent sales representatives bought beauty products from the company and sold them at higher prices.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Why did Mary Kay give a share of new people’s earnings to the person who brought them in?",
-   "options": [
-    "So experienced representatives would be willing to train new ones",
-    "So the company paid less tax",
-    "So fewer people would join",
-    "To raise prices"
-   ],
-   "answer": 0,
+   "answer": 3,
    "explain": "Đoạn 7: “That way, experienced sales representatives would be willing to train new ones.”"
   },
   {
    "type": "mcq",
-   "q": "What did the company aim to do in order to grow sales?",
+   "q": "What does “compete against yourself” mean in the context of the company’s sales idea?",
    "options": [
-    "Encourage people to compete against themselves",
-    "Stop all prizes",
-    "Hire only men",
-    "Lower the quality"
+    "Teams of sellers compete against their own managers for prizes",
+    "Each seller must try to win customers away from a rival company",
+    "Each person tries to improve on their own earlier sales figures",
+    "Sellers are asked to sell fewer products than they sold the year before"
    ],
-   "answer": 0,
-   "explain": "Đoạn 10: “it is best to compete against yourself … every individual is trying to beat their own sales records.”"
+   "answer": 2,
+   "explain": "Đoạn 10: “every individual is trying to beat their own sales records” ≈ cố vượt thành tích bán hàng trước đó của chính mình."
   },
   {
    "type": "tf",
-   "q": "The company was selling almost one million dollars in products by 1965.",
+   "q": "By the middle of the 1960s the company was already selling products worth nearly a million dollars.",
    "answer": "T",
    "explain": "Đoạn 8: “By 1965, the company was selling almost one million dollars in products.”"
   },
   {
    "type": "tf",
-   "q": "Mary Kay Ash wrote more than ten books.",
-   "answer": "F",
-   "explain": "Đoạn 12: “Mary Kay Ash also wrote three books.”"
+   "q": "Mary Kay Ash received a literary prize for one of her books.",
+   "answer": "NG",
+   "explain": "Đoạn 12 chỉ nói bà viết ba cuốn sách; không nói về giải thưởng."
   }
  ],
  "notes": {

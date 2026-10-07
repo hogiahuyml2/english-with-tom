@@ -22,87 +22,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What does urbanization describe, according to paragraph 1?",
+   "q": "How does the writer contrast village life with city life?",
    "options": [
-    "The population shift from rural to urban areas and how societies adapt to it",
-    "The building of tall towers",
-    "The growth of farms",
-    "The movement of people between countries only"
+    "Villagers move house often, whereas city people usually stay in one place for life",
+    "Villagers are close and cooperative, while city people are strangers who compete",
+    "Villagers are very competitive, whereas city people tend to help one another",
+    "Villagers share a common language, whereas city people speak several languages"
    ],
-   "answer": 0,
-   "explain": "Đoạn 1: “the population shift from rural to urban areas … and the ways in which societies and culture adapt to this change.”"
+   "answer": 1,
+   "explain": "Đoạn 2: văn hóa làng – quan hệ huyết thống, thân thiết, cộng đồng; văn hóa đô thị – huyết thống xa, quan hệ xa lạ, cạnh tranh."
   },
   {
    "type": "mcq",
-   "q": "How does the text contrast village culture with urban culture?",
+   "q": "Why did the balance between rural and urban populations stay fairly stable until the 18th century?",
    "options": [
-    "Village: common bloodlines, intimate relationships, communal behaviour; urban: distant bloodlines, unfamiliar relations, competitive behaviour",
-    "Village: competitive; urban: communal",
-    "They are exactly the same",
-    "Village culture has no relationships"
+    "Towns were destroyed regularly by war and by serious diseases",
+    "People had no wish to leave the countryside to find new work",
+    "Farming was too undeveloped to allow a large share of people to live in towns",
+    "Governments strictly controlled the number of people living in towns"
    ],
-   "answer": 0,
-   "explain": "Đoạn 2: “Village culture is characterized by common bloodlines, intimate relationships, and communal behaviour, whereas urban culture is characterized by distant bloodlines, unfamiliar relations, and competitive behaviour.”"
+   "answer": 2,
+   "explain": "Đoạn 3: nông nghiệp “primitive and relatively stagnant” nên tỉ lệ nông thôn/thành thị giữ ở trạng thái cân bằng."
   },
   {
    "type": "mcq",
-   "q": "Until the 18th century, why did the ratio of rural to urban population stay at a fixed equilibrium?",
+   "q": "What change took place after about 1800?",
    "options": [
-    "Because of the primitive and relatively stagnant state of agriculture",
-    "Because there were no cities",
-    "Because of many wars",
-    "Because trade was forbidden"
+    "The rural population grew faster than the urban population",
+    "The urban population fell, as people returned to farm the land",
+    "City populations grew rapidly through migration and a population boom",
+    "The balance between town and country stayed exactly as before"
    ],
-   "answer": 0,
-   "explain": "Đoạn 3: “Due to the primitive and relatively stagnant state of agriculture throughout this period, the ratio of rural to urban population remained at a fixed equilibrium.”"
+   "answer": 2,
+   "explain": "Đoạn 4: Cách mạng Nông nghiệp và Công nghiệp phá vỡ cân bằng; dân số đô thị tăng chưa từng có do di cư từ nông thôn và bùng nổ dân số."
   },
   {
    "type": "mcq",
-   "q": "What broke this relationship in the late 18th century?",
+   "q": "What do the figures for 1891 in paragraph 4 show?",
    "options": [
-    "The British Agricultural Revolution and the Industrial Revolution",
-    "The invention of the telephone",
-    "The discovery of America",
-    "A new government"
+    "England and Wales were more urbanised than France, Prussia or the US",
+    "France was the most urbanised of the four countries listed",
+    "The United States had the largest urban population in the world",
+    "Prussia and France were as urbanised as England and Wales"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “With the onset of the British Agricultural Revolution and Industrial Revolution in the late 18th century, this relationship was finally broken”."
+   "explain": "Đoạn 4: năm 1891 tỉ lệ đô thị hóa của Anh và xứ Wales là 72%, so với 37% (Pháp), 41% (Phổ) và 28% (Mỹ)."
   },
   {
    "type": "mcq",
-   "q": "In England and Wales, how did the proportion of people living in cities of more than 20,000 change between 1801 and 1891?",
+   "q": "Which of the following is mentioned as a disadvantage of urban living?",
    "options": [
-    "From 17% to 54%",
-    "From 54% to 17%",
-    "From 10% to 20%",
-    "It did not change"
+    "A feeling of isolation and a higher cost of living",
+    "A smaller number of different jobs to choose from",
+    "Poorer access to education and to health services",
+    "A longer time spent travelling to and from work"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “jumped from 17% in 1801 to 54% in 1891.”"
+   "explain": "Đoạn 5: những mặt hại gồm “alienation, stress, increased cost of living, and mass marginalization”."
   },
   {
    "type": "mcq",
-   "q": "How is suburbanization seen, according to the last paragraph?",
+   "q": "How does the writer present suburbanization in the final paragraph?",
    "options": [
-    "As an attempt to balance harmful aspects of urban life while still allowing access to shared resources",
-    "As the end of cities",
-    "As a cause of unemployment",
-    "As a type of farming"
+    "As a problem that gets worse as developing countries become wealthier",
+    "As a trend that is likely to replace big cities entirely in coming years",
+    "As a scheme that governments always organise carefully in advance",
+    "As one way to ease the drawbacks of city life while keeping shared resources"
    ],
-   "answer": 0,
-   "explain": "Đoạn 5: “Suburbanization … may be regarded as an attempt to balance these harmful aspects of urban life while still allowing access to a large extent of shared resources.”"
+   "answer": 3,
+   "explain": "Đoạn 5: ngoại ô hóa “may be regarded as an attempt to balance these harmful aspects of urban life while still allowing access to a large extent of shared resources”."
   },
   {
    "type": "tf",
-   "q": "Urbanization can occur either organically or planned.",
+   "q": "According to the text, cities can offer better access to jobs and education than rural areas.",
    "answer": "T",
-   "explain": "Đoạn 5: “Urbanization occurs either organically or planned”."
+   "explain": "Đoạn 5: sống ở thành phố có thể có “greater opportunities for access to the labour market, better education…”."
   },
   {
    "type": "tf",
-   "q": "The text says urbanization is only a modern phenomenon.",
+   "q": "The writer claims that urbanization began in the nineteenth century.",
    "answer": "F",
-   "explain": "Đoạn 2: “Urbanization is not merely a modern phenomenon”."
+   "explain": "Đoạn 2–3: “not merely a modern phenomenon” – đã có từ khi con người tập trung thành làng và các thành phố đầu tiên ở Lưỡng Hà, Ai Cập, thung lũng Indus."
   }
  ],
  "notes": {

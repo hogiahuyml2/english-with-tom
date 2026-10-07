@@ -29,87 +29,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "In which year did Pearl S. Buck win the Nobel Prize in Literature?",
+   "q": "Why is Pearl Buck remembered mainly for her novels about China?",
    "options": [
-    "1931",
-    "1932",
-    "1938",
-    "1973"
+    "She understood China well after living there for so long",
+    "She was born in China and never left the country again",
+    "She never wrote about any other subject during her career",
+    "The Chinese government had asked her to write them"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: dù viết hơn 100 cuốn thuộc nhiều thể loại, bà được nhớ nhờ tiểu thuyết về Trung Quốc vì “knew the country and its people very well”; Trung Quốc là nhà gần 40 năm."
+  },
+  {
+   "type": "mcq",
+   "q": "What can be understood about Pearl’s early schooling?",
+   "options": [
+    "She went to an American school from the age of five",
+    "She was taught only by Chinese teachers in a village school",
+    "She had no lessons at all until she went to college in Virginia",
+    "Both her mother and a Chinese teacher gave her lessons"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 5: giáo dục bắt đầu ở nhà – mẹ dạy nhiều môn như ở trường Mỹ, một thầy giáo Trung Quốc dạy các môn khác."
+  },
+  {
+   "type": "mcq",
+   "q": "What influenced the subject matter of many of Buck’s later books?",
+   "options": [
+    "Years spent with very poor villagers after she got married",
+    "Her work as a newspaper writer on a farm in Pennsylvania",
+    "Her travels with her parents as they worked for their church",
+    "Her studies of philosophy at a college in Virginia"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: sau khi cưới, họ sống ở một ngôi làng phía bắc Trung Quốc; “their life among the poorest people provided the subject matter for many of the books she later wrote”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which statement best summarises the story of The Good Earth as it is described here?",
+   "options": [
+    "A poor farming couple improve their lives, but their happiness does not last",
+    "A rich landowner loses his money and decides to move to America",
+    "Two brothers invent a new machine that helps them to plant crops",
+    "A young teacher struggles to open a school in a Chinese village"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7–8: Wang Lung và O-Lan nghèo, làm việc chăm chỉ, mua đất, cuộc sống khá hơn và hạnh phúc, nhưng “the good times do not last”."
+  },
+  {
+   "type": "mcq",
+   "q": "Why were Buck’s first books about China important?",
+   "options": [
+    "They were written in Chinese for the people of her village",
+    "Few readers abroad had any idea how Chinese people lived",
+    "They were the first novels from America to win a famous prize",
+    "They taught readers how to set up a farm in a foreign country"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 9: bà viết khi “most people in the world knew almost nothing about the Chinese way of life”."
+  },
+  {
+   "type": "mcq",
+   "q": "What message did Buck give to young people in her speeches?",
+   "options": [
+    "Move to China to learn the skills needed for modern farming",
+    "Stay away from politics and concentrate only on your own country",
+    "Study hard and learn more about people in other countries",
+    "Read newspapers instead of novels so that you understand the world"
    ],
    "answer": 2,
-   "explain": "Đoạn 3: “In 1938, Buck became the first American woman to be awarded the Nobel Prize in Literature.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Why do most people remember Pearl Buck?",
-   "options": [
-    "For her novels about China",
-    "For her science books",
-    "For her poems about the sea",
-    "For her travel guides"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 3: “most people remember Pearl Buck for her novels about China.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Where did Pearl’s education begin?",
-   "options": [
-    "In an American school",
-    "At home — her mother taught her, and a Chinese teacher taught other subjects",
-    "At a university",
-    "In a hospital"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 5: “Pearl’s education began at home. Her mother taught her many of the things … A Chinese teacher taught Pearl other subjects.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What is The Good Earth about?",
-   "options": [
-    "A poor Chinese man, Wang Lung, and his wife O-Lan who work hard and buy land for a farm",
-    "A rich American family",
-    "A war in Europe",
-    "A trip around the world"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 7: “the story of a poor Chinese man named Wang Lung. His wife is O-Lan. They work very hard together and finally make enough money to buy some land for a farm.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What did Buck do after she moved back to the United States?",
-   "options": [
-    "She stopped writing",
-    "She wrote articles and expressed her opinions on war, politics and other subjects",
-    "She became a doctor",
-    "She taught philosophy at a college"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 10: “She began to write articles … She expressed her opinions on war, politics, religion, equal rights”."
-  },
-  {
-   "type": "mcq",
-   "q": "What did Buck tell young people?",
-   "options": [
-    "Education is not important",
-    "A good education is important, and they need to know more about other people around the world",
-    "They should live in China",
-    "They should not travel"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 11: “Buck talked to young people about the importance of a good education. She also told them they needed to know more about other people around the world.”"
+   "explain": "Đoạn 11: bà nói về tầm quan trọng của giáo dục tốt và cần “know more about other people around the world”."
   },
   {
    "type": "tf",
-   "q": "Pearl’s parents were religious workers in China.",
+   "q": "Buck won a major American prize for fiction in the year after The Good Earth was the best-selling book in the country.",
    "answer": "T",
-   "explain": "Đoạn 4: “They were religious workers in China.”"
+   "explain": "Đoạn 1–2: năm 1931 The Good Earth bán chạy nhất; “the following year” (1932) bà giành giải Pulitzer cho tiểu thuyết hay nhất."
   },
   {
    "type": "tf",
-   "q": "Pearl’s husband, John Lossing Buck, also wrote novels.",
+   "q": "Buck’s husband encouraged her to begin writing novels.",
    "answer": "NG",
-   "explain": "Đoạn 6: bài chỉ nói ông là “a religious worker who studied agriculture”; không nói ông viết tiểu thuyết."
+   "explain": "Bài không nói ai động viên bà bắt đầu viết."
   }
  ],
  "notes": {

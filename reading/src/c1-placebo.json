@@ -22,87 +22,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What is a placebo?",
+   "q": "Why should a placebo look the same as the real treatment in a clinical trial?",
    "options": [
-    "A medicine that cures every disease",
-    "A treatment intended to appear genuine but with no pharmaceutical effect",
-    "A new type of vaccine",
-    "A medical machine"
+    "So that the real medicine can be tested on fewer people than usual",
+    "Then nobody knows who gets what, so expectations cannot influence the results",
+    "So that doctors can make sure that every patient is given the same dose",
+    "So that patients feel more comfortable when they take the medicine"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “a medicine or treatment intended to appear genuine to its recipient, but which has no pharmaceutical effect.”"
+   "explain": "Đoạn 2: giả dược nên không thể phân biệt với thuốc thật “to shield test participants… from knowing” vì kì vọng của bệnh nhân và bác sĩ có thể ảnh hưởng kết quả."
   },
   {
    "type": "mcq",
-   "q": "Why are placebos used in randomized clinical trials?",
+   "q": "What does “regression to the mean” help to explain?",
    "options": [
-    "To make patients feel worse",
-    "To test the efficacy of medical treatments",
-    "To save money on medicine",
-    "To stop doctors from working"
+    "Why patients in a control group can never show any change in their condition",
+    "Why doctors must always give the smallest dose of any medicine to patients",
+    "Why a patient may seem better when an extreme reading just becomes less extreme",
+    "Why a placebo works only when the patient fully understands the treatment"
    ],
-   "answer": 1,
-   "explain": "Đoạn 2: “Placebos are used in randomized clinical trials to test the efficacy of medical treatments.”"
+   "answer": 2,
+   "explain": "Đoạn 3: “regression to the mean” – một số đo cao/thấp bất thường thường được theo sau bởi số đo bớt cực đoan, nên cải thiện có thể không liên quan đến giả dược."
   },
   {
    "type": "mcq",
-   "q": "In a placebo-controlled trial, what is the “placebo effect”?",
+   "q": "What ethical problem arises when a placebo is presented as a real treatment?",
    "options": [
-    "The difference between the placebo response and the result of no treatment",
-    "The side effects of a real drug",
-    "The cost of the trial",
-    "The patients’ opinions about doctors"
+    "The patient could become dependent on the tablets for life",
+    "The patient is deceived and so cannot give informed consent",
+    "The patient might refuse to take part in any future trial",
+    "The patient may have to pay a higher price for the medicine"
    ],
-   "answer": 0,
-   "explain": "Đoạn 2: “any change in the control group is known as the placebo response, and the difference between this and the result of no treatment is the placebo effect.”"
+   "answer": 1,
+   "explain": "Đoạn 3: dùng giả dược như thuốc thật “introduces dishonesty into the doctor–patient relationship and bypasses informed consent”."
   },
   {
    "type": "mcq",
-   "q": "What do modern studies find about placebos?",
+   "q": "According to the text, what can a placebo mainly influence?",
    "options": [
-    "They cure serious diseases",
-    "They can affect some outcomes such as pain and nausea, but do not generally have important clinical effects",
-    "They are dangerous",
-    "They work only on children"
+    "The speed at which a serious disease spreads through the body",
+    "The cure of illnesses such as Parkinson’s disease in most patients",
+    "How patients experience symptoms such as pain, rather than the illness itself",
+    "The results of blood tests that no patient can notice"
    ],
-   "answer": 1,
-   "explain": "Đoạn 3: “placebos can affect some outcomes such as pain and nausea, but otherwise do not generally have important clinical effects.”"
+   "answer": 2,
+   "explain": "Đoạn 4–5: giả dược ảnh hưởng đến cảm nhận và giảm đau/triệu chứng, nhưng “have no impact on the disease itself”."
   },
   {
    "type": "mcq",
-   "q": "What ethical concern does the text raise?",
+   "q": "How does the writer present the conclusion of the 2010 Cochrane review?",
    "options": [
-    "Placebos are too expensive",
-    "Using placebos disguised as active treatment introduces dishonesty and bypasses informed consent",
-    "Placebos harm the body",
-    "Placebos are illegal everywhere"
+    "As a result that came from a study of only one medical condition",
+    "As a key finding, though one criticised for the way the study was done",
+    "As an idea that every researcher in the field has agreed with fully",
+    "As final proof that placebos can never have any effect on any patient"
    ],
    "answer": 1,
-   "explain": "Đoạn 3: “especially if they are disguised as an active treatment, as this introduces dishonesty … and bypasses informed consent.”"
+   "explain": "Đoạn 5: các tác giả kết luận không thấy tác dụng lâm sàng quan trọng nói chung, nhưng cách giải thích này “has been subject to criticism” vì phương pháp."
   },
   {
    "type": "mcq",
-   "q": "What did the 2010 Cochrane review find about the actual diseases?",
+   "q": "What does the final sentence of the text add to the discussion?",
    "options": [
-    "Placebos strongly improve them",
-    "Placebos do not appear to affect the actual diseases or outcomes not dependent on patient perception",
-    "Placebos make them worse",
-    "Placebos cure them completely"
+    "It proves that the 2001 analysis was wrong about the effect on pain",
+    "Newer work suggests placebos may influence some measurable outcomes too",
+    "It confirms that placebos only affect conditions related to pain",
+    "It shows that placebos are dangerous for people with certain diseases"
    ],
    "answer": 1,
-   "explain": "Đoạn 5: “placebos do not appear to affect the actual diseases, or outcomes that are not dependent on a patient's perception.”"
+   "explain": "Đoạn 5 (cuối): nghiên cứu gần đây liên hệ giả dược với cải thiện chức năng vận động ở bệnh Parkinson và các kết quả khách quan khác (miễn dịch, nội tiết, thể thao, nhận thức)."
   },
   {
    "type": "tf",
-   "q": "A 2001 meta-analysis concluded that pain was the only condition where the placebo effect had been shown to be significant.",
+   "q": "A 2001 analysis found a significant placebo effect in only one of the conditions it examined.",
    "answer": "T",
-   "explain": "Đoạn 5: nội dung này được nói trực tiếp."
+   "explain": "Đoạn 5: phân tích gộp năm 2001 xét 40 bệnh và kết luận chỉ có đau là chứng minh được tác dụng đáng kể."
   },
   {
    "type": "tf",
-   "q": "The text says that placebos can only be given as tablets.",
-   "answer": "F",
-   "explain": "Đoạn 1: “Common placebos include inert tablets (like sugar pills), inert injections (like saline), sham surgery, and other procedures.”"
+   "q": "Placebos are more effective when the patient believes they are expensive.",
+   "answer": "NG",
+   "explain": "Bài không nói gì về giá cả hay niềm tin của bệnh nhân về giá của giả dược."
   }
  ],
  "notes": {

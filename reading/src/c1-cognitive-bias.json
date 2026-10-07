@@ -23,87 +23,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "How does the text define a cognitive bias?",
+   "q": "What point is made about “subjective reality” in paragraph 1?",
    "options": [
-    "A systematic pattern of deviation from the norm or rationality in judgment",
-    "A problem with eyesight",
-    "A kind of memory loss",
-    "A deliberate lie"
+    "People react to their own reading of what they perceive, not to plain fact",
+    "People share one reality because they all receive the same input from outside",
+    "People change reality itself simply by thinking about it in a different way",
+    "People always see the world exactly as it is, with no distortion of any kind"
    ],
    "answer": 0,
-   "explain": "Đoạn 1: “A cognitive bias is a systematic pattern of deviation from the norm or rationality in judgment.”"
+   "explain": "Đoạn 1: mỗi người tạo “subjective reality” từ nhận thức; “construction of reality, not the objective input, may dictate their behavior”."
   },
   {
    "type": "mcq",
-   "q": "Why might some cognitive biases be considered adaptive?",
+   "q": "Why does the writer say that allowing cognitive biases can sometimes be desirable?",
    "options": [
-    "They always give perfect answers",
-    "They may lead to more effective actions in a given context and allow faster decisions",
-    "They make people more emotional",
-    "They remove the need to think"
+    "They make sure that every judgment turns out to be completely accurate",
+    "They remove the need to look for evidence before making a choice",
+    "They help people to avoid feeling uncertain about any decision",
+    "They make quicker decisions possible when speed matters more than precision"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: cho phép thiên kiến giúp “faster decisions which can be desirable when timeliness is more valuable than accuracy”."
+  },
+  {
+   "type": "mcq",
+   "q": "What link does the text make between cognitive biases and pseudoscientific beliefs?",
+   "options": [
+    "Biases only affect people who have received no scientific education",
+    "Biases can lead people to accept claims that fit their views on weaker evidence",
+    "Biases force people to demand more proof before they accept any claim",
+    "Pseudoscience is the main reason for the existence of cognitive biases"
    ],
    "answer": 1,
-   "explain": "Đoạn 2: “some are adaptive. They may lead to more effective actions in a given context … allowing cognitive biases enables faster decisions”."
+   "explain": "Đoạn 2: thiên kiến khiến con người dễ tin giả khoa học vì “requiring less evidence for claims that confirm their preconceptions”."
   },
   {
    "type": "mcq",
-   "q": "What are heuristics?",
+   "q": "Which situation is an example of the “availability heuristic”?",
    "options": [
-    "Mental shortcuts that provide swift estimates about uncertain occurrences",
-    "Rules of formal logic",
-    "Medical tests",
-    "Memory exercises"
+    "A student decides a quiet man must be a librarian because he fits the usual image",
+    "A woman judges a price by comparing it with the first price she was shown",
+    "A man thinks flying is very dangerous because plane crashes are easy to remember",
+    "A manager collects all the available data before she makes her decision"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 4: availability = ước lượng khả năng xảy ra theo mức độ dễ nhớ lại. Neo giá đầu tiên là anchoring; đoán nghề theo hình mẫu điển hình là representativeness."
+  },
+  {
+   "type": "mcq",
+   "q": "Why does the “Linda Problem” show an error in reasoning?",
+   "options": [
+    "A combined description cannot be likelier than one part of it, yet most chose it",
+    "The description gave no hint that Linda was interested in social issues at all",
+    "The people who took part did not read the description of Linda with any care",
+    "Most people chose the answer that contained the smallest amount of information"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “people rely on mental shortcuts or heuristics, which provide swift estimates about the possibility of uncertain occurrences.”"
+   "explain": "Đoạn 5: phương án (b) “bank teller and active in the feminist movement” luôn ít khả năng hơn (a) “bank teller”; đa số vẫn chọn (b) vì nó “representative” hơn (conjunction fallacy)."
   },
   {
    "type": "mcq",
-   "q": "What does the availability heuristic mean?",
+   "q": "What is Gerd Gigerenzer’s view of heuristics?",
    "options": [
-    "People judge likelihood by how easy examples are to recall",
-    "People always choose the first option",
-    "People ignore all evidence",
-    "People trust experts completely"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 4: “individuals estimate the likelihood of events by how easy they are to recall”."
-  },
-  {
-   "type": "mcq",
-   "q": "In the “Linda Problem”, which answer did a majority choose?",
-   "options": [
-    "(a) a bank teller",
-    "(b) a bank teller and active in the feminist movement",
-    "Neither answer",
-    "They could not decide"
+    "They are the main reason why human thinking is irrational",
+    "Many so-called biases may actually be useful rules of thumb in real life",
+    "They have been proved to cause serious errors in most decisions",
+    "They should be replaced by the rules of formal logic"
    ],
    "answer": 1,
-   "explain": "Đoạn 5: “A majority chose answer (b).”"
-  },
-  {
-   "type": "mcq",
-   "q": "What does Gerd Gigerenzer argue?",
-   "options": [
-    "Heuristics prove that humans are irrational",
-    "Cognitive biases may be rules of thumb or “gut feelings” that help us make accurate decisions",
-    "Heuristics should be banned in science",
-    "Rationality means following formal logic only"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 6: “cognitive biases are not biases, but rules of thumb, or … “gut feelings” that can actually help us make accurate decisions”."
+   "explain": "Đoạn 6: ông cho rằng đó là “rules of thumb… gut feelings” giúp quyết định chính xác; chưa có bằng chứng rõ ràng rằng chúng thực sự là thiên kiến nghiêm trọng."
   },
   {
    "type": "tf",
-   "q": "The text says that heuristics are efficient and simple for the brain to compute.",
-   "answer": "T",
-   "explain": "Đoạn 4: “While these heuristics are efficient and simple for the brain to compute…”."
-  },
-  {
-   "type": "tf",
-   "q": "The text says there is clear evidence that human behaviors are genuinely, severely biased.",
+   "q": "The text suggests that all cognitive biases are harmful.",
    "answer": "F",
-   "explain": "Đoạn 6: “There is not clear evidence that these behaviors are genuinely, severely biased”."
+   "explain": "Đoạn 2: “some are adaptive” – có thể dẫn đến hành động hiệu quả hơn; đoạn 6 còn đi xa hơn."
+  },
+  {
+   "type": "tf",
+   "q": "The “Linda Problem” experiment was first carried out with university students.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói “Participants were given a description”, không nêu ai là người tham gia."
   }
  ],
  "notes": {

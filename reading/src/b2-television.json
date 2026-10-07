@@ -32,87 +32,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "How old was Philo Farnsworth when he came up with the idea for television?",
+   "q": "Why did the young Philo disagree with the famous scientists?",
    "options": [
-    "Four",
-    "Fourteen",
-    "Twenty-four",
-    "Forty"
+    "He believed that it would never be possible to send sound as well",
+    "He thought that pictures could not be sent through the air at all",
+    "He felt that machines with moving parts could never succeed",
+    "He had tested their machines himself and found them to be dangerous"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 5–6: cậu cho rằng thiết bị cơ khí “would never work” và thiết bị phải là điện tử, dùng electron để làm việc."
+  },
+  {
+   "type": "mcq",
+   "q": "What was Philo’s “light in a bottle”?",
+   "options": [
+    "A glass tube from a magazine that was full of electrical wires",
+    "A plan for a receiver that would hold light and send it along electrons",
+    "A machine for showing moving films on the wall of a classroom",
+    "A lamp that his family used to light the house in the evenings"
    ],
    "answer": 1,
-   "explain": "Đoạn 1: “the inventor came up with the idea when he was just fourteen years old.”"
+   "explain": "Đoạn 7: máy thu “would trap light in a container and send the light on a line of electrons” – Philo gọi là “light in a bottle”."
   },
   {
    "type": "mcq",
-   "q": "What did the magazine story say?",
+   "q": "What does the writer suggest about Philo’s drawing for his teacher?",
    "options": [
-    "Scientists were trying to make a device to send pictures and sound through the air",
-    "Television had already been invented",
-    "Electricity was dangerous",
-    "Utah had the best scientists"
+    "It was unfinished and had to be completed by other scientists",
+    "It was so complicated that the teacher could not understand it at all",
+    "It had been copied carefully from a plan he found in a magazine",
+    "It looked simple, yet it included every detail required to construct a television"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 9: bản vẽ “seemed very simple. But it still clearly showed the information needed to build a television”."
+  },
+  {
+   "type": "mcq",
+   "q": "How good was the first working television?",
+   "options": [
+    "The machine did not work properly until several months had passed",
+    "The picture was perfect, so investors were quick to give him money",
+    "The picture was clear but nobody wished to pay for the invention",
+    "The picture was poor, but the machine worked and attracted investors"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 10–11: hình ảnh “not very clear” nhưng thiết bị hoạt động; vài tháng sau có người muốn đầu tư."
+  },
+  {
+   "type": "mcq",
+   "q": "What happened after Farnsworth’s legal disputes with RCA?",
+   "options": [
+    "He won them, but money and business problems stayed with him",
+    "He sold the invention to the company for a very large sum of money",
+    "He agreed to work for the company for the rest of his life",
+    "He lost them and was forced to give up the rights to his invention"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “some of the world’s best scientists were working on the idea … to try to make a kind of device to send pictures.”"
+   "explain": "Đoạn 13: “Philo won the disputes but faced many business and financial difficulties in his life.”"
   },
   {
    "type": "mcq",
-   "q": "Why did Philo think the famous scientists were wrong?",
+   "q": "What is the main message of the final paragraphs?",
    "options": [
-    "He believed mechanical devices would never work; the device would have to be electronic",
-    "He thought pictures could not be sent",
-    "He wanted to use batteries",
-    "He did not trust magazines"
+    "Farnsworth is better known today for radar than for anything else",
+    "Farnsworth stopped inventing as soon as he had received his patent",
+    "Farnsworth’s only important invention was the special camera tube",
+    "Farnsworth’s work reached far beyond television, and he is highly regarded"
    ],
-   "answer": 0,
-   "explain": "Đoạn 5–6: “He decided that mechanical devices would never work … such a device would have to be electronic.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What did Philo call his idea for a receiver?",
-   "options": [
-    "A picture box",
-    "Light in a bottle",
-    "The electron machine",
-    "The magic eye"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 7: “Philo called it “light in a bottle.””"
-  },
-  {
-   "type": "mcq",
-   "q": "What happened in September 1927?",
-   "options": [
-    "Philo turned on the first working television receiver",
-    "Philo received his patent",
-    "Philo died",
-    "Philo met his teacher"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 10: “In September 1927, Philo turned on a device that was the first working television receiver.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What was the purpose of the patent documents?",
-   "options": [
-    "To protect his invention from being copied by others",
-    "To pay his debts",
-    "To sell the camera",
-    "To start a company called RCA"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 12: “These documents aimed to protect his invention from being copied by others.”"
+   "answer": 3,
+   "explain": "Đoạn 14–15: ông phát triển hơn 100 thiết bị, sơ khai về radar, kính hiển vi điện tử, năng lượng nguyên tử và được xem là một trong những nhà phát minh quan trọng nhất thế kỉ 20."
   },
   {
    "type": "tf",
-   "q": "The image on the first television receiver was very clear.",
+   "q": "There was electricity in the house where Philo lived as a small child.",
    "answer": "F",
-   "explain": "Đoạn 11: “the image produced on the receiver was not very clear”."
+   "explain": "Đoạn 3: ngôi nhà nơi cậu sống những năm đầu “had no electricity”."
   },
   {
    "type": "tf",
-   "q": "Philo’s teacher kept the drawing of the television for many years.",
+   "q": "Philo’s teacher helped him to obtain his patent.",
    "answer": "NG",
-   "explain": "Bài chỉ nói Philo đưa bản vẽ cho thầy giáo; không nói thầy giữ bao lâu."
+   "explain": "Bài chỉ nói cậu đưa bản vẽ cho thầy giáo; không nói thầy giúp xin bằng sáng chế."
   }
  ],
  "notes": {

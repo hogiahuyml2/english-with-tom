@@ -29,75 +29,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "According to the text, what is a bad habit?",
+   "q": "Which of these behaviours would the writer describe as a bad habit?",
    "options": [
-    "A custom or repeated action that has a negative effect on you or your goals",
-    "Any habit that takes a lot of time",
-    "Something that only children do",
-    "An action that other people do not like"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 2: “a bad habit – a custom or repeated action that has a negative effect on you or your goals.”"
-  },
-  {
-   "type": "mcq",
-   "q": "In the cell phone example, what is the cue?",
-   "options": [
-    "Seeing the cell phone",
-    "Wanting to check the phone",
-    "Checking the phone",
-    "Seeing something interesting"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 3: “In our cell phone example, the cue is seeing the cell phone.”"
-  },
-  {
-   "type": "mcq",
-   "q": "How can you make your phone “invisible”?",
-   "options": [
-    "Break it",
-    "Hide it away",
-    "Give it to a friend",
-    "Turn on all the alarms"
+    "Taking a short break to stretch and rest your eyes in the middle of a long lesson",
+    "Picking up your phone again and again during homework, even though it slows your progress",
+    "Using your phone once to check the meaning of a new word and then putting it away",
+    "Studying English at the same time every evening so that it becomes routine"
    ],
    "answer": 1,
-   "explain": "Đoạn 6: “To make your phone invisible, you could hide it away.”"
+   "explain": "Đoạn 2: bad habit = hành động lặp đi lặp lại gây hại cho mục tiêu. “look again at your phone a short time later… reduce your ability to learn” ≈ cứ cầm điện thoại lên lại và làm chậm tiến bộ. Ba đáp án kia không gây hại hoặc không lặp lại."
   },
   {
    "type": "mcq",
-   "q": "Why does Wendy Wood suggest wearing a wristwatch?",
+   "q": "In paragraph 3, “the craving” is the part of the habit that is",
    "options": [
-    "It looks nice",
-    "It limits one reason for looking at the phone – checking the time",
-    "It helps you sleep",
-    "It makes you walk more"
+    "the pleasant result you get afterwards",
+    "the action of picking up the phone",
+    "the strong wish to do the action",
+    "the thing that first makes you notice your phone"
    ],
-   "answer": 1,
-   "explain": "Đoạn 7: “This will limit at least one reason for looking at the phone – checking the time.”"
+   "answer": 2,
+   "explain": "Đoạn 3: “the craving is the desire or urge to check your phone” → desire/urge ≈ strong wish. “Seeing the phone” là cue, “checking” là response, “seeing something interesting” là reward."
   },
   {
    "type": "mcq",
-   "q": "What reward does Wood suggest for not looking at your phone?",
+   "q": "Which action is an example of making a bad habit “difficult”?",
    "options": [
-    "Reading a good book",
-    "Watching a film",
-    "Buying new clothes",
-    "Calling a friend"
+    "Asking a relative to keep an eye on how often you use it",
+    "Putting the phone out of sight so you are not reminded of it",
+    "Moving your phone farther away so it takes effort to reach it",
+    "Reminding yourself why it is sensible to stop checking it"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 6: difficult = “increase the space between you and your phone” ≈ đặt xa hơn để mất công lấy. Out of sight = invisible; nhắc mình lý do = unattractive; nhờ người thân theo dõi = habit contract (unsatisfying)."
+  },
+  {
+   "type": "mcq",
+   "q": "Why might wearing a wristwatch help someone who is studying?",
+   "options": [
+    "The person no longer needs the phone to find out the time",
+    "It shows how many minutes remain in the lesson",
+    "It stops messages from appearing on the phone",
+    "It makes the phone look less interesting"
    ],
    "answer": 0,
-   "explain": "Đoạn 10: “reading a good book.”"
+   "explain": "Đoạn 7: đeo đồng hồ “will limit at least one reason for looking at the phone – checking the time” ≈ không còn cần điện thoại để xem giờ. Các đáp án khác bài không nói."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer suggest about surroundings and habits?",
+   "options": [
+    "A strong decision is enough to end any habit immediately and for good",
+    "Changing your surroundings removes a habit within a few short days",
+    "A habit is hard to stop when the surroundings make it very easy to carry out",
+    "Where you live matters less than how clever you are at making plans"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 11: “if such an action is very easy for you to do, you will probably continue doing it” ≈ thói quen khó bỏ nếu môi trường làm nó dễ dàng. Đoạn 12 nói thay đổi thói quen cần thời gian nên “within days” sai."
   },
   {
    "type": "tf",
-   "q": "The text says that changing a habit does not take any time.",
-   "answer": "F",
-   "explain": "Đoạn 12: “Habit changes take time.”"
+   "q": "The writer believes that other people can have a useful part in helping you change a habit.",
+   "answer": "T",
+   "explain": "Đoạn 6 (habit contract: nhờ người nhà theo dõi) và đoạn 9 (gọi cho người nhà thay vì lướt điện thoại) cho thấy người khác có thể giúp."
   },
   {
    "type": "tf",
-   "q": "Wendy Wood has written more than one book about habits.",
+   "q": "Most people manage to change a habit within a month if they follow the advice.",
    "answer": "NG",
-   "explain": "Bài đưa ra tên cuốn sách của James Clear nhưng không nói gì về việc bà Wendy Wood đã viết bao nhiêu cuốn sách."
+   "explain": "Bài chỉ nói thay đổi thói quen “take time” (đoạn 12), không nêu con số một tháng hay tỉ lệ người thành công."
   }
  ],
  "notes": {

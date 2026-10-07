@@ -29,75 +29,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "Which three things does the text suggest doing before studying?",
+   "q": "What is the main idea of the text?",
    "options": [
-    "Eating, sleeping and reading",
-    "Exercise, study location and a pre-study test",
-    "Watching videos, singing and writing",
-    "Making lists, cleaning and resting"
+    "Students should always work in the same quiet room to learn well",
+    "Tests are only useful after the whole course has been completed",
+    "The longer students study each day, the more they will remember",
+    "Some things done before studying can help students remember more"
    ],
-   "answer": 1,
-   "explain": "Đoạn 2: “Three important ideas to think about before studying include exercise, study location and pre-study tests.”"
+   "answer": 3,
+   "explain": "Đoạn 1–2: những việc làm TRƯỚC khi học (exercise, location, pre-study tests) giúp nhớ lâu hơn. Các đáp án khác sai hoặc ngược với bài (đổi chỗ học có thể tốt hơn; kiểm tra trước khi học có ích)."
   },
   {
    "type": "mcq",
-   "q": "What did researchers find in the 2018 study about exercise?",
+   "q": "What did the 2018 treadmill study find?",
    "options": [
-    "Young people who exercised for 15 minutes on a treadmill remembered more words",
-    "Young people who slept more remembered more words",
-    "Older people learned faster than young people",
-    "Exercise made no difference"
+    "A short burst of hard exercise went together with better memory for words",
+    "Exercise made no difference to how well people remembered",
+    "Young people who ran outdoors learned fewer words than those indoors",
+    "An hour of gentle walking improved the results of young people"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “a group of young people who did 15 minutes of high-intensity training on a treadmill remembered more words.”"
+   "explain": "Đoạn 4: nhóm tập “15 minutes of high-intensity training” nhớ nhiều từ hơn ≈ tập ngắn, cường độ cao → nhớ từ tốt hơn."
   },
   {
    "type": "mcq",
-   "q": "Why might changing where you study help?",
+   "q": "Why might it help to study in several different places?",
    "options": [
-    "Because new places are quieter",
-    "Because our memories sometimes depend on things in our environment",
-    "Because it is cheaper",
-    "Because it saves time"
+    "A desk makes people feel too tired to concentrate",
+    "Moving between rooms counts as extra exercise",
+    "Teachers usually give better marks for varied study places",
+    "Things around you can act as reminders of what you learned"
    ],
-   "answer": 1,
-   "explain": "Đoạn 5–6: “our memories sometimes depend on things in our environment.”"
+   "answer": 3,
+   "explain": "Đoạn 6: trí nhớ đôi khi phụ thuộc vào những thứ trong môi trường (“a book might remind you of something…”) ≈ mọi thứ xung quanh làm gợi nhớ."
   },
   {
    "type": "mcq",
-   "q": "What happened to students who took a test before learning new material?",
+   "q": "What is surprising about the research on pre-study tests?",
    "options": [
-    "They did much better after studying the material",
-    "They stopped studying",
-    "They did worse than other students",
-    "They finished earlier"
+    "Students who passed the early test learned nothing new during the later lesson",
+    "Students found the early test much easier than the final test they took later",
+    "Students who did badly on the early test still learned better than those who only read the material",
+    "Students who read the text twice scored higher than the students who were tested"
    ],
-   "answer": 0,
-   "explain": "Đoạn 10: “students who took a test before learning new material did much better after studying the material.”"
+   "answer": 2,
+   "explain": "Đoạn 11: học sinh “failed on the tests” nhưng nhớ tài liệu tốt hơn nhóm chỉ đọc → điều bất ngờ là làm sai bài kiểm tra trước vẫn có lợi."
   },
   {
    "type": "mcq",
-   "q": "What does the text suggest if you are using a textbook?",
+   "q": "What does the writer advise if you are using a textbook?",
    "options": [
-    "Skip the questions",
-    "Do a few practice questions at the end of the chapter before you read it",
-    "Read it twice without stopping",
-    "Only read the first page"
+    "Skip the practice questions so that there is more time for reading",
+    "Read each chapter twice and only then try to answer any questions",
+    "Do some of the questions at the end of a chapter before reading it",
+    "Ask a friend to read the chapter aloud to you before you begin"
    ],
-   "answer": 1,
-   "explain": "Đoạn 12: “look to the end of the chapter and do a few practice questions before you read it.”"
+   "answer": 2,
+   "explain": "Đoạn 12: “look to the end of the chapter and do a few practice questions before you read it”."
   },
   {
    "type": "tf",
-   "q": "The students in the testing study failed the tests but remembered the material better than students who only read it.",
-   "answer": "T",
-   "explain": "Đoạn 11: “The students failed on the tests, but they were better able to remember the material.”"
+   "q": "The writer says that having a special study area is a bad idea.",
+   "answer": "F",
+   "explain": "Đoạn 5: “it is good to have a desk or a special study area”; chỉ thêm rằng đổi chỗ đôi khi cũng giúp nhớ hơn."
   },
   {
    "type": "tf",
-   "q": "The 2018 exercise study was done with 100 young people.",
+   "q": "More than one hundred young people took part in the treadmill study.",
    "answer": "NG",
-   "explain": "Bài không nói số người tham gia nghiên cứu."
+   "explain": "Bài không nêu số người tham gia nghiên cứu (đoạn 4 chỉ nói “a group of young people”)."
   }
  ],
  "notes": {

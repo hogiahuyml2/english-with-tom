@@ -30,75 +30,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "Who asked for advice on improving his listening skills?",
+   "q": "Why did Emre ask the writer for help?",
    "options": [
-    "A teacher",
-    "A reader named Emre",
-    "A customer",
-    "The writer"
+    "He was preparing to move to an English-speaking country",
+    "He needed to write more polite emails to customers",
+    "He wanted to pass a grammar examination",
+    "He wanted to understand spoken English better at his job"
    ],
-   "answer": 1,
-   "explain": "Đoạn 1: “One of our readers, Emre … asked for advice on how he can improve his listening skills.”"
+   "answer": 3,
+   "explain": "Đoạn 1: Emre làm việc nói chuyện với khách hàng bằng tiếng Anh và hỏi lời khuyên “how he can improve his listening skills”."
   },
   {
    "type": "mcq",
-   "q": "What is a learning strategy?",
+   "q": "What does the writer mean by a “learning strategy”?",
    "options": [
-    "A test",
-    "A thought or an action you take to make learning easier",
-    "A kind of dictionary",
-    "A school rule"
+    "A test that shows how much of a language you have learned so far",
+    "A lesson plan that a teacher writes before a class begins",
+    "Something you think or do that makes learning less difficult",
+    "A rule that tells you how to use grammar correctly in speech"
    ],
-   "answer": 1,
-   "explain": "Đoạn 2: “A learning strategy can be a thought or an action you take to make learning easier.”"
+   "answer": 2,
+   "explain": "Đoạn 2: “a thought or an action you take to make learning easier”."
   },
   {
    "type": "mcq",
-   "q": "What is the first strategy?",
+   "q": "What is the purpose of “predicting” in the first strategy?",
    "options": [
-    "Predict what you will hear",
-    "Ask for a free lesson",
-    "Read the news",
-    "Write a long email"
+    "To find out which products customers will buy",
+    "To translate each word into your own language in advance",
+    "To get ready for the words you are likely to hear",
+    "To guess the customer’s name before the call"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3–4: dự đoán những từ khách hay dùng (ví dụ “order”) rồi lắng nghe chúng ≈ chuẩn bị trước cho những từ có thể nghe thấy."
+  },
+  {
+   "type": "mcq",
+   "q": "Why does the writer suggest asking, “Did you say you want to order?”",
+   "options": [
+    "To check that you have understood a word you were expecting",
+    "To ask the customer to speak more slowly during the conversation",
+    "To make the customer repeat the whole question from the beginning",
+    "To end the conversation politely before the customer is finished"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “The first strategy is to predict what you will hear.”"
+   "explain": "Đoạn 7: khi nghe một từ đã dự đoán, hỏi một câu ngắn “to be sure” ≈ để xác nhận mình nghe đúng. Câu xin nói chậm là loại câu hỏi khác (đoạn 6)."
   },
   {
    "type": "mcq",
-   "q": "What can you ask at the beginning of the conversation?",
+   "q": "What advice does the writer give for improving your listening outside work?",
    "options": [
-    "“Would you please speak more slowly?”",
-    "“What is your name?”",
-    "“How old are you?”",
-    "“Where do you live?”"
+    "Practise only with native speakers of English",
+    "Translate customers’ emails every evening",
+    "Write down new words in your own language",
+    "Listen regularly to English films and podcasts"
    ],
-   "answer": 0,
-   "explain": "Đoạn 6: “At the beginning of the conversation, you can ask, ‘Would you please speak more slowly?’”"
-  },
-  {
-   "type": "mcq",
-   "q": "What does “asking to clarify” mean in the text?",
-   "options": [
-    "Asking a short question to be sure of what you heard",
-    "Asking for more money",
-    "Asking the customer to leave",
-    "Asking the customer to write it down"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 7: “you can ask the customer a short question to be sure.”"
+   "answer": 3,
+   "explain": "Đoạn 13: nghe phim và podcast tiếng Anh “as often as you can”; càng nghe nhiều càng hiểu."
   },
   {
    "type": "tf",
-   "q": "The writer suggests you can practice your answers out loud in your free time.",
+   "q": "The writer recommends practising your possible answers aloud when you have spare time.",
    "answer": "T",
-   "explain": "Đoạn 8: “rehearse them in your free time … practice saying them out loud to yourself.”"
+   "explain": "Đoạn 8: “rehearse them in your free time… practice saying them out loud”."
   },
   {
    "type": "tf",
-   "q": "The text says you should never tell customers you are an English learner.",
+   "q": "The writer advises you to avoid telling customers that you are still learning English.",
    "answer": "F",
-   "explain": "Đoạn 5: “You can let the customer know you are an English learner.”"
+   "explain": "Đoạn 5 khuyên ngược lại: nên cho khách biết bạn là người học tiếng Anh (“You can let the customer know you are an English learner”)."
   }
  ],
  "notes": {

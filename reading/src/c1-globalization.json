@@ -22,87 +22,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "Which of the following is NOT mentioned as a factor behind globalization?",
+   "q": "Which of the following is NOT given as a factor behind globalization?",
    "options": [
-    "The reduction of barriers to international trade",
-    "The development of transportation infrastructure",
-    "A rapid increase in the world’s population",
-    "The advancement of information and communication technologies"
-   ],
-   "answer": 2,
-   "explain": "Đoạn 1 liệt kê: giảm rào cản thương mại, tự do hóa dòng vốn, hạ tầng giao thông, công nghệ thông tin – truyền thông. Không nhắc đến dân số."
-  },
-  {
-   "type": "mcq",
-   "q": "When, according to the text, did large-scale globalization begin?",
-   "options": [
-    "In the 1820s",
-    "In the 1930s",
-    "In the 1960s",
-    "In the 1990s"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 2: “Large-scale globalization began in the 1820s”."
-  },
-  {
-   "type": "mcq",
-   "q": "What drove the rapid progress of globalization between 1990 and 2010?",
-   "options": [
-    "Wars between large countries",
-    "The information and communication technology revolution, trade liberalization and the shift of manufacturing to emerging economies",
-    "The invention of the steam engine",
-    "The creation of the United Nations"
+    "The development of faster communication technology",
+    "The growing use of one common language across the world",
+    "The lowering of barriers to trade between countries",
+    "The building of better transport links around the world"
    ],
    "answer": 1,
-   "explain": "Đoạn 3: “driven by the information and communication technology revolution … along with trade liberalization and the shift of manufacturing operations to emerging economies”."
+   "explain": "Đoạn 1 nêu: giảm rào cản thương mại, tự do hóa vốn, hạ tầng giao thông, công nghệ thông tin – truyền thông. Không có “một ngôn ngữ chung”."
   },
   {
    "type": "mcq",
-   "q": "How do opponents of globalization view it?",
+   "q": "What does paragraph 2 suggest about the origins of globalization?",
    "options": [
-    "As harmful to social well-being because of ethnocentrism, environmental consequences and other drawbacks",
-    "As a cause of faster economic growth",
-    "As an old idea that no longer matters",
-    "As a plan made by one government"
+    "It began suddenly in the 1990s after the end of the Cold War",
+    "It started when the internet allowed people to talk across the world",
+    "It was a purely political process led by governments of large nations",
+    "It goes back to technical progress that followed the Industrial Revolution"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: nguồn gốc có thể truy về thế kỉ 18–19, khi giao thông và thông tin tiến bộ sau Cách mạng Công nghiệp; thuật ngữ mới phổ biến từ thập niên 1990 (đoạn 1)."
+  },
+  {
+   "type": "mcq",
+   "q": "Which combination of developments speeded up globalization between 1990 and 2010?",
+   "options": [
+    "Cheaper communication, freer trade and factories moving to emerging economies",
+    "Less contact between cultures and a rise in regional conflicts",
+    "The end of the Industrial Revolution and a fall in international trade",
+    "Higher taxes on imports, more local factories and slower communication"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “opponents claim globalizing processes are detrimental to social well-being due to ethnocentrism, environmental consequences, and other potential drawbacks.”"
+   "explain": "Đoạn 3: cuộc cách mạng ICT làm giảm chi phí liên lạc, tự do hóa thương mại và việc chuyển sản xuất sang các nền kinh tế mới nổi (đặc biệt Trung Quốc)."
   },
   {
    "type": "mcq",
-   "q": "In paragraph 5, what does “failed to gain traction” mean?",
+   "q": "What is the main objection of the opponents of globalization?",
    "options": [
-    "Did not become widely accepted or used",
-    "Was banned by the government",
-    "Was translated too slowly",
-    "Was used too often"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 5: thuật ngữ chỉ dùng trong bối cảnh giáo dục, “failed to gain traction” = không được lan rộng, không phổ biến."
-  },
-  {
-   "type": "mcq",
-   "q": "Who is more confidently credited with popularizing the term in the mid-1980s?",
-   "options": [
-    "François Perroux",
-    "Karl Marx",
-    "Theodore Levitt",
-    "John Dewey"
+    "They think it spreads one single culture and removes all religion",
+    "They believe that it slows down the growth of national economies",
+    "They argue that it can harm social well-being and the environment",
+    "They feel that it makes international travel too expensive for people"
    ],
    "answer": 2,
-   "explain": "Đoạn 5: “Theodore Levitt … can more confidently be credited with popularizing the term”."
+   "explain": "Đoạn 4: người phản đối cho rằng quá trình toàn cầu hóa gây hại cho phúc lợi xã hội vì chủ nghĩa dân tộc hẹp hòi (ethnocentrism), hậu quả môi trường…"
+  },
+  {
+   "type": "mcq",
+   "q": "In paragraph 5, “failed to gain traction” suggests that the word globalization",
+   "options": [
+    "did not become widely accepted when it was first used",
+    "was used only by people who spoke French as a first language",
+    "was banned from use in newspapers and magazines",
+    "was strongly criticised by scholars in the education field"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: từ này xuất hiện từ thập niên 1930 nhưng “failed to gain traction”, tức không được dùng rộng rãi lúc đó."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer say about Theodore Levitt?",
+   "options": [
+    "He argued against using the term in business circles and in the media",
+    "He invented the word in the 1930s while he was writing about education",
+    "He translated the essays of François Perroux from French into English",
+    "He is wrongly named as its inventor, though he did spread the word in business"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 5: Levitt “sometimes inaccurately cited as having invented the term”, nhưng “can more confidently be credited with popularizing the term”."
   },
   {
    "type": "tf",
-   "q": "The term globalization came into popular use in the 1990s.",
+   "q": "The word “globalization” was already in use in English long before it became popular.",
    "answer": "T",
-   "explain": "Đoạn 1: “came into popular use in the 1990s”."
+   "explain": "Đoạn 5: được dùng trong tiếng Anh từ thập niên 1930 (chỉ trong giáo dục) trong khi chỉ phổ biến từ thập niên 1990 (đoạn 1)."
   },
   {
    "type": "tf",
-   "q": "The word globalization was first used in English in the 1990s.",
-   "answer": "F",
-   "explain": "Đoạn 5: từ này được dùng bằng tiếng Anh “as early as the 1930s”, dù chỉ trong lĩnh vực giáo dục."
+   "q": "François Perroux was in favour of globalization.",
+   "answer": "NG",
+   "explain": "Đoạn 5 chỉ nói Perroux dùng một thuật ngữ gần nghĩa vào đầu thập niên 1960; không nói quan điểm của ông."
   }
  ],
  "notes": {

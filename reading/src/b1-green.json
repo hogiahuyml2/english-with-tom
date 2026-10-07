@@ -25,75 +25,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What can the word “green” sometimes mean?",
+   "q": "Which person could best be described as having “a green thumb”?",
    "options": [
-    "Young, fresh and growing",
-    "Old and tired",
-    "Cold and wet",
-    "Dangerous"
+    "A neighbour whose vegetables grow beautifully every summer",
+    "A manager who lets a project go ahead",
+    "A girl who feels sad when her classmate wins a prize",
+    "A new employee who does not yet know the office routines"
    ],
    "answer": 0,
-   "explain": "Đoạn 2: “Sometimes, the word green means young, fresh and growing.”"
+   "explain": "Đoạn 4–5: green thumb = giỏi trồng cây. Nhân viên mới = greenhorn; buồn vì bạn được giải = jealousy (green-eyed monster); cho dự án tiếp tục = green light."
   },
   {
    "type": "mcq",
-   "q": "What is a “greenhorn”?",
+   "q": "If a character in a story is described as a “greenhorn”, what do we know about him?",
    "options": [
-    "Someone who has no experience",
-    "Someone who is very rich",
-    "A farmer with many cows",
-    "A teacher"
+    "He has little experience of the situation he is in",
+    "He has the power to approve plans and allow projects to continue",
+    "He feels angry because someone else has had more success than he has",
+    "He is very good at growing plants and vegetables in his garden"
    ],
    "answer": 0,
-   "explain": "Đoạn 3: “a greenhorn is someone who has no experience, who is new to a situation.”"
+   "explain": "Đoạn 3: greenhorn = người chưa có kinh nghiệm, mới trong một tình huống/công việc."
   },
   {
    "type": "mcq",
-   "q": "What does it mean if someone “has a green thumb”?",
+   "q": "How has the meaning of “greenhorn” developed over the centuries?",
    "options": [
-    "They are good at growing plants",
-    "They are ill",
-    "They like painting",
-    "They are jealous"
+    "It moved from describing young animals to describing people without experience",
+    "It moved from describing people to describing farm animals with small horns",
+    "It has always described soldiers who are fighting in a battle",
+    "It once meant “jealous” but now means a person who is new to a job"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “Someone who has the ability to grow plants well is said to have a green thumb.”"
+   "explain": "Đoạn 3: thế kỉ 15 – bò/trâu non chưa mọc sừng → một thế kỉ sau – lính chưa có kinh nghiệm → thế kỉ 18 – người mới vào nghề."
   },
   {
    "type": "mcq",
-   "q": "Who used the expression “the green-eyed monster” about 400 years ago?",
+   "q": "Why does the writer say the green-eyed monster “is not a frightening creature from outer space”?",
    "options": [
-    "William Shakespeare",
-    "Mark Twain",
-    "A farmer",
-    "A soldier"
+    "To warn readers that the phrase should only be used with children",
+    "To suggest that Shakespeare wrote stories about visitors from other planets",
+    "To make it clear that the phrase describes a feeling, not a real being",
+    "To show that the phrase is old-fashioned and no longer used today"
    ],
-   "answer": 0,
-   "explain": "Đoạn 6: “It is an expression used about four hundred years ago by British writer William Shakespeare in his play “Othello.””"
+   "answer": 2,
+   "explain": "Đoạn 6–7: cụm này nói về cảm xúc ghen tị (“the unpleasant feeling a person has when someone has something he wants”), không phải một sinh vật có thật."
   },
   {
    "type": "mcq",
-   "q": "What does a green light mean in everyday speech?",
+   "q": "A radio host says, “We have a green light to continue this series.” What does this tell us?",
    "options": [
-    "Approval to continue with a project",
-    "A danger",
-    "A holiday",
-    "A mistake"
+    "The programme will end next week after many years on the air",
+    "The programme has been given official permission to continue",
+    "The host is jealous of another series on a rival channel",
+    "The series is about road safety and traffic signals in cities"
    ],
-   "answer": 0,
-   "explain": "Đoạn 8: “In everyday speech, a green light means approval to continue with a project.”"
+   "answer": 1,
+   "explain": "Đoạn 8: trong lời nói hằng ngày, green light = sự chấp thuận để tiếp tục một dự án."
   },
   {
    "type": "tf",
-   "q": "In the fifteenth century, a greenhorn was a young cow or ox whose horns had not yet developed.",
-   "answer": "T",
-   "explain": "Đoạn 3: nội dung này được nói trực tiếp."
-  },
-  {
-   "type": "tf",
-   "q": "The green-eyed monster is a frightening creature from outer space.",
+   "q": "In English expressions, the colour green is used only for things that are growing well.",
    "answer": "F",
-   "explain": "Đoạn 6: “The green-eyed monster is not a frightening creature from outer space.”"
+   "explain": "Bài còn nêu green = chưa chín/chưa hoàn thiện, jealousy (green-eyed monster) và green light = chấp thuận."
+  },
+  {
+   "type": "tf",
+   "q": "The expression “green light” first appeared on the railways.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói green light trên đèn giao thông và nghĩa “chấp thuận”; không nói nguồn gốc từ đường sắt."
   }
  ],
  "notes": {

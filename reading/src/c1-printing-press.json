@@ -23,87 +23,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "Which of these was NOT a consequence of the spread of printing in Europe?",
+   "q": "What does the writer suggest was a result of cheaper printed texts?",
    "options": [
-    "Printed texts became cheaper",
-    "Adult literacy rates rose",
-    "Books increasingly appeared in vernacular languages",
-    "Latin became the main language of all books"
+    "More adults in Europe became able to read",
+    "Fewer people wished to learn their own national language",
+    "Latin was used more often than before for new books",
+    "The Reformation was delayed by the new technology"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “The cost of printed texts declined… facilitating higher adult literacy rates across Europe”."
+  },
+  {
+   "type": "mcq",
+   "q": "How did printing affect the languages used in books?",
+   "options": [
+    "Books were produced in the languages of the places where paper was made",
+    "Books were printed in one common language for the whole of Europe",
+    "Books were increasingly published in everyday languages instead of Latin",
+    "Books were written mostly in Latin, so that scholars could read them"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “Books increasingly appeared in vernacular languages rather than Latin, and national languages were standardized.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does paragraph 3 show about printing technology between about 1440 and 1800?",
+   "options": [
+    "The basic wooden design changed very little for about three centuries",
+    "It was driven by steam power in most European printing shops",
+    "It was improved every decade by new inventions and methods",
+    "It was replaced by iron machines soon after Gutenberg’s death"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: thiết kế máy in tay bằng gỗ “largely consistent for over three centuries, until the Industrial Revolution”; máy sắt xuất hiện khoảng 1800."
+  },
+  {
+   "type": "mcq",
+   "q": "Why were conditions in late medieval Europe favourable for Gutenberg’s press?",
+   "options": [
+    "The Church had asked for fewer books to be copied by hand in the monasteries",
+    "Universities were closing in many towns, so books were no longer needed",
+    "Paper had become so cheap that anyone was able to make a book at home",
+    "Rising demand from traders and students was more than copyists could supply"
    ],
    "answer": 3,
-   "explain": "Đoạn 2: sách ngày càng xuất hiện bằng ngôn ngữ địa phương “rather than Latin”."
+   "explain": "Đoạn 4: tầng lớp trung lưu và các trường đại học tăng nhu cầu sách; chép tay chậm, đắt nên “the supply of manuscripts was much less than the demand”."
   },
   {
    "type": "mcq",
-   "q": "What remained largely consistent for over three centuries?",
+   "q": "What does the writer suggest about Gutenberg’s achievement?",
    "options": [
-    "The basic design of the wooden handpress",
-    "The price of paper",
-    "The language of books",
-    "The size of printing houses"
+    "He copied the Roman screw press and changed nothing in its design",
+    "He invented every part of the press without using any earlier ideas at all",
+    "He was mainly interested in finding a way of making paper more quickly",
+    "He joined existing technologies into one system and added inventions of his own"
    ],
-   "answer": 0,
-   "explain": "Đoạn 3: “The basic design of the wooden handpress was largely consistent for over three centuries, until the Industrial Revolution.”"
+   "answer": 3,
+   "explain": "Đoạn 4–5: ông kết hợp bốn công nghệ sẵn có “into a single working system” và thêm cải tiến riêng (khuôn đúc chữ, mực dầu)."
   },
   {
    "type": "mcq",
-   "q": "Which four existing technologies did Gutenberg use?",
+   "q": "Why did Gutenberg change the design of the platen?",
    "options": [
-    "The screw press, movable type, the codex book format and mechanized paper production",
-    "The steam engine, the telephone, the camera and the clock",
-    "The compass, the telescope, the map and the globe",
-    "Oil painting, glass making, weaving and farming"
+    "So that it would press evenly on the paper without smearing the ink",
+    "So that the machine could press grapes and olives more efficiently",
+    "So that the press became lighter and easier to move between towns",
+    "So that the machine could print on cloth as well as on paper"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “utilizing four existing technologies: the screw press, movable type, the codex book format, and mechanized paper production.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Why were commercial conditions favorable for Gutenberg’s press?",
-   "options": [
-    "The urban middle class and the number of universities were growing, and hand-copying was slow and expensive",
-    "Paper was free",
-    "There were no manuscripts",
-    "The Church ordered it"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 4: tầng lớp trung lưu đô thị tăng, nhiều đại học làm tăng nhu cầu sách, trong khi chép tay chậm và đắt."
-  },
-  {
-   "type": "mcq",
-   "q": "What innovations of his own did Gutenberg add?",
-   "options": [
-    "A hand mold for casting type and an oil-based ink suited to metal type",
-    "A steam engine",
-    "A rotary press",
-    "A digital printer"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 5: “a hand mold for casting type and an oil-based ink suited to metal type.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What was the screw press often used for before Gutenberg?",
-   "options": [
-    "Pressing grapes to make wine and olives to make oil",
-    "Cutting wood",
-    "Making paper",
-    "Printing money"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 6: “it was often used by farmers for pressing grapes to make wine and olives to make oil.”"
+   "explain": "Đoạn 6: ông điều chỉnh sao cho platen “exerted even pressure across the paper with minimal smearing”."
   },
   {
    "type": "tf",
-   "q": "In 1814, The Times adopted new presses that incorporated steam power and rotary motion.",
+   "q": "Steam power was being used in printing by the early nineteenth century.",
    "answer": "T",
-   "explain": "Đoạn 3: “In 1814, The Times adopted Friedrich Koenig's new presses, which incorporated steam power and rotary motion.”"
+   "explain": "Đoạn 3: năm 1814 tờ The Times dùng máy in của Koenig kết hợp sức hơi nước và chuyển động quay."
   },
   {
    "type": "tf",
-   "q": "Richard M. Hoe’s rotary press, introduced in 1843, reduced output.",
-   "answer": "F",
-   "explain": "Đoạn 3: máy của Hoe “enabled much higher output”."
+   "q": "Gutenberg printed the first newspaper.",
+   "answer": "NG",
+   "explain": "Bài không đề cập đến báo chí; chỉ nói về máy in và sách/bản in."
   }
  ],
  "notes": {

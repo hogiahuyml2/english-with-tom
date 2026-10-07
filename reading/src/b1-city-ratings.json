@@ -21,75 +21,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "How is the City Brands Index different from many other city rankings?",
+   "q": "What makes the City Brands Index different from most other city rankings?",
    "options": [
-    "It asks ordinary people to score cities like products",
-    "It only uses crime figures",
-    "It is made by city governments",
-    "It ranks only small towns"
+    "It relies on public opinion rather than on official statistics",
+    "It only compares cities that attract very large numbers of tourists",
+    "It uses prices and crime figures that city officials have collected",
+    "It asks city governments to give marks to their own cities"
    ],
    "answer": 0,
-   "explain": "Đoạn 2: “It treats a city like a product … and asks ordinary people to give it a score.”"
+   "explain": "Đoạn 1–2: các bảng xếp hạng khác dựa vào “hard data … that officials collect”; City Brands Index “asks ordinary people to give it a score” ≈ dựa vào ý kiến công chúng, không dựa vào số liệu chính thức."
   },
   {
    "type": "mcq",
-   "q": "What do people who answer the survey often base their opinions on?",
+   "q": "In paragraph 2, why does the writer mention a brand of trainers?",
    "options": [
-    "News, magazines and television",
-    "Their own long visits",
-    "Their parents’ advice",
-    "Travel agents"
+    "To prove that shoes are the most popular product people think about in the survey",
+    "To suggest that living in a big city is as expensive as buying a pair of sports shoes",
+    "To explain that the people who answer the questionnaire are all keen athletes",
+    "To show that the index treats a city in the way a company treats something it sells"
    ],
-   "answer": 0,
-   "explain": "Đoạn 2: “They judge a city by what they have picked up from the news, magazines and television.”"
+   "answer": 3,
+   "explain": "Đoạn 2: “It treats a city like a product, for example a brand of trainers” → ví dụ để cho thấy thành phố được xem như một thương hiệu/sản phẩm."
   },
   {
    "type": "mcq",
-   "q": "How many cities are scored each year?",
+   "q": "What is surprising about many of the people who take part in the survey?",
    "options": [
-    "Twenty",
-    "Fifty",
-    "Ten thousand",
-    "Five hundred"
+    "They live in the cities they are asked to score",
+    "They are experts in business and economics",
+    "They work for the city governments",
+    "They have never visited the places they are judging"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: “The surprising part is that the people who answer have often never been there.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which of these is NOT something the participants give marks for?",
+   "options": [
+    "The people who live there",
+    "The standard of education",
+    "The quality of the local sports teams",
+    "The state of the natural environment"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3 liệt kê: economy, education, environment, culture, weather, people. Không có sports teams."
+  },
+  {
+   "type": "mcq",
+   "q": "How could a city government use the results?",
+   "options": [
+    "To decide how much money visitors should be charged for tickets and hotel rooms",
+    "To understand what attracts or puts off visitors and companies, and then plan improvements",
+    "To count how many people live in each city so that taxes can be collected",
+    "To compare its own crime figures with the figures from other countries"
    ],
    "answer": 1,
-   "explain": "Đoạn 3: “an online questionnaire about fifty cities.”"
-  },
-  {
-   "type": "mcq",
-   "q": "Which of these is NOT mentioned as something people give marks for?",
-   "options": [
-    "Public transport prices",
-    "The economy",
-    "Education",
-    "The weather"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 3 liệt kê economy, education, environment, culture, weather, people — không có giá giao thông công cộng."
-  },
-  {
-   "type": "mcq",
-   "q": "Who can use the results, according to the text?",
-   "options": [
-    "People planning to move, study or take a holiday, and city governments",
-    "Only teachers",
-    "Only scientists",
-    "Only banks"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 4: người định chuyển đến, học hoặc đi nghỉ, và chính quyền thành phố."
+   "explain": "Đoạn 4: chính quyền thành phố “can learn why visitors and companies choose to come, or stay away, and then decide what to improve”."
   },
   {
    "type": "tf",
-   "q": "People who answer must have visited the cities they score.",
+   "q": "Participants fill in the questionnaire in person in the cities they are rating.",
    "answer": "F",
-   "explain": "Đoạn 2: người trả lời “have often never been there”."
+   "explain": "Đoạn 3: họ “complete an online questionnaire”, và đoạn 2 cho biết nhiều người chưa từng đến thành phố đó."
   },
   {
    "type": "tf",
-   "q": "The survey is carried out twice a year.",
+   "q": "Most of the people who answer the survey are under thirty years old.",
    "answer": "NG",
-   "explain": "Bài chỉ nói “every year”, không nói số lần khảo sát."
+   "explain": "Bài chỉ nói khoảng mười nghìn người ở hai mươi nước; không nói về độ tuổi."
   }
  ],
  "notes": {

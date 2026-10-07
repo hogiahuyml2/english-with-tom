@@ -28,75 +28,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "Why are Facebook groups useful, according to the text?",
+   "q": "According to the text, how can you tell that a Facebook member is serious about learning English?",
    "options": [
-    "They are expensive",
-    "They help you find people who share your interests, including English learning",
-    "They teach grammar",
-    "They are only for friends and family"
+    "They belong to a very large group",
+    "They have joined many groups at once",
+    "They often write helpful comments or questions",
+    "They always reply to messages immediately"
    ],
-   "answer": 1,
-   "explain": "Đoạn 3: “Facebook groups are excellent for finding people who share your interests, including English learning.”"
+   "answer": 2,
+   "explain": "Đoạn 5: nếu ai đó thường viết nhiều bình luận/câu hỏi hữu ích thì “they are probably serious about learning English”."
   },
   {
    "type": "mcq",
-   "q": "What does the text say about very large Facebook groups?",
+   "q": "Why does the writer warn about joining a group with thousands of members?",
    "options": [
-    "They are always the best",
-    "Groups with thousands of members may not be as active as smaller groups",
-    "They have no members",
-    "They are not allowed to share information"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 4: “groups with thousands of members may not be as active as smaller groups.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What is Meetup?",
-   "options": [
-    "A free website that helps people with similar interests meet in person",
-    "A paid language school",
-    "A video game",
-    "A kind of coffee house"
+    "A very big group may be less lively than a small one",
+    "Large groups are only for advanced learners",
+    "Large groups usually charge a fee",
+    "Large groups never allow private messages"
    ],
    "answer": 0,
-   "explain": "Đoạn 6: “Meetup is a free website that helps people with similar interests find each other and meet in person.”"
+   "explain": "Đoạn 4: nhóm hàng nghìn thành viên “may not be as active as smaller groups”."
   },
   {
    "type": "mcq",
-   "q": "In a language exchange, what do partners do?",
+   "q": "What is special about a language exchange?",
    "options": [
-    "They only speak English",
-    "They speak each person’s language for part of the meeting",
-    "They write letters",
-    "They watch films together"
+    "It is only open to people who live in the same city as each other",
+    "It is held in a language school where a qualified teacher leads the class",
+    "It is a recorded course in which there is no real partner to talk to",
+    "The time is shared between two languages so each person helps the other"
    ],
-   "answer": 1,
-   "explain": "Đoạn 9: một người nói tiếng Anh nửa buổi, rồi nói tiếng Bồ Đào Nha nửa buổi còn lại (ví dụ trong bài)."
+   "answer": 3,
+   "explain": "Đoạn 8–9: buổi gặp được chia để luyện hai ngôn ngữ; mỗi người nói tiếng của mình một nửa thời gian."
   },
   {
    "type": "mcq",
-   "q": "What does “cast a wide net” mean here?",
+   "q": "Why does the writer encourage you to tell friends, family and coworkers that you want a partner?",
    "options": [
-    "Buy a fishing net",
-    "Try many different things to increase your chances",
-    "Stop looking for a partner",
-    "Only ask your family"
+    "They can write a letter of recommendation to a language school",
+    "More people knowing means a partner may be found sooner",
+    "Those people will certainly be good partners themselves",
+    "It is a cheap way of paying for private English lessons"
    ],
    "answer": 1,
-   "explain": "Đoạn 10: “That means to try many different things to increase your chances of getting what you want.”"
+   "explain": "Đoạn 11: “The more people you ask, the more likely and quickly you will find a good practice partner.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How has the coronavirus pandemic changed some Meetup groups?",
+   "options": [
+    "They only meet in coffee houses and no longer use the internet",
+    "Some now meet over the internet instead, or where members can keep their distance",
+    "They have stopped meeting altogether and have closed their pages",
+    "They now charge a fee for every meeting that members attend"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 7: một số nhóm gặp trực tuyến hoặc ở nơi có thể giữ khoảng cách an toàn."
   },
   {
    "type": "tf",
-   "q": "Meetup is a website that you must pay to use.",
+   "q": "Meetup is a website that members must pay to use.",
    "answer": "F",
-   "explain": "Đoạn 6: Meetup là “a free website”."
+   "explain": "Đoạn 6: “Meetup is a free website”."
   },
   {
    "type": "tf",
-   "q": "The text says Zoom is better than Facebook Messenger for practice.",
+   "q": "Most people who find a partner online meet that person face to face within a year.",
    "answer": "NG",
-   "explain": "Bài chỉ nói có thể luyện qua Messenger hoặc ứng dụng video như Zoom, Skype; không so sánh cái nào tốt hơn."
+   "explain": "Bài không đưa ra thông tin hay số liệu nào về việc gặp mặt trực tiếp sau khi tìm được bạn luyện nói online."
   }
  ],
  "notes": {

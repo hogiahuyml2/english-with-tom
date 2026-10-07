@@ -30,75 +30,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "How does the text describe habits?",
+   "q": "Why do people often fail to notice their own habits?",
    "options": [
-    "Special skills you learn at school",
-    "Regular ways of dealing with your environment that you usually do not think about",
-    "Actions that you do only once",
-    "Things that other people make you do"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 3: “Habits are regular ways of dealing with your environment. You generally do not pay attention to them.”"
-  },
-  {
-   "type": "mcq",
-   "q": "According to James Clear, which four steps make a habit?",
-   "options": [
-    "Cue, craving, response, reward",
-    "Plan, practice, repeat, reward",
-    "Idea, action, result, habit",
-    "Goal, effort, test, success"
+    "They carry them out almost without thinking",
+    "Habits appear suddenly during a crisis",
+    "They only happen when people are bored",
+    "People forget what they did the day before"
    ],
    "answer": 0,
-   "explain": "Đoạn 5: “These steps are cue, craving, response, and reward.”"
+   "explain": "Đoạn 3: thói quen là cách quen thuộc đối phó với môi trường và “You generally do not pay attention to them” ≈ làm gần như không nghĩ."
   },
   {
    "type": "mcq",
-   "q": "In the example of checking social media, what is the cue?",
+   "q": "In the social-media example, what is the “craving”?",
    "options": [
-    "Seeing something interesting",
-    "A feeling of boredom when you are near your computer or phone",
-    "The desire to stop a feeling",
-    "Putting your phone away"
+    "Finding something interesting to read",
+    "The feeling of boredom itself",
+    "The act of looking at the screen",
+    "A wish to get rid of a bored feeling"
    ],
-   "answer": 1,
-   "explain": "Đoạn 7: “The cue might be a feeling of boredom while you are near your computer or phone.”"
+   "answer": 3,
+   "explain": "Đoạn 7: cue = cảm giác chán; craving = mong muốn chấm dứt cảm giác đó; response = lướt mạng; reward = thấy điều thú vị."
   },
   {
    "type": "mcq",
-   "q": "What does Clear suggest about the time you study when you start a new habit?",
+   "q": "Which suggestion would help make a new study habit “obvious”?",
    "options": [
-    "Study as long as possible",
-    "Begin with limited, shorter periods, such as two minutes",
-    "Study only at night",
-    "Study without any breaks"
+    "Beginning with study sessions of only two minutes each day",
+    "Joining an online group of other learners of the English language",
+    "Leaving your English notes where you will see them every day",
+    "Listening to a favourite song as a reward after studying"
    ],
-   "answer": 1,
-   "explain": "Đoạn 10: “Clear suggests beginning your habits with limited, shorter time periods – two minutes for example.”"
+   "answer": 2,
+   "explain": "Đoạn 8: làm cue rõ ràng → để sách/ghi chú ở chỗ dễ thấy. Nhóm online = attractive; hai phút = easy; nghe bài hát = satisfying."
   },
   {
    "type": "mcq",
-   "q": "What reward does the text give as an example for studying English for 15 minutes?",
+   "q": "Why does Clear suggest starting with very short study sessions?",
    "options": [
-    "Eating a big meal",
-    "Listening to a song you like",
-    "Buying a new book",
-    "Going to bed early"
+    "Longer sessions are never useful for learners, however much time they have",
+    "Small beginnings are easier to keep up, and you can lengthen them later",
+    "The brain cannot learn anything new when a lesson lasts longer than two minutes",
+    "Teachers say that short lessons are always better than long ones"
    ],
    "answer": 1,
-   "explain": "Đoạn 12: “if you study English for 15 minutes, you could reward yourself by listening to a song you like.”"
+   "explain": "Đoạn 10–11: bắt đầu với thời gian ngắn (ví dụ hai phút) để dễ làm, sau đó tăng; đòi hỏi quá nhiều làm dễ bỏ cuộc."
+  },
+  {
+   "type": "mcq",
+   "q": "In paragraph 11, “place too many demands on yourself” most nearly means",
+   "options": [
+    "spend too much money on study materials",
+    "compare yourself with other learners",
+    "ask other people to help you",
+    "expect too much from yourself"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 11: “if you place too many demands on yourself, you are more likely to give up” ≈ kì vọng/đặt yêu cầu quá cao ở bản thân."
   },
   {
    "type": "tf",
-   "q": "If you place too many demands on yourself, you are more likely to give up on your new habit.",
+   "q": "Being part of a group where your new behaviour is normal can make a habit more attractive.",
    "answer": "T",
-   "explain": "Đoạn 11: nội dung này được nói trực tiếp."
+   "explain": "Đoạn 9: Clear khuyên tham gia “a culture where your new desired behavior is the normal behavior”."
   },
   {
    "type": "tf",
-   "q": "A new habit is usually formed after you repeat an action only once.",
-   "answer": "F",
-   "explain": "Đoạn 13: “You may have to repeat an action many times before it becomes a habit.”"
+   "q": "Studying in online meetings is more effective than studying with a group in person.",
+   "answer": "NG",
+   "explain": "Bài chỉ nêu họp trực tuyến như một ví dụ; không so sánh với học trực tiếp."
   }
  ],
  "notes": {

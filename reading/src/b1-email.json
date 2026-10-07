@@ -29,75 +29,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "According to the text, what is usually the most important part of an email?",
+   "q": "According to the writer, why is the subject line so important?",
    "options": [
-    "The subject line",
-    "The closing",
-    "The signature",
-    "The date"
+    "It is the first thing the reader sees and may decide whether the email gets read",
+    "It is the longest part of the message, so it takes most of the writer’s time",
+    "It tells the reader where you work and what your job is",
+    "It replaces the opening greeting, so the email can begin straight away"
    ],
    "answer": 0,
-   "explain": "Đoạn 4: “The subject line is usually the most important part of an email.”"
+   "explain": "Đoạn 4: người nhận đọc subject line đầu tiên; “a bad subject line can mean the receiver will not read the email”."
   },
   {
    "type": "mcq",
-   "q": "What should a good subject line be like?",
+   "q": "In paragraph 5, what does “know your audience” mean for the opening of an email?",
    "options": [
-    "Short but with enough details for the receiver to recognize the subject",
-    "Very long and full of details",
-    "Only the word “important”",
-    "Empty"
+    "Begin with a joke so that the reader is interested in your email",
+    "Use the same greeting for every person, however well you know them",
+    "Choose a greeting that suits how well you know the reader",
+    "Leave the opening out when the email is short and the subject clear"
    ],
-   "answer": 0,
-   "explain": "Đoạn 4: “It should be short but contain enough details that the receiver recognizes the subject of the email.”"
+   "answer": 2,
+   "explain": "Đoạn 5: lời mở đầu phụ thuộc vào “how formal the relationship is” ≈ chọn cách chào phù hợp với mức độ quen biết."
   },
   {
    "type": "mcq",
-   "q": "What does the opening of an email depend on?",
+   "q": "What should you do if the person you are writing to has never met you?",
    "options": [
-    "How formal the relationship is",
-    "The colour of the text",
-    "The time of day only",
-    "The length of the email"
+    "Ask them to introduce themselves first",
+    "Write a longer message than usual",
+    "Say who you are in the first lines",
+    "Wait until the closing to give your name"
    ],
-   "answer": 0,
-   "explain": "Đoạn 5: “The opening of an email depends on things like how formal the relationship is.”"
+   "answer": 2,
+   "explain": "Đoạn 7: “you should introduce yourself in the first few lines”."
   },
   {
    "type": "mcq",
-   "q": "What does the body of the email do?",
+   "q": "Why does the writer recommend putting the most important information first?",
    "options": [
-    "It asks for what you need or makes clear your reason for writing",
-    "It only says goodbye",
-    "It repeats the subject line",
-    "It lists the sender’s hobbies"
+    "It makes the message clear and saves the reader’s time",
+    "It means the closing can be left out",
+    "Readers usually stop reading after the first sentence",
+    "It replaces the need for a subject line"
    ],
    "answer": 0,
-   "explain": "Đoạn 6: “The body of the email is where you ask for what you need or make clear your reason for writing the email.”"
+   "explain": "Đoạn 8: thông tin quan trọng nhất đặt trước “makes your email clear to your receiver and saves them time”."
   },
   {
    "type": "mcq",
-   "q": "What should you do if the person does not know you?",
+   "q": "What is the writer’s attitude to automatic signatures?",
    "options": [
-    "Introduce yourself in the first few lines",
-    "Write nothing about yourself",
-    "Send the email twice",
-    "Use only emojis"
+    "Cautious, because they may contain mistakes",
+    "Positive, because they save the sender time",
+    "Neutral, because they are rarely used",
+    "Negative, because they look impersonal"
    ],
-   "answer": 0,
-   "explain": "Đoạn 7: “you should introduce yourself in the first few lines.”"
+   "answer": 1,
+   "explain": "Đoạn 11: chữ ký tự động “is useful because it saves time when you are writing”."
   },
   {
    "type": "tf",
-   "q": "The most important information should come first in the body.",
-   "answer": "T",
-   "explain": "Đoạn 8: “The most important information should come first.”"
-  },
-  {
-   "type": "tf",
-   "q": "The text says an email should always be as long as possible.",
+   "q": "The writer thinks an email should contain as much detail as possible.",
    "answer": "F",
-   "explain": "Đoạn 9: “Try to keep your email short, but polite.”"
+   "explain": "Đoạn 9: nên giải thích rõ “in as few words as possible”, giữ email ngắn nhưng lịch sự."
+  },
+  {
+   "type": "tf",
+   "q": "Emails sent in the morning receive more replies than emails sent in the afternoon.",
+   "answer": "NG",
+   "explain": "Bài không nói gì về thời điểm gửi email."
   }
  ],
  "notes": {

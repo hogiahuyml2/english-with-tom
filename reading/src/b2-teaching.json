@@ -30,87 +30,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What does the writer suggest you try in order to improve your own learning?",
+   "q": "What did the 1982 study find about tutoring?",
    "options": [
-    "Reading more books",
-    "Teaching",
-    "Taking more tests",
-    "Studying alone at night"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 2: “try teaching – not as a job, but as a way to improve your own learning.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What did a 1982 study find about tutoring?",
-   "options": [
-    "It helped only the students",
-    "It helped both the tutors and the people who studied with them",
-    "It was too expensive",
-    "It made no difference"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 3: “tutoring helped both the tutors and the people who studied with them.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What did the 2013 study compare?",
-   "options": [
-    "People who taught a lesson and people who only prepared to teach",
-    "Teachers and doctors",
-    "Two different schools",
-    "Computers and books"
+    "The tutor and the learner both benefited from it",
+    "Only the learner gained any benefit from the lessons",
+    "Only the tutor gained any benefit from the lessons",
+    "Neither of them gained anything that could be measured"
    ],
    "answer": 0,
-   "explain": "Đoạn 6: “compared the learning results of people who actually taught a lesson to those who simply prepared but did not teach.”"
+   "explain": "Đoạn 3: tutoring “helped both the tutors and the people who studied with them”."
   },
   {
    "type": "mcq",
-   "q": "What is “retrieval” in this text?",
+   "q": "What did the researchers conclude from the 2013 study?",
    "options": [
-    "Looking up information on the internet",
-    "Remembering the information you have learned as you teach",
-    "Writing notes after a lesson",
-    "Getting a book back"
+    "Teaching only helps people who work with a single learner at a time",
+    "Preparing a lesson in detail was as effective as teaching it to others",
+    "Teaching a lesson gave deeper, more lasting understanding than just preparing",
+    "Teaching helps short-term memory but has no effect on understanding"
    ],
-   "answer": 1,
-   "explain": "Đoạn 8: “you have to remember the information you have learned as you continue to teach. Experts call this “retrieval.””"
+   "answer": 2,
+   "explain": "Đoạn 6–7: so sánh người thật sự dạy với người chỉ chuẩn bị; kết luận người dạy “develop a deeper and more persistent understanding”."
   },
   {
    "type": "mcq",
-   "q": "What does the text advise when you teach a younger person?",
+   "q": "In this text, “retrieval” refers to",
    "options": [
-    "Make your lessons simple and clear, and ask what they do not understand",
-    "Teach very difficult ideas",
-    "Do not ask any questions",
-    "Teach only for five minutes"
+    "bringing back to mind something you have already learned",
+    "finding a book or an article in a library or on the internet",
+    "repeating a lesson to the same listener again and again",
+    "taking notes while another person is teaching a class"
    ],
    "answer": 0,
-   "explain": "Đoạn 11: “Try to make your lessons simple and clear, and ask them what they do not understand.”"
+   "explain": "Đoạn 8–9: khi dạy bạn phải nhớ lại thông tin đã học; “to improve your memory… you have to practice remembering that information”."
   },
   {
    "type": "mcq",
-   "q": "Why is asking for feedback useful?",
+   "q": "What does the writer advise when you teach a younger person?",
    "options": [
-    "It makes lessons shorter",
-    "It helps you realize you may not understand things as well as you thought",
-    "It saves money",
-    "It helps you sleep"
+    "Teach only topics that the child has already studied at school",
+    "Avoid asking questions so that the child does not feel nervous",
+    "Keep the lessons simple and find out what the child cannot follow",
+    "Use difficult vocabulary so that the child learns more quickly"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 11: “make your lessons simple and clear, and ask them what they do not understand”."
+  },
+  {
+   "type": "mcq",
+   "q": "According to the writer, what is one benefit of asking for feedback?",
+   "options": [
+    "You can finish the lesson in a much shorter amount of time",
+    "You can persuade your learners to agree with everything you say",
+    "You can be sure that you will never make a mistake again",
+    "You may find gaps in your own knowledge that you had not noticed"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 12: dạy và xin phản hồi giúp bạn nhận ra mình “may not understand some things as well as you thought”; đó là bước cần thiết."
+  },
+  {
+   "type": "mcq",
+   "q": "What is the idea behind the suggestion about recording a video?",
+   "options": [
+    "It shows other people that the speaker is an expert on the subject",
+    "It gives people who enjoy technology another way to practise teaching",
+    "It is a rule for students who would like to become teachers",
+    "It removes the need to prepare the lesson carefully in advance"
    ],
    "answer": 1,
-   "explain": "Đoạn 12: “will help you realize that you may not understand some things as well as you thought you did.”"
+   "explain": "Đoạn 13: “A final idea for those who like technology” – quay video bài giảng rồi gửi bạn bè hoặc đăng lên mạng."
   },
   {
    "type": "tf",
-   "q": "The 2013 study found that people who only prepared a lesson understood it more deeply than people who taught it.",
+   "q": "The 2013 study found that people who only prepared a lesson ended up with a deeper understanding than people who taught it.",
    "answer": "F",
-   "explain": "Đoạn 7: người thật sự dạy bài “develop a deeper and more persistent understanding” hơn người chỉ chuẩn bị."
+   "explain": "Đoạn 7: ngược lại – người thật sự dạy hiểu sâu và bền hơn người chỉ chuẩn bị."
   },
   {
    "type": "tf",
-   "q": "The 2013 study was done with university students.",
+   "q": "The people who took part in the 2013 study were university students.",
    "answer": "NG",
-   "explain": "Bài không nói người tham gia nghiên cứu là ai."
+   "explain": "Bài không nói người tham gia nghiên cứu năm 2013 là ai."
   }
  ],
  "notes": {

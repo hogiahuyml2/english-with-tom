@@ -27,87 +27,87 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What is cyberbullying?",
+   "q": "What can be concluded from the survey figures in paragraph 2?",
    "options": [
-    "Playing games online for too long",
-    "The use of electronic communication to threaten or insult someone",
-    "Buying things online",
-    "Sending emails to teachers"
+    "Online bullying has become less common since the survey of 2019",
+    "Most students are bullied at some point during the school year",
+    "Boys are bullied on the internet more often than girls are",
+    "Girls are more likely than boys to be targeted online"
    ],
-   "answer": 1,
-   "explain": "Đoạn 1: “Cyberbullying is the use of electronic communication to threaten or insult someone.”"
+   "answer": 3,
+   "explain": "Đoạn 2: cyberbullying “appears to be worse among girls” (20,4% so với 10,9%). Chỉ 22% học sinh bị bắt nạt trong năm học nên “most” sai."
   },
   {
    "type": "mcq",
-   "q": "According to the 2019 survey, among which group does cyberbullying appear to be worse?",
+   "q": "How does the text link time spent online with young people’s wellbeing?",
    "options": [
-    "Boys",
-    "Girls",
-    "Teachers",
-    "Parents"
-   ],
-   "answer": 1,
-   "explain": "Đoạn 2: “Cyberbullying also appears to be worse among girls.”"
-  },
-  {
-   "type": "mcq",
-   "q": "What does the text say about time spent online?",
-   "options": [
-    "More time online comes with a higher risk of exposure to cyberbullying",
-    "Time online does not matter",
-    "Children spend less time online than before",
-    "Adults spend more time online than children"
-   ],
-   "answer": 0,
-   "explain": "Đoạn 3: “With more time online comes a higher risk of exposure to cyberbullying.”"
-  },
-  {
-   "type": "mcq",
-   "q": "In what ways can a child be involved in cyberbullying?",
-   "options": [
-    "Only as the person who bullies",
-    "Only as the person who is bullied",
-    "They can bully, be bullied, or witness the bullying of others",
-    "Only by reading about it"
+    "Using social media less often makes feelings of depression more likely",
+    "Young people who feel depressed tend to spend less time online",
+    "More hours online raise the risk of being bullied, which can deepen depression",
+    "Time online has no real effect on how young people feel about life"
    ],
    "answer": 2,
-   "explain": "Đoạn 5: “They can bully, be bullied, or witness the bullying of others.”"
+   "explain": "Đoạn 3: “With more time online comes a higher risk of exposure to cyberbullying. Cyberbullying can make feelings of depression worse”."
   },
   {
    "type": "mcq",
-   "q": "What can a child do if he or she sees hateful content online?",
+   "q": "Why does the writer say that adults “need to be aware of children’s online usage”?",
    "options": [
-    "Report it anonymously and block the person",
-    "Answer with the same words",
-    "Share it with friends",
-    "Delete their own account at once"
+    "Adults are usually the people who carry out the cyberbullying",
+    "Websites ask parents to approve every message that a child sends",
+    "Children are not allowed to use social media without an adult’s permission",
+    "A child who uses many kinds of messaging is likelier to run into bullying"
    ],
-   "answer": 0,
-   "explain": "Đoạn 7: “The child could report the content anonymously … They can also block the person.”"
+   "answer": 3,
+   "explain": "Đoạn 5: càng dùng nhiều hình thức giao tiếp số, trẻ càng dễ tiếp xúc với bắt nạt trên mạng; vì vậy người lớn cần nắm việc con dùng mạng."
   },
   {
    "type": "mcq",
-   "q": "What did France do against cyberbullying?",
+   "q": "How does the text say adults should react when a child is being cyberbullied?",
    "options": [
-    "It closed social media sites",
-    "It created a special court to try online crimes in January",
-    "It banned phones in all schools",
-    "It stopped teenagers from using the internet"
+    "Concentrate only on punishing the child who did the bullying online",
+    "Take away the victim’s phone and computer for the rest of the term",
+    "Support the victim, deal with the bully’s behaviour and treat it as serious",
+    "Wait for a while, because the problem usually ends without any help"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 6: người lớn nên “support the child being bullied and address the behavior of the child doing the bullying” và cho thấy đây là việc nghiêm trọng."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer imply about ignoring hateful posts?",
+   "options": [
+    "It is impossible, because hateful posts cannot be hidden from view",
+    "It looks like the easier option, but blocking the person is more likely to work",
+    "It is the best way to make an online bully quickly lose interest",
+    "It is only worth trying after a parent has reported the posts"
    ],
    "answer": 1,
-   "explain": "Đoạn 10: “In January, the country created a special court to try online crimes, including harassment and bullying.”"
+   "explain": "Đoạn 7: “While ignoring posts might seem easier than blocking someone, it will not make the problem go away” → bỏ qua có vẻ dễ hơn nhưng không giải quyết được."
+  },
+  {
+   "type": "mcq",
+   "q": "Why does the writer mention France in the final paragraph?",
+   "options": [
+    "To show that cyberbullying first appeared in France in recent years",
+    "To give an example of a country that has taken firmer legal action",
+    "To criticise French social media companies for ignoring complaints",
+    "To suggest that France has fewer cases than most other countries"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 10: Pháp “has taken stronger measures” – lập tòa án chuyên xử tội phạm trên mạng và 11 người bị kết án vì quấy rối một cô gái tuổi teen."
   },
   {
    "type": "tf",
-   "q": "Common Sense found that 38 percent of teens and young adults were depressed in 2020.",
-   "answer": "T",
-   "explain": "Đoạn 3: nội dung này được nói trực tiếp."
-  },
-  {
-   "type": "tf",
-   "q": "The text says that ignoring hateful posts will make the problem go away.",
+   "q": "The text claims that careful parents can stop cyberbullying completely.",
    "answer": "F",
-   "explain": "Đoạn 7: “While ignoring posts might seem easier than blocking someone, it will not make the problem go away.”"
+   "explain": "Đoạn 9: “Cyberbullying may be impossible to stop completely”; cha mẹ chỉ có thể theo dõi hành vi và thời gian online của con."
+  },
+  {
+   "type": "tf",
+   "q": "Most cyberbullying takes place on one particular social media site.",
+   "answer": "NG",
+   "explain": "Bài không nêu nền tảng hay trang web cụ thể nào là nơi xảy ra nhiều nhất."
   }
  ],
  "notes": {

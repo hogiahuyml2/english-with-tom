@@ -31,75 +31,75 @@
  "questions": [
   {
    "type": "mcq",
-   "q": "What does “one person’s trash is another person’s treasure” mean?",
+   "q": "Which situation best fits “one person’s trash is another person’s treasure”?",
    "options": [
-    "Rich people throw away good things",
-    "Something one person thinks is worthless may be highly valued by someone else",
-    "Treasure is hidden in the trash",
-    "People should never throw things away"
+    "Nam gave away a comic book he no longer wanted, and his cousin was delighted to receive it",
+    "Nam sold his old comic book for less money than he had paid when he bought it",
+    "Nam threw away a torn comic book because nobody he knew wanted to read it",
+    "Nam and his cousin both disliked the comic book and agreed it was boring"
    ],
-   "answer": 1,
-   "explain": "Đoạn 2: “something that one person may consider worthless could be highly prized or valued by someone else.”"
+   "answer": 0,
+   "explain": "Đoạn 2: thứ mà người này cho là vô giá trị lại được người khác trân trọng. Chỉ tình huống đầu tiên có hai người đánh giá khác nhau."
   },
   {
    "type": "mcq",
-   "q": "In the example, what does Speaker A say about Jackson Pollock’s paintings?",
+   "q": "Why does Speaker A say the paintings look as if a team of monkeys painted them?",
    "options": [
-    "They look like a team of monkeys painted them",
-    "They are beautiful",
-    "They are very old",
-    "They are too expensive"
+    "To say that the artist painted the pictures together with some animals",
+    "To praise the paintings because they are playful and full of fun",
+    "To show that A does not think the paintings are skilful or attractive",
+    "To explain how the paintings were sold at an auction"
    ],
-   "answer": 0,
-   "explain": "Đoạn 4: “To me, they look like a team of monkeys painted them!”"
+   "answer": 2,
+   "explain": "Đoạn 4: A “doesn’t understand the appeal” của tranh Pollock; so sánh với khỉ vẽ = chê tranh không có kĩ thuật/đẹp."
   },
   {
    "type": "mcq",
-   "q": "Which expression has a fixed form that cannot be changed?",
+   "q": "What does the writer say about “different strokes for different folks”?",
    "options": [
-    "“different strokes for different folks” — we do not say “different people”",
-    "“one man’s trash” — we cannot say “man”",
-    "“to each his own”",
-    "“it takes all kinds”"
+    "Its wording is fixed, so changing “folks” to “people” sounds wrong",
+    "It is newer than the expression about trash and treasure",
+    "It can be changed freely without altering how the expression sounds",
+    "It is used only when people are talking about paintings and art"
    ],
    "answer": 0,
-   "explain": "Đoạn 8: “as a set expression, we do not say “different strokes for different people.””"
+   "explain": "Đoạn 8: đây là thành ngữ cố định; “different strokes for different people” “just doesn’t sound right”."
   },
   {
    "type": "mcq",
-   "q": "What does “whatever floats your boat” mean?",
+   "q": "What does the writer’s example of a perfect evening show?",
    "options": [
-    "Whatever makes you happy",
-    "Whatever is expensive",
-    "Whatever is dangerous",
-    "Whatever is easy"
+    "Dancing is a healthier hobby than reading quietly at home",
+    "Staying at home is always the better choice for an evening",
+    "People enjoy different things and neither choice is better",
+    "Friends should always choose the same activities together"
    ],
-   "answer": 0,
-   "explain": "Đoạn 13: “They all mean … whatever makes you happy!”"
+   "answer": 2,
+   "explain": "Đoạn 9: một người thích khiêu vũ, người kia thích ở nhà đọc sách; “Neither is a better way” → mỗi người một sở thích."
   },
   {
    "type": "mcq",
-   "q": "What general meaning do all these expressions share?",
+   "q": "If someone says “whatever floats your boat”, what are they saying?",
    "options": [
-    "We are all different and unique",
-    "We should all be the same",
-    "Money is not important",
-    "We must always agree"
+    "I accept that you like what you like",
+    "I do not trust your opinion",
+    "I want to buy your boat",
+    "I think you should try something new"
    ],
    "answer": 0,
-   "explain": "Đoạn 14: “We are all different and unique.”"
+   "explain": "Đoạn 11–13: những thành ngữ này đều có nghĩa chấp nhận mỗi người mỗi sở thích (“whatever makes you happy”)."
   },
   {
    "type": "tf",
-   "q": "Speaker B in the dialogue likes Pollock’s paintings.",
+   "q": "In the example, Speaker B finds something new in the paintings every time B looks at them.",
    "answer": "T",
-   "explain": "Đoạn 5: “I love Pollock’s paintings.”"
+   "explain": "Đoạn 5: B “see something new every time I look at them”."
   },
   {
    "type": "tf",
-   "q": "Jackson Pollock painted for more than twenty years.",
+   "q": "Jackson Pollock was born in the United States.",
    "answer": "NG",
-   "explain": "Bài chỉ nhắc đến tranh của Pollock trong một đoạn hội thoại ví dụ; không nói gì về thời gian ông vẽ."
+   "explain": "Bài không nói gì về nơi sinh của Jackson Pollock."
   }
  ],
  "notes": {
