@@ -179,7 +179,7 @@
     var s = SH(24) + R(34, 82, 10, 9, 3, GOLD, ST(GOLD)) + R(56, 82, 10, 9, 3, GOLD, ST(GOLD)) + P('M72 78Q88 74 84 56Q80 68 68 70Z', GOLD, ST(GOLD)) + P('M28 90Q26 68 38 62H62Q74 68 72 90Z', RED, ST(RED)) + L('M30 80H70', GOLD, 3.4) + L('M32 86h36', '#FFB02E', 2), i;
     for (i = 0; i < 14; i++) { var a = (-190 + i * 14.6) * rad; s += '<g transform="translate(50 42) rotate(' + (a / rad + 90) + ')">' + P('M-5 -22L0 -34L5 -22Z', i % 2 ? GOLD : '#FFB02E', ST(GOLD)) + '</g>'; }
     return s + C(30, 30, 7, RED, ST(RED)) + C(70, 30, 7, RED, ST(RED)) + C(30, 30, 3.4, GOLD) + C(70, 30, 3.4, GOLD) + C(50, 44, 22, RED, ST(RED)) + P('M50 20L45 30H55Z', GOLD, ST(GOLD)) + C(50, 21, 1.8, '#fff')
-      + C(40, 40, 7, '#fff', ST('#888')) + C(60, 40, 7, '#fff', ST('#888')) + C(41, 41, 3.6, INK) + C(59, 41, 3.6, INK) + C(42, 39.5, 1.2, '#fff') + C(60, 39.5, 1.2, '#fff')
+      + C(40, 40, 7, '#fff', ST('#888888')) + C(60, 40, 7, '#fff', ST('#888888')) + C(41, 41, 3.6, INK) + C(59, 41, 3.6, INK) + C(42, 39.5, 1.2, '#fff') + C(60, 39.5, 1.2, '#fff')
       + L('M33 32Q40 28 46 32M54 32Q60 28 67 32', GOLD, 2.4) + C(32, 50, 4, '#FF8A9A', ' opacity=".7"') + C(68, 50, 4, '#FF8A9A', ' opacity=".7"') + E(50, 48, 4, 3, GOLD) + P('M34 54Q50 74 66 54Q50 62 34 54Z', '#fff', ST('#CFCFCF')) + L('M44 58q6 4 12 0', RED2, 1.4);
   };
   PET.tet_p2 = function () {
