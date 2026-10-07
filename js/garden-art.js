@@ -47,6 +47,7 @@
   }
 
   /* ───────── cây ───────── */
+  var TREEX = {};   // cây của các khu mới (garden-art2.js)
   function treeArt(id, it, stage) {
     var sc = [0.32, 0.55, 0.8, 1][stage], tx = 50, ty = 90;
     var tr = function (col, w, h) { return P('M' + (50 - w) + ' 90 Q' + (50 - w / 2) + ' ' + (90 - h / 2) + ' ' + (50 - w / 3) + ' ' + (90 - h) + ' H' + (50 + w / 3) + ' Q' + (50 + w / 2) + ' ' + (90 - h / 2) + ' ' + (50 + w) + ' 90Z', col); };
@@ -55,6 +56,7 @@
     if (id === 'apple' || id === 'lemon') body = tr('#8A5A2E', 9, 26) + C(50, 40, 27, it.c) + C(36, 48, 17, shade(it.c, -0.08)) + C(64, 46, 17, shade(it.c, -0.08)) + C(46, 32, 14, shade(it.c, 0.1)) + (stage === 3 ? [[38, 38], [58, 30], [66, 50], [46, 54], [30, 52]].map(function (p) { return C(p[0], p[1], 4.6, it.c2) + C(p[0] - 1.2, p[1] - 1.4, 1.2, shade(it.c2, 0.4)); }).join('') : '');
     if (id === 'cherry') body = tr('#7A4A3A', 8, 28) + C(50, 38, 29, '#FFC4D8') + C(34, 46, 18, '#FFB7D0') + C(66, 46, 18, '#FFB7D0') + C(50, 28, 16, '#FFD6E5') + (stage === 3 ? [[36, 38], [56, 28], [64, 46], [46, 50], [28, 52], [72, 38]].map(function (p) { return C(p[0], p[1], 3, '#FF7FAE'); }).join('') + C(24, 76, 2.4, '#FFB7D0') + C(72, 82, 2.4, '#FFB7D0') + C(40, 88, 2, '#FFB7D0') : '');
     if (id === 'palm') body = P('M46 90 Q40 60 50 36 L56 36 Q50 60 56 90Z', '#9A6B3A') + [[-70, 24], [-30, 28], [30, 28], [70, 24], [-110, 22], [110, 22]].map(function (f, k) { return '<g transform="translate(52 38) rotate(' + f[0] + ')">' + P('M0 0 Q' + f[1] * 0.5 + ' -12 ' + f[1] + ' 0 Q' + f[1] * 0.5 + ' -4 0 0Z', k % 2 ? '#3FAE4A' : '#329B3E') + '</g>'; }).join('') + (stage === 3 ? C(48, 44, 4.4, '#8A5A2E') + C(56, 46, 4.4, '#7A4A22') : '');
+    if (TREEX[id]) body = TREEX[id](it, tr, stage);
     return SH(24 * sc + 4) + '<g transform="translate(50 90) scale(' + sc + ') translate(-50 -90)">' + body + '</g>';
   }
 
@@ -107,6 +109,6 @@
   function petSvg(pt, size, cls) {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + pt.name + '"><g class="bvS">' + (PET[pt.id] || function () { return ''; })() + '</g></svg>';
   }
-  var API = { draw: drawItem, itemSvg: itemSvg, petSvg: petSvg, shade: shade };
+  var API = { draw: drawItem, itemSvg: itemSvg, petSvg: petSvg, shade: shade, BLOOM: BLOOM, DECO: DECO, PET: PET, TREEX: TREEX, K: { INK: INK, C: C, E: E, R: R, P: P, L: L, SH: SH, G1: G1, G2: G2, G3: G3, leaf: leaf, stem: stem, eyes: eyes } };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenArt = API;
 })(typeof window !== 'undefined' ? window : this);

@@ -192,4 +192,127 @@
   ART.crater = function (b) {
     return T(b.x * 100, b.y * 100, '<ellipse cx="100" cy="112" rx="92" ry="66" fill="#9AA3B2" stroke="#6A7384" stroke-width="3"/><ellipse cx="100" cy="120" rx="68" ry="44" fill="#7A8394"/><ellipse cx="100" cy="126" rx="48" ry="28" fill="#646D7E"/><path d="M40 88q20 -20 50 -22" stroke="rgba(255,255,255,.45)" stroke-width="5" fill="none" stroke-linecap="round"/>' + circ(150, 74, 9, '#AAB3C2', '#6A7384') + circ(46, 150, 7, '#AAB3C2', '#6A7384') + circ(170, 150, 5, '#AAB3C2', '#6A7384'));
   };
+
+  /* ───────── công trình lớn dành cho các khu mới (đặt trong cửa hàng "Công trình") ───────── */
+  var BIG = API.BIG, BIGSIZE = API.BIGSIZE;
+  BIG.barnbig = function () { return ART.barn({ x: 0, y: 0 }); };
+  BIGSIZE.barnbig = [3, 2];
+  BIG.pyramidbig = function () { return ART.pyramid({ x: 0, y: 0 }) + T(204, 96, '<g transform="scale(.7)">' + ART.cactus({ x: 0, y: 0 }) + '</g>'); };
+  BIGSIZE.pyramidbig = [3, 2];
+  BIG.teahouse = function () {
+    return shadow(100, 188, 92, 9) + rect(24, 124, 152, 62, F('wall'), '#C9A66A', 3) + rect(24, 170, 152, 16, F('woodD'), OUT, 2) +
+      [0, 1, 2].map(function (i) { return rect(36 + i * 48, 134, 40, 36, '#FFF8E0', OUT, 2) + '<path d="M' + (56 + i * 48) + ' 134v36M36 ' + (152) + 'h' + 0 + '" stroke="' + OUT + '" stroke-width="1.6"/><path d="M' + (46 + i * 48) + ' 134v36M' + (66 + i * 48) + ' 134v36" stroke="#D8C28A" stroke-width="1"/>'; }).join('') +
+      '<path d="M2 128 Q100 66 198 128 L186 132 Q100 84 14 132Z" fill="#4A4F5C" stroke="#2A2E38" stroke-width="3"/><path d="M12 124 Q100 62 188 124" fill="none" stroke="#6A7080" stroke-width="3"/><path d="M30 104 Q100 44 170 104 L160 110 Q100 62 40 110Z" fill="#5A6070" stroke="#2A2E38" stroke-width="3"/>' +
+      '<path d="M2 128 Q-4 128 -6 120M198 128 Q204 128 206 120" stroke="#2A2E38" stroke-width="3" fill="none"/>' + rect(8, 150, 8, 36, F('red'), '#9E2E26', 2) + rect(184, 150, 8, 36, F('red'), '#9E2E26', 2) + '<g class="lampg"><circle cx="100" cy="116" r="12" fill="url(#bg-glow)"/></g>' + circ(100, 118, 6, '#FFE9A0', '#C99E3A');
+  };
+  BIGSIZE.teahouse = [2, 2];
+  BIG.treehouse = function () {
+    var s = '', i, R2 = rnd(5);
+    for (i = 0; i < 12; i++) s += circ((100 + (R2() - .5) * 150).toFixed(0), (50 + (R2() - .5) * 70).toFixed(0), (22 + R2() * 14).toFixed(0), ['#3FAE4A', '#52C26A', '#2F9A4E'][i % 3]);
+    return shadow(100, 192, 70, 9) + '<path d="M84 190 Q88 130 80 90 H120 Q112 130 118 190Z" fill="' + F('woodD') + '" stroke="' + OUT + '" stroke-width="3"/><path d="M92 170h16M90 140h20M92 110h18" stroke="#6B4121" stroke-width="2" opacity=".6"/>' + s +
+      rect(52, 78, 96, 56, F('wood'), OUT, 4) + '<path d="M52 98h96M52 116h96" stroke="#8F5A2B" stroke-width="2"/>' + poly('44,82 100,40 156,82', F('roofR'), '#962B25') + rect(86, 96, 28, 38, F('woodD'), OUT, 14) + rect(60, 92, 20, 18, F('glass'), OUT, 2) + rect(120, 92, 20, 18, F('glass'), OUT, 2) + rect(44, 134, 112, 8, F('woodD'), OUT, 2) +
+      '<path d="M70 142 V186 M78 142 V186 M70 152h8M70 164h8M70 176h8" stroke="#C9A66A" stroke-width="3"/><g class="sway b" style="transform-origin:160px 60px"><path d="M148 50 q24 -20 36 4" stroke="#fff" stroke-width="0"/>' + circ(166, 56, 14, '#3FAE4A') + '</g>';
+  };
+  BIGSIZE.treehouse = [2, 2];
+  BIG.gingerbread = function () {
+    var s = '', i; for (i = 0; i < 5; i++) s += circ(34 + i * 34, 70 + (i % 2) * 6, 9, ['#FF6B9A', '#FFD23F', '#6BC8FF', '#8BE28A', '#B48CFF'][i]);
+    return shadow(100, 190, 86, 9, 'rgba(160,60,100,.25)') + rect(24, 92, 152, 96, '#C98A52', '#8A5A2E', 6) + '<path d="M24 118h152M24 144h152M24 168h152" stroke="#A8693A" stroke-width="2" opacity=".5"/>' + poly('10,98 100,24 190,98', '#FF9EC4', '#C94B7B') +
+      '<path d="M10 98q12 14 24 0t24 0t24 0t24 0t24 0t24 0t24 0t12 0" fill="#fff" stroke="#E7C3D3" stroke-width="2"/>' + s + rect(76, 130, 48, 58, '#8A5A2E', '#5E3A1C', 22) + circ(114, 160, 4, '#FFD23F') + rect(36, 112, 30, 28, '#FFF3D6', '#C98A52', 4) + '<path d="M51 112v28M36 126h30" stroke="#E7C3D3" stroke-width="3"/>' + rect(134, 112, 30, 28, '#FFF3D6', '#C98A52', 4) + '<path d="M149 112v28M134 126h30" stroke="#E7C3D3" stroke-width="3"/>' + circ(100, 64, 7, '#FFD23F', '#C99E3A');
+  };
+  BIGSIZE.gingerbread = [2, 2];
+  BIG.submarine = function () {
+    return '<ellipse cx="150" cy="96" rx="130" ry="6" fill="rgba(10,50,100,.3)"/><g class="float1"><path d="M24 62 Q24 30 80 28 H230 Q286 30 286 62 Q286 90 230 94 H80 Q24 92 24 62Z" fill="#FFD23F" stroke="#C99E3A" stroke-width="3"/><path d="M40 52 Q60 38 120 38 H210" fill="none" stroke="#FFF3A0" stroke-width="4" opacity=".8"/>' + rect(120, 8, 50, 28, '#F2C21E', '#C99E3A', 6) + rect(140, -8, 6, 20, '#8A97A8') + rect(140, -10, 20, 6, '#8A97A8', '', 2) +
+      [0, 1, 2, 3].map(function (i) { return circ(86 + i * 40, 62, 11, '#BDE8FF', '#7E8A9A') + circ(83 + i * 40, 58, 3, '#fff'); }).join('') + '<path d="M286 62 L300 44 L300 80Z" fill="#E5484D" stroke="#9E2E26" stroke-width="2"/><path d="M24 62 L8 52 V72Z" fill="#8A97A8"/><path d="M40 94 Q60 108 80 94" fill="#8A97A8"/></g>' + circ(12, 40, 4, 'none', '#fff') + circ(20, 24, 3, 'none', '#fff') + '<g fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><circle cx="304" cy="30" r="4"/><circle cx="296" cy="14" r="3"/></g>';
+  };
+  BIGSIZE.submarine = [3, 1];
+  BIG.cloudhouse = function () {
+    return '<g fill="#fff" stroke="#CFE0F2" stroke-width="2"><ellipse cx="100" cy="164" rx="94" ry="26"/><ellipse cx="46" cy="156" rx="40" ry="24"/><ellipse cx="152" cy="156" rx="42" ry="24"/><ellipse cx="100" cy="148" rx="52" ry="22"/></g><g class="float2">' + rect(58, 80, 84, 62, F('wall'), '#C9A66A', 4) + poly('48,86 100,34 152,86', F('roofB'), '#3C58C4') + '<path d="M60 78 Q100 24 140 78" fill="none" stroke="#FF8D7C" stroke-width="4" opacity=".0"/>' + rect(88, 102, 24, 40, F('woodD'), OUT, 12) + rect(64, 96, 18, 18, F('glass'), OUT, 2) + rect(118, 96, 18, 18, F('glass'), OUT, 2) + '<path d="M100 34v-16" stroke="#8A5A2E" stroke-width="3"/><path d="M100 18h18l-6 6l6 6h-18z" fill="#FFD23F"/></g>';
+  };
+  BIGSIZE.cloudhouse = [2, 2];
+  BIG.rocketbig = function () {
+    return shadow(50, 192, 40, 7, 'rgba(0,0,0,.35)') + '<g class="float1"><path d="M50 8 Q80 44 74 128 H26 Q20 44 50 8Z" fill="#F6F8FC" stroke="#9FB0C6" stroke-width="3"/><path d="M50 8 Q36 24 30 48 H70 Q64 24 50 8Z" fill="#E24D4D" stroke="#9E2E26" stroke-width="2.4"/>' + circ(50, 76, 13, '#BDE8FF', '#6A86A8') + circ(50, 76, 8, '#7CC4F0') + poly('26,100 8,140 28,132', '#E24D4D', '#9E2E26') + poly('74,100 92,140 72,132', '#E24D4D', '#9E2E26') + rect(40, 126, 20, 10, '#8A97A8', '#5F6B7A', 3) + '<path d="M42 136 Q50 176 58 136Z" fill="#FFB63A"/><path d="M46 136 Q50 160 54 136Z" fill="#FFF3A0"/></g>' + rect(14, 180, 72, 10, '#6A7688', '#3E4858', 3);
+  };
+  BIGSIZE.rocketbig = [1, 2];
+  BIG.observatory = function () {
+    return shadow(100, 190, 90, 9, 'rgba(0,0,0,.3)') + rect(30, 100, 140, 86, F('white'), '#9FB0C6', 4) + '<path d="M30 100a70 62 0 0 1 140 0z" fill="' + F('stone') + '" stroke="#7E8A9A" stroke-width="3"/><path d="M92 40 L108 40 L112 100 H88Z" fill="#2B3C66" stroke="#7E8A9A" stroke-width="2"/><g transform="rotate(-32 100 70)"><rect x="86" y="44" width="30" height="64" rx="6" fill="#C9D2DE" stroke="#7E8A9A" stroke-width="2.4"/><rect x="82" y="40" width="38" height="8" rx="3" fill="#8A97A8"/></g>' +
+      rect(84, 130, 32, 56, F('woodD'), OUT, 14) + rect(40, 118, 26, 22, '#BDE8FF', '#6A86A8', 3) + rect(134, 118, 26, 22, '#BDE8FF', '#6A86A8', 3) + circ(60, 128, 2, '#fff') + '<g class="spk"><circle cx="160" cy="34" r="3" fill="#FFF3A0"/></g>';
+  };
+  BIGSIZE.observatory = [2, 2];
+
+  /* ───────── cảnh phụ rải trên đất mở rộng (xem genDecor trong garden-data.js) ───────── */
+  var DTH = {
+    default: { leaf: ['#4FAE4A', '#3C9440', '#7FD36B'], bush: ['#3C9440', '#4FAE4A'], rock: ['#9AA3AE', '#B9C1CB'], post: '#E8D4B0', rail: '#C98A4B' },
+    autumn: { leaf: ['#E2531F', '#F29A2E', '#C4321C'], bush: ['#C4321C', '#E2531F'], rock: ['#A89A86', '#C4B8A4'], post: '#C98A4B', rail: '#8A5A2E' },
+    sakura: { leaf: ['#FFB7D0', '#FF9FC0', '#FFD3E3'], bush: ['#E88FB0', '#FFB7D0'], rock: ['#A9B1BC', '#C9D0D9'], post: '#E24D4D', rail: '#B83A30' },
+    mountain: { leaf: ['#2F7A4A', '#3D8F58', '#58A870'], bush: ['#4A8A5A', '#6AA46E'], rock: ['#8A929C', '#AAB2BC'], post: '#C9A66A', rail: '#8A5A2E' },
+    winter: { leaf: ['#E8F2FA', '#CFE1F3', '#fff'], bush: ['#D8E8F6', '#fff'], rock: ['#B8C6D6', '#EAF2FA'], post: '#F5F9FF', rail: '#C9D8E8' },
+    beach: { leaf: ['#5DBE55', '#3FAE4A', '#7FD36B'], bush: ['#4FAE4A', '#7FD36B'], rock: ['#D9C49A', '#EAD8B2'], post: '#F0DCB0', rail: '#C99E5A' },
+    desert: { leaf: ['#7FA66A', '#6B9A5A', '#9AC07A'], bush: ['#9AA86A', '#B8C07A'], rock: ['#C9A66A', '#E0C28A'], post: '#E0C28A', rail: '#B8873A' },
+    candy: { leaf: ['#FF9EC4', '#FF6B9A', '#FFD3E3'], bush: ['#FF8FB8', '#FFB3D0'], rock: ['#FFC4D8', '#fff'], post: '#fff', rail: '#FF6B9A' },
+    ocean: { leaf: ['#3FAE5A', '#2F9A4E', '#52C26A'], bush: ['#2F9A4E', '#52C26A'], rock: ['#7A98B8', '#9DB8D0'], post: '#E8D4B0', rail: '#B8A070' },
+    sky: { leaf: ['#fff', '#E9F3FF', '#CFE0F2'], bush: ['#E9F3FF', '#fff'], rock: ['#DCE8F5', '#fff'], post: '#fff', rail: '#CFE0F2' },
+    space: { leaf: ['#8E5CF0', '#B48CFF', '#6A4CC0'], bush: ['#6A4CC0', '#8E5CF0'], rock: ['#7A8394', '#9AA3B2'], post: '#9AA3B2', rail: '#6A7384' },
+    magic: { leaf: ['#7C58D8', '#9B7BE0', '#B48CFF'], bush: ['#6A4CC0', '#9B7BE0'], rock: ['#7A6AB0', '#9A8AD0'], post: '#CDA8FF', rail: '#8E5CF0' }
+  };
+  function th(b) { return DTH[b.th] || DTH.default; }
+  ART.ptree = function (b) {
+    var t = th(b), s = '';
+    s += circ(50, 44, 26, t.leaf[0]) + circ(34, 54, 16, t.leaf[1]) + circ(66, 52, 16, t.leaf[1]) + circ(44, 36, 13, t.leaf[2]);
+    return T(b.x * 100, b.y * 100, shadow(50, 92, 28, 7) + '<path d="M44 92 Q46 76 44 62 H56 Q54 76 56 92Z" fill="' + F('woodD') + '" stroke="' + OUT + '" stroke-width="2"/><g class="sway b" style="transform-origin:50px 70px">' + s + '</g>');
+  };
+  ART.pbush = function (b) {
+    var t = th(b);
+    return T(b.x * 100, b.y * 100, shadow(50, 90, 30, 6) + circ(32, 70, 16, t.bush[0]) + circ(68, 70, 16, t.bush[0]) + circ(50, 62, 20, t.bush[1]) + circ(40, 56, 11, t.leaf[2]) + (b.th === 'winter' ? '<path d="M30 54q20 -14 40 0q-20 -4 -40 0" fill="#fff"/>' : circ(60, 60, 2.6, '#FF8FA3') + circ(42, 68, 2.4, '#FFD23F')));
+  };
+  ART.prock = function (b) {
+    var t = th(b);
+    return T(b.x * 100, b.y * 100, shadow(50, 88, 26, 6) + '<path d="M22 86 Q20 64 38 56 Q56 52 72 62 Q82 74 78 86Z" fill="' + t.rock[0] + '" stroke="rgba(40,50,70,.35)" stroke-width="1.6"/><path d="M32 66 Q42 58 56 62 Q48 64 42 72Z" fill="' + t.rock[1] + '"/>' + (b.th === 'winter' || b.th === 'mountain' ? '<path d="M30 62 Q44 50 62 58 Q50 56 40 66Z" fill="#fff"/>' : '') + (b.th === 'ocean' ? circ(40, 60, 3, '#3FAE5A') + circ(66, 70, 2.4, '#FF7A9A') : ''));
+  };
+  ART.pflower = function (b) {
+    var cs = ['#FF6B8A', '#FFD23F', '#B57BFF', '#fff', '#5BB6FF'], s = '';
+    [[28, 66], [52, 58], [70, 72]].forEach(function (p, i) { s += '<path d="M' + p[0] + ' 86 V' + (p[1] + 6) + '" stroke="#3C9440" stroke-width="3"/>' + circ(p[0], p[1], 9, cs[(b.x * 3 + b.y + i) % 5], 'rgba(0,0,0,.18)') + circ(p[0], p[1], 3.2, '#FFE9A0'); });
+    return T(b.x * 100, b.y * 100, shadow(50, 90, 30, 5) + s);
+  };
+  ART.plamp = function (b) {
+    return T(b.x * 100, b.y * 100, shadow(50, 92, 14, 5) + rect(44, 64, 12, 28, '#3B4252', '', 3) + rect(46, 26, 8, 42, '#4C566A', '', 2) + poly('34,30 40,14 60,14 66,30', '#3B4252') + poly('38,30 42,18 58,18 62,30', '#FFE08A') + '<g class="lampg"><circle cx="50" cy="24" r="14" fill="url(#bg-glow)"/></g>');
+  };
+  ART.fenceh = function (b) {
+    var t = th(b), n = b.w * 100, s = '', x;
+    s += rect(0, 58, n, 7, t.rail, 'rgba(0,0,0,.25)', 2) + rect(0, 74, n, 7, t.rail, 'rgba(0,0,0,.25)', 2);
+    for (x = 12; x < n; x += 40) s += poly((x - 6) + ',90 ' + (x - 6) + ',50 ' + x + ',44 ' + (x + 6) + ',50 ' + (x + 6) + ',90', t.post, 'rgba(0,0,0,.28)') + (b.th === 'winter' ? '<path d="M' + (x - 7) + ' 50q7 -9 14 0z" fill="#fff"/>' : '');
+    return T(b.x * 100, b.y * 100, '<ellipse cx="' + (n / 2) + '" cy="92" rx="' + (n / 2 - 6) + '" ry="4" fill="rgba(20,50,20,.22)"/>' + s);
+  };
+  ART.fencev = function (b) {
+    var t = th(b), n = b.h * 100, s = '', y;
+    s += rect(44, 8, 7, n - 18, t.rail, 'rgba(0,0,0,.25)', 2) + rect(62, 8, 7, n - 18, t.rail, 'rgba(0,0,0,.25)', 2);
+    for (y = 20; y < n - 6; y += 40) s += poly('36,' + (y + 14) + ' 36,' + (y - 12) + ' 56,' + (y - 18) + ' 76,' + (y - 12) + ' 76,' + (y + 14), t.post, 'rgba(0,0,0,.28)') + (b.th === 'winter' ? '<path d="M36 ' + (y - 12) + 'q20 -12 40 0z" fill="#fff"/>' : '');
+    return T(b.x * 100, b.y * 100, '<ellipse cx="56" cy="' + (n - 6) + '" rx="26" ry="5" fill="rgba(20,50,20,.22)"/>' + s);
+  };
+  ART.pmush = function (b) {
+    return T(b.x * 100, b.y * 100, shadow(50, 90, 22, 5, 'rgba(30,10,60,.3)') + rect(44, 62, 12, 28, '#F2E8FF', '', 5) + '<path d="M26 66 Q28 38 50 36 Q72 38 74 66Z" fill="#B48CFF"/>' + circ(40, 52, 4.4, '#fff') + circ(58, 48, 3.4, '#fff') + circ(62, 58, 3, '#fff') + '<g class="spk"><circle cx="50" cy="52" r="26" fill="url(#bg-glowP)" opacity=".5"/></g>');
+  };
+  ART.pgum = function (b) {
+    var c = ['#FF6B9A', '#6BC8FF', '#FFD23F', '#8BE28A', '#B48CFF'][(b.x + b.y * 2) % 5], s = '';
+    [[38, 56], [56, 50], [48, 68], [62, 66], [34, 70]].forEach(function (p) { s += circ(p[0], p[1], 1.6, '#fff'); });
+    return T(b.x * 100, b.y * 100, shadow(50, 88, 26, 6, 'rgba(160,60,100,.25)') + '<path d="M24 86 Q22 42 50 38 Q78 42 76 86Z" fill="' + c + '" stroke="rgba(0,0,0,.2)" stroke-width="1.6"/><path d="M30 60 Q34 46 46 44" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>' + s + '<ellipse cx="50" cy="86" rx="26" ry="5" fill="rgba(0,0,0,.15)"/>');
+  };
+  ART.pcoral = function (b) {
+    var cs = ['#FF7A9A', '#FFB04A', '#B48CFF'], c = cs[(b.x + b.y) % 3];
+    return T(b.x * 100, b.y * 100, shadow(50, 90, 24, 5, 'rgba(10,50,100,.35)') + '<g class="sway b" style="transform-origin:50px 90px"><path d="M50 90 V44 M50 66 l-14 -16 M50 60 l16 -18 M50 76 l-18 -8" stroke="' + c + '" stroke-width="9" stroke-linecap="round" fill="none"/>' + circ(50, 42, 6, c) + circ(34, 48, 5, c) + circ(66, 40, 5, c) + circ(31, 66, 5, c) + '</g>');
+  };
+  ART.pcloud = function (b) {
+    return T(b.x * 100, b.y * 100, E0(50, 82, 30, 5) + circ(34, 62, 14, '#fff', '#CFE0F2') + circ(52, 52, 18, '#fff', '#CFE0F2') + circ(68, 62, 14, '#fff', '#CFE0F2') + '<ellipse cx="50" cy="68" rx="28" ry="9" fill="#fff"/>');
+  };
+  function E0(cx, cy, rx, ry) { return '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="rgba(120,150,200,.25)"/>'; }
+
+  var DEC_CACHE = {};
+  function decorSvg(z, lv) {
+    var D = root.EWTGardenData, key = z.id + ':' + lv; if (!D || !z.decor || !lv) return '';
+    if (DEC_CACHE[key]) return DEC_CACHE[key];
+    var ld = D.landOf(lv), blocks = z.decor.filter(function (d) { return d.L <= lv; }).sort(function (a, b) { return (a.y + a.h) - (b.y + b.h) || a.x - b.x; }), s = '';
+    if (!blocks.length) return (DEC_CACHE[key] = '');
+    blocks.forEach(function (d) { if (ART[d.k]) s += API.lit(ART[d.k](d), 'bvM'); });
+    return (DEC_CACHE[key] = API.uniq('<svg class="gd-zdec" viewBox="0 0 ' + (ld.c * 100) + ' ' + (ld.r * 100) + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + API.DEFS + '</defs>' + s + '</svg>'));
+  }
+  API.decorSvg = decorSvg;
 })(typeof window !== 'undefined' ? window : this);

@@ -94,6 +94,7 @@
 .gd-lawn::before { content: ""; position: absolute; inset: 0; border-radius: 15px; pointer-events: none; box-shadow: inset 0 0 14px rgba(40,20,0,.35); z-index: 3; }
 .gd-zwrap { position: relative; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); border-radius: 8px; overflow: hidden; }
 .gd-zsvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.gd-zdec { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
 .gd-zscn { position: absolute; left: 0; top: 0; width: calc(var(--ts) * 7); height: calc(var(--ts) * 5); display: block; pointer-events: none; }
 .gd-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols), var(--ts)); grid-auto-rows: var(--ts); }
 .gt { position: relative; cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -371,10 +372,11 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=9"></script>
-<script src="js/garden-art.js?v=6"></script>
-<script src="js/garden-world.js?v=8"></script>
-<script src="js/garden-world2.js?v=1"></script>
+<script src="js/garden-data.js?v=10"></script>
+<script src="js/garden-art.js?v=7"></script>
+<script src="js/garden-art2.js?v=1"></script>
+<script src="js/garden-world.js?v=9"></script>
+<script src="js/garden-world2.js?v=2"></script>
 <script>
 (function () {
 'use strict';
@@ -458,7 +460,7 @@ function cellsHtml(z, ts, mini) {
   var h = '', c, r, gi, t, it, alt, inner, cls, now = NOW(), blocked, d = zdim(z), tc;
   for (tc = 0; tc < d.c * d.r; tc++) {
     r = Math.floor(tc / d.c); c = tc % d.c;
-    gi = z.i * PER + r * MAXC + c; blocked = (r < BASER && c < BASEC) ? z.mask[r * BASEC + c] : 0; t = S.tiles[gi]; it = t && D.BY[t.k]; inner = ''; alt = ((r + c) % 2) ? ' alt' : ''; cls = 'gt' + alt + (blocked ? ' blk' : '');
+    gi = z.i * PER + r * MAXC + c; blocked = D.isBlocked(gi); t = S.tiles[gi]; it = t && D.BY[t.k]; inner = ''; alt = ((r + c) % 2) ? ' alt' : ''; cls = 'gt' + alt + (blocked ? ' blk' : '');
     if (t && t.ref != null) cls += ' cov';
     if (it && it.kind === 'big') { cls += ' bigc'; inner = '<div class="bigart" style="width:calc(var(--ts) * ' + it.w + ');height:calc(var(--ts) * ' + it.h + ')">' + W.bigSvg(it.id) + '</div>'; }
     else if (it) {
@@ -473,7 +475,7 @@ function cellsHtml(z, ts, mini) {
   }
   return h;
 }
-function planted(z) { var n = 0, c, r, d = zdim(z); for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) if (!((r < BASER && c < BASEC) && z.mask[r * BASEC + c]) && S.tiles[z.i * PER + r * MAXC + c]) n++; return n; }
+function planted(z) { var n = 0, c, r, d = zdim(z); for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) if (!D.isBlocked(z.i * PER + r * MAXC + c) && S.tiles[z.i * PER + r * MAXC + c]) n++; return n; }
 function layout(z) {
   var d = zdim(z), pl = $('play'), W0 = pl.clientWidth, Hh = pl.clientHeight - 34, fit = Math.floor(Math.min((W0 - 44) / d.c, (Hh - 44) / d.r)), mn = innerWidth <= 640 ? 26 : 22;
   var ts = Math.max(mn, Math.min(100, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
@@ -484,10 +486,10 @@ function renderMap() {
   var tsW = Math.floor(((cw - 14 * (mc - 1)) / mc - 48) / BASEC), ts = Math.max(narrow ? 17 : 22, Math.min(40, tsW));
   m.style.setProperty('--mc', mc);
   m.innerHTML = ZORDER.map(function (z) {
-    var open = zoneUnlocked(z.id), pl = planted(z), canLv = z.lvl <= S.level, d = zdim(z), zts = Math.max(6, ts * Math.min(BASEC / d.c, BASER / d.r)), plots = z.plots + (d.cells - BASEC * BASER);
+    var open = zoneUnlocked(z.id), pl = planted(z), canLv = z.lvl <= S.level, d = zdim(z), zts = Math.max(6, ts * Math.min(BASEC / d.c, BASER / d.r)), plots = D.plotsOf(z, zlv(z));
     var lock = open ? '' : '<div class="lk">🔒 ' + (VISIT ? 'Chưa mở' : (canLv ? 'Mở khu: ' + z.cost + ' ' + COIN : 'Cần vườn cấp ' + z.lvl)) + '</div>';
     return '<button class="gd-zcard' + (open ? '' : ' lock') + '" data-zone="' + z.id + '" aria-label="' + esc(z.name) + '"><div class="zh">' + z.icon + ' ' + esc(z.name) + '</div>' +
-      '<div class="gd-lawn z-' + z.id + '" style="--ts:' + zts.toFixed(2) + 'px;--cols:' + d.c + ';--rows:' + d.r + '"><div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid">' + cellsHtml(z, zts, true) + '</div></div></div>' +
+      '<div class="gd-lawn z-' + z.id + '" style="--ts:' + zts.toFixed(2) + 'px;--cols:' + d.c + ';--rows:' + d.r + '"><div class="gd-zwrap">' + W.zoneSvg(z) + W.decorSvg(z, zlv(z)) + '<div class="gd-grid">' + cellsHtml(z, zts, true) + '</div></div></div>' +
       (open ? '<span class="zp">🌱 ' + pl + '/' + plots + ' ô đã trồng · ' + d.c + '×' + d.r + '</span>' : '') + '<div class="zf">' + esc(z.desc) + '</div>' + lock + '</button>';
   }).join('');
 }
@@ -495,7 +497,7 @@ function ensureLawn(z) {
   var lawn = $('lawn');
   var key = z.id + ':' + zlv(z);
   if (LAWNZ !== key) {
-    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
+    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + W.decorSvg(z, zlv(z)) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
     var dm = zdim(z); lawn.style.setProperty('--cols', dm.c); lawn.style.setProperty('--rows', dm.r);
   }
 }

@@ -46,6 +46,14 @@ module.exports = function (app, { db, requireAuth, now }) {
     else if ((r.v || 1) < 3) st.tiles = remapV2(st.tiles);
     if (st.tiles.length !== G.TOTAL) { const t = new Array(G.TOTAL).fill(null); st.tiles.forEach((x, i) => { if (i < t.length) t[i] = x; }); st.tiles = t; }
     st.zones = st.zones.filter((id) => G.ZBY[id]); if (st.zones.indexOf('cottage') < 0) st.zones.unshift('cottage');
+    // Cảnh phụ mới chiếm một số ô: đồ đã đặt trúng ô đó (nếu có) được dọn đi và hoàn xu
+    st.purged = 0; st.purgedAny = false;
+    for (let i = 0; i < st.tiles.length; i++) {
+      const t = st.tiles[i]; if (!t || !G.isBlocked(i)) continue;
+      const a = t.ref != null ? t.ref : i, at = st.tiles[a], it = at && G.BY[at.k]; st.purgedAny = true;
+      if (it && (it.kind === 'deco' || it.kind === 'ground' || it.kind === 'big') && it.cost > 0) st.purged += it.cost;
+      (it && it.kind === 'big' ? G.footprint(a, it, G.LAND.length - 1) || [a] : [a]).forEach((k) => { st.tiles[k] = null; }); st.tiles[i] = null;
+    }
     Object.keys(st.land).forEach((k) => { const n = Number(st.land[k]); if (!G.ZBY[k] || !Number.isInteger(n) || n < 1) delete st.land[k]; else st.land[k] = Math.min(n, G.LAND.length - 1); });
     return st;
   }
@@ -57,6 +65,7 @@ module.exports = function (app, { db, requireAuth, now }) {
       r = one('SELECT * FROM garden WHERE user_id=?', user.id);
     }
     const st = fromRow(r);
+    if (st.purgedAny) { if (st.purged > 0) addCoins(user.id, st.purged); st.purged = 0; st.purgedAny = false; save(st); }
     const today = vnDay();
     if (st.water_day !== today) { st.water = Math.max(st.water, G.RULES.waterFree); st.water_day = today; }
     if (st.yield_day !== today) { st.yield_day = today; st.yield_xu = 0; }

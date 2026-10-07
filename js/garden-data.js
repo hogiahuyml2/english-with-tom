@@ -63,13 +63,67 @@
     { id: 'clocktower', name: 'Tháp đồng hồ', kind: 'big', w: 1, h: 2, cost: 900, lvl: 6, b: 30 },
     { id: 'fountainbig', name: 'Đài phun lớn', kind: 'big', w: 2, h: 2, cost: 1100, lvl: 7, b: 36 },
     { id: 'glasshouse', name: 'Nhà kính lớn', kind: 'big', w: 3, h: 2, cost: 1500, lvl: 7, b: 44 },
-    { id: 'castle', name: 'Lâu đài mini', kind: 'big', w: 3, h: 2, cost: 3000, lvl: 9, b: 80 }
+    { id: 'castle', name: 'Lâu đài mini', kind: 'big', w: 3, h: 2, cost: 3000, lvl: 9, b: 80 },
+    // ── Món dành cho 9 khu mới (mở khoá theo cấp vườn tương ứng) ──
+    { id: 'carrot', name: 'Cà rốt', kind: 'plant', cost: 28, lvl: 3, grow: 50, y: 11, b: 3, c: '#FF8A2A', c2: '#2F8A4A' },
+    { id: 'tomato', name: 'Cà chua', kind: 'plant', cost: 45, lvl: 3, grow: 80, y: 14, b: 4, c: '#E5334B', c2: '#2F8A4A' },
+    { id: 'wheat', name: 'Lúa mì', kind: 'plant', cost: 60, lvl: 3, grow: 100, y: 17, b: 4, c: '#E8C45A', c2: '#B79A3C' },
+    { id: 'kiku', name: 'Cúc Nhật', kind: 'plant', cost: 150, lvl: 5, grow: 160, y: 26, b: 8, c: '#FFF4D6', c2: '#FFD23F' },
+    { id: 'camellia', name: 'Hoa trà', kind: 'plant', cost: 230, lvl: 5, grow: 200, y: 32, b: 9, c: '#E8456B', c2: '#FFD23F' },
+    { id: 'mum', name: 'Cúc thu', kind: 'plant', cost: 200, lvl: 6, grow: 190, y: 30, b: 9, c: '#F28A24', c2: '#FFD23F' },
+    { id: 'pumpkin', name: 'Bí ngô', kind: 'plant', cost: 160, lvl: 6, grow: 210, y: 34, b: 8, c: '#F28A24', c2: '#5E8F3A' },
+    { id: 'edelweiss', name: 'Hoa nhung tuyết', kind: 'plant', cost: 320, lvl: 7, grow: 240, y: 44, b: 11, c: '#F6F8F2', c2: '#E8D27A' },
+    { id: 'aloe', name: 'Lô hội', kind: 'plant', cost: 380, lvl: 8, grow: 260, y: 52, b: 12, c: '#4FA85A', c2: '#FF7AA8' },
+    { id: 'desertrose', name: 'Hồng sa mạc', kind: 'plant', cost: 450, lvl: 8, grow: 280, y: 56, b: 13, c: '#FF8FB0', c2: '#FFD6E2' },
+    { id: 'swirlflower', name: 'Hoa kẹo xoắn', kind: 'plant', cost: 520, lvl: 9, grow: 300, y: 66, b: 15, c: '#FF6B9A', c2: '#6BC8FF' },
+    { id: 'anemone', name: 'Hải quỳ', kind: 'plant', cost: 650, lvl: 10, grow: 320, y: 76, b: 17, c: '#FF7A9A', c2: '#B48CFF' },
+    { id: 'kelp', name: 'Tảo biển', kind: 'plant', cost: 580, lvl: 10, grow: 300, y: 70, b: 16, c: '#3FAE5A', c2: '#9BE8B0' },
+    { id: 'cloudflower', name: 'Hoa mây', kind: 'plant', cost: 820, lvl: 11, grow: 340, y: 90, b: 20, c: '#FFFFFF', c2: '#9FC8F5' },
+    { id: 'alienflower', name: 'Hoa ngoài hành tinh', kind: 'plant', cost: 1100, lvl: 12, grow: 380, y: 110, b: 24, c: '#8E5CF0', c2: '#6BE8FF' },
+    { id: 'glowshroom', name: 'Nấm phát sáng', kind: 'plant', cost: 1000, lvl: 12, grow: 360, y: 100, b: 22, c: '#38D6C4', c2: '#B8FFF0' },
+    { id: 'plum', name: 'Cây mai Nhật', kind: 'tree', cost: 380, lvl: 5, grow: 500, y: 66, b: 14, c: '#4CAF50', c2: '#2E8B57' },
+    { id: 'maple', name: 'Cây phong đỏ', kind: 'tree', cost: 420, lvl: 6, grow: 520, y: 70, b: 15, c: '#4CAF50', c2: '#2E8B57' },
+    { id: 'saguaro', name: 'Xương rồng khổng lồ', kind: 'tree', cost: 520, lvl: 8, grow: 560, y: 84, b: 17, c: '#4CAF50', c2: '#2E8B57' },
+    { id: 'candytree', name: 'Cây kẹo bông', kind: 'tree', cost: 700, lvl: 9, grow: 600, y: 98, b: 20, c: '#4CAF50', c2: '#2E8B57' },
+    { id: 'coraltree', name: 'Cây san hô', kind: 'tree', cost: 850, lvl: 10, grow: 620, y: 108, b: 22, c: '#4CAF50', c2: '#2E8B57' },
+    { id: 'crystaltree', name: 'Cây pha lê', kind: 'tree', cost: 1500, lvl: 12, grow: 700, y: 150, b: 30, c: '#4CAF50', c2: '#2E8B57' },
+    { id: 'scarecrow', name: 'Bù nhìn', kind: 'deco', cost: 60, lvl: 3, b: 4 },
+    { id: 'milkcan', name: 'Can sữa', kind: 'deco', cost: 40, lvl: 3, b: 3 },
+    { id: 'torii', name: 'Cổng torii', kind: 'deco', cost: 220, lvl: 5, b: 10 },
+    { id: 'stonelantern', name: 'Đèn đá Nhật', kind: 'deco', cost: 120, lvl: 5, b: 6 },
+    { id: 'pumpkinlamp', name: 'Đèn bí ngô', kind: 'deco', cost: 90, lvl: 6, b: 5 },
+    { id: 'leafheap', name: 'Đống lá thu', kind: 'deco', cost: 50, lvl: 6, b: 3 },
+    { id: 'campfired', name: 'Lửa trại', kind: 'deco', cost: 150, lvl: 7, b: 7 },
+    { id: 'snowflag', name: 'Cờ đỉnh núi', kind: 'deco', cost: 100, lvl: 7, b: 5 },
+    { id: 'urn', name: 'Bình cổ', kind: 'deco', cost: 180, lvl: 8, b: 8 },
+    { id: 'camelstatue', name: 'Tượng lạc đà', kind: 'deco', cost: 320, lvl: 8, b: 12 },
+    { id: 'candycane', name: 'Gậy kẹo', kind: 'deco', cost: 110, lvl: 9, b: 6 },
+    { id: 'lollipopd', name: 'Kẹo mút', kind: 'deco', cost: 90, lvl: 9, b: 5 },
+    { id: 'shelld', name: 'Vỏ sò', kind: 'deco', cost: 130, lvl: 10, b: 6 },
+    { id: 'anchor', name: 'Mỏ neo', kind: 'deco', cost: 200, lvl: 10, b: 9 },
+    { id: 'treasured', name: 'Rương kho báu', kind: 'deco', cost: 400, lvl: 10, b: 13 },
+    { id: 'cloudpuff', name: 'Mây bông', kind: 'deco', cost: 260, lvl: 11, b: 10 },
+    { id: 'rainbowd', name: 'Cầu vồng mini', kind: 'deco', cost: 420, lvl: 11, b: 14 },
+    { id: 'astronaut', name: 'Phi hành gia', kind: 'deco', cost: 600, lvl: 12, b: 18 },
+    { id: 'ufo', name: 'Đĩa bay', kind: 'deco', cost: 750, lvl: 12, b: 20 },
+    { id: 'satellited', name: 'Vệ tinh nhỏ', kind: 'deco', cost: 520, lvl: 12, b: 16 },
+    { id: 'barnbig', name: 'Chuồng nông trại', kind: 'big', w: 3, h: 2, cost: 900, lvl: 3, b: 34 },
+    { id: 'teahouse', name: 'Nhà trà Nhật', kind: 'big', w: 2, h: 2, cost: 1300, lvl: 5, b: 40 },
+    { id: 'treehouse', name: 'Nhà trên cây', kind: 'big', w: 2, h: 2, cost: 1700, lvl: 6, b: 46 },
+    { id: 'pyramidbig', name: 'Kim tự tháp', kind: 'big', w: 3, h: 2, cost: 2600, lvl: 8, b: 64 },
+    { id: 'gingerbread', name: 'Nhà bánh quy', kind: 'big', w: 2, h: 2, cost: 2200, lvl: 9, b: 54 },
+    { id: 'submarine', name: 'Tàu ngầm vàng', kind: 'big', w: 3, h: 1, cost: 2000, lvl: 10, b: 48 },
+    { id: 'cloudhouse', name: 'Nhà trên mây', kind: 'big', w: 2, h: 2, cost: 3200, lvl: 11, b: 66 },
+    { id: 'rocketbig', name: 'Tên lửa', kind: 'big', w: 1, h: 2, cost: 3800, lvl: 12, b: 72 },
+    { id: 'observatory', name: 'Đài thiên văn', kind: 'big', w: 2, h: 2, cost: 4500, lvl: 12, b: 82 }
   ];
   var PETS = [
     { id: 'bird', name: 'Chim sẻ', cost: 60, lvl: 1 }, { id: 'cat', name: 'Mèo con', cost: 80, lvl: 1 }, { id: 'dog', name: 'Cún con', cost: 100, lvl: 1 },
     { id: 'duck', name: 'Vịt vàng', cost: 80, lvl: 2 }, { id: 'bunny', name: 'Thỏ trắng', cost: 90, lvl: 2 }, { id: 'butterfly', name: 'Bướm', cost: 50, lvl: 2 },
     { id: 'turtle', name: 'Rùa nhỏ', cost: 120, lvl: 3 }, { id: 'hamster', name: 'Chuột hamster', cost: 90, lvl: 3 }, { id: 'fox', name: 'Cáo nhỏ', cost: 300, lvl: 5 },
-    { id: 'hedgehog', name: 'Nhím con', cost: 110, lvl: 3 }, { id: 'penguin', name: 'Cánh cụt', cost: 180, lvl: 4 }, { id: 'panda', name: 'Gấu trúc con', cost: 420, lvl: 6 }
+    { id: 'hedgehog', name: 'Nhím con', cost: 110, lvl: 3 }, { id: 'penguin', name: 'Cánh cụt', cost: 180, lvl: 4 }, { id: 'panda', name: 'Gấu trúc con', cost: 420, lvl: 6 },
+    { id: 'chick', name: 'Gà con', cost: 70, lvl: 3 }, { id: 'lamb', name: 'Cừu non', cost: 160, lvl: 3 }, { id: 'koifish', name: 'Cá koi', cost: 260, lvl: 5 }, { id: 'squirrel', name: 'Sóc nâu', cost: 300, lvl: 6 }, { id: 'goat', name: 'Dê núi', cost: 340, lvl: 7 },
+    { id: 'camel', name: 'Lạc đà con', cost: 460, lvl: 8 }, { id: 'seahorse', name: 'Cá ngựa', cost: 600, lvl: 10 }, { id: 'jellyfish', name: 'Sứa hồng', cost: 680, lvl: 10 }, { id: 'unicorn', name: 'Kỳ lân con', cost: 1000, lvl: 11 }, { id: 'alien', name: 'Chú ngoài hành tinh', cost: 1300, lvl: 12 }
   ];
   var LEVELS = [
     { n: 1, at: 0, title: 'Mầm non' }, { n: 2, at: 10, title: 'Vườn nhỏ xinh' }, { n: 3, at: 30, title: 'Vườn hoa' }, { n: 4, at: 60, title: 'Vườn rực rỡ' }, { n: 5, at: 100, title: 'Vườn mơ ước' },
@@ -113,6 +167,47 @@
     z.blocks.forEach(function (b) { if (b.nb) return; for (var yy = b.y; yy < b.y + b.h; yy++) for (var xx = b.x; xx < b.x + b.w; xx++) z.mask[yy * BASEC + xx] = 1; });
     z.plots = z.mask.filter(function (m) { return !m; }).length;   // số ô trống ở đất gốc
   });
+  // ── Cảnh phụ có sẵn rải trên vùng đất mở rộng (cây, bụi, đá, hàng rào, lối đi…): chiếm ô cố định, học sinh trang trí thêm vào các ô còn trống ──
+  // [kiểu, rộng, cao, trọng số]; kiểu nào cũng có hình vẽ trong garden-world(2).js
+  var DEC_BASE = [['ptree', 1, 1, 5], ['pbush', 1, 1, 4], ['prock', 1, 1, 3], ['pflower', 1, 1, 3], ['fenceh', 3, 1, 2], ['fencev', 1, 3, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]];
+  var DECOR_KINDS = {
+    farm: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['haystack', 1, 1, 4], ['scarecrow', 1, 1, 1], ['cropfield', 3, 2, 2], ['fenceh', 3, 1, 3], ['fencev', 1, 3, 2], ['pathh', 4, 1, 1], ['pflower', 1, 1, 2]],
+    winter: [['snowpine', 1, 1, 6], ['prock', 1, 1, 3], ['pbush', 1, 1, 3], ['snowman', 1, 1, 1], ['fenceh', 3, 1, 2], ['fencev', 1, 3, 1], ['pathh', 4, 1, 1, 1], ['pathv', 1, 3, 1, 1]],
+    beach: [['palm', 1, 1, 5], ['prock', 1, 1, 3], ['pbush', 1, 1, 2], ['fenceh', 3, 1, 2], ['plamp', 1, 1, 1], ['pflower', 1, 1, 2]],
+    magic: [['crystals', 1, 1, 4], ['pmush', 1, 1, 5], ['prock', 1, 1, 2], ['plamp', 1, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1]],
+    sakura: [['sakuratree', 2, 2, 2], ['lantern', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['fenceh', 3, 1, 2], ['fencev', 1, 3, 1], ['pathh', 4, 1, 2], ['pathv', 1, 3, 1]],
+    autumn: [['mapletree', 2, 2, 2], ['leafpile', 1, 1, 4], ['ptree', 1, 1, 3], ['pbush', 1, 1, 2], ['pumpkinpatch', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1]],
+    mountain: [['snowpine', 1, 1, 4], ['prock', 1, 1, 6], ['ptree', 1, 1, 2], ['flagpole', 1, 1, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pbush', 1, 1, 2]],
+    desert: [['cactus', 1, 1, 5], ['palm', 1, 1, 3], ['prock', 1, 1, 4], ['tent', 2, 2, 1], ['fenceh', 3, 1, 1], ['pbush', 1, 1, 2]],
+    candy: [['lollipop', 1, 1, 5], ['pgum', 1, 1, 5], ['cupcake', 2, 2, 1], ['fenceh', 3, 1, 2], ['fencev', 1, 3, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1]],
+    ocean: [['seaweed', 1, 2, 5], ['pcoral', 1, 1, 6], ['prock', 1, 1, 3], ['treasure', 1, 1, 1]],
+    sky: [['pcloud', 1, 1, 7], ['balloon', 1, 2, 1], ['fenceh', 3, 1, 1], ['fencev', 1, 3, 1]],
+    space: [['prock', 1, 1, 5], ['crystals', 1, 1, 3], ['satellite', 1, 1, 1], ['crater', 2, 2, 1], ['plamp', 1, 1, 2]]
+  };
+  function genDecor(z) {
+    var out = [], used = new Array(MAXC * MAXR).fill(0), kinds = DECOR_KINDS[z.id] || DEC_BASE, tw = 0, i, L, t, k, r;
+    kinds.forEach(function (x) { tw += x[3]; });
+    z.dmask = new Array(MAXC * MAXR).fill(0); z.decorUpTo = [0];
+    for (L = 1; L < LAND.length; L++) {
+      var pv = LAND[L - 1], cu = LAND[L], seed = z.i * 7919 + L * 131 + 17, rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+      var newCells = cu.cells - pv.cells, target = Math.round(newCells * 0.2), got = 0, tries = 0;
+      while (got < target && tries++ < 500) {
+        r = rnd() * tw; for (i = 0; i < kinds.length; i++) { r -= kinds[i][3]; if (r <= 0) break; } k = kinds[Math.min(i, kinds.length - 1)];
+        var w = k[1], h = k[2], x = Math.floor(rnd() * (cu.c - w + 1)), y = Math.floor(rnd() * (cu.r - h + 1)), ok = true, dx, dy;
+        if (!(x + w > pv.c || y + h > pv.r)) continue;                  // phải nằm hẳn trong phần đất mới ở mức này
+        for (dy = -1; dy <= h && ok; dy++) for (dx = -1; dx <= w && ok; dx++) { var cx = x + dx, cy = y + dy; if (cx < 0 || cy < 0 || cx >= MAXC || cy >= MAXR) continue; if (cx < BASEC && cy < BASER) { if (dx >= 0 && dx < w && dy >= 0 && dy < h) ok = false; continue; } if (used[cy * MAXC + cx]) ok = false; }
+        if (!ok) continue;
+        // không chiếm ô nào đã thuộc đất của mức trước (đã có thể có đồ của học sinh)
+        for (dy = 0; dy < h && ok; dy++) for (dx = 0; dx < w; dx++) if (x + dx < pv.c && y + dy < pv.r) ok = false;
+        if (!ok) continue;
+        for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) { used[(y + dy) * MAXC + x + dx] = 1; z.dmask[(y + dy) * MAXC + x + dx] = 1; }
+        var b = { k: k[0], x: x, y: y, w: w, h: h, L: L, th: z.id }; if (k[4]) b.snow = 1; out.push(b); got += w * h;
+      }
+      z.decorUpTo[L] = z.decorUpTo[L - 1] + got;
+    }
+    z.decor = out;
+  }
+  ZONES.forEach(genDecor);
   var ZBY = {}; ZONES.forEach(function (z) { ZBY[z.id] = z; });
   var TOTAL = ZONES.length * PER;
   // Kích thước đất hiện tại của một khu theo mức mở rộng
@@ -126,7 +221,9 @@
   }
   function zoneOfCell(i) { return ZONES[Math.floor(i / PER)] || null; }
   // Ô thuộc phong cảnh có sẵn (chỉ nằm trong vùng đất gốc 7×5)
-  function isBlocked(i) { var z = zoneOfCell(i); if (!z) return true; var c = i % PER, col = c % MAXC, row = Math.floor(c / MAXC); return col < BASEC && row < BASER && !!z.mask[row * BASEC + col]; }
+  function isBlocked(i) { var z = zoneOfCell(i); if (!z) return true; var c = i % PER, col = c % MAXC, row = Math.floor(c / MAXC); if (col < BASEC && row < BASER) return !!z.mask[row * BASEC + col]; return !!z.dmask[c]; }
+  // Số ô trống (xây được) của khu ở một mức đất
+  function plotsOf(z, lv) { var l = landOf(lv); return z.plots + (l.cells - BASEC * BASER) - (z.decorUpTo[Math.max(0, Math.min(LAND.length - 1, lv | 0))] || 0); }
   // Ô có nằm trong đất đã mở của khu không
   function inLand(i, lv) { var c = i % PER, col = c % MAXC, row = Math.floor(c / MAXC), ld = landOf(lv); return i >= 0 && i < TOTAL && col < ld.c && row < ld.r; }
   // Chuyển chỉ số ô của vườn đời cũ (mỗi khu 7×5 = 35 ô) sang chỉ số mới
@@ -164,6 +261,6 @@
     Object.keys(state.land || {}).forEach(function (k) { b += (state.land[k] | 0) * 2; }); return b;
   }
 
-  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
+  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);

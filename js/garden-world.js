@@ -443,6 +443,6 @@
   }
   function zoneSvg(z) { return uniq(build(z)); }
 
-  var API = { zoneSvg: zoneSvg, bigSvg: bigSvg, BIGSIZE: BIGSIZE, THEME: THEME, ART: ART, BIG: BIG };
+  var API = { DEFS: DEFS, uniq: uniq, lit: lit, zoneSvg: zoneSvg, bigSvg: bigSvg, BIGSIZE: BIGSIZE, THEME: THEME, ART: ART, BIG: BIG };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenWorld = API;
 })(typeof window !== 'undefined' ? window : this);
