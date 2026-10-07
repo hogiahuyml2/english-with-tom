@@ -47,6 +47,7 @@
 .wb-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 92vw; } .wb-toast.on { opacity: 1; }
 .wb-spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: wbspin .8s linear infinite; vertical-align: -2px; } @keyframes wbspin { to { transform: rotate(360deg); } }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -73,7 +74,7 @@
 <div class="wb-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -229,7 +230,7 @@ function sendIds(ids) {
 }
 
 /* ───── sự kiện ───── */
-document.addEventListener('click', function (e) {
+document.addEventListener('click', async function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); history.replaceState(null, '', '?status=' + TAB); load(); return; }
   if ((el = t.closest('[data-more]'))) { var id = el.getAttribute('data-more'), b = $('e' + id); b.classList.toggle('open'); el.textContent = b.classList.contains('open') ? '▲ Thu gọn' : '▼ Xem hết bài'; return; }
@@ -241,9 +242,9 @@ document.addEventListener('click', function (e) {
   }
   if ((el = t.closest('[data-save]'))) { var sid = Number(el.getAttribute('data-save')); saveEdits(sid).catch(function (x) { setMsg(sid, '⚠️ ' + esc(x.message), true); }); return; }
   if ((el = t.closest('[data-send1]'))) { sendIds([Number(el.getAttribute('data-send1'))]); return; }
-  if (t.id === 'btnAi') { var todo = selIds().filter(function (id) { var it = find(id); return it && it.status === 'pending'; }); if (!todo.length) return; if (todo.length > 30 && !confirm('Chấm nháp ' + todo.length + ' bài bằng AI? (có thể mất vài phút)')) return; runBatch(todo); return; }
+  if (t.id === 'btnAi') { var todo = selIds().filter(function (id) { var it = find(id); return it && it.status === 'pending'; }); if (!todo.length) return; if (todo.length > 30 && !(await ewtConfirm('Chấm nháp ' + todo.length + ' bài bằng AI? (có thể mất vài phút)'))) return; runBatch(todo); return; }
   if (t.id === 'btnStop') { RUN.cancel = true; t.disabled = true; t.textContent = 'Đang dừng…'; return; }
-  if (t.id === 'btnSend') { var dr = selIds().filter(function (id) { var it = find(id); return it && it.status === 'pending_review'; }); if (dr.length && confirm('Gửi kết quả chấm cho ' + dr.length + ' học sinh?\n(Học sinh sẽ nhận thông báo và xem được điểm.)')) sendIds(dr); return; }
+  if (t.id === 'btnSend') { var dr = selIds().filter(function (id) { var it = find(id); return it && it.status === 'pending_review'; }); if (dr.length && (await ewtConfirm('Gửi kết quả chấm cho ' + dr.length + ' học sinh?\n(Học sinh sẽ nhận thông báo và xem được điểm.)'))) sendIds(dr); return; }
 });
 document.addEventListener('change', function (e) {
   var t = e.target;

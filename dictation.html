@@ -47,13 +47,14 @@
 .dc-empty { text-align: center; color: var(--text-muted); padding: 40px 12px; }
 @media (max-width: 520px) { .dc-lv { grid-template-columns: repeat(2, 1fr); gap: 8px; } .dc-lvb { padding: 10px 11px; min-height: 0; } .dc-lvb b { font-size: 15px; } .dc-lvb small:nth-of-type(1) { display: none; } .dc-h1 { font-size: 22px; } .dc-stats { gap: 6px; } .dc-stat b { font-size: 19px; } .dc-play { width: 88px; height: 88px; } .dc-btn { flex-basis: 100%; } }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="dictation" data-guard="auth">
 <div id="site-header"></div>
 <main class="dc-wrap" id="root"><div class="dc-empty">⏳ Đang tải…</div></main>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -122,7 +123,7 @@ function show() {
   load(it); document.getElementById('play').onclick = playNow; document.getElementById('again').onclick = playNow;
   document.getElementById('slow').onclick = function () { rate = rate === 1 ? 0.7 : 1; this.classList.toggle('on', rate !== 1); if (audio) audio.playbackRate = rate; };
   document.getElementById('slow').classList.toggle('on', rate !== 1);
-  document.getElementById('quit').onclick = function () { if (confirm('Thoát khỏi lượt luyện này? Các câu đã làm vẫn được ghi nhận.')) finish(true); };
+  document.getElementById('quit').onclick = async function () { if ((await ewtConfirm('Thoát khỏi lượt luyện này? Các câu đã làm vẫn được ghi nhận.'))) finish(true); };
   if (listen) document.getElementById('next').onclick = function () { api('/api/dictation/check', { run: RUN.run, id: it.id }).catch(function () {}); step(); };
   else {
     var ta = document.getElementById('ta');
@@ -151,9 +152,9 @@ function check() {
   err.textContent = ''; document.getElementById('chk').disabled = true; document.getElementById('hint').disabled = true;
   api('/api/dictation/check', { run: RUN.run, id: it.id, text: text }).then(function (r) { RUN.res[it.id] = r; ta.disabled = true; result(r); }).catch(function (e) { document.getElementById('chk').disabled = false; document.getElementById('hint').disabled = false; err.textContent = e.message; });
 }
-function reveal() {
+async function reveal() {
   var it = RUN.items[I], err = document.getElementById('err');
-  if (!confirm('Xem phụ đề sẽ không được tính điểm cho câu này. Bạn vẫn muốn xem?')) return;
+  if (!(await ewtConfirm('Xem phụ đề sẽ không được tính điểm cho câu này. Bạn vẫn muốn xem?'))) return;
   api('/api/dictation/reveal', { run: RUN.run, id: it.id }).then(function (r) {
     var ta = document.getElementById('ta'); var typed = ta.value.trim();
     document.getElementById('hint').disabled = true;

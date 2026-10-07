@@ -347,6 +347,7 @@
     .page-break { page-break-before:always; }
   }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
@@ -619,7 +620,7 @@
 <div id="site-footer"></div>
 <script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="js/exam-guard.js?v=1"></script>
 <script>
 /* ── Utilities ── */
@@ -758,7 +759,7 @@ function handleDrop(e) {
   if (file && /^image\//.test(file.type)) processImageFile(file);
 }
 function processImageFile(file) {
-  if (file.size > 10 * 1024 * 1024) { alert('Ảnh quá lớn (tối đa 10MB).'); return; }
+  if (file.size > 10 * 1024 * 1024) { ewtAlert('Ảnh quá lớn (tối đa 10MB).'); return; }
   var reader = new FileReader();
   reader.onload = function(ev) {
     var dataUrl  = ev.target.result; // data:image/jpeg;base64,...
@@ -1041,10 +1042,10 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
   // Kiểm tra đầu vào theo tab đang active
   var text = '';
   if (G_activeTab === 'image') {
-    if (!G_studentImageData) { alert('Vui lòng chọn hoặc chụp ảnh bài làm trước khi nộp.'); return; }
+    if (!G_studentImageData) { ewtAlert('Vui lòng chọn hoặc chụp ảnh bài làm trước khi nộp.'); return; }
   } else {
     text = essayEditor ? essayEditor.getText().trim() : document.getElementById('essay').value.trim();
-    if (!window.G_forceSubmit && (!text || text.split(/\s+/).length < 15)) { alert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
+    if (!window.G_forceSubmit && (!text || text.split(/\s+/).length < 15)) { ewtAlert('Bài viết quá ngắn (tối thiểu 15 từ).'); return; }
     if (window.G_forceSubmit && !text) text = '(Học sinh chưa viết gì — bài tự động nộp do rời trang quá số lần cho phép)';
   }
   G_submittedEssay = text; // lưu lại để highlight sau khi chấm
@@ -1068,7 +1069,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
     });
     this.disabled = false;
     document.getElementById('loading').style.display = 'none';
-    if (r0.status===401){ alert('Bạn cần đăng nhập.'); location.href='login.html?next='+encodeURIComponent(location.href); return; }
+    if (r0.status===401){ (await ewtAlert('Bạn cần đăng nhập.')); location.href='login.html?next='+encodeURIComponent(location.href); return; }
     if (r0.ok){
       document.getElementById('result').style.display = 'block';
       document.getElementById('result').style.borderColor = 'var(--success)';
@@ -1080,7 +1081,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
       if (window.EWTGuard) EWTGuard.stop();
     } else {
       var err0 = await r0.json().catch(function(){return {};});
-      alert(err0.error || 'Nộp bài thất bại.');
+      ewtAlert(err0.error || 'Nộp bài thất bại.');
     }
     return;
   }
@@ -1109,16 +1110,16 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
     var msg = (fetchErr && fetchErr.name === 'AbortError')
       ? 'Chấm bài quá lâu (>2 phút). Hệ thống tự động có thể đang bận — vui lòng thử lại sau 30 giây.'
       : 'Mất kết nối khi nộp bài — kiểm tra mạng rồi thử lại.';
-    alert(msg);
+    ewtAlert(msg);
     return;
   }
   this.disabled = false;
   document.getElementById('loading').style.display = 'none';
 
-  if (r.status === 401) { alert('Bạn cần đăng nhập để nộp bài.'); location.href='login.html?next='+encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
+  if (r.status === 401) { (await ewtAlert('Bạn cần đăng nhập để nộp bài.')); location.href='login.html?next='+encodeURIComponent('practice-writing.html?id='+EXERCISE_ID); return; }
   data = await r.json().catch(function(){ return {}; });
-  if (!r.ok) { alert((data.error || 'Nộp bài thất bại.') + (data.detail ? '\n\nChi tiết: ' + data.detail : '')); return; }
-  if (data.pending) { alert('Bài đã được lưu và đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.'); location.href='dashboard.html'; return; }
+  if (!r.ok) { ewtAlert((data.error || 'Nộp bài thất bại.') + (data.detail ? '\n\nChi tiết: ' + data.detail : '')); return; }
+  if (data.pending) { (await ewtAlert('Bài đã được lưu và đang chờ chấm — giáo viên sẽ phản hồi sớm nhất có thể.')); location.href='dashboard.html'; return; }
 
   var res = data.result;
   G_submissionId = data.id || null;
@@ -1624,7 +1625,7 @@ function closeMessageModal() {
 
 async function sendTeacherMessage() {
   var msg = document.getElementById('msgText').value.trim();
-  if (!msg) { alert('Vui lòng nhập nội dung tin nhắn.'); return; }
+  if (!msg) { ewtAlert('Vui lòng nhập nội dung tin nhắn.'); return; }
   var btn = document.getElementById('msgSendBtn');
   btn.disabled = true; btn.textContent = 'Đang gửi...';
   try {
@@ -1636,12 +1637,12 @@ async function sendTeacherMessage() {
     var data = await r.json();
     if (r.ok) {
       closeMessageModal();
-      alert('✅ Đã gửi tin nhắn đến giáo viên. Giáo viên sẽ phản hồi sớm qua email!');
+      ewtAlert('✅ Đã gửi tin nhắn đến giáo viên. Giáo viên sẽ phản hồi sớm qua email!');
     } else {
-      alert(data.error || 'Gửi tin nhắn thất bại. Thử lại sau.');
+      ewtAlert(data.error || 'Gửi tin nhắn thất bại. Thử lại sau.');
     }
   } catch(e) {
-    alert('Gửi tin nhắn thất bại. Vui lòng thử lại.');
+    ewtAlert('Gửi tin nhắn thất bại. Vui lòng thử lại.');
   }
   btn.disabled = false; btn.textContent = 'Gửi tin nhắn';
 }

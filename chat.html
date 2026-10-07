@@ -197,6 +197,7 @@
 [data-theme="dark"] .chat-textarea { background:#16142a; border-color:#2d2a44; color:#e2dff5; }
 [data-theme="dark"] .msg-row.theirs .msg-bubble { background:#2d2a44; color:#e2dff5; border-color:#3d3a58; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="chat" data-guard="auth">
 <div id="site-header"></div>
@@ -252,7 +253,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="js/kid.js?v=3"></script>
 <script src="js/figures.js?v=3"></script>
 <script src="js/avatar.js?v=7"></script>
@@ -489,9 +490,9 @@ function sendRaw(content) {
   .then(function(d){
     ta.disabled = false;
     if (d.ok) { _lastMsgId = 0; loadThread(_activeUserId, false); }
-    else alert(d.error || 'Gửi thất bại.');
+    else ewtAlert(d.error || 'Gửi thất bại.');
   })
-  .catch(function(){ ta.disabled = false; alert('Không gửi được tin nhắn.'); });
+  .catch(function(){ ta.disabled = false; ewtAlert('Không gửi được tin nhắn.'); });
 }
 
 /* ===== HELPERS ===== */

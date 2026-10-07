@@ -1,3 +1,5 @@
+/* Hộp thoại hoà giao diện thay alert/confirm/prompt (nạp nếu trang chưa có) */
+if (!window.EWTDialog) { var _dl = document.createElement('script'); _dl.src = 'js/dialog.js?v=1'; document.head.appendChild(_dl); }
 /* English With Tom — header/footer dùng chung + tương tác nhẹ */
 
 /* ===== FAVICON — inject sớm để hiện ngay khi load ===== */
@@ -665,9 +667,9 @@ window.ewtInstallCard = function (mount) {
     }
     mount.className = 'inst'; mount.innerHTML = h;
     var go = document.getElementById('instGo'); if (go) go.onclick = function () { var p = window.ewtInstallPrompt; if (!p) return; p.prompt(); p.userChoice.then(function () { window.ewtInstallPrompt = null; render(); }); };
-    var cp = document.getElementById('instCopy'); if (cp) cp.onclick = function () {
+    var cp = document.getElementById('instCopy'); if (cp) cp.onclick = async function () {
       var url = location.origin + '/'; var done = function () { cp.textContent = '✅ Đã sao chép — hãy dán vào ' + (isIOS ? 'Safari' : 'Chrome'); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done).catch(function () { prompt('Sao chép liên kết này:', url); }); else prompt('Sao chép liên kết này:', url);
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done).catch(async function () { (await ewtPrompt('Sao chép liên kết này:', url)); }); else (await ewtPrompt('Sao chép liên kết này:', url));
     };
   }
   render();

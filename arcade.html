@@ -109,6 +109,7 @@
 @keyframes cfFall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
 .cf { position: fixed; top: -20px; z-index: 600; font-size: 22px; pointer-events: none; animation: cfFall 2.4s ease-in forwards; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="arcade" data-guard="auth">
 <div id="site-header"></div>
@@ -119,7 +120,7 @@
 <div class="ar-wrap" id="arRoot"><div class="ar-card">Đang tải...</div></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="js/vocab-conflict.js?v=1"></script>
 <script src="js/arcade-games.js?v=8"></script>
 <script>
@@ -222,10 +223,10 @@ function viewThemePick(gameId) {
 }
 function runNew(gameId, th) {
   stopCur(); var rp = readyPool(gameId, th);
-  if (!rp.ok) { alert('Chủ đề này chưa đủ từ để chơi. Hãy chọn chủ đề khác.'); return viewThemePick(gameId); }
+  if (!rp.ok) { ewtAlert('Chủ đề này chưa đủ từ để chơi. Hãy chọn chủ đề khác.'); return viewThemePick(gameId); }
   root.innerHTML = '<div class="ar-stage"><div class="ar-hud"><span>' + NEWG[gameId] + '<span class="ax-theme">' + th.ic + ' ' + esc(th.name) + '</span></span><span id="arHud"></span><button class="ar-btn ghost" id="arExit" style="padding:5px 12px;font-size:13px;">✕ Thoát</button></div>' + (rp.note ? '<div class="ar-note" style="margin:0 0 8px;">' + esc(rp.note) + '</div>' : '') + '<div id="arBox"></div></div>';
   var finished = false;
-  $('arExit').onclick = function () { if (!finished && !confirm('Thoát ván chơi? Kết quả chưa nộp sẽ không được tính.')) return; stopCur(); viewThemePick(gameId); };
+  $('arExit').onclick = async function () { if (!finished && !(await ewtConfirm('Thoát ván chơi? Kết quả chưa nộp sẽ không được tính.'))) return; stopCur(); viewThemePick(gameId); };
   var done = function (results, meta) { finished = true; stopCur(); submit(gameId, results, meta); };
   CUR = window.ARXGAMES[gameId](X, rp.list, $('arBox'), $('arHud'), done, { theme: th });
 }
@@ -264,11 +265,11 @@ function startGame(id) {
   if (id === 'wordle') return gameWordle();
   if (id === 'duel') return viewDuelLobby();
   var p = id === 'hangman' ? pool(4, 12) : pool();
-  if (p.length < 8) { alert('Cấp độ này chưa đủ từ để chơi (cần ít nhất 8 từ). Hãy chọn "Tất cả".'); return; }
+  if (p.length < 8) { ewtAlert('Cấp độ này chưa đủ từ để chơi (cần ít nhất 8 từ). Hãy chọn "Tất cả".'); return; }
   var title = { blaster: '🚀 Thiên thạch', frog: '🐸 Ếch nhảy sen', hangman: '👨‍🚀 Cứu phi hành gia' }[id];
   root.innerHTML = '<div class="ar-stage"><div class="ar-hud"><span>' + title + '</span><span id="arHud"></span><button class="ar-btn ghost" id="arExit" style="padding:5px 12px;font-size:13px;">✕ Thoát</button></div><div id="arBox"></div></div>';
   var finished = false;
-  $('arExit').onclick = function () { if (!finished && !confirm('Thoát ván chơi? Kết quả chưa nộp sẽ không được tính.')) return; stopCur(); viewHub(); };
+  $('arExit').onclick = async function () { if (!finished && !(await ewtConfirm('Thoát ván chơi? Kết quả chưa nộp sẽ không được tính.'))) return; stopCur(); viewHub(); };
   var done = function (results, meta) { finished = true; stopCur(); submit(id, results, meta); };
   CUR = { blaster: gameBlaster, frog: gameFrog, hangman: gameHangman }[id](p, $('arBox'), $('arHud'), done);
 }
@@ -699,10 +700,10 @@ function openDuel(code) {
   var D = { dead: false, poll: null, feed: null, tick: null, off: 0, phase: '', qs: null, qi: 0, lastAt: 0, locked: false, st: null, sent: false };
   CUR = { destroy: function () { D.dead = true; clearTimeout(D.poll); clearTimeout(D.feed); clearInterval(D.tick); } };
   root.innerHTML = '<div class="ar-stage"><div class="ar-hud"><span>⚔️ Phòng <b>' + esc(code) + '</b></span><span id="duHud"></span><button class="ar-btn ghost" id="duLeave" style="padding:5px 12px;font-size:13px;">✕ Rời</button></div><div id="duBody"><div class="ar-prompt">Đang vào phòng...</div></div></div>';
-  $('duLeave').onclick = function () {
+  $('duLeave').onclick = async function () {
     var st = D.st;
     if (st && st.status === 'waiting') { api('POST', '/api/duel/' + code + '/cancel').catch(function () {}); }
-    else if (st && st.status === 'playing' && !confirm('Rời trận khi đang đấu sẽ bị tính thua. Bạn chắc chứ?')) return;
+    else if (st && st.status === 'playing' && !(await ewtConfirm('Rời trận khi đang đấu sẽ bị tính thua. Bạn chắc chứ?'))) return;
     stopCur(); viewHub();
   };
   function body(h) { var b = $('duBody'); if (b) b.innerHTML = h; }

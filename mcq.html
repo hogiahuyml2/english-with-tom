@@ -53,6 +53,7 @@
 .rv { border-top: 1px solid var(--border); padding: 14px 0; } .rv .qt { font-weight: 700; margin-bottom: 6px; white-space: pre-wrap; } .rv .ex { background: var(--bg-soft); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; margin-top: 6px; }
 @media print { .tk-q, .tk-nav { display: none !important; } }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="assigned" data-guard="auth">
 <div id="site-header"></div>
@@ -63,7 +64,7 @@
 <div class="mq-wrap" id="mqRoot"><div class="mq-card">Đang tải...</div></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -237,8 +238,8 @@ function viewResult(id, info, res) {
     }
     root.innerHTML = h;
     var tg = $('rvToggle'); if (tg) tg.onclick = function () { var b = $('rvBox'), hid = b.style.display === 'none'; b.style.display = hid ? '' : 'none'; tg.textContent = hid ? '🙈 Ẩn' : '👁 Hiện'; };
-    var sr = $('scRefresh'); if (sr) sr.onclick = function () { api('GET', '/api/mcq/attempt/' + r.attemptId).then(show).catch(function (e) { alert(e.message); }); };
-    var rf = $('rvRefresh'); if (rf) rf.onclick = function () { api('GET', '/api/mcq/attempt/' + r.attemptId).then(show).catch(function (e) { alert(e.message); }); };
+    var sr = $('scRefresh'); if (sr) sr.onclick = function () { api('GET', '/api/mcq/attempt/' + r.attemptId).then(show).catch(function (e) { ewtAlert(e.message); }); };
+    var rf = $('rvRefresh'); if (rf) rf.onclick = function () { api('GET', '/api/mcq/attempt/' + r.attemptId).then(show).catch(function (e) { ewtAlert(e.message); }); };
   };
   if (res) return show(res);
   if (info.result) return show(info.result);
@@ -353,8 +354,8 @@ function viewTeacherList() {
         '<div style="display:flex;gap:10px;flex-wrap:wrap;">' + [['showScore', 'Điểm', 'show_score'], ['reveal', 'Đáp án', 'reveal'], ['showExp', 'Giải thích', 'show_exp']].map(function (f) { return '<label class="mq-sub" style="display:flex;gap:6px;align-items:center;" title="Học sinh chỉ thấy khi bật">' + f[1] + ' <button class="mq-sw' + (t[f[0]] ? ' on' : '') + '" data-rv="' + t.id + '" data-f="' + f[2] + '" aria-label="' + f[1] + '"></button></label>'; }).join('') + '</div>' +
         '<a class="mq-btn sm" style="text-decoration:none;" href="mcq.html?id=' + t.id + '&tab=results">📊 Kết quả</a><button class="mq-btn sm ghost" data-del="' + t.id + '">🗑</button></div>';
     }).join('');
-    Array.prototype.forEach.call($('mqTab').querySelectorAll('[data-rv]'), function (b) { b.onclick = function () { var on = !b.classList.contains('on'); var pb = {}; pb[b.getAttribute('data-f')] = on; api('PATCH', '/api/mcq/' + b.getAttribute('data-rv'), pb).then(function () { b.classList.toggle('on', on); }).catch(function (e) { alert(e.message); }); }; });
-    Array.prototype.forEach.call($('mqTab').querySelectorAll('[data-del]'), function (b) { b.onclick = function () { if (!confirm('Xoá đề này và toàn bộ bài làm của học sinh?')) return; api('DELETE', '/api/mcq/' + b.getAttribute('data-del')).then(viewTeacherList).catch(function (e) { alert(e.message); }); }; });
+    Array.prototype.forEach.call($('mqTab').querySelectorAll('[data-rv]'), function (b) { b.onclick = function () { var on = !b.classList.contains('on'); var pb = {}; pb[b.getAttribute('data-f')] = on; api('PATCH', '/api/mcq/' + b.getAttribute('data-rv'), pb).then(function () { b.classList.toggle('on', on); }).catch(function (e) { ewtAlert(e.message); }); }; });
+    Array.prototype.forEach.call($('mqTab').querySelectorAll('[data-del]'), function (b) { b.onclick = async function () { if (!(await ewtConfirm('Xoá đề này và toàn bộ bài làm của học sinh?'))) return; api('DELETE', '/api/mcq/' + b.getAttribute('data-del')).then(viewTeacherList).catch(function (e) { ewtAlert(e.message); }); }; });
   }).catch(function (e) { $('mqTab').innerHTML = '<div class="mq-msg err">' + esc(e.message) + '</div>'; });
 }
 
@@ -373,15 +374,15 @@ function viewResults(id) {
     h += '<div class="mq-card"><div class="mq-title">🛠 Sửa đáp án đúng <span class="mq-sub">(nếu phát hiện sai — hệ thống tự chấm lại tất cả bài đã nộp)</span></div><button class="mq-btn ghost" id="rsFix">Mở danh sách câu hỏi</button><div id="rsFixBox"></div></div>';
     h += '<div class="mq-card mq-form"><div class="mq-title">➕ Giao thêm cho học sinh khác</div>' + stuPicker('aStu') + '<button class="mq-btn" id="aGo" style="margin-top:10px;">📨 Giao thêm</button><div id="aMsg"></div></div><div id="rsDetail"></div>';
     root.innerHTML = h; bindPicker('aStu');
-    Array.prototype.forEach.call(root.querySelectorAll('[data-rsf]'), function (b) { b.onclick = function () { var on = !b.classList.contains('on'), pb = {}; pb[b.getAttribute('data-rsf')] = on; api('PATCH', '/api/mcq/' + id, pb).then(function () { b.classList.toggle('on', on); }).catch(function (e) { alert(e.message); }); }; });
-    Array.prototype.forEach.call(root.querySelectorAll('[data-reset]'), function (b) { b.onclick = function () { if (!confirm('Huỷ bài làm hiện tại của học sinh này để họ làm lại từ đầu?')) return; api('POST', '/api/mcq/' + id + '/reset', { user_id: +b.getAttribute('data-reset') }).then(function () { viewResults(id); }).catch(function (e) { alert(e.message); }); }; });
-    Array.prototype.forEach.call(root.querySelectorAll('[data-view]'), function (b) { b.onclick = function () { api('GET', '/api/mcq/' + id + '/attempt/' + b.getAttribute('data-view')).then(function (d) { $('rsDetail').innerHTML = '<div class="mq-card"><div class="mq-title">👁 Bài làm của ' + esc(d.student.name) + ' — ' + d.score + '/' + d.total + (d.leaveLog.length ? ' <span class="mq-badge w">rời trang ' + d.leaveLog.length + ' lần</span>' : '') + '</div>' + (d.leaveLog.length ? '<div class="mq-sub" style="margin-bottom:8px;">' + d.leaveLog.map(function (l) { return fmtDl(new Date(l.at).toISOString()) + ' (' + (l.kind === 'blur' ? 'mất focus' : 'chuyển tab') + (l.away ? ', ' + fmtDur(l.away) : '') + ')'; }).join(' · ') + '</div>' : '') + reviewHtml(d.review) + '</div>'; $('rsDetail').scrollIntoView({ behavior: 'smooth' }); }).catch(function (e) { alert(e.message); }); }; });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-rsf]'), function (b) { b.onclick = function () { var on = !b.classList.contains('on'), pb = {}; pb[b.getAttribute('data-rsf')] = on; api('PATCH', '/api/mcq/' + id, pb).then(function () { b.classList.toggle('on', on); }).catch(function (e) { ewtAlert(e.message); }); }; });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-reset]'), function (b) { b.onclick = async function () { if (!(await ewtConfirm('Huỷ bài làm hiện tại của học sinh này để họ làm lại từ đầu?'))) return; api('POST', '/api/mcq/' + id + '/reset', { user_id: +b.getAttribute('data-reset') }).then(function () { viewResults(id); }).catch(function (e) { ewtAlert(e.message); }); }; });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-view]'), function (b) { b.onclick = function () { api('GET', '/api/mcq/' + id + '/attempt/' + b.getAttribute('data-view')).then(function (d) { $('rsDetail').innerHTML = '<div class="mq-card"><div class="mq-title">👁 Bài làm của ' + esc(d.student.name) + ' — ' + d.score + '/' + d.total + (d.leaveLog.length ? ' <span class="mq-badge w">rời trang ' + d.leaveLog.length + ' lần</span>' : '') + '</div>' + (d.leaveLog.length ? '<div class="mq-sub" style="margin-bottom:8px;">' + d.leaveLog.map(function (l) { return fmtDl(new Date(l.at).toISOString()) + ' (' + (l.kind === 'blur' ? 'mất focus' : 'chuyển tab') + (l.away ? ', ' + fmtDur(l.away) : '') + ')'; }).join(' · ') + '</div>' : '') + reviewHtml(d.review) + '</div>'; $('rsDetail').scrollIntoView({ behavior: 'smooth' }); }).catch(function (e) { ewtAlert(e.message); }); }; });
     $('aGo').onclick = function () { var ids = picked('aStu'); if (!ids.length) { msg('aMsg', 'err', 'Hãy chọn ít nhất một học sinh.'); return; } api('POST', '/api/mcq/' + id + '/assign', { user_ids: ids }).then(function (x) { msg('aMsg', 'ok', '✅ Đã giao thêm cho ' + x.added + ' học sinh' + (x.already ? ' (' + x.already + ' bạn đã có)' : '') + '.'); setTimeout(function () { viewResults(id); }, 1400); }).catch(function (e) { msg('aMsg', 'err', esc(e.message)); }); };
     $('rsFix').onclick = function () {
       api('GET', '/api/mcq/' + id + '/full').then(function (f) {
         $('rsFixBox').innerHTML = '<div style="margin-top:10px;">' + f.questions.map(function (q, i) { return '<div class="mq-q"><div class="mq-sub">Câu ' + (i + 1) + '</div><div style="font-weight:600;white-space:pre-wrap;">' + esc(q.q) + '</div>' + q.opts.map(function (o, k) { return '<label class="opt" style="cursor:pointer;"><input type="radio" name="fx' + i + '" data-i="' + i + '" data-k="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b> ' + esc(o) + '</label>'; }).join('') + '</div>'; }).join('') + '</div><div id="fxMsg"></div>';
         Array.prototype.forEach.call($('rsFixBox').querySelectorAll('input[data-k]'), function (el) { el.onchange = function () { api('PATCH', '/api/mcq/' + id, { fix: [{ i: +el.getAttribute('data-i'), ans: +el.getAttribute('data-k') }] }).then(function (x) { msg('fxMsg', 'ok', '✅ Đã lưu đáp án mới' + (x.regraded ? ' và chấm lại ' + x.regraded + ' bài đã nộp' : '') + '.'); }).catch(function (e) { msg('fxMsg', 'err', esc(e.message)); }); }; });
-      }).catch(function (e) { alert(e.message); });
+      }).catch(function (e) { ewtAlert(e.message); });
     };
   }).catch(function (e) { root.innerHTML = '<div class="mq-card"><div class="mq-msg err">' + esc(e.message) + '</div></div>'; });
 }

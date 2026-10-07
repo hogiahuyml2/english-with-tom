@@ -36,6 +36,7 @@
 .pa-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .bad td{background:rgba(239,68,68,.06)}
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -46,7 +47,7 @@
 <div class="pa-wrap" id="paRoot"><div class="pa-card">Đang tải...</div></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -92,7 +93,7 @@ function renderResults() {
   $('fq').oninput = function () { FILT.q = this.value; var p = this.selectionStart; renderResults(); var n = $('fq'); n.focus(); n.setSelectionRange(p, p); };
   $('flv').onchange = function () { FILT.lv = this.value; renderResults(); }; $('fst').onchange = function () { FILT.st = this.value; renderResults(); };
   Array.prototype.forEach.call(root.querySelectorAll('[data-d]'), function (b) { b.onclick = function () { openAttempt(Number(b.getAttribute('data-d'))); }; });
-  Array.prototype.forEach.call(root.querySelectorAll('[data-v]'), function (b) { b.onclick = function () { if (!b.getAttribute('data-u') && !confirm('Vô hiệu lượt làm bài này? (học sinh có thể làm lại ngay; bài không tính vào thống kê)')) return; api('POST', '/api/placement/admin/attempt/' + b.getAttribute('data-v') + '/void', { undo: !!b.getAttribute('data-u') }).then(load); }; });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-v]'), function (b) { b.onclick = async function () { if (!b.getAttribute('data-u') && !(await ewtConfirm('Vô hiệu lượt làm bài này? (học sinh có thể làm lại ngay; bài không tính vào thống kê)'))) return; api('POST', '/api/placement/admin/attempt/' + b.getAttribute('data-v') + '/void', { undo: !!b.getAttribute('data-u') }).then(load); }; });
 }
 function modal(html) { var ov = document.createElement('div'); ov.className = 'pa-ov'; ov.innerHTML = '<div>' + html + '</div>'; ov.addEventListener('mousedown', function (e) { if (e.target === ov) ov.remove(); }); document.body.appendChild(ov); return ov; }
 function openAttempt(id) {
@@ -113,7 +114,7 @@ function openAttempt(id) {
     ov.querySelector('#onlyWrong').onchange = function () { Array.prototype.forEach.call(ov.querySelectorAll('#dtbl tr[data-ok]'), function (tr) { tr.style.display = this.checked && tr.getAttribute('data-ok') === '1' ? 'none' : ''; }.bind(this)); };
     $('wsave').onclick = function () { var l = $('wl').value; if (!l) { $('wmsg').innerHTML = '<div class="pa-msg err">Hãy chọn bậc.</div>'; return; } api('POST', '/api/placement/admin/attempt/' + id + '/writing', { level: l, note: $('wn').value }).then(function () { $('wmsg').innerHTML = '<div class="pa-msg ok">Đã lưu — kết quả tổng của học sinh được cập nhật.</div>'; load(); }).catch(function (e) { $('wmsg').innerHTML = '<div class="pa-msg err">' + esc(e.message) + '</div>'; }); };
     $('wre').onclick = function () { api('POST', '/api/placement/admin/attempt/' + id + '/regrade', {}).then(function () { $('wmsg').innerHTML = '<div class="pa-msg ok">Đã gửi chấm lại — tải lại sau ít giây để xem.</div>'; setTimeout(load, 4000); }).catch(function (e) { $('wmsg').innerHTML = '<div class="pa-msg err">' + esc(e.message) + '</div>'; }); };
-  }).catch(function (e) { alert(e.message); });
+  }).catch(function (e) { ewtAlert(e.message); });
 }
 
 // ───────── Ngân hàng đề ─────────
@@ -162,7 +163,7 @@ function openItem(id) {
       api('POST', '/api/placement/admin/bank/' + id, body).then(function () { $('imsg').innerHTML = '<div class="pa-msg ok">Đã lưu.</div>'; load(); }).catch(function (e) { $('imsg').innerHTML = '<div class="pa-msg err">' + esc(e.message) + '</div>'; });
     };
     $('ireset').onclick = function () { api('POST', '/api/placement/admin/bank/' + id, { key: null, lv: d.base.lv }).then(function () { ov.remove(); load(); }); };
-  }).catch(function (e) { alert(e.message); });
+  }).catch(function (e) { ewtAlert(e.message); });
 }
 
 // ───────── Giao bài ─────────
@@ -172,9 +173,9 @@ function renderAssign() {
     '<label style="display:block;margin:10px 0"><input type="checkbox" id="aAll"> Gửi cho TẤT CẢ học sinh</label><button class="pa-btn" id="aSend">📨 Gửi lời mời</button><div id="aMsg"></div></div>';
   window.ewtImportKit($('aKit'), { template: 'students', target: 'aEm', unit: ' email', append: true });
   api('GET', '/api/groups').then(function (r) { $('aGr').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label style="display:block;padding:3px 0"><input type="checkbox" class="aG" value="' + g.id + '"> ' + esc(g.name) + ' <span style="color:var(--text-muted);font-size:12px">(' + g.member_count + ' HS)</span></label>'; }).join('') : '<span style="color:var(--text-muted)">Chưa có lớp.</span>'; }).catch(function () { $('aGr').textContent = 'Không tải được lớp.'; });
-  $('aSend').onclick = function () {
+  $('aSend').onclick = async function () {
     var body = { group_ids: Array.prototype.map.call(document.querySelectorAll('.aG:checked'), function (c) { return +c.value; }), emails: $('aEm').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean), all_students: $('aAll').checked };
-    if (body.all_students && !confirm('Gửi thông báo cho TẤT CẢ học sinh?')) return;
+    if (body.all_students && !(await ewtConfirm('Gửi thông báo cho TẤT CẢ học sinh?'))) return;
     api('POST', '/api/placement/admin/assign', body).then(function (r) { $('aMsg').innerHTML = '<div class="pa-msg ok">Đã gửi cho ' + r.count + ' học sinh.</div>'; }).catch(function (e) { $('aMsg').innerHTML = '<div class="pa-msg err">' + esc(e.message) + '</div>'; });
   };
 }

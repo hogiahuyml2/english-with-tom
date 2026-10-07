@@ -65,6 +65,7 @@
 .result-row.bad { background:#fee2e2; color:#991b1b; }
 .result-row .ri { flex-shrink:0; font-size:16px; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="practice" data-guard="auth">
 <div id="site-header"></div>
@@ -146,7 +147,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════
 //  DỮ LIỆU — 5 chủ đề × 3 cấp độ × 20 câu
@@ -1182,7 +1183,7 @@ function resetChips()    { if (state.checked) return; state.picked=[]; redraw();
 //  CHECK ANSWER
 // ═══════════════════════════════════════════════════════════════
 function checkAnswer() {
-  if (!state.picked.length){ alert('Bạn chưa xếp từ nào vào câu!'); return; }
+  if (!state.picked.length){ ewtAlert('Bạn chưa xếp từ nào vào câu!'); return; }
   state.checked = true;
 
   var userWords    = state.picked.map(function(si){ return state.shuffledWords[si]; });

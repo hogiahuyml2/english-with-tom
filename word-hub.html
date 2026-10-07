@@ -237,6 +237,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
 .wh-how p, .wh-how li { font-size: 13.5px; color: var(--text-muted); line-height: 1.7; margin-top: 6px; }
 .wh-how ul { margin-left: 20px; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="word-hub" data-guard="auth">
 <div id="site-header"></div>
@@ -335,7 +336,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="js/vocab-conflict.js?v=1"></script>
 <script>
 (function () {
@@ -935,8 +936,8 @@ function startMode(mode) {
   startPlay(mode, picked.map(function (w) { return makeQ(w, mode === 'type' ? 'type' : 'situation'); }));
 }
 
-$('wpExit').onclick = function () {
-  if (G && G.results.length) { if (!confirm('Thoát phiên học? Các câu bạn đã trả lời vẫn được lưu.')) return; endPlay(); }
+$('wpExit').onclick = async function () {
+  if (G && G.results.length) { if (!(await ewtConfirm('Thoát phiên học? Các câu bạn đã trả lời vẫn được lưu.'))) return; endPlay(); }
   else { stopPlay(); }
 };
 function stopPlay() { if (G && G.timer) clearInterval(G.timer); G = null; $('wpBoss').style.display = 'none'; $('whPlay').style.display = 'none'; $('whHub').style.display = 'block'; }
@@ -1024,9 +1025,9 @@ function renderTList() {
     rows.map(function (w) { return '<tr><td><b>' + esc(w.word) + '</b> <i style="color:var(--text-muted)">' + (w.kind === 'colloc' ? '🔗' : (w.kind === 'upgrade' ? '🚀 ← ' + esc(w.basic) : esc(w.pos))) + '</i></td><td>' + esc(w.vi) + '</td><td>' + esc(w.topic) + '</td><td><button class="wh-del" data-del="' + w.id + '" title="Xoá">🗑</button></td></tr>'; }).join('') + '</tbody></table></div>';
   Array.prototype.forEach.call(el.querySelectorAll('[data-l]'), function (b) { b.onclick = function () { el.setAttribute('data-lv', b.getAttribute('data-l')); renderTList(); }; });
   Array.prototype.forEach.call(el.querySelectorAll('[data-del]'), function (b) {
-    b.onclick = function () {
+    b.onclick = async function () {
       var w = S.byId[b.getAttribute('data-del')];
-      if (!confirm('Xoá từ "' + w.word + '"? Tiến độ học của học sinh với từ này cũng bị xoá.')) return;
+      if (!(await ewtConfirm('Xoá từ "' + w.word + '"? Tiến độ học của học sinh với từ này cũng bị xoá.'))) return;
       api('DELETE', '/api/words/' + w.id).then(function () { return reloadWords(); }).then(renderTList).catch(function (e) { toast(e.message); });
     };
   });
@@ -1191,7 +1192,7 @@ function loadDlgList() {
     $('dList').innerHTML = '<div class="wh-scroll"><table class="wh-table"><thead><tr><th>Cấp</th><th>Tên</th><th>Chỗ trống</th><th></th></tr></thead><tbody>' +
       r.dialogues.map(function (d) { return '<tr><td>' + d.level + '</td><td>' + esc(d.title) + '</td><td>' + d.blanks + '</td><td><button class="wh-del" data-deld="' + d.id + '">🗑</button></td></tr>'; }).join('') + '</tbody></table></div>';
     Array.prototype.forEach.call($('dList').querySelectorAll('[data-deld]'), function (b) {
-      b.onclick = function () { if (!confirm('Xoá hội thoại này?')) return; api('DELETE', '/api/word-dialogues/' + b.getAttribute('data-deld')).then(loadDlgList).catch(function (e) { toast(e.message); }); };
+      b.onclick = async function () { if (!(await ewtConfirm('Xoá hội thoại này?'))) return; api('DELETE', '/api/word-dialogues/' + b.getAttribute('data-deld')).then(loadDlgList).catch(function (e) { toast(e.message); }); };
     });
   }).catch(function (e) { $('dList').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; });
 }
@@ -1261,7 +1262,7 @@ function loadSetList() {
         '<table class="wh-table"><thead><tr><th>Học sinh</th><th>Đã thuộc</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
     }).join('');
     Array.prototype.forEach.call(el.querySelectorAll('[data-delset]'), function (b) {
-      b.onclick = function () { if (!confirm('Xoá bộ từ này? Học sinh sẽ không còn thấy nữa (tiến độ học từ vẫn giữ nguyên).')) return; api('DELETE', '/api/word-sets/' + b.getAttribute('data-delset')).then(loadSetList).catch(function (e) { toast(e.message); }); };
+      b.onclick = async function () { if (!(await ewtConfirm('Xoá bộ từ này? Học sinh sẽ không còn thấy nữa (tiến độ học từ vẫn giữ nguyên).'))) return; api('DELETE', '/api/word-sets/' + b.getAttribute('data-delset')).then(loadSetList).catch(function (e) { toast(e.message); }); };
     });
   }).catch(function (e) { $('sList').innerHTML = '<div class="wh-msg err">' + esc(e.message) + '</div>'; });
 }

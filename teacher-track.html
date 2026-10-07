@@ -45,6 +45,7 @@ table.tk tr:hover:not(.gh) td { background: var(--bg-soft); }
 .tk-hint { font-size: 12.5px; color: var(--text-muted); }
 @media (max-width: 700px) { .tk-fl { width: 100%; } .tk-chip { padding: 8px 13px; min-height: 36px; } .tk-btn.sm { padding: 8px 12px; min-height: 36px; } .tk-pre button { padding: 9px 12px; } }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -74,7 +75,7 @@ table.tk tr:hover:not(.gh) td { background: var(--bg-soft); }
 <div class="tk-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -216,9 +217,9 @@ document.addEventListener('change', function (e) {
 });
 var qt; document.addEventListener('input', function (e) { if (e.target.id === 'fq') { var v = e.target.value; clearTimeout(qt); qt = setTimeout(function () { F.q = v.trim(); PAGE = 1; renderCards(); renderTable(); renderFilters(); var f = $('fq'); f.focus(); try { f.setSelectionRange(f.value.length, f.value.length); } catch (x) {} }, 250); } });
 $('btnReload').onclick = function () { load().then(function () { toast('Đã làm mới'); }); };
-$('btnRemind').onclick = function () {
+$('btnRemind').onclick = async function () {
   var ids = Object.keys(SEL).filter(function (k) { return SEL[k]; }).map(Number); if (!ids.length) return;
-  if (!confirm('Gửi thông báo nhắc làm bài cho ' + ids.length + ' học sinh đã chọn?')) return;
+  if (!(await ewtConfirm('Gửi thông báo nhắc làm bài cho ' + ids.length + ' học sinh đã chọn?'))) return;
   fetch('/api/teacher/remind', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: ids }) }).then(function (r) { return r.json(); }).then(function (d) { SEL = {}; toast('Đã nhắc ' + (d.sent || 0) + ' học sinh' + (d.skipped ? ' (bỏ qua ' + d.skipped + ': đã nộp / vừa nhắc / chưa có tài khoản)' : '')); renderTable(); }).catch(function () { toast('Không gửi được'); });
 };
 $('btnCsv').onclick = function () {
@@ -258,7 +259,7 @@ function renderPresets() {
 function loadSaved() {
   return fetch('/api/me/filters?page=track', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : { filters: [] }; }).then(function (d) { SAVED = d.filters || []; renderPresets(); }).catch(function () {});
 }
-document.addEventListener('click', function (e) {
+document.addEventListener('click', async function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-pre]'))) {
     var id = el.getAttribute('data-pre'), p = BUILTIN.concat(SAVED).filter(function (x) { return String(x.id) === id; })[0]; if (!p) return;
@@ -266,11 +267,11 @@ document.addEventListener('click', function (e) {
   }
   if ((el = t.closest('[data-predel]'))) {
     var did = el.getAttribute('data-predel'), pr = SAVED.filter(function (x) { return String(x.id) === did; })[0];
-    if (!pr || !confirm('Xoá bộ lọc “' + pr.name + '”?')) return;
+    if (!pr || !(await ewtConfirm('Xoá bộ lọc “' + pr.name + '”?'))) return;
     fetch('/api/me/filters/' + did, { method: 'DELETE', credentials: 'same-origin' }).then(function () { SAVED = SAVED.filter(function (x) { return String(x.id) !== did; }); renderPresets(); toast('Đã xoá bộ lọc'); }); return;
   }
   if (t.id === 'btnSavePre') {
-    var name = prompt('Đặt tên cho bộ lọc này (ví dụ: “12A2 chưa nộp quá hạn”):', suggestName()); if (!name || !name.trim()) return;
+    var name = (await ewtPrompt('Đặt tên cho bộ lọc này (ví dụ: “12A2 chưa nộp quá hạn”):', suggestName())); if (!name || !name.trim()) return;
     fetch('/api/me/filters', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'track', name: name.trim(), data: snapshot() }) }).then(function (r) { return r.json(); }).then(function (d) {
       if (!d.ok) { toast(d.error || 'Không lưu được'); return; } toast(d.updated ? 'Đã cập nhật bộ lọc' : 'Đã lưu bộ lọc'); loadSaved();
     }).catch(function () { toast('Không lưu được'); });

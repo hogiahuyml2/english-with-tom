@@ -80,6 +80,7 @@
 .lv-fb { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6; } .lv-fb.ok { background: var(--success-soft); } .lv-fb.bad { background: rgba(239,68,68,.1); }
 .lv-score { text-align: center; padding: 10px 0; } .lv-score .big { font-size: 54px; font-weight: 700; } .lv-rev { text-align: left; font-size: 13.5px; } .lv-rev div { padding: 8px 0; border-top: 1px solid var(--border); line-height: 1.55; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="lesson-vocab" data-guard="auth">
 <div id="site-header"></div>
@@ -98,7 +99,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -391,7 +392,7 @@ function viewTeacherSets() {
         '<a class="lv-btn sm" style="text-decoration:none;" href="lesson-vocab.html?id=' + s.id + '&tab=results">📊 Kết quả</a><a class="lv-btn sm ghost" style="text-decoration:none;" href="lesson-vocab.html?id=' + s.id + '">👁 Xem như học sinh</a><button class="lv-btn sm ghost" data-del="' + s.id + '">🗑</button></div>';
     }).join('');
     Array.prototype.forEach.call($('lvTab').querySelectorAll('[data-del]'), function (b) {
-      b.onclick = function () { if (!confirm('Xoá bộ từ này và toàn bộ kết quả học sinh đã gửi?')) return; api('DELETE', '/api/lesson-vocab/' + b.getAttribute('data-del')).then(viewTeacherSets).catch(function (e) { toast(e.message); }); };
+      b.onclick = async function () { if (!(await ewtConfirm('Xoá bộ từ này và toàn bộ kết quả học sinh đã gửi?'))) return; api('DELETE', '/api/lesson-vocab/' + b.getAttribute('data-del')).then(viewTeacherSets).catch(function (e) { toast(e.message); }); };
     });
   }).catch(function (e) { $('lvTab').innerHTML = '<div class="lv-msg err">' + esc(e.message) + '</div>'; });
 }
@@ -547,8 +548,8 @@ function renderResult() {
     '<div class="lv-actions" style="justify-content:center;margin:10px 0;"><button class="lv-btn" id="lvSend">📨 Gửi kết quả cho giáo viên</button><button class="lv-btn line" id="lvAgain">↺ Luyện lại</button></div><div id="lvSendMsg"></div>' +
     '<div class="lv-rev"><b>Xem lại từng câu:</b>' + S.questions.map(function (q, i) { var ok = P.ans[i] === q.answer_index; return '<div>' + (ok ? '✅' : '❌') + ' <b>' + (i + 1) + '.</b> ' + esc(q.stem.replace('_____', '[' + q.options[q.answer_index] + ']')) + (ok ? '' : '<br><span class="lv-sub">Bạn chọn: ' + (P.ans[i] == null ? '(bỏ trống)' : esc(q.options[P.ans[i]])) + '</span>') + '</div>'; }).join('') + '</div></div>';
   $('lvAgain').onclick = startPractice;
-  $('lvSend').onclick = function () {
-    if (S.owner && !confirm('Bạn đang xem như giáo viên. Vẫn gửi kết quả thử?')) return;
+  $('lvSend').onclick = async function () {
+    if (S.owner && !(await ewtConfirm('Bạn đang xem như giáo viên. Vẫn gửi kết quả thử?'))) return;
     var b = $('lvSend'); b.disabled = true;
     api('POST', '/api/lesson-vocab/' + S.id + '/submit', { answers: S.questions.map(function (q, i) { return P.ans[i] == null ? null : P.ans[i]; }) }).then(function (r) {
       $('lvSendMsg').innerHTML = '<div class="lv-msg ok">✅ Đã gửi kết quả <b>' + r.score + '/' + r.total + '</b> cho giáo viên (lần gửi thứ ' + r.attempt + '). Bạn vẫn có thể luyện lại và gửi lần nữa.</div>'; b.textContent = '✓ Đã gửi'; b.disabled = true; setTimeout(function () { b.textContent = '📨 Gửi lại kết quả mới'; b.disabled = false; }, 400);

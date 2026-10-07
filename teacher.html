@@ -345,6 +345,7 @@
 .todo-row:hover { background:var(--bg-soft); } .todo-row .tx { flex:1; min-width:200px; } .todo-row .tx small { display:block; color:var(--text-faint); font-size:12px; }
 .todo-ok { text-align:center; padding:18px 8px; color:var(--success); font-weight:700; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -1105,7 +1106,7 @@
 <div id="site-footer"></div>
 <script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
   /* ===== TABS ===== */
   var TABS = ['create','groups','assign','grade','bank','students'];
@@ -1370,15 +1371,15 @@
   function toggleSelfJoin(on) {
     if (!_currentGroupId) return;
     fetch('/api/groups/'+_currentGroupId+'/selfjoin',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:!!on})})
-      .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { alert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupSelfJoin').checked = !on; } });
+      .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { ewtAlert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupSelfJoin').checked = !on; } });
   }
   function toggleApproval(on) {
     if (!_currentGroupId) return;
     fetch('/api/groups/'+_currentGroupId+'/approval',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:!!on})})
-      .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { alert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupNeedsApproval').checked = !on; } });
+      .then(r=>r.json()).then(function(d){ if (d.ok) loadGroups(); else { ewtAlert('Lỗi: '+(d.error||'Không đổi được')); document.getElementById('groupNeedsApproval').checked = !on; } });
   }
-  function quickCreateClasses() {
-    var t = prompt('Nhập tên các lớp, cách nhau bằng dấu ; (các lớp này mở cho học sinh tự chọn trong Hồ sơ, học sinh chọn xong sẽ chờ bạn duyệt — có thể tắt duyệt ở từng lớp):', '10A4 LC2627; 10A8 LC2627; 12A2 LC2627; 12A4 LC2627');
+  async function quickCreateClasses() {
+    var t = (await ewtPrompt('Nhập tên các lớp, cách nhau bằng dấu ; (các lớp này mở cho học sinh tự chọn trong Hồ sơ, học sinh chọn xong sẽ chờ bạn duyệt — có thể tắt duyệt ở từng lớp):', '10A4 LC2627; 10A8 LC2627; 12A2 LC2627; 12A4 LC2627'));
     if (!t) return;
     var names = t.split(/[;\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
     if (!names.length) return;
@@ -1392,37 +1393,37 @@
       });
     })(0);
   }
-  function openCreateGroup() {
-    var name = prompt('Tên lớp mới (VD: KET1, IELTS A, APTIS 1:1...):');
+  async function openCreateGroup() {
+    var name = (await ewtPrompt('Tên lớp mới (VD: KET1, IELTS A, APTIS 1:1...):'));
     if (!name || !name.trim()) return;
     fetch('/api/groups',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name.trim()})})
       .then(r=>r.json()).then(function(d){
         if (d.ok) { loadGroups(); loadGroupDetail(d.id); }
-        else alert('Lỗi: '+(d.error||'Không thể tạo lớp'));
+        else ewtAlert('Lỗi: '+(d.error||'Không thể tạo lớp'));
       });
   }
 
-  function renameCurrentGroup() {
+  async function renameCurrentGroup() {
     if (!_currentGroupId) return;
-    var name = prompt('Tên mới cho lớp:', _currentGroupName);
+    var name = (await ewtPrompt('Tên mới cho lớp:', _currentGroupName));
     if (!name || !name.trim() || name.trim()===_currentGroupName) return;
     fetch('/api/groups/'+_currentGroupId,{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name.trim()})})
       .then(r=>r.json()).then(function(d){
         if (d.ok) { loadGroups(); loadGroupDetail(_currentGroupId); }
-        else alert('Lỗi: '+(d.error||'Không thể đổi tên'));
+        else ewtAlert('Lỗi: '+(d.error||'Không thể đổi tên'));
       });
   }
 
-  function deleteCurrentGroup() {
+  async function deleteCurrentGroup() {
     if (!_currentGroupId) return;
-    if (!confirm('Xoá lớp "'+_currentGroupName+'"?\nThành viên và lịch sử giao bài sẽ vẫn được giữ lại.')) return;
+    if (!(await ewtConfirm('Xoá lớp "'+_currentGroupName+'"?\nThành viên và lịch sử giao bài sẽ vẫn được giữ lại.'))) return;
     fetch('/api/groups/'+_currentGroupId,{method:'DELETE',credentials:'same-origin'}).then(r=>r.json()).then(function(d){
       if (d.ok) {
         _currentGroupId = null; _currentGroupName = '';
         document.getElementById('groupDetail').style.display = 'none';
         document.getElementById('groupPlaceholder').style.display = 'flex';
         loadGroups();
-      } else alert('Lỗi: '+(d.error||'Không thể xoá lớp'));
+      } else ewtAlert('Lỗi: '+(d.error||'Không thể xoá lớp'));
     });
   }
 
@@ -1450,20 +1451,20 @@
       });
   }
 
-  function removeMember(memberId) {
+  async function removeMember(memberId) {
     if (!_currentGroupId) return;
-    if (!confirm('Xoá thành viên này khỏi lớp?')) return;
+    if (!(await ewtConfirm('Xoá thành viên này khỏi lớp?'))) return;
     fetch('/api/groups/'+_currentGroupId+'/members/'+memberId,{method:'DELETE',credentials:'same-origin'})
       .then(r=>r.json()).then(function(d){
         if (d.ok) { loadGroupDetail(_currentGroupId); loadGroups(); }
-        else alert('Lỗi: '+(d.error||'Không thể xoá'));
+        else ewtAlert('Lỗi: '+(d.error||'Không thể xoá'));
       });
   }
 
   function assignToGroup() {
     if (!_currentGroupId) return;
     var exId = document.getElementById('groupAssignExId').value;
-    if (!exId) { alert('Vui lòng chọn đề bài.'); return; }
+    if (!exId) { ewtAlert('Vui lòng chọn đề bài.'); return; }
     var deadline = document.getElementById('groupAssignDeadline').value;
     var note = document.getElementById('groupAssignNote').value.trim();
     var msgEl = document.getElementById('groupAssignMsg');
@@ -1520,18 +1521,18 @@
   }
   function memSelectAll(on) { document.querySelectorAll('.memChk').forEach(function(c){ c.checked = on; }); memSelect(); }
 
-  function bulkRemove() {
+  async function bulkRemove() {
     var ids = Object.keys(_selMembers).map(Number); if (!ids.length) return;
-    if (!confirm('Xoá '+ids.length+' thành viên đã chọn khỏi lớp “'+_currentGroupName+'”?\n(Bài đã nộp và điểm của các em vẫn được giữ nguyên.)')) return;
+    if (!(await ewtConfirm('Xoá '+ids.length+' thành viên đã chọn khỏi lớp “'+_currentGroupName+'”?\n(Bài đã nộp và điểm của các em vẫn được giữ nguyên.)'))) return;
     gmFetch('/api/groups/'+_currentGroupId+'/members/remove','POST',{member_ids:ids}).then(function(d){
-      if (!d.ok) { alert('Lỗi: '+(d.error||'Không xoá được')); return; }
+      if (!d.ok) { ewtAlert('Lỗi: '+(d.error||'Không xoá được')); return; }
       gmToast('Đã xoá '+d.removed+' thành viên khỏi lớp'); loadGroupDetail(_currentGroupId); loadGroups();
     });
   }
 
   function openMoveModal(mode) {
     var ids = Object.keys(_selMembers).map(Number); if (!ids.length) return;
-    var opts = otherGroupsOptions(); if (!opts) { alert('Bạn chưa có lớp nào khác. Hãy tạo lớp đích trước (hoặc dùng “Lên lớp cuối năm” để tạo lớp mới ngay).'); return; }
+    var opts = otherGroupsOptions(); if (!opts) { ewtAlert('Bạn chưa có lớp nào khác. Hãy tạo lớp đích trước (hoặc dùng “Lên lớp cuối năm” để tạo lớp mới ngay).'); return; }
     var isMove = mode !== 'copy';
     gmModal(isMove ? '↪ Chuyển '+ids.length+' thành viên sang lớp khác' : '📋 Thêm '+ids.length+' thành viên vào lớp khác',
       '<div class="field"><label>Lớp đích</label><select id="gmTo" style="width:100%;">'+opts+'</select></div>'
@@ -1540,7 +1541,7 @@
     document.getElementById('gmGo').onclick = function(){
       var to = Number(document.getElementById('gmTo').value), btn = this; btn.disabled = true; var from = _currentGroupId;
       gmFetch('/api/groups/members/move','POST',{from:from,to:to,member_ids:ids,mode:isMove?'move':'copy'}).then(function(d){
-        gmClose(); if (!d.ok) { alert('Lỗi: '+(d.error||'Không chuyển được')); return; }
+        gmClose(); if (!d.ok) { ewtAlert('Lỗi: '+(d.error||'Không chuyển được')); return; }
         var msg = (isMove?'Đã chuyển ':'Đã thêm ')+d.moved+' thành viên sang “'+escHtml(d.to.name)+'”'+(d.duplicates?' ('+d.duplicates+' đã có sẵn ở lớp đích)':'')+(d.backfilled?' · giao '+d.backfilled+' bài của lớp':'');
         var el = gmToast(msg + (isMove && (d.moved||d.duplicates) ? ' <button class="btn btn-sm" id="gmUndo" style="color:#111;">↩ Hoàn tác</button>' : ''), 14000);
         var u = document.getElementById('gmUndo'); if (u) u.onclick = function(){ u.disabled = true;
@@ -1555,7 +1556,7 @@
   }
   function openPromoteModal() {
     if (!_currentGroupId) return;
-    var total = (window._members||[]).length; if (!total) { alert('Lớp này chưa có thành viên để chuyển.'); return; }
+    var total = (window._members||[]).length; if (!total) { ewtAlert('Lớp này chưa có thành viên để chuyển.'); return; }
     var opts = otherGroupsOptions(), sug = suggestNextClass(_currentGroupName);
     var exists = (window._allGroups||[]).filter(function(g){ return g.name.toLowerCase() === sug.toLowerCase() && g.id !== _currentGroupId; })[0];
     gmModal('🎓 Lên lớp cuối năm: '+escHtml(_currentGroupName),
@@ -1566,14 +1567,14 @@
       +'<label style="display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:13.5px;cursor:pointer;"><input type="checkbox" id="gmCopy" style="width:18px;height:18px;margin-top:1px;"> <span><b>Giữ lại lớp cũ (chỉ sao chép, không chuyển)</b> — các em ở cả hai lớp; chọn nếu bạn muốn lớp cũ vẫn còn sổ điểm đầy đủ.</span></label>'
       +'<div style="font-size:13px;margin:10px 0;"><a href="/api/teacher/gradebook.xlsx?class='+_currentGroupId+'" style="color:var(--primary);font-weight:700;">⬇️ Tải sổ điểm lớp cũ (Excel) để lưu trước khi chuyển</a></div>'
       +'<div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn" onclick="gmClose()">Huỷ</button><button class="btn btn-primary" id="gmGo">🎓 Chuyển cả lớp</button></div>');
-    document.getElementById('gmGo').onclick = function(){
+    document.getElementById('gmGo').onclick = async function(){
       var sel = document.getElementById('gmTo'), toId = sel && sel.value ? Number(sel.value) : 0, nn = document.getElementById('gmNew').value.trim();
-      if (!toId && !nn) { alert('Hãy nhập tên lớp mới hoặc chọn một lớp đã có.'); return; }
+      if (!toId && !nn) { ewtAlert('Hãy nhập tên lớp mới hoặc chọn một lớp đã có.'); return; }
       var copy = document.getElementById('gmCopy').checked, closeOld = document.getElementById('gmClose').checked, from = _currentGroupId, fromName = _currentGroupName;
-      if (!confirm('Chuyển '+total+' thành viên từ “'+fromName+'” sang '+(toId ? 'lớp đã chọn' : '“'+nn+'”')+(copy?' (sao chép, giữ lớp cũ)':'')+'?')) return;
+      if (!(await ewtConfirm('Chuyển '+total+' thành viên từ “'+fromName+'” sang '+(toId ? 'lớp đã chọn' : '“'+nn+'”')+(copy?' (sao chép, giữ lớp cũ)':'')+'?'))) return;
       this.disabled = true;
       gmFetch('/api/groups/'+from+'/promote','POST',{to_id:toId||undefined,new_name:toId?undefined:nn,mode:copy?'copy':'move',close_old:closeOld}).then(function(d){
-        gmClose(); if (!d.ok) { alert('Lỗi: '+(d.error||'Không chuyển được')); return; }
+        gmClose(); if (!d.ok) { ewtAlert('Lỗi: '+(d.error||'Không chuyển được')); return; }
         var msg = '🎓 Đã '+(copy?'thêm ':'chuyển ')+d.moved+' thành viên sang “'+escHtml(d.to.name)+'”'+(d.to.created?' (lớp mới được tạo)':'')+(d.duplicates?' · '+d.duplicates+' đã có sẵn':'')+(d.backfilled?' · giao '+d.backfilled+' bài':'');
         gmToast(msg+' <button class="btn btn-sm" id="gmUndo" style="color:#111;">↩ Hoàn tác</button>', 20000);
         var u = document.getElementById('gmUndo'); if (u) u.onclick = function(){ u.disabled = true;
@@ -1607,7 +1608,7 @@
   function saveLb() {
     if (!_currentGroupId) return;
     gmFetch('/api/groups/'+_currentGroupId+'/leaderboard','PUT',{on:document.getElementById('groupLbOn').checked,anon:document.getElementById('groupLbAnon').checked}).then(function(d){
-      if (!d.ok) { alert('Lỗi: '+(d.error||'Không lưu được')); return; }
+      if (!d.ok) { ewtAlert('Lỗi: '+(d.error||'Không lưu được')); return; }
       window._grpLb[_currentGroupId] = { on: !!d.lb_on, anon: !!d.lb_anon }; gmToast(d.lb_on ? '🏆 Đã bật bảng xếp hạng cho lớp' : 'Đã tắt bảng xếp hạng', 2500);
     });
   }
@@ -1677,26 +1678,26 @@
   }
   function toggleAutoRemind(on) {
     fetch('/api/teacher/auto-remind',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:!!on})}).then(r=>r.json()).then(function(d){
-      if (!d.ok) { alert('Không đổi được cài đặt.'); document.getElementById('autoRemind').checked = !on; return; }
+      if (!d.ok) { ewtAlert('Không đổi được cài đặt.'); document.getElementById('autoRemind').checked = !on; return; }
       if (_todo) _todo.auto_remind = d.auto_remind;
     }).catch(function(){ document.getElementById('autoRemind').checked = !on; });
   }
   function todoGrade(id) { showTab('grade'); openGradingPanel(id); window.scrollTo({top:document.getElementById('tabGrade').offsetTop-80,behavior:'smooth'}); }
-  function todoRemind(ids, btn) {
-    if (!confirm('Gửi thông báo nhắc làm bài cho '+ids.length+' học sinh?')) return;
+  async function todoRemind(ids, btn) {
+    if (!(await ewtConfirm('Gửi thông báo nhắc làm bài cho '+ids.length+' học sinh?'))) return;
     btn.disabled = true;
     fetch('/api/teacher/remind',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:ids})}).then(r=>r.json()).then(function(d){
       btn.textContent = '✓ Đã nhắc '+(d.sent||0)+(d.skipped?' (bỏ qua '+d.skipped+')':'');
-    }).catch(function(){ btn.disabled = false; alert('Không gửi được, thử lại nhé.'); });
+    }).catch(function(){ btn.disabled = false; ewtAlert('Không gửi được, thử lại nhé.'); });
   }
-  function decideRequests(action, ids) {
+  async function decideRequests(action, ids) {
     var list = ids || (_todo.requests||[]).map(function(r){return r.id;});
     if (!list.length) return;
-    if (!ids && !confirm((action==='approve'?'Duyệt':'Từ chối')+' tất cả '+list.length+' yêu cầu vào lớp?')) return;
+    if (!ids && !(await ewtConfirm((action==='approve'?'Duyệt':'Từ chối')+' tất cả '+list.length+' yêu cầu vào lớp?'))) return;
     fetch('/api/groups/requests/decide',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:list,action:action})}).then(r=>r.json()).then(function(d){
-      if (!d.ok) { alert(d.error||'Không xử lý được'); return; }
+      if (!d.ok) { ewtAlert(d.error||'Không xử lý được'); return; }
       loadTodo(); if (document.getElementById('tabGroups').style.display !== 'none') loadGroups();
-    }).catch(function(){ alert('Không xử lý được, thử lại nhé.'); });
+    }).catch(function(){ ewtAlert('Không xử lý được, thử lại nhé.'); });
   }
   loadTodo();
 
@@ -2118,7 +2119,7 @@
 
   document.getElementById('addEmailBtn').onclick = function(){
     var val = document.getElementById('assignEmailInput').value.trim().toLowerCase();
-    if (!val || !val.includes('@')){ alert('Email không hợp lệ.'); return; }
+    if (!val || !val.includes('@')){ ewtAlert('Email không hợp lệ.'); return; }
     if (!pendingEmails.includes(val)) pendingEmails.push(val);
     document.getElementById('assignEmailInput').value = '';
     renderEmailTags();
@@ -2199,8 +2200,8 @@
     }).catch(function(){});
   }
 
-  function deleteAssignment(id){
-    if (!confirm('Xoá bài đã giao này?')) return;
+  async function deleteAssignment(id){
+    if (!(await ewtConfirm('Xoá bài đã giao này?'))) return;
     fetch('/api/teacher/assignments/'+id,{method:'DELETE',credentials:'same-origin'}).then(function(){loadAssignments();});
   }
 
@@ -2517,7 +2518,7 @@
       // Text trước highlight
       if (s > cursor) html += escHtml(essayText.slice(cursor, s));
       var noteAttr = ann.note ? ' data-note="'+escHtml(ann.note)+'"' : '';
-      html += '<mark class="annotation-highlight" style="background:'+ann.color+'88;border-bottom:2px solid '+ann.color+';"'+noteAttr+' title="'+(ann.note ? escHtml(ann.note) : 'Click để xoá')+'" onclick="if(confirm(\'Xoá annotation này?\'))annDelete('+ann.id+','+ann.submission_id+')">'+escHtml(essayText.slice(s, e))+'</mark>';
+      html += '<mark class="annotation-highlight" style="background:'+ann.color+'88;border-bottom:2px solid '+ann.color+';"'+noteAttr+' title="'+(ann.note ? escHtml(ann.note) : 'Click để xoá')+'" onclick="ewtConfirm(\'Xoá annotation này?\').then(function(ok){if(ok)annDelete('+ann.id+','+ann.submission_id+')})">'+escHtml(essayText.slice(s, e))+'</mark>';
       cursor = e;
     });
     if (cursor < essayText.length) html += escHtml(essayText.slice(cursor));
@@ -2646,7 +2647,7 @@
   async function bulkDeleteBank(){
     var ids = Array.from(document.querySelectorAll('#exBank .rowChk:checked')).map(function(c){ return Number(c.value); });
     if(!ids.length) return;
-    if(!confirm('Xoá '+ids.length+' đề đã chọn?\nHành động này không thể hoàn tác!')) return;
+    if(!(await ewtConfirm('Xoá '+ids.length+' đề đã chọn?\nHành động này không thể hoàn tác!'))) return;
     try{
       var r = await fetch('/api/exercises/bulk-delete',{
         method:'POST', credentials:'same-origin',
@@ -2655,8 +2656,8 @@
       });
       var d = await r.json().catch(function(){return{};});
       if(r.ok){ loadBank(); }
-      else{ alert('Lỗi: '+(d.error||r.status)); }
-    }catch(e){ alert('Lỗi kết nối'); }
+      else{ ewtAlert('Lỗi: '+(d.error||r.status)); }
+    }catch(e){ ewtAlert('Lỗi kết nối'); }
   }
 
   /* ===== EDIT DRAWER ===== */
@@ -2732,7 +2733,7 @@
       document.getElementById('editOverlay').classList.add('open');
       document.getElementById('editDrawer').classList.add('open');
     }).catch(function(err){
-      alert('Không thể tải đề: '+err);
+      ewtAlert('Không thể tải đề: '+err);
     });
   }
 
@@ -2968,8 +2969,8 @@
     }catch(e){ st.textContent = '❌ Lỗi kết nối'; }
   });
 
-  function removeEditImg(){
-    if(!confirm('Xoá ảnh đề bài?')) return;
+  async function removeEditImg(){
+    if(!(await ewtConfirm('Xoá ảnh đề bài?'))) return;
     _editImgAction = 'remove';
     _editImgNewUrl = '';
     document.getElementById('editImageUrl').value = '';
@@ -3123,12 +3124,12 @@
   }
 
   async function deleteExercise(id, title){
-    if(!confirm('Xoá đề "'+title+'"?\n\nHành động này không thể hoàn tác!')) return;
+    if(!(await ewtConfirm('Xoá đề "'+title+'"?\n\nHành động này không thể hoàn tác!'))) return;
     try{
       var r = await fetch('/api/exercises/'+id,{method:'DELETE',credentials:'same-origin'});
       if(r.ok){ loadBank(); }
-      else { var d=await r.json().catch(function(){return {};}); alert('Lỗi: '+(d.error||r.status)); }
-    }catch(e){ alert('Lỗi kết nối'); }
+      else { var d=await r.json().catch(function(){return {};}); ewtAlert('Lỗi: '+(d.error||r.status)); }
+    }catch(e){ ewtAlert('Lỗi kết nối'); }
   }
 
   /* ===== RICH EDITOR INIT ===== */
@@ -3589,7 +3590,7 @@ async function _runAiGrade() {
     document.getElementById('gpAILoading').style.display = 'none';
     if (!r.ok || !d.result) {
       document.getElementById('gpAIActions').style.display = '';
-      alert('Chấm tự động thất bại: ' + (d.error || 'Lỗi không xác định'));
+      ewtAlert('Chấm tự động thất bại: ' + (d.error || 'Lỗi không xác định'));
       return;
     }
     var _pDefault = _gpProgram === 'KET' ? 15 : (['PET','FCE'].includes(_gpProgram) ? 20 : 5);
@@ -3615,7 +3616,7 @@ async function _runAiGrade() {
   } catch(e) {
     document.getElementById('gpAILoading').style.display = 'none';
     document.getElementById('gpAIActions').style.display = '';
-    alert('Lỗi kết nối khi chấm tự động.');
+    ewtAlert('Lỗi kết nối khi chấm tự động.');
   }
 }
 
@@ -3882,9 +3883,9 @@ function updateSuggestedWriting(el) {
 }
 
 /* Xoá 1 mục nhận xét (lỗi/điểm cải thiện) khỏi error_list — học sinh sẽ không thấy mục đã xoá */
-function deleteErrorItem(idx) {
+async function deleteErrorItem(idx) {
   if (!_gpAIResult || !Array.isArray(_gpAIResult.error_list)) return;
-  if (!confirm('Xoá nhận xét này? Học sinh sẽ KHÔNG thấy nhận xét này khi nhận kết quả.')) return;
+  if (!(await ewtConfirm('Xoá nhận xét này? Học sinh sẽ KHÔNG thấy nhận xét này khi nhận kết quả.'))) return;
   _gpAIResult.error_list.splice(idx, 1);
   document.getElementById('gpAIResult').innerHTML = renderAIResult(_gpAIResult);
 }
@@ -3931,7 +3932,7 @@ async function loadGpModelAnswer() {
     document.getElementById('gpModelLoading').style.display = 'none';
     if (!r.ok || !d.hints) {
       document.getElementById('gpModelBtn').style.display = '';
-      alert('Không tạo được bài mẫu: ' + (d.error || 'Lỗi không xác định'));
+      ewtAlert('Không tạo được bài mẫu: ' + (d.error || 'Lỗi không xác định'));
       return;
     }
     document.getElementById('gpModelResult').innerHTML = renderModelAnswer(d.hints);
@@ -3939,7 +3940,7 @@ async function loadGpModelAnswer() {
   } catch(e) {
     document.getElementById('gpModelLoading').style.display = 'none';
     document.getElementById('gpModelBtn').style.display = '';
-    alert('Lỗi kết nối.');
+    ewtAlert('Lỗi kết nối.');
   }
 }
 
@@ -4027,7 +4028,7 @@ async function gpLoadAnnotations() {
 }
 
 async function gpDelAnnotation(annId) {
-  if (!confirm('Xoá annotation này?')) return;
+  if (!(await ewtConfirm('Xoá annotation này?'))) return;
   await fetch('/api/annotations/' + annId, { method: 'DELETE', credentials: 'same-origin' });
   gpLoadAnnotations();
 }

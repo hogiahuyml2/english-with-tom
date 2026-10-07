@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=25">
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="admin">
 <div id="site-header"></div>
@@ -142,7 +143,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
   var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị' };
   var me = null;
@@ -174,22 +175,22 @@
     document.querySelectorAll('.roleSel').forEach(function(s){
       s.onchange = async function(){
         var r = await api('/api/admin/users/'+s.getAttribute('data-id')+'/role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role:s.value})});
-        if (!r.ok) { alert(r.data.error||'Lỗi'); loadUsers(); }
+        if (!r.ok) { ewtAlert(r.data.error||'Lỗi'); loadUsers(); }
       };
     });
     document.querySelectorAll('.rcUser').forEach(function(b){
       b.onclick = async function(){
         var r = await api('/api/admin/users/'+b.getAttribute('data-id')+'/reset-code', {method:'POST'});
-        if (!r.ok) { alert(r.data.error||'Lỗi'); return; }
+        if (!r.ok) { ewtAlert(r.data.error||'Lỗi'); return; }
         var d = r.data;
-        prompt('Mã OTP đặt lại mật khẩu cho "'+d.name+'" (hiệu lực '+d.minutes+' phút).\nGửi mã này cho học sinh; học sinh vào trang Quên mật khẩu → nhập email → bấm "Gửi mã" rồi nhập MÃ NÀY thay cho mã trong email.\nHoặc gửi link bên dưới:', d.code + '   |   ' + d.link);
+        (await ewtPrompt('Mã OTP đặt lại mật khẩu cho "'+d.name+'" (hiệu lực '+d.minutes+' phút).\nGửi mã này cho học sinh; học sinh vào trang Quên mật khẩu → nhập email → bấm "Gửi mã" rồi nhập MÃ NÀY thay cho mã trong email.\nHoặc gửi link bên dưới:', d.code + '   |   ' + d.link));
       };
     });
     document.querySelectorAll('.delUser').forEach(function(b){
       b.onclick = async function(){
-        if (!confirm('Xoá tài khoản "'+b.getAttribute('data-name')+'"? Mọi bài làm của họ cũng bị xoá.')) return;
+        if (!(await ewtConfirm('Xoá tài khoản "'+b.getAttribute('data-name')+'"? Mọi bài làm của họ cũng bị xoá.'))) return;
         var r = await api('/api/admin/users/'+b.getAttribute('data-id'), {method:'DELETE'});
-        if (r.ok) loadUsers(); else alert(r.data.error||'Lỗi');
+        if (r.ok) loadUsers(); else ewtAlert(r.data.error||'Lỗi');
       };
     });
   }
@@ -226,20 +227,20 @@
   async function bulkDeleteUsers(){
     var ids = Array.from(document.querySelectorAll('#usersBody .userChk:checked')).map(function(c){ return Number(c.value); });
     if(!ids.length) return;
-    if(!confirm('Xoá '+ids.length+' tài khoản đã chọn?\nTất cả bài làm của họ cũng bị xoá!')) return;
+    if(!(await ewtConfirm('Xoá '+ids.length+' tài khoản đã chọn?\nTất cả bài làm của họ cũng bị xoá!'))) return;
     var r = await api('/api/admin/users/bulk-delete', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:ids})});
-    if(r.ok){ alert('Đã xoá '+(r.data.deleted||0)+' tài khoản.'); loadUsers(); }
-    else alert('Lỗi: '+(r.data.error||r.ok));
+    if(r.ok){ ewtAlert('Đã xoá '+(r.data.deleted||0)+' tài khoản.'); loadUsers(); }
+    else ewtAlert('Lỗi: '+(r.data.error||r.ok));
   }
 
   async function bulkRoleUsers(){
     var ids = Array.from(document.querySelectorAll('#usersBody .userChk:checked')).map(function(c){ return Number(c.value); });
     if(!ids.length) return;
     var role = document.getElementById('bulkRoleSel').value;
-    if(!confirm('Đổi role của '+ids.length+' người dùng thành "'+roleLabel[role]+'"?')) return;
+    if(!(await ewtConfirm('Đổi role của '+ids.length+' người dùng thành "'+roleLabel[role]+'"?'))) return;
     var r = await api('/api/admin/users/bulk-role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:ids, role:role})});
-    if(r.ok){ alert('Đã cập nhật '+(r.data.updated||0)+' người dùng.'); loadUsers(); }
-    else alert('Lỗi: '+(r.data.error||r.ok));
+    if(r.ok){ ewtAlert('Đã cập nhật '+(r.data.updated||0)+' người dùng.'); loadUsers(); }
+    else ewtAlert('Lỗi: '+(r.data.error||r.ok));
   }
 
   async function loadExercises(){
@@ -257,9 +258,9 @@
     }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa có đề.</td></tr>';
     document.querySelectorAll('.delEx').forEach(function(b){
       b.onclick = async function(){
-        if (!confirm('Xoá đề "'+b.getAttribute('data-name')+'"?')) return;
+        if (!(await ewtConfirm('Xoá đề "'+b.getAttribute('data-name')+'"?'))) return;
         var r = await api('/api/admin/exercises/'+b.getAttribute('data-id'), {method:'DELETE'});
-        if (r.ok) loadExercises(); else alert(r.data.error||'Lỗi');
+        if (r.ok) loadExercises(); else ewtAlert(r.data.error||'Lỗi');
       };
     });
   }
@@ -296,16 +297,16 @@
   async function bulkDeleteExercises(){
     var ids = Array.from(document.querySelectorAll('#exBody .exChk:checked')).map(function(c){ return Number(c.value); });
     if(!ids.length) return;
-    if(!confirm('Xoá '+ids.length+' đề đã chọn?\nHành động này không thể hoàn tác!')) return;
+    if(!(await ewtConfirm('Xoá '+ids.length+' đề đã chọn?\nHành động này không thể hoàn tác!'))) return;
     var r = await api('/api/admin/exercises/bulk-delete', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ids:ids})});
-    if(r.ok){ alert('Đã xoá '+(r.data.deleted||0)+' đề.'); loadExercises(); }
-    else alert('Lỗi: '+(r.data.error||r.ok));
+    if(r.ok){ ewtAlert('Đã xoá '+(r.data.deleted||0)+' đề.'); loadExercises(); }
+    else ewtAlert('Lỗi: '+(r.data.error||r.ok));
   }
 
   document.getElementById('cleanupBtn').onclick = async function(){
-    if (!confirm('Xoá tất cả tài khoản test (email kết thúc bằng "ewt-test.com")? Tài khoản thật và tài khoản @ewt.vn sẽ KHÔNG bị ảnh hưởng.')) return;
+    if (!(await ewtConfirm('Xoá tất cả tài khoản test (email kết thúc bằng "ewt-test.com")? Tài khoản thật và tài khoản @ewt.vn sẽ KHÔNG bị ảnh hưởng.'))) return;
     var r = await api('/api/admin/cleanup-test', {method:'POST'});
-    alert('Đã xoá ' + (r.data.deleted||0) + ' tài khoản test.');
+    ewtAlert('Đã xoá ' + (r.data.deleted||0) + ' tài khoản test.');
     loadUsers();
   };
 

@@ -62,6 +62,7 @@
 .sa-code { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; min-height: 380px; }
 .sa-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .sa-toast.on { opacity: 1; }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="school" data-guard="teacher">
 <div id="site-header"></div>
@@ -84,7 +85,7 @@
 <div class="sa-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -121,9 +122,9 @@ function renderList() {
 }
 
 /* ───────── Mở / lưu bài ───────── */
-function confirmLeave() { return !DIRTY || confirm('Bài đang sửa chưa lưu. Rời đi và bỏ các thay đổi?'); }
-function openLesson(id) {
-  if (!confirmLeave()) return;
+async function confirmLeave() { return !DIRTY || (await ewtConfirm('Bài đang sửa chưa lưu. Rời đi và bỏ các thay đổi?')); }
+async function openLesson(id) {
+  if (!(await confirmLeave())) return;
   api('GET', '/api/school/admin/lesson/' + encodeURIComponent(id)).then(function (d) {
     CUR = { id: id, lesson: d.lesson, state: d.state, builtin: d.builtin, hasOverride: d.hasOverride, flags: d.flags || [], versions: d.versions || [], source: d.source || '', msgs: null };
     ensureShape(CUR.lesson); DIRTY = false; TAB = 'info'; $('grid').classList.add('editing'); renderEditor(); renderList(); history.replaceState(null, '', '?id=' + encodeURIComponent(id)); window.scrollTo(0, 0);
@@ -175,17 +176,17 @@ function renderEditor() {
 }
 function bindBar() {
   var on = function (id, fn) { var b = $(id); if (b) b.onclick = fn; };
-  on('btnBack', function () { if (!confirmLeave()) return; DIRTY = false; CUR = null; $('grid').classList.remove('editing'); $('main').innerHTML = '<div class="sa-card sa-empty">Chọn một bài ở danh sách để sửa.</div>'; renderList(); history.replaceState(null, '', location.pathname); });
+  on('btnBack', async function () { if (!(await confirmLeave())) return; DIRTY = false; CUR = null; $('grid').classList.remove('editing'); $('main').innerHTML = '<div class="sa-card sa-empty">Chọn một bài ở danh sách để sửa.</div>'; renderList(); history.replaceState(null, '', location.pathname); });
   on('btnSave', function () { save().then(function () { toast('Đã lưu'); }).catch(function () {}); });
-  on('btnPub', function () { if (!confirm('Xuất bản bài này? Học sinh sẽ nhìn thấy ngay.')) return; save('published').then(function () { toast('Đã xuất bản'); }).catch(function () {}); });
-  on('btnUnpub', function () { if (!confirm('Gỡ bài về nháp? Học sinh sẽ không thấy bản này nữa' + (CUR.builtin ? ' (sẽ hiển thị lại bản gốc).' : '.'))) return; save('draft').then(function () { toast('Đã gỡ về nháp'); }).catch(function () {}); });
+  on('btnPub', async function () { if (!(await ewtConfirm('Xuất bản bài này? Học sinh sẽ nhìn thấy ngay.'))) return; save('published').then(function () { toast('Đã xuất bản'); }).catch(function () {}); });
+  on('btnUnpub', async function () { if (!(await ewtConfirm('Gỡ bài về nháp? Học sinh sẽ không thấy bản này nữa' + (CUR.builtin ? ' (sẽ hiển thị lại bản gốc).' : '.')))) return; save('draft').then(function () { toast('Đã gỡ về nháp'); }).catch(function () {}); });
   on('btnPrev', function () { var go = function () { window.open('school-lesson.html?id=' + encodeURIComponent(CUR.id) + '&preview=1', '_blank'); }; if (DIRTY || (CUR.builtin && !CUR.hasOverride && false)) { save().then(go).catch(function () {}); } else go(); });
   on('btnChk', checkQuiz);
   on('btnHist', openHist);
-  on('btnHide', function () { if (!confirm('Ẩn bài khỏi trang học sinh?')) return; setStatus('hidden'); });
+  on('btnHide', async function () { if (!(await ewtConfirm('Ẩn bài khỏi trang học sinh?'))) return; setStatus('hidden'); });
   on('btnShow', function () { setStatus(CUR.hasOverride && !CUR.builtin ? 'draft' : 'builtin'); });
-  on('btnRevert', function () { if (!confirm('Bỏ mọi chỉnh sửa và dùng lại bản gốc?')) return; setStatus('builtin', true); });
-  on('btnDel', function () { if (!confirm('Xoá hẳn bài này? (vẫn có thể khôi phục từ lịch sử trong 15 phiên bản gần nhất của bài khác — bài đã xoá thì không)')) return; api('DELETE', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id)).then(function () { DIRTY = false; CUR = null; $('grid').classList.remove('editing'); $('main').innerHTML = '<div class="sa-card sa-empty">Đã xoá.</div>'; return loadList(); }).catch(function (e) { toast(e.message); }); });
+  on('btnRevert', async function () { if (!(await ewtConfirm('Bỏ mọi chỉnh sửa và dùng lại bản gốc?'))) return; setStatus('builtin', true); });
+  on('btnDel', async function () { if (!(await ewtConfirm('Xoá hẳn bài này? (vẫn có thể khôi phục từ lịch sử trong 15 phiên bản gần nhất của bài khác — bài đã xoá thì không)'))) return; api('DELETE', '/api/school/admin/lesson/' + encodeURIComponent(CUR.id)).then(function () { DIRTY = false; CUR = null; $('grid').classList.remove('editing'); $('main').innerHTML = '<div class="sa-card sa-empty">Đã xoá.</div>'; return loadList(); }).catch(function (e) { toast(e.message); }); });
   Array.prototype.forEach.call(document.querySelectorAll('[data-clr]'), function (a) { a.onclick = function (e) { e.preventDefault(); CUR.flags.splice(+a.dataset.clr, 1); dirty(); renderEditor(); }; });
   Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function (b) { b.onclick = function () { TAB = b.dataset.tab; renderEditor(); }; });
 }
@@ -250,17 +251,17 @@ function bindTab() {
   Array.prototype.forEach.call(b.querySelectorAll('[data-act]'), function (el) { el.onclick = function () { act(el.dataset.act, el.dataset); }; });
 }
 function mv(a, i, d) { var j = i + d; if (j < 0 || j >= a.length) return; var t = a[i]; a[i] = a[j]; a[j] = t; }
-function act(a, d) {
+async function act(a, d) {
   var L = CUR.lesson, i = +d.i, j = +d.j; var re = true;
   if (a === 'secAdd') L.sections.push({ h: (L.sections.length + 1) + '. ', b: [{ p: '' }] });
-  else if (a === 'secDel') { if (!confirm('Xoá cả phần này?')) return; L.sections.splice(i, 1); }
+  else if (a === 'secDel') { if (!(await ewtConfirm('Xoá cả phần này?'))) return; L.sections.splice(i, 1); }
   else if (a === 'secUp') mv(L.sections, i, -1); else if (a === 'secDn') mv(L.sections, i, 1);
   else if (a === 'blkAdd') { var k = d.k; L.sections[i].b.push(k === 'f' ? { f: [''] } : k === 'ul' ? { ul: [''] } : k === 't' ? { t: { h: ['Cột 1', 'Cột 2'], r: [['', '']] } } : (function () { var o = {}; o[k] = ''; return o; })()); }
   else if (a === 'blkDel') L.sections[i].b.splice(j, 1); else if (a === 'blkUp') mv(L.sections[i].b, j, -1); else if (a === 'blkDn') mv(L.sections[i].b, j, 1);
   else if (a === 'exAdd') L.ex.push(['', '']); else if (a === 'exDel') L.ex.splice(i, 1);
   else if (a === 'exBulk') { var t = $('exBulk').value; t.split('\n').forEach(function (ln) { var p = ln.split('|'); if (p.length >= 2 && p[0].trim()) L.ex.push([p[0].trim(), p.slice(1).join('|').trim()]); }); }
   else if (a === 'misAdd') L.mis.push(['', '', '']); else if (a === 'misDel') L.mis.splice(i, 1);
-  else if (a === 'qAdd') L.quiz.push(['', ['', '', '', ''], -1, '']); else if (a === 'qDel') { if (!confirm('Xoá câu này?')) return; L.quiz.splice(i, 1); }
+  else if (a === 'qAdd') L.quiz.push(['', ['', '', '', ''], -1, '']); else if (a === 'qDel') { if (!(await ewtConfirm('Xoá câu này?'))) return; L.quiz.splice(i, 1); }
   else if (a === 'qDup') L.quiz.splice(i + 1, 0, JSON.parse(JSON.stringify(L.quiz[i]))); else if (a === 'qUp') mv(L.quiz, i, -1); else if (a === 'qDn') mv(L.quiz, i, 1);
   else if (a === 'jsonApply') { try { var o = JSON.parse($('jsonBox').value); o.grade = L.grade; ensureShape(o); CUR.lesson = o; } catch (e) { toast('JSON chưa hợp lệ: ' + e.message); return; } }
   else re = false;
@@ -282,10 +283,10 @@ function openHist() {
 }
 
 /* ───────── Bài mới ───────── */
-$('btnNew').onclick = function () {
-  if (!confirmLeave()) return;
-  var g = prompt('Tạo bài cho lớp nào? (6–12)', F.g || '6'); if (g == null) return; g = parseInt(g, 10); if (!(g >= 6 && g <= 12)) { toast('Lớp phải từ 6 đến 12'); return; }
-  var t = prompt('Tên bài học (có thể sửa sau):', ''); if (t == null) return;
+$('btnNew').onclick = async function () {
+  if (!(await confirmLeave())) return;
+  var g = (await ewtPrompt('Tạo bài cho lớp nào? (6–12)', F.g || '6')); if (g == null) return; g = parseInt(g, 10); if (!(g >= 6 && g <= 12)) { toast('Lớp phải từ 6 đến 12'); return; }
+  var t = (await ewtPrompt('Tên bài học (có thể sửa sau):', '')); if (t == null) return;
   api('POST', '/api/school/admin/lesson', { grade: g, title: t }).then(function (r) { return loadList().then(function () { DIRTY = false; return openLesson(r.id); }); }).catch(function (e) { toast(e.message); });
 };
 

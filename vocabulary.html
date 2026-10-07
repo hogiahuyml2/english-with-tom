@@ -173,6 +173,7 @@
   .btn-nav    { width: 40px; height: 40px; }
 }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="vocabulary" data-guard="auth">
 <div id="site-header"></div>
@@ -266,7 +267,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="vocab-data.js"></script>
 <script>
 (function(){
@@ -490,7 +491,7 @@
 
   document.getElementById('reviewUnknownBtn').addEventListener('click', function(){
     var sub = deck.filter(function(_,i){ return known[i] === false; });
-    if(!sub.length){ alert('Không có từ nào chưa biết!'); return; }
+    if(!sub.length){ ewtAlert('Không có từ nào chưa biết!'); return; }
     deck  = sub;
     idx   = 0;
     known = {};

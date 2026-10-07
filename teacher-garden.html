@@ -41,6 +41,7 @@
 .gg-f { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin: 8px 0; } .gg-f label { display: grid; gap: 4px; font-size: 13px; font-weight: 700; } .gg-f .pp-in { width: 130px; }
 .gg-bar { height: 16px; background: #E5E7EB; border-radius: 99px; overflow: hidden; margin: 6px 0; } .gg-bar i { display: block; height: 100%; background: linear-gradient(90deg, #34D399, #22C55E); }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -77,7 +78,7 @@
 </main>
 <div class="pp-toast" id="toast"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script src="js/garden-data.js?v=14"></script>
 <script>
 (function () {
@@ -112,10 +113,10 @@ function gift(body) {
   api('/api/garden/teacher/gift', body).then(function (d) { toast('Đã tặng quà cho ' + d.count + ' học sinh 🎁'); }).catch(function (e) { toast(e.message); });
 }
 $('gSel').onclick = function () { var ids = [].map.call(document.querySelectorAll('#mem input:checked'), function (c) { return +c.getAttribute('data-u'); }); if (!ids.length) return toast('Hãy tick chọn học sinh trước.'); gift({ user_ids: ids }); };
-$('gAll').onclick = function () { if (!CUR) return; if (confirm('Tặng quà cho TẤT CẢ ' + MEM.length + ' học sinh trong lớp?')) gift({ group_id: CUR }); };
+$('gAll').onclick = async function () { if (!CUR) return; if ((await ewtConfirm('Tặng quà cho TẤT CẢ ' + MEM.length + ' học sinh trong lớp?'))) gift({ group_id: CUR }); };
 $('gPick').onclick = function () { var cs = document.querySelectorAll('#mem input'), on = [].some.call(cs, function (c) { return !c.checked; }); [].forEach.call(cs, function (c) { c.checked = on; }); };
 $('pMake').onclick = function () { api('/api/garden/teacher/project', { group_id: CUR, item_id: $('pItem').value, target: +$('pTarget').value }).then(function () { toast('Đã tạo dự án cho lớp 🏗️'); loadProjects(); }).catch(function (e) { toast(e.message); }); };
-$('projs').onclick = function (e) { var b = e.target.closest('[data-cancel]'); if (!b) return; if (confirm('Huỷ dự án? Xu đã góp sẽ được hoàn lại cho từng bạn.')) api('/api/garden/teacher/project/cancel', { id: +b.getAttribute('data-cancel') }).then(function () { toast('Đã huỷ dự án'); loadProjects(); }).catch(function (x) { toast(x.message); }); };
+$('projs').onclick = async function (e) { var b = e.target.closest('[data-cancel]'); if (!b) return; if ((await ewtConfirm('Huỷ dự án? Xu đã góp sẽ được hoàn lại cho từng bạn.'))) api('/api/garden/teacher/project/cancel', { id: +b.getAttribute('data-cancel') }).then(function () { toast('Đã huỷ dự án'); loadProjects(); }).catch(function (x) { toast(x.message); }); };
 })();
 </script>
 </body>

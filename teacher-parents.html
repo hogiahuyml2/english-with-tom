@@ -36,6 +36,7 @@
 .pp-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 400; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; } .pp-toast.on { opacity: 1; }
 @media (max-width: 760px) { .pp-row { grid-template-columns: 1fr; gap: 8px; } }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="teacher">
 <div id="site-header"></div>
@@ -66,7 +67,7 @@
 <div class="pp-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 (function () {
 'use strict';
@@ -111,7 +112,7 @@ function rowData(row) {
 }
 function save(row) { var d = rowData(row); return api('/api/parent-report/set', d); }
 
-document.addEventListener('click', function (e) {
+document.addEventListener('click', async function (e) {
   var b = e.target.closest('[data-a]'), row = b && b.closest('.pp-row');
   if (b && row) {
     var a = b.getAttribute('data-a'), id = Number(row.getAttribute('data-id')); b.disabled = true;
@@ -125,7 +126,7 @@ document.addEventListener('click', function (e) {
     else if (a === 'now') {
       var pe = row.querySelector('[data-f="pe"]').value.trim();
       if (!pe) { toast('Hãy nhập email phụ huynh trước.'); done(); return; }
-      if (!confirm('Gửi báo cáo ngay cho phụ huynh (' + pe + ')?')) { done(); return; }
+      if (!(await ewtConfirm('Gửi báo cáo ngay cho phụ huynh (' + pe + ')?'))) { done(); return; }
       save(row).then(function () { return api('/api/parent-report/send', { user_id: id, to: 'parent' }); }).then(function () { toast('Đã gửi cho phụ huynh'); return load(); }).catch(function (x) { toast(x.message); }).then(done);
     }
     return;
@@ -145,9 +146,9 @@ $('bulkGo').onclick = function () {
     $('bulkRes').innerHTML = m; load();
   }).catch(function (x) { $('bulkRes').textContent = x.message; }).then(function () { btn.disabled = false; });
 };
-function classToggle(on) {
+async function classToggle(on) {
   if (!CUR) { toast('Hãy chọn một lớp cụ thể ở ô chọn lớp phía trên.'); return; }
-  if (!confirm((on ? 'Bật' : 'Tắt') + ' báo cáo hằng tuần cho cả lớp này?')) return;
+  if (!(await ewtConfirm((on ? 'Bật' : 'Tắt') + ' báo cáo hằng tuần cho cả lớp này?'))) return;
   api('/api/parent-report/enable-class', { group_id: CUR, enabled: on }).then(function (d) { toast((on ? 'Đã bật' : 'Đã tắt') + ' cho ' + d.changed + ' học sinh'); load(); }).catch(function (x) { toast(x.message); });
 }
 $('btnOn').onclick = function () { classToggle(true); }; $('btnOff').onclick = function () { classToggle(false); };

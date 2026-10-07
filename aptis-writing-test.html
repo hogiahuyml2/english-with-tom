@@ -195,6 +195,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
   button { min-height: 44px; }
 }
 </style>
+<script src="js/dialog.js?v=1"></script>
 </head>
 <body data-guard="auth">
 
@@ -388,7 +389,7 @@ body{font-family:var(--font);background:#ebebeb;color:var(--text);min-height:100
 
 <script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=47"></script>
+<script src="js/main.js?v=48"></script>
 <script>
 /* ────────────────────────────────────────────
    APTIS Writing Test — client logic
@@ -558,7 +559,7 @@ function escHtml(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({
 
 /* ── Start test ── */
 function startTest(){
-  if(!testData){ alert('Đề chưa tải xong, thử lại sau giây lát.'); return; }
+  if(!testData){ ewtAlert('Đề chưa tải xong, thử lại sau giây lát.'); return; }
   testStarted = true;
   document.getElementById('introScreen').style.display = 'none';
   document.getElementById('testHeader').style.display = 'flex';
@@ -632,11 +633,11 @@ function goBack(){
   if(currentPart > 0) goToPart(currentPart-1);
 }
 
-function openGridNav(){
+async function openGridNav(){
   var parts = ['Part 1 – Personal Info','Part 2 – Form Fill','Part 3 – Group Chat','Part 4 – Email Writing'];
   var msg = 'Nhảy đến part:\n' + parts.map(function(p,i){ return (i+1)+'. '+p+(i===currentPart?' (đang làm)':''); }).join('\n') +
     '\n\nNhập số (1-4):';
-  var n = parseInt(prompt(msg));
+  var n = parseInt((await ewtPrompt(msg)));
   if(n>=1 && n<=4) goToPart(n-1);
 }
 
@@ -674,10 +675,10 @@ function collectAnswers(){
 async function submitAll(timeUp){
   if(!testStarted) return;
   if(!timeUp){
-    var ok = confirm('Nộp bài ngay?\n\nBạn không thể chỉnh sửa sau khi nộp.');
+    var ok = (await ewtConfirm('Nộp bài ngay?\n\nBạn không thể chỉnh sửa sau khi nộp.'));
     if(!ok) return;
   } else {
-    alert('⏰ Hết giờ! Bài của bạn sẽ được nộp tự động.');
+    ewtAlert('⏰ Hết giờ! Bài của bạn sẽ được nộp tự động.');
   }
 
   clearInterval(timerInterval);
@@ -702,7 +703,7 @@ async function submitAll(timeUp){
       if(data.pending){
         showPendingResult();
       } else {
-        alert('Lỗi: '+(data.error||'Nộp bài thất bại.'));
+        ewtAlert('Lỗi: '+(data.error||'Nộp bài thất bại.'));
         document.getElementById('testBody').style.display='flex';
         document.getElementById('testFooter').style.display='flex';
         goToPart(currentPart);
@@ -713,7 +714,7 @@ async function submitAll(timeUp){
     showResult(data.result);
   } catch(err) {
     document.getElementById('loadingOverlay').classList.remove('show');
-    alert('Lỗi kết nối. Vui lòng thử lại.');
+    ewtAlert('Lỗi kết nối. Vui lòng thử lại.');
     document.getElementById('testBody').style.display='flex';
     document.getElementById('testFooter').style.display='flex';
     goToPart(currentPart);
