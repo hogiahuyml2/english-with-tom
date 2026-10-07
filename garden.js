@@ -85,12 +85,17 @@ module.exports = function (app, { db, requireAuth, now }) {
         const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
         if (!it) return { err: 'Món này không tồn tại.' };
         if (!Number.isInteger(i) || i < 0 || i >= st.tiles.length) return { err: 'Ô đất không hợp lệ.' };
-        if (G.isBlocked(i)) return { err: 'Đây là phong cảnh có sẵn của khu, hãy chọn ô đất trống khác nhé.' };
+        const fp = it.kind === 'big' ? G.footprint(i, it) : [i];
+        if (!fp) return { err: 'Công trình này không vừa chỗ — hãy chọn ô khác (cần đủ ' + it.w + '×' + it.h + ' ô trống).' };
+        if (fp.some((k) => G.isBlocked(k) || G.zoneOfCell(k).id !== G.zoneOfCell(i).id)) return { err: 'Đây là phong cảnh có sẵn của khu, hãy chọn ô đất trống khác nhé.' };
+        if (fp.some((k) => st.tiles[k])) return { err: 'Chỗ này đã có đồ — cần ' + fp.length + ' ô trống liền nhau.' };
         if (st.zones.indexOf(G.zoneOfCell(i).id) < 0) return { err: 'Khu này chưa được mở.' };
         if (st.tiles[i]) return { err: 'Ô này đã có đồ — hãy dọn trước nhé.' };
         if (it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mở món này.' };
         if (it.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(it.cost, req.user.id, it.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!', need: it.cost }; }
-        st.tiles[i] = { k: it.id, at: Date.now(), w: 0 }; save(st); return { st };
+        st.tiles[i] = { k: it.id, at: Date.now(), w: 0 };
+        if (it.kind === 'big') fp.forEach((k) => { if (k !== i) st.tiles[k] = { ref: i }; });
+        save(st); return { st };
       });
       if (out.err) return bad(res, out.err);
       reply(res, req.user, out.st);
@@ -98,13 +103,16 @@ module.exports = function (app, { db, requireAuth, now }) {
   });
 
   app.post('/api/garden/remove', requireAuth, (req, res) => {
-    const i = Number((req.body || {}).i);
+    let i = Number((req.body || {}).i);
     try {
       const out = tx(() => {
         const st = load(req.user); if (!Number.isInteger(i) || !st.tiles[i]) return { err: 'Ô này đang trống.' };
-        const it = G.BY[st.tiles[i].k]; let back = 0;
-        if (it && (it.kind === 'deco' || it.kind === 'ground') && it.cost > 0) { back = Math.floor(it.cost * G.RULES.sellBack); if (back) addCoins(req.user.id, back); }
-        st.tiles[i] = null; save(st); return { st, back };
+        if (st.tiles[i].ref != null) i = st.tiles[i].ref;     // bấm vào phần phụ của công trình lớn → dọn cả công trình
+        const t = st.tiles[i]; if (!t) return { err: 'Ô này đang trống.' };
+        const it = G.BY[t.k]; let back = 0;
+        if (it && (it.kind === 'deco' || it.kind === 'ground' || it.kind === 'big') && it.cost > 0) { back = Math.floor(it.cost * G.RULES.sellBack); if (back) addCoins(req.user.id, back); }
+        (it && it.kind === 'big' ? G.footprint(i, it) || [i] : [i]).forEach((k) => { st.tiles[k] = null; });
+        save(st); return { st, back };
       });
       if (out.err) return bad(res, out.err);
       reply(res, req.user, out.st, { refund: out.back });
