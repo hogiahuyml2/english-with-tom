@@ -248,6 +248,11 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-seg { display: flex; gap: 6px; margin: 6px 0 10px; } .gd-seg button { flex: 1; border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 8px 10px; font: 800 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 40px; } .gd-seg button.on { background: var(--gradient); color: #fff; border-color: transparent; }
 .gd-trh { font-size: 14px; font-weight: 800; margin: 8px 0 2px; } .gd-hist { font-size: 12.5px; color: var(--text-muted); line-height: 1.7; }
 #vgift { margin-right: 6px; }
+/* ───────── âm thanh ───────── */
+.gd-sndp { padding: 0 4px !important; gap: 0; } .gd-sndp button { background: none; border: 0; font-size: 18px; min-width: 34px; min-height: 34px; border-radius: 50%; cursor: pointer; padding: 0; line-height: 1; } .gd-sndp button:hover { background: rgba(255,255,255,.5); } #sndBtn.on { background: rgba(79,174,74,.28); box-shadow: 0 0 0 2px #4FAE4A inset; }
+.gd-snd { position: fixed; right: 14px; top: 130px; z-index: 130; width: min(300px, calc(100vw - 28px)); background: linear-gradient(180deg, #FFF8E8, #FFE9BE); border: 3px solid #C98E55; border-radius: 18px; padding: 12px 14px; box-shadow: 0 14px 34px rgba(60,32,8,.4); color: #5A3A1A; display: none; font-family: inherit; } .gd-snd.on { display: grid; gap: 8px; }
+.gd-snd b { font-size: 15px; } .gd-snd label { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; min-height: 30px; cursor: pointer; } .gd-snd input[type=checkbox] { width: 20px; height: 20px; accent-color: #4FAE4A; flex: none; } .gd-snd input[type=range] { flex: 1; accent-color: #4FAE4A; min-height: 28px; } .gd-snd small { font-size: 12px; line-height: 1.45; color: #8A5A2B; }
+@media (max-width: 640px) { #questBtn::before { content: '🎯'; font-size: 17px; margin-right: 2px; } #passBtn::before { content: '🛂'; font-size: 17px; margin-right: 2px; } #evBtn .ei { font-size: 17px; } .gd-sndp button { font-size: 16px; min-width: 30px; } .gd-snd { top: 150px; right: 8px; } }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
 .gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
 .gd-box h3 { margin: 0 0 4px; font-size: 20px; } .gd-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
@@ -394,6 +399,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
         <span class="gd-pill mine" title="Xu — dùng chung với phần Luyện từ"><i class="coin"></i> <span id="xu">0</span></span>
         <span class="gd-pill mine" title="Lượt tưới nước còn lại">💧 <span id="wt">0</span></span>
         <button class="gd-pill btn mine" id="friend"><i class="ic" data-ic="visit"></i>Thăm bạn</button>
+        <span class="gd-pill mine gd-sndp"><button id="sndBtn" aria-label="Bật / tắt âm thanh" title="Bật nhạc nền & âm thanh">🔇</button><button id="sndSet" aria-label="Cài đặt âm thanh" title="Cài đặt âm thanh">⚙️</button></span>
         <button class="gd-pill btn mine" id="evBtn" style="display:none" title="Sự kiện theo mùa: quà mỗi ngày và món giới hạn"></button>
         <button class="gd-pill btn mine" id="questBtn" title="Nhiệm vụ, quà từ thầy cô và dự án của lớp">🎯 Nhiệm vụ <b class="gd-dot" id="questDot" style="display:none">0</b></button>
         <button class="gd-pill btn mine" id="passBtn" title="Hộ chiếu văn hoá: học tiếng Anh qua các khu quốc gia">🛂 Hộ chiếu</button>
@@ -462,6 +468,16 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
   <div class="gd-act"><button class="gd-btn" id="pspclose">Đóng</button></div>
 </div></div>
 <div class="gd-modal" id="culm"><div class="gd-box gd-cul" style="max-width:520px"><div id="culbody"></div><div class="gd-act"><button class="gd-btn" id="culclose">Đóng</button></div></div></div>
+<div class="gd-snd" id="sndPanel" role="dialog" aria-label="Cài đặt âm thanh">
+  <b>🎵 Âm thanh trong vườn</b>
+  <label><input type="checkbox" id="sndOn"> Bật âm thanh</label>
+  <label class="vl">🔉 <input type="range" id="sndVol" min="0" max="100" step="5" aria-label="Âm lượng"></label>
+  <label><input type="checkbox" id="sndMus"> 🎼 Nhạc nền riêng từng khu</label>
+  <label><input type="checkbox" id="sndAmb"> 🌿 Âm thanh môi trường (sóng, gió, chim…)</label>
+  <label><input type="checkbox" id="sndFx"> 🔔 Âm thanh khi chăm vườn</label>
+  <small id="sndNow"></small>
+  <small>Âm nhạc do máy tự tạo, không cần tải gì cả. Nhạc tạm dừng khi bạn rời trang.</small>
+</div>
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
@@ -491,6 +507,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-gen4.js?v=1"></script>
 <script src="js/garden-events-art.js?v=1"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
+<script src="js/garden-sound.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -500,7 +517,9 @@ var COIN = '<i class="coin"></i>';
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function H(s) { return esc(s).replace(/🪙/g, COIN); }   // văn bản có biểu tượng xu → xu vàng vẽ bằng CSS (không phụ thuộc emoji của máy)
 var tt; function toast(t, ms) { var el = $('toast'); el.innerHTML = H(t); el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 2600); }
-function api(url, body) { return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; throw e; } return d; }); }); }
+function SND(n) { try { if (window.EWTSound) EWTSound.sfx(n); } catch (e) {} }
+function sfxApi(u, d) { var k = String(u).replace('/api/garden/', ''), m = { place: 'place', remove: 'click', water: 'water', harvest: d && d.gained ? 'harvest' : 'water', 'harvest-all': 'harvest', grow: 'reward', 'land/expand': 'levelup', 'zone/unlock': 'levelup', 'pet/adopt': 'reward', 'pet/feed': 'coin', 'quests/claim': 'reward', 'inbox/claim': 'reward', 'event/daily': 'reward', 'event/milestone': 'levelup', 'trade/send': 'send', 'trade/respond': 'reward', 'culture/answer': d && d.passed ? 'reward' : 'click', 'class/contribute': 'coin', 'quiz/flip': 'reward' }; if (m[k]) SND(m[k]); }
+function api(url, body) { return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; SND('err'); throw e; } sfxApi(url, d); return d; }); }); }
 function NOW() { return Date.now() + SKEW; }
 function fmtT(ms) { var m = Math.ceil(ms / 60000); if (m < 1) return '<1 ph'; if (m < 60) return m + ' ph'; var h = Math.floor(m / 60); return h + 'g' + (m % 60 ? (m % 60) + 'p' : ''); }
 function setState(d) { S = d.garden; if (!VISIT) COINS = d.coins; if (typeof d.inbox === 'number') INBOX = d.inbox; if (typeof d.trades === 'number') TRADES = d.trades; SKEW = (S.now || Date.now()) - Date.now(); render(); if (window.updDots) window.updDots(); }
@@ -621,8 +640,8 @@ function render() {
   $('lvb').textContent = 'Cấp ' + S.level + ' · ' + S.levelTitle;
   var cur = D.LEVELS[S.level - 1].at, nx = S.next ? S.next.need + S.beauty : null; $('lvbar').style.width = (nx ? Math.min(100, Math.round((S.beauty - cur) / (nx - cur) * 100)) : 100) + '%';
   $('lvnx').textContent = S.next ? 'Còn ' + S.next.need + ' điểm đẹp → cấp ' + S.next.level : '🏆 Cấp cao nhất!';
-  if (LAST_LEVEL && S.level > LAST_LEVEL) { toast('🎉 Vườn lên cấp ' + S.level + ': ' + S.levelTitle + '! Mở thêm món và khu mới.', 4200); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'party-popper', 'glowing-star'], { count: 18, from: $('lvb') }); }
-  LAST_LEVEL = S.level; renderEvent();
+  if (LAST_LEVEL && S.level > LAST_LEVEL) { SND('levelup'); toast('🎉 Vườn lên cấp ' + S.level + ': ' + S.levelTitle + '! Mở thêm món và khu mới.', 4200); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'party-popper', 'glowing-star'], { count: 18, from: $('lvb') }); }
+  LAST_LEVEL = S.level; renderEvent(); fitTop(); sndScene();
   var z = VIEW === 'map' ? null : D.ZBY[VIEW];
   $('stage').classList.toggle('map', !z);
   if (!z) { renderMap(); renderTools(); return; }
@@ -1012,7 +1031,7 @@ function renderEvent() {
   if (VISIT || !evs.length) { b.style.display = 'none'; return; }
   var e = evs[0], todo = evs.some(function (x) { return !x.claimed || (x.miles || []).some(function (m) { return m.ready; }); });
   b.style.display = ''; b.classList.toggle('pulse', todo);
-  b.innerHTML = e.icon + ' ' + esc(e.short) + (evs.length > 1 ? ' +' + (evs.length - 1) : '') + ' <small>' + (e.left ? 'còn ' + e.left + ' ngày' : 'ngày cuối') + '</small>' + (todo ? ' <b class="gd-dot">!</b>' : '');
+  b.innerHTML = '<span class="ei">' + e.icon + '</span> ' + esc(e.short) + (evs.length > 1 ? ' +' + (evs.length - 1) : '') + ' <small>' + (e.left ? 'còn ' + e.left + ' ngày' : 'ngày cuối') + '</small>' + (todo ? ' <b class="gd-dot">!</b>' : '');
 }
 function evThumb(id) { var it = D.BY[id]; if (it) return it.kind === 'big' ? W.bigSvg(id) : A.itemSvg(it, 3, 52); var p = D.PBY[id]; return p ? A.petSvg(p, 52) : ''; }
 function openEvent() { var evs = (S.events && S.events.active) || []; if (!evs.length) return; if (!evs.some(function (e) { return e.id === EVSEL; })) EVSEL = evs[0].id; $('evm').classList.add('on'); drawEvent(); }
@@ -1114,6 +1133,40 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-trx]'))) { api('/api/garden/trade/cancel', { id: +el.getAttribute('data-trx') }).then(function (d) { setState(d); toast('Đã huỷ — món đã về giỏ của bạn.', 3200); drawQst(); }).catch(function (er) { toast(er.message, 3800); }); return; }
 });
 document.addEventListener('input', function (e) { if (!TR || !e.target) return; if (e.target.id === 'trq') { TR.q = e.target.value; drawTrRes(); } else if (e.target.id === 'trnote') TR.note = e.target.value; });
+
+/* ───────── nhạc nền & âm thanh theo khu ───────── */
+/* trên điện thoại thanh trên cùng có thể xuống nhiều dòng → chừa chỗ đúng bằng chiều cao thật để không đè lên khu vườn */
+function fitTop() { var st = $('stage'), tp = st.querySelector('.gd-top'); if (!tp) return; if (innerWidth > 640) { st.style.removeProperty('--top'); return; } var h = Math.ceil(tp.getBoundingClientRect().height) + 6; st.style.setProperty('--top', Math.max(104, h) + 'px'); }
+function sndScene() {
+  if (!window.EWTSound || !S) return;
+  var evs = ((S.events && S.events.active) || []).map(function (e) { return e.id; });
+  EWTSound.scene(D.ZBY[VIEW] ? VIEW : 'map', { night: $('stage').classList.contains('night'), events: evs });
+  sndUi();
+}
+function sndUi() {
+  if (!window.EWTSound) return; var st = EWTSound.state(), b = $('sndBtn');
+  b.textContent = st.on ? '🔊' : '🔇'; b.classList.toggle('on', st.on);
+  b.title = st.on ? 'Đang bật âm thanh — bấm để tắt' : st.wantOn ? 'Chạm vào trang để bật lại âm thanh bạn đã chọn' : 'Bật nhạc nền riêng cho từng khu vườn';
+  $('sndOn').checked = st.on; $('sndVol').value = Math.round(st.vol * 100); $('sndMus').checked = !!st.mus; $('sndAmb').checked = !!st.amb; $('sndFx').checked = !!st.fx;
+  var key = D.ZBY[VIEW] ? VIEW : 'map', z = D.ZBY[key];
+  $('sndNow').innerHTML = st.on ? '🎶 ' + esc(z ? z.name : 'Bản đồ vườn') + ': ' + esc(EWTSound.describe(key)) : (st.ok ? 'Đang tắt. Bật lên để nghe nhạc của từng khu.' : 'Trình duyệt này không hỗ trợ âm thanh.');
+}
+(function sndInit() {
+  if (!window.EWTSound) return; EWTSound.init(); var st = EWTSound.state();
+  if (!st.ok) { $('sndBtn').parentNode.style.display = 'none'; return; }
+  $('sndBtn').onclick = function () { EWTSound.toggle(!EWTSound.state().on); sndScene(); };
+  $('sndSet').onclick = function () { $('sndPanel').classList.toggle('on'); sndUi(); };
+  $('sndOn').onchange = function () { EWTSound.toggle($('sndOn').checked); sndScene(); };
+  $('sndVol').oninput = function () { EWTSound.set('vol', $('sndVol').value / 100); };
+  $('sndMus').onchange = function () { EWTSound.set('mus', $('sndMus').checked ? 1 : 0); };
+  $('sndAmb').onchange = function () { EWTSound.set('amb', $('sndAmb').checked ? 1 : 0); };
+  $('sndFx').onchange = function () { EWTSound.set('fx', $('sndFx').checked ? 1 : 0); };
+  document.addEventListener('pointerdown', function (e) { if (!$('sndPanel').contains(e.target) && !e.target.closest('#sndSet')) $('sndPanel').classList.remove('on'); }, true);
+  // đã bật từ lần trước → bật lại ngay khi học sinh chạm vào trang (trình duyệt chỉ cho phát tiếng sau khi người dùng chạm)
+  if (st.wantOn) { var once = function () { document.removeEventListener('pointerdown', once, true); if (!EWTSound.state().on) { EWTSound.toggle(true); sndScene(); } }; document.addEventListener('pointerdown', once, true); }
+  else { var seen = false; try { seen = !!localStorage.getItem('ewt-garden-snd'); } catch (e) {} if (!seen) setTimeout(function () { if (!VISIT) toast('🎵 Mới! Bấm nút 🔇 trên đầu để bật nhạc nền riêng cho từng khu vườn nhé.', 5200); EWTSound.set('vol', EWTSound.state().vol); }, 4500); }
+  sndUi();
+})();
 
 /* ───────── khởi động ───────── */
 buildScene(); paintIcons(); gfxInit(); timeOfDay(); setInterval(timeOfDay, 60000);
