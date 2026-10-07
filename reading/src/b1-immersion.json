@@ -1,0 +1,218 @@
+{
+ "id": "b1-immersion",
+ "level": "B1",
+ "title": "Create an English Language Immersion Experience",
+ "topic": "Study skills",
+ "words": 398,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Create an English Language Immersion Experience",
+  "url": "https://learningenglish.voanews.com/a/create-an-english-language-immersion-experience/5879458.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Have you ever seen an advertisement for a language immersion program? These programs can take place in a school or other location where a learner can practice using their second language in a natural setting. The language immersion situation forces the learner to use the new language throughout the day. They must try to communicate their ideas and understand native speakers. Speaking and hearing others use the language at meals, while shopping or taking part in other activities gives language learners valuable (and enjoyable) practice.",
+  "The use of new technologies can help you create your own immersion experiences. Below are some details on how you can plan an English immersion program for yourself and carry it out in your own home.",
+  "Follow these basic guidelines in making your program:",
+  "Step one: Know your starting level. It is best to know your ability level to create your immersion program. You can test yourself with a free online language test, like the EFSET test. After a period of time, you can take the same test again and see how much you improved. Knowing your level also lets you choose materials at the right level. The VOA English Challenge test on our website will give you a score on the Council of Europe’s (CEFR) scale. That goes from A1 – C2.",
+  "Step two: Choose materials a little above your level. Immersion programs often include material that is at a little higher level than the material you normally use. On our website, for example, there are three levels: Beginner, Intermediate, and Advanced. If you have been reading at the Intermediate level for some time, try choosing readings from our Advanced level, such as American Stories.",
+  "Step three: change up your practice. On some days, put more of your effort toward reading and writing. On others, spend more time on listening and speaking. Try to avoid doing the same thing each day. And take a break now and then to rest your brain. Read our story on spacing and interleaving your learning for more on this topic.",
+  "Step four: make new friends and have fun. Through conversation clubs and the new activities that are part of your language immersion, you will probably find new friends. Speak English with them as often as you can.",
+  "Look for ways to make your immersion program fun, like inviting a friend or family member to join you."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is the main purpose of this text?",
+   "options": [
+    "To advertise a school that offers English courses abroad",
+    "To show learners how to create an English-rich setting by themselves",
+    "To compare several different tests of English level",
+    "To explain why immersion programmes are too expensive for most people"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: tác giả hướng dẫn cách tự lên kế hoạch chương trình “immersion” tại nhà."
+  },
+  {
+   "type": "mcq",
+   "q": "What is one advantage of taking a level test more than once?",
+   "options": [
+    "You can measure how far you have progressed",
+    "You will remember all the answers",
+    "You can skip the next step of the programme",
+    "You will always get a higher CEFR level"
+   ],
+   "answer": 0,
+   "explain": "Bước 1: làm lại bài kiểm tra sau một thời gian để thấy mình tiến bộ bao nhiêu."
+  },
+  {
+   "type": "mcq",
+   "q": "A learner has found the middle-level texts comfortable for a long time. What does the writer advise?",
+   "options": [
+    "Return to the Beginner texts for extra practice",
+    "Stop reading and spend more time listening",
+    "Read only texts the learner already knows well",
+    "Try some texts from the Advanced section"
+   ],
+   "answer": 3,
+   "explain": "Bước 2: chọn tài liệu hơi cao hơn trình độ hiện tại, ví dụ chuyển sang bài Advanced."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer recommend about daily practice?",
+   "options": [
+    "Do the same activity every day to build a routine",
+    "Practise only speaking until you feel fluent",
+    "Vary the focus between skills and sometimes take a rest",
+    "Work without breaks for several hours each day"
+   ],
+   "answer": 2,
+   "explain": "Bước 3: thay đổi hoạt động (đọc-viết / nghe-nói), tránh lặp lại và nghỉ ngơi cho não."
+  },
+  {
+   "type": "mcq",
+   "q": "The writer says immersion happens in a “natural setting”. This suggests a place where…",
+   "options": [
+    "students study only grammar rules from their books",
+    "the language is used for real tasks, like meals or shopping",
+    "learners are not allowed to ask their teacher for help",
+    "people speak very slowly and use only simple words"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: học viên dùng ngôn ngữ suốt ngày — lúc ăn, mua sắm, làm hoạt động khác."
+  },
+  {
+   "type": "mcq",
+   "q": "Which learner is following the advice in Step four?",
+   "options": [
+    "Dao, who invites her cousin to join her at a weekly conversation club",
+    "Huy, who studies alone every night to avoid distractions",
+    "Nga, who only watches films without subtitles",
+    "Khoa, who takes the same test again every week"
+   ],
+   "answer": 0,
+   "explain": "Bước 4: kết bạn qua câu lạc bộ hội thoại, mời bạn bè/gia đình cùng tham gia cho vui."
+  },
+  {
+   "type": "tf",
+   "q": "The writer says an immersion programme must be held at a school.",
+   "answer": "F",
+   "explain": "Đoạn 1: chương trình có thể diễn ra “in a school or other location”; đoạn 2 còn hướng dẫn tự làm ở nhà."
+  },
+  {
+   "type": "tf",
+   "q": "The EFSET test costs less than the VOA test.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói EFSET miễn phí và VOA test cho điểm theo thang CEFR; không so sánh chi phí giữa hai bài."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "immersion",
+    "pos": "n",
+    "def": "learning a language by using it all the time",
+    "vi": "học bằng cách “ngâm mình” trong ngôn ngữ",
+    "ex": "a language immersion program"
+   },
+   {
+    "w": "native",
+    "pos": "adj",
+    "def": "born in a place or speaking a language from birth",
+    "vi": "bản ngữ, bản xứ",
+    "ex": "understand native speakers"
+   },
+   {
+    "w": "guideline",
+    "pos": "n",
+    "def": "a rule or piece of advice for doing something",
+    "vi": "nguyên tắc hướng dẫn",
+    "ex": "Follow these basic guidelines"
+   },
+   {
+    "w": "ability",
+    "pos": "n",
+    "def": "the skill to do something",
+    "vi": "khả năng",
+    "ex": "your ability level"
+   },
+   {
+    "w": "material",
+    "pos": "n",
+    "def": "things used for learning, such as texts",
+    "vi": "tài liệu",
+    "ex": "choose materials"
+   },
+   {
+    "w": "interleave",
+    "pos": "v",
+    "def": "to mix different things in a pattern",
+    "vi": "xen kẽ",
+    "ex": "spacing and interleaving"
+   },
+   {
+    "w": "valuable",
+    "pos": "adj",
+    "def": "very useful or important",
+    "vi": "có giá trị",
+    "ex": "valuable (and enjoyable) practice"
+   },
+   {
+    "w": "conversation club",
+    "pos": "n",
+    "def": "a group that meets to practise speaking",
+    "vi": "câu lạc bộ hội thoại",
+    "ex": "conversation clubs"
+   }
+  ],
+  "coll": [
+   {
+    "c": "carry out",
+    "vi": "thực hiện",
+    "ex": "carry it out in your own home"
+   },
+   {
+    "c": "take part in",
+    "vi": "tham gia",
+    "ex": "taking part in other activities"
+   },
+   {
+    "c": "on top of / a little above",
+    "vi": "cao hơn một chút",
+    "ex": "a little above your level"
+   },
+   {
+    "c": "make friends",
+    "vi": "kết bạn",
+    "ex": "make new friends"
+   },
+   {
+    "c": "take a break",
+    "vi": "nghỉ giải lao",
+    "ex": "take a break now and then"
+   }
+  ],
+  "str": [
+   {
+    "s": "It is best to + verb",
+    "vi": "Tốt nhất là …",
+    "ex": "It is best to know your ability level",
+    "explain": "It is best to + động từ: đưa lời khuyên mạnh."
+   },
+   {
+    "s": "try + V-ing / try + noun",
+    "vi": "thử …",
+    "ex": "try choosing readings from our Advanced level",
+    "explain": "try + V-ing: thử làm việc gì xem sao."
+   },
+   {
+    "s": "as often as you can",
+    "vi": "thường xuyên nhất có thể",
+    "ex": "Speak English with them as often as you can.",
+    "explain": "as … as you can: ở mức cao nhất có thể."
+   }
+  ]
+ }
+}

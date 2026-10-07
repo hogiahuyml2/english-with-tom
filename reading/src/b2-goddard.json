@@ -1,0 +1,217 @@
+{
+ "id": "b2-goddard",
+ "level": "B2",
+ "title": "American Inventors: Rocket Scientist Robert Goddard",
+ "topic": "Inventions",
+ "words": 309,
+ "minutes": 5,
+ "source": {
+  "name": "VOA Learning English — American Inventors: Rocket Scientist Robert Goddard",
+  "url": "https://learningenglish.voanews.com/a/american-inventors-rocket-scientist-robert-goddard/7979682.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Today rocket launches and space missions are common. But in the early 1900s, space travel seemed like a dream.",
+  "One of the most influential people in the field of rocket science was American Robert Goddard.",
+  "The American space agency NASA describes Goddard as “the father of modern rocket propulsion.”",
+  "Robert Goddard once said that \"the dream of yesterday is the hope of today and the reality of tomorrow.\" His scientific work gave hope to many dreams about space travel. He turned some of those dreams into reality.",
+  "More than one hundred years ago, Goddard carried out studies and tests of rocket engines.",
+  "He developed and flew many rockets that got their power from solid fuels: chemicals that formed a hard substance. In 1925, he made and tested the first rocket engine using a soft chemical fuel. The next year, he successfully launched the world's first liquid-fuel rocket.",
+  "Many historians consider liquid-fuel rocket flight to be as important as the first airplane flight by the American brothers Orville and Wilbur Wright.",
+  "Goddard's work proved that machines could travel outside of Earth's atmosphere and into space.",
+  "During his early research, he received money and support from the U.S. Smithsonian Institution. The Smithsonian published several reports about his efforts.",
+  "One publication, called “A Method of Reaching Extreme Altitudes,” wrote about his search for ways to send weather recording instruments higher than balloons could fly. It described how he developed the mathematical theories for rocket flight.",
+  "In that report, Goddard also suggested the possibility of a rocket someday reaching the moon. At the time, there was a big dispute in the press about this claim. Many people thought he was foolish for suggesting something that seemed so impossible.",
+  "Many of Goddard’s ideas are still used in rocket development. So, in a way, every rocket that flies today could be considered a Goddard rocket."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Why does the writer begin by comparing the early 1900s with today?",
+   "options": [
+    "To argue that space travel matters less now than before",
+    "To show how bold Goddard’s ideas were for their time",
+    "To explain why rocket launches have become dangerous",
+    "To compare rockets with the first aeroplanes"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: đầu thế kỷ 20 du hành vũ trụ chỉ như giấc mơ — làm nổi bật sự táo bạo của Goddard."
+  },
+  {
+   "type": "mcq",
+   "q": "What happened in 1926, according to the text?",
+   "options": [
+    "The first launch of a rocket that burned liquid fuel",
+    "The first test of an engine that used liquid fuel",
+    "The first flight of a rocket with solid fuel",
+    "The first rocket to travel beyond the atmosphere"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: 1925 thử động cơ nhiên liệu lỏng đầu tiên; năm sau (1926) phóng thành công tên lửa nhiên liệu lỏng đầu tiên."
+  },
+  {
+   "type": "mcq",
+   "q": "Why does the writer mention the Wright brothers?",
+   "options": [
+    "Historians see both achievements as equally important milestones",
+    "Goddard helped the Wright brothers with their early experiments",
+    "Both achievements happened within a few months of each other",
+    "Both used the very same type of fuel in their engines"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: nhiều sử gia coi chuyến bay tên lửa nhiên liệu lỏng quan trọng như chuyến bay đầu tiên của anh em nhà Wright."
+  },
+  {
+   "type": "mcq",
+   "q": "What was the original aim of the Smithsonian report?",
+   "options": [
+    "To ask the public to pay for building a rocket for the moon",
+    "To argue that liquid fuel was safer than solid fuel for rockets",
+    "To explain how to take weather equipment above balloon height",
+    "To describe a new kind of balloon for weather scientists"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 10: báo cáo viết về cách đưa dụng cụ đo thời tiết lên cao hơn khinh khí cầu."
+  },
+  {
+   "type": "mcq",
+   "q": "How did people react when Goddard mentioned a possible trip to the moon?",
+   "options": [
+    "Scientists agreed at once and offered money to help",
+    "Many considered the idea unrealistic and argued about it in public",
+    "The Smithsonian refused to publish his report",
+    "Newspapers ignored it because it seemed unimportant"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 11: có tranh cãi lớn trên báo chí; nhiều người cho rằng ông ngớ ngẩn."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer mean by saying that all rockets now flying are, in a way, “Goddard rockets”?",
+   "options": [
+    "Goddard personally built every rocket launched today",
+    "All modern rockets are named in his honour",
+    "Modern rockets look the same as the ones he built",
+    "Today’s rocket builders still rely on principles that he introduced"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 12: nhiều ý tưởng của Goddard vẫn được dùng trong phát triển tên lửa."
+  },
+  {
+   "type": "tf",
+   "q": "The Smithsonian helped to pay for Goddard’s early research.",
+   "answer": "T",
+   "explain": "Đoạn 9: ông nhận tiền và sự hỗ trợ từ Viện Smithsonian."
+  },
+  {
+   "type": "tf",
+   "q": "Goddard received several awards for his work during his lifetime.",
+   "answer": "NG",
+   "explain": "Bài không nhắc đến giải thưởng nào dành cho ông."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "propulsion",
+    "pos": "n",
+    "def": "a force that pushes something forward",
+    "vi": "sức đẩy, lực đẩy",
+    "ex": "modern rocket propulsion"
+   },
+   {
+    "w": "influential",
+    "pos": "adj",
+    "def": "having a strong effect on others",
+    "vi": "có ảnh hưởng lớn",
+    "ex": "most influential people"
+   },
+   {
+    "w": "solid fuel",
+    "pos": "n",
+    "def": "fuel in the form of a hard substance",
+    "vi": "nhiên liệu rắn",
+    "ex": "solid fuels"
+   },
+   {
+    "w": "atmosphere",
+    "pos": "n",
+    "def": "the layer of gases around the Earth",
+    "vi": "khí quyển",
+    "ex": "atmosphere"
+   },
+   {
+    "w": "altitude",
+    "pos": "n",
+    "def": "height above the ground or sea",
+    "vi": "độ cao",
+    "ex": "Extreme Altitudes"
+   },
+   {
+    "w": "theory",
+    "pos": "n",
+    "def": "a set of ideas that explain something",
+    "vi": "lý thuyết",
+    "ex": "mathematical theories"
+   },
+   {
+    "w": "dispute",
+    "pos": "n",
+    "def": "a serious argument",
+    "vi": "cuộc tranh cãi",
+    "ex": "a big dispute in the press"
+   },
+   {
+    "w": "foolish",
+    "pos": "adj",
+    "def": "showing a lack of good sense",
+    "vi": "ngớ ngẩn, dại dột",
+    "ex": "Many people thought he was foolish"
+   }
+  ],
+  "coll": [
+   {
+    "c": "carry out studies",
+    "vi": "tiến hành nghiên cứu",
+    "ex": "carried out studies and tests of rocket engines"
+   },
+   {
+    "c": "turn dreams into reality",
+    "vi": "biến ước mơ thành hiện thực",
+    "ex": "He turned some of those dreams into reality."
+   },
+   {
+    "c": "get power from",
+    "vi": "lấy năng lượng từ",
+    "ex": "got their power from solid fuels"
+   },
+   {
+    "c": "in a way",
+    "vi": "theo một cách nào đó",
+    "ex": "in a way, every rocket"
+   }
+  ],
+  "str": [
+   {
+    "s": "One of the most + adjective + noun",
+    "vi": "một trong những … nhất",
+    "ex": "One of the most influential people in the field",
+    "explain": "One of the most + tính từ + danh từ số nhiều: nêu một thành viên nổi bật trong nhóm."
+   },
+   {
+    "s": "Many historians consider X to be Y",
+    "vi": "Nhiều sử gia cho rằng X là Y",
+    "ex": "Many historians consider liquid-fuel rocket flight to be as important as",
+    "explain": "consider X to be Y; as … as: so sánh bằng."
+   },
+   {
+    "s": "could be considered",
+    "vi": "có thể được coi là",
+    "ex": "could be considered a Goddard rocket",
+    "explain": "could be + quá khứ phân từ: khả năng/đánh giá khách quan."
+   }
+  ]
+ }
+}

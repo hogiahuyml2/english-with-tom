@@ -1,0 +1,222 @@
+{
+ "id": "c1-supply-demand",
+ "level": "C1",
+ "title": "Supply and Demand",
+ "topic": "Economics",
+ "words": 457,
+ "minutes": 7,
+ "source": {
+  "name": "Wikipedia — Supply and demand",
+  "url": "https://en.wikipedia.org/wiki/Supply_and_demand",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "In microeconomics, supply and demand is an economic model of price determination in a market. It postulates that, holding all else equal, the unit price for a particular good or other traded item in a perfectly competitive market, will vary until it settles at the market-clearing price, where the quantity demanded equals the quantity supplied such that an economic equilibrium is achieved for price and quantity transacted. The concept of supply and demand forms the theoretical basis of modern economics.",
+  "In situations where a firm has market power, its decision on how much output to bring to market influences the market price, in violation of perfect competition. There, a more complicated model should be used; for example, an oligopoly or differentiated-product model. Likewise, where a buyer has market power, models such as monopsony will be more accurate.",
+  "A supply schedule, depicted graphically as a supply curve, is a table that shows the relationship between the price of a good and the quantity supplied by producers. Under the assumption of perfect competition, supply is determined by marginal cost: Firms will produce additional output as long as the cost of extra production is less than the market price.",
+  "A rise in the cost of raw materials would decrease supply, shifting the supply curve to the left because at each possible price a smaller quantity would be supplied. This shift may also be thought of as an upwards shift in the supply curve, because the price must rise for producers to supply a given quantity. A fall in production costs would increase supply, shifting the supply curve to the right or down.",
+  "Economists distinguish between short-run and long-run supply curve. Short run refers to a time period during which one or more inputs are fixed (typically physical capital), and the number of firms in the industry is also fixed (if it is a market supply curve). Long run refers to a time period during which new firms enter or existing firms exit and all inputs can be adjusted fully to any price change. Long-run supply curves are flatter than short-run counterparts (with quantity more sensitive to price, more elastic supply).",
+  "A demand schedule, depicted graphically as a demand curve, represents the amount of a certain good that buyers are willing and able to purchase at various prices, assuming all other determinants of demand are held constant, such as income, tastes and preferences, and the prices of substitute and complementary goods. Generally, consumers will buy an additional unit as long as the marginal value of the extra unit is more than the market price they pay. According to the law of demand, the demand curve is always downward-sloping, meaning that as the price decreases, consumers will buy more of the good."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "According to the first paragraph, how does price behave when buyers and sellers compete freely and none has power over it?",
+   "options": [
+    "It changes until the quantity buyers want equals the quantity sellers offer",
+    "The government sets a new price that balances the market",
+    "Sellers cut production until the price rises",
+    "Buyers stop purchasing until demand disappears"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: giá thay đổi đến khi đạt mức làm sạch thị trường, nơi lượng cầu bằng lượng cung."
+  },
+  {
+   "type": "mcq",
+   "q": "In which situation does the writer say a different model is needed?",
+   "options": [
+    "When many small firms compete freely",
+    "When a seller or buyer can influence the price",
+    "When prices are studied over a very long time",
+    "When all the goods on sale are identical"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: khi có quyền lực thị trường (firm có market power, hoặc người mua) cần mô hình phức tạp hơn."
+  },
+  {
+   "type": "mcq",
+   "q": "Up to what point will a firm in perfect competition keep raising its output?",
+   "options": [
+    "Until the total demand in the market has been fully satisfied",
+    "Until making one more unit would cost more than selling it brings in",
+    "Until its costs per unit start to rise even a little",
+    "Until the market price has fallen all the way to zero"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “as long as the cost of extra production is less than the market price”."
+  },
+  {
+   "type": "mcq",
+   "q": "What would be the likely effect of a fall in the price of raw materials?",
+   "options": [
+    "Producers would offer less at every price",
+    "Producers would have to raise prices to cover their costs",
+    "More goods would be offered at every price",
+    "The demand curve would move to the right"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 4: chi phí sản xuất giảm → cung tăng → đường cung dịch sang phải."
+  },
+  {
+   "type": "mcq",
+   "q": "Why are long-run supply curves flatter than short-run ones?",
+   "options": [
+    "Firms can fully adjust over time, so quantity responds more strongly to price",
+    "Prices stay fixed for a longer period in the long run",
+    "Fewer firms take part in the market once the long run begins",
+    "Inputs cannot be changed at all when the long run begins"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: dài hạn mọi yếu tố đầu vào có thể điều chỉnh, số doanh nghiệp thay đổi → lượng cung nhạy hơn theo giá."
+  },
+  {
+   "type": "mcq",
+   "q": "The law of demand, as described in the text, means that…",
+   "options": [
+    "people buy the same amount whatever the price is",
+    "higher incomes always cause demand to fall",
+    "consumers buy only goods that have complementary products",
+    "people tend to buy more of a good when it becomes cheaper"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 6: đường cầu dốc xuống — giá giảm thì người mua mua nhiều hơn."
+  },
+  {
+   "type": "tf",
+   "q": "A demand curve is drawn on the assumption that factors such as income and tastes do not change.",
+   "answer": "T",
+   "explain": "Đoạn 6: “assuming all other determinants of demand are held constant, such as income, tastes and preferences”."
+  },
+  {
+   "type": "tf",
+   "q": "The model was first developed in the nineteenth century.",
+   "answer": "NG",
+   "explain": "Bài không nói lý thuyết xuất hiện khi nào."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "postulate",
+    "pos": "v",
+    "def": "to suggest that something is true as a basis for argument",
+    "vi": "giả định, đưa ra giả thuyết",
+    "ex": "It postulates that"
+   },
+   {
+    "w": "equilibrium",
+    "pos": "n",
+    "def": "a state in which opposing forces are balanced",
+    "vi": "trạng thái cân bằng",
+    "ex": "an economic equilibrium is achieved"
+   },
+   {
+    "w": "output",
+    "pos": "n",
+    "def": "the amount that something produces",
+    "vi": "sản lượng",
+    "ex": "how much output to bring to market"
+   },
+   {
+    "w": "market power",
+    "pos": "n",
+    "def": "the ability of a firm or buyer to influence price",
+    "vi": "sức mạnh thị trường",
+    "ex": "has market power"
+   },
+   {
+    "w": "assumption",
+    "pos": "n",
+    "def": "something accepted as true without proof",
+    "vi": "giả định",
+    "ex": "Under the assumption of perfect competition"
+   },
+   {
+    "w": "determinant",
+    "pos": "n",
+    "def": "a factor that decides something",
+    "vi": "yếu tố quyết định",
+    "ex": "other determinants of demand"
+   },
+   {
+    "w": "elastic",
+    "pos": "adj",
+    "def": "changing a lot when conditions change",
+    "vi": "co giãn",
+    "ex": "more elastic supply"
+   },
+   {
+    "w": "counterpart",
+    "pos": "n",
+    "def": "a person or thing that has the same role as another",
+    "vi": "đối tác tương ứng, bản đối ứng",
+    "ex": "short-run counterparts"
+   }
+  ],
+  "coll": [
+   {
+    "c": "perfectly competitive market",
+    "vi": "thị trường cạnh tranh hoàn hảo",
+    "ex": "a perfectly competitive market"
+   },
+   {
+    "c": "supply curve",
+    "vi": "đường cung",
+    "ex": "the supply curve"
+   },
+   {
+    "c": "raw materials",
+    "vi": "nguyên liệu thô",
+    "ex": "raw materials"
+   },
+   {
+    "c": "production costs",
+    "vi": "chi phí sản xuất",
+    "ex": "production costs"
+   },
+   {
+    "c": "at each possible price",
+    "vi": "ở mỗi mức giá có thể",
+    "ex": "at each possible price"
+   }
+  ],
+  "str": [
+   {
+    "s": "holding all else equal",
+    "vi": "giữ các yếu tố khác không đổi",
+    "ex": "holding all else equal",
+    "explain": "Cụm phân từ trong kinh tế học (ceteris paribus)."
+   },
+   {
+    "s": "as long as + clause",
+    "vi": "miễn là / chừng nào …",
+    "ex": "as long as the cost of extra production is less than the market price",
+    "explain": "as long as: điều kiện để hành động tiếp tục."
+   },
+   {
+    "s": "Likewise, …",
+    "vi": "Tương tự, …",
+    "ex": "Likewise, where a buyer has market power",
+    "explain": "Likewise: trạng từ nối chỉ sự tương tự."
+   },
+   {
+    "s": "meaning that …",
+    "vi": "nghĩa là …",
+    "ex": "meaning that as the price decreases",
+    "explain": "meaning that + mệnh đề: giải thích hệ quả."
+   }
+  ]
+ }
+}

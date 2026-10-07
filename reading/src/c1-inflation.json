@@ -1,0 +1,221 @@
+{
+ "id": "c1-inflation",
+ "level": "C1",
+ "title": "Inflation",
+ "topic": "Economics",
+ "words": 539,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Inflation",
+  "url": "https://en.wikipedia.org/wiki/Inflation",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "In economics, inflation is an increase in the average price of goods and services in terms of money, though it originally referred to the increase of the money supply (monetary inflation) that can cause such a universal shift. This increase is measured using a price index, typically a consumer price index (CPI). When the general price level rises, each unit of currency buys fewer goods and services; consequently, inflation corresponds to a reduction in the purchasing power of money. The opposite of inflation is deflation, a decrease in the general price level of goods and services. The common measure of inflation is the inflation rate, the annualized percentage change in a general price index.",
+  "Moderate inflation affects economies in both positive and negative ways. The negative effects would include an increase in the opportunity cost of holding money; incentivizing workers to switch jobs unnecessarily, making labor markets appear tight while average real wages fall; forcing workers into risky wage negotiations to keep pace, as purchasing power erodes between contracts; uncertainty over future inflation, which may discourage investment and savings; and, if inflation were rapid enough, shortages of goods as consumers begin hoarding out of concern that prices will increase in the future. Positive effects include reducing unemployment due to nominal wage rigidity, allowing the central bank greater freedom in carrying out monetary policy, encouraging loans and investment instead of money hoarding, and avoiding the inefficiencies associated with deflation.",
+  "Today, most economists favour a low and steady rate of inflation. Low (as opposed to zero or negative) inflation reduces the likelihood of economic recessions by enabling the labor market to adjust more quickly and reduces the risk that a liquidity trap prevents monetary policy from stabilizing the economy, while also avoiding the costs associated with high inflation. The task of keeping the rate of inflation low and stable is usually given to central banks that control monetary policy, normally through the setting of interest rates and by carrying out open market operations.",
+  "The term originates from the Latin inflare (to blow into or inflate). Conceptually, inflation refers to the general trend of prices, not changes in any specific price. For example, if people choose to buy more cucumbers than tomatoes, cucumbers consequently become more expensive and tomatoes less expensive. These changes are not related to inflation; they reflect a shift in tastes. Inflation is related to the value of currency itself. When currency was linked with gold, if new gold deposits were found, the price of gold and the value of currency would fall, and consequently, the prices of all other goods would become higher.",
+  "Other economic concepts related to inflation include: deflation – a fall in the general price level; disinflation – a decrease in the rate of inflation; hyperinflation – an out-of-control inflationary spiral; stagflation – a combination of inflation, slow economic growth and high unemployment; reflation – an attempt to raise the general level of prices to counteract deflationary pressures; asset price inflation – a general rise in the prices of financial assets without a corresponding increase in the prices of goods or services; and agflation – an advanced increase in the price for food and industrial agricultural crops when compared with the general rise in prices."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the first paragraph imply for someone whose savings stay the same over several years of inflation?",
+   "options": [
+    "The money will purchase fewer items and services",
+    "Its value will rise along with the price index",
+    "The central bank will automatically adjust its amount",
+    "It will be easier to put money aside each month"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: giá chung tăng thì mỗi đơn vị tiền mua được ít hàng hoá và dịch vụ hơn → sức mua giảm."
+  },
+  {
+   "type": "mcq",
+   "q": "Which of the following would the writer NOT classify as inflation?",
+   "options": [
+    "The prices of almost all goods rise because the currency has lost value",
+    "Cucumbers cost more because shoppers now prefer them to tomatoes",
+    "The cost of living climbs across the whole economy as money buys less",
+    "A broad increase in what people must pay for everyday items"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: chênh lệch giá do thay đổi thị hiếu (dưa chuột/cà chua) không liên quan đến lạm phát."
+  },
+  {
+   "type": "mcq",
+   "q": "Why might moderate inflation encourage lending and investment rather than saving cash?",
+   "options": [
+    "Money kept idle gradually loses purchasing power, so it is less attractive to hold",
+    "Banks are legally required to lend more whenever prices increase",
+    "Wages automatically rise faster than prices during inflation",
+    "Governments stop collecting taxes when inflation is moderate"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: chi phí cơ hội của việc giữ tiền tăng; lạm phát vừa phải “encouraging loans and investment instead of money hoarding”."
+  },
+  {
+   "type": "mcq",
+   "q": "What is the writer’s overall view of moderate inflation?",
+   "options": [
+    "It is harmful in every respect and should be eliminated completely",
+    "It benefits governments but damages ordinary workers",
+    "It has both advantages and drawbacks, and a low, stable level is generally preferred",
+    "It has too little effect on economies to be worth discussing"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2–3: nêu cả tác động tích cực và tiêu cực; đa số nhà kinh tế thích mức thấp và ổn định."
+  },
+  {
+   "type": "mcq",
+   "q": "Why do most economists favour low inflation over no inflation at all?",
+   "options": [
+    "Zero inflation encourages workers to change jobs unnecessarily",
+    "Zero inflation causes shortages because consumers hoard goods",
+    "Low inflation is easier to measure with a consumer price index",
+    "Low inflation helps the labour market adjust and lowers the chance of recession"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 3: lạm phát thấp (khác “zero or negative”) giảm khả năng suy thoái nhờ thị trường lao động điều chỉnh nhanh hơn."
+  },
+  {
+   "type": "mcq",
+   "q": "Which situation is an example of stagflation?",
+   "options": [
+    "Prices fall while the economy expands quickly",
+    "Prices climb while the economy hardly grows and many people lose their jobs",
+    "Prices stay exactly the same for several years",
+    "Prices climb in a booming economy with very low unemployment"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: stagflation = lạm phát + tăng trưởng chậm + thất nghiệp cao."
+  },
+  {
+   "type": "tf",
+   "q": "Originally, “inflation” meant that prices were going up, not that more money was being created.",
+   "answer": "F",
+   "explain": "Đoạn 1: ban đầu nó chỉ sự tăng lượng cung tiền (“originally referred to the increase of the money supply”)."
+  },
+  {
+   "type": "tf",
+   "q": "Inflation is currently higher in developing countries than in developed ones.",
+   "answer": "NG",
+   "explain": "Bài không so sánh lạm phát giữa các nhóm nước."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "purchasing power",
+    "pos": "n",
+    "def": "the amount of goods that money can buy",
+    "vi": "sức mua",
+    "ex": "the purchasing power of money"
+   },
+   {
+    "w": "deflation",
+    "pos": "n",
+    "def": "a general fall in prices",
+    "vi": "giảm phát",
+    "ex": "deflation, a decrease in the general price level"
+   },
+   {
+    "w": "incentivize",
+    "pos": "v",
+    "def": "to encourage someone to act",
+    "vi": "tạo động cơ, khuyến khích",
+    "ex": "incentivizing workers to switch jobs"
+   },
+   {
+    "w": "erode",
+    "pos": "v",
+    "def": "to wear away slowly",
+    "vi": "bào mòn, suy giảm dần",
+    "ex": "purchasing power erodes between contracts"
+   },
+   {
+    "w": "hoard",
+    "pos": "v",
+    "def": "to collect and keep a large amount of something",
+    "vi": "tích trữ",
+    "ex": "hoarding out of concern"
+   },
+   {
+    "w": "recession",
+    "pos": "n",
+    "def": "a period when the economy shrinks",
+    "vi": "suy thoái kinh tế",
+    "ex": "economic recessions"
+   },
+   {
+    "w": "counteract",
+    "pos": "v",
+    "def": "to reduce the effect of something",
+    "vi": "chống lại, triệt tiêu",
+    "ex": "to counteract deflationary pressures"
+   },
+   {
+    "w": "rigidity",
+    "pos": "n",
+    "def": "the quality of not changing easily",
+    "vi": "tính cứng nhắc",
+    "ex": "nominal wage rigidity"
+   }
+  ],
+  "coll": [
+   {
+    "c": "price level",
+    "vi": "mặt bằng giá",
+    "ex": "the general price level"
+   },
+   {
+    "c": "central bank",
+    "vi": "ngân hàng trung ương",
+    "ex": "the central bank"
+   },
+   {
+    "c": "monetary policy",
+    "vi": "chính sách tiền tệ",
+    "ex": "monetary policy"
+   },
+   {
+    "c": "interest rates",
+    "vi": "lãi suất",
+    "ex": "interest rates"
+   },
+   {
+    "c": "economic growth",
+    "vi": "tăng trưởng kinh tế",
+    "ex": "slow economic growth"
+   }
+  ],
+  "str": [
+   {
+    "s": "while + clause (đồng thời / đối lập)",
+    "vi": "trong khi …",
+    "ex": "making labor markets appear tight while average real wages fall",
+    "explain": "while nối hai ý diễn ra cùng lúc hoặc trái ngược nhau."
+   },
+   {
+    "s": "(as opposed to + noun)",
+    "vi": "chứ không phải …, đối lập với …",
+    "ex": "Low (as opposed to zero or negative) inflation",
+    "explain": "as opposed to + danh từ: nhấn mạnh sự khác biệt giữa hai lựa chọn."
+   },
+   {
+    "s": "if + were + subject (giả định)",
+    "vi": "nếu … (giả định)",
+    "ex": "if inflation were rapid enough",
+    "explain": "Câu điều kiện loại 2 trang trọng: if + were … để nêu giả định."
+   },
+   {
+    "s": "consequently, …",
+    "vi": "do đó, …",
+    "ex": "consequently, inflation corresponds to a reduction",
+    "explain": "consequently: trạng từ nối chỉ kết quả."
+   }
+  ]
+ }
+}

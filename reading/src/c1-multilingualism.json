@@ -1,0 +1,222 @@
+{
+ "id": "c1-multilingualism",
+ "level": "C1",
+ "title": "Multilingualism",
+ "topic": "Language",
+ "words": 529,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Multilingualism",
+  "url": "https://en.wikipedia.org/wiki/Multilingualism",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Multilingualism is the use of more than one language, either by an individual speaker or by a group of speakers. When the languages are only two, it is usually called bilingualism. It is believed that multilingual speakers outnumber monolingual speakers in the world's population. More than half of all Europeans claim to speak at least one language other than their mother tongue, but many read and write in one language. Being multilingual is advantageous for people wanting to participate in trade, globalization and cultural openness. Owing to the ease of access to information facilitated by the Internet, individuals' exposure to multiple languages has become increasingly possible. People who speak several languages are also called polyglots.",
+  "Multilingual speakers have acquired and maintained at least one language during childhood, the so-called first language (L1). The first language (sometimes also referred to as the mother tongue) is usually acquired without formal education, by mechanisms about which scholars disagree. Children acquiring two languages natively from these early years are called simultaneous bilinguals. It is common for young simultaneous bilinguals to be more proficient in one language than the other.",
+  "Modern research emphasizes that multilingualism should be viewed as a multidimensional complex term. Instead of categorizing someone as either monolingual or multilingual, multilingualism should be seen more as a multifaceted phenomenon. Someone might learn multiple languages since birth or in early childhood whereas another might not learn a second language until teenage years or even adulthood. People also differ in how well they speak a language and how often they use the different languages that they speak in everyday life.",
+  "In addition, there is no consistent definition of what constitutes a distinct language. For instance, scholars often disagree whether Scots is a language in its own right or merely a dialect of English. Furthermore, what is considered a language can change, often for purely political reasons. One example is the creation of Serbo-Croatian as a standard language on the basis of the Eastern Herzegovinian dialect to function as umbrella for numerous South Slavic dialects; after the breakup of Yugoslavia, it was split into Serbian, Croatian, Bosnian and Montenegrin. Another example is the historical dismissal of Ukrainian as a Russian dialect by the Russian tsars to discourage national feelings.",
+  "Many small independent nations' schoolchildren are today compelled to learn multiple languages because of international interactions. For example, in Finland, all children are required to learn at least three languages: the two national languages (Finnish and Swedish) and one foreign language (usually English). Many Finnish schoolchildren also study further languages, such as German, French or Spanish.",
+  "Bilinguals might have important labor market advantages over monolingual individuals as bilingual people can carry out duties that monolinguals cannot, such as interacting with customers who only speak a minority language. A study in Switzerland has found that multilingualism is positively correlated with an individual's salary, the productivity of firms, and the gross domestic production (GDP); the authors state that Switzerland's GDP is augmented by 10% by multilingualism. A study in the United States by O. Agirdag found that bilingualism has substantial economic benefits, as bilingual people were found to earn around $3,000 more per year in salary than monolinguals."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the writer imply by noting that many Europeans are literate in only one language?",
+   "options": [
+    "Most Europeans have never studied a second language",
+    "Reading and writing are easier to master than speaking",
+    "Europeans prefer written communication to spoken communication",
+    "Claimed speaking ability in other languages may not be matched by literacy"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 1: hơn nửa người châu Âu nói được ngôn ngữ khác tiếng mẹ đẻ, nhưng nhiều người chỉ đọc/viết một ngôn ngữ."
+  },
+  {
+   "type": "mcq",
+   "q": "What is typical of young simultaneous bilinguals?",
+   "options": [
+    "They study the second language at school after learning to read",
+    "They learn two languages in early childhood but are often stronger in one",
+    "They use both languages equally well in every situation",
+    "They acquire both languages through formal teaching"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: học hai ngôn ngữ từ nhỏ nhưng thường thành thạo một ngôn ngữ hơn."
+  },
+  {
+   "type": "mcq",
+   "q": "What does recent research suggest about describing someone’s language ability?",
+   "options": [
+    "It should be reduced to a single score on a test",
+    "Only people who learn as babies can be called multilingual",
+    "It is better treated as a spectrum of differences than as a two-way label",
+    "The age at which a language is learned is the only factor that counts"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3: không nên chia đơn giản “đơn ngữ/đa ngữ”; đây là hiện tượng nhiều chiều."
+  },
+  {
+   "type": "mcq",
+   "q": "What do the cases of Serbo-Croatian and Ukrainian illustrate?",
+   "options": [
+    "Dialects always grow into distinct languages over time",
+    "Decisions about what counts as a separate language are often shaped by politics",
+    "Languages that share a script are easier to learn",
+    "Governments rarely have a say in how languages are classified"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: việc coi là “ngôn ngữ” hay “phương ngữ” có thể thay đổi “for purely political reasons”."
+  },
+  {
+   "type": "mcq",
+   "q": "Under the Finnish rule described in the text, which combination must every child study?",
+   "options": [
+    "Finnish, Swedish and a language from abroad",
+    "Finnish and English only",
+    "Swedish, English and German",
+    "Finnish, Swedish, English and a fourth language of choice"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: ít nhất ba ngôn ngữ — hai ngôn ngữ quốc gia (Finnish, Swedish) và một ngoại ngữ."
+  },
+  {
+   "type": "mcq",
+   "q": "Why does the writer cite studies from Switzerland and the United States?",
+   "options": [
+    "To offer evidence that speaking several languages can bring financial benefits",
+    "To show that bilinguals are more intelligent than monolinguals",
+    "To argue that employers should only hire bilingual staff",
+    "To explain why some countries have several official languages"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: các nghiên cứu cho thấy đa ngữ liên quan đến lương cao hơn và GDP/năng suất."
+  },
+  {
+   "type": "tf",
+   "q": "According to the text, people who speak only one language probably make up the majority of the world’s population.",
+   "answer": "F",
+   "explain": "Đoạn 1: “It is believed that multilingual speakers outnumber monolingual speakers”."
+  },
+  {
+   "type": "tf",
+   "q": "Learning a second language is easier for young children than for adults.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói người có thể học ngôn ngữ ở các độ tuổi khác nhau; không so sánh mức độ dễ."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "monolingual",
+    "pos": "adj",
+    "def": "speaking only one language",
+    "vi": "đơn ngữ",
+    "ex": "monolingual speakers"
+   },
+   {
+    "w": "polyglot",
+    "pos": "n",
+    "def": "a person who knows many languages",
+    "vi": "người biết nhiều thứ tiếng",
+    "ex": "also called polyglots"
+   },
+   {
+    "w": "advantageous",
+    "pos": "adj",
+    "def": "helpful; giving an advantage",
+    "vi": "có lợi",
+    "ex": "Being multilingual is advantageous"
+   },
+   {
+    "w": "proficient",
+    "pos": "adj",
+    "def": "skilled and competent",
+    "vi": "thành thạo",
+    "ex": "more proficient in one language"
+   },
+   {
+    "w": "categorize",
+    "pos": "v",
+    "def": "to put into groups",
+    "vi": "phân loại",
+    "ex": "Instead of categorizing someone"
+   },
+   {
+    "w": "dialect",
+    "pos": "n",
+    "def": "a form of a language used in a region",
+    "vi": "phương ngữ",
+    "ex": "a dialect of English"
+   },
+   {
+    "w": "compel",
+    "pos": "v",
+    "def": "to force someone to do something",
+    "vi": "buộc, ép",
+    "ex": "are today compelled to learn multiple languages"
+   },
+   {
+    "w": "correlate",
+    "pos": "v",
+    "def": "to be connected in a regular way",
+    "vi": "có tương quan",
+    "ex": "positively correlated with an individual's salary"
+   }
+  ],
+  "coll": [
+   {
+    "c": "mother tongue",
+    "vi": "tiếng mẹ đẻ",
+    "ex": "their mother tongue"
+   },
+   {
+    "c": "first language",
+    "vi": "ngôn ngữ thứ nhất",
+    "ex": "first language (L1)"
+   },
+   {
+    "c": "labor market",
+    "vi": "thị trường lao động",
+    "ex": "labor market advantages"
+   },
+   {
+    "c": "in everyday life",
+    "vi": "trong đời sống hằng ngày",
+    "ex": "in everyday life"
+   },
+   {
+    "c": "at least",
+    "vi": "ít nhất",
+    "ex": "at least three languages"
+   }
+  ],
+  "str": [
+   {
+    "s": "Owing to + noun, …",
+    "vi": "Do …, …",
+    "ex": "Owing to the ease of access to information",
+    "explain": "Owing to + danh từ: giới từ ghép chỉ nguyên nhân, trang trọng."
+   },
+   {
+    "s": "whereas",
+    "vi": "trong khi (đối lập)",
+    "ex": "whereas another might not learn a second language until teenage years",
+    "explain": "whereas nối hai vế đối lập."
+   },
+   {
+    "s": "Instead of + V-ing",
+    "vi": "Thay vì …",
+    "ex": "Instead of categorizing someone as either monolingual or multilingual",
+    "explain": "Instead of + V-ing: nêu cách làm thay thế."
+   },
+   {
+    "s": "It is believed that …",
+    "vi": "Người ta tin rằng …",
+    "ex": "It is believed that multilingual speakers outnumber",
+    "explain": "Bị động khách quan: it is believed that + mệnh đề."
+   }
+  ]
+ }
+}

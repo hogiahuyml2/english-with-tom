@@ -1,0 +1,185 @@
+{
+ "id": "a2-tea",
+ "level": "A2",
+ "title": "Tea",
+ "topic": "Food & drink",
+ "words": 192,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Tea",
+  "url": "https://simple.wikipedia.org/wiki/Tea",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Đã rút gọn và đơn giản hoá nhẹ một số câu; thông tin theo bài gốc."
+ },
+ "paras": [
+  "Tea is a drink made from the leaves of the Camellia sinensis plant. After water, tea is the most widely drunk drink in the world. Sometimes people use the word “tea” for drinks made by soaking fruit or herbs in hot water, like rosehip tea or chamomile tea. These are called herbal teas.",
+  "There are three main types of tea: black tea, oolong tea and green tea. To make black tea, people dry the leaves with hot air until they turn brown or black. Most black tea comes from Sri Lanka, Indonesia and eastern Africa. In China, black tea is often called red tea, because the tea in the cup looks deep dark red.",
+  "Green tea is made by steaming fresh leaves. This keeps them green. Then the leaves are crushed and dried in ovens. Oolong tea is a traditional Chinese tea.",
+  "Tea is mainly grown in China, India, Pakistan, Sri Lanka, Taiwan, Japan, Nepal, Australia, Argentina and Kenya. Green tea is usually left in hot water for two to three minutes, but black tea needs three to five minutes in boiling water. Earl Grey is a black tea with bergamot oil."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is tea made from?",
+   "options": [
+    "The seeds of a fruit",
+    "The roots of a tree",
+    "The leaves of a plant",
+    "Milk and sugar"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “a drink made from the leaves of the Camellia sinensis plant”."
+  },
+  {
+   "type": "mcq",
+   "q": "Why is black tea often called “red tea” in China?",
+   "options": [
+    "Because the leaves are red before drying",
+    "Because it grows near red mountains",
+    "Because it is made from red fruit",
+    "Because the tea in the cup looks deep red"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: “because the tea in the cup looks deep dark red”."
+  },
+  {
+   "type": "mcq",
+   "q": "How long is black tea usually left in boiling water?",
+   "options": [
+    "Three to five minutes",
+    "Two to three minutes",
+    "Ten to twenty minutes",
+    "About one hour"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “black tea needs three to five minutes in boiling water”."
+  },
+  {
+   "type": "mcq",
+   "q": "What is Earl Grey?",
+   "options": [
+    "A green tea from Japan",
+    "A black tea with bergamot oil",
+    "A tea made from fruit",
+    "A kind of oolong tea"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: “Earl Grey is a black tea with bergamot oil.”"
+  },
+  {
+   "type": "tf",
+   "q": "After water, tea is the most widely drunk drink in the world.",
+   "answer": "T",
+   "explain": "Đoạn 1: “After water, tea is the most widely drunk drink in the world.”"
+  },
+  {
+   "type": "tf",
+   "q": "Green tea is made by drying the leaves with hot air until they turn brown.",
+   "answer": "F",
+   "explain": "Đoạn 3: trà xanh được làm bằng cách hấp lá tươi để giữ màu xanh; trà đen mới là loại phơi sấy cho nâu/đen."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "leaf",
+    "pos": "n",
+    "def": "a flat green part of a plant",
+    "vi": "lá",
+    "ex": "the leaves of the Camellia sinensis plant"
+   },
+   {
+    "w": "herb",
+    "pos": "n",
+    "def": "a plant used for flavour or medicine",
+    "vi": "thảo mộc",
+    "ex": "fruit or herbs"
+   },
+   {
+    "w": "soak",
+    "pos": "v",
+    "def": "to leave something in water",
+    "vi": "ngâm",
+    "ex": "soaking fruit or herbs in hot water"
+   },
+   {
+    "w": "oolong",
+    "pos": "n",
+    "def": "a type of Chinese tea",
+    "vi": "trà ô long",
+    "ex": "oolong tea"
+   },
+   {
+    "w": "steam",
+    "pos": "v",
+    "def": "to cook with hot gas from boiling water",
+    "vi": "hấp",
+    "ex": "made by steaming fresh leaves"
+   },
+   {
+    "w": "crush",
+    "pos": "v",
+    "def": "to press something hard until it breaks",
+    "vi": "nghiền, ép nát",
+    "ex": "Then the leaves are crushed"
+   },
+   {
+    "w": "traditional",
+    "pos": "adj",
+    "def": "done in the old way for many years",
+    "vi": "truyền thống",
+    "ex": "a traditional Chinese tea"
+   },
+   {
+    "w": "boiling",
+    "pos": "adj",
+    "def": "very hot, like water that bubbles",
+    "vi": "sôi",
+    "ex": "boiling water"
+   }
+  ],
+  "coll": [
+   {
+    "c": "made from",
+    "vi": "được làm từ",
+    "ex": "a drink made from the leaves"
+   },
+   {
+    "c": "most widely drunk",
+    "vi": "được uống nhiều nhất",
+    "ex": "the most widely drunk drink"
+   },
+   {
+    "c": "turn brown",
+    "vi": "chuyển sang màu nâu",
+    "ex": "until they turn brown or black"
+   },
+   {
+    "c": "mainly grown in",
+    "vi": "chủ yếu được trồng ở",
+    "ex": "Tea is mainly grown in China"
+   }
+  ],
+  "str": [
+   {
+    "s": "the most + adverb + past participle",
+    "vi": "… nhất",
+    "ex": "the most widely drunk drink",
+    "explain": "Cấu trúc so sánh nhất với phân từ: the most widely drunk = được uống rộng rãi nhất."
+   },
+   {
+    "s": "There are + number + types of …",
+    "vi": "Có … loại …",
+    "ex": "There are three main types of tea",
+    "explain": "There are + số lượng + danh từ số nhiều: giới thiệu các loại."
+   },
+   {
+    "s": "because + clause",
+    "vi": "bởi vì …",
+    "ex": "because the tea in the cup looks deep dark red",
+    "explain": "because + mệnh đề: nêu lý do."
+   }
+  ]
+ }
+}

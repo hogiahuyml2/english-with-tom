@@ -1,0 +1,180 @@
+{
+ "id": "a1-honey",
+ "level": "A1",
+ "title": "Honey",
+ "topic": "Food",
+ "words": 86,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Honey",
+  "url": "https://simple.wikipedia.org/wiki/Honey",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Honey is a sweet food. Bees make honey from nectar. Nectar comes from flowers. The bees keep the honey in a honeycomb. People can use honey instead of sugar.",
+  "Honey can taste different. It depends on the flowers that the bees use. Some honey is thick and some honey is light.",
+  "Honey does not go bad. Bacteria and other tiny living things cannot grow in it. Scientists found very old honey in ancient tombs in Egypt. It was still good to eat after thousands of years."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What do bees make honey from?",
+   "options": [
+    "Nectar",
+    "Sugar",
+    "Milk"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Bees make honey from nectar.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where do the bees keep the honey?",
+   "options": [
+    "In a tree",
+    "In a honeycomb",
+    "In a jar of sugar"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “The bees keep the honey in a honeycomb.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What can people use instead of sugar?",
+   "options": [
+    "Nectar",
+    "A honeycomb",
+    "Honey"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “People can use honey instead of sugar.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where did scientists find very old honey?",
+   "options": [
+    "In ancient tombs in Egypt",
+    "In a school in Spain",
+    "In a river in China"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “Scientists found very old honey in ancient tombs in Egypt.”"
+  },
+  {
+   "type": "tf",
+   "q": "Honey tastes different when bees use different flowers.",
+   "answer": "T",
+   "explain": "Đoạn 2: “It depends on the flowers that the bees use.”"
+  },
+  {
+   "type": "tf",
+   "q": "Honey goes bad very quickly.",
+   "answer": "F",
+   "explain": "Đoạn 3: “Honey does not go bad.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "honey",
+    "pos": "n",
+    "def": "a sweet food that bees make",
+    "vi": "mật ong",
+    "ex": "Honey is a sweet food."
+   },
+   {
+    "w": "bee",
+    "pos": "n",
+    "def": "a small insect that makes honey",
+    "vi": "con ong",
+    "ex": "Bees make honey"
+   },
+   {
+    "w": "nectar",
+    "pos": "n",
+    "def": "a sweet liquid inside flowers",
+    "vi": "mật hoa",
+    "ex": "from nectar"
+   },
+   {
+    "w": "honeycomb",
+    "pos": "n",
+    "def": "a wax structure where bees keep honey",
+    "vi": "tổ ong",
+    "ex": "in a honeycomb"
+   },
+   {
+    "w": "instead of",
+    "pos": "prep",
+    "def": "in place of",
+    "vi": "thay vì",
+    "ex": "instead of sugar"
+   },
+   {
+    "w": "thick",
+    "pos": "adj",
+    "def": "not thin; not easy to pour",
+    "vi": "đặc, sệt",
+    "ex": "thick"
+   },
+   {
+    "w": "ancient",
+    "pos": "adj",
+    "def": "very, very old",
+    "vi": "cổ xưa",
+    "ex": "ancient tombs"
+   },
+   {
+    "w": "tomb",
+    "pos": "n",
+    "def": "a place where a dead person is buried",
+    "vi": "ngôi mộ",
+    "ex": "ancient tombs"
+   }
+  ],
+  "coll": [
+   {
+    "c": "go bad",
+    "vi": "bị hỏng (thức ăn)",
+    "ex": "Honey does not go bad."
+   },
+   {
+    "c": "depend on",
+    "vi": "phụ thuộc vào",
+    "ex": "It depends on the flowers"
+   },
+   {
+    "c": "instead of",
+    "vi": "thay vì",
+    "ex": "instead of sugar"
+   },
+   {
+    "c": "thousands of years",
+    "vi": "hàng nghìn năm",
+    "ex": "thousands of years"
+   }
+  ],
+  "str": [
+   {
+    "s": "can + verb",
+    "vi": "có thể",
+    "ex": "People can use honey instead of sugar.",
+    "explain": "can + động từ nguyên mẫu: nói về điều có thể làm."
+   },
+   {
+    "s": "does not + verb",
+    "vi": "không …",
+    "ex": "Honey does not go bad.",
+    "explain": "does not + động từ nguyên mẫu: phủ định ở hiện tại đơn (he/she/it)."
+   },
+   {
+    "s": "It depends on + noun",
+    "vi": "Tuỳ thuộc vào …",
+    "ex": "It depends on the flowers that the bees use.",
+    "explain": "depend on + danh từ: kết quả thay đổi theo yếu tố nào đó."
+   }
+  ]
+ }
+}

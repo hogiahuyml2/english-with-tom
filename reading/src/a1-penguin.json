@@ -1,0 +1,180 @@
+{
+ "id": "a1-penguin",
+ "level": "A1",
+ "title": "Penguins",
+ "topic": "Animals",
+ "words": 89,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Penguin",
+  "url": "https://simple.wikipedia.org/wiki/Penguin",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Penguins are birds. They cannot fly, but they swim very well. They use their wings to swim under the water. Penguins eat fish and other food from the sea.",
+  "Penguins live in the south of the world, for example in Antarctica and New Zealand. Penguins lay their eggs and take care of their babies on land.",
+  "All penguins have a white belly and a black back. The biggest penguin is the emperor penguin. It can be nearly 110 centimetres tall. The smallest penguin is only about 32 centimetres tall."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What can penguins NOT do?",
+   "options": [
+    "Swim",
+    "Fly",
+    "Eat fish"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “They cannot fly, but they swim very well.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do penguins eat?",
+   "options": [
+    "Fish",
+    "Grass",
+    "Bread"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Penguins eat fish and other food from the sea.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where do penguins lay their eggs?",
+   "options": [
+    "In the water",
+    "In a tree",
+    "On land"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “Penguins lay their eggs and take care of their babies on land.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which penguin is the biggest?",
+   "options": [
+    "The emperor penguin",
+    "The smallest penguin",
+    "A penguin with a black belly"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “The biggest penguin is the emperor penguin.”"
+  },
+  {
+   "type": "tf",
+   "q": "Penguins live in the north of the world.",
+   "answer": "F",
+   "explain": "Đoạn 2: penguin sống ở phía nam của thế giới (Antarctica, New Zealand…)."
+  },
+  {
+   "type": "tf",
+   "q": "A penguin has a white belly.",
+   "answer": "T",
+   "explain": "Đoạn 3: “All penguins have a white belly and a black back.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "penguin",
+    "pos": "n",
+    "def": "a black and white bird that swims but cannot fly",
+    "vi": "chim cánh cụt",
+    "ex": "Penguins are birds."
+   },
+   {
+    "w": "fly",
+    "pos": "v",
+    "def": "to move through the air with wings",
+    "vi": "bay",
+    "ex": "They cannot fly"
+   },
+   {
+    "w": "swim",
+    "pos": "v",
+    "def": "to move through water",
+    "vi": "bơi",
+    "ex": "they swim very well"
+   },
+   {
+    "w": "wing",
+    "pos": "n",
+    "def": "the part of a bird that it uses to fly or swim",
+    "vi": "cánh",
+    "ex": "They use their wings"
+   },
+   {
+    "w": "belly",
+    "pos": "n",
+    "def": "the front part of the body, under the chest",
+    "vi": "bụng",
+    "ex": "a white belly"
+   },
+   {
+    "w": "egg",
+    "pos": "n",
+    "def": "an oval thing that a bird lays; a baby bird grows inside",
+    "vi": "trứng",
+    "ex": "lay their eggs"
+   },
+   {
+    "w": "tall",
+    "pos": "adj",
+    "def": "high (for people and animals)",
+    "vi": "cao",
+    "ex": "nearly 110 centimetres tall"
+   },
+   {
+    "w": "land",
+    "pos": "n",
+    "def": "the ground, not the sea",
+    "vi": "đất liền",
+    "ex": "on land"
+   }
+  ],
+  "coll": [
+   {
+    "c": "lay eggs",
+    "vi": "đẻ trứng",
+    "ex": "Penguins lay their eggs"
+   },
+   {
+    "c": "take care of",
+    "vi": "chăm sóc",
+    "ex": "take care of their babies"
+   },
+   {
+    "c": "for example",
+    "vi": "ví dụ",
+    "ex": "for example in Antarctica"
+   },
+   {
+    "c": "under the water",
+    "vi": "dưới nước",
+    "ex": "swim under the water"
+   }
+  ],
+  "str": [
+   {
+    "s": "They cannot + verb",
+    "vi": "Chúng không thể …",
+    "ex": "They cannot fly",
+    "explain": "cannot + động từ nguyên mẫu: không có khả năng làm gì."
+   },
+   {
+    "s": "The biggest / the smallest + noun",
+    "vi": "… lớn nhất / nhỏ nhất",
+    "ex": "The biggest penguin is the emperor penguin.",
+    "explain": "the + tính từ so sánh nhất + danh từ: chỉ cái “nhất” trong nhóm."
+   },
+   {
+    "s": "both … and (A, B and C)",
+    "vi": "liệt kê bằng and",
+    "ex": "a white belly and a black back",
+    "explain": "Nối hai thứ giống nhau về chức năng bằng and."
+   }
+  ]
+ }
+}

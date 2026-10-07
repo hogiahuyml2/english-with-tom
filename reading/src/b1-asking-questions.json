@@ -1,0 +1,218 @@
+{
+ "id": "b1-asking-questions",
+ "level": "B1",
+ "title": "Learning How to Ask Questions",
+ "topic": "Study skills",
+ "words": 391,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Learning How to Ask Questions",
+  "url": "https://learningenglish.voanews.com/a/education-tips-improve-critical-thinking-ask-questions/3303557.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Suzanne Meyer, the assistant director of the English Language Institute at the University of Tennessee, Knoxville, says that many students need to develop critical thinking skills.",
+  "In other words, students need to learn how to collect information, and then evaluate the information and apply it to a new context.",
+  "\"We need to get students actively engaged in inquiry, from the beginning levels on, into those levels where they really are close to professional and university contexts.\"",
+  "One way to develop critical thinking skills, Meyer says, is to teach students to be creative about the types of questions that they ask.",
+  "Meyer says that there are many benefits to using question-asking activities with English learners. Question-asking activities help students to become better language learners.",
+  "\"Question-asking overall helps students be better language learners. Not for the obvious, because you ask a question you get an answer. Often, questions are the first point of contact. And so if my question is not good, then that's going to direct the level of our conversation.\"",
+  "Meyer also says that question-asking may help develop critical thinking skills by allowing for more interactions:",
+  "\"People who can ask questions are very confident. And when you are confident, you can have more interaction. That extra interaction might lead to critical thinking. Because you are more likely to actually integrate in some fashion into a new setting if you are in an ESL scenario. So, I think overall, just the whole question-asking idea has so many benefits.\"",
+  "There are many strategies to improve question-asking and develop critical thinking skills. One possible strategy, says Meyer, is to use question-asking patterns that start with concrete questions and move to abstract questions.",
+  "So, for example, if students were reading a new text, they would design a series of questions using three different steps.",
+  "If students follow these three steps, they have not only practiced creative ways to ask questions, they have also started practicing critical thinking.",
+  "Meyer says that when teachers tell students which questions to answer, students are less likely to be creative about the types of questions that they ask.",
+  "So, practice developing your own questions! Try making a list of questions that go from concrete to abstract, like the steps outlined above. Check with your teacher to make sure that your grammar is correct, and try to practice in the classroom."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does Meyer mean by “critical thinking”?",
+   "options": [
+    "Finding mistakes in what other people say",
+    "Collecting information, judging it and using it in a new situation",
+    "Memorising facts for a test as quickly as possible",
+    "Choosing the most difficult questions to answer"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: collect information, evaluate it and apply it to a new context."
+  },
+  {
+   "type": "mcq",
+   "q": "Why does Meyer say that a weak question can affect a conversation?",
+   "options": [
+    "It sets the quality of the exchange that follows",
+    "It makes the other person stop speaking altogether",
+    "It shows that the learner has not read the text",
+    "It only matters in a classroom, not in everyday life"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6 (trích dẫn): “if my question is not good, then that’s going to direct the level of our conversation”."
+  },
+  {
+   "type": "mcq",
+   "q": "How, according to Meyer, can being able to ask questions improve students’ thinking?",
+   "options": [
+    "Learners who ask questions are given harder homework by teachers",
+    "Asking questions gives learners quick answers to remember",
+    "Learners who ask many questions are seen as more intelligent",
+    "Confident learners interact more, and that extra contact may encourage deeper thinking"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 7–8: tự tin → tương tác nhiều hơn → có thể dẫn đến tư duy phản biện."
+  },
+  {
+   "type": "mcq",
+   "q": "Which approach to practising questions does Meyer recommend?",
+   "options": [
+    "Beginning with the hardest question and then making it easier",
+    "Beginning with questions about specific details and finishing with broader ideas",
+    "Using only questions that the teacher has prepared",
+    "Asking the same question several times in different words"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 9: “start with concrete questions and move to abstract questions”."
+  },
+  {
+   "type": "mcq",
+   "q": "Students read a story about how foods affect people. Which question is the most abstract?",
+   "options": [
+    "How might a society’s eating habits shape its culture?",
+    "What did the main character have for lunch?",
+    "How many people sat at the table?",
+    "Which food was served first?"
+   ],
+   "answer": 0,
+   "explain": "Câu hỏi trừu tượng là câu bàn về ý tưởng chung (xã hội, văn hoá), không phải chi tiết cụ thể."
+  },
+  {
+   "type": "mcq",
+   "q": "What does Meyer say about teachers who choose all the questions for their students?",
+   "options": [
+    "They help students become more confident speakers",
+    "They are the best way to teach critical thinking",
+    "They make students less inventive with their own questions",
+    "They save students time that they can use for reading"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 12: khi giáo viên chỉ định câu hỏi, học sinh ít sáng tạo hơn."
+  },
+  {
+   "type": "tf",
+   "q": "Meyer believes the main value of asking questions is getting answers.",
+   "answer": "F",
+   "explain": "Đoạn 6: “Not for the obvious, because you ask a question you get an answer” — giá trị nằm ở chỗ khác (ngôn ngữ, tương tác)."
+  },
+  {
+   "type": "tf",
+   "q": "Most English learners find asking questions easier than answering them.",
+   "answer": "NG",
+   "explain": "Bài không so sánh việc đặt câu hỏi với việc trả lời."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "critical",
+    "pos": "adj",
+    "def": "using careful judgment about good and bad points",
+    "vi": "mang tính phản biện",
+    "ex": "critical thinking skills"
+   },
+   {
+    "w": "evaluate",
+    "pos": "v",
+    "def": "to judge the value of something carefully",
+    "vi": "đánh giá",
+    "ex": "evaluate the information"
+   },
+   {
+    "w": "context",
+    "pos": "n",
+    "def": "the situation in which something happens",
+    "vi": "bối cảnh",
+    "ex": "a new context"
+   },
+   {
+    "w": "inquiry",
+    "pos": "n",
+    "def": "the act of asking questions to find information",
+    "vi": "sự tìm hiểu, truy vấn",
+    "ex": "actively engaged in inquiry"
+   },
+   {
+    "w": "interaction",
+    "pos": "n",
+    "def": "talking and working with other people",
+    "vi": "sự tương tác",
+    "ex": "more interactions"
+   },
+   {
+    "w": "strategy",
+    "pos": "n",
+    "def": "a plan for achieving a goal",
+    "vi": "chiến lược, cách làm",
+    "ex": "many strategies"
+   },
+   {
+    "w": "concrete",
+    "pos": "adj",
+    "def": "about specific things, not general ideas",
+    "vi": "cụ thể",
+    "ex": "concrete questions"
+   },
+   {
+    "w": "abstract",
+    "pos": "adj",
+    "def": "about general ideas, not specific things",
+    "vi": "trừu tượng",
+    "ex": "abstract questions"
+   }
+  ],
+  "coll": [
+   {
+    "c": "develop skills",
+    "vi": "phát triển kỹ năng",
+    "ex": "develop critical thinking skills"
+   },
+   {
+    "c": "actively engaged in",
+    "vi": "chủ động tham gia",
+    "ex": "actively engaged in inquiry"
+   },
+   {
+    "c": "first point of contact",
+    "vi": "điểm tiếp xúc đầu tiên",
+    "ex": "the first point of contact"
+   },
+   {
+    "c": "be more likely to",
+    "vi": "có nhiều khả năng hơn",
+    "ex": "students are less likely to be creative"
+   }
+  ],
+  "str": [
+   {
+    "s": "One way to + verb is to + verb",
+    "vi": "Một cách để … là …",
+    "ex": "One way to develop critical thinking skills, Meyer says, is to teach students",
+    "explain": "Cấu trúc nêu giải pháp: One way to … is to …"
+   },
+   {
+    "s": "allowing for + noun",
+    "vi": "cho phép/tạo điều kiện cho …",
+    "ex": "by allowing for more interactions",
+    "explain": "allow for + danh từ: tạo điều kiện cho điều gì."
+   },
+   {
+    "s": "less likely to + verb",
+    "vi": "ít có khả năng …",
+    "ex": "students are less likely to be creative",
+    "explain": "less likely to + động từ: khả năng thấp hơn."
+   }
+  ]
+ }
+}

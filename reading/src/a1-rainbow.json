@@ -1,0 +1,180 @@
+{
+ "id": "a1-rainbow",
+ "level": "A1",
+ "title": "Rainbows",
+ "topic": "Weather",
+ "words": 89,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Rainbow",
+  "url": "https://simple.wikipedia.org/wiki/Rainbow",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "A rainbow is an arc of colours in the sky. You can see a rainbow when the sun shines through falling rain. Rainbows often come after storms.",
+  "A rainbow has seven colours. They are red, orange, yellow, green, blue, indigo and violet. Red is on the outside. Violet is on the inside.",
+  "Sunlight looks white, but it is really many colours together. Drops of water split the light into colours. You can also see a rainbow near a waterfall. In many cultures a rainbow is a symbol of peace."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "When can you see a rainbow?",
+   "options": [
+    "When it is dark and very cold outside",
+    "When there is a strong wind and no sun",
+    "When the sun shines through falling rain"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “You can see a rainbow when the sun shines through falling rain.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How many colours does a rainbow have?",
+   "options": [
+    "Three",
+    "Seven",
+    "Ten"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: “A rainbow has seven colours.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which colour is on the outside of a rainbow?",
+   "options": [
+    "Red",
+    "Violet",
+    "Green"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Red is on the outside. Violet is on the inside.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What do drops of water do to sunlight?",
+   "options": [
+    "They split it into colours",
+    "They make it hotter",
+    "They make it disappear"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “Drops of water split the light into colours.”"
+  },
+  {
+   "type": "tf",
+   "q": "A rainbow often comes after a storm.",
+   "answer": "T",
+   "explain": "Đoạn 1: “Rainbows often come after storms.”"
+  },
+  {
+   "type": "tf",
+   "q": "Sunlight is really only one colour.",
+   "answer": "F",
+   "explain": "Đoạn 3: ánh nắng trông trắng nhưng thật ra là nhiều màu hợp lại."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "rainbow",
+    "pos": "n",
+    "def": "an arc of colours in the sky",
+    "vi": "cầu vồng",
+    "ex": "A rainbow is an arc"
+   },
+   {
+    "w": "arc",
+    "pos": "n",
+    "def": "a curved line",
+    "vi": "cung, đường cong",
+    "ex": "an arc of colours"
+   },
+   {
+    "w": "storm",
+    "pos": "n",
+    "def": "very bad weather with strong wind and rain",
+    "vi": "cơn bão",
+    "ex": "after storms"
+   },
+   {
+    "w": "outside",
+    "pos": "n",
+    "def": "the part that is away from the centre",
+    "vi": "bên ngoài",
+    "ex": "Red is on the outside."
+   },
+   {
+    "w": "inside",
+    "pos": "n",
+    "def": "the part that is near the centre",
+    "vi": "bên trong",
+    "ex": "Violet is on the inside."
+   },
+   {
+    "w": "sunlight",
+    "pos": "n",
+    "def": "light from the sun",
+    "vi": "ánh nắng",
+    "ex": "Sunlight looks white"
+   },
+   {
+    "w": "split",
+    "pos": "v",
+    "def": "to break into parts",
+    "vi": "tách ra",
+    "ex": "split the light into colours"
+   },
+   {
+    "w": "symbol",
+    "pos": "n",
+    "def": "a thing that shows an idea",
+    "vi": "biểu tượng",
+    "ex": "a symbol of peace"
+   }
+  ],
+  "coll": [
+   {
+    "c": "shine through",
+    "vi": "chiếu qua",
+    "ex": "the sun shines through falling rain"
+   },
+   {
+    "c": "falling rain",
+    "vi": "mưa đang rơi",
+    "ex": "falling rain"
+   },
+   {
+    "c": "drops of water",
+    "vi": "giọt nước",
+    "ex": "Drops of water"
+   },
+   {
+    "c": "symbol of peace",
+    "vi": "biểu tượng của hoà bình",
+    "ex": "a symbol of peace"
+   }
+  ],
+  "str": [
+   {
+    "s": "You can + verb",
+    "vi": "Bạn có thể …",
+    "ex": "You can see a rainbow",
+    "explain": "can + động từ nguyên mẫu: nói về khả năng hoặc điều có thể xảy ra."
+   },
+   {
+    "s": "when + clause",
+    "vi": "khi …",
+    "ex": "when the sun shines through falling rain",
+    "explain": "when nối hai mệnh đề để nói về thời điểm hoặc điều kiện."
+   },
+   {
+    "s": "A looks B, but it is really C",
+    "vi": "A trông như B, nhưng thật ra là C",
+    "ex": "Sunlight looks white, but it is really many colours together.",
+    "explain": "looks + tính từ: trông như; but: diễn đạt sự đối lập."
+   }
+  ]
+ }
+}

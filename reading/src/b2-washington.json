@@ -1,0 +1,212 @@
+{
+ "id": "b2-washington",
+ "level": "B2",
+ "title": "George Washington: The First President",
+ "topic": "History",
+ "words": 297,
+ "minutes": 5,
+ "source": {
+  "name": "VOA Learning English — George Washington – the First President",
+  "url": "https://learningenglish.voanews.com/a/george-washington-first-president/7972056.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "George Washington was the first president of the United States. He served from 1789 to 1797. He was a famous general who led the American colonists to freedom from British rule and he presided over the convention that created the U.S. Constitution.",
+  "He wanted to retire from public service and return home. But the country’s founders wanted him to move to New York and serve as the American president. Washington accepted the job as his duty.",
+  "Washington was sworn in as president in 1789. He had to invent the job of being president for all future presidents. He established a group of advisors — called the cabinet—as well as the nation’s official money. He appointed a six-member Supreme Court. And he created the Department of Foreign Affairs, now called the State Department. He hoped to act in such a way that future presidents could continue to build on what he began.",
+  "From the beginning, George Washington was careful to establish a good working relationship with Congress. By his actions, he confirmed the separation of powers of the three branches of the government, as described in the Constitution.",
+  "Historian Joseph Ellis says one of the best things about George Washington was his ability to give up power. At the end of the Revolutionary War, General Washington returned his sword. And at the end of his second term, President Washington simply returned home.",
+  "Like many plantation owners, Washington was a slave holder. By the end of his life, Washington opposed slavery. He left a will ordering his survivors to free his slaves after his wife’s death.",
+  "Three years after he finished his second term as president, Washington fell ill. On December 14, 1799, he died in his bed, surrounded by his wife, enslaved maids, and friends. He was 67."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Why did Washington agree to become president?",
+   "options": [
+    "He believed that only a former general could lead the country",
+    "He hoped to be remembered as the founder of the Supreme Court",
+    "He felt it was his responsibility, although he would have preferred to retire",
+    "He wanted to move to New York for family reasons"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: ông muốn nghỉ hưu nhưng nhận công việc như một bổn phận (“as his duty”)."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer mean when saying that Washington created the role from nothing?",
+   "options": [
+    "He had to write a new constitution before he took office at all",
+    "He designed the building where later presidents would live and work",
+    "He was the first national leader to make official visits to other countries",
+    "No earlier model existed, so he set up the practices later leaders followed"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 3: ông lập nội các, tiền tệ, Tòa án Tối cao, Bộ Ngoại giao… để các tổng thống sau tiếp nối."
+  },
+  {
+   "type": "mcq",
+   "q": "What lasting effect did Washington’s careful dealings with Congress have?",
+   "options": [
+    "It allowed him to choose judges without asking for any approval",
+    "His conduct confirmed that each branch of government kept its own powers",
+    "It ended the arguments between the founders of the country",
+    "It persuaded Congress to let him stay on for a third term"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: qua hành động, ông “confirmed the separation of powers”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which action best illustrates the quality that Joseph Ellis admires in Washington?",
+   "options": [
+    "Leading the colonists in their struggle against Britain",
+    "Returning to private life when his second term had finished",
+    "Chairing the meeting that produced the Constitution",
+    "Creating a group of advisors known as the cabinet"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: Ellis khen “ability to give up power” — trả lại kiếm, về nhà sau nhiệm kỳ thứ hai."
+  },
+  {
+   "type": "mcq",
+   "q": "How does the writer present Washington’s attitude to slavery?",
+   "options": [
+    "His view shifted over time; near the end he wanted the enslaved people freed",
+    "He was against it from the start but never did anything about it",
+    "He supported it until he died, as most of the plantation owners did",
+    "He freed all of them on the very day that he left office"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: ban đầu là chủ nô, cuối đời phản đối và để lại di chúc yêu cầu trả tự do sau khi vợ ông mất."
+  },
+  {
+   "type": "mcq",
+   "q": "The word “presided” in paragraph 1 is closest in meaning to…",
+   "options": [
+    "was in charge of",
+    "took part as a guest at",
+    "wrote the rules for",
+    "voted against"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: preside = chủ trì, điều hành chính thức một cuộc họp."
+  },
+  {
+   "type": "tf",
+   "q": "Washington was eager to take the job of president.",
+   "answer": "F",
+   "explain": "Đoạn 2: ông muốn nghỉ hưu và về nhà; nhận chức vụ như một bổn phận."
+  },
+  {
+   "type": "tf",
+   "q": "The founders considered no one except Washington for the post of president.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói các nhà lập quốc muốn ông làm tổng thống; không nói họ có xem xét người khác hay không."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "preside",
+    "pos": "v",
+    "def": "to be in charge of a meeting or office",
+    "vi": "chủ trì",
+    "ex": "he presided over the convention"
+   },
+   {
+    "w": "retire",
+    "pos": "v",
+    "def": "to stop working, usually because of age",
+    "vi": "nghỉ hưu",
+    "ex": "retire from public service"
+   },
+   {
+    "w": "duty",
+    "pos": "n",
+    "def": "something you must do because it is right",
+    "vi": "bổn phận, nghĩa vụ",
+    "ex": "as his duty"
+   },
+   {
+    "w": "establish",
+    "pos": "v",
+    "def": "to set up or create",
+    "vi": "thành lập, xây dựng",
+    "ex": "He established a group of advisors"
+   },
+   {
+    "w": "appoint",
+    "pos": "v",
+    "def": "to choose someone for a job",
+    "vi": "bổ nhiệm",
+    "ex": "He appointed a six-member Supreme Court"
+   },
+   {
+    "w": "branch",
+    "pos": "n",
+    "def": "one of the main parts of a government",
+    "vi": "nhánh (quyền lực)",
+    "ex": "the three branches of the government"
+   },
+   {
+    "w": "plantation",
+    "pos": "n",
+    "def": "a large farm where crops are grown",
+    "vi": "đồn điền",
+    "ex": "plantation owners"
+   },
+   {
+    "w": "will",
+    "pos": "n",
+    "def": "a legal document that says who receives your possessions",
+    "vi": "di chúc",
+    "ex": "He left a will"
+   }
+  ],
+  "coll": [
+   {
+    "c": "public service",
+    "vi": "công vụ, phục vụ cộng đồng",
+    "ex": "retire from public service"
+   },
+   {
+    "c": "sworn in",
+    "vi": "tuyên thệ nhậm chức",
+    "ex": "sworn in as president"
+   },
+   {
+    "c": "build on",
+    "vi": "tiếp nối, phát triển dựa trên",
+    "ex": "continue to build on what he began"
+   },
+   {
+    "c": "fall ill",
+    "vi": "ngã bệnh",
+    "ex": "Washington fell ill"
+   }
+  ],
+  "str": [
+   {
+    "s": "He wanted to + verb, but …",
+    "vi": "Ông muốn …, nhưng …",
+    "ex": "He wanted to retire from public service and return home. But the country’s founders",
+    "explain": "Hai câu đối lập: mong muốn cá nhân và yêu cầu của người khác."
+   },
+   {
+    "s": "had to + verb",
+    "vi": "phải …",
+    "ex": "He had to invent the job of being president",
+    "explain": "had to: bắt buộc trong quá khứ."
+   },
+   {
+    "s": "By the end of his life, …",
+    "vi": "Đến cuối đời, …",
+    "ex": "By the end of his life, Washington opposed slavery.",
+    "explain": "By the end of + thời điểm: nêu trạng thái đạt được lúc đó."
+   }
+  ]
+ }
+}

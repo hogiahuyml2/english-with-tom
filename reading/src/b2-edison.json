@@ -1,0 +1,214 @@
+{
+ "id": "b2-edison",
+ "level": "B2",
+ "title": "Thomas Edison: Inventor and Busy Team Leader",
+ "topic": "Inventions",
+ "words": 302,
+ "minutes": 5,
+ "source": {
+  "name": "VOA Learning English — Thomas Edison: Inventor and Busy Team Leader",
+  "url": "https://learningenglish.voanews.com/a/thomas-edison-inventor-and-busy-team-leader/7974949.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "The inventor Thomas Alva Edison had a major effect on the lives of people around the world. Thomas Edison is remembered most for the electric light, his phonograph, and his work with motion pictures.",
+  "Edison was born on February 11, 1847, in Milan, Ohio. He was mostly self-taught. His mother taught him reading, writing, and mathematics. He learned from books, and he experimented.",
+  "At the age of 10, he experimented with chemicals and electricity. He built a telegraph machine and, at the age of 16, he went to work as a telegraph operator.",
+  "He continued his work with electricity, making improved telegraph machines, and he invented an electrical voting machine.",
+  "Edison earned enough money from his early inventions to start his own company in 1871. Instead of working alone, he worked with a group of employees on many different projects at one time. They asked the United States government for patents to protect more than one hundred devices or inventions each year. He was an extremely busy man.",
+  "In 1913, a popular magazine at the time called Thomas Edison the most useful man in America.",
+  "He almost never slept more than four or five hours a night. He usually worked 18 hours each day because he enjoyed what he was doing.",
+  "A reporter asked Edison in 1917 which of his many inventions he enjoyed the most. He answered, the phonograph was really the most interesting. The hardest invention to develop, he said, was the electric light. He said that it was the most difficult and the most important. He also invented the modern motion picture film.",
+  "In 1928, he received a special medal of honor from the Congress of the United States. Thomas Edison died on January 6, 1931. People worldwide have had easier and more enjoyable lives because of his inventions."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "How did Edison mainly receive his education?",
+   "options": [
+    "At a technical college, where he studied electricity for years",
+    "Mostly through his own reading and tests, after early lessons at home",
+    "By serving as an apprentice to a well-known inventor",
+    "From evening lectures given by the telegraph company"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 2: tự học là chính; mẹ dạy đọc, viết, toán; học từ sách và thí nghiệm."
+  },
+  {
+   "type": "mcq",
+   "q": "What was different about the way Edison worked after 1871?",
+   "options": [
+    "He concentrated on one invention until it was finished",
+    "He stopped inventing and spent his time running a business",
+    "He worked alone so that he could protect his patents",
+    "He directed a team that handled several projects at once"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 5: lập công ty, làm việc với nhóm nhân viên, nhiều dự án cùng lúc."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer use to show how productive Edison’s group was?",
+   "options": [
+    "The number of patent applications it made each year",
+    "The prizes it won from scientific magazines",
+    "The size of the factory that it built in Ohio",
+    "The profits it made from selling electric lights"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: nhóm xin bằng sáng chế cho hơn một trăm thiết bị/phát minh mỗi năm."
+  },
+  {
+   "type": "mcq",
+   "q": "How did Edison compare his own inventions in 1917?",
+   "options": [
+    "The electric light was the most enjoyable and the phonograph the hardest",
+    "The phonograph interested him most, but the electric light was the hardest",
+    "Motion pictures were both the hardest and the most important",
+    "All of his inventions had been equally difficult to develop"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 8: máy hát là thú vị nhất; bóng đèn điện khó nhất (và quan trọng nhất)."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer suggest about Edison’s very long working days?",
+   "options": [
+    "They did not trouble him because he liked what he did",
+    "His employers demanded them from everyone in the company",
+    "They damaged his health in his later years",
+    "They were a condition for receiving government patents"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: làm 18 giờ mỗi ngày “because he enjoyed what he was doing”."
+  },
+  {
+   "type": "mcq",
+   "q": "Which statement best sums up the writer’s final judgement?",
+   "options": [
+    "He was admired more abroad than in his own country at the time",
+    "His business success mattered more to the world than his inventions",
+    "His inventions made everyday life easier and more pleasant for people",
+    "His work was valued only by scientists and professional engineers"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 9: nhờ phát minh của ông, người dân trên thế giới có cuộc sống dễ dàng và thú vị hơn."
+  },
+  {
+   "type": "tf",
+   "q": "Edison was still in his twenties when he started his own company.",
+   "answer": "T",
+   "explain": "Đoạn 2 và 5: sinh năm 1847, lập công ty năm 1871 → khoảng 23–24 tuổi."
+  },
+  {
+   "type": "tf",
+   "q": "Edison’s was the first company in America to employ a team of inventors.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói ông làm việc với một nhóm nhân viên; không nói đó là công ty đầu tiên như vậy."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "phonograph",
+    "pos": "n",
+    "def": "an early machine that played recorded sound",
+    "vi": "máy quay đĩa",
+    "ex": "his phonograph"
+   },
+   {
+    "w": "self-taught",
+    "pos": "adj",
+    "def": "having learned without a teacher or school",
+    "vi": "tự học",
+    "ex": "mostly self-taught"
+   },
+   {
+    "w": "experiment",
+    "pos": "v",
+    "def": "to try new things in order to learn",
+    "vi": "thí nghiệm",
+    "ex": "he experimented"
+   },
+   {
+    "w": "telegraph",
+    "pos": "n",
+    "def": "a system for sending messages by electric signals",
+    "vi": "máy điện báo",
+    "ex": "a telegraph machine"
+   },
+   {
+    "w": "patent",
+    "pos": "n",
+    "def": "an official right to be the only maker of an invention",
+    "vi": "bằng sáng chế",
+    "ex": "asked the United States government for patents"
+   },
+   {
+    "w": "device",
+    "pos": "n",
+    "def": "a machine or tool made for a purpose",
+    "vi": "thiết bị",
+    "ex": "more than one hundred devices"
+   },
+   {
+    "w": "extremely",
+    "pos": "adv",
+    "def": "to a very high degree",
+    "vi": "cực kỳ",
+    "ex": "an extremely busy man"
+   },
+   {
+    "w": "medal of honor",
+    "pos": "n",
+    "def": "a special prize for great service",
+    "vi": "huân chương danh dự",
+    "ex": "a special medal of honor"
+   }
+  ],
+  "coll": [
+   {
+    "c": "have an effect on",
+    "vi": "tác động đến",
+    "ex": "had a major effect on the lives of people"
+   },
+   {
+    "c": "be remembered for",
+    "vi": "được nhớ đến vì",
+    "ex": "is remembered most for the electric light"
+   },
+   {
+    "c": "start a company",
+    "vi": "thành lập công ty",
+    "ex": "start his own company"
+   },
+   {
+    "c": "work on a project",
+    "vi": "làm một dự án",
+    "ex": "many different projects at one time"
+   }
+  ],
+  "str": [
+   {
+    "s": "Instead of + V-ing",
+    "vi": "Thay vì …",
+    "ex": "Instead of working alone, he worked with a group",
+    "explain": "Instead of + V-ing: nêu điều thay thế cho cách làm thông thường."
+   },
+   {
+    "s": "almost never + verb",
+    "vi": "hầu như không bao giờ …",
+    "ex": "He almost never slept more than four or five hours a night.",
+    "explain": "almost never: tần suất rất thấp."
+   },
+   {
+    "s": "because of + noun",
+    "vi": "nhờ/ do …",
+    "ex": "because of his inventions",
+    "explain": "because of + danh từ: nêu nguyên nhân."
+   }
+  ]
+ }
+}

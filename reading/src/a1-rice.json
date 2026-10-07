@@ -1,0 +1,180 @@
+{
+ "id": "a1-rice",
+ "level": "A1",
+ "title": "Rice",
+ "topic": "Food",
+ "words": 91,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Rice",
+  "url": "https://simple.wikipedia.org/wiki/Rice",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Rice is a kind of food. It is the main food in many parts of Asia. Rice grows in warm parts of the world.",
+  "Farmers plant rice in flat fields full of water. People usually cook rice. In India, people eat rice with sauce, curry or soup. In Spain, people first fry rice in oil or butter. Then they cook it with water or soup.",
+  "People think that rice first grew in southern China and India. That was more than 4,000 years ago. From India, rice went to Europe and Africa."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Where does rice grow?",
+   "options": [
+    "In warm parts of the world",
+    "In cold places with no water",
+    "Only in the sea or in rivers"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 1: “Rice grows in warm parts of the world.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where do farmers plant rice?",
+   "options": [
+    "In flat fields full of water",
+    "On very high, dry mountains",
+    "Inside a big forest of trees"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “Farmers plant rice in flat fields full of water.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How do people in India often eat rice?",
+   "options": [
+    "With cold milk and sugar",
+    "With ice cream and fruit",
+    "With sauce, curry or soup"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “In India, people eat rice with sauce, curry or soup.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where did rice probably first grow?",
+   "options": [
+    "In Spain and Italy",
+    "In southern China and India",
+    "In Canada and Brazil"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 3: “rice first grew in southern China and India.”"
+  },
+  {
+   "type": "tf",
+   "q": "Rice is the main food in many parts of Asia.",
+   "answer": "T",
+   "explain": "Đoạn 1: “It is the main food in many parts of Asia.”"
+  },
+  {
+   "type": "tf",
+   "q": "People usually eat rice raw (not cooked).",
+   "answer": "F",
+   "explain": "Đoạn 2: “People usually cook rice.”"
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "rice",
+    "pos": "n",
+    "def": "small white or brown seeds that people cook and eat",
+    "vi": "gạo, cơm",
+    "ex": "Rice is a kind of food."
+   },
+   {
+    "w": "main",
+    "pos": "adj",
+    "def": "most important",
+    "vi": "chính",
+    "ex": "the main food"
+   },
+   {
+    "w": "warm",
+    "pos": "adj",
+    "def": "a little hot",
+    "vi": "ấm",
+    "ex": "warm parts of the world"
+   },
+   {
+    "w": "farmer",
+    "pos": "n",
+    "def": "a person who grows food",
+    "vi": "nông dân",
+    "ex": "Farmers plant rice"
+   },
+   {
+    "w": "plant",
+    "pos": "v",
+    "def": "to put seeds in the ground to grow",
+    "vi": "trồng",
+    "ex": "Farmers plant rice"
+   },
+   {
+    "w": "flat",
+    "pos": "adj",
+    "def": "level, with no hills",
+    "vi": "bằng phẳng",
+    "ex": "flat fields"
+   },
+   {
+    "w": "sauce",
+    "pos": "n",
+    "def": "a thick liquid that you eat with food",
+    "vi": "nước sốt",
+    "ex": "with sauce, curry or soup"
+   },
+   {
+    "w": "fry",
+    "pos": "v",
+    "def": "to cook in hot oil or butter",
+    "vi": "chiên, rán",
+    "ex": "fry rice in oil or butter"
+   }
+  ],
+  "coll": [
+   {
+    "c": "a kind of",
+    "vi": "một loại",
+    "ex": "a kind of food"
+   },
+   {
+    "c": "full of",
+    "vi": "đầy …",
+    "ex": "full of water"
+   },
+   {
+    "c": "first grew",
+    "vi": "mọc / được trồng đầu tiên",
+    "ex": "rice first grew"
+   },
+   {
+    "c": "more than",
+    "vi": "hơn …",
+    "ex": "more than 4,000 years ago"
+   }
+  ],
+  "str": [
+   {
+    "s": "the main + noun",
+    "vi": "… chính, quan trọng nhất",
+    "ex": "It is the main food in many parts of Asia.",
+    "explain": "the main + danh từ: điều quan trọng nhất."
+   },
+   {
+    "s": "In + place, people + verb",
+    "vi": "Ở … người ta …",
+    "ex": "In India, people eat rice with sauce, curry or soup.",
+    "explain": "In + địa điểm đứng đầu câu để nói về thói quen ở nơi đó."
+   },
+   {
+    "s": "first … Then …",
+    "vi": "đầu tiên … sau đó …",
+    "ex": "people first fry rice in oil or butter. Then they cook it",
+    "explain": "first và then nối hai bước theo thứ tự thời gian."
+   }
+  ]
+ }
+}

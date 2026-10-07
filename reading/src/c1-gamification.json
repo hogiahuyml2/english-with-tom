@@ -1,0 +1,222 @@
+{
+ "id": "c1-gamification",
+ "level": "C1",
+ "title": "Gamification",
+ "topic": "Technology & learning",
+ "words": 533,
+ "minutes": 8,
+ "source": {
+  "name": "Wikipedia — Gamification",
+  "url": "https://en.wikipedia.org/wiki/Gamification",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "Gamification is the process of integrating game design elements and principles (such as points, badges, and leaderboards) into non-game contexts in order to increase user engagement and motivation. It is a component of system design. Gamification has been used to improve organizational productivity, flow, learning, crowdsourcing, knowledge retention, employee recruitment and evaluation, usability, usefulness of systems, physical exercise, tailored interactions and icebreaker activities in dating apps, traffic violations, voter apathy, public attitudes about alternative energy, and more.",
+  "Gamification techniques leverage people's desires for socializing, learning, mastery, competition, achievement, status, self-expression, altruism, and closure, or simply their response to framing a situation as a game. Players are engaged using competition and rewards for completing tasks. Rewards can include points, badges, levels, progress bar, and virtual currency. Making the rewards for accomplishing tasks visible to other players (e.g., leaderboards) encourages players to compete. Meaningful choice, onboarding tutorials, increasing challenge, and adding narrative are other ways to make tasks feel more like games.",
+  "Points are basic elements of a multitude of games and gamified applications. They are typically rewarded for the successful accomplishment of specified activities within the gamified environment and they serve to numerically represent a player's progress. Various kinds of points can be differentiated between, e.g. experience points, redeemable points, or reputation points, as can the different purposes that points serve. One of the most important purposes of points is to provide feedback. Points allow the players' in-game behavior to be measured, and they serve as continuous and immediate feedback and as a reward.",
+  "Leaderboards rank players according to their relative success, measuring them against a certain success criterion. As such, leaderboards can help determine who performs best in a certain activity and are thus competitive indicators of progress that relate the player's own performance to the performance of others. However, the motivational potential of leaderboards is mixed. Werbach and Hunter regard them as effective motivators if there are only a few points left to the next level or position, but as demotivators, if players find themselves at the bottom end of the leaderboard. Competition caused by leaderboards can create social pressure to increase the player's level of engagement and can consequently have a constructive effect on participation and learning. However, these positive effects of competition are more likely if the respective competitors are approximately at the same performance level.",
+  "Performance graphs provide information about the players' performance compared to their preceding performance during a game. Thus, in contrast to leaderboards, performance graphs do not compare the player's performance to other players, but instead, evaluate the player's own performance over time. Unlike the social reference standard of leaderboards, performance graphs are based on an individual reference standard. By graphically displaying the player's performance over a fixed period, they focus on improvements. Motivation theory postulates that this fosters mastery orientation, which is particularly beneficial to learning.",
+  "Teammates, whether they are other real players or virtual non-player characters, can induce conflict, competition or cooperation. The latter can be fostered particularly by introducing teams, i.e. by creating defined groups of players that work together towards a shared objective. Meta-analytic evidence supports that the combination of competition and collaboration in games is likely to be effective for learning."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is the purpose of gamification?",
+   "options": [
+    "To turn every kind of activity into an entertaining video game",
+    "To boost motivation by using game features in other kinds of activity",
+    "To replace teachers and managers with automated software",
+    "To record how much time users spend playing games"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: đưa yếu tố thiết kế game vào bối cảnh không phải game để tăng sự tham gia và động lực."
+  },
+  {
+   "type": "mcq",
+   "q": "According to paragraph 2, how do gamified systems encourage competition?",
+   "options": [
+    "By hiding all scores until the activity has finished",
+    "By giving every participant exactly the same reward",
+    "By taking away every kind of challenge",
+    "By letting everyone see the rewards that others have earned"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: phần thưởng hiển thị cho người chơi khác (bảng xếp hạng) khuyến khích cạnh tranh."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer identify as a key function of points?",
+   "options": [
+    "Allowing players to exchange them for real products",
+    "Taking the place of badges and leaderboards",
+    "Giving players immediate information about how they are doing",
+    "Making tasks harder as players advance"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3: “one of the most important purposes of points is to provide feedback”."
+  },
+  {
+   "type": "mcq",
+   "q": "Why is the motivational effect of leaderboards described as “mixed”?",
+   "options": [
+    "They inspire players near the next rank yet discourage those at the bottom",
+    "They work only for players who have never tried similar games",
+    "They motivate beginners but bore the most experienced players",
+    "Players enjoy them, although game designers generally dislike them"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: Werbach & Hunter: có tác dụng khi chỉ còn ít điểm tới cấp kế tiếp, nhưng làm nản người ở cuối bảng."
+  },
+  {
+   "type": "mcq",
+   "q": "How do performance graphs differ from leaderboards?",
+   "options": [
+    "They rank players by the number of points they have spent",
+    "They set a player against that same person’s own past results",
+    "They show which team has the largest number of members",
+    "They can be seen only by the people who designed the game"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: biểu đồ thành tích so sánh với thành tích trước đó của chính người chơi, không so với người khác."
+  },
+  {
+   "type": "mcq",
+   "q": "What do the findings in the last paragraph suggest?",
+   "options": [
+    "Games that combine competition with cooperation tend to be good for learning",
+    "Teams are less effective for learning than individual players",
+    "Cooperation is useful only when computer-controlled characters take part",
+    "Competition should be avoided in every educational game"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 6: bằng chứng meta-analytic cho thấy kết hợp cạnh tranh và hợp tác có khả năng hiệu quả với việc học."
+  },
+  {
+   "type": "tf",
+   "q": "According to the text, gamification has so far been used only in education.",
+   "answer": "F",
+   "explain": "Đoạn 1: được dùng trong nhiều lĩnh vực — năng suất tổ chức, tuyển dụng, tập thể dục, v.v."
+  },
+  {
+   "type": "tf",
+   "q": "Gamified apps have been shown to raise the profits of companies.",
+   "answer": "NG",
+   "explain": "Bài không nhắc đến lợi nhuận của công ty."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "engagement",
+    "pos": "n",
+    "def": "the state of being interested and involved",
+    "vi": "sự gắn kết, tham gia",
+    "ex": "user engagement and motivation"
+   },
+   {
+    "w": "leaderboard",
+    "pos": "n",
+    "def": "a list that ranks players by their scores",
+    "vi": "bảng xếp hạng",
+    "ex": "leaderboards"
+   },
+   {
+    "w": "badge",
+    "pos": "n",
+    "def": "a symbol that shows an achievement",
+    "vi": "huy hiệu",
+    "ex": "points, badges, and leaderboards"
+   },
+   {
+    "w": "feedback",
+    "pos": "n",
+    "def": "information about how well someone is doing",
+    "vi": "phản hồi",
+    "ex": "to provide feedback"
+   },
+   {
+    "w": "motivator",
+    "pos": "n",
+    "def": "something that makes people want to act",
+    "vi": "yếu tố tạo động lực",
+    "ex": "effective motivators"
+   },
+   {
+    "w": "constructive",
+    "pos": "adj",
+    "def": "useful and helpful",
+    "vi": "mang tính xây dựng",
+    "ex": "a constructive effect on participation"
+   },
+   {
+    "w": "foster",
+    "pos": "v",
+    "def": "to help something develop",
+    "vi": "nuôi dưỡng, thúc đẩy",
+    "ex": "this fosters mastery orientation"
+   },
+   {
+    "w": "objective",
+    "pos": "n",
+    "def": "something that you plan to achieve",
+    "vi": "mục tiêu",
+    "ex": "a shared objective"
+   }
+  ],
+  "coll": [
+   {
+    "c": "game design",
+    "vi": "thiết kế trò chơi",
+    "ex": "game design elements"
+   },
+   {
+    "c": "in order to",
+    "vi": "để (nhằm)",
+    "ex": "in order to increase user engagement"
+   },
+   {
+    "c": "rank players",
+    "vi": "xếp hạng người chơi",
+    "ex": "Leaderboards rank players"
+   },
+   {
+    "c": "work together",
+    "vi": "cùng làm việc",
+    "ex": "work together towards a shared objective"
+   },
+   {
+    "c": "at the bottom end",
+    "vi": "ở cuối bảng",
+    "ex": "at the bottom end of the leaderboard"
+   }
+  ],
+  "str": [
+   {
+    "s": "Unlike + noun, …",
+    "vi": "Không giống …, …",
+    "ex": "Unlike the social reference standard of leaderboards",
+    "explain": "Unlike + danh từ: nêu điểm khác biệt."
+   },
+   {
+    "s": "in contrast to + noun",
+    "vi": "trái với …",
+    "ex": "in contrast to leaderboards",
+    "explain": "in contrast to + danh từ: đối lập hai đối tượng."
+   },
+   {
+    "s": "regard X as Y",
+    "vi": "xem X là Y",
+    "ex": "Werbach and Hunter regard them as effective motivators",
+    "explain": "regard A as B: coi A là B."
+   },
+   {
+    "s": "the latter / the former",
+    "vi": "cái sau / cái trước",
+    "ex": "The latter can be fostered particularly by introducing teams",
+    "explain": "the latter: chỉ ý đứng sau trong hai ý vừa nêu."
+   }
+  ]
+ }
+}

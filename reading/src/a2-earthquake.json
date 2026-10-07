@@ -1,0 +1,185 @@
+{
+ "id": "a2-earthquake",
+ "level": "A2",
+ "title": "Earthquakes",
+ "topic": "Earth & science",
+ "words": 185,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Earthquake",
+  "url": "https://simple.wikipedia.org/wiki/Earthquake",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Đã rút gọn và đơn giản hoá nhẹ một số câu; thông tin theo bài gốc."
+ },
+ "paras": [
+  "An earthquake is when the Earth’s tectonic plates shake and move the Earth’s surface. Strong earthquakes damage buildings. The plates are always moving slowly. When they get stuck, tension builds up. Then an earthquake happens when the plates suddenly break free and start moving quickly.",
+  "The point under the ground where an earthquake starts is called the hypocenter. The epicenter is the point on the ground directly above it. People who study earthquakes are called seismologists. A seismometer detects the tremors of the earth and plots them on a seismograph.",
+  "The strength of an earthquake can be measured with the Richter scale. Charles Francis Richter invented it in 1935, and the scale goes from 0 to 10. No one can tell when an earthquake will happen, but we know where earthquakes are likely to happen, such as near fault lines. An earthquake under the ocean can create a huge wave called a tsunami.",
+  "Earthquakes are common in some parts of the world. The biggest earthquake zone is the Pacific belt, which circles the Pacific Ocean. It has the most active earthquakes and the most volcanoes."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What happens when the plates suddenly break free?",
+   "options": [
+    "A strong storm",
+    "An earthquake",
+    "A big flood",
+    "A forest fire"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “an earthquake happens when the plates suddenly break free and start moving quickly”."
+  },
+  {
+   "type": "mcq",
+   "q": "What is the epicenter?",
+   "options": [
+    "The point on the ground above the hypocenter",
+    "The point where the plates meet the sea",
+    "The place where a seismologist works",
+    "The biggest building in a city"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “The epicenter is the point on the ground directly above it.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does a seismometer do?",
+   "options": [
+    "It stops the plates from moving",
+    "It measures the weather",
+    "It predicts the date of an earthquake",
+    "It detects the tremors of the earth"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: “A seismometer detects the tremors of the earth”."
+  },
+  {
+   "type": "mcq",
+   "q": "What can an earthquake under the ocean create?",
+   "options": [
+    "A new volcano on the sea floor",
+    "A strong wind across the ocean",
+    "A huge wave called a tsunami",
+    "A very cold sea current"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 3: “An earthquake under the ocean can create a huge wave called a tsunami.”"
+  },
+  {
+   "type": "tf",
+   "q": "Scientists can say exactly when an earthquake will happen.",
+   "answer": "F",
+   "explain": "Đoạn 3: “No one can tell when an earthquake will happen”."
+  },
+  {
+   "type": "tf",
+   "q": "Charles Richter was born in the United States.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói Richter phát minh thang đo năm 1935; không nói ông sinh ở đâu."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "earthquake",
+    "pos": "n",
+    "def": "a sudden shaking of the ground",
+    "vi": "động đất",
+    "ex": "An earthquake is when"
+   },
+   {
+    "w": "surface",
+    "pos": "n",
+    "def": "the top part of something",
+    "vi": "bề mặt",
+    "ex": "the Earth’s surface"
+   },
+   {
+    "w": "damage",
+    "pos": "v",
+    "def": "to harm or break something",
+    "vi": "làm hư hại",
+    "ex": "Strong earthquakes damage buildings."
+   },
+   {
+    "w": "tension",
+    "pos": "n",
+    "def": "a strong pull or pressure between two things",
+    "vi": "sự căng, lực căng",
+    "ex": "tension builds up"
+   },
+   {
+    "w": "tremor",
+    "pos": "n",
+    "def": "a small shaking of the ground",
+    "vi": "rung chấn nhỏ",
+    "ex": "the tremors of the earth"
+   },
+   {
+    "w": "measure",
+    "pos": "v",
+    "def": "to find the size or strength of something",
+    "vi": "đo",
+    "ex": "can be measured"
+   },
+   {
+    "w": "invent",
+    "pos": "v",
+    "def": "to make or think of something new",
+    "vi": "phát minh",
+    "ex": "Charles Francis Richter invented it"
+   },
+   {
+    "w": "tsunami",
+    "pos": "n",
+    "def": "a very big sea wave",
+    "vi": "sóng thần",
+    "ex": "a huge wave called a tsunami"
+   }
+  ],
+  "coll": [
+   {
+    "c": "build up",
+    "vi": "tăng dần, tích tụ",
+    "ex": "tension builds up"
+   },
+   {
+    "c": "break free",
+    "vi": "thoát ra, tách ra",
+    "ex": "suddenly break free"
+   },
+   {
+    "c": "likely to happen",
+    "vi": "có khả năng xảy ra",
+    "ex": "likely to happen"
+   },
+   {
+    "c": "fault line",
+    "vi": "đường đứt gãy",
+    "ex": "near fault lines"
+   }
+  ],
+  "str": [
+   {
+    "s": "is called + name",
+    "vi": "được gọi là …",
+    "ex": "is called the hypocenter",
+    "explain": "Bị động: be called + tên gọi."
+   },
+   {
+    "s": "People who + verb",
+    "vi": "Những người mà …",
+    "ex": "People who study earthquakes are called seismologists.",
+    "explain": "who + động từ: mệnh đề quan hệ nói về người."
+   },
+   {
+    "s": "No one can + verb, but …",
+    "vi": "Không ai có thể …, nhưng …",
+    "ex": "No one can tell when an earthquake will happen, but we know where",
+    "explain": "but nối hai ý đối lập."
+   }
+  ]
+ }
+}

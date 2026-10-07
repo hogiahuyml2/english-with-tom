@@ -1,0 +1,185 @@
+{
+ "id": "a2-chocolate",
+ "level": "A2",
+ "title": "Chocolate",
+ "topic": "Food",
+ "words": 189,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Chocolate",
+  "url": "https://simple.wikipedia.org/wiki/Chocolate",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Đã rút gọn và đơn giản hoá nhẹ một số câu; thông tin theo bài gốc."
+ },
+ "paras": [
+  "Chocolate is a food made from cacao beans. It is used in many desserts like pudding, cakes, candy and ice cream. It can be solid, like a candy bar, or liquid, like hot chocolate. Most chocolate has sugar, and sometimes milk, added.",
+  "About two thousand years ago, Mayan people in Central America and Mexico used the seeds of the cacao tree to make a drink. It tasted bitter, not sweet, and only important people could drink it. The word “chocolate” in almost every language comes from the Nahuatl word chocolatl, from Mexico.",
+  "Later, the drink was made sweeter. Spanish explorers made it popular when they brought it to Spain. When chocolate was sweetened and made into candy, it became a very popular treat in Europe. At first, only the rich could afford it. Now, many people can.",
+  "There are three main types of chocolate: white, milk and dark chocolate. White chocolate is the sweetest because it has more sweet ingredients in it. Dark chocolate is the least sweet and has the strongest chocolate flavour. Today, most cocoa is made in Africa, in countries like the Ivory Coast and Nigeria."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is chocolate made from?",
+   "options": [
+    "Milk and sugar only",
+    "Cacao beans",
+    "Sweet fruit",
+    "Coffee seeds"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “Chocolate is a food made from cacao beans.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What did the early Mayan chocolate drink taste like?",
+   "options": [
+    "Very sweet",
+    "Sour like lemon",
+    "Bitter",
+    "Like milk"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “It tasted bitter, not sweet”."
+  },
+  {
+   "type": "mcq",
+   "q": "Who made the chocolate drink popular in Spain?",
+   "options": [
+    "Spanish explorers",
+    "Mayan kings and priests",
+    "French cooks and bakers",
+    "Candy makers in Africa"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “Spanish explorers made it popular when they brought it to Spain.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Which type of chocolate is the sweetest?",
+   "options": [
+    "Dark chocolate",
+    "Milk chocolate",
+    "Hot chocolate",
+    "White chocolate"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 4: “White chocolate is the sweetest”."
+  },
+  {
+   "type": "tf",
+   "q": "Most cocoa today is made in Africa.",
+   "answer": "T",
+   "explain": "Đoạn 4: “Today, most cocoa is made in Africa”."
+  },
+  {
+   "type": "tf",
+   "q": "Milk chocolate was first made in Switzerland.",
+   "answer": "NG",
+   "explain": "Bài không nói milk chocolate được làm đầu tiên ở đâu."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "cacao",
+    "pos": "n",
+    "def": "the tree whose seeds are used to make chocolate",
+    "vi": "cây ca cao",
+    "ex": "cacao beans"
+   },
+   {
+    "w": "dessert",
+    "pos": "n",
+    "def": "sweet food that you eat at the end of a meal",
+    "vi": "món tráng miệng",
+    "ex": "many desserts"
+   },
+   {
+    "w": "solid",
+    "pos": "adj",
+    "def": "hard; not liquid",
+    "vi": "rắn, đặc",
+    "ex": "It can be solid"
+   },
+   {
+    "w": "liquid",
+    "pos": "adj",
+    "def": "like water; not solid",
+    "vi": "lỏng",
+    "ex": "or liquid"
+   },
+   {
+    "w": "bitter",
+    "pos": "adj",
+    "def": "having a sharp, not sweet taste",
+    "vi": "đắng",
+    "ex": "It tasted bitter"
+   },
+   {
+    "w": "explorer",
+    "pos": "n",
+    "def": "a person who travels to find new places",
+    "vi": "nhà thám hiểm",
+    "ex": "Spanish explorers"
+   },
+   {
+    "w": "afford",
+    "pos": "v",
+    "def": "to have enough money to buy something",
+    "vi": "đủ khả năng mua",
+    "ex": "only the rich could afford it"
+   },
+   {
+    "w": "flavour",
+    "pos": "n",
+    "def": "the taste of food",
+    "vi": "hương vị",
+    "ex": "the strongest chocolate flavour"
+   }
+  ],
+  "coll": [
+   {
+    "c": "candy bar",
+    "vi": "thanh kẹo",
+    "ex": "a candy bar"
+   },
+   {
+    "c": "hot chocolate",
+    "vi": "sô-cô-la nóng",
+    "ex": "hot chocolate"
+   },
+   {
+    "c": "comes from",
+    "vi": "có nguồn gốc từ",
+    "ex": "comes from the Nahuatl word"
+   },
+   {
+    "c": "at first",
+    "vi": "lúc đầu",
+    "ex": "At first, only the rich"
+   }
+  ],
+  "str": [
+   {
+    "s": "is made from + noun",
+    "vi": "được làm từ …",
+    "ex": "Chocolate is a food made from cacao beans.",
+    "explain": "Bị động: be made from + nguyên liệu."
+   },
+   {
+    "s": "the + superlative (sweetest / least sweet)",
+    "vi": "ngọt nhất / ít ngọt nhất",
+    "ex": "White chocolate is the sweetest",
+    "explain": "Tính từ ngắn + est; “the least + tính từ” dùng cho mức thấp nhất."
+   },
+   {
+    "s": "not A, but B / A, not B",
+    "vi": "không phải A mà là B",
+    "ex": "It tasted bitter, not sweet",
+    "explain": "Dùng , not … để loại bỏ điều không đúng."
+   }
+  ]
+ }
+}

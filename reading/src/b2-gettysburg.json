@@ -1,0 +1,217 @@
+{
+ "id": "b2-gettysburg",
+ "level": "B2",
+ "title": "American Places: Gettysburg, Pennsylvania",
+ "topic": "History & travel",
+ "words": 388,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — American Places – Gettysburg, Pennsylvania",
+  "url": "https://learningenglish.voanews.com/a/american-places-gettysburg-pennsylvania/7965779.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Đã rút gọn: chỉ giữ một số đoạn."
+ },
+ "paras": [
+  "The Gettysburg National Military Park is in the small town of Gettysburg in the eastern state of Pennsylvania.",
+  "Much of the area around Gettysburg still looks like it did in the 1860s, during the American Civil War. The town is in the middle of good farmland. Roads pass through Gettysburg that lead to Baltimore, Washington, D.C., and other eastern cities. It is hard to believe that two huge armies fought there.",
+  "One fighting force was the United States Army of the Potomac, commanded by General George Meade. The other was the Confederate Army of Northern Virginia led by General Robert E. Lee. Lee’s troops had moved north into Pennsylvania from Virginia.",
+  "Lee believed that a Southern win of a battle on Northern land would force a negotiated settlement of the Civil War and mean independence for the Confederate States.",
+  "The battle of Gettysburg began on July 1, 1863. About 170,000 soldiers fought for three days. When it ended on July 3, more than 50,000 soldiers were dead, wounded or missing.",
+  "Lee’s army lost the battle.",
+  "Many visitors start their visit to Gettysburg at the Gettysburg Museum of the Civil War. The museum has a large collection of Civil War objects. The museum has more than 1 million artifacts, from soldiers’ private notebooks and clothing to maps of the battlefield.",
+  "The museum also houses the Gettysburg cyclorama painting. This kind of artwork completely surrounds the people looking at it.",
+  "The painting shows the artist’s vision of the final major attack of the battle on July 3, 1863. Over time, it has come to be called Pickett's Charge. George Pickett was one of several Confederate commanders ordered to make the charge.",
+  "The Confederate soldiers reached a point close to the northern lines and headquarters. Today, the point is called the “High Water Mark.” Northern forces then turned the Confederates back.",
+  "The charge failed. Southern forces would never again reach so far north. Soon after the battle, people began to visit Gettysburg to try to understand what happened there. One of those visitors, on November 19, 1863, was President Abraham Lincoln. He was invited to help dedicate a burial ground for Union soldiers killed in the battle.",
+  "Lincoln spoke for just two minutes. But his speech, known as “The Gettysburg Address,” is one of the most famous pieces of American oratory."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the writer imply in the second paragraph?",
+   "options": [
+    "The peaceful scenery gives little hint of the violence that happened here",
+    "The town has been rebuilt to look exactly as it did before the war",
+    "Most of the farmland was ruined and has never really recovered",
+    "The roads that cross the town make it unsuitable for farming"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: cảnh vật vẫn như thập niên 1860, “hard to believe that two huge armies fought there”."
+  },
+  {
+   "type": "mcq",
+   "q": "Why did General Lee move his army into Pennsylvania?",
+   "options": [
+    "He expected to find richer farmland and food supplies for his troops",
+    "He wanted to seize the roads that led to the city of Baltimore",
+    "He hoped that fewer soldiers would be needed once he was in the North",
+    "He thought victory on enemy ground could end the war on Southern terms"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 4: Lee tin thắng trận trên đất miền Bắc sẽ buộc đàm phán và đem lại độc lập."
+  },
+  {
+   "type": "mcq",
+   "q": "What can be calculated from the figures in paragraph 5?",
+   "options": [
+    "Roughly three in ten soldiers, or more, became casualties",
+    "Fewer than 20 percent of the soldiers were killed or injured",
+    "Fewer than one soldier in ten failed to return home",
+    "Nearly all of the soldiers who fought were lost"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: hơn 50.000 trên 170.000 người ≈ 29,4% trở lên."
+  },
+  {
+   "type": "mcq",
+   "q": "What was the result of Pickett’s Charge?",
+   "options": [
+    "The Confederates reached Northern headquarters and held it for a day",
+    "The attack was turned back, and Southern forces never again advanced so far north",
+    "The Northern army retreated, which ended the war",
+    "Both armies agreed to stop fighting for a time"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 10–11: quân miền Nam bị đẩy lùi; không bao giờ tiến xa như vậy nữa."
+  },
+  {
+   "type": "mcq",
+   "q": "What kind of artwork is a cyclorama?",
+   "options": [
+    "A small painting kept in a soldier’s notebook",
+    "A large work that surrounds its viewers on every side",
+    "A map of the battlefield drawn by an army officer",
+    "A statue showing the Confederate commanders"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 8: cyclorama là tác phẩm bao quanh hoàn toàn người xem."
+  },
+  {
+   "type": "mcq",
+   "q": "What point does the writer make about Lincoln’s speech at Gettysburg?",
+   "options": [
+    "It was very long, but few people remember it",
+    "It was written to celebrate the victory of the North",
+    "In spite of its brevity, it became a famous example of public speaking",
+    "It was heard by most of the soldiers who fought there"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 12: ông chỉ nói hai phút nhưng bài phát biểu nổi tiếng (“But …”)."
+  },
+  {
+   "type": "tf",
+   "q": "The museum holds more than a million items related to the Civil War.",
+   "answer": "T",
+   "explain": "Đoạn 7: bảo tàng có hơn một triệu hiện vật (“more than 1 million artifacts”)."
+  },
+  {
+   "type": "tf",
+   "q": "Gettysburg was the bloodiest battle of the whole Civil War.",
+   "answer": "NG",
+   "explain": "Bài nêu số thương vong nhưng không so sánh với các trận khác."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "army",
+    "pos": "n",
+    "def": "a large group of soldiers",
+    "vi": "quân đội",
+    "ex": "two huge armies"
+   },
+   {
+    "w": "commander",
+    "pos": "n",
+    "def": "a person who leads soldiers",
+    "vi": "chỉ huy",
+    "ex": "Confederate commanders"
+   },
+   {
+    "w": "negotiated settlement",
+    "pos": "n",
+    "def": "an agreement reached by talking",
+    "vi": "thoả thuận đạt được qua đàm phán",
+    "ex": "a negotiated settlement"
+   },
+   {
+    "w": "independence",
+    "pos": "n",
+    "def": "freedom from control by others",
+    "vi": "nền độc lập",
+    "ex": "independence for the Confederate States"
+   },
+   {
+    "w": "artifact",
+    "pos": "n",
+    "def": "an object made by people in the past",
+    "vi": "hiện vật",
+    "ex": "more than 1 million artifacts"
+   },
+   {
+    "w": "cyclorama",
+    "pos": "n",
+    "def": "a large painting that surrounds the viewer",
+    "vi": "tranh toàn cảnh",
+    "ex": "the Gettysburg cyclorama painting"
+   },
+   {
+    "w": "dedicate",
+    "pos": "v",
+    "def": "to set aside for a special purpose",
+    "vi": "khánh thành, hiến dâng",
+    "ex": "to help dedicate a burial ground"
+   },
+   {
+    "w": "oratory",
+    "pos": "n",
+    "def": "the art of making speeches in public",
+    "vi": "thuật hùng biện",
+    "ex": "American oratory"
+   }
+  ],
+  "coll": [
+   {
+    "c": "fight a battle",
+    "vi": "giao chiến",
+    "ex": "two huge armies fought there"
+   },
+   {
+    "c": "turn back",
+    "vi": "đẩy lùi",
+    "ex": "Northern forces then turned the Confederates back"
+   },
+   {
+    "c": "dead, wounded or missing",
+    "vi": "chết, bị thương hoặc mất tích",
+    "ex": "dead, wounded or missing"
+   },
+   {
+    "c": "burial ground",
+    "vi": "nghĩa trang",
+    "ex": "a burial ground for Union soldiers"
+   }
+  ],
+  "str": [
+   {
+    "s": "It is hard to believe (that) …",
+    "vi": "Thật khó tin rằng …",
+    "ex": "It is hard to believe that two huge armies fought there.",
+    "explain": "It is + tính từ + (that) mệnh đề: bình luận về điều đáng ngạc nhiên."
+   },
+   {
+    "s": "would + verb (nhìn từ quá khứ)",
+    "vi": "sẽ …",
+    "ex": "would force a negotiated settlement",
+    "explain": "would diễn tả điều Lee dự đoán trong quá khứ."
+   },
+   {
+    "s": "never again + verb",
+    "vi": "không bao giờ … nữa",
+    "ex": "Southern forces would never again reach so far north",
+    "explain": "never again: nhấn mạnh điều đó chấm dứt vĩnh viễn."
+   }
+  ]
+ }
+}

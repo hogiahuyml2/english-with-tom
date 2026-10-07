@@ -1,0 +1,180 @@
+{
+ "id": "a1-elephant",
+ "level": "A1",
+ "title": "Elephants",
+ "topic": "Animals",
+ "words": 84,
+ "minutes": 3,
+ "source": {
+  "name": "Simple English Wikipedia — Elephant",
+  "url": "https://simple.wikipedia.org/wiki/Elephant",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Chuyển thể sang mức A1 (câu ngắn, từ đơn giản); thông tin theo bài gốc."
+ },
+ "paras": [
+  "Elephants are the biggest land animals. They have big ears and a very long nose. The long nose is called a trunk. An elephant uses its trunk to pick up food.",
+  "Elephants live in families. They \"talk\" to each other with very low sounds. People often cannot hear these sounds, but elephants can hear them from far away.",
+  "A baby elephant stays inside its mother for 20 to 22 months. No other land animal takes so long. Elephants can live for about 70 years."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What is a trunk?",
+   "options": [
+    "A big ear",
+    "A baby elephant",
+    "A very long nose"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “The long nose is called a trunk.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What does an elephant use its trunk for?",
+   "options": [
+    "To fly",
+    "To pick up food",
+    "To swim under the sea"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “An elephant uses its trunk to pick up food.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How do elephants talk to each other?",
+   "options": [
+    "With very low sounds",
+    "With loud songs",
+    "With their ears only"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 2: “They talk to each other with very low sounds.”"
+  },
+  {
+   "type": "mcq",
+   "q": "How long does a baby elephant stay inside its mother?",
+   "options": [
+    "20 to 22 months",
+    "About 2 weeks",
+    "About 7 years"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “A baby elephant stays inside its mother for 20 to 22 months.”"
+  },
+  {
+   "type": "tf",
+   "q": "Elephants are the smallest land animals.",
+   "answer": "F",
+   "explain": "Đoạn 1: voi là loài động vật trên cạn lớn nhất (“the biggest land animals”)."
+  },
+  {
+   "type": "tf",
+   "q": "People can hear most elephant sounds.",
+   "answer": "F",
+   "explain": "Đoạn 2: “People often cannot hear these sounds”."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "elephant",
+    "pos": "n",
+    "def": "a very big grey animal with a long nose",
+    "vi": "con voi",
+    "ex": "Elephants are the biggest land animals."
+   },
+   {
+    "w": "trunk",
+    "pos": "n",
+    "def": "an elephant’s long nose",
+    "vi": "vòi (voi)",
+    "ex": "called a trunk"
+   },
+   {
+    "w": "ear",
+    "pos": "n",
+    "def": "the part of the body that you hear with",
+    "vi": "tai",
+    "ex": "big ears"
+   },
+   {
+    "w": "pick up",
+    "pos": "phr v",
+    "def": "to lift something",
+    "vi": "nhặt lên, cầm lên",
+    "ex": "to pick up food"
+   },
+   {
+    "w": "family",
+    "pos": "n",
+    "def": "a group of related people or animals",
+    "vi": "gia đình",
+    "ex": "Elephants live in families."
+   },
+   {
+    "w": "low",
+    "pos": "adj",
+    "def": "not high; deep (for sounds)",
+    "vi": "thấp, trầm",
+    "ex": "very low sounds"
+   },
+   {
+    "w": "far away",
+    "pos": "adv",
+    "def": "at a long distance",
+    "vi": "ở xa",
+    "ex": "from far away"
+   },
+   {
+    "w": "month",
+    "pos": "n",
+    "def": "one of the twelve parts of a year",
+    "vi": "tháng",
+    "ex": "20 to 22 months"
+   }
+  ],
+  "coll": [
+   {
+    "c": "pick up",
+    "vi": "nhặt lên",
+    "ex": "to pick up food"
+   },
+   {
+    "c": "talk to",
+    "vi": "nói chuyện với",
+    "ex": "talk\" to each other"
+   },
+   {
+    "c": "far away",
+    "vi": "ở xa",
+    "ex": "from far away"
+   },
+   {
+    "c": "land animal",
+    "vi": "động vật trên cạn",
+    "ex": "land animals"
+   }
+  ],
+  "str": [
+   {
+    "s": "the + superlative (the biggest)",
+    "vi": "… nhất",
+    "ex": "Elephants are the biggest land animals.",
+    "explain": "the + tính từ so sánh nhất: lớn nhất trong nhóm."
+   },
+   {
+    "s": "uses A to + verb",
+    "vi": "dùng A để …",
+    "ex": "An elephant uses its trunk to pick up food.",
+    "explain": "use A to + động từ: dùng cái gì để làm gì."
+   },
+   {
+    "s": "No other + noun + verb",
+    "vi": "Không có … nào khác …",
+    "ex": "No other land animal takes so long.",
+    "explain": "No other + danh từ: nhấn mạnh chỉ có một đối tượng như vậy."
+   }
+  ]
+ }
+}

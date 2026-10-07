@@ -1,0 +1,185 @@
+{
+ "id": "a2-pizza",
+ "level": "A2",
+ "title": "Pizza",
+ "topic": "Food",
+ "words": 185,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Pizza",
+  "url": "https://simple.wikipedia.org/wiki/Pizza",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Đã rút gọn và đơn giản hoá nhẹ một số câu; thông tin theo bài gốc."
+ },
+ "paras": [
+  "Pizza is an Italian food that was created in the area of Naples, in southern Italy. A pizza is a piece of flat bread covered with sauce and different toppings. The sauce is usually made from tomatoes. Some of the most common toppings are mozzarella (a kind of cheese), sausages, pepperoni, vegetables and herbs. The bread part is called the “pizza crust”.",
+  "In June 1889, the Neapolitan chef Raffaele Esposito created the “Margherita” in honour of Queen Margherita. It was the first pizza to include cheese.",
+  "Italian immigrants brought pizza to the United States in the late nineteenth century. The country’s first pizzeria, Lombardi’s, opened in 1905. After World War II, many soldiers came home from Italy and wanted to buy pizza. Since then, pizza has become more and more popular in the U.S. Thirteen percent of Americans eat pizza on any given day.",
+  "Today, pizza is an international food. The toppings are different in different parts of the world. Some people put pineapple, egg, chicken, fish or kimchi on pizza. Pizza can also be made without meat for vegetarians, and without cheese for vegans."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "Where was pizza created?",
+   "options": [
+    "In New York, the United States",
+    "In Paris, France",
+    "In Naples, southern Italy",
+    "In Athens, Greece"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 1: “created in the area of Naples, in southern Italy”."
+  },
+  {
+   "type": "mcq",
+   "q": "What is the “crust” of a pizza?",
+   "options": [
+    "The sauce",
+    "The bread part",
+    "The cheese on top",
+    "The meat"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 1: “The bread part is called the “pizza crust”.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Who was the “Margherita” pizza named for?",
+   "options": [
+    "Chef Esposito’s mother",
+    "An Italian soldier",
+    "A famous pizzeria",
+    "Queen Margherita"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 2: “created the “Margherita” in honour of Queen Margherita.”"
+  },
+  {
+   "type": "mcq",
+   "q": "When did the first U.S. pizzeria, Lombardi’s, open?",
+   "options": [
+    "In 1905",
+    "In 1889",
+    "In 1945",
+    "In 1999"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 3: “The country’s first pizzeria, Lombardi’s, opened in 1905.”"
+  },
+  {
+   "type": "tf",
+   "q": "The sauce on a pizza is usually made from tomatoes.",
+   "answer": "T",
+   "explain": "Đoạn 1: “The sauce is usually made from tomatoes.”"
+  },
+  {
+   "type": "tf",
+   "q": "Raffaele Esposito worked in a restaurant in the United States.",
+   "answer": "NG",
+   "explain": "Bài nói Esposito là đầu bếp ở Naples; không nói ông làm việc ở Mỹ."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "topping",
+    "pos": "n",
+    "def": "something that you put on top of food",
+    "vi": "nguyên liệu phủ lên trên",
+    "ex": "different toppings"
+   },
+   {
+    "w": "sauce",
+    "pos": "n",
+    "def": "a thick liquid that you eat with food",
+    "vi": "nước sốt",
+    "ex": "covered with sauce"
+   },
+   {
+    "w": "crust",
+    "pos": "n",
+    "def": "the hard outside part of bread or pizza",
+    "vi": "đế bánh, vỏ bánh",
+    "ex": "the “pizza crust”"
+   },
+   {
+    "w": "chef",
+    "pos": "n",
+    "def": "a person who cooks in a restaurant",
+    "vi": "đầu bếp",
+    "ex": "the Neapolitan chef"
+   },
+   {
+    "w": "in honour of",
+    "pos": "phr",
+    "def": "to show respect for someone",
+    "vi": "để vinh danh",
+    "ex": "in honour of Queen Margherita"
+   },
+   {
+    "w": "immigrant",
+    "pos": "n",
+    "def": "a person who comes to live in a new country",
+    "vi": "người nhập cư",
+    "ex": "Italian immigrants"
+   },
+   {
+    "w": "pizzeria",
+    "pos": "n",
+    "def": "a restaurant that makes pizza",
+    "vi": "tiệm pizza",
+    "ex": "first pizzeria"
+   },
+   {
+    "w": "vegetarian",
+    "pos": "n",
+    "def": "a person who does not eat meat",
+    "vi": "người ăn chay",
+    "ex": "for vegetarians"
+   }
+  ],
+  "coll": [
+   {
+    "c": "flat bread",
+    "vi": "bánh mì dẹt",
+    "ex": "a piece of flat bread"
+   },
+   {
+    "c": "covered with",
+    "vi": "được phủ …",
+    "ex": "covered with sauce"
+   },
+   {
+    "c": "come home from",
+    "vi": "trở về nhà từ",
+    "ex": "came home from Italy"
+   },
+   {
+    "c": "on any given day",
+    "vi": "vào bất kỳ ngày nào",
+    "ex": "on any given day"
+   }
+  ],
+  "str": [
+   {
+    "s": "was created in + place",
+    "vi": "được tạo ra ở …",
+    "ex": "Pizza is an Italian food that was created in the area of Naples",
+    "explain": "Bị động quá khứ: was/were + quá khứ phân từ."
+   },
+   {
+    "s": "more and more + adjective",
+    "vi": "ngày càng …",
+    "ex": "pizza has become more and more popular",
+    "explain": "more and more + tính từ dài: diễn tả sự tăng dần."
+   },
+   {
+    "s": "without + noun",
+    "vi": "không có …",
+    "ex": "without meat for vegetarians, and without cheese for vegans",
+    "explain": "without + danh từ: không có cái gì."
+   }
+  ]
+ }
+}

@@ -1,0 +1,216 @@
+{
+ "id": "b2-yellowstone",
+ "level": "B2",
+ "title": "Yellowstone: The World’s First National Park",
+ "topic": "Nature & travel",
+ "words": 366,
+ "minutes": 6,
+ "source": {
+  "name": "VOA Learning English — Yellowstone: The World’s First National Park",
+  "url": "https://learningenglish.voanews.com/a/yellowstone-the-world-s-first-national-park/7974034.html",
+  "license": "Nội dung của VOA (Voice of America), phạm vi công cộng",
+  "adapted": false,
+  "note": "Giữ nguyên nội dung các đoạn chính; bỏ tiêu đề nhỏ."
+ },
+ "paras": [
+  "Yellowstone National Park in the western United States was the world’s first national park.",
+  "Established in 1872, it is famous for its geothermal activity and wild animals. It includes beautiful mountains, deep canyons, lakes and rivers.",
+  "Yellowstone is still one of the largest national parks in the U.S. It takes up almost 9,000 square kilometers. Most of the park lies within the western state of Wyoming.",
+  "The park is unusual because of what lies underneath it. It sits on top of an ancient super volcano, known as the Yellowstone Caldera. The caldera remains an active volcano.",
+  "A lake of hot liquid rock is about six kilometers under the park. Experts say this lake is under huge amounts of pressure. The pressure and heat cause geysers to shoot hot water out of the ground and mud to boil at Yellowstone.",
+  "The park is home to more than 300 geysers. There are more geysers and hot springs in Yellowstone than any other place on Earth. “Old Faithful” is the name of the park’s most famous geyser because it erupts about every 90 minutes.",
+  "Yellowstone is on a high plateau with an average height of 2,400 meters above sea level. This makes the weather very cold in winter, with January temperatures averaging between -18 degrees and -7 degrees Celsius. However, some areas of the park remain open to visitors throughout the year.",
+  "Yellowstone Canyon is about 365 meters deep. The Yellowstone River runs through it and drops 93 meters in the Lower Falls. Visitors can walk on a path that brings them very close to the top of the falls. There, they can see and hear the powerful falls.",
+  "In summer of 1988, forest fires burned large areas of the park. Most of those areas are now covered with plants and young trees.",
+  "Yellowstone is home to the largest group of wild animals in the lower 48 United States. These include bison, grizzly bear, elk, deer, moose, fox, beaver, coyote and wolves. In 2024, park officials estimated the bison population to be about 4,500 animals. That makes it the largest group of wild bison in the world.",
+  "There is still a wild west in America…and its name is Yellowstone."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What does the writer say makes Yellowstone unusual?",
+   "options": [
+    "It contains more lakes than any other park in the country",
+    "It lies above a volcano that is still active",
+    "It stays open to visitors in every area all year round",
+    "It is the largest protected area anywhere in the world"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 4: công viên nằm trên một siêu núi lửa cổ và “remains an active volcano”."
+  },
+  {
+   "type": "mcq",
+   "q": "According to experts, what causes the geysers and boiling mud?",
+   "options": [
+    "Intense heat and pressure from molten rock far below the surface",
+    "Water from melting snow that flows through the canyon",
+    "Earthquakes along the line of the Yellowstone River",
+    "Hot summer weather that warms the lakes in the park"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 5: hồ đá nóng chảy sâu 6 km chịu áp suất lớn; “pressure and heat cause geysers”."
+  },
+  {
+   "type": "mcq",
+   "q": "Why is Old Faithful the best-known geyser in the park?",
+   "options": [
+    "It throws water higher than any other geyser does",
+    "It was the first geyser that visitors ever saw",
+    "It is located closest to the entrance of the park",
+    "Its eruptions come at fairly regular intervals"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 6: nổi tiếng vì phun “about every 90 minutes” — khá đều đặn (tên “Faithful”)."
+  },
+  {
+   "type": "mcq",
+   "q": "What explains the very cold winters in Yellowstone?",
+   "options": [
+    "Cold air collects inside the deep canyon",
+    "The park sits on high ground",
+    "Many lakes and rivers freeze completely",
+    "Strong winds blow from nearby mountains"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 7: nằm trên cao nguyên trung bình 2.400 m nên mùa đông rất lạnh."
+  },
+  {
+   "type": "mcq",
+   "q": "What can be concluded from the information about winter in the park?",
+   "options": [
+    "The park does not close entirely, even in severe cold",
+    "No visitors can enter between December and February",
+    "Temperatures in January are warmer than in summer",
+    "Only the canyon is open to the public during winter"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 7: tháng 1 lạnh nhất (−18 đến −7 °C) nhưng “some areas … remain open … throughout the year”."
+  },
+  {
+   "type": "mcq",
+   "q": "What does the writer say about the bison in Yellowstone?",
+   "options": [
+    "Their numbers have fallen below one thousand",
+    "They are the only large animals that live in the park",
+    "The park has the biggest wild herd of them in the world",
+    "They are kept in a special area away from visitors"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 10: ước tính khoảng 4.500 con, “largest group of wild bison in the world”."
+  },
+  {
+   "type": "tf",
+   "q": "Most of the areas damaged by the fires of 1988 are still bare.",
+   "answer": "F",
+   "explain": "Đoạn 9: phần lớn khu vực bị cháy nay đã phủ cây cỏ và cây non."
+  },
+  {
+   "type": "tf",
+   "q": "Yellowstone has more visitors in summer than in winter.",
+   "answer": "NG",
+   "explain": "Bài không đưa số liệu du khách theo mùa."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "geothermal",
+    "pos": "adj",
+    "def": "connected with heat from inside the Earth",
+    "vi": "(thuộc) địa nhiệt",
+    "ex": "geothermal activity"
+   },
+   {
+    "w": "canyon",
+    "pos": "n",
+    "def": "a deep valley with steep sides",
+    "vi": "hẻm núi",
+    "ex": "deep canyons"
+   },
+   {
+    "w": "caldera",
+    "pos": "n",
+    "def": "a very large crater formed by a volcano",
+    "vi": "miệng núi lửa lớn (caldera)",
+    "ex": "Yellowstone Caldera"
+   },
+   {
+    "w": "geyser",
+    "pos": "n",
+    "def": "a hot spring that shoots water into the air",
+    "vi": "mạch nước phun",
+    "ex": "geysers to shoot hot water"
+   },
+   {
+    "w": "plateau",
+    "pos": "n",
+    "def": "a large area of high, flat land",
+    "vi": "cao nguyên",
+    "ex": "a high plateau"
+   },
+   {
+    "w": "erupt",
+    "pos": "v",
+    "def": "to burst out suddenly",
+    "vi": "phun trào",
+    "ex": "erupts about every 90 minutes"
+   },
+   {
+    "w": "estimate",
+    "pos": "v",
+    "def": "to guess a number from the facts you have",
+    "vi": "ước tính",
+    "ex": "park officials estimated"
+   },
+   {
+    "w": "bison",
+    "pos": "n",
+    "def": "a large wild animal like a cow with a big head",
+    "vi": "bò rừng bison",
+    "ex": "bison, grizzly bear"
+   }
+  ],
+  "coll": [
+   {
+    "c": "take up",
+    "vi": "chiếm (diện tích)",
+    "ex": "It takes up almost 9,000 square kilometers"
+   },
+   {
+    "c": "sit on top of",
+    "vi": "nằm trên",
+    "ex": "It sits on top of an ancient super volcano"
+   },
+   {
+    "c": "be home to",
+    "vi": "là nơi sinh sống của",
+    "ex": "The park is home to more than 300 geysers"
+   },
+   {
+    "c": "above sea level",
+    "vi": "trên mực nước biển",
+    "ex": "above sea level"
+   }
+  ],
+  "str": [
+   {
+    "s": "known as + name",
+    "vi": "được biết đến với tên …",
+    "ex": "known as the Yellowstone Caldera",
+    "explain": "known as: được gọi/biết đến là."
+   },
+   {
+    "s": "The more … ",
+    "vi": "nhiều hơn bất kỳ … khác",
+    "ex": "more geysers and hot springs in Yellowstone than any other place on Earth",
+    "explain": "so sánh hơn với any other + danh từ: nhất trong tất cả."
+   },
+   {
+    "s": "with + number + adjective noun (averaging)",
+    "vi": "trung bình …",
+    "ex": "January temperatures averaging between -18 degrees and -7 degrees Celsius",
+    "explain": "Phân từ averaging dùng để nêu giá trị trung bình."
+   }
+  ]
+ }
+}

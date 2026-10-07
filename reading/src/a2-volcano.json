@@ -1,0 +1,186 @@
+{
+ "id": "a2-volcano",
+ "level": "A2",
+ "title": "Volcanoes",
+ "topic": "Earth & science",
+ "words": 180,
+ "minutes": 4,
+ "source": {
+  "name": "Simple English Wikipedia — Volcano",
+  "url": "https://simple.wikipedia.org/wiki/Volcano",
+  "license": "Giấy phép CC BY-SA 4.0 (Wikipedia contributors)",
+  "adapted": true,
+  "note": "Đã rút gọn và đơn giản hoá nhẹ một số câu; thông tin theo bài gốc."
+ },
+ "paras": [
+  "A volcano is a mountain that has lava (hot, liquid rock) coming out from a magma chamber under the ground, or did have in the past. Volcanoes are formed by the movement of tectonic plates.",
+  "Most volcanoes have a volcanic crater at the top. When a volcano is active, materials come out of it. The materials include lava, steam, gases, ash and broken rock pieces.",
+  "When there is enough pressure, the volcano erupts. Some eruptions blow off the top of the volcano. Some eruptions come out at a side instead of the top.",
+  "Volcanoes are also found on planets other than Earth. An example is Olympus Mons on Mars. Scientists who study volcanoes are called volcanologists.",
+  "Mauna Loa is a famous volcano on the “Big Island” of Hawaii. It is one of five volcanoes on that island, and it is 4,196 metres tall. Like all the other Hawaiian volcanoes, it was created by the movement of the Pacific tectonic plate over a hotspot in the Earth’s mantle. One of its largest recent eruptions left a lava trail 51 kilometres long."
+ ],
+ "questions": [
+  {
+   "type": "mcq",
+   "q": "What comes out of an active volcano?",
+   "options": [
+    "Only water, mud and sand",
+    "Cold air, ice and snow",
+    "Lava, steam, gases and ash",
+    "Plants, trees and soil"
+   ],
+   "answer": 2,
+   "explain": "Đoạn 2: “The materials include lava, steam, gases, ash and broken rock pieces.”"
+  },
+  {
+   "type": "mcq",
+   "q": "When does a volcano erupt?",
+   "options": [
+    "When it rains for many days",
+    "When a plate stops moving",
+    "When the lava is cold",
+    "When there is enough pressure"
+   ],
+   "answer": 3,
+   "explain": "Đoạn 3: “When there is enough pressure, the volcano erupts.”"
+  },
+  {
+   "type": "mcq",
+   "q": "Where is Olympus Mons?",
+   "options": [
+    "On the planet Mars",
+    "On the planet Earth",
+    "On the Moon",
+    "In Hawaii"
+   ],
+   "answer": 0,
+   "explain": "Đoạn 4: “An example is Olympus Mons on Mars.”"
+  },
+  {
+   "type": "mcq",
+   "q": "What created the Hawaiian volcanoes?",
+   "options": [
+    "A strong wind blowing from the sea",
+    "The Pacific plate moving over a hotspot",
+    "A huge earthquake near Japan",
+    "Melting ice from the high mountains"
+   ],
+   "answer": 1,
+   "explain": "Đoạn 5: “it was created by the movement of the Pacific tectonic plate over a hotspot in the Earth’s mantle.”"
+  },
+  {
+   "type": "tf",
+   "q": "All volcanic eruptions come out from the top of the volcano.",
+   "answer": "F",
+   "explain": "Đoạn 3: “Some eruptions come out at a side instead of the top.”"
+  },
+  {
+   "type": "tf",
+   "q": "Mauna Loa is the most dangerous volcano in the world.",
+   "answer": "NG",
+   "explain": "Bài chỉ nói Mauna Loa cao 4,196 mét và có phun trào lớn; không nói nó nguy hiểm nhất thế giới."
+  }
+ ],
+ "notes": {
+  "vocab": [
+   {
+    "w": "lava",
+    "pos": "n",
+    "def": "hot liquid rock that comes out of a volcano",
+    "vi": "dung nham",
+    "ex": "lava (hot, liquid rock)"
+   },
+   {
+    "w": "crater",
+    "pos": "n",
+    "def": "the round hole at the top of a volcano",
+    "vi": "miệng núi lửa",
+    "ex": "a volcanic crater"
+   },
+   {
+    "w": "active",
+    "pos": "adj",
+    "def": "working now; not finished or asleep",
+    "vi": "đang hoạt động",
+    "ex": "When a volcano is active"
+   },
+   {
+    "w": "steam",
+    "pos": "n",
+    "def": "hot gas that comes from boiling water",
+    "vi": "hơi nước",
+    "ex": "lava, steam, gases"
+   },
+   {
+    "w": "ash",
+    "pos": "n",
+    "def": "grey powder that is left after something burns",
+    "vi": "tro",
+    "ex": "gases, ash and broken rock pieces"
+   },
+   {
+    "w": "pressure",
+    "pos": "n",
+    "def": "a strong force that pushes on something",
+    "vi": "áp suất",
+    "ex": "enough pressure"
+   },
+   {
+    "w": "erupt",
+    "pos": "v",
+    "def": "to explode and send out lava, ash and gas",
+    "vi": "phun trào",
+    "ex": "the volcano erupts"
+   },
+   {
+    "w": "volcanologist",
+    "pos": "n",
+    "def": "a scientist who studies volcanoes",
+    "vi": "nhà nghiên cứu núi lửa",
+    "ex": "called volcanologists"
+   }
+  ],
+  "coll": [
+   {
+    "c": "come out of",
+    "vi": "thoát ra từ",
+    "ex": "materials come out of it"
+   },
+   {
+    "c": "tectonic plates",
+    "vi": "các mảng kiến tạo",
+    "ex": "movement of tectonic plates"
+   },
+   {
+    "c": "lava trail",
+    "vi": "dòng dung nham",
+    "ex": "a lava trail 51 kilometres long"
+   },
+   {
+    "c": "other than",
+    "vi": "ngoài …, khác …",
+    "ex": "planets other than Earth"
+   }
+  ],
+  "str": [
+   {
+    "s": "is/are formed by + noun",
+    "vi": "được hình thành bởi …",
+    "ex": "Volcanoes are formed by the movement of tectonic plates.",
+    "explain": "Câu bị động: be + quá khứ phân từ + by + tác nhân."
+   },
+   {
+    "s": "when + clause, clause",
+    "vi": "khi … thì …",
+    "ex": "When there is enough pressure, the volcano erupts.",
+    "explain": "when mở đầu mệnh đề chỉ điều kiện/thời điểm; phía sau có dấu phẩy."
+   },
+   {
+    "s": "Some … Some … instead of",
+    "vi": "Có … , có … thay vì …",
+    "ex": "Some eruptions come out at a side instead of the top.",
+    "explain": "Dùng Some … để chia một nhóm thành các loại khác nhau; instead of + danh từ: thay vì."
+   }
+  ]
+ }
+}
