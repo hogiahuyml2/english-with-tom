@@ -156,6 +156,16 @@
 .gd-lawn.z-ocean { --bed: #6EC7F1; --bed2: #5FB9E6; --bedl: rgba(255,255,255,.5); background: repeating-linear-gradient(90deg, #2B7FC0 0 10px, #1E5F9A 10px 12px); border-color: #7CC8F0; box-shadow: inset 0 0 0 3px #A8E0FF, 0 14px 0 -2px rgba(10,40,90,.4), 0 22px 34px rgba(10,40,90,.5); }
 .gd-lawn.z-sky { --bed: #E8F4FF; --bed2: #D9ECFF; --bedl: rgba(130,170,220,.5); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px, #CFE3F7 10px 12px); border-color: #BBD5F2; }
 .gd-lawn.z-space { --bed: #3B4088; --bed2: #30357A; --bedl: rgba(170,180,255,.5); background: repeating-linear-gradient(90deg, #5A6288 0 10px, #343B5E 10px 12px); border-color: #8FA0FF; box-shadow: inset 0 0 0 3px #B7C2FF, 0 0 26px 6px rgba(110,130,255,.45), 0 14px 0 -2px rgba(10,10,40,.5), 0 22px 34px rgba(10,10,50,.55); }
+.gd-lawn.z-bamboo { --bed: #CFE8B0; --bed2: #BEDD9C; --bedl: rgba(70,130,50,.4); background: repeating-linear-gradient(90deg, #7FB05A 0 12px, #5A8A3C 12px 14px); border-color: #5A8A3C; }
+.gd-lawn.z-savanna { --bed: #F0DC98; --bed2: #E6CE80; --bedl: rgba(160,120,40,.45); background: repeating-linear-gradient(90deg, #D9B866 0 12px, #B8923F 12px 14px); border-color: #A8812F; }
+.gd-lawn.z-jungle { --bed: #6BB06E; --bed2: #58A05C; --bedl: rgba(20,70,35,.45); background: repeating-linear-gradient(90deg, #3C7A48 0 12px, #2A5E36 12px 14px); border-color: #2A5E36; }
+.gd-lawn.z-village { --bed: #B6DE92; --bed2: #A6D282; --bedl: rgba(70,110,50,.4); background: repeating-linear-gradient(90deg, #B8A27A 0 12px, #8F7A55 12px 14px); border-color: #7A6644; }
+.gd-lawn.z-funfair { --bed: #C6ECB0; --bed2: #B4E29C; --bedl: rgba(70,130,60,.4); background: repeating-linear-gradient(45deg, #FFD23F 0 9px, #FF6B9A 9px 18px); border-color: #FF6B9A; }
+.gd-lawn.z-arctic { --bed: #F2FAFF; --bed2: #DDEEFA; --bedl: rgba(110,160,205,.55); background: repeating-linear-gradient(90deg, #DDEEFA 0 10px, #A8CBE6 10px 12px); border-color: #8FB4D6; box-shadow: inset 0 0 0 3px #C9E4F7, 0 0 22px 4px rgba(120,230,200,.35), 0 14px 0 -2px rgba(40,80,130,.35), 0 22px 34px rgba(30,60,110,.4); }
+.gd-lawn.z-pirate { --bed: #F8E8B8; --bed2: #EFD9A0; --bedl: rgba(180,140,60,.5); background: repeating-linear-gradient(90deg, #A8723A 0 14px, #7A4A22 14px 16px); border-color: #6B4120; }
+.gd-lawn.z-dino { --bed: #A4CE6E; --bed2: #96C25E; --bedl: rgba(60,100,30,.45); background: repeating-linear-gradient(90deg, #7A6A44 0 12px, #5A4E30 12px 14px); border-color: #5A4E30; }
+.gd-lawn.z-volcano { --bed: #6A4A4A; --bed2: #5A3C3C; --bedl: rgba(255,150,70,.5); background: repeating-linear-gradient(90deg, #3A2A2E 0 10px, #1E1418 10px 12px); border-color: #FF8A2A; box-shadow: inset 0 0 0 3px #FF9A4A, 0 0 26px 6px rgba(255,110,40,.45), 0 14px 0 -2px rgba(30,10,10,.5), 0 22px 34px rgba(40,10,10,.55); }
+.gd-lawn.z-cyber { --bed: #343E70; --bed2: #2A3260; --bedl: rgba(92,232,255,.5); background: repeating-linear-gradient(90deg, #2A3260 0 10px, #141A38 10px 12px); border-color: #5CE8FF; box-shadow: inset 0 0 0 3px #5CE8FF, 0 0 26px 6px rgba(255,92,200,.4), 0 14px 0 -2px rgba(10,10,40,.5), 0 22px 34px rgba(10,10,50,.55); }
 .gd-lawn.z-palace { background: repeating-linear-gradient(90deg, #F6F1E3 0 12px, #CFC7B1 12px 14px); border-color: #D6BE7A; }
 .gd-zin { animation: gdZin .5s cubic-bezier(.2,1.2,.4,1); } @keyframes gdZin { from { transform: scale(.55); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .gd-zbar { pointer-events: auto; display: none; align-items: center; gap: 6px; margin-top: 6px; } .gd-stage:not(.map) .gd-zbar { display: flex; } @media (min-width: 901px) { .gd-stage:not(.map) { --top: 120px; } } @media (max-width: 900px) { .gd-stage:not(.map) { --top: 168px; } } @media (max-width: 640px) { .gd-stage:not(.map) { --top: 150px; } } .gd-stage:not(.map) .gd-gname { display: none; }
@@ -372,11 +382,13 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=11"></script>
+<script src="js/garden-data.js?v=12"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
+<script src="js/garden-art3.js?v=1"></script>
 <script src="js/garden-world.js?v=9"></script>
-<script src="js/garden-world2.js?v=2"></script>
+<script src="js/garden-world2.js?v=3"></script>
+<script src="js/garden-world3.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -405,9 +417,9 @@ function paintIcons() { [].forEach.call(document.querySelectorAll('[data-ic]'), 
 /* ───────── hạt chuyển động trong khu (phấn hoa, lá rơi, cánh hoa, đom đóm, ánh sao…) ───────── */
 function fxHtml(zid) {
   var seed = 7, i, out = '', rr = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-  var mix = { cottage: [['pf', 8], ['lf', 4], ['pt', 3]], hill: [['pf', 9], ['lf', 3]], river: [['pf', 5], ['gl', 8]], pond: [['pf', 5], ['pt', 5], ['gl', 5]], forest: [['pf', 6], ['lf', 9]], palace: [['pf', 6], ['pt', 7], ['gl', 5]], winter: [['gl', 14]], beach: [['gl', 10], ['pf', 3]], magic: [['rn', 14], ['gl', 5]] }[zid] || [['pf', 8]];
+  var mix = { cottage: [['pf', 8], ['lf', 4], ['pt', 3]], hill: [['pf', 9], ['lf', 3]], river: [['pf', 5], ['gl', 8]], pond: [['pf', 5], ['pt', 5], ['gl', 5]], forest: [['pf', 6], ['lf', 9]], palace: [['pf', 6], ['pt', 7], ['gl', 5]], winter: [['gl', 14]], beach: [['gl', 10], ['pf', 3]], magic: [['rn', 14], ['gl', 5]], bamboo: [['lf', 6], ['pf', 4]], jungle: [['lf', 8], ['gl', 6]], funfair: [['pt', 10], ['pf', 3]], arctic: [['gl', 14]], volcano: [['gl', 14], ['pf', 3]], cyber: [['gl', 12], ['pt', 4]], savanna: [['pf', 8]] }[zid] || [['pf', 8]];
   mix.forEach(function (m) { for (i = 0; i < m[1]; i++) out += '<i class="' + m[0] + (m[0] === 'lf' && i % 3 === 0 ? ' o' : '') + '" style="left:' + (rr() * 96).toFixed(1) + '%;top:' + (m[0] === 'lf' || m[0] === 'pt' ? (rr() * 20).toFixed(1) : (30 + rr() * 66).toFixed(1)) + '%;animation-delay:' + (-rr() * 10).toFixed(2) + 's;animation-duration:' + (6 + rr() * 6).toFixed(1) + 's"></i>'; });
-  if (zid !== 'winter') for (i = 0; i < 8; i++) out += '<i class="ff" style="left:' + (rr() * 94).toFixed(1) + '%;top:' + (20 + rr() * 70).toFixed(1) + '%;animation-delay:' + (-rr() * 6).toFixed(2) + 's"></i>';
+  if (zid !== 'winter' && zid !== 'arctic') for (i = 0; i < 8; i++) out += '<i class="ff" style="left:' + (rr() * 94).toFixed(1) + '%;top:' + (20 + rr() * 70).toFixed(1) + '%;animation-delay:' + (-rr() * 6).toFixed(2) + 's"></i>';
   return out;
 }
 /* chế độ đồ hoạ cao (ánh sáng nổi khối): tự bật trên máy khoẻ, học sinh có thể tắt để máy chạy mượt hơn */

@@ -115,7 +115,28 @@
     { id: 'submarine', name: 'Tàu ngầm vàng', kind: 'big', w: 3, h: 1, cost: 2000, lvl: 10, b: 48 },
     { id: 'cloudhouse', name: 'Nhà trên mây', kind: 'big', w: 2, h: 2, cost: 3200, lvl: 11, b: 66 },
     { id: 'rocketbig', name: 'Tên lửa', kind: 'big', w: 1, h: 2, cost: 3800, lvl: 12, b: 72 },
-    { id: 'observatory', name: 'Đài thiên văn', kind: 'big', w: 2, h: 2, cost: 4500, lvl: 12, b: 82 }
+    { id: 'observatory', name: 'Đài thiên văn', kind: 'big', w: 2, h: 2, cost: 4500, lvl: 12, b: 82 },
+    // ── món cho 10 khu thêm sau: mỗi khu 1 công trình lớn + 1 đồ trang trí ──
+    { id: 'bamboobunch', name: 'Bụi tre', kind: 'deco', cost: 140, lvl: 4, b: 6 },
+    { id: 'drum', name: 'Trống châu Phi', kind: 'deco', cost: 180, lvl: 5, b: 7 },
+    { id: 'totem', name: 'Cột totem', kind: 'deco', cost: 260, lvl: 6, b: 10 },
+    { id: 'cart', name: 'Xe chở cỏ khô', kind: 'deco', cost: 200, lvl: 6, b: 8 },
+    { id: 'popcorn', name: 'Xe bắp rang', kind: 'deco', cost: 320, lvl: 7, b: 11 },
+    { id: 'snowsled', name: 'Xe trượt tuyết', kind: 'deco', cost: 400, lvl: 8, b: 12 },
+    { id: 'pirateflag', name: 'Cờ hải tặc', kind: 'deco', cost: 520, lvl: 9, b: 14 },
+    { id: 'dinoegg', name: 'Trứng khủng long', kind: 'deco', cost: 700, lvl: 10, b: 16 },
+    { id: 'tikitorch', name: 'Đuốc dung nham', kind: 'deco', cost: 900, lvl: 11, b: 19 },
+    { id: 'hologramd', name: 'Quả cầu hologram', kind: 'deco', cost: 1300, lvl: 13, b: 24 },
+    { id: 'bamboohouse', name: 'Nhà sàn tre', kind: 'big', w: 3, h: 2, cost: 1800, lvl: 4, b: 44 },
+    { id: 'safaritower', name: 'Tháp ngắm thú', kind: 'big', w: 2, h: 2, cost: 2400, lvl: 5, b: 50 },
+    { id: 'tavern', name: 'Quán trọ trung cổ', kind: 'big', w: 3, h: 2, cost: 2800, lvl: 6, b: 62 },
+    { id: 'jungletemple', name: 'Đền cổ trong rừng', kind: 'big', w: 3, h: 3, cost: 4200, lvl: 6, b: 88 },
+    { id: 'carousel', name: 'Vòng quay ngựa gỗ', kind: 'big', w: 2, h: 2, cost: 3600, lvl: 7, b: 70 },
+    { id: 'igloo', name: 'Nhà tuyết igloo', kind: 'big', w: 2, h: 2, cost: 3200, lvl: 8, b: 58 },
+    { id: 'pirateship', name: 'Tàu hải tặc', kind: 'big', w: 3, h: 3, cost: 6000, lvl: 9, b: 100 },
+    { id: 'brontosaurus', name: 'Khủng long cổ dài', kind: 'big', w: 4, h: 3, cost: 8000, lvl: 10, b: 130 },
+    { id: 'volcano', name: 'Núi lửa nhỏ', kind: 'big', w: 4, h: 3, cost: 10000, lvl: 11, b: 150 },
+    { id: 'neontower', name: 'Tháp neon', kind: 'big', w: 2, h: 3, cost: 12000, lvl: 13, b: 160 }
   ];
   var PETS = [
     { id: 'bird', name: 'Chim sẻ', cost: 60, lvl: 1 }, { id: 'cat', name: 'Mèo con', cost: 80, lvl: 1 }, { id: 'dog', name: 'Cún con', cost: 100, lvl: 1 },
@@ -160,7 +181,18 @@
     { id: 'candy', name: 'Xứ sở kẹo ngọt', icon: '🍭', desc: 'Nhà bánh quy, sông sô-cô-la và những cây kẹo mút khổng lồ.', cost: 6000, lvl: 9, blocks: [{ k: 'candyhouse', x: 0, y: 0, w: 3, h: 2 }, { k: 'lollipop', x: 3, y: 0, w: 1, h: 1 }, { k: 'chocoriver', x: 0, y: 3, w: 5, h: 1 }, { k: 'cupcake', x: 5, y: 2, w: 2, h: 2 }, { k: 'lollipop', x: 6, y: 0, w: 1, h: 1 }] },
     { id: 'ocean', name: 'Đại dương san hô', icon: '🐠', desc: 'Rạn san hô rực rỡ, tàu đắm cổ và rương kho báu dưới đáy biển.', cost: 9000, lvl: 10, blocks: [{ k: 'coralreef', x: 0, y: 0, w: 3, h: 2 }, { k: 'seaweed', x: 3, y: 1, w: 1, h: 2 }, { k: 'treasure', x: 6, y: 0, w: 1, h: 1 }, { k: 'shipwreck', x: 4, y: 3, w: 3, h: 2 }] },
     { id: 'sky', name: 'Thiên đường mây', icon: '☁️', desc: 'Lâu đài trên mây, cầu vồng bảy sắc và khinh khí cầu bay lượn.', cost: 12000, lvl: 11, blocks: [{ k: 'rainbow', x: 2, y: 0, w: 5, h: 1, nb: 1 }, { k: 'cloudcastle', x: 0, y: 0, w: 3, h: 3 }, { k: 'balloon', x: 5, y: 3, w: 1, h: 2 }] },
-    { id: 'space', name: 'Trạm vũ trụ', icon: '🚀', desc: 'Tên lửa chờ phóng, căn cứ Mặt Trăng và vệ tinh lấp lánh.', cost: 16000, lvl: 12, blocks: [{ k: 'rocket', x: 0, y: 0, w: 2, h: 3 }, { k: 'moonbase', x: 3, y: 0, w: 3, h: 2 }, { k: 'satellite', x: 6, y: 0, w: 1, h: 1 }, { k: 'crater', x: 3, y: 3, w: 2, h: 2 }] }
+    { id: 'space', name: 'Trạm vũ trụ', icon: '🚀', desc: 'Tên lửa chờ phóng, căn cứ Mặt Trăng và vệ tinh lấp lánh.', cost: 16000, lvl: 12, blocks: [{ k: 'rocket', x: 0, y: 0, w: 2, h: 3 }, { k: 'moonbase', x: 3, y: 0, w: 3, h: 2 }, { k: 'satellite', x: 6, y: 0, w: 1, h: 1 }, { k: 'crater', x: 3, y: 3, w: 2, h: 2 }] },
+    // ── 10 khu thêm sau (cũng thêm vào cuối để không đổi chỉ số ô) ──
+    { id: 'bamboo', name: 'Rừng tre trúc', icon: '🎋', desc: 'Rừng tre xào xạc, nhà sàn tre và chú gấu trúc đang nhấm măng.', cost: 1200, lvl: 4, blocks: [{ k: 'bamboogrove', x: 0, y: 0, w: 2, h: 3 }, { k: 'pathv', x: 3, y: 0, w: 1, h: 5 }, { k: 'bamboohouse', x: 4, y: 0, w: 3, h: 2 }, { k: 'pandasit', x: 5, y: 3, w: 1, h: 1 }] },
+    { id: 'savanna', name: 'Thảo nguyên', icon: '🦒', desc: 'Cây keo xoè tán, hố nước và tháp ngắm thú giữa đồng cỏ vàng.', cost: 2200, lvl: 5, blocks: [{ k: 'acacia', x: 0, y: 0, w: 2, h: 2 }, { k: 'safaritower', x: 5, y: 0, w: 2, h: 2 }, { k: 'waterhole', x: 2, y: 2, w: 3, h: 2 }] },
+    { id: 'jungle', name: 'Rừng nhiệt đới', icon: '🦜', desc: 'Ngôi đền cổ phủ dây leo, cây cổ thụ và hoa khổng lồ.', cost: 3000, lvl: 6, blocks: [{ k: 'jungletemple', x: 0, y: 0, w: 3, h: 3 }, { k: 'vinetree', x: 4, y: 0, w: 2, h: 3 }, { k: 'bigflower', x: 6, y: 3, w: 1, h: 1 }] },
+    { id: 'village', name: 'Làng trung cổ', icon: '🏘️', desc: 'Quán trọ nhà gỗ, quầy chợ rực rỡ và giếng nước giữa làng.', cost: 2600, lvl: 6, blocks: [{ k: 'tavern', x: 0, y: 0, w: 3, h: 2 }, { k: 'marketstall', x: 4, y: 0, w: 2, h: 1 }, { k: 'well', x: 6, y: 2, w: 1, h: 1 }, { k: 'pathh', x: 0, y: 3, w: 7, h: 1 }] },
+    { id: 'funfair', name: 'Công viên giải trí', icon: '🎡', desc: 'Vòng đu quay khổng lồ, ngựa gỗ xoay tròn và lều xiếc sặc sỡ.', cost: 4000, lvl: 7, blocks: [{ k: 'ferriswheel', x: 0, y: 0, w: 3, h: 3 }, { k: 'carousel', x: 4, y: 0, w: 2, h: 2 }, { k: 'circustent', x: 4, y: 3, w: 3, h: 2 }] },
+    { id: 'arctic', name: 'Bắc Cực', icon: '🐧', desc: 'Cực quang lung linh, nhà igloo, núi băng và đàn chim cánh cụt.', cost: 5000, lvl: 8, blocks: [{ k: 'aurora', x: 0, y: 0, w: 7, h: 1, nb: 1 }, { k: 'igloo', x: 0, y: 1, w: 2, h: 2 }, { k: 'iceberg', x: 4, y: 0, w: 3, h: 3 }, { k: 'penguins', x: 1, y: 4, w: 2, h: 1 }] },
+    { id: 'pirate', name: 'Đảo hải tặc', icon: '🏴‍☠️', desc: 'Tàu hải tặc mắc cạn, hòn đảo đầu lâu và dấu X kho báu.', cost: 6500, lvl: 9, blocks: [{ k: 'pirateship', x: 0, y: 0, w: 3, h: 3 }, { k: 'skullrock', x: 4, y: 0, w: 2, h: 2 }, { k: 'xmark', x: 5, y: 3, w: 1, h: 1 }, { k: 'palm', x: 6, y: 3, w: 1, h: 1 }] },
+    { id: 'dino', name: 'Thung lũng khủng long', icon: '🦕', desc: 'Chú khủng long cổ dài, ổ trứng bí ẩn và rừng dương xỉ.', cost: 8500, lvl: 10, blocks: [{ k: 'brontosaurus', x: 0, y: 0, w: 4, h: 3 }, { k: 'ferntree', x: 5, y: 0, w: 2, h: 2 }, { k: 'eggnest', x: 5, y: 3, w: 2, h: 1 }] },
+    { id: 'volcano', name: 'Núi lửa', icon: '🌋', desc: 'Núi lửa phun khói, hồ dung nham đỏ rực và đá obsidian.', cost: 11000, lvl: 11, blocks: [{ k: 'volcano', x: 3, y: 0, w: 4, h: 3 }, { k: 'hut', x: 0, y: 0, w: 2, h: 2 }, { k: 'lavapool', x: 0, y: 3, w: 3, h: 2 }, { k: 'obsidian', x: 5, y: 3, w: 2, h: 1 }] },
+    { id: 'cyber', name: 'Thành phố tương lai', icon: '🌆', desc: 'Toà tháp neon, xe bay và chú robot thân thiện.', cost: 22000, lvl: 13, blocks: [{ k: 'neontower', x: 0, y: 0, w: 2, h: 3 }, { k: 'hovercar', x: 3, y: 0, w: 2, h: 2 }, { k: 'robot', x: 5, y: 2, w: 2, h: 2 }, { k: 'hologram', x: 3, y: 3, w: 1, h: 1 }] }
   ];
   ZONES.forEach(function (z, zi) {
     z.i = zi; z.cols = BASEC; z.rows = BASER; z.cells = BASEC * BASER; z.mask = new Array(BASEC * BASER).fill(0);
@@ -182,7 +214,17 @@
     candy: [['lollipop', 1, 1, 5], ['pgum', 1, 1, 5], ['cupcake', 2, 2, 1], ['fenceh', 3, 1, 2], ['fencev', 1, 3, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1]],
     ocean: [['seaweed', 1, 2, 5], ['pcoral', 1, 1, 6], ['prock', 1, 1, 3], ['treasure', 1, 1, 1]],
     sky: [['pcloud', 1, 1, 7], ['balloon', 1, 2, 1], ['fenceh', 3, 1, 1], ['fencev', 1, 3, 1]],
-    space: [['prock', 1, 1, 5], ['crystals', 1, 1, 3], ['satellite', 1, 1, 1], ['crater', 2, 2, 1], ['plamp', 1, 1, 2]]
+    space: [['prock', 1, 1, 5], ['crystals', 1, 1, 3], ['satellite', 1, 1, 1], ['crater', 2, 2, 1], ['plamp', 1, 1, 2]],
+    bamboo: [['pbamboo', 1, 1, 6], ['ptree', 1, 1, 2], ['prock', 1, 1, 3], ['pbush', 1, 1, 2], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1]],
+    savanna: [['ptree', 1, 1, 3], ['pbush', 1, 1, 4], ['prock', 1, 1, 4], ['haystack', 1, 1, 2], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pflower', 1, 1, 1]],
+    jungle: [['pfern', 1, 1, 6], ['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['bigflower', 1, 1, 2], ['prock', 1, 1, 2], ['pathh', 4, 1, 1]],
+    village: [['pbarrel', 1, 1, 3], ['ptree', 1, 1, 3], ['pbush', 1, 1, 2], ['fenceh', 3, 1, 3], ['fencev', 1, 3, 2], ['pathh', 4, 1, 2], ['pathv', 1, 3, 2], ['plamp', 1, 1, 2], ['haystack', 1, 1, 1]],
+    funfair: [['plamp', 1, 1, 3], ['pflower', 1, 1, 3], ['pbush', 1, 1, 2], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 2], ['pathv', 1, 3, 2], ['pbarrel', 1, 1, 1], ['balloon', 1, 2, 1]],
+    arctic: [['snowpine', 1, 1, 5], ['pice', 1, 1, 6], ['prock', 1, 1, 3], ['snowman', 1, 1, 1], ['penguins', 2, 1, 1]],
+    pirate: [['palm', 1, 1, 5], ['prock', 1, 1, 3], ['pbarrel', 1, 1, 3], ['xmark', 1, 1, 1], ['pbush', 1, 1, 2], ['fenceh', 3, 1, 1]],
+    dino: [['pfern', 1, 1, 6], ['ptree', 1, 1, 3], ['prock', 1, 1, 4], ['eggnest', 2, 1, 1], ['pbush', 1, 1, 2]],
+    volcano: [['plava', 1, 1, 5], ['prock', 1, 1, 5], ['obsidian', 2, 1, 1], ['plamp', 1, 1, 1]],
+    cyber: [['pneon', 1, 1, 4], ['plamp', 1, 1, 3], ['hologram', 1, 1, 1], ['fenceh', 3, 1, 1], ['pathh', 4, 1, 2], ['pathv', 1, 3, 2]]
   };
   function genDecor(z) {
     var out = [], used = new Array(MAXC * MAXR).fill(0), kinds = DECOR_KINDS[z.id] || DEC_BASE, tw = 0, i, L, t, k, r;

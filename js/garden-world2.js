@@ -315,4 +315,5 @@
     return (DEC_CACHE[key] = API.uniq('<svg class="gd-zdec" viewBox="0 0 ' + (ld.c * 100) + ' ' + (ld.r * 100) + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + API.DEFS + '</defs>' + s + '</svg>'));
   }
   API.decorSvg = decorSvg;
+  API.DTH = DTH;
 })(typeof window !== 'undefined' ? window : this);
