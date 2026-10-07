@@ -60,6 +60,12 @@
     <div id="evList" style="margin-top:8px"></div>
   </div>
   <div class="pp-box">
+    <h3 style="margin:0 0 6px">🤝 Tặng / đổi quà giữa học sinh</h3>
+    <div class="pp-how">Học sinh có thể tặng hoặc đổi các món <b>đã mua trong giỏ</b> cho nhau (không chuyển xu; mỗi em tối đa 10 lượt gửi/ngày). Dưới đây là 100 lượt gần nhất để bạn nắm tình hình.</div>
+    <button class="pp-btn" id="trLoad" style="margin-top:8px">📋 Xem các lượt gần đây</button>
+    <div id="trList" style="margin-top:8px;overflow-x:auto"></div>
+  </div>
+  <div class="pp-box">
     <h3 style="margin:0 0 6px">🎁 Tặng quà thưởng</h3>
     <div class="pp-how">Chọn học sinh (hoặc cả lớp), nhập số xu (tối đa 500/lần) và/hoặc số rương quà (tối đa 3/lần). Học sinh sẽ thấy quà ở mục <b>🎯 Nhiệm vụ → Quà</b> trong EWT Garden.</div>
     <div class="gg-f">
@@ -139,6 +145,15 @@ $('evList').onclick = async function (e) {
   api('/api/garden/teacher/event', { id: id, action: act, days: sel ? +sel.value : 7 }).then(function (d) { drawEvents(d.events); toast(act === 'open' ? 'Đã mở sự kiện 🎉' : act === 'close' ? 'Đã đóng sự kiện' : 'Đã trả về lịch tự động'); }).catch(function (er) { toast(er.message); });
 };
 loadEvents();
+/* ───── lượt tặng / đổi quà ───── */
+var TST = { pending: '⏳ chờ', accepted: '✅ đã nhận', declined: '❌ từ chối', cancelled: '↩️ huỷ', expired: '⌛ hết hạn' };
+$('trLoad').onclick = function () {
+  api('/api/garden/teacher/trades').then(function (d) {
+    $('trList').innerHTML = d.trades.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:var(--text-muted)"><th>Thời gian</th><th>Người gửi</th><th>Người nhận</th><th>Món gửi</th><th>Mong nhận</th><th>Trạng thái</th></tr>' + d.trades.map(function (t) {
+      return '<tr style="border-top:1px solid var(--border)"><td>' + esc(new Date(t.at).toLocaleString('vi-VN')) + '</td><td>' + esc(t.from) + '</td><td>' + esc(t.to) + '</td><td>' + esc(t.give) + '</td><td>' + esc(t.want || '— (tặng)') + '</td><td>' + (TST[t.status] || t.status) + '</td></tr>';
+    }).join('') + '</table>' : '<div class="pp-how">Chưa có lượt tặng/đổi nào.</div>';
+  }).catch(function (e) { toast(e.message); });
+};
 })();
 </script>
 </body>

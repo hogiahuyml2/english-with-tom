@@ -51,7 +51,7 @@ const RULES = [
   ['POST', /^\/api\/garden\/quiz\/answer$/, 'game', 'EWT Garden: trả lời câu hỏi'], ['POST', /^\/api\/garden\/quiz\/flip$/, 'game', 'EWT Garden: lật thẻ thưởng'],
   ['POST', /^\/api\/garden\/(place|remove|water|harvest|harvest-all|zone\/unlock)$/, 'game', 'EWT Garden: chăm vườn'], ['POST', /^\/api\/garden\/pet\/.+$/, 'game', 'EWT Garden: thú cưng'],
   ['POST', /^\/api\/garden\/(name|share)$/, 'game', 'EWT Garden: đặt tên / chia sẻ vườn'],
-  ['POST', /^\/api\/garden\/(quests\/claim|inbox\/claim|class\/contribute|culture\/answer|event\/daily|event\/milestone)$/, 'game', 'EWT Garden: nhiệm vụ / quà / sự kiện / hộ chiếu'],
+  ['POST', /^\/api\/garden\/(quests\/claim|inbox\/claim|class\/contribute|culture\/answer|event\/daily|event\/milestone|trade\/send|trade\/respond|trade\/cancel)$/, 'game', 'EWT Garden: nhiệm vụ / quà / sự kiện / tặng-đổi quà / hộ chiếu'],
   ['POST', /^\/api\/garden\/teacher\/event$/, 'teach', 'EWT Garden: mở / đóng sự kiện theo mùa'],
   ['POST', /^\/api\/messages\/\d+$/, 'social', 'Gửi tin nhắn'], ['POST', /^\/api\/student-message$/, 'social', 'Gửi tin nhắn cho giáo viên'], ['POST', /^\/api\/upload(-recording)?$/, 'submit', 'Tải tệp / bản ghi âm lên'],
   ['POST', /^\/api\/assignments$/, 'teach', 'Giao bài tập'], ['POST', /^\/api\/exercises$/, 'teach', 'Tạo bài tập'], ['PUT', /^\/api\/exercises\/\d+$/, 'teach', 'Sửa bài tập'], ['DELETE', /^\/api\/exercises\/\d+$/, 'teach', 'Xoá bài tập'],

@@ -9,7 +9,7 @@ const crypto = require('crypto');
 const G = require('./js/garden-data.js');
 const VC = require('./js/vocab-conflict.js');
 
-module.exports = function (app, { db, requireAuth, requireRole, now }) {
+module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser }) {
   let X = null;   // tiện ích nhiệm vụ / quà / hộ chiếu (garden-extra.js), gán ở cuối tệp
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
   const one = (sql, ...a) => db.prepare(sql).get(...a);
@@ -111,7 +111,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
   const bad = (res, msg, code) => res.status(code || 400).json({ error: msg });
   const tx = (fn) => { db.exec('BEGIN'); try { const r = fn(); db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
 
-  app.get('/api/garden', requireAuth, (req, res) => { const st = load(req.user); try { X.scanHomework(req.user); } catch (e) { console.error('[garden/homework]', e.message); } X.track(st, 'login', 0); save(st); reply(res, req.user, st, { inbox: X.inboxCount(req.user.id) }); });
+  app.get('/api/garden', requireAuth, (req, res) => { const st = load(req.user); try { X.scanHomework(req.user); } catch (e) { console.error('[garden/homework]', e.message); } X.track(st, 'login', 0); save(st); reply(res, req.user, st, { inbox: X.inboxCount(req.user.id), trades: X.tradeCount(req.user.id) }); });
 
   app.post('/api/garden/name', requireAuth, (req, res) => {
     const nm = String((req.body || {}).name || '').replace(/[<>]/g, '').trim().slice(0, 30);
@@ -329,7 +329,8 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
     const st = Object.assign(fromRow(row), { quiz_total: 0, yield_xu: 0, feed_xu: 0, quiz_ok: 0 });
     const v = view(st); v.left = { yield: 0, feed: 0, quiz: 0 }; v.bag = null; v.events = X.eventsView(null); v.quests = null;
     let av = null; try { av = row.uavatar ? require('./js/avatar.js').normalize(JSON.parse(row.uavatar)) : null; } catch (_) {}
-    res.json({ garden: v, owner: { name: givenName(row.uname), avatar: av, me: row.user_id === req.user.id }, readonly: true });
+    let tok = null; if (row.user_id !== req.user.id && row.open) { tok = row.share; if (!tok) { tok = newToken(); db.prepare('UPDATE garden SET share=? WHERE user_id=?').run(tok, row.user_id); } }
+    res.json({ garden: v, owner: { name: givenName(row.uname), avatar: av, me: row.user_id === req.user.id, token: tok }, readonly: true });
   });
 
   /* ───── Kiếm xu bằng câu hỏi ───── */
@@ -475,5 +476,5 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
     reply(res, req.user, out.st, { cards: f.cards, pick, gained: out.gained, got: out.got, before });
   });
 
-  X = require('./garden-extra')(app, { db, requireAuth, requireRole, now, G, vnDay, load, save, tx, reply, bad, coinsOf, addCoins, rollCard, applyCardSt, bagAdd, givenName, one });
+  X = require('./garden-extra')(app, { db, requireAuth, requireRole, now, G, vnDay, load, save, tx, reply, bad, coinsOf, addCoins, rollCard, applyCardSt, bagAdd, givenName, one, notifyUser });
 };
