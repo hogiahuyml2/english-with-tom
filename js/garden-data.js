@@ -236,11 +236,16 @@
     yieldCapDay: 40,      // xu tối đa nhận từ thu hoạch mỗi ngày
     feedXu: 1, feedCapDay: 5, // cho thú cưng ăn: +1 xu / con, tối đa 5 xu mỗi ngày
     quizWater: 1, quizCapDay: 150, // trả lời đúng: +1 lượt tưới và được lật thẻ thưởng (xem FLIP); tối đa 150 câu đúng được thưởng mỗi ngày
-    maxPets: 6, sellBack: 0.5
+    maxPets: 6, sellBack: 0.5,
+    boostRate: 0.5, boostMin: 3 // cho cây lớn ngay: 0,5 xu mỗi phút còn lại (cây chờ càng lâu càng tốn), tối thiểu 3 xu
   };
-  // Thẻ thưởng khi trả lời đúng: lật 1 trong 3 thẻ. Thẻ thường 20–100 xu; thẻ lớn +500 / +1000 xu; thẻ nhân ×2 / ×3 số xu hiện có (có mức tối đa).
+  // Thẻ thưởng khi trả lời đúng: lật 1 trong 3 thẻ. Thẻ thường 20–100 xu; thẻ lớn +500 / +1000 xu; thẻ nhân ×2 / ×3 TOÀN BỘ số xu hiện có (không giới hạn trên);
+  // thẻ quà: phiếu mua miễn phí (hoa/cây/đồ trang trí/công trình/thú cưng), một thú cưng, một khu mới, lượt tưới, phép cho cây lớn ngay.
   var FLIP = { cards: 3, normal: [[20, 34], [30, 26], [40, 16], [50, 10], [60, 6], [80, 3.5], [100, 1.5]],
-    types: [['coin', 60], ['b500', 14], ['b1000', 7], ['x2', 12], ['x3', 7]], big: { b500: 500, b1000: 1000 }, mult: { x2: 2, x3: 3 }, multCap: 2000, multMin: 100 };
+    types: [['coin', 44], ['b500', 11], ['b1000', 5], ['x2', 10], ['x3', 6], ['free_plant', 6], ['free_tree', 3], ['free_deco', 3], ['free_big', 2], ['free_pet', 2], ['pet', 2], ['zone', 2], ['water', 3], ['boost', 3]],
+    big: { b500: 500, b1000: 1000 }, mult: { x2: 2, x3: 3 }, multMin: 100,
+    free: { free_plant: { n: 5, cls: 'plant', label: 'hoa' }, free_tree: { n: 2, cls: 'tree', label: 'cây' }, free_deco: { n: 3, cls: 'deco', label: 'đồ trang trí' }, free_big: { n: 1, cls: 'big', label: 'công trình lớn' }, free_pet: { n: 1, cls: 'pet', label: 'thú cưng' } },
+    water: 10, boost: 1 };
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });
   var PBY = {}; PETS.forEach(function (i) { PBY[i.id] = i; });
 
@@ -254,6 +259,7 @@
     var tot = growMs(item, tile.w), el = Math.max(0, now - (tile.at || 0)), r = tot > 0 ? el / tot : 1;
     return r >= 1 ? 3 : r >= 0.6 ? 2 : r >= 0.25 ? 1 : 0;
   }
+  function boostCost(ms) { return Math.max(RULES.boostMin, Math.ceil(ms / MIN * RULES.boostRate)); }
   function remainMs(item, tile, now) { return Math.max(0, growMs(item, tile.w) - (now - (tile.at || 0))); }
   function beautyOf(state) {
     var b = 0; (state.tiles || []).forEach(function (t) { if (t && BY[t.k]) b += BY[t.k].b; });
@@ -261,6 +267,6 @@
     Object.keys(state.land || {}).forEach(function (k) { b += (state.land[k] | 0) * 2; }); return b;
   }
 
-  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
+  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);

@@ -18,7 +18,7 @@ module.exports = function (app, { db, requireAuth, now }) {
     water INTEGER NOT NULL DEFAULT 10, water_day TEXT, yield_day TEXT, yield_xu INTEGER NOT NULL DEFAULT 0, feed_day TEXT, feed_xu INTEGER NOT NULL DEFAULT 0,
     quiz_day TEXT, quiz_ok INTEGER NOT NULL DEFAULT 0, quiz_total INTEGER NOT NULL DEFAULT 0, created_at TEXT, updated_at TEXT)`);
 
-  for (const c of ['share TEXT', 'open INTEGER NOT NULL DEFAULT 1', 'zones TEXT', 'v INTEGER NOT NULL DEFAULT 1', 'land TEXT']) { try { db.exec('ALTER TABLE garden ADD COLUMN ' + c); } catch (_) {} }
+  for (const c of ['share TEXT', 'open INTEGER NOT NULL DEFAULT 1', 'zones TEXT', 'v INTEGER NOT NULL DEFAULT 1', 'land TEXT', 'bag TEXT']) { try { db.exec('ALTER TABLE garden ADD COLUMN ' + c); } catch (_) {} }
 
   const givenName = (n) => String(n || 'bạn').trim().split(/\s+/).slice(-1)[0] || 'bạn';
   const coinsOf = (uid) => { db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(uid); return one('SELECT coins FROM word_game WHERE user_id=?', uid).coins; };
@@ -39,8 +39,20 @@ module.exports = function (app, { db, requireAuth, now }) {
     (old || []).forEach((x, i) => { if (!x) return; const n = G.remapOld(i); if (n < t.length) t[n] = x.ref != null ? { ref: G.remapOld(x.ref) } : x; });
     return t;
   }
+  // Giỏ hàng: đồ đã mua nhưng đang cất (items), thú cưng đang cất (pets), phiếu miễn phí (free)
+  const FREE_CLS = { plant: 'plant', tree: 'tree', deco: 'deco', ground: 'deco', big: 'big' };
+  function normBag(b) {
+    const o = { items: {}, pets: [], free: { plant: 0, tree: 0, deco: 0, big: 0, pet: 0, boost: 0 } };
+    if (!b || typeof b !== 'object') return o;
+    Object.keys(b.items || {}).forEach((k) => { const n = Math.floor(Number(b.items[k])); if (G.BY[k] && n > 0) o.items[k] = Math.min(n, 999); });
+    (Array.isArray(b.pets) ? b.pets : []).slice(0, 60).forEach((p) => { if (p && G.PBY[p.k]) o.pets.push({ k: p.k, name: String(p.name || G.PBY[p.k].name).replace(/[<>]/g, '').slice(0, 16) }); });
+    Object.keys(o.free).forEach((k) => { const n = Math.floor(Number((b.free || {})[k])); if (n > 0) o.free[k] = Math.min(n, 9999); });
+    return o;
+  }
+  function bagAdd(st, id, n) { st.bag.items[id] = Math.min(999, (st.bag.items[id] | 0) + (n || 1)); }
   function fromRow(r) {
     const st = { uid: r.user_id, name: r.name, size: 5, tiles: J(r.tiles, []), zones: J(r.zones, null), pets: J(r.pets, []), water: r.water, water_day: r.water_day, yield_day: r.yield_day, yield_xu: r.yield_xu, feed_day: r.feed_day, feed_xu: r.feed_xu, quiz_day: r.quiz_day, quiz_ok: r.quiz_ok, quiz_total: r.quiz_total };
+    st.bag = normBag(J(r.bag, null));
     st.land = J(r.land, {}); if (!st.land || typeof st.land !== 'object' || Array.isArray(st.land)) st.land = {};
     if ((r.v || 1) < 2 || !Array.isArray(st.zones)) { const m = migrate(st.tiles); st.tiles = m.tiles; st.zones = m.zones; }
     else if ((r.v || 1) < 3) st.tiles = remapV2(st.tiles);
@@ -77,13 +89,13 @@ module.exports = function (app, { db, requireAuth, now }) {
   function trimTiles(t) { let n = t.length; while (n > 0 && !t[n - 1]) n--; return t.slice(0, n); }
   const landLv = (st, z) => (z ? st.land[z.id] | 0 : 0);
   function save(st) {
-    db.prepare('UPDATE garden SET name=?,size=?,tiles=?,zones=?,land=?,v=3,pets=?,water=?,water_day=?,yield_day=?,yield_xu=?,feed_day=?,feed_xu=?,quiz_day=?,quiz_ok=?,quiz_total=?,updated_at=? WHERE user_id=?')
-      .run(st.name, st.size, JSON.stringify(trimTiles(st.tiles)), JSON.stringify(st.zones), JSON.stringify(st.land || {}), JSON.stringify(st.pets), st.water, st.water_day, st.yield_day, st.yield_xu, st.feed_day, st.feed_xu, st.quiz_day, st.quiz_ok, st.quiz_total, now(), st.uid);
+    db.prepare('UPDATE garden SET name=?,size=?,tiles=?,zones=?,land=?,bag=?,v=3,pets=?,water=?,water_day=?,yield_day=?,yield_xu=?,feed_day=?,feed_xu=?,quiz_day=?,quiz_ok=?,quiz_total=?,updated_at=? WHERE user_id=?')
+      .run(st.name, st.size, JSON.stringify(trimTiles(st.tiles)), JSON.stringify(st.zones), JSON.stringify(st.land || {}), JSON.stringify(st.bag || normBag(null)), JSON.stringify(st.pets), st.water, st.water_day, st.yield_day, st.yield_xu, st.feed_day, st.feed_xu, st.quiz_day, st.quiz_ok, st.quiz_total, now(), st.uid);
   }
   function view(st) {
     const beauty = G.beautyOf(st), level = G.levelOf(beauty), nl = G.nextLevel(beauty), t = Date.now(), R = G.RULES;
     return {
-      name: st.name, zones: st.zones, land: st.land, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
+      name: st.name, zones: st.zones, land: st.land, bag: st.bag, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
       next: nl ? { level: nl.n, need: nl.at - beauty, title: nl.title } : null, slots: G.petSlots(level),
       left: { yield: Math.max(0, R.yieldCapDay - st.yield_xu), feed: Math.max(0, R.feedCapDay - st.feed_xu), quiz: Math.max(0, R.quizCapDay - st.quiz_ok) }, now: t, quizTotal: st.quiz_total
     };
@@ -114,14 +126,17 @@ module.exports = function (app, { db, requireAuth, now }) {
         if (fp.some((k) => st.tiles[k])) return { err: 'Chỗ này đã có đồ — cần ' + fp.length + ' ô trống liền nhau.' };
         if (st.zones.indexOf(G.zoneOfCell(i).id) < 0) return { err: 'Khu này chưa được mở.' };
         if (st.tiles[i]) return { err: 'Ô này đã có đồ — hãy dọn trước nhé.' };
-        if (it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mở món này.' };
-        if (it.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(it.cost, req.user.id, it.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!', need: it.cost }; }
+        const cls = FREE_CLS[it.kind], inBag = (st.bag.items[it.id] | 0) > 0; let used = null;
+        if (!inBag && it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mở món này.' };
+        if (inBag) { if (--st.bag.items[it.id] <= 0) delete st.bag.items[it.id]; used = 'bag'; }
+        else if (it.cost > 0 && st.bag.free[cls] > 0) { st.bag.free[cls]--; used = 'free'; }
+        else if (it.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(it.cost, req.user.id, it.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!', need: it.cost }; }
         st.tiles[i] = { k: it.id, at: Date.now(), w: 0 };
         if (it.kind === 'big') fp.forEach((k) => { if (k !== i) st.tiles[k] = { ref: i }; });
-        save(st); return { st };
+        save(st); return { st, used };
       });
       if (out.err) return bad(res, out.err);
-      reply(res, req.user, out.st);
+      reply(res, req.user, out.st, { used: out.used });
     } catch (e) { console.error('[garden/place]', e.message); bad(res, 'Có lỗi, thử lại nhé.', 500); }
   });
 
@@ -132,13 +147,13 @@ module.exports = function (app, { db, requireAuth, now }) {
         const st = load(req.user); if (!Number.isInteger(i) || !st.tiles[i]) return { err: 'Ô này đang trống.' };
         if (st.tiles[i].ref != null) i = st.tiles[i].ref;     // bấm vào phần phụ của công trình lớn → dọn cả công trình
         const t = st.tiles[i]; if (!t) return { err: 'Ô này đang trống.' };
-        const it = G.BY[t.k]; let back = 0;
-        if (it && (it.kind === 'deco' || it.kind === 'ground' || it.kind === 'big') && it.cost > 0) { back = Math.floor(it.cost * G.RULES.sellBack); if (back) addCoins(req.user.id, back); }
+        const it = G.BY[t.k]; let stored = null;
+        if (it && it.cost > 0) { bagAdd(st, it.id); stored = it.name; }   // món đã mua → tự cất vào giỏ để dùng lại
         (it && it.kind === 'big' ? G.footprint(i, it, G.LAND.length - 1) || [i] : [i]).forEach((k) => { st.tiles[k] = null; });
-        save(st); return { st, back };
+        save(st); return { st, stored };
       });
       if (out.err) return bad(res, out.err);
-      reply(res, req.user, out.st, { refund: out.back });
+      reply(res, req.user, out.st, { stored: out.stored });
     } catch (e) { bad(res, 'Có lỗi, thử lại nhé.', 500); }
   });
 
@@ -174,6 +189,23 @@ module.exports = function (app, { db, requireAuth, now }) {
     const out = tx(() => { const st = load(req.user); let n = 0, xu = 0; st.tiles.forEach((t, i) => { const h = t && harvestOne(st, i, req.user.id); if (h) { n++; xu += h.gain; } }); if (n) save(st); return { st, n, xu }; });
     if (!out.n) return bad(res, 'Chưa có cây nào nở để thu hoạch.');
     reply(res, req.user, out.st, { gained: out.xu, count: out.n });
+  });
+
+  // Cho cây lớn ngay: tốn xu theo thời gian còn lại (càng chờ lâu càng tốn), hoặc dùng phiếu "lớn nhanh" nếu có
+  app.post('/api/garden/grow', requireAuth, (req, res) => {
+    const i = Number((req.body || {}).i), useFree = !!(req.body || {}).free;
+    const out = tx(() => {
+      const st = load(req.user), t = st.tiles[i], it = t && G.BY[t.k];
+      if (!it || (it.kind !== 'plant' && it.kind !== 'tree')) return { err: 'Chỉ cho hoa và cây lớn nhanh được.' };
+      const now = Date.now();
+      if (G.stageOf(it, t, now) >= 3) return { err: 'Cây này đã nở rồi.' };
+      const cost = G.boostCost(G.remainMs(it, t, now));
+      if (useFree && st.bag.free.boost > 0) st.bag.free.boost--;
+      else { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(cost, req.user.id, cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + cost + ' 🪙) để cho cây lớn ngay.', need: cost }; }
+      t.at = now - G.growMs(it, t.w) - 1000; save(st); return { st, cost: useFree ? 0 : cost };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { spent: out.cost });
   });
 
   // Mở rộng đất của một khu (đã mở): lưới ô to hơn, ô nhỏ lại để vừa màn hình
@@ -214,14 +246,18 @@ module.exports = function (app, { db, requireAuth, now }) {
     const out = tx(() => {
       const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
       if (!pt) return { err: 'Thú cưng này không tồn tại.' };
-      if (pt.lvl > lvl) return { err: 'Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.' };
       if (st.pets.length >= G.petSlots(lvl)) return { err: 'Vườn chưa đủ chỗ cho thêm thú cưng — nâng cấp vườn để có thêm chỗ nhé.' };
-      const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(pt.cost, req.user.id, pt.cost);
-      if (!r.changes) return { err: 'Chưa đủ xu (cần ' + pt.cost + ' 🪙).' };
-      st.pets.push({ id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: pt.name, fed: null }); save(st); return { st };
+      const bi = st.bag.pets.findIndex((x) => x.k === pt.id); let nm = pt.name, used = null;
+      if (bi >= 0) { nm = st.bag.pets[bi].name || pt.name; st.bag.pets.splice(bi, 1); used = 'bag'; }
+      else {
+        if (pt.lvl > lvl) return { err: 'Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.' };
+        if (pt.cost > 0 && st.bag.free.pet > 0) { st.bag.free.pet--; used = 'free'; }
+        else { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(pt.cost, req.user.id, pt.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + pt.cost + ' 🪙).' }; }
+      }
+      st.pets.push({ id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: nm, fed: null }); save(st); return { st, used };
     });
     if (out.err) return bad(res, out.err);
-    reply(res, req.user, out.st);
+    reply(res, req.user, out.st, { used: out.used });
   });
   app.post('/api/garden/pet/feed', requireAuth, (req, res) => {
     const out = tx(() => {
@@ -242,9 +278,10 @@ module.exports = function (app, { db, requireAuth, now }) {
     p.name = nm; save(st); reply(res, req.user, st);
   });
   app.post('/api/garden/pet/release', requireAuth, (req, res) => {
-    const st = load(req.user), n = st.pets.length; st.pets = st.pets.filter((x) => x.id !== (req.body || {}).pid);
-    if (st.pets.length === n) return bad(res, 'Không thấy thú cưng này.');
-    save(st); reply(res, req.user, st);
+    const st = load(req.user), p = st.pets.find((x) => x.id === (req.body || {}).pid);
+    if (!p) return bad(res, 'Không thấy thú cưng này.');
+    st.pets = st.pets.filter((x) => x !== p); if (st.bag.pets.length < 60) st.bag.pets.push({ k: p.k, name: p.name });   // cất vào giỏ, nhận nuôi lại miễn phí
+    save(st); reply(res, req.user, st, { stored: p.name });
   });
 
   /* ───── Tham quan vườn của bạn (chỉ xem): nhập email của bạn hoặc dùng link được chia sẻ ───── */
@@ -274,7 +311,7 @@ module.exports = function (app, { db, requireAuth, now }) {
     else return bad(res, 'Hãy nhập email của bạn bè nhé.');
     if (!row || !row.open) return bad(res, 'Không tìm thấy khu vườn nào. Hãy kiểm tra lại email, hoặc bạn ấy chưa mở khu vườn.', 404);
     const st = Object.assign(fromRow(row), { quiz_total: 0, yield_xu: 0, feed_xu: 0, quiz_ok: 0 });
-    const v = view(st); v.left = { yield: 0, feed: 0, quiz: 0 };
+    const v = view(st); v.left = { yield: 0, feed: 0, quiz: 0 }; v.bag = null;
     let av = null; try { av = row.uavatar ? require('./js/avatar.js').normalize(JSON.parse(row.uavatar)) : null; } catch (_) {}
     res.json({ garden: v, owner: { name: givenName(row.uname), avatar: av, me: row.user_id === req.user.id }, readonly: true });
   });
@@ -291,20 +328,43 @@ module.exports = function (app, { db, requireAuth, now }) {
   const LESSONS = (() => { const m = new Map(); GR.forEach((q) => { if (!m.has(q.lesson)) m.set(q.lesson, { id: q.lesson, grade: q.grade, title: q.title, n: 0 }); m.get(q.lesson).n++; }); return [...m.values()]; })();
   const pending = new Map(), recent = new Map(), flips = new Map();
   function pickW(list) { const tot = list.reduce((x, y) => x + y[1], 0); let r = Math.random() * tot; for (const [k, w] of list) { if ((r -= w) <= 0) return k; } return list[0][0]; }
-  function rollCard() {
-    const F = G.FLIP, t = pickW(F.types);
-    if (t === 'coin') return { t, v: pickW(F.normal) };
+  const userOf = (uid) => one('SELECT id, name FROM users WHERE id=?', uid);
+  function rollCard(st) {
+    const F = G.FLIP, t = pickW(F.types), coin = () => ({ t: 'coin', v: pickW(F.normal) });
+    if (t === 'coin') return coin();
     if (F.big[t]) return { t, v: F.big[t] };
-    return { t, v: 0 }; // ×2 / ×3: tính theo số xu lúc lật
+    if (F.mult[t]) return { t, v: 0 };   // ×2 / ×3: tính theo số xu lúc lật
+    if (F.free[t]) return { t, v: F.free[t].n };
+    if (t === 'water') return { t, v: F.water };
+    if (t === 'boost') return { t, v: F.boost };
+    if (t === 'pet') {
+      const lv = G.levelOf(G.beautyOf(st)), pool = G.PETS.filter((p) => p.lvl <= lv + 3 && !st.pets.some((x) => x.k === p.id) && !st.bag.pets.some((x) => x.k === p.id));
+      return pool.length ? { t, id: pool[crypto.randomInt(pool.length)].id, v: 1 } : coin();
+    }
+    if (t === 'zone') {
+      const z = G.ZONES.filter((q) => st.zones.indexOf(q.id) < 0).sort((a, b) => (a.lvl - b.lvl) || (a.cost - b.cost))[0];
+      return z ? { t, id: z.id, v: 1 } : coin();
+    }
+    return coin();
   }
-  // Số xu thật sự nhận được của một thẻ (thẻ nhân tính trên số xu hiện có, có mức tối thiểu và tối đa)
-  function cardGain(uid, c) {
-    const m = G.FLIP.mult[c.t]; if (!m) return c.v;
-    return Math.max(G.FLIP.multMin, Math.min(G.FLIP.multCap, coinsOf(uid) * (m - 1)));
+  // Áp dụng một thẻ cho người chơi: cộng xu / phiếu / thú cưng / mở khu. Thẻ nhân tính trên TOÀN BỘ số xu hiện có (×3 của 2500 = 7500).
+  function applyCard(user, c) {
+    const F = G.FLIP, st = load(user); let gained = 0, got = '';
+    if (c.t === 'coin' || F.big[c.t]) gained = c.v;
+    else if (F.mult[c.t]) gained = Math.max(F.multMin, coinsOf(user.id) * (F.mult[c.t] - 1));
+    else if (F.free[c.t]) { const f = F.free[c.t]; st.bag.free[f.cls] += f.n; got = 'Mua miễn phí ' + f.n + ' ' + f.label; }
+    else if (c.t === 'water') { st.water += c.v; got = '+' + c.v + ' lượt tưới 💧'; }
+    else if (c.t === 'boost') { st.bag.free.boost += c.v; got = 'Phiếu cho cây lớn ngay'; }
+    else if (c.t === 'pet' && G.PBY[c.id]) { if (st.bag.pets.length < 60) st.bag.pets.push({ k: c.id, name: G.PBY[c.id].name }); got = 'Mở khoá thú cưng ' + G.PBY[c.id].name + ' (đã vào giỏ)'; }
+    else if (c.t === 'zone' && G.ZBY[c.id]) {
+      if (st.zones.indexOf(c.id) < 0) { st.zones.push(c.id); got = 'Mở khoá khu "' + G.ZBY[c.id].name + '"'; } else gained = 300;
+    } else gained = 20;
+    save(st); if (gained > 0) addCoins(user.id, gained);
+    return { gained, got, st };
   }
   // Thẻ chưa lật (học sinh bỏ qua) → tự nhận ngẫu nhiên một thẻ để không mất thưởng
   function settleFlips(uid) {
-    for (const [k, f] of flips) if (f.uid === uid) { flips.delete(k); addCoins(uid, cardGain(uid, f.cards[crypto.randomInt(f.cards.length)])); }
+    for (const [k, f] of flips) if (f.uid === uid) { flips.delete(k); const u = userOf(uid); if (u) applyCard(u, f.cards[crypto.randomInt(f.cards.length)]); }
   }
   const shuf = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   function remember(uid, key) { const r = recent.get(uid) || []; r.push(key); if (r.length > 40) r.shift(); recent.set(uid, r); }
@@ -357,11 +417,11 @@ module.exports = function (app, { db, requireAuth, now }) {
       if (ok && st.quiz_ok < R.quizCapDay) {
         st.quiz_ok++; wt = R.quizWater; st.water += wt;
         fid = crypto.randomBytes(6).toString('hex');
-        flips.set(fid, { uid: req.user.id, ts: Date.now(), cards: Array.from({ length: G.FLIP.cards }, rollCard) });
+        flips.set(fid, { uid: req.user.id, ts: Date.now(), cards: Array.from({ length: G.FLIP.cards }, () => rollCard(st)) });
       }
       save(st); return { st, wt, fid };
     });
-    for (const [k, v] of flips) if (Date.now() - v.ts > 15 * 60e3) { flips.delete(k); addCoins(v.uid, cardGain(v.uid, v.cards[0])); }
+    for (const [k, v] of flips) if (Date.now() - v.ts > 15 * 60e3) { flips.delete(k); const u = userOf(v.uid); if (u) applyCard(u, v.cards[0]); }
     reply(res, req.user, out.st, { correct: ok, answer: p.idx, expl: p.expl, gained: { xu: 0, water: out.wt }, flip: out.fid, capped: ok && !out.fid });
   });
   // Lật thẻ thưởng: máy chủ đã định sẵn giá trị các thẻ, người chơi chỉ chọn vị trí
@@ -370,8 +430,8 @@ module.exports = function (app, { db, requireAuth, now }) {
     if (!f || f.uid !== req.user.id) return bad(res, 'Thẻ thưởng đã được nhận hoặc đã hết hạn.');
     if (!Number.isInteger(pick) || pick < 0 || pick >= f.cards.length) return bad(res, 'Hãy chọn một thẻ.');
     flips.delete(String(req.body.id));
-    let gained = 0;
-    const out = tx(() => { gained = cardGain(req.user.id, f.cards[pick]); addCoins(req.user.id, gained); const st = load(req.user); save(st); return st; });
-    reply(res, req.user, out, { cards: f.cards, pick, gained });
+    const before = coinsOf(req.user.id);
+    const out = tx(() => applyCard(req.user, f.cards[pick]));
+    reply(res, req.user, out.st, { cards: f.cards, pick, gained: out.gained, got: out.got, before });
   });
 };
