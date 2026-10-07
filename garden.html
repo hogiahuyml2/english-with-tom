@@ -68,19 +68,24 @@
 .gd-tool b { font-size: 24px; line-height: 1; } .gd-tool:hover { transform: translateY(-2px); } .gd-tool.on { background: linear-gradient(180deg, #A58BFF, #6F58EE); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px rgba(111,88,238,.5); } .gd-tool:disabled { opacity: .5; cursor: not-allowed; } .gd-tool small { font-size: 9.5px; font-weight: 700; opacity: .85; }
 /* khu vực chơi */
 .gd-play { position: absolute; z-index: 5; left: 98px; right: 22px; top: var(--top); bottom: var(--tray); display: flex; align-items: center; justify-content: center; padding-bottom: 34px; }
-.gd-lawn { position: relative; --ts: 64px; width: calc(var(--ts) * var(--n) + 42px); padding: 14px; border-radius: 22px; background: #7A5230; border: 7px solid #B98046; box-shadow: inset 0 0 0 3px #D9A566, 0 14px 0 -2px rgba(70,40,10,.35), 0 22px 34px rgba(30,60,20,.45); flex: none; touch-action: manipulation; }
-.gd-lawn::before { content: ""; position: absolute; inset: 0; border-radius: 15px; pointer-events: none; box-shadow: inset 0 0 14px rgba(40,20,0,.35); z-index: 1; }
-.gd-grid { position: relative; display: grid; grid-template-columns: repeat(var(--n), var(--ts)); grid-auto-rows: var(--ts); border-radius: 8px; overflow: hidden; }
-.gt { position: relative; cursor: pointer; background: #8FD16A; outline: none; -webkit-tap-highlight-color: transparent; } .gt.alt { background: #86C961; }
-.gt::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 30%, rgba(255,255,255,.2) 0 2px, transparent 3px), radial-gradient(circle at 70% 65%, rgba(60,120,40,.22) 0 2px, transparent 3px), radial-gradient(circle at 45% 80%, rgba(255,255,255,.14) 0 1.5px, transparent 2.5px); }
-.gt.has::after { content: ""; position: absolute; left: 18%; right: 18%; bottom: 6%; height: 16%; border-radius: 50%; background: rgba(60,35,10,.32); }
-.gt:hover { box-shadow: inset 0 0 0 3px rgba(255,255,255,.75); z-index: 2; } .gt.sel { box-shadow: inset 0 0 0 3px #FFD23F; z-index: 3; }
+.gd-lawn { position: relative; --ts: 64px; width: calc(var(--ts) * var(--cols) + 42px); padding: 14px; border-radius: 22px; background: #7A5230; border: 7px solid #B98046; box-shadow: inset 0 0 0 3px #D9A566, 0 14px 0 -2px rgba(70,40,10,.35), 0 22px 34px rgba(30,60,20,.45); flex: none; touch-action: manipulation; }
+.gd-lawn::before { content: ""; position: absolute; inset: 0; border-radius: 15px; pointer-events: none; box-shadow: inset 0 0 14px rgba(40,20,0,.35); z-index: 3; }
+.gd-zwrap { position: relative; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); border-radius: 8px; overflow: hidden; }
+.gd-zsvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.gd-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols), var(--ts)); grid-auto-rows: var(--ts); }
+.gt { position: relative; cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
+.gt::before { content: ""; position: absolute; inset: 3px; border-radius: 12px; background: radial-gradient(circle at 20% 30%, rgba(255,255,255,.22) 0 2px, transparent 3px), radial-gradient(circle at 70% 65%, rgba(60,120,40,.25) 0 2px, transparent 3px), radial-gradient(circle at 45% 80%, rgba(255,255,255,.16) 0 1.5px, transparent 2.5px), #92D46D; box-shadow: inset 0 0 0 2px rgba(70,120,40,.4), 0 3px 0 rgba(70,40,10,.3); }
+.gt.alt::before { background-color: #87C964; }
+.gt.blk { cursor: default; pointer-events: none; } .gt.blk::before { display: none; }
+.gt.has::after { content: ""; position: absolute; left: 20%; right: 20%; bottom: 8%; height: 16%; border-radius: 50%; background: rgba(60,35,10,.32); }
+.gt:not(.blk):hover::before { box-shadow: inset 0 0 0 3px rgba(255,255,255,.85), 0 3px 0 rgba(70,40,10,.3); } .gt.sel::before { box-shadow: inset 0 0 0 3px #FFD23F, 0 3px 0 rgba(70,40,10,.3); }
+.gt:hover, .gt.sel { z-index: 3; }
 .gt svg.sp { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 50% 90%; z-index: 1; } .gt.grow svg.sp { animation: gdSway2 4.5s ease-in-out infinite; } .gt.tree svg.sp { animation-duration: 6s; }
 @keyframes gdSway2 { 0%, 100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
 .gt .ready { position: absolute; right: 2px; top: 0; z-index: 2; font-size: calc(var(--ts) * .3); animation: gdPop 1.2s ease-in-out infinite; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); } @keyframes gdPop { 50% { transform: translateY(-5px) scale(1.15); } }
 .gt .tm { position: absolute; left: 4px; right: 4px; top: 2px; z-index: 2; font-size: 10px; font-weight: 800; color: #fff; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; } .gt .tm i { display: block; height: 4px; border-radius: 4px; background: rgba(0,0,0,.3); margin-bottom: 1px; overflow: hidden; } .gt .tm i b { display: block; height: 100%; background: #FFE14D; }
 .gt .wd { position: absolute; left: 3px; bottom: 1px; z-index: 2; font-size: calc(var(--ts) * .2); letter-spacing: -2px; }
-.gd-pets { position: absolute; left: 21px; top: 21px; width: calc(var(--ts) * var(--n)); height: calc(var(--ts) * var(--n)); pointer-events: none; z-index: 4; }
+.gd-pets { position: absolute; left: 0; top: 0; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); pointer-events: none; z-index: 4; }
 .gd-pet { position: absolute; left: 0; top: 0; width: var(--ts); height: var(--ts); transition: transform 3.2s linear; pointer-events: auto; cursor: pointer; z-index: 5; }
 .gd-pet svg { width: 100%; height: 100%; animation: gdHop .7s ease-in-out infinite; transform-origin: 50% 90%; } .gd-pet.rest svg { animation: gdBreath 2.4s ease-in-out infinite; }
 .gd-pet .mood { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); font-size: calc(var(--ts) * .26); animation: gdPop 1.4s ease-in-out infinite; }
@@ -88,6 +93,28 @@
 .gd-float { position: absolute; z-index: 20; font-weight: 800; font-size: 18px; color: #fff; text-shadow: 0 2px 3px rgba(0,0,0,.6); pointer-events: none; animation: gdUp 1.3s ease-out forwards; white-space: nowrap; } @keyframes gdUp { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -52px); } }
 .gd-pop { position: absolute; z-index: 30; background: #fff; border-radius: 16px; box-shadow: 0 12px 30px rgba(30,40,80,.4); padding: 12px 14px; width: 220px; border: 2px solid var(--border); }
 .gd-pop h4 { margin: 0 0 2px; font-size: 15px; } .gd-pop p { margin: 0 0 8px; font-size: 12.5px; color: var(--text-muted); line-height: 1.45; } .gd-pop .btns { display: flex; gap: 6px; flex-wrap: wrap; } .gd-pop button { border: 2px solid var(--border); background: var(--surface); border-radius: 11px; padding: 7px 10px; font: 800 12.5px inherit; font-family: inherit; cursor: pointer; min-height: 38px; color: var(--text); } .gd-pop button.pri { background: var(--primary); color: #fff; border-color: var(--primary); }
+.spin { transform-box: fill-box; transform-origin: center; animation: gdSpin 12s linear infinite; } .ripple { transform-box: fill-box; transform-origin: center; animation: gdRip 3s ease-out infinite; } @keyframes gdRip { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+.jet { animation: gdJet 1.2s ease-out infinite; } .jet.j2 { animation-name: gdJet2; } @keyframes gdJet { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-14px, 30px); opacity: 0; } } @keyframes gdJet2 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(14px, 30px); opacity: 0; } }
+.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: gdFlame .45s ease-in-out infinite alternate; } @keyframes gdFlame { to { transform: scale(.9, 1.12) skewX(4deg); } } .flag { transform-box: fill-box; transform-origin: 0 50%; animation: gdFlag 1.6s ease-in-out infinite; } @keyframes gdFlag { 50% { transform: scaleX(.8) skewY(6deg); } }
+/* ───────── Bản đồ các khu ───────── */
+.gd-map { display: none; position: absolute; z-index: 5; left: 14px; right: 14px; top: var(--top); bottom: var(--tray); padding: 4px 4px 12px; overflow: auto; align-content: center; justify-content: center; gap: 14px; grid-template-columns: repeat(var(--mc, 3), max-content); } .gd-stage.map .gd-map { display: grid; } .gd-stage.map .gd-play { display: none; } .gd-stage.map { --tray: 14px; } .gd-stage.map .gd-dock, .gd-stage.map .gd-tray { display: none; }
+.gd-zcard { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; border: 4px solid #C98E55; border-radius: 22px; background: linear-gradient(180deg, rgba(255,246,226,.97), rgba(255,231,184,.97)); padding: 8px 10px 10px; cursor: pointer; font-family: inherit; color: #6B3E12; box-shadow: 0 10px 22px rgba(60,30,5,.38), inset 0 2px 0 #fff; transition: transform .2s, box-shadow .2s; }
+.gd-zcard:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 18px 30px rgba(60,30,5,.45), 0 0 0 4px rgba(255,210,63,.7), inset 0 2px 0 #fff; }
+.gd-zcard .zh { font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 6px; } .gd-zcard .zf { font-size: 11.5px; font-weight: 700; color: #8A5A2E; text-align: center; line-height: 1.3; max-width: 100%; }
+.gd-zcard .zp { font-size: 11.5px; font-weight: 800; background: #E8F7DC; color: #2E7D32; border-radius: 99px; padding: 2px 10px; }
+.gd-zcard .gd-lawn { --ts: 24px; width: calc(var(--ts) * var(--cols) + 20px); padding: 4px; border-width: 4px; border-radius: 12px; box-shadow: inset 0 0 0 2px #D9A566, 0 5px 0 -1px rgba(70,40,10,.3); } .gd-zcard .gd-lawn::before { border-radius: 7px; box-shadow: inset 0 0 8px rgba(40,20,0,.3); } .gd-zcard .gd-zwrap { border-radius: 5px; }
+.gd-zcard .gt { cursor: pointer; pointer-events: none; } .gd-zcard .gt::before { inset: 1px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(70,120,40,.4); }
+.gd-zcard.lock .gd-lawn { filter: grayscale(.85) brightness(.75); } .gd-zcard.lock { background: linear-gradient(180deg, rgba(240,232,220,.95), rgba(214,200,180,.95)); border-color: #A89478; }
+.gd-zcard .lk { position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); background: rgba(31,41,55,.92); color: #fff; border-radius: 16px; padding: 8px 14px; font-weight: 800; font-size: 13px; text-align: center; line-height: 1.35; box-shadow: 0 6px 16px rgba(0,0,0,.45); z-index: 6; white-space: nowrap; }
+.gd-lawn.z-cottage { background: repeating-linear-gradient(90deg, #F8EFDA 0 9px, #E2CDA0 9px 11px); border-color: #D9B67A; }
+.gd-lawn.z-hill { background: repeating-linear-gradient(90deg, #C98E55 0 16px, #A9733E 16px 18px); }
+.gd-lawn.z-river, .gd-lawn.z-pond { background: repeating-linear-gradient(45deg, #C3CAD3 0 9px, #A3ABB6 9px 11px); border-color: #8E96A3; }
+.gd-lawn.z-forest { background: repeating-linear-gradient(90deg, #8A5A2E 0 14px, #6B4120 14px 16px); border-color: #5A3410; }
+.gd-lawn.z-palace { background: repeating-linear-gradient(90deg, #F6F1E3 0 12px, #CFC7B1 12px 14px); border-color: #D6BE7A; }
+.gd-zin { animation: gdZin .5s cubic-bezier(.2,1.2,.4,1); } @keyframes gdZin { from { transform: scale(.55); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.gd-zbar { pointer-events: auto; display: none; align-items: center; gap: 6px; margin-top: 6px; } .gd-stage:not(.map) .gd-zbar { display: flex; } @media (min-width: 901px) { .gd-stage:not(.map) { --top: 120px; } } @media (max-width: 900px) { .gd-stage:not(.map) { --top: 168px; } } @media (max-width: 640px) { .gd-stage:not(.map) { --top: 150px; } } .gd-stage:not(.map) .gd-gname { display: none; }
+.gd-zbtn { white-space: nowrap; border: 3px solid #7A4A1E; background: linear-gradient(180deg, #FFF6E2, #FFE2AA); color: #6B3E12; border-radius: 12px; padding: 4px 12px; font: 800 13.5px inherit; font-family: inherit; cursor: pointer; min-height: 34px; box-shadow: 0 4px 10px rgba(60,30,5,.35); } .gd-zbtn:disabled { opacity: .4; cursor: default; }
+.gd-zname { background: linear-gradient(180deg, #C98E55, #A96F3C); color: #FFF3D6; border: 3px solid #7A4A1E; border-radius: 12px; padding: 4px 14px; font: 800 14px inherit; text-shadow: 0 2px 0 rgba(60,30,5,.5); white-space: nowrap; box-shadow: 0 4px 10px rgba(60,30,5,.35); }
 .gd-hint { position: absolute; z-index: 8; left: 50%; transform: translateX(-50%); bottom: calc(var(--tray) + 8px); max-width: min(640px, calc(100% - 200px)); background: rgba(255,246,226,.96); border: 2px solid #C98E55; color: #6B3E12; border-radius: 99px; padding: 6px 16px; font: 700 13px inherit; font-family: inherit; text-align: center; box-shadow: 0 4px 12px rgba(60,30,5,.3); line-height: 1.35; } .gd-hint:empty { display: none; }
 /* ───────── Khay cửa hàng ───────── */
 .gd-tray { position: absolute; z-index: 11; left: 0; right: 0; bottom: 0; height: var(--tray); background: linear-gradient(180deg, #C98E55, #A96F3C 30%, #8F5A2B); border-top: 5px solid #E8B97A; box-shadow: 0 -8px 22px rgba(60,30,5,.4), inset 0 3px 0 rgba(255,255,255,.25); display: flex; flex-direction: column; transition: height .25s; }
@@ -104,7 +131,7 @@
 .gd-stage.fold { --tray: 52px; } .gd-stage.fold .gd-items, .gd-stage.fold .gd-note { display: none; } .gd-stage.fold .gd-tray-h { padding-bottom: 8px; }
 /* ───────── Tham quan ───────── */
 .gd-visit { display: none; position: absolute; z-index: 12; left: 50%; transform: translateX(-50%); bottom: 14px; background: #FFF4D1; border: 3px solid #F5D77A; color: #7A4A0B; border-radius: 18px; padding: 10px 16px; font-weight: 700; font-size: 14px; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 8px 20px rgba(60,30,5,.35); max-width: calc(100% - 24px); justify-content: center; }
-body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray, body.visit .gd-res .mine, body.visit .gd-hint { display: none !important; } body.visit .gd-stage { --tray: 70px; } body.visit .gd-play { left: 22px; } body.visit .gd-gname { cursor: default; } body.visit .gt, body.visit .gd-pet { cursor: default; } body.visit .gt:hover { box-shadow: none; }
+body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray, body.visit .gd-zbar .tomod, body.visit .gd-res .mine, body.visit .gd-hint { display: none !important; } body.visit .gd-stage { --tray: 70px; } body.visit .gd-stage.map { --tray: 70px; } body.visit .gd-play { left: 22px; } body.visit .gd-gname { cursor: default; } body.visit .gt, body.visit .gd-pet { cursor: default; } body.visit .gt:hover { box-shadow: none; }
 /* ───────── Hộp thoại ───────── */
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
 .gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
@@ -130,7 +157,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; } .gd-toast.on { opacity: 1; }
 @media (max-width: 900px) { .gd-top { flex-wrap: wrap; padding: 8px 10px; gap: 8px; } .gd-sign { order: 3; flex-basis: 100%; flex-direction: row; justify-content: center; gap: 10px; } .gd-logo h1 { font-size: 21px; } .gd-logo .mk { width: 30px; height: 30px; } .gd-gname { margin-top: 0; font-size: 13px; padding: 3px 12px; } .gd-stage { --top: 128px; --tray: 170px; } .gd-me .av { width: 46px; height: 46px; } .gd-bar { width: 120px; } .gd-me .nx { display: none; } .gd-pill { min-height: 36px; font-size: 14px; padding: 3px 11px 3px 7px; } .gd-earn { min-height: 38px; padding: 5px 12px; font-size: 13px; } .gd-note { display: none; } }
 @media (max-width: 640px) { .gd-wrap { padding: 4px 4px 30px; } .gd-stage { border-width: 3px; border-radius: 20px; height: clamp(600px, calc(100svh - 120px), 820px); --top: 124px; --tray: 160px; } .gd-dock { left: 6px; padding: 5px; gap: 5px; } .gd-tool { width: 50px; padding: 4px 1px; font-size: 9px; } .gd-tool b { font-size: 19px; } .gd-tool small { display: none; } .gd-play { left: 66px; right: 6px; } .gd-it { width: 88px; } .gd-it svg { width: 52px; height: 52px; } .gd-hint { max-width: calc(100% - 90px); font-size: 12px; left: calc(50% + 28px); } .gd-me .lv { font-size: 12px; } .gd-sun, .gd-moon { right: 6%; transform: scale(.7); } }
-@media (max-width: 640px) { .gd-top { padding: 6px 8px; gap: 6px; align-items: center; } .gd-me { padding: 4px 10px 4px 4px; gap: 6px; border-width: 2px; border-radius: 16px; } .gd-me .av { width: 36px; height: 36px; border-width: 2px; font-size: 20px; } .gd-me .lv { font-size: 11px; } .gd-bar { width: 84px; height: 9px; margin: 3px 0 0; } .gd-res { gap: 5px; } .gd-pill { min-height: 32px; font-size: 13px; padding: 2px 9px 2px 6px; border-width: 2px; } .gd-pill.btn { padding: 2px 9px; font-size: 0; } .gd-pill.btn::before { content: "👀"; font-size: 16px; } .gd-earn { min-height: 34px; padding: 4px 11px; font-size: 12px; border-width: 2px; } .gd-sign { flex-direction: row; gap: 6px; } .gd-logo h1 { font-size: 17px; text-shadow: 0 2px 0 #2E8B57; } .gd-logo .mk { display: none; } .gd-gname { font-size: 12px; padding: 2px 10px; border-width: 2px; } .gd-stage { --top: 104px; } .gd-hint { border-radius: 14px; padding: 4px 10px; font-size: 11.5px; max-width: calc(100% - 84px); bottom: calc(var(--tray) + 6px); } .gd-pop { width: 200px; } }
+@media (max-width: 640px) { .gd-stage.map .gd-map { top: calc(var(--top) + 16px); } .gd-zcard .zh { font-size: 13px; } .gd-zcard .zf { display: none; } .gd-map { left: 6px; right: 6px; gap: 10px; } .gd-top { padding: 6px 8px; gap: 6px; align-items: center; } .gd-me { padding: 4px 10px 4px 4px; gap: 6px; border-width: 2px; border-radius: 16px; } .gd-me .av { width: 36px; height: 36px; border-width: 2px; font-size: 20px; } .gd-me .lv { font-size: 11px; } .gd-bar { width: 84px; height: 9px; margin: 3px 0 0; } .gd-res { gap: 5px; } .gd-pill { min-height: 32px; font-size: 13px; padding: 2px 9px 2px 6px; border-width: 2px; } .gd-pill.btn { padding: 2px 9px; font-size: 0; } .gd-pill.btn::before { content: "👀"; font-size: 16px; } .gd-earn { min-height: 34px; padding: 4px 11px; font-size: 12px; border-width: 2px; } .gd-sign { flex-direction: row; gap: 6px; } .gd-logo h1 { font-size: 17px; text-shadow: 0 2px 0 #2E8B57; } .gd-logo .mk { display: none; } .gd-gname { font-size: 12px; padding: 2px 10px; border-width: 2px; } .gd-stage { --top: 104px; } .gd-hint { border-radius: 14px; padding: 4px 10px; font-size: 11.5px; max-width: calc(100% - 84px); bottom: calc(var(--tray) + 6px); } .gd-pop { width: 200px; } }
 @media (prefers-reduced-motion: reduce) { .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-spin, .gt .ready, .sway, .flow, .smoke, .duck, .boat, .gd-bird, .gd-bfly, .gd-star, .gd-card { animation: none !important; } .gd-pet { transition-duration: 0s; } }
 </style>
 </head>
@@ -220,6 +247,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       <div class="gd-me"><div class="av" id="gav">🧑‍🌾</div><div class="who"><div class="lv" id="lvb">Cấp 1</div><div class="gd-bar" title="Điểm đẹp của khu vườn"><i id="lvbar" style="width:0"></i></div><div class="nx" id="lvnx"></div></div></div>
       <div class="gd-sign">
         <div class="gd-logo"><svg class="mk" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#FFF8D6"/><path d="M32 54 V30" stroke="#2E8B57" stroke-width="4" stroke-linecap="round"/><path d="M32 40 Q18 38 14 26 Q28 24 32 38Z" fill="#4FAE4A"/><path d="M32 36 Q46 34 50 22 Q36 20 32 34Z" fill="#7FD36B"/><circle cx="32" cy="22" r="8" fill="#FF8FB8"/><circle cx="32" cy="22" r="3.4" fill="#FFD23F"/></svg><h1>EWT <span>Garden</span></h1></div>
+        <div class="gd-zbar" id="zbar"><button class="gd-zbtn" id="toMap">🗺️ Bản đồ</button><button class="gd-zbtn" id="zprev" aria-label="Khu trước">‹</button><span class="gd-zname" id="zname"></span><button class="gd-zbtn" id="znext" aria-label="Khu sau">›</button></div>
         <button class="gd-gname" id="gname" title="Đổi tên khu vườn">🌷 <span id="gnameT">Khu vườn của bạn</span> <span class="ed">✏️</span></button>
       </div>
       <div class="gd-res">
@@ -235,10 +263,11 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       <button class="gd-tool" data-tool="harvest"><b>🧺</b>Thu hoạch</button>
       <button class="gd-tool" id="harvAll"><b>✨</b>Thu tất cả</button>
       <button class="gd-tool" data-tool="remove"><b>🧹</b>Dọn</button>
-      <button class="gd-tool" id="expand"><b>🏡</b>Mở rộng<small id="expc"></small></button>
+      <button class="gd-tool" id="toMapTool"><b>🗺️</b>Bản đồ</button>
     </div>
 
-    <div class="gd-play" id="play"><div class="gd-lawn" id="lawn"><div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div></div></div>
+    <div class="gd-map" id="map"></div>
+    <div class="gd-play" id="play"><div class="gd-lawn" id="lawn"></div></div>
     <div class="gd-hint" id="hint"></div>
 
     <div class="gd-tray" id="tray">
@@ -273,8 +302,9 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=4"></script>
+<script src="js/garden-data.js?v=5"></script>
 <script src="js/garden-art.js?v=3"></script>
+<script src="js/garden-world.js?v=2"></script>
 <script>
 (function () {
 'use strict';
@@ -321,10 +351,48 @@ function buildScene() {
 }
 function timeOfDay() { var h = new Date().getHours(); $('stage').classList.toggle('night', h >= 19 || h < 5); $('stage').classList.toggle('dusk', (h >= 17 && h < 19) || (h >= 5 && h < 6.5)); }
 
-/* ───────── vẽ khu vườn ───────── */
-function layout() {
-  var pl = $('play'), n = S.size, W = pl.clientWidth, Hh = pl.clientHeight - 34, ts = Math.max(32, Math.min(88, Math.floor((Math.min(W, Hh) - 62) / n)));
-  $('lawn').style.setProperty('--n', n); $('lawn').style.setProperty('--ts', ts + 'px'); return ts;
+/* ───────── bản đồ các khu & vẽ từng khu ───────── */
+var VIEW = 'map', COLS = D.COLS, ROWS = D.ROWS, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null;
+function zoneUnlocked(id) { return S.zones.indexOf(id) >= 0; }
+function cellsHtml(z, ts, mini) {
+  var h = '', c, gi, t, it, alt, inner, cls, now = NOW(), blocked;
+  for (c = 0; c < PER; c++) {
+    gi = z.i * PER + c; blocked = z.mask[c]; t = S.tiles[gi]; it = t && D.BY[t.k]; inner = ''; alt = ((Math.floor(c / COLS) + c % COLS) % 2) ? ' alt' : ''; cls = 'gt' + alt + (blocked ? ' blk' : '');
+    if (it) {
+      var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has';
+      inner = A.itemSvg(it, st, '100%', 'sp'); if (it.kind === 'plant' || it.kind === 'tree') cls += ' ' + (it.kind === 'tree' ? 'tree ' : '') + 'grow';
+      if (!mini) {
+        if (grow) { var tot = D.growMs(it, t.w), el = now - t.at; inner += '<div class="tm"><i><b style="width:' + Math.min(100, Math.max(4, el / tot * 100)) + '%"></b></i>' + fmtT(D.remainMs(it, t, now)) + '</div>'; if (t.w) inner += '<div class="wd">' + new Array(t.w + 1).join('💧') + '</div>'; }
+        else if (it.kind === 'plant' || it.kind === 'tree') inner += '<div class="ready">' + (it.y > 0 ? '🧺' : '✨') + '</div>';
+      }
+    }
+    h += mini ? '<div class="' + cls + '">' + inner + '</div>' : '<div class="' + cls + (SEL === gi ? ' sel' : '') + '" data-i="' + gi + '"' + (blocked ? '' : ' tabindex="0" role="button" aria-label="' + (it ? esc(it.name) : 'Ô đất trống') + '"') + '>' + inner + '</div>';
+  }
+  return h;
+}
+function planted(z) { var n = 0, c; for (c = 0; c < PER; c++) if (!z.mask[c] && S.tiles[z.i * PER + c]) n++; return n; }
+function layout(z) {
+  var pl = $('play'), W0 = pl.clientWidth, Hh = pl.clientHeight - 34, ts = Math.max(30, Math.min(100, Math.floor(Math.min((W0 - 44) / COLS, (Hh - 44) / ROWS))));
+  $('lawn').style.setProperty('--ts', ts + 'px'); return ts;
+}
+function renderMap() {
+  var m = $('map'), narrow = innerWidth <= 900, mc = narrow ? 2 : 3, rows = Math.ceil(D.ZONES.length / mc), cw = m.clientWidth - 8, ch = m.clientHeight - 16;
+  var tsW = Math.floor(((cw - 14 * (mc - 1)) / mc - 48) / COLS), tsH = Math.floor((ch / rows - 14 * (rows - 1) / rows - 112) / ROWS), ts = Math.max(narrow ? 17 : 22, Math.min(46, tsW, tsH));
+  m.style.setProperty('--mc', mc);
+  m.innerHTML = D.ZONES.map(function (z) {
+    var open = zoneUnlocked(z.id), pl = planted(z), canLv = z.lvl <= S.level;
+    var lock = open ? '' : '<div class="lk">🔒 ' + (VISIT ? 'Chưa mở' : (canLv ? 'Mở khu: ' + z.cost + ' ' + COIN : 'Cần vườn cấp ' + z.lvl)) + '</div>';
+    return '<button class="gd-zcard' + (open ? '' : ' lock') + '" data-zone="' + z.id + '" aria-label="' + esc(z.name) + '"><div class="zh">' + z.icon + ' ' + esc(z.name) + '</div>' +
+      '<div class="gd-lawn z-' + z.id + '" style="--ts:' + ts + 'px;--cols:' + COLS + ';--rows:' + ROWS + '"><div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid">' + cellsHtml(z, ts, true) + '</div></div></div>' +
+      (open ? '<span class="zp">🌱 ' + pl + '/' + z.plots + ' ô đã trồng</span>' : '') + '<div class="zf">' + esc(z.desc) + '</div>' + lock + '</button>';
+  }).join('');
+}
+function ensureLawn(z) {
+  var lawn = $('lawn');
+  if (LAWNZ !== z.id) {
+    LAWNZ = z.id; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div></div>';
+    lawn.style.setProperty('--cols', COLS); lawn.style.setProperty('--rows', ROWS);
+  }
 }
 function render() {
   if (!S) return;
@@ -332,27 +400,35 @@ function render() {
   $('lvb').textContent = 'Cấp ' + S.level + ' · ' + S.levelTitle;
   var cur = D.LEVELS[S.level - 1].at, nx = S.next ? S.next.need + S.beauty : null; $('lvbar').style.width = (nx ? Math.min(100, Math.round((S.beauty - cur) / (nx - cur) * 100)) : 100) + '%';
   $('lvnx').textContent = S.next ? 'Còn ' + S.next.need + ' điểm đẹp → cấp ' + S.next.level : '🏆 Cấp cao nhất!';
-  if (LAST_LEVEL && S.level > LAST_LEVEL) { toast('🎉 Vườn lên cấp ' + S.level + ': ' + S.levelTitle + '! Mở thêm món mới trong cửa hàng.', 4200); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'party-popper', 'glowing-star'], { count: 18, from: $('lvb') }); }
+  if (LAST_LEVEL && S.level > LAST_LEVEL) { toast('🎉 Vườn lên cấp ' + S.level + ': ' + S.levelTitle + '! Mở thêm món và khu mới.', 4200); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star', 'party-popper', 'glowing-star'], { count: 18, from: $('lvb') }); }
   LAST_LEVEL = S.level;
-  var ts = layout(), g = $('grid'), h = '', i, n = S.size, now = NOW();
-  for (i = 0; i < S.tiles.length; i++) {
-    var t = S.tiles[i], it = t && D.BY[t.k], alt = ((Math.floor(i / n) + i % n) % 2) ? ' alt' : '', inner = '', cls = 'gt' + alt;
-    if (it) {
-      var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has';
-      inner = A.itemSvg(it, st, '100%', 'sp'); if (it.kind === 'plant' || it.kind === 'tree') cls += ' ' + (it.kind === 'tree' ? 'tree ' : '') + 'grow';
-      if (grow) { var tot = D.growMs(it, t.w), el = now - t.at; inner += '<div class="tm"><i><b style="width:' + Math.min(100, Math.max(4, el / tot * 100)) + '%"></b></i>' + fmtT(D.remainMs(it, t, now)) + '</div>'; if (t.w) inner += '<div class="wd">' + new Array(t.w + 1).join('💧') + '</div>'; }
-      else if (it.kind === 'plant' || it.kind === 'tree') inner += '<div class="ready">' + (it.y > 0 ? '🧺' : '✨') + '</div>';
-    }
-    h += '<div class="' + cls + (SEL === i ? ' sel' : '') + '" data-i="' + i + '" tabindex="0" role="button" aria-label="' + (it ? esc(it.name) : 'Ô đất trống') + '">' + inner + '</div>';
-  }
-  g.innerHTML = h; renderPets(ts); renderShop(); renderTools();
+  var z = VIEW === 'map' ? null : D.ZBY[VIEW];
+  $('stage').classList.toggle('map', !z);
+  if (!z) { renderMap(); renderTools(); return; }
+  ensureLawn(z); layout(z);
+  var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
+  $('grid').innerHTML = cellsHtml(z, ts, false);
+  $('zname').textContent = z.icon + ' ' + z.name;
+  var ul = D.ZONES.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(z); $('zprev').disabled = ix <= 0; $('znext').disabled = ix >= ul.length - 1;
+  renderPets(ts); renderShop(); renderTools();
+}
+function enterZone(id) {
+  if (!D.ZBY[id]) return; var z = D.ZBY[id];
+  if (!zoneUnlocked(id)) { if (VISIT) return toast('Khu này bạn ấy chưa mở.'); return askUnlock(z); }
+  VIEW = id; LAWNZ = null; TOOL = null; BRUSH = null; closePop(); render(); $('lawn').classList.remove('gd-zin'); void $('lawn').offsetWidth; $('lawn').classList.add('gd-zin');
+}
+function toMap() { VIEW = 'map'; TOOL = null; BRUSH = null; closePop(); render(); }
+function askUnlock(z) {
+  if (z.lvl > S.level) return toast('Cần vườn cấp ' + z.lvl + ' để mở khu "' + z.name + '". Trang trí thêm để lên cấp nhé!', 3600);
+  if (!confirm('Mở khu "' + z.name + '" với giá ' + z.cost + ' xu?\n(Bạn đang có ' + COINS + ' xu)')) return;
+  api('/api/garden/zone/unlock', { zone: z.id }).then(function (d) { setState(d); toast('🎉 Đã mở khu "' + z.name + '"!', 3200); if (window.ewtCelebrate) window.ewtCelebrate(['party-popper', 'star', 'sparkles'], { count: 16, from: $('xu') }); enterZone(z.id); }).catch(function (e) { toast(e.message, 3600); if (e.data && e.data.need) $('earn').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 600 }); });
 }
 function renderTools() {
-  var nx = S.nextSize; $('expc').textContent = nx ? nx.n + '×' + nx.n + ' · ' + nx.cost : 'Tối đa'; $('expand').disabled = !nx;
   [].forEach.call(document.querySelectorAll('[data-tool]'), function (b) { b.classList.toggle('on', TOOL === b.getAttribute('data-tool')); });
   if (VISIT) { $('hint').innerHTML = ''; return; }
   var hint = '';
-  if (TOOL === 'water') hint = '💧 Chạm vào hoa/cây đang lớn để tưới (rút ngắn 25% thời gian, tối đa ' + D.RULES.waterMax + ' lần/cây). Còn ' + S.water + ' lượt.';
+  if (VIEW === 'map') hint = innerWidth < 640 ? 'Chạm vào một khu để vào xây dựng 🗺️' : '🗺️ Chạm vào một khu để vào xem và xây dựng. Khu có ổ khoá cần đủ cấp vườn và xu để mở.';
+  else if (TOOL === 'water') hint = '💧 Chạm vào hoa/cây đang lớn để tưới (rút ngắn 25% thời gian, tối đa ' + D.RULES.waterMax + ' lần/cây). Còn ' + S.water + ' lượt.';
   else if (TOOL === 'harvest') hint = '🧺 Chạm vào hoa/cây đã nở để thu hoạch xu (hôm nay còn nhận được ' + S.left.yield + ' 🪙).';
   else if (TOOL === 'remove') hint = '🧹 Chạm vào món muốn dọn. Đồ trang trí hoàn lại 50% xu, hoa/cây thì không hoàn.';
   else if (BRUSH) hint = BRUSH.label + ' — chạm vào ô đất trống để đặt. (Bấm lại món trong cửa hàng để bỏ chọn)';
@@ -362,15 +438,15 @@ function renderTools() {
 
 /* ───────── thú cưng đi dạo ───────── */
 function renderPets(ts) {
-  var el = $('pets'), n = S.size, h = '';
-  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (n - 1), y: Math.random() * (n - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
+  var el = $('pets'), h = '';
+  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (COLS - 1), y: Math.random() * (ROWS - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
   el.innerHTML = h;
 }
 function wander() {
-  if (!S || document.hidden) return; var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64, n = S.size;
+  if (!S || document.hidden || VIEW === 'map') return; var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
   [].forEach.call(document.querySelectorAll('.gd-pet'), function (el) {
     var id = el.getAttribute('data-pid'), q = PETPOS[id]; if (!q || Math.random() < 0.35) return;
-    var nx = Math.max(0, Math.min(n - 1, q.x + (Math.random() * 3 - 1.5))), ny = Math.max(0, Math.min(n - 1, q.y + (Math.random() * 3 - 1.5)));
+    var nx = Math.max(0, Math.min(COLS - 1, q.x + (Math.random() * 3 - 1.5))), ny = Math.max(0, Math.min(ROWS - 1, q.y + (Math.random() * 3 - 1.5)));
     q.f = nx >= q.x ? 1 : -1; q.x = nx; q.y = ny; el.style.transform = 'translate(' + nx * ts + 'px,' + ny * ts + 'px)'; el.firstChild.style.transform = 'scaleX(' + q.f + ')';
   });
 }
@@ -440,7 +516,9 @@ document.addEventListener('click', function (e) {
     BRUSH = BRUSH && BRUSH.id === id ? null : { id: id, kind: kind, cost: it.cost, label: (it.cost ? 'Đã chọn ' + it.name + ' (' + it.cost + ' 🪙)' : 'Đã chọn ' + it.name + ' (miễn phí)') }; TOOL = null; render(); return;
   }
   if (t.closest('#harvAll')) { api('/api/garden/harvest-all', {}).then(function (d) { setState(d); toast('🧺 Thu hoạch ' + d.count + ' cây, nhận ' + d.gained + ' 🪙'); if (window.ewtCelebrate) window.ewtCelebrate(['star', 'sparkles', 'coin'], { count: 10, from: $('xu') }); }).catch(function (er) { toast(er.message); }); return; }
-  if (t.closest('#expand')) { var nx = S.nextSize; if (nx && confirm('Mở rộng vườn lên ' + nx.n + '×' + nx.n + ' với giá ' + nx.cost + ' xu?')) api('/api/garden/expand', {}).then(function (d) { setState(d); toast('🏡 Vườn rộng hơn rồi!'); }).catch(function (er) { toast(er.message, 3600); }); return; }
+  if ((el = t.closest('[data-zone]'))) { enterZone(el.getAttribute('data-zone')); return; }
+  if (t.closest('#toMap') || t.closest('#toMapTool')) { toMap(); return; }
+  if (t.closest('#zprev') || t.closest('#znext')) { var ul = D.ZONES.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(D.ZBY[VIEW]) + (t.closest('#znext') ? 1 : -1); if (ul[ix]) enterZone(ul[ix].id); return; }
   if (t.closest('#gname') && !VISIT) { var nm = prompt('Đặt tên cho khu vườn của bạn:', S.name); if (nm && nm.trim()) api('/api/garden/name', { name: nm }).then(setState).catch(function (er) { toast(er.message); }); return; }
   if ((el = t.closest('.gd-pet'))) { openPet(el.getAttribute('data-pid')); return; }
   if (t.closest('#earn')) { openQuiz(); return; }

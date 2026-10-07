@@ -48,6 +48,26 @@
     { n: 1, at: 0, title: 'Mầm non' }, { n: 2, at: 10, title: 'Vườn nhỏ xinh' }, { n: 3, at: 30, title: 'Vườn hoa' }, { n: 4, at: 60, title: 'Vườn rực rỡ' }, { n: 5, at: 100, title: 'Vườn mơ ước' },
     { n: 6, at: 160, title: 'Vườn cổ tích' }, { n: 7, at: 240, title: 'Vườn thượng uyển' }, { n: 8, at: 340, title: 'Vườn thần tiên' }, { n: 9, at: 480, title: 'Vườn huyền thoại' }, { n: 10, at: 650, title: 'Khu vườn của Tom' }
   ];
+  // Các khu của EWT Garden: mỗi khu là một lưới cols×rows; "blocks" là phong cảnh có sẵn (nhà, cung điện, sông, hồ…) — học sinh chỉ xây trên các ô còn trống.
+  // nb:1 = chỉ là hình trang trí, không chiếm ô. Chỉ số ô toàn vườn = vị trí khu × 35 + (hàng × 7 + cột).
+  var COLS = 7, ROWS = 5, PER = COLS * ROWS;
+  var ZONES = [
+    { id: 'cottage', name: 'Vườn nhà Tom', icon: '🏡', desc: 'Căn nhà nhỏ ấm áp, lối đi lát đá dẫn ra cổng.', cost: 0, lvl: 1, blocks: [{ k: 'house', x: 0, y: 0, w: 2, h: 2 }, { k: 'pathv', x: 3, y: 0, w: 1, h: 5 }, { k: 'gate', x: 3, y: 4, w: 1, h: 1, nb: 1 }, { k: 'well', x: 6, y: 0, w: 1, h: 1 }] },
+    { id: 'hill', name: 'Đồi gió', icon: '🌬️', desc: 'Cối xay gió quay trên đồi cỏ xanh mướt.', cost: 300, lvl: 2, blocks: [{ k: 'windmill', x: 5, y: 0, w: 2, h: 3 }, { k: 'pathh', x: 0, y: 3, w: 7, h: 1 }] },
+    { id: 'river', name: 'Bờ sông', icon: '🌊', desc: 'Dòng sông trong xanh, cầu gỗ và cây liễu rủ.', cost: 600, lvl: 3, blocks: [{ k: 'river', x: 3, y: 0, w: 1, h: 5 }, { k: 'willow', x: 0, y: 0, w: 1, h: 1 }, { k: 'dock', x: 4, y: 4, w: 1, h: 1 }] },
+    { id: 'pond', name: 'Hồ sen', icon: '🪷', desc: 'Hồ sen thơ mộng với chòi nghỉ chân mái lá.', cost: 1000, lvl: 4, blocks: [{ k: 'pond', x: 1, y: 1, w: 3, h: 3 }, { k: 'pavilion', x: 5, y: 0, w: 2, h: 2 }] },
+    { id: 'forest', name: 'Rừng chòi lá', icon: '🛖', desc: 'Những chòi lá giữa rừng, bên đống lửa trại ấm áp.', cost: 1500, lvl: 5, blocks: [{ k: 'hut', x: 0, y: 0, w: 2, h: 2 }, { k: 'hut', x: 5, y: 3, w: 2, h: 2 }, { k: 'campfire', x: 3, y: 2, w: 1, h: 1 }] },
+    { id: 'palace', name: 'Cung điện hoa', icon: '🏰', desc: 'Cung điện lộng lẫy với đài phun nước và lối đi hoàng gia.', cost: 2500, lvl: 7, blocks: [{ k: 'palace', x: 1, y: 0, w: 5, h: 2 }, { k: 'fountain', x: 3, y: 2, w: 1, h: 1 }, { k: 'pathv', x: 3, y: 3, w: 1, h: 2 }] }
+  ];
+  ZONES.forEach(function (z, zi) {
+    z.i = zi; z.cols = COLS; z.rows = ROWS; z.cells = PER; z.mask = new Array(PER).fill(0);
+    z.blocks.forEach(function (b) { if (b.nb) return; for (var yy = b.y; yy < b.y + b.h; yy++) for (var xx = b.x; xx < b.x + b.w; xx++) z.mask[yy * COLS + xx] = 1; });
+    z.plots = z.mask.filter(function (m) { return !m; }).length;
+  });
+  var ZBY = {}; ZONES.forEach(function (z) { ZBY[z.id] = z; });
+  var TOTAL = ZONES.length * PER;
+  function zoneOfCell(i) { return ZONES[Math.floor(i / PER)] || null; }
+  function isBlocked(i) { var z = zoneOfCell(i); return !z || !!z.mask[i % PER]; }
   var SIZES = [{ n: 5, cost: 0 }, { n: 6, cost: 80 }, { n: 7, cost: 200 }, { n: 8, cost: 400 }, { n: 9, cost: 700 }, { n: 10, cost: 1000 }];
   var RULES = {
     waterFree: 10,        // lượt tưới miễn phí mỗi ngày
@@ -77,9 +97,9 @@
   function remainMs(item, tile, now) { return Math.max(0, growMs(item, tile.w) - (now - (tile.at || 0))); }
   function beautyOf(state) {
     var b = 0; (state.tiles || []).forEach(function (t) { if (t && BY[t.k]) b += BY[t.k].b; });
-    (state.pets || []).forEach(function (p) { b += 5; }); b += (state.size - 5) * 4; return b;
+    (state.pets || []).forEach(function (p) { b += 5; }); b += Math.max(0, ((state.zones || []).length || 1) - 1) * 8; return b;
   }
 
-  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
+  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, zoneOfCell: zoneOfCell, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);
