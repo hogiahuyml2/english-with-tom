@@ -1,5 +1,5 @@
 'use strict';
-// Hộ chiếu văn hoá (EWT Garden): câu hỏi mini-quiz của 15 khu quốc gia — đáp án ĐÚNG luôn là phương án đầu tiên trong mỗi mục (máy chủ tự trộn khi ra đề).
+// Hộ chiếu văn hoá (EWT Garden): câu hỏi mini-quiz của 23 khu quốc gia — đáp án ĐÚNG luôn là phương án đầu tiên trong mỗi mục (máy chủ tự trộn khi ra đề).
 // Chỉ hỏi những điều đã nêu trong js/garden-culture.js và chắc chắn đúng.
 module.exports = {
   vietnam: [
@@ -61,5 +61,37 @@ module.exports = {
   switzerland: [
     ['The Matterhorn is a famous mountain in the ___.', ['Alps', 'Andes', 'Himalayas', 'Rocky Mountains'], 'The Matterhorn is in the Alps.'],
     ['What shape is the flag of Switzerland?', ['Square', 'Triangle', 'Circle', 'Star'], 'The flag of Switzerland is square.'],
-    ['A cuckoo clock has a small ___ that sings every hour.', ['bird', 'cat', 'dog', 'fish'], 'A cuckoo clock has a small bird.'] ]
+    ['A cuckoo clock has a small ___ that sings every hour.', ['bird', 'cat', 'dog', 'fish'], 'A cuckoo clock has a small bird.'] ],
+  korea: [
+    ['What colour is the circle on the flag of South Korea?', ['Red and blue', 'Green and yellow', 'Black and white', 'Orange and purple'], 'The circle on the flag of South Korea is red and blue.'],
+    ['Gyeongbokgung is a royal ___ in Seoul.', ['palace', 'farm', 'market', 'school'], 'Gyeongbokgung is a big royal palace in Seoul.'],
+    ['Kimchi is made from vegetables like ___.', ['cabbage', 'chocolate', 'bread', 'cheese'], 'Kimchi is made from vegetables like cabbage.'] ],
+  turkey: [
+    ['The flag of Turkey is red with a white ___ and a star.', ['crescent moon', 'tree', 'cross', 'circle'], 'The flag of Turkey has a white crescent moon and a star.'],
+    ['In Cappadocia, tourists can ride in hot air ___.', ['balloons', 'trains', 'boats', 'buses'], 'In Cappadocia, tourists can ride in hot air balloons.'],
+    ['What shape are Turkish tea glasses?', ['Like tulips', 'Like stars', 'Like boxes', 'Like balls'], 'Turkish tea glasses are shaped like tulips.'] ],
+  australia: [
+    ['The roof of the Sydney Opera House looks like white ___.', ['sails', 'trees', 'clouds', 'houses'], 'Its roof looks like white sails.'],
+    ['The flag of Australia has the Union Jack in the ___.', ['corner', 'middle', 'bottom', 'tail'], 'The Union Jack is in the corner of the flag.'],
+    ['A boomerang is a ___ piece of wood.', ['curved', 'round', 'square', 'heavy'], 'A boomerang is a curved piece of wood.'] ],
+  canada: [
+    ['What is in the middle of the flag of Canada?', ['A maple leaf', 'A star', 'A moon', 'A cross'], 'The flag of Canada has a red maple leaf in the middle.'],
+    ['The CN Tower is in ___.', ['Toronto', 'Paris', 'Sydney', 'Cairo'], 'The CN Tower is a very tall tower in Toronto.'],
+    ['Maple syrup is made from ___ trees.', ['maple', 'apple', 'pine', 'palm'], 'Maple syrup is made from maple trees.'] ],
+  mexico: [
+    ['Chichén Itzá was built by the ___.', ['Maya', 'Romans', 'Vikings', 'Greeks'], 'Chichén Itzá is an ancient city built by the Maya.'],
+    ['A sombrero is a hat with a very ___ edge.', ['wide', 'short', 'thin', 'sharp'], 'A sombrero has a very wide edge.'],
+    ['Children hit a piñata with a ___.', ['stick', 'book', 'pen', 'spoon'], 'Children hit a piñata with a stick.'] ],
+  brazil: [
+    ['Christ the Redeemer is a statue on a ___ in Rio de Janeiro.', ['mountain', 'beach', 'river', 'bridge'], 'The statue stands on a mountain in Rio de Janeiro.'],
+    ['What is a toucan?', ['A bird with a big colourful beak', 'A fish with a long tail', 'A tree with red leaves', 'A big yellow house'], 'A toucan is a bird with a very big, colourful beak.'],
+    ['Carnival is a big ___ in Brazil.', ['festival', 'school', 'bank', 'airport'], 'Carnival is a big festival in Brazil.'] ],
+  egypt: [
+    ['The Pyramids of Giza are huge stone ___.', ['tombs', 'boats', 'schools', 'markets'], 'The Pyramids of Giza are huge stone tombs.'],
+    ['The ankh means ___.', ['life', 'rain', 'money', 'night'], 'The ankh is an ancient symbol that means "life".'],
+    ['A scarab is a kind of ___.', ['beetle', 'fish', 'bird', 'snake'], 'The scarab is a kind of beetle.'] ],
+  morocco: [
+    ['What colour is the star on the flag of Morocco?', ['Green', 'Blue', 'Yellow', 'White'], 'The flag of Morocco has a green star on a red background.'],
+    ['The Koutoubia Mosque is in ___.', ['Marrakech', 'Paris', 'Rome', 'Tokyo'], 'The Koutoubia Mosque is in Marrakech.'],
+    ['Moroccan mint tea is a ___ drink.', ['sweet', 'cold', 'sour', 'bitter'], 'Moroccan mint tea is a sweet drink.'] ]
 };

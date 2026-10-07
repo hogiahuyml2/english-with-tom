@@ -209,6 +209,47 @@
     { id: 'cuckooclock', name: 'Đồng hồ cúc cu', kind: 'deco', cost: 620, lvl: 12, b: 17 },
     { id: 'gentian', name: 'Hoa long đởm', kind: 'plant', cost: 730, lvl: 12, grow: 394, y: 78, b: 15, c: '#3A5AE8', c2: '#FFD23F' },
     { id: 'neonflower', name: 'Hoa neon', kind: 'plant', cost: 1400, lvl: 13, grow: 400, y: 130, b: 16, c: '#3ADFFF', c2: '#FF5CC8' },
+    // ── 8 khu quốc gia mới: công trình biểu tượng + vật phẩm văn hoá (hình vẽ ở garden-world7.js / garden-world8.js) ──
+    { id: 'gyeongbok', name: 'Cung Gyeongbokgung', kind: 'big', w: 3, h: 3, cost: 9500, lvl: 12, b: 140 },
+    { id: 'krflag', name: 'Cờ Hàn Quốc', kind: 'deco', cost: 500, lvl: 12, b: 16 },
+    { id: 'kimchijar', name: 'Chum kim chi', kind: 'deco', cost: 660, lvl: 12, b: 17 },
+    { id: 'jangseung', name: 'Cột jangseung giữ làng', kind: 'deco', cost: 720, lvl: 12, b: 18 },
+    { id: 'dolhareubang', name: 'Tượng ông đá Jeju', kind: 'deco', cost: 780, lvl: 12, b: 19 },
+    { id: 'hagiasophia', name: 'Thánh đường Hagia Sophia', kind: 'big', w: 3, h: 3, cost: 9800, lvl: 12, b: 142 },
+    { id: 'trflag', name: 'Cờ Thổ Nhĩ Kỳ', kind: 'deco', cost: 520, lvl: 12, b: 16 },
+    { id: 'turkishtea', name: 'Trà Thổ Nhĩ Kỳ', kind: 'deco', cost: 680, lvl: 12, b: 17 },
+    { id: 'evileye', name: 'Mắt xanh nazar', kind: 'deco', cost: 740, lvl: 12, b: 18 },
+    { id: 'turkishlamp', name: 'Đèn khảm Thổ Nhĩ Kỳ', kind: 'deco', cost: 800, lvl: 12, b: 19 },
+    { id: 'sydneyopera', name: 'Nhà hát Opera Sydney', kind: 'big', w: 3, h: 3, cost: 10200, lvl: 13, b: 146 },
+    { id: 'uluru', name: 'Núi đá Uluru', kind: 'big', w: 3, h: 2, cost: 7600, lvl: 13, b: 100 },
+    { id: 'auflag', name: 'Cờ Úc', kind: 'deco', cost: 540, lvl: 13, b: 17 },
+    { id: 'boomerang', name: 'Bumerang & kèn didgeridoo', kind: 'deco', cost: 700, lvl: 13, b: 18 },
+    { id: 'kangaroosign', name: 'Biển báo chuột túi', kind: 'deco', cost: 760, lvl: 13, b: 18 },
+    { id: 'cntower', name: 'Tháp CN Toronto', kind: 'big', w: 3, h: 3, cost: 10400, lvl: 13, b: 148 },
+    { id: 'caflag', name: 'Cờ Canada', kind: 'deco', cost: 550, lvl: 13, b: 17 },
+    { id: 'maplesyrup', name: 'Xi-rô phong & bánh kếp', kind: 'deco', cost: 720, lvl: 13, b: 18 },
+    { id: 'totempole', name: 'Cột totem thổ dân', kind: 'deco', cost: 780, lvl: 13, b: 19 },
+    { id: 'canoe', name: 'Thuyền canoe', kind: 'deco', cost: 640, lvl: 13, b: 17 },
+    { id: 'chichen', name: 'Kim tự tháp Chichén Itzá', kind: 'big', w: 3, h: 3, cost: 10600, lvl: 13, b: 150 },
+    { id: 'sombrero', name: 'Mũ sombrero', kind: 'deco', cost: 580, lvl: 13, b: 17 },
+    { id: 'pinata', name: 'Piñata', kind: 'deco', cost: 700, lvl: 13, b: 18 },
+    { id: 'tacocart', name: 'Xe bán taco', kind: 'deco', cost: 860, lvl: 13, b: 20 },
+    { id: 'altar', name: 'Bàn thờ Día de Muertos', kind: 'deco', cost: 920, lvl: 13, b: 21 },
+    { id: 'christredeemer', name: 'Tượng Chúa Cứu Thế', kind: 'big', w: 3, h: 3, cost: 11000, lvl: 14, b: 154 },
+    { id: 'braball', name: 'Bóng đá Brazil', kind: 'deco', cost: 600, lvl: 14, b: 17 },
+    { id: 'toucanpost', name: 'Cọc đậu toucan', kind: 'deco', cost: 760, lvl: 14, b: 19 },
+    { id: 'victoria', name: 'Sen khổng lồ Amazon', kind: 'deco', cost: 880, lvl: 14, b: 20 },
+    { id: 'giza', name: 'Quần thể kim tự tháp Giza', kind: 'big', w: 3, h: 3, cost: 11400, lvl: 14, b: 156 },
+    { id: 'ankh', name: 'Biểu tượng Ankh', kind: 'deco', cost: 620, lvl: 14, b: 17 },
+    { id: 'scarab', name: 'Bọ hung Scarab', kind: 'deco', cost: 700, lvl: 14, b: 18 },
+    { id: 'obelisk', name: 'Tháp obelisk', kind: 'deco', cost: 800, lvl: 14, b: 19 },
+    { id: 'papyrus', name: 'Cói papyrus', kind: 'deco', cost: 740, lvl: 14, b: 18 },
+    { id: 'eyehorus', name: 'Mắt Horus', kind: 'deco', cost: 940, lvl: 14, b: 21 },
+    { id: 'koutoubia', name: 'Tháp Koutoubia', kind: 'big', w: 3, h: 3, cost: 11800, lvl: 14, b: 158 },
+    { id: 'maflag', name: 'Cờ Ma-rốc', kind: 'deco', cost: 600, lvl: 14, b: 17 },
+    { id: 'moroccanteapot', name: 'Ấm trà bạc hà', kind: 'deco', cost: 760, lvl: 14, b: 19 },
+    { id: 'moroccanlamp', name: 'Đèn lồng Ma-rốc', kind: 'deco', cost: 860, lvl: 14, b: 20 },
+    { id: 'carpet', name: 'Thảm Ma-rốc', kind: 'deco', cost: 700, lvl: 14, b: 18 },
     // cây riêng của các khu
     { id: 'bambooclump', name: 'Bụi tre xanh', kind: 'tree', cost: 200, lvl: 4, grow: 300, y: 40, b: 9, c: '#62B43E', c2: '#86CC52' },
     { id: 'acaciatree', name: 'Cây keo', kind: 'tree', cost: 360, lvl: 5, grow: 420, y: 55, b: 12, c: '#7C9638', c2: '#A8C257' },
@@ -294,6 +335,14 @@
     { id: 'greece', name: 'Greece Culture Park', icon: '🏛️', desc: 'Công viên văn hoá Hy Lạp: đền Parthenon, ngôi nhà trắng mái vòm xanh, bình amphora và quốc kỳ xanh – trắng.', cost: 12000, lvl: 11, blocks: [{ k: 'parthenon', x: 0, y: 0, w: 3, h: 3 }, { k: 'santorini', x: 4, y: 0, w: 2, h: 2 }, { k: 'grflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'amphora', x: 6, y: 2, w: 1, h: 1 }] },
     { id: 'sweden', name: 'Sweden Culture Park', icon: '🦌', desc: 'Công viên văn hoá Thụy Điển: nhà gỗ đỏ, ngựa Dala, bánh quế cinnamon và quốc kỳ chữ thập vàng.', cost: 13000, lvl: 11, blocks: [{ k: 'redcottage', x: 0, y: 0, w: 3, h: 3 }, { k: 'dalahorse', x: 4, y: 0, w: 2, h: 2 }, { k: 'seflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'cinnamonbun', x: 6, y: 2, w: 1, h: 1 }] },
     { id: 'switzerland', name: 'Switzerland Culture Park', icon: '🏔️', desc: 'Công viên văn hoá Thụy Sĩ: đỉnh Matterhorn, nhà gỗ chalet, đồng hồ cúc cu và quốc kỳ chữ thập trắng.', cost: 15000, lvl: 12, blocks: [{ k: 'matterhorn', x: 0, y: 0, w: 3, h: 3 }, { k: 'swisschalet', x: 4, y: 0, w: 2, h: 2 }, { k: 'chflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'cuckooclock', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'korea', name: 'Korea Culture Park', icon: '🏯', desc: 'Công viên văn hoá Hàn Quốc: cung Gyeongbokgung, nhà hanok, chum kim chi và quốc kỳ Taegeukgi.', cost: 16000, lvl: 12, blocks: [{ k: 'gyeongbok', x: 0, y: 0, w: 3, h: 3 }, { k: 'hanok', x: 4, y: 0, w: 2, h: 2 }, { k: 'krflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'kimchijar', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'turkey', name: 'Turkey Culture Park', icon: '🧿', desc: 'Công viên văn hoá Thổ Nhĩ Kỳ: thánh đường Hagia Sophia, khinh khí cầu Cappadocia, trà tulip và mắt xanh may mắn.', cost: 17000, lvl: 12, blocks: [{ k: 'hagiasophia', x: 0, y: 0, w: 3, h: 3 }, { k: 'cappadocia', x: 4, y: 0, w: 2, h: 2 }, { k: 'trflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'turkishtea', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'australia', name: 'Australia Culture Park', icon: '🦘', desc: 'Công viên văn hoá Úc: nhà hát Opera Sydney, nhà vùng outback, bumerang và quốc kỳ Sao Nam Thập.', cost: 19000, lvl: 13, blocks: [{ k: 'sydneyopera', x: 0, y: 0, w: 3, h: 3 }, { k: 'outbackhouse', x: 4, y: 0, w: 2, h: 2 }, { k: 'auflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'boomerang', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'canada', name: 'Canada Culture Park', icon: '🍁', desc: 'Công viên văn hoá Canada: tháp CN, nhà gỗ rừng thông, xi-rô phong và quốc kỳ lá phong.', cost: 20000, lvl: 13, blocks: [{ k: 'cntower', x: 0, y: 0, w: 3, h: 3 }, { k: 'logcabin', x: 4, y: 0, w: 2, h: 2 }, { k: 'caflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'maplesyrup', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'mexico', name: 'Mexico Culture Park', icon: '🌮', desc: 'Công viên văn hoá Mexico: kim tự tháp Chichén Itzá, nhà hacienda rực rỡ, mũ sombrero và lễ hội Día de Muertos.', cost: 22000, lvl: 13, blocks: [{ k: 'chichen', x: 0, y: 0, w: 3, h: 3 }, { k: 'hacienda', x: 4, y: 0, w: 2, h: 2 }, { k: 'sombrero', x: 3, y: 1, w: 1, h: 1 }, { k: 'pinata', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'brazil', name: 'Brazil Culture Park', icon: '⚽', desc: 'Công viên văn hoá Brazil: tượng Chúa Cứu Thế, xe diễu hành Carnival, bóng đá và rừng Amazon.', cost: 24000, lvl: 14, blocks: [{ k: 'christredeemer', x: 0, y: 0, w: 3, h: 3 }, { k: 'carnival', x: 4, y: 0, w: 2, h: 2 }, { k: 'toucanpost', x: 3, y: 1, w: 1, h: 1 }, { k: 'braball', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'egypt', name: 'Egypt Culture Park', icon: '🐫', desc: 'Công viên văn hoá Ai Cập: kim tự tháp Giza, đền Karnak, biểu tượng Ankh và bọ hung Scarab.', cost: 26000, lvl: 14, blocks: [{ k: 'giza', x: 0, y: 0, w: 3, h: 3 }, { k: 'karnak', x: 4, y: 0, w: 2, h: 2 }, { k: 'ankh', x: 3, y: 1, w: 1, h: 1 }, { k: 'scarab', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'morocco', name: 'Morocco Culture Park', icon: '🍵', desc: 'Công viên văn hoá Ma-rốc: tháp Koutoubia, nhà riad có sân trong, ấm trà bạc hà và quốc kỳ sao xanh.', cost: 28000, lvl: 14, blocks: [{ k: 'koutoubia', x: 0, y: 0, w: 3, h: 3 }, { k: 'riad', x: 4, y: 0, w: 2, h: 2 }, { k: 'maflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'moroccanteapot', x: 6, y: 2, w: 1, h: 1 }] }
   ];
   ZONES.forEach(function (z, zi) {
     z.i = zi; z.cols = BASEC; z.rows = BASER; z.cells = BASEC * BASER; z.mask = new Array(BASEC * BASER).fill(0);
@@ -341,6 +390,14 @@
     greece: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['amphora', 1, 1, 2], ['santorini', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]],
     sweden: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['cinnamonbun', 1, 1, 2], ['dalahorse', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]],
     switzerland: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['cuckooclock', 1, 1, 2], ['swisschalet', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,korea: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['kimchijar', 1, 1, 2], ['jangseung', 1, 1, 1], ['dolhareubang', 1, 1, 1], ['hanok', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,turkey: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['turkishtea', 1, 1, 2], ['evileye', 1, 1, 1], ['turkishlamp', 1, 1, 1], ['cappadocia', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,australia: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 2], ['boomerang', 1, 1, 2], ['kangaroosign', 1, 1, 1], ['outbackhouse', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,canada: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['maplesyrup', 1, 1, 2], ['totempole', 1, 1, 1], ['canoe', 1, 1, 1], ['logcabin', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,mexico: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 3], ['pinata', 1, 1, 2], ['tacocart', 1, 1, 1], ['altar', 1, 1, 1], ['hacienda', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,brazil: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['braball', 1, 1, 2], ['victoria', 1, 1, 1], ['carnival', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,egypt: [['ptree', 1, 1, 2], ['pbush', 1, 1, 2], ['prock', 1, 1, 3], ['pflower', 1, 1, 1], ['scarab', 1, 1, 2], ['obelisk', 1, 1, 1], ['papyrus', 1, 1, 2], ['karnak', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,morocco: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['moroccanteapot', 1, 1, 2], ['moroccanlamp', 1, 1, 1], ['carpet', 1, 1, 1], ['riad', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
   };
   function genDecor(z) {
     var out = [], used = new Array(MAXC * MAXR).fill(0), kinds = DECOR_KINDS[z.id] || DEC_BASE, tw = 0, i, L, t, k, r;
@@ -405,7 +462,7 @@
     free: { free_plant: { n: 5, cls: 'plant', label: 'hoa' }, free_tree: { n: 2, cls: 'tree', label: 'cây' }, free_deco: { n: 3, cls: 'deco', label: 'đồ trang trí' }, free_big: { n: 1, cls: 'big', label: 'công trình lớn' }, free_pet: { n: 1, cls: 'pet', label: 'thú cưng' } },
     water: 10, boost: 1 };
   // Kho đặc sản từng khu (5 hoa · 5 cây · 5 trang trí · 5 công trình · 5 thú cưng cho MỖI khu): xem js/garden-catalog.js + garden-cat-*.js
-  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
+  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd', 'e'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
   if (CAT) CAT.build({ zones: ZONES, items: ITEMS, pets: PETS });
   var EV = root.EWTGardenEvents || (typeof require === 'function' ? require('./garden-events.js') : null); if (EV) EV.build({ items: ITEMS, pets: PETS });   // món giới hạn theo sự kiện
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });

@@ -254,6 +254,16 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-snd b { font-size: 15px; } .gd-snd label { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; min-height: 30px; cursor: pointer; } .gd-snd input[type=checkbox] { width: 20px; height: 20px; accent-color: #4FAE4A; flex: none; } .gd-snd input[type=range] { flex: 1; accent-color: #4FAE4A; min-height: 28px; } .gd-snd small { font-size: 12px; line-height: 1.45; color: #8A5A2B; }
 @media (max-width: 640px) { #questBtn::before { content: '🎯'; font-size: 17px; margin-right: 2px; } #passBtn::before { content: '🛂'; font-size: 17px; margin-right: 2px; } #evBtn .ei { font-size: 17px; } .gd-sndp button { font-size: 16px; min-width: 30px; } .gd-snd { top: 150px; right: 8px; } }
 .gd-shopq { border: 2px solid #C98E55; background: #FFF8EC; border-radius: 12px; padding: 6px 12px; font: 700 13px inherit; font-family: inherit; color: #5A3A1A; min-height: 36px; width: 150px; max-width: 40vw; } .gd-it.oz { opacity: .86; } .gd-it .zb { position: absolute; left: 4px; top: 4px; z-index: 2; background: #5A3A1A; color: #FFE9BE; border-radius: 99px; font-size: 9.5px; font-weight: 800; padding: 1px 7px; max-width: calc(100% - 8px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .gd-it.more { display: grid; place-content: center; text-align: center; min-width: 110px; background: #FFE9BE; border-style: dashed; }
+/* 8 khu quốc gia mới */
+.gd-lawn.z-korea { --bed: #D6EEC0; --bed2: #C8E6B0; --bedl: rgba(70,130,70,.4); background: repeating-linear-gradient(90deg, #CD2E3A 0 12px, #0047A0 12px 14px); border-color: #0047A0; }
+.gd-lawn.z-turkey { --bed: #F2E4B8; --bed2: #E8D6A0; --bedl: rgba(180,120,60,.4); background: repeating-linear-gradient(90deg, #E30A17 0 12px, #FFFFFF 12px 14px); border-color: #E30A17; }
+.gd-lawn.z-australia { --bed: #F2DDA8; --bed2: #E8CE90; --bedl: rgba(190,110,60,.4); background: repeating-linear-gradient(90deg, #012169 0 12px, #E4002B 12px 14px); border-color: #012169; }
+.gd-lawn.z-canada { --bed: #CDEBB8; --bed2: #BDE2A6; --bedl: rgba(60,120,60,.4); background: repeating-linear-gradient(90deg, #D52B1E 0 12px, #FFFFFF 12px 14px); border-color: #D52B1E; }
+.gd-lawn.z-mexico { --bed: #F0E2AE; --bed2: #E6D49A; --bedl: rgba(170,110,50,.4); background: repeating-linear-gradient(90deg, #006847 0 10px, #FFFFFF 10px 12px, #CE1126 12px 22px, #FFFFFF 22px 24px); border-color: #006847; }
+.gd-lawn.z-brazil { --bed: #BEEBA0; --bed2: #AEE090; --bedl: rgba(40,120,50,.4); background: repeating-linear-gradient(90deg, #009C3B 0 12px, #FFDF00 12px 14px); border-color: #009C3B; }
+.gd-lawn.z-egypt { --bed: #F2E2B0; --bed2: #E8D498; --bedl: rgba(180,130,50,.45); background: repeating-linear-gradient(90deg, #C09300 0 12px, #1A1A1A 12px 14px); border-color: #C09300; }
+.gd-lawn.z-morocco { --bed: #F0D8B6; --bed2: #E6CAA0; --bedl: rgba(170,100,60,.4); background: repeating-linear-gradient(90deg, #C1272D 0 12px, #006233 12px 14px); border-color: #C1272D; }
+.gd-nof { font-size: 40px; line-height: 1; height: 56px; display: grid; place-items: center; }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
 .gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
 .gd-box h3 { margin: 0 0 4px; font-size: 20px; } .gd-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
@@ -488,28 +498,32 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-cat-b.js?v=2"></script>
 <script src="js/garden-cat-c.js?v=2"></script>
 <script src="js/garden-cat-d.js?v=2"></script>
+<script src="js/garden-cat-e.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
-<script src="js/garden-data.js?v=16"></script>
+<script src="js/garden-data.js?v=17"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
 <script src="js/garden-art3.js?v=2"></script>
 <script src="js/garden-world.js?v=9"></script>
 <script src="js/garden-world2.js?v=3"></script>
 <script src="js/garden-world3.js?v=2"></script>
-<script src="js/garden-flags.js?v=1"></script>
+<script src="js/garden-flags.js?v=2"></script>
 <script src="js/garden-world4.js?v=1"></script>
 <script src="js/garden-world5.js?v=1"></script>
 <script src="js/garden-world6.js?v=1"></script>
+<script src="js/garden-world7.js?v=1"></script>
+<script src="js/garden-world8.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-art5.js?v=1"></script>
-<script src="js/garden-culture.js?v=1"></script>
-<script src="js/garden-gen1.js?v=2"></script>
-<script src="js/garden-gen2.js?v=2"></script>
-<script src="js/garden-gen3.js?v=2"></script>
-<script src="js/garden-gen4.js?v=2"></script>
+<script src="js/garden-art6.js?v=1"></script>
+<script src="js/garden-culture.js?v=2"></script>
+<script src="js/garden-gen1.js?v=3"></script>
+<script src="js/garden-gen2.js?v=3"></script>
+<script src="js/garden-gen3.js?v=3"></script>
+<script src="js/garden-gen4.js?v=3"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
-<script src="js/garden-sound.js?v=1"></script>
+<script src="js/garden-sound.js?v=2"></script>
 <script>
 (function () {
 'use strict';
@@ -928,7 +942,7 @@ $('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') go
 $('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
 
 /* ───────── nhiệm vụ · quà thầy cô · lớp học ───────── */
-var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch' };
+var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma' };
 function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch (e) {} }
 function claimable() { var q = S && S.quests; if (!q) return 0; var n = 0; q.daily.concat(q.weekly).forEach(function (x) { if (x.p >= x.goal && !x.claimed) n++; }); q.streak.miles.forEach(function (m) { if (m.ready) n++; }); return n; }
 window.updDots = function () { var n = (S && !VISIT ? claimable() : 0) + INBOX + TRADES, d = $('questDot'); if (d) { d.textContent = n; d.style.display = n ? '' : 'none'; } };
@@ -976,11 +990,11 @@ function contribute(pid) { var v = +($('cin' + pid) || {}).value; if (!(v >= 1))
 /* ───────── Hộ chiếu văn hoá ───────── */
 function stamped(zid) { return (S.passport || []).indexOf(zid) >= 0; }
 function openPassport() {
-  var ids = Object.keys(CULT()).sort(function (a, b) { return D.ZBY[a].lvl - D.ZBY[b].lvl || D.ZBY[a].cost - D.ZBY[b].cost; }), n = ids.filter(stamped).length, nx = n < 5 ? 5 : n < 10 ? 10 : n < 15 ? 15 : 0;
+  var ids = Object.keys(CULT()).sort(function (a, b) { return D.ZBY[a].lvl - D.ZBY[b].lvl || D.ZBY[a].cost - D.ZBY[b].cost; }), n = ids.filter(stamped).length, nx = n < 5 ? 5 : n < 10 ? 10 : n < 15 ? 15 : n < 20 ? 20 : n < 23 ? 23 : 0;
   $('pspsub').innerHTML = 'Chạm vào công trình trong các khu quốc gia để học từ vựng và câu tiếng Anh, rồi làm mini-quiz để nhận <b>dấu hộ chiếu</b> + quà. Bạn đã có <b>' + n + '/' + ids.length + '</b> dấu.' + (nx ? ' Đủ ' + nx + ' dấu sẽ có quà lớn!' : ' 🏅 Bạn đã đủ tất cả!');
   $('pspgrid').innerHTML = ids.map(function (id) {
-    var z = D.ZBY[id], open = S.zones.indexOf(id) >= 0, fl = FLAGOF[id], r = EWTFlags.RATIO[fl];
-    return '<button class="gd-pc' + (open ? '' : ' lock') + '" data-pz="' + id + '"><svg viewBox="0 0 100 ' + (100 * r).toFixed(1) + '">' + EWTFlags.draw(fl, 0, 0, 100) + '</svg><b>' + esc(CULT()[id].vi) + '</b><small>' + (open ? (stamped(id) ? 'Đã đóng dấu' : 'Chưa có dấu') : '🔒 Cấp ' + z.lvl + ' · ' + z.cost + ' xu') + '</small>' + (stamped(id) ? '<span class="stp">ĐÃ<br>ĐẾN</span>' : '') + '</button>';
+    var z = D.ZBY[id], open = S.zones.indexOf(id) >= 0, fl = FLAGOF[id], r = fl ? EWTFlags.RATIO[fl] : 0;
+    return '<button class="gd-pc' + (open ? '' : ' lock') + '" data-pz="' + id + '">' + (fl ? '<svg viewBox="0 0 100 ' + (100 * r).toFixed(1) + '">' + EWTFlags.draw(fl, 0, 0, 100) + '</svg>' : '<div class="gd-nof">' + z.icon + '</div>') + '<b>' + esc(CULT()[id].vi) + '</b><small>' + (open ? (stamped(id) ? 'Đã đóng dấu' : 'Chưa có dấu') : '🔒 Cấp ' + z.lvl + ' · ' + z.cost + ' xu') + '</small>' + (stamped(id) ? '<span class="stp">ĐÃ<br>ĐẾN</span>' : '') + '</button>';
   }).join('');
   $('pspm').classList.add('on');
 }

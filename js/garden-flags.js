@@ -56,6 +56,24 @@
     se: { w: 160, h: 100, body: function () { return rc(0, 0, 160, 100, '#006AA7') + rc(50, 0, 20, 100, '#FECC02') + rc(0, 40, 160, 20, '#FECC02'); } },
     // Thụy Sĩ (1:1): nền đỏ, chữ thập trắng vuông (lưới 32: tay rộng 6, dài 7 mỗi bên từ ô vuông giữa → thanh từ 6 đến 26)
     ch: { w: 100, h: 100, body: function () { var k = 100 / 32; return rc(0, 0, 100, 100, '#DA291C') + rc(6 * k, 13 * k, 20 * k, 6 * k, '#FFFFFF') + rc(13 * k, 6 * k, 6 * k, 20 * k, '#FFFFFF'); } },
+
+    // Hàn Quốc (2:3) — hình học lấy từ bản vẽ chuẩn công khai: đường kính Thái Cực = 1/2 chiều cao; quẻ nghiêng 33,69° theo đường chéo (Càn ☰ trên-trái, Khôn ☷ dưới-phải, Khảm ☵ trên-phải, Ly ☲ dưới-trái); nét quẻ dày D/12, hở D/24
+    kr: { w: 300, h: 200, body: function () {
+      return '<rect width="300" height="200" fill="#FFFFFF"/><g transform="translate(150 100) scale(2.0833333)"><g stroke="#000" stroke-width="4"><path transform="rotate(33.69006752598)" d="M-50-12v24m6 0v-24m6 0v24m76 0V1m0-2v-11m6 0v11m0 2v11m6 0V1m0-2v-11"/><path transform="rotate(-33.69006752598)" d="M-50-12v24m6 0V1m0-2v-11m6 0v24m76 0V1m0-2v-11m6 0v24m6 0V1m0-2v-11"/></g><g transform="rotate(33.69006752598)"><path fill="#CD2E3A" d="M12 0a18 18 0 11-36 0 24 24 0 1148 0"/><path fill="#0047A0" d="M-24 0a24 24 0 1048 0A12 12 0 100 0a12 12 0 11-24 0"/></g></g>'; } },
+    // Canada (1:2): ba phần 1:2:1 — đỏ, ô vuông trắng, đỏ; lá phong cách điệu 11 nhọn màu đỏ ở chính giữa
+    ca: { w: 960, h: 480, body: function () {
+      return '<g transform="scale(.1)"><path fill="#D52B1E" d="m0 0h2400l99 99h4602l99-99h2400v4800h-2400l-99-99h-4602l-99 99H0z"/><path fill="#FFFFFF" d="m2400 0h4800v4800h-4800zm2490 4430-45-863a95 95 0 0 1 111-98l859 151-116-320a65 65 0 0 1 20-73l941-762-212-99a65 65 0 0 1-34-79l186-572-542 115a65 65 0 0 1-73-38l-105-247-423 454a65 65 0 0 1-111-57l204-1052-327 189a65 65 0 0 1-91-27l-332-652-332 652a65 65 0 0 1-91 27l-327-189 204 1052a65 65 0 0 1-111 57l-423-454-105 247a65 65 0 0 1-73 38l-542-115 186 572a65 65 0 0 1-34 79l-212 99 941 762a65 65 0 0 1 20 73l-116 320 859-151a95 95 0 0 1 111 98l-45 863z"/></g>'; } },
+    // Thổ Nhĩ Kỳ (2:3): nền đỏ #E30A17; trăng lưỡi liềm và sao năm cánh trắng (đường tròn ngoài r=15000, trong r=12000 lệch về phía đuôi cờ; sao nội tiếp đường kính 1/4)
+    tr: { w: 300, h: 200, body: function () {
+      return '<g transform="scale(.0033333333) translate(0 30000)"><path fill="#E30A17" d="m0-30000h90000v60000H0z"/><path fill="#FFFFFF" d="m41750 0 13568-4408-8386 11541V-7133l8386 11541zm925 8021a15000 15000 0 1 1 0-16042 12000 12000 0 1 0 0 16042z"/></g>'; } },
+    // Úc (1:2): nền xanh #012169; góc trên-trái là Union Jack; Sao Liên bang 7 cánh dưới góc cờ; chòm Nam Thập: 4 sao 7 cánh + 1 sao nhỏ 5 cánh
+    au: { w: 1008, h: 504, body: function () {
+      var S7 = 'M0,-360 69.421398,-144.155019 281.459334,-224.456329 155.988466,-35.603349 350.974048,80.107536 125.093037,99.758368 156.198146,324.348792 0,160 -156.198146,324.348792 -125.093037,99.758368 -350.974048,80.107536 -155.988466,-35.603349 -281.459334,-224.456329 -69.421398,-144.155019z',
+        S5 = 'M0,-210 54.859957,-75.508253 199.721868,-64.893569 88.765275,28.841586 123.434903,169.893569 0,93.333333 -123.434903,169.893569 -88.765275,28.841586 -199.721868,-64.893569 -54.859957,-75.508253z';
+      return '<g transform="scale(.1)"><defs><clipPath id="fl-auc1"><path d="M0,0H6V3H0z"/></clipPath><clipPath id="fl-auc2"><path d="M0,0V1.5H6V3H6zM6,0H3V3H0V3z"/></clipPath></defs><g transform="scale(840)"><rect width="12" height="6" fill="#012169"/><path d="M0,0 6,3M6,0 0,3" stroke="#fff" stroke-width="0.6" clip-path="url(#fl-auc1)"/><path d="M0,0 6,3M6,0 0,3" stroke="#E4002B" stroke-width="0.4" clip-path="url(#fl-auc2)"/><path d="M3,0V3M0,1.5H6" stroke="#fff"/><path d="M3,0V3M0,1.5H6" stroke="#E4002B" stroke-width="0.6"/></g><g fill="#fff"><path transform="translate(2520 3780) scale(2.1)" d="' + S7 + '"/><path transform="translate(7560 4200)" d="' + S7 + '"/><path transform="translate(6300 2205)" d="' + S7 + '"/><path transform="translate(7560 840)" d="' + S7 + '"/><path transform="translate(8680 1869)" d="' + S7 + '"/><path transform="translate(8064 2730)" d="' + S5 + '"/></g></g>'; } },
+    // Ma-rốc (2:3): nền đỏ #C1272D; sao năm cánh xanh lá #006233 chỉ vẽ nét viền (ngôi sao Solomon) ở chính giữa
+    ma: { w: 300, h: 200, body: function () {
+      return '<g transform="scale(.0033333333)"><path fill="#C1272D" d="m0 0h90000v60000H0z"/><path fill="none" stroke="#006233" stroke-width="1426" d="m45000 17308 7460 22960-19531-14190h24142L37540 40268z"/></g>'; } },
     // Indonesia (2:3): hai dải ngang bằng nhau — đỏ ở trên, trắng ở dưới
     id: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#CE1126') + rc(0, 100, 300, 100, '#FFFFFF'); } }
   };

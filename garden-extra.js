@@ -426,7 +426,7 @@ module.exports = function (app, C) {
         if (!rec.stamp) { rec.stamp = 1; rec.at = now(); first = true; got = got.concat(grant(st, req.user.id, { xu: correct === 3 ? 250 : 150, chest: 1 })); }
         rec.best = Math.max(rec.best | 0, correct);
         const n = Object.keys(st.passport).filter((k) => k !== '_m' && st.passport[k] && st.passport[k].stamp).length, mm = st.passport._m || (st.passport._m = []);
-        [[5, { xu: 300, free: { big: 1 } }], [10, { xu: 800, chest: 2 }], [15, { xu: 2000, chest: 3, free: { big: 1 } }]].forEach((m) => { if (n >= m[0] && mm.indexOf(m[0]) < 0) { mm.push(m[0]); got = got.concat(['🏅 Đủ ' + m[0] + ' dấu hộ chiếu!'], grant(st, req.user.id, m[1])); } });
+        [[5, { xu: 300, free: { big: 1 } }], [10, { xu: 800, chest: 2 }], [15, { xu: 2000, chest: 3, free: { big: 1 } }], [20, { xu: 3500, chest: 3, free: { big: 1 } }], [23, { xu: 6000, chest: 4, free: { big: 2 } }]].forEach((m) => { if (n >= m[0] && mm.indexOf(m[0]) < 0) { mm.push(m[0]); got = got.concat(['🏅 Đủ ' + m[0] + ' dấu hộ chiếu!'], grant(st, req.user.id, m[1])); } });
       }
       save(st); return { st, got, first };
     });

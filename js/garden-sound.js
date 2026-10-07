@@ -53,7 +53,15 @@
     usa: { sc: 'blues', r: 67, bpm: 96, sig: 4, lead: 'banjo', pad: null, bass: 1, d: .6, rh: 'shaker', amb: ['night'] },
     greece: { sc: 'hijaz', r: 57, bpm: 108, sig: 4, lead: 'oud', pad: null, bass: 1, d: .65, rh: 'tab', amb: ['waves'] },
     sweden: { sc: 'dor', r: 57, bpm: 90, sig: 3, lead: 'erhu', l2: 'music', pad: null, d: .45, amb: ['wind', 'birds'] },
-    switzerland: { sc: 'maj', r: 60, bpm: 76, sig: 4, lead: 'horn', l2: 'music', pad: 'warm', d: .35, rh: 'cow', amb: ['wind'] }
+    switzerland: { sc: 'maj', r: 60, bpm: 76, sig: 4, lead: 'horn', l2: 'music', pad: 'warm', d: .35, rh: 'cow', amb: ['wind'] },
+    korea: { sc: 'yo', r: 62, bpm: 72, sig: 4, lead: 'koto', l2: 'flute', pad: null, d: .4, rh: 'wood', amb: ['wind', 'birds'] },
+    turkey: { sc: 'hijaz', r: 62, bpm: 96, sig: 4, lead: 'oud', l2: 'flute', pad: null, bass: 1, d: .55, rh: 'tab', amb: ['birds'] },
+    australia: { sc: 'pmaj', r: 57, bpm: 84, sig: 4, lead: 'horn', l2: 'marimba', pad: null, d: .4, rh: 'wood', amb: ['wind', 'birds'] },
+    canada: { sc: 'maj', r: 60, bpm: 88, sig: 4, lead: 'pluck', l2: 'flute', pad: 'warm', bass: 1, d: .45, amb: ['wind', 'birds'] },
+    mexico: { sc: 'maj', r: 62, bpm: 112, sig: 3, lead: 'mandolin', l2: 'accord', pad: null, bass: 1, d: .65, rh: 'oom', amb: [] },
+    brazil: { sc: 'pmaj', r: 60, bpm: 100, sig: 4, lead: 'banjo', l2: 'marimba', pad: null, bass: 1, d: .6, rh: 'shaker', amb: ['birds', 'night'] },
+    egypt: { sc: 'hijaz', r: 60, bpm: 80, sig: 4, lead: 'oud', l2: 'flute', pad: null, d: .45, rh: 'tab', amb: ['wind'] },
+    morocco: { sc: 'hijaz', r: 57, bpm: 92, sig: 4, lead: 'oud', l2: 'banjo', pad: null, bass: 1, d: .5, rh: 'tab', amb: ['wind'] }
   };
   /* hệ số cân bằng âm lượng từng khu (đo bằng cách dựng thử từng cảnh nhạc) để khu nào cũng nghe vừa tai như nhau */
   var TRIM = {"map":1.26,"cottage":0.89,"hill":0.56,"river":1.12,"pond":1.12,"forest":0.79,"palace":1,"winter":1.12,"beach":0.79,"magic":1,"farm":1.12,"sakura":2.24,"autumn":0.71,"mountain":0.79,"desert":1.12,"candy":1.26,"ocean":0.79,"sky":1.12,"space":0.79,"bamboo":1.26,"savanna":1.58,"jungle":1.78,"village":0.89,"funfair":0.79,"arctic":1,"pirate":0.79,"dino":0.55,"volcano":0.79,"cyber":1.12,"vietnam":2.51,"thailand":1.58,"japan":2.24,"china":1.58,"india":2,"indonesia":1.41,"france":0.79,"italy":1,"netherlands":1.58,"uk":1.12,"germany":0.79,"usa":1.41,"greece":0.89,"sweden":2,"switzerland":0.79};
