@@ -27,7 +27,10 @@
     orchid: function (c, c2) { var s = L('M50 90 Q50 60 40 40 Q36 34 40 28', G2, 3), fl = [[40, 30], [48, 44], [38, 54]], i; for (i = 0; i < fl.length; i++) { var x = fl[i][0], y = fl[i][1]; s += E(x - 6, y - 3, 7, 4.5, c, -30) + E(x + 6, y - 3, 7, 4.5, c, 30) + E(x, y + 5, 6, 5, shade(c, 0.1)) + E(x, y - 1, 5, 4, c2) + C(x, y, 1.6, '#FFD23F'); } return s + leaf(50, 84, -45, 18, G1) + leaf(50, 84, 225, 18, G1); },
     starflower: function (c, c2) { var s = stem(32) + C(50, 50, 22, c, ' opacity=".22"'), i; for (i = 0; i < 8; i++) s += '<g transform="translate(50 50) rotate(' + i * 45 + ')">' + P('M0 0 L5 -9 L0 -20 L-5 -9Z', i % 2 ? c : shade(c, 0.15)) + '</g>'; return s + C(50, 50, 6, c2) + C(50, 50, 3, '#fff') + C(30, 36, 1.8, c2) + C(72, 40, 1.4, c2) + C(68, 66, 1.6, c2) + C(32, 62, 1.2, c2); }
   };
+  // Hình PNG đồ nông trại (Kenney, CC0): ảnh 256×512, tâm viên gạch nằm gần đáy
+  function farmImg(file, k) { return '<image href="images/garden/farm/' + file + '.png" x="' + (50 - 50 * k) + '" y="' + (74 - 183.6 * k) + '" width="' + (100 * k) + '" height="' + (200 * k) + '" preserveAspectRatio="xMidYMid meet"/>'; }
   function plantArt(id, it, stage) {
+    if (it.img && stage >= 1) return farmImg(stage >= 3 ? 'corn_N' : 'cornYoung_N', stage === 1 ? 0.62 : stage === 2 ? 0.82 : 0.9);
     if (stage <= 0) return '<g transform="translate(0 -4)">' + SH(16) + E(50, 86, 15, 7, '#8A5A3A') + E(50, 84, 12, 5, '#A06C47') + E(46, 83, 3, 1.6, '#6B4228') + E(54, 85, 2.4, 1.3, '#6B4228') + C(50, 80, 2.2, '#C9A06B') + '</g>';
     if (stage === 1) return SH(14) + E(50, 88, 11, 4, '#8A5A3A') + L('M50 88 Q50 80 50 72', G2, 3) + leaf(50, 76, -30, 14, G3) + leaf(50, 76, 210, 14, G3);
     if (stage === 2) return SH(16) + L('M50 90 Q48 70 50 54', G2, 3.5) + leaf(50, 80, -35, 15, G1) + leaf(50, 72, 215, 13, G1) + E(50, 48, 7, 10, it.c) + P('M44 52 Q50 62 56 52 Q50 56 44 52Z', G1) + E(48, 45, 2, 4, shade(it.c, 0.3), 0);
@@ -83,13 +86,14 @@
   function drawItem(it, stage) {
     if (it.kind === 'plant') return plantArt(it.id, it, stage);
     if (it.kind === 'tree') return treeArt(it.id, it, stage);
+    if (it.img && it.file) return farmImg(it.file, it.k || 1);
     return (DECO[it.id] || function () { return ''; })();
   }
   function itemSvg(it, stage, size, cls) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + it.name + '"><g transform="translate(50 92) scale(' + (it.kind === 'plant' ? 1.3 : it.kind === 'deco' ? 1.06 : 1.02) + ') translate(-50 -92)">' + drawItem(it, stage == null ? 3 : stage) + '</g></svg>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + it.name + '"><g class="' + (it.img ? '' : 'bvS') + '" transform="translate(50 92) scale(' + (it.kind === 'plant' ? 1.3 : it.kind === 'deco' ? 1.06 : 1.02) + ') translate(-50 -92)">' + drawItem(it, stage == null ? 3 : stage) + '</g></svg>';
   }
   function petSvg(pt, size, cls) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + pt.name + '">' + (PET[pt.id] || function () { return ''; })() + '</svg>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + pt.name + '"><g class="bvS">' + (PET[pt.id] || function () { return ''; })() + '</g></svg>';
   }
   var API = { draw: drawItem, itemSvg: itemSvg, petSvg: petSvg, shade: shade };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenArt = API;

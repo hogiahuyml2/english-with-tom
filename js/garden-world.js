@@ -16,6 +16,7 @@
     ['stone', '#E8ECF1', '#98A3B2'], ['thatch', '#F4D98C', '#C09440'], ['gold', '#FFEA90', '#DDA51A'], ['glass', '#E8F9FF', '#93D0EC'], ['snow', '#FFFFFF', '#CFE1F3'], ['water', '#92DFFF', '#2D9CDD'],
     ['white', '#FFFFFF', '#DFE6EE'], ['purple', '#CDA8FF', '#6538CE'], ['ice', '#EDFBFF', '#9AD6F0'], ['red', '#FF8D7C', '#D6433A'], ['sand', '#FCEBB6', '#E7CD84'], ['teal', '#86E8D8', '#27A596'], ['brick', '#EBB48A', '#B7694B'], ['night', '#6A4CC0', '#2E1F72']];
   var DEFS = GRADS.map(function (g) { return '<linearGradient id="bg-' + g[0] + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + g[1] + '"/><stop offset="1" stop-color="' + g[2] + '"/></linearGradient>'; }).join('') +
+    '<linearGradient id="bg-ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6C8" stop-opacity=".42"/><stop offset="1" stop-color="#FFF6C8" stop-opacity="0"/></linearGradient>' +
     '<radialGradient id="bg-glow"><stop offset="0" stop-color="#FFF3B0" stop-opacity=".95"/><stop offset="1" stop-color="#FFD23F" stop-opacity="0"/></radialGradient>' +
     '<radialGradient id="bg-glowP"><stop offset="0" stop-color="#F0D8FF" stop-opacity=".95"/><stop offset="1" stop-color="#B07CFF" stop-opacity="0"/></radialGradient>' +
     '<radialGradient id="bg-vortex"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#E4C8FF"/><stop offset=".75" stop-color="#8E5CF0"/><stop offset="1" stop-color="#4B2AA8"/></radialGradient>';
@@ -382,6 +383,13 @@
   var BIGSIZE = { hutbig: [2, 2], cabinbig: [2, 2], pondbig: [2, 2], bridge: [3, 1], flowerarch: [3, 1], gazebo: [2, 2], clocktower: [1, 2], fountainbig: [2, 2], glasshouse: [3, 2], castle: [3, 2] };
   var DEFSTAG = '<defs>' + DEFS + '</defs>';
 
+  // Bọc hình bằng bộ lọc ánh sáng (class bvL/bvM — chỉ bật ở chế độ đồ hoạ cao); vầng sáng đèn và khói được tách ra ngoài để không bị đổ khối
+  function lit(raw, cls) {
+    var ex = [];
+    raw = raw.replace(/<g class="lampg">[\s\S]*?<\/g>|<circle class="smoke"[^>]*\/>/g, function (m) { ex.push(m); return ''; });
+    return '<g class="' + cls + '">' + raw + '</g>' + ex.join('');
+  }
+  var NOBEVEL = { willow: 1, sea: 1, campfire: 1, river: 1 };
   var uidN = 0;
   function uniq(s) { var n = ++uidN; return s.replace(/(zw-(?:ground-[a-z]+|water)|bg-[A-Za-z0-9]+)/g, function (m) { return m + '-' + n; }); }
 
@@ -389,7 +397,7 @@
   function bigSvg(id) {
     var sz = BIGSIZE[id], fn = BIG[id]; if (!sz || !fn) return '';
     var vb = id === 'castle' ? '0 -66 300 276' : id === 'clocktower' ? '0 -30 100 230' : id === 'gazebo' ? '0 -20 200 220' : id === 'hutbig' || id === 'cabinbig' ? '0 -6 200 204' : '0 -10 ' + sz[0] * 100 + ' ' + (sz[1] * 100 + 10);
-    return uniq('<svg class="gd-bigsvg" viewBox="' + vb + '" preserveAspectRatio="xMidYMax meet" aria-hidden="true">' + DEFSTAG + fn() + '</svg>');
+    return uniq('<svg class="gd-bigsvg" viewBox="' + vb + '" preserveAspectRatio="xMidYMax meet" aria-hidden="true">' + DEFSTAG + lit(fn(), 'bvM') + '</svg>');
   }
 
   /* ───────── nền từng khu + lắp ráp ───────── */
@@ -403,18 +411,32 @@
     var th = THEME[z.id] || THEME.cottage, R = rnd(z.i * 977 + 11), s = '', i, gx, gy;
     s += '<svg class="gd-zsvg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + DEFS +
       '<linearGradient id="zw-ground-' + z.id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + th.g1 + '"/><stop offset="1" stop-color="' + th.g2 + '"/></linearGradient>' +
-      '<linearGradient id="zw-water" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62C6F6"/><stop offset="1" stop-color="#A8E4FF"/></linearGradient></defs>';
+      '<linearGradient id="zw-water" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62C6F6"/><stop offset="1" stop-color="#A8E4FF"/></linearGradient>' +
+      '<filter id="bg-noiseA" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012 .018" numOctaves="3" seed="' + (z.i * 7 + 3) + '"/><feColorMatrix type="matrix" values="0 0 0 0 .05  0 0 0 0 .2  0 0 0 0 .05  0 0 0 1.1 -.42"/></filter>' +
+      '<filter id="bg-noiseB" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="2" seed="' + (z.i * 5 + 1) + '"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.45"/></filter></defs>';
     s += '<rect width="' + W + '" height="' + H + '" fill="url(#zw-ground-' + z.id + ')"/>';
+    s += '<rect width="' + W + '" height="' + H + '" filter="url(#bg-noiseA)" opacity="' + (z.id === 'winter' ? '.22' : z.id === 'magic' ? '.5' : '.34') + '" style="mix-blend-mode:multiply"/><rect width="' + W + '" height="' + H + '" filter="url(#bg-noiseB)" opacity=".16"/>';
     for (i = 0; i < 9; i++) s += '<ellipse cx="' + (R() * W) + '" cy="' + (R() * H) + '" rx="' + (50 + R() * 90) + '" ry="' + (30 + R() * 50) + '" fill="' + (z.id === 'magic' ? 'rgba(160,120,255,.14)' : z.id === 'winter' ? 'rgba(150,185,225,.22)' : z.id === 'beach' ? 'rgba(210,170,90,.18)' : 'rgba(255,255,255,.1)') + '"/>';
     if (z.id === 'winter') { for (i = 0; i < 60; i++) { gx = R() * W; gy = R() * H; s += '<circle cx="' + gx + '" cy="' + gy + '" r="2.4" fill="#fff"/>'; } }
     else if (z.id === 'beach') { for (i = 0; i < 40; i++) { gx = R() * W; gy = 100 + R() * 400; s += '<path d="M' + gx + ' ' + gy + 'q8 -5 16 0" stroke="rgba(190,150,70,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>'; } for (i = 0; i < 7; i++) s += '<path d="M' + (R() * W) + ' ' + (130 + R() * 340) + 'l5 -9l5 9z" fill="#FF8FB8" opacity=".85"/>'; }
     else if (z.id === 'magic') { for (i = 0; i < 70; i++) s += '<circle class="spk" style="animation-delay:' + (-R() * 3).toFixed(2) + 's" cx="' + (R() * W) + '" cy="' + (R() * H) + '" r="' + (1.2 + R() * 2).toFixed(1) + '" fill="#E9D8FF"/>'; }
     else { for (i = 0; i < 90; i++) { gx = R() * W; gy = R() * H; s += '<path d="M' + gx + ' ' + gy + 'l-3 -8m3 8l0 -10m0 10l3 -8" stroke="rgba(30,100,30,.35)" stroke-width="2" stroke-linecap="round"/>'; } for (i = 0; i < 36; i++) s += '<circle cx="' + (R() * W) + '" cy="' + (R() * H) + '" r="3.4" fill="' + ['#fff', '#FFE14D', '#FF9EBD', '#C9A8FF'][i % 4] + '"/>'; }
     // phong cảnh dựng sẵn: vẽ theo thứ tự từ trên xuống dưới để che nhau đúng
-    z.blocks.slice().sort(function (a, b) { return (a.y + a.h) - (b.y + b.h) || a.x - b.x; }).forEach(function (b) { if (ART[b.k]) s += ART[b.k](b); });
+    z.blocks.slice().sort(function (a, b) { return (a.y + a.h) - (b.y + b.h) || a.x - b.x; }).forEach(function (b) { if (ART[b.k]) s += lit(ART[b.k](b), NOBEVEL[b.k] ? '' : 'bvL'); });
+    s += lights(z, R);
     if (z.id === 'winter') for (i = 0; i < 34; i++) s += '<circle class="snowf" style="animation-delay:' + (-R() * 7).toFixed(2) + 's;animation-duration:' + (5 + R() * 4).toFixed(1) + 's" cx="' + (R() * W).toFixed(0) + '" cy="-10" r="' + (2 + R() * 2.4).toFixed(1) + '" fill="#fff" opacity=".9"/>';
     s += '</svg>';
     return (cache[z.id] = s);
+  }
+  // Ánh nắng xuyên tán lá / ánh sáng lung linh tuỳ khu (vẽ mờ, đặt trên cùng)
+  function lights(z, R) {
+    var f = '', i;
+    if (z.id === 'forest' || z.id === 'cottage' || z.id === 'pond' || z.id === 'hill') {
+      f += '<g class="rays" pointer-events="none">';
+      for (i = 0; i < 4; i++) { var rx = 80 + i * 150 + R() * 40; f += '<polygon points="' + rx + ',0 ' + (rx + 46) + ',0 ' + (rx + 150) + ',500 ' + (rx + 40) + ',500" fill="url(#bg-ray)" style="animation-delay:' + (-i * 1.7) + 's"/>'; }
+      f += '</g>';
+    }
+    return f;
   }
   function zoneSvg(z) { return uniq(build(z)); }
 

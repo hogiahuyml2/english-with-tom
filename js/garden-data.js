@@ -38,6 +38,12 @@
     { id: 'fountain', name: 'Đài phun nước', kind: 'deco', cost: 500, lvl: 5, b: 14 },
     { id: 'windmill', name: 'Cối xay gió', kind: 'deco', cost: 650, lvl: 6, b: 15 },
     { id: 'greenhouse', name: 'Nhà kính', kind: 'deco', cost: 900, lvl: 7, b: 18 },
+    // Bộ "Nông trại" (hình của Kenney, CC0): dùng ảnh PNG đặt trong images/garden/farm
+    { id: 'corn', name: 'Cây ngô', kind: 'plant', cost: 24, lvl: 2, grow: 55, y: 12, b: 3, c: '#C9D56A', c2: '#8FB04A', img: 'farm' },
+    { id: 'haybale', name: 'Bó rơm', kind: 'deco', cost: 22, lvl: 2, b: 3, img: 'farm', file: 'hayBalesStacked_N', k: 1.05 },
+    { id: 'crates', name: 'Thùng & bao tải', kind: 'deco', cost: 26, lvl: 2, b: 3, img: 'farm', file: 'sacksCrate_N', k: 1.5 },
+    { id: 'rustfence', name: 'Hàng rào gỗ nâu', kind: 'deco', cost: 12, lvl: 1, b: 2, img: 'farm', file: 'fenceLow_N', k: 1.2 },
+    { id: 'deck', name: 'Sàn gỗ', kind: 'ground', cost: 15, lvl: 1, b: 2, img: 'farm', file: 'planks_N', k: 1 },
     // Công trình lớn: chiếm w×h ô (đặt ô góc trên-trái), giá cao và rất đẹp
     { id: 'hutbig', name: 'Chòi lá', kind: 'big', w: 2, h: 2, cost: 300, lvl: 3, b: 16 },
     { id: 'pondbig', name: 'Hồ nhỏ', kind: 'big', w: 2, h: 2, cost: 450, lvl: 4, b: 18 },

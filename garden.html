@@ -22,7 +22,25 @@
   position: relative; height: clamp(620px, calc(100svh - 176px), 940px); border-radius: 30px; overflow: hidden; border: 5px solid #fff; box-shadow: 0 18px 50px rgba(40,90,60,.32); background: linear-gradient(180deg, var(--sky1), var(--sky2) 55%); user-select: none; isolation: isolate; }
 .gd-stage.dusk { --sky1: #FF9A6B; --sky2: #FFE0A8; --m1: #B58BA8; --m2: #9A6F95; --h1: #7DB35E; --h2: #5D9E4E; --g1: #6FB654; --g2: #4C9A42; --w1: #E7A27A; --w2: #FFD2A8; --dim: rgba(255,120,60,.16); }
 .gd-stage.night { --sky1: #0F1B4D; --sky2: #3A4A93; --m1: #3F4F8C; --m2: #2F3D78; --h1: #2F6B52; --h2: #245A47; --g1: #2F7B4E; --g2: #226A41; --w1: #2E6FB0; --w2: #5C97D6; --dim: rgba(14,20,80,.38); }
+.gd-hq .bvS { filter: url(#gdBevelS); } .gd-hq .bvM { filter: url(#gdBevelM); } .gd-hq .bvL { filter: url(#gdBevelL); } .gd-hq .bvXL { filter: url(#gdBevelXL); }
 .gd-stage > svg.scene { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.gd-vig { position: absolute; inset: 0; z-index: 3; pointer-events: none; background: radial-gradient(ellipse at 50% 44%, rgba(255,255,255,0) 52%, rgba(24,34,86,.30) 100%), linear-gradient(135deg, rgba(255,238,196,.22) 0%, rgba(255,238,196,0) 34%), linear-gradient(315deg, rgba(60,40,120,.14) 0%, rgba(60,40,120,0) 30%); }
+.night .gd-vig { background: radial-gradient(ellipse at 50% 44%, rgba(255,255,255,0) 45%, rgba(8,10,50,.5) 100%); }
+.gd-fx { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; border-radius: 8px; }
+.gd-fx i { position: absolute; display: block; opacity: 0; }
+.gd-fx .pf { width: 7px; height: 7px; border-radius: 50%; background: radial-gradient(circle, #FFFBD0 0, rgba(255,246,176,.9) 35%, rgba(255,246,176,0) 70%); animation: gdPf 8s ease-in-out infinite; }
+.gd-fx .lf { width: 11px; height: 7px; border-radius: 0 100% 0 100%; background: linear-gradient(135deg, #8FD36B, #4FA050); animation: gdLf 11s linear infinite; }
+.gd-fx .lf.o { background: linear-gradient(135deg, #FFC46B, #E0833A); } .gd-fx .pt { width: 9px; height: 6px; border-radius: 100% 0 100% 0; background: linear-gradient(135deg, #FFD0E2, #FF8FB8); animation: gdLf 12s linear infinite; }
+.gd-fx .ff { width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle, #FFFBB0, rgba(255,240,120,0) 70%); box-shadow: 0 0 10px 4px rgba(255,240,120,.7); animation: gdFf 6s ease-in-out infinite; display: none; } .night .gd-fx .ff { display: block; }
+.gd-fx .gl { width: 9px; height: 9px; background: radial-gradient(circle, #fff, rgba(255,255,255,0) 70%); animation: gdGl 3.4s ease-in-out infinite; }
+.gd-fx .rn { width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle, #F4E4FF, rgba(190,140,255,0) 70%); box-shadow: 0 0 9px 3px rgba(190,140,255,.6); animation: gdRn 9s ease-in-out infinite; }
+@keyframes gdPf { 0% { transform: translate(0, 0) scale(.5); opacity: 0; } 15% { opacity: .95; } 80% { opacity: .8; } 100% { transform: translate(60px, -90px) scale(1.1); opacity: 0; } }
+@keyframes gdLf { 0% { transform: translate(0, -30px) rotate(0); opacity: 0; } 10% { opacity: .95; } 50% { transform: translate(40px, 200px) rotate(200deg); } 100% { transform: translate(-30px, 480px) rotate(420deg); opacity: 0; } }
+@keyframes gdFf { 0%, 100% { transform: translate(0, 0); opacity: .1; } 25% { opacity: 1; } 50% { transform: translate(24px, -18px); opacity: .35; } 75% { transform: translate(-16px, -34px); opacity: 1; } }
+@keyframes gdGl { 0%, 100% { opacity: 0; transform: scale(.3); } 50% { opacity: 1; transform: scale(1.3); } }
+@keyframes gdRn { 0% { transform: translate(0, 20px) scale(.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(20px, -120px) scale(1); opacity: 0; } }
+.rays polygon { animation: gdRay 7s ease-in-out infinite; } @keyframes gdRay { 0%, 100% { opacity: .35; } 50% { opacity: 1; } } .night .rays { display: none; }
+.ic { display: block; width: 34px; height: 34px; } .ic svg { width: 100%; height: 100%; display: block; overflow: visible; filter: drop-shadow(0 2px 2px rgba(60,30,5,.35)); } .gd-pill .ic, .gd-earn .ic { display: inline-block; width: 26px; height: 26px; vertical-align: middle; margin-right: 4px; }
 .gd-dim { position: absolute; inset: 0; z-index: 2; background: var(--dim); mix-blend-mode: multiply; pointer-events: none; }
 .gd-sky-fx { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .gd-sun { position: absolute; right: 16%; top: 7%; width: 84px; height: 84px; border-radius: 50%; background: radial-gradient(circle at 40% 38%, #FFF7B0, #FFD23F 60%, #FFB800); box-shadow: 0 0 0 14px rgba(255,214,63,.25), 0 0 60px 26px rgba(255,214,63,.38); animation: gdSun 6s ease-in-out infinite; transition: opacity .6s; }
@@ -59,13 +77,13 @@
 .gd-gname { pointer-events: auto; margin-top: 6px; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; background: linear-gradient(180deg, #C98E55, #A96F3C); color: #FFF3D6; border: 3px solid #7A4A1E; border-radius: 14px; padding: 5px 16px; font: 800 15px inherit; font-family: inherit; cursor: pointer; box-shadow: 0 5px 12px rgba(60,30,5,.4), inset 0 2px 0 rgba(255,255,255,.35); text-shadow: 0 2px 0 rgba(60,30,5,.5); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gd-res { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; margin-left: auto; }
 .gd-pill { display: inline-flex; align-items: center; gap: 7px; background: linear-gradient(180deg, #FFF6E2, #FFE7B8); border: 3px solid #C98E55; border-radius: 99px; padding: 5px 15px 5px 8px; font: 800 17px inherit; font-family: inherit; color: #6B3E12; box-shadow: 0 5px 12px rgba(80,40,10,.3), inset 0 2px 0 #fff; min-height: 42px; cursor: default; }
-.gd-pill.btn { cursor: pointer; padding: 5px 15px; } .gd-pill.btn:hover { filter: brightness(1.06); }
+.gd-pill.btn { cursor: pointer; padding: 5px 15px; } .gd-pill.btn .ic { width: 28px; height: 28px; } .gd-pill.btn:hover { filter: brightness(1.06); }
 .coin { display: inline-block; width: 1.15em; height: 1.15em; border-radius: 50%; vertical-align: -0.2em; background: radial-gradient(circle at 35% 30%, #FFF3A0 0 18%, #FFD23F 45%, #E59A0B 100%); border: .1em solid #B87408; box-shadow: inset 0 0 0 .13em rgba(255,255,255,.35), 0 1px 2px rgba(80,40,0,.4); position: relative; } .coin::after { content: ""; position: absolute; inset: 28%; border-radius: 50%; border: .08em solid rgba(160,95,5,.55); }
 .gd-earn { border: 3px solid #fff; cursor: pointer; font: 800 15px inherit; font-family: inherit; background: linear-gradient(180deg, #FFB347, #FF6B6B); color: #fff; border-radius: 99px; padding: 8px 18px; min-height: 46px; box-shadow: 0 7px 18px rgba(255,107,107,.55); animation: gdPulse 2.4s ease-in-out infinite; text-shadow: 0 2px 0 rgba(160,40,40,.5); } @keyframes gdPulse { 50% { transform: scale(1.06); } }
 /* thanh công cụ bên trái */
 .gd-dock { position: absolute; z-index: 9; left: 12px; top: calc(var(--top) + 6px); display: flex; flex-direction: column; gap: 8px; padding: 8px; background: linear-gradient(180deg, rgba(201,142,85,.95), rgba(169,111,60,.95)); border: 3px solid #7A4A1E; border-radius: 20px; box-shadow: 0 8px 20px rgba(60,30,5,.4), inset 0 2px 0 rgba(255,255,255,.3); }
 .gd-tool { width: 64px; border: 2px solid #E8C48C; background: linear-gradient(180deg, #FFF6E2, #FFE2AA); color: #6B3E12; border-radius: 14px; padding: 6px 2px 5px; font: 800 10.5px inherit; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.15; transition: transform .1s; }
-.gd-tool b { font-size: 24px; line-height: 1; } .gd-tool:hover { transform: translateY(-2px); } .gd-tool.on { background: linear-gradient(180deg, #A58BFF, #6F58EE); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px rgba(111,88,238,.5); } .gd-tool:disabled { opacity: .5; cursor: not-allowed; } .gd-tool small { font-size: 9.5px; font-weight: 700; opacity: .85; }
+.gd-tool .ic { margin: 0 auto 2px; width: 36px; height: 36px; } .gd-tool:hover { transform: translateY(-2px); } .gd-tool.on { background: linear-gradient(180deg, #A58BFF, #6F58EE); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px rgba(111,88,238,.5); } .gd-tool:disabled { opacity: .5; cursor: not-allowed; } .gd-tool small { font-size: 9.5px; font-weight: 700; opacity: .85; }
 /* khu vực chơi */
 .gd-play { position: absolute; z-index: 5; left: 98px; right: 22px; top: var(--top); bottom: var(--tray); display: flex; align-items: center; justify-content: center; padding-bottom: 34px; }
 .gd-lawn { position: relative; --ts: 64px; width: calc(var(--ts) * var(--cols) + 42px); padding: 14px; border-radius: 22px; background: #7A5230; border: 7px solid #B98046; box-shadow: inset 0 0 0 3px #D9A566, 0 14px 0 -2px rgba(70,40,10,.35), 0 22px 34px rgba(30,60,20,.45); flex: none; touch-action: manipulation; }
@@ -78,6 +96,8 @@
 .gt.alt::before { background-color: var(--bed2, #87C964); }
 .gt.cov::before, .gt.bigc::before { display: none; } .gt.cov::after, .gt.bigc::after { display: none; } .gt.bigc { z-index: 4; }
 .bigart { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 4; } .bigart svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.gt.pop svg.sp, .gt.pop .bigart { animation: gdPopIn .7s cubic-bezier(.2,1.7,.4,1) both; transform-origin: 50% 90%; } @keyframes gdPopIn { from { transform: scale(.2) translateY(14px); opacity: 0; } 60% { opacity: 1; } to { transform: scale(1); } }
+.gt.pop::before { animation: gdDust .6s ease-out; } @keyframes gdDust { 0% { box-shadow: inset 0 0 0 2px var(--bedl), 0 0 0 0 rgba(255,255,255,.9); } 100% { box-shadow: inset 0 0 0 2px var(--bedl), 0 0 0 16px rgba(255,255,255,0); } }
 .gt.pv-ok::after, .gt.pv-bad::after { content: ''; display: block !important; position: absolute; inset: 3px; border-radius: 12px; z-index: 6; pointer-events: none; } .gt.pv-ok::after { background: rgba(60,200,110,.42); outline: 3px solid #22C55E; } .gt.pv-bad::after { background: rgba(240,70,70,.4); outline: 3px solid #EF4444; }
 .gt.blk { cursor: default; pointer-events: none; } .gt.blk::before { display: none; }
 .gt.has::after { content: ""; position: absolute; left: 20%; right: 20%; bottom: 8%; height: 16%; border-radius: 50%; background: rgba(60,35,10,.32); }
@@ -168,15 +188,30 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-prize { margin-top: 12px; font-size: 18px; font-weight: 800; color: #166534; min-height: 26px; } .gd-prize.jp { color: #C2410C; font-size: 22px; }
 .gd-toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; } .gd-toast.on { opacity: 1; }
 @media (max-width: 900px) { .gd-top { flex-wrap: wrap; padding: 8px 10px; gap: 8px; } .gd-sign { order: 3; flex-basis: 100%; flex-direction: row; justify-content: center; gap: 10px; } .gd-logo h1 { font-size: 21px; } .gd-logo .mk { width: 30px; height: 30px; } .gd-gname { margin-top: 0; font-size: 13px; padding: 3px 12px; } .gd-stage { --top: 128px; --tray: 170px; } .gd-me .av { width: 46px; height: 46px; } .gd-bar { width: 120px; } .gd-me .nx { display: none; } .gd-pill { min-height: 36px; font-size: 14px; padding: 3px 11px 3px 7px; } .gd-earn { min-height: 38px; padding: 5px 12px; font-size: 13px; } .gd-note { display: none; } }
-@media (max-width: 640px) { .gd-wrap { padding: 4px 4px 30px; } .gd-stage { border-width: 3px; border-radius: 20px; height: clamp(600px, calc(100svh - 120px), 820px); --top: 124px; --tray: 160px; } .gd-dock { left: 6px; padding: 5px; gap: 5px; } .gd-tool { width: 50px; padding: 4px 1px; font-size: 9px; } .gd-tool b { font-size: 19px; } .gd-tool small { display: none; } .gd-play { left: 66px; right: 6px; } .gd-it { width: 88px; } .gd-it svg { width: 52px; height: 52px; } .gd-hint { max-width: calc(100% - 90px); font-size: 12px; left: calc(50% + 28px); } .gd-me .lv { font-size: 12px; } .gd-sun, .gd-moon { right: 6%; transform: scale(.7); } }
-@media (max-width: 640px) { .gd-stage.map .gd-map { top: calc(var(--top) + 16px); } .gd-zcard .zh { font-size: 13px; } .gd-zcard .zf { display: none; } .gd-map { left: 6px; right: 6px; gap: 10px; } .gd-top { padding: 6px 8px; gap: 6px; align-items: center; } .gd-me { padding: 4px 10px 4px 4px; gap: 6px; border-width: 2px; border-radius: 16px; } .gd-me .av { width: 36px; height: 36px; border-width: 2px; font-size: 20px; } .gd-me .lv { font-size: 11px; } .gd-bar { width: 84px; height: 9px; margin: 3px 0 0; } .gd-res { gap: 5px; } .gd-pill { min-height: 32px; font-size: 13px; padding: 2px 9px 2px 6px; border-width: 2px; } .gd-pill.btn { padding: 2px 9px; font-size: 0; } .gd-pill.btn::before { content: "👀"; font-size: 16px; } .gd-earn { min-height: 34px; padding: 4px 11px; font-size: 12px; border-width: 2px; } .gd-sign { flex-direction: row; gap: 6px; } .gd-logo h1 { font-size: 17px; text-shadow: 0 2px 0 #2E8B57; } .gd-logo .mk { display: none; } .gd-gname { font-size: 12px; padding: 2px 10px; border-width: 2px; } .gd-stage { --top: 104px; } .gd-hint { border-radius: 14px; padding: 4px 10px; font-size: 11.5px; max-width: calc(100% - 84px); bottom: calc(var(--tray) + 6px); } .gd-pop { width: 200px; } }
-@media (prefers-reduced-motion: reduce) { .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-spin, .gt .ready, .sway, .flow, .smoke, .wave, .snowf, .spk, .float1, .float2, .beam, .duck, .boat, .gd-bird, .gd-bfly, .gd-star, .gd-card { animation: none !important; } .gd-pet { transition-duration: 0s; } }
+@media (max-width: 640px) { .gd-wrap { padding: 4px 4px 30px; } .gd-stage { border-width: 3px; border-radius: 20px; height: clamp(600px, calc(100svh - 120px), 820px); --top: 124px; --tray: 160px; } .gd-dock { left: 6px; padding: 5px; gap: 5px; } .gd-tool { width: 50px; padding: 4px 1px; font-size: 9px; } .gd-tool .ic { width: 28px; height: 28px; } .gd-tool small { display: none; } .gd-play { left: 66px; right: 6px; } .gd-it { width: 88px; } .gd-it svg { width: 52px; height: 52px; } .gd-hint { max-width: calc(100% - 90px); font-size: 12px; left: calc(50% + 28px); } .gd-me .lv { font-size: 12px; } .gd-sun, .gd-moon { right: 6%; transform: scale(.7); } }
+@media (max-width: 640px) { .gd-stage.map .gd-map { top: calc(var(--top) + 16px); } .gd-zcard .zh { font-size: 13px; } .gd-zcard .zf { display: none; } .gd-map { left: 6px; right: 6px; gap: 10px; } .gd-top { padding: 6px 8px; gap: 6px; align-items: center; } .gd-me { padding: 4px 10px 4px 4px; gap: 6px; border-width: 2px; border-radius: 16px; } .gd-me .av { width: 36px; height: 36px; border-width: 2px; font-size: 20px; } .gd-me .lv { font-size: 11px; } .gd-bar { width: 84px; height: 9px; margin: 3px 0 0; } .gd-res { gap: 5px; } .gd-pill { min-height: 32px; font-size: 13px; padding: 2px 9px 2px 6px; border-width: 2px; } .gd-pill.btn { padding: 2px 9px; font-size: 0; } .gd-pill.btn::before { content: none; } .gd-earn { min-height: 34px; padding: 4px 11px; font-size: 12px; border-width: 2px; } .gd-sign { flex-direction: row; gap: 6px; } .gd-logo h1 { font-size: 17px; text-shadow: 0 2px 0 #2E8B57; } .gd-logo .mk { display: none; } .gd-gname { font-size: 12px; padding: 2px 10px; border-width: 2px; } .gd-stage { --top: 104px; } .gd-hint { border-radius: 14px; padding: 4px 10px; font-size: 11.5px; max-width: calc(100% - 84px); bottom: calc(var(--tray) + 6px); } .gd-pop { width: 200px; } }
+@media (prefers-reduced-motion: reduce) { .gd-fx { display: none; } .rays polygon { animation: none; } .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-spin, .gt .ready, .sway, .flow, .smoke, .wave, .snowf, .spk, .float1, .float2, .beam, .duck, .boat, .gd-bird, .gd-bfly, .gd-star, .gd-card { animation: none !important; } .gd-pet { transition-duration: 0s; } }
 </style>
 </head>
 <body data-page="garden" data-guard="auth">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <!-- Bộ lọc ánh sáng: biến hình phẳng thành khối nổi (sáng từ góc trên-trái, viền bo tròn có vệt bóng) -->
+  <filter id="gdBevelS" x="-10%" y="-10%" width="120%" height="124%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="1.7" result="b"/><feDiffuseLighting in="b" surfaceScale="2.6" diffuseConstant="1.22" lighting-color="#fff" result="d"><feDistantLight azimuth="232" elevation="56"/></feDiffuseLighting><feSpecularLighting in="b" surfaceScale="2.6" specularConstant=".55" specularExponent="16" lighting-color="#fff" result="sp"><feDistantLight azimuth="232" elevation="56"/></feSpecularLighting><feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="m"/><feComposite in="sp" in2="SourceAlpha" operator="in" result="si"/><feComposite in="m" in2="si" operator="arithmetic" k1="0" k2="1" k3=".6" k4="0" result="l"/><feComposite in="l" in2="SourceAlpha" operator="in"/></filter>
+  <filter id="gdBevelM" x="-8%" y="-8%" width="116%" height="120%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="b"/><feDiffuseLighting in="b" surfaceScale="5" diffuseConstant="1.1" lighting-color="#fff" result="d"><feDistantLight azimuth="232" elevation="56"/></feDiffuseLighting><feSpecularLighting in="b" surfaceScale="5" specularConstant=".42" specularExponent="16" lighting-color="#fff" result="sp"><feDistantLight azimuth="232" elevation="56"/></feSpecularLighting><feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="m"/><feComposite in="sp" in2="SourceAlpha" operator="in" result="si"/><feComposite in="m" in2="si" operator="arithmetic" k1="0" k2="1" k3=".6" k4="0" result="l"/><feComposite in="l" in2="SourceAlpha" operator="in"/></filter>
+  <filter id="gdBevelL" x="-6%" y="-6%" width="112%" height="116%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="4.6" result="b"/><feDiffuseLighting in="b" surfaceScale="7" diffuseConstant="1.1" lighting-color="#fff" result="d"><feDistantLight azimuth="232" elevation="56"/></feDiffuseLighting><feSpecularLighting in="b" surfaceScale="7" specularConstant=".38" specularExponent="16" lighting-color="#fff" result="sp"><feDistantLight azimuth="232" elevation="56"/></feSpecularLighting><feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="m"/><feComposite in="sp" in2="SourceAlpha" operator="in" result="si"/><feComposite in="m" in2="si" operator="arithmetic" k1="0" k2="1" k3=".6" k4="0" result="l"/><feComposite in="l" in2="SourceAlpha" operator="in"/></filter>
+  <filter id="gdBevelXL" x="-6%" y="-6%" width="112%" height="116%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="7" result="b"/><feDiffuseLighting in="b" surfaceScale="9" diffuseConstant="1.1" lighting-color="#fff" result="d"><feDistantLight azimuth="232" elevation="56"/></feDiffuseLighting><feSpecularLighting in="b" surfaceScale="9" specularConstant=".36" specularExponent="16" lighting-color="#fff" result="sp"><feDistantLight azimuth="232" elevation="56"/></feSpecularLighting><feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="m"/><feComposite in="sp" in2="SourceAlpha" operator="in" result="si"/><feComposite in="m" in2="si" operator="arithmetic" k1="0" k2="1" k3=".55" k4="0" result="l"/><feComposite in="l" in2="SourceAlpha" operator="in"/></filter>
+  <filter id="gdNoiseS" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".006 .01" numOctaves="3" seed="8"/><feColorMatrix type="matrix" values="0 0 0 0 .05  0 0 0 0 .22  0 0 0 0 .05  0 0 0 1.1 -.4"/></filter>
+  <linearGradient id="ic-blue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD3FF"/><stop offset="1" stop-color="#2F86E0"/></linearGradient>
+  <linearGradient id="ic-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF08A"/><stop offset="1" stop-color="#F2A81C"/></linearGradient>
+  <linearGradient id="ic-wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8B070"/><stop offset="1" stop-color="#A9693A"/></linearGradient>
+  <linearGradient id="ic-red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A8A"/><stop offset="1" stop-color="#D93E36"/></linearGradient>
+  <linearGradient id="ic-green" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9BE08A"/><stop offset="1" stop-color="#3FA84A"/></linearGradient>
+  <linearGradient id="ic-paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4D2"/><stop offset="1" stop-color="#EAC98A"/></linearGradient>
+  <linearGradient id="ic-purple" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A8FF"/><stop offset="1" stop-color="#7040D8"/></linearGradient>
+</defs></svg>
 <div id="site-header"></div>
 <main class="gd-wrap">
-  <section class="gd-stage" id="stage">
+  <section class="gd-stage gd-hq" id="stage">
     <div class="gd-sky-fx" aria-hidden="true">
       <div class="gd-sun"></div><div class="gd-moon"></div><div id="stars"></div>
       <div class="gd-cloud" style="top:9%;width:110px;height:30px;animation-duration:90s;animation-delay:-30s"></div>
@@ -188,16 +223,22 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       <defs>
         <linearGradient id="gGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--g1)"/><stop offset="1" style="stop-color:var(--g2)"/></linearGradient>
         <linearGradient id="gWater" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--w1)"/><stop offset="1" style="stop-color:var(--w2)"/></linearGradient>
+        <linearGradient id="gHaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".5"/></linearGradient>
+        <linearGradient id="gMtnLight" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#1B2A6B" stop-opacity=".18"/></linearGradient>
+        <clipPath id="gClip"><path d="M0 585 Q300 540 620 580 T1180 570 T1600 585 V900 H0Z"/></clipPath>
       </defs>
       <!-- núi xa -->
       <path d="M0 430 L120 310 L210 380 L350 245 L520 400 L650 320 L820 430 L970 300 L1110 392 L1270 262 L1430 385 L1600 300 V540 H0Z" style="fill:var(--m1)"/>
       <path d="M350 245 L318 285 L338 278 L352 296 L368 276 L388 284Z M1270 262 L1238 302 L1258 295 L1272 313 L1288 293 L1308 301Z M970 300 L944 332 L960 327 L972 340 L986 325 L1000 331Z" fill="#fff" opacity=".9"/>
       <path d="M0 470 L90 400 L190 455 L300 380 L430 470 L560 410 L700 480 L860 400 L1010 470 L1150 405 L1300 470 L1450 410 L1600 465 V560 H0Z" style="fill:var(--m2)"/>
+      <rect x="0" y="330" width="1600" height="240" fill="url(#gHaze)"/>
+      <path d="M0 430 L120 310 L210 380 L350 245 L520 400 L650 320 L820 430 L970 300 L1110 392 L1270 262 L1430 385 L1600 300 V540 H0Z" fill="url(#gMtnLight)"/>
       <!-- đồi -->
       <path d="M0 500 Q200 430 430 485 T850 470 T1250 455 T1600 480 V600 H0Z" style="fill:var(--h1)"/>
       <path d="M0 540 Q240 480 480 530 T900 520 T1300 505 T1600 530 V640 H0Z" style="fill:var(--h2)"/>
       <!-- đồng cỏ phía trước -->
       <path d="M0 585 Q300 540 620 580 T1180 570 T1600 585 V900 H0Z" fill="url(#gGround)"/>
+      <g clip-path="url(#gClip)"><rect width="1600" height="900" filter="url(#gdNoiseS)" opacity=".4" style="mix-blend-mode:multiply"/></g>
       <g id="farTrees"></g>
       <!-- sông -->
       <path d="M1228 440 C1280 540 1345 640 1305 770 C1288 830 1305 870 1318 900 L1566 900 C1550 862 1524 822 1540 762 C1572 650 1478 544 1336 436 Z" fill="#EAD9A6"/>
@@ -222,7 +263,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       <path d="M268 482 C310 560 440 640 640 676" fill="none" stroke="#CDAA6E" stroke-width="44" stroke-linecap="round"/><path d="M268 482 C310 560 440 640 640 676" fill="none" stroke="#E7CD98" stroke-width="34" stroke-linecap="round"/>
       <path d="M1000 700 C1090 690 1170 670 1260 690" fill="none" stroke="#CDAA6E" stroke-width="40" stroke-linecap="round"/><path d="M1000 700 C1090 690 1170 670 1260 690" fill="none" stroke="#E7CD98" stroke-width="30" stroke-linecap="round"/>
       <!-- nhà -->
-      <g transform="translate(150 330)">
+      <g class="bvXL" transform="translate(150 330)">
         <ellipse cx="116" cy="162" rx="150" ry="16" fill="rgba(20,70,20,.25)"/>
         <rect x="26" y="70" width="190" height="92" fill="#FFE9C7"/><rect x="26" y="70" width="190" height="10" fill="#F2D3A0"/>
         <rect x="150" y="14" width="26" height="62" fill="#B5553C"/><rect x="146" y="8" width="34" height="9" fill="#8F3F2B"/>
@@ -235,7 +276,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       </g>
       <g id="houseFence"></g>
       <!-- cổng làng -->
-      <g transform="translate(40 700)">
+      <g class="bvXL" transform="translate(40 700)">
         <ellipse cx="130" cy="150" rx="150" ry="14" fill="rgba(20,70,20,.25)"/>
         <rect x="0" y="20" width="30" height="130" rx="6" fill="#8A5A2E"/><rect x="230" y="20" width="30" height="130" rx="6" fill="#8A5A2E"/>
         <rect x="0" y="20" width="30" height="10" fill="#B9824A"/><rect x="230" y="20" width="30" height="10" fill="#B9824A"/>
@@ -252,6 +293,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       <g transform="translate(900 840)"><rect x="-3" y="-60" width="7" height="86" fill="#8A5A2E"/><path d="M-60 -64 H52 L66 -50 L52 -36 H-60Z" fill="#E8C48C" stroke="#6F4421" stroke-width="3"/><path d="M60 -22 H-48 L-62 -8 L-48 6 H60Z" fill="#E8C48C" stroke="#6F4421" stroke-width="3"/><text x="-4" y="-44" text-anchor="middle" font-size="14" font-weight="800" fill="#6F4421" font-family="Be Vietnam Pro, sans-serif">Vườn hoa</text><text x="0" y="-2" text-anchor="middle" font-size="14" font-weight="800" fill="#6F4421" font-family="Be Vietnam Pro, sans-serif">Dòng sông</text></g>
       <g id="nearDeco"></g>
     </svg>
+    <div class="gd-vig"></div>
     <div class="gd-dim"></div>
     <div class="gd-bfly" style="left:22%;top:58%">🦋</div><div class="gd-bfly" style="left:62%;top:74%;animation-delay:-6s;animation-duration:17s">🦋</div>
 
@@ -265,17 +307,17 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
       <div class="gd-res">
         <span class="gd-pill mine" title="Xu — dùng chung với phần Luyện từ"><i class="coin"></i> <span id="xu">0</span></span>
         <span class="gd-pill mine" title="Lượt tưới nước còn lại">💧 <span id="wt">0</span></span>
-        <button class="gd-pill btn mine" id="friend">👀 Thăm bạn</button>
-        <button class="gd-earn mine" id="earn">✨ Kiếm xu</button>
+        <button class="gd-pill btn mine" id="friend"><i class="ic" data-ic="visit"></i>Thăm bạn</button>
+        <button class="gd-earn mine" id="earn"><i class="ic" data-ic="star"></i>Kiếm xu</button>
       </div>
     </div>
 
     <div class="gd-dock" id="tools">
-      <button class="gd-tool" data-tool="water"><b>💧</b>Tưới</button>
-      <button class="gd-tool" data-tool="harvest"><b>🧺</b>Thu hoạch</button>
-      <button class="gd-tool" id="harvAll"><b>✨</b>Thu tất cả</button>
-      <button class="gd-tool" data-tool="remove"><b>🧹</b>Dọn</button>
-      <button class="gd-tool" id="toMapTool"><b>🗺️</b>Bản đồ</button>
+      <button class="gd-tool" data-tool="water"><i class="ic" data-ic="water"></i>Tưới</button>
+      <button class="gd-tool" data-tool="harvest"><i class="ic" data-ic="basket"></i>Thu hoạch</button>
+      <button class="gd-tool" id="harvAll"><i class="ic" data-ic="wand"></i>Thu tất cả</button>
+      <button class="gd-tool" data-tool="remove"><i class="ic" data-ic="broom"></i>Dọn</button>
+      <button class="gd-tool" id="toMapTool"><i class="ic" data-ic="map"></i>Bản đồ</button>
     </div>
 
     <div class="gd-map" id="map"></div>
@@ -283,7 +325,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
     <div class="gd-hint" id="hint"></div>
 
     <div class="gd-tray" id="tray">
-      <div class="gd-tray-h"><div class="gd-tabs" id="tabs"></div><div class="gd-note" id="note"></div><button class="gd-fold" id="fold" title="Thu gọn / mở cửa hàng">▾</button></div>
+      <div class="gd-tray-h"><div class="gd-tabs" id="tabs"></div><div class="gd-note" id="note"></div><button class="gd-fold" id="hq" style="width:auto;padding:0 12px;font-size:12.5px;margin-left:auto">✨ Đồ hoạ cao</button><button class="gd-fold" id="fold" style="margin-left:0" title="Thu gọn / mở cửa hàng">▾</button></div>
       <div class="gd-items" id="items"></div>
     </div>
 
@@ -314,9 +356,9 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=6"></script>
-<script src="js/garden-art.js?v=3"></script>
-<script src="js/garden-world.js?v=5"></script>
+<script src="js/garden-data.js?v=7"></script>
+<script src="js/garden-art.js?v=5"></script>
+<script src="js/garden-world.js?v=7"></script>
 <script>
 (function () {
 'use strict';
@@ -330,6 +372,33 @@ function api(url, body) { return fetch(url, { method: body === undefined ? 'GET'
 function NOW() { return Date.now() + SKEW; }
 function fmtT(ms) { var m = Math.ceil(ms / 60000); if (m < 1) return '<1 ph'; if (m < 60) return m + ' ph'; var h = Math.floor(m / 60); return h + 'g' + (m % 60 ? (m % 60) + 'p' : ''); }
 function setState(d) { S = d.garden; if (!VISIT) COINS = d.coins; SKEW = (S.now || Date.now()) - Date.now(); render(); }
+
+/* ───────── biểu tượng vẽ tay (thay emoji) ───────── */
+var ICONS = {
+  water: '<svg viewBox="0 0 48 48"><g class="bvS"><path d="M9 19h25l-2.5 21q-.4 3-3.4 3H15q-3 0-3.4-3z" fill="url(#ic-blue)" stroke="#1E5E9E" stroke-width="2" stroke-linejoin="round"/><ellipse cx="21.5" cy="19" rx="12.5" ry="3.6" fill="#CFEBFF" stroke="#1E5E9E" stroke-width="2"/><path d="M33 26l9-10 3.5 3.2-8.5 12z" fill="url(#ic-blue)" stroke="#1E5E9E" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 24q-8-1-6.5 7 1.5 5 8 3.5" fill="none" stroke="#1E5E9E" stroke-width="3.6" stroke-linecap="round"/></g><g fill="#7DD3FF" stroke="#2F86E0" stroke-width="1"><path d="M44 24q2.4 3.4 0 5.4q-2.4-2 0-5.4z"/><path d="M40.5 30q2 3 0 4.6q-2-1.6 0-4.6z"/><path d="M46 33q1.8 2.6 0 4q-1.8-1.4 0-4z"/></g></svg>',
+  basket: '<svg viewBox="0 0 48 48"><g class="bvS"><path d="M9 20q15-24 30 0" fill="none" stroke="#8F5A2B" stroke-width="3.8" stroke-linecap="round"/><path d="M5 21h38l-4.5 19q-1 4.5-5 4.5H14.5q-4 0-5-4.5z" fill="url(#ic-wood)" stroke="#6B4121" stroke-width="2" stroke-linejoin="round"/><path d="M8 28h32M9.5 35h29M17 21l1.5 23M25 21v23M33 21l-1.5 23" stroke="#6B4121" stroke-width="1.6" opacity=".6"/><circle cx="15" cy="17" r="5.2" fill="url(#ic-red)" stroke="#962B25" stroke-width="1.6"/><circle cx="24" cy="14.5" r="5.6" fill="url(#ic-gold)" stroke="#B57A0E" stroke-width="1.6"/><circle cx="33" cy="17" r="5.2" fill="url(#ic-red)" stroke="#962B25" stroke-width="1.6"/><path d="M24 9q3-3 6-1" stroke="#3FA84A" stroke-width="2.2" fill="none" stroke-linecap="round"/></g></svg>',
+  wand: '<svg viewBox="0 0 48 48"><g class="bvS"><rect x="3" y="33" width="26" height="6.5" rx="3.2" transform="rotate(-45 16 36)" fill="url(#ic-wood)" stroke="#6B4121" stroke-width="2"/><path d="M33 4l4.2 8.4 9.2 1.4-6.7 6.5 1.6 9.2L33 25l-8.3 4.5 1.6-9.2-6.700-6.5 9.2-1.4z" fill="url(#ic-gold)" stroke="#B57A0E" stroke-width="2" stroke-linejoin="round"/></g><g fill="#fff" stroke="#E0A81C" stroke-width=".8"><path d="M8 8l1.3 2.7 2.7 1.3-2.7 1.3L8 16l-1.3-2.7L4 12l2.7-1.3z"/><path d="M42 36l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></g></svg>',
+  broom: '<svg viewBox="0 0 48 48"><g class="bvS"><rect x="21" y="2" width="5.4" height="28" rx="2.7" transform="rotate(38 24 16)" fill="url(#ic-wood)" stroke="#6B4121" stroke-width="1.8"/><path d="M9 29l12-5 15 15q-3 6-12 7-9 1-14-4z" fill="url(#ic-gold)" stroke="#B57A0E" stroke-width="2" stroke-linejoin="round"/><path d="M14 33l9 9M19 29l11 11M24 27l10 11" stroke="#B57A0E" stroke-width="1.6" opacity=".7"/><path d="M8 29l13-5" stroke="#8F5A2B" stroke-width="3.6" stroke-linecap="round"/></g></svg>',
+  map: '<svg viewBox="0 0 48 48"><g class="bvS"><path d="M4 11l13-4 14 4 13-4v30l-13 4-14-4-13 4z" fill="url(#ic-paper)" stroke="#8F5A2B" stroke-width="2" stroke-linejoin="round"/><path d="M17 7v30M31 11v30" stroke="#C9A064" stroke-width="1.6"/><path d="M9 31q6-8 12-2t10-8 9 2" fill="none" stroke="#D93E36" stroke-width="2.2" stroke-dasharray="3 3" stroke-linecap="round"/><path d="M36 14l4 5M40 14l-4 5" stroke="#D93E36" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="18" r="3.4" fill="url(#ic-green)" stroke="#2E8B57" stroke-width="1.4"/></g></svg>',
+  visit: '<svg viewBox="0 0 48 48"><g class="bvS"><rect x="7" y="7" width="10" height="11" rx="3" fill="#8E6BE8" stroke="#4B2AA8" stroke-width="2"/><rect x="31" y="7" width="10" height="11" rx="3" fill="#8E6BE8" stroke="#4B2AA8" stroke-width="2"/><rect x="4" y="16" width="17" height="25" rx="7" fill="url(#ic-purple)" stroke="#4B2AA8" stroke-width="2"/><rect x="27" y="16" width="17" height="25" rx="7" fill="url(#ic-purple)" stroke="#4B2AA8" stroke-width="2"/><rect x="18" y="21" width="12" height="8" rx="3" fill="#C9A8FF" stroke="#4B2AA8" stroke-width="2"/><circle cx="12.5" cy="35" r="5" fill="#BFE9FF" stroke="#2F86E0" stroke-width="2"/><circle cx="35.5" cy="35" r="5" fill="#BFE9FF" stroke="#2F86E0" stroke-width="2"/></g></svg>',
+  star: '<svg viewBox="0 0 48 48"><g class="bvS"><circle cx="24" cy="24" r="19" fill="url(#ic-gold)" stroke="#B57A0E" stroke-width="2.4"/><path d="M24 10l4.2 8.6 9.4 1.4-6.8 6.6 1.6 9.4L24 31.6 15.6 36l1.6-9.4-6.8-6.6 9.4-1.4z" fill="#fff" stroke="#E0A81C" stroke-width="1.6" stroke-linejoin="round"/></g></svg>'
+};
+function paintIcons() { [].forEach.call(document.querySelectorAll('[data-ic]'), function (e) { if (ICONS[e.getAttribute('data-ic')] && !e.firstChild) e.innerHTML = ICONS[e.getAttribute('data-ic')]; }); }
+/* ───────── hạt chuyển động trong khu (phấn hoa, lá rơi, cánh hoa, đom đóm, ánh sao…) ───────── */
+function fxHtml(zid) {
+  var seed = 7, i, out = '', rr = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  var mix = { cottage: [['pf', 8], ['lf', 4], ['pt', 3]], hill: [['pf', 9], ['lf', 3]], river: [['pf', 5], ['gl', 8]], pond: [['pf', 5], ['pt', 5], ['gl', 5]], forest: [['pf', 6], ['lf', 9]], palace: [['pf', 6], ['pt', 7], ['gl', 5]], winter: [['gl', 14]], beach: [['gl', 10], ['pf', 3]], magic: [['rn', 14], ['gl', 5]] }[zid] || [['pf', 8]];
+  mix.forEach(function (m) { for (i = 0; i < m[1]; i++) out += '<i class="' + m[0] + (m[0] === 'lf' && i % 3 === 0 ? ' o' : '') + '" style="left:' + (rr() * 96).toFixed(1) + '%;top:' + (m[0] === 'lf' || m[0] === 'pt' ? (rr() * 20).toFixed(1) : (30 + rr() * 66).toFixed(1)) + '%;animation-delay:' + (-rr() * 10).toFixed(2) + 's;animation-duration:' + (6 + rr() * 6).toFixed(1) + 's"></i>'; });
+  if (zid !== 'winter') for (i = 0; i < 8; i++) out += '<i class="ff" style="left:' + (rr() * 94).toFixed(1) + '%;top:' + (20 + rr() * 70).toFixed(1) + '%;animation-delay:' + (-rr() * 6).toFixed(2) + 's"></i>';
+  return out;
+}
+/* chế độ đồ hoạ cao (ánh sáng nổi khối): tự bật trên máy khoẻ, học sinh có thể tắt để máy chạy mượt hơn */
+function gfxInit() {
+  var saved = ''; try { saved = localStorage.getItem('ewt-garden-hq') || ''; } catch (e) {}
+  var auto = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) && (innerWidth > 900 || (navigator.hardwareConcurrency || 4) >= 6);
+  setHq(saved === '' ? auto : saved === '1');
+}
+function setHq(on) { $('stage').classList.toggle('gd-hq', on); var b = $('hq'); if (b) { b.textContent = on ? '✨ Đồ hoạ cao' : '🍃 Tiết kiệm'; b.title = on ? 'Đang bật hiệu ứng ánh sáng đẹp. Bấm để tắt nếu máy bị chậm.' : 'Đang ở chế độ tiết kiệm. Bấm để bật hiệu ứng ánh sáng đẹp.'; } }
 
 /* ───────── cảnh nền: cây cối, hàng rào, hoa cỏ ───────── */
 function treeSvg(x, y, s, k, d) {
@@ -364,7 +433,7 @@ function buildScene() {
 function timeOfDay() { var h = new Date().getHours(); $('stage').classList.toggle('night', h >= 19 || h < 5); $('stage').classList.toggle('dusk', (h >= 17 && h < 19) || (h >= 5 && h < 6.5)); }
 
 /* ───────── bản đồ các khu & vẽ từng khu ───────── */
-var VIEW = 'map', COLS = D.COLS, ROWS = D.ROWS, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null;
+var JUSTPLACED = -1, VIEW = 'map', COLS = D.COLS, ROWS = D.ROWS, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null;
 function zoneUnlocked(id) { return S.zones.indexOf(id) >= 0; }
 function cellsHtml(z, ts, mini) {
   var h = '', c, gi, t, it, alt, inner, cls, now = NOW(), blocked;
@@ -380,7 +449,7 @@ function cellsHtml(z, ts, mini) {
         else if (it.kind === 'plant' || it.kind === 'tree') inner += '<div class="ready">' + (it.y > 0 ? '🧺' : '✨') + '</div>';
       }
     }
-    h += mini ? '<div class="' + cls + '">' + inner + '</div>' : '<div class="' + cls + (SEL === gi ? ' sel' : '') + '" data-i="' + gi + '"' + (blocked ? '' : ' tabindex="0" role="button" aria-label="' + (it ? esc(it.name) : 'Ô đất trống') + '"') + '>' + inner + '</div>';
+    h += mini ? '<div class="' + cls + '">' + inner + '</div>' : '<div class="' + cls + (SEL === gi ? ' sel' : '') + (JUSTPLACED === gi ? ' pop' : '') + '" data-i="' + gi + '"' + (blocked ? '' : ' tabindex="0" role="button" aria-label="' + (it ? esc(it.name) : 'Ô đất trống') + '"') + '>' + inner + '</div>';
   }
   return h;
 }
@@ -404,7 +473,7 @@ function renderMap() {
 function ensureLawn(z) {
   var lawn = $('lawn');
   if (LAWNZ !== z.id) {
-    LAWNZ = z.id; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div></div>';
+    LAWNZ = z.id; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
     lawn.style.setProperty('--cols', COLS); lawn.style.setProperty('--rows', ROWS);
   }
 }
@@ -421,7 +490,7 @@ function render() {
   if (!z) { renderMap(); renderTools(); return; }
   ensureLawn(z); layout(z);
   var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
-  $('grid').innerHTML = cellsHtml(z, ts, false);
+  $('grid').innerHTML = cellsHtml(z, ts, false); JUSTPLACED = -1;
   $('zname').textContent = z.icon + ' ' + z.name;
   var ul = D.ZONES.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(z); $('zprev').disabled = ix <= 0; $('znext').disabled = ix >= ul.length - 1;
   renderPets(ts); renderShop(); renderTools();
@@ -494,7 +563,7 @@ function onTile(i) {
   if (TOOL === 'remove') { if (!it) return toast('Ô này đang trống.'); return api('/api/garden/remove', { i: i }).then(function (d) { setState(d); if (d.refund) toast('Đã dọn. Hoàn lại ' + d.refund + ' 🪙'); }).catch(function (e) { toast(e.message); }); }
   if (!it) {
     if (BRUSH && BRUSH.kind === 'big') { var bi = D.BY[BRUSH.id], fp = D.footprint(i, bi); if (!fp || fp.some(function (k) { return D.isBlocked(k) || S.tiles[k]; })) return toast('Cần đủ ' + bi.w + '×' + bi.h + ' ô trống liền nhau (chạm vào ô góc trên-trái). Hãy chọn chỗ khác nhé.', 3600); }
-    if (BRUSH && BRUSH.kind !== 'pet') return api('/api/garden/place', { i: i, item: BRUSH.id }).then(function (d) { setState(d); var e = tileEl(i); if (e && BRUSH.cost) floatText(e, '-' + BRUSH.cost + ' 🪙'); }).catch(function (e) { toast(e.message, 3600); if (e.data && e.data.need) $('earn').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 600 }); });
+    if (BRUSH && BRUSH.kind !== 'pet') return api('/api/garden/place', { i: i, item: BRUSH.id }).then(function (d) { JUSTPLACED = i; setState(d); var e = tileEl(i); if (e && BRUSH.cost) floatText(e, '-' + BRUSH.cost + ' 🪙'); }).catch(function (e) { toast(e.message, 3600); if (e.data && e.data.need) $('earn').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 600 }); });
     return toast('Chọn một món ở khay cửa hàng bên dưới rồi chạm vào ô đất nhé 🌱');
   }
   showPop(i);
@@ -524,6 +593,7 @@ document.addEventListener('click', function (e) {
   if ($('pop') && !t.closest('.gd-pop')) closePop();
   if ((el = t.closest('[data-tool]'))) { var tn = el.getAttribute('data-tool'); TOOL = TOOL === tn ? null : tn; BRUSH = null; closePop(); render(); return; }
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); renderShop(); return; }
+  if (t.closest('#hq')) { var on = !$('stage').classList.contains('gd-hq'); setHq(on); try { localStorage.setItem('ewt-garden-hq', on ? '1' : '0'); } catch (er) {} return; }
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
   if ((el = t.closest('[data-pick]'))) {
     var id = el.getAttribute('data-pick'), kind = el.getAttribute('data-kind');
@@ -628,7 +698,7 @@ $('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') go
 $('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
 
 /* ───────── khởi động ───────── */
-buildScene(); timeOfDay(); setInterval(timeOfDay, 60000);
+buildScene(); paintIcons(); gfxInit(); timeOfDay(); setInterval(timeOfDay, 60000);
 try { if (localStorage.getItem('ewt-garden-fold')) { $('stage').classList.add('fold'); $('fold').textContent = '▴'; } } catch (e) {}
 var QP = new URLSearchParams(location.search), VQ = QP.get('visit') ? 'token=' + encodeURIComponent(QP.get('visit')) : QP.get('email') ? 'email=' + encodeURIComponent(QP.get('email')) : '';
 if (VQ) {
