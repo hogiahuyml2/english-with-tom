@@ -15,6 +15,16 @@ const VOCAB_FIXES = [
     set: { example_en: 'The two companies hope to reach an agreement soon.', example_vi: 'Hai công ty hy vọng sớm đạt được thỏa thuận.' } },
   { word: 'come to a conclusion', level: 'FCE', oldEx: 'After a long talk, we come to a conclusion.',
     set: { example_en: 'Let us talk until we come to a conclusion.', example_vi: 'Hãy trao đổi cho đến khi chúng ta đi đến kết luận.' } },
+  // Đáp án nhiễu của câu collocation từng có thể cũng đúng (vd. 'lead research', 'raise a ban') → thay bằng từ chắc chắn sai
+  { word: 'ride a bike', level: 'KET', oldEx: 'My brother can ride a bike very fast.', set: { extra: 'fly,sail,row' } },
+  { word: 'keep a secret', level: 'PET', oldEx: 'Can you keep a secret?', set: { extra: 'hold,put,take' } },
+  { word: 'fast food', level: 'PET', oldEx: 'Fast food is cheap but not very healthy.', set: { extra: 'rapid,speedy,hasty' } },
+  { word: 'gain experience', level: 'FCE', oldEx: 'Interns gain experience while they work.', set: { extra: 'win,take,hold' } },
+  { word: 'conduct research', level: 'IELTS', oldEx: 'Scientists conduct research in many fields.', set: { extra: 'hold,play,keep' } },
+  { word: 'tackle a problem', level: 'IELTS', oldEx: 'Governments must tackle a problem like air pollution.', set: { extra: 'catch,hold,throw' } },
+  { word: 'draw a conclusion', level: 'IELTS', oldEx: 'It is difficult to draw a conclusion from one study.', set: { extra: 'hold,take,give' } },
+  { word: 'lift a ban', level: 'IELTS', oldEx: 'The government decided to lift a ban on imports.', set: { extra: 'carry,hold,throw' } },
+  { word: 'gain access to', level: 'IELTS', oldEx: 'Many students gain access to books through libraries.', set: { extra: 'take,catch,put' } },
 ];
 
 // from → to là một đoạn trong script hội thoại (đáp án đúng luôn đứng đầu trong { })
@@ -23,6 +33,7 @@ const DIALOGUE_FIXES = [
   { title: 'Ở cửa hàng quần áo', from: 'Can I {try on|wake up|borrow|invite} it?', to: 'Can I {try on|wake up|practise|invite} it?' },
   { title: 'Trò chuyện về môi trường', from: '{sustainable|convenient|delighted|generous}', to: '{sustainable|jealous|delighted|generous}' },
   { title: 'Trò chuyện về môi trường', from: 'become {extinct|jealous|nervous|embarrassed}', to: 'become {extinct|relieved|nervous|embarrassed}' },
+  { title: 'Cuộc họp kinh doanh', from: '{promote|rely|gather|afford}', to: '{promote|rely|gather|resign}' },
   { title: 'Speaking Part 3: Giáo dục', from: '{compulsory|flexible|obsolete|preventive}', to: '{compulsory|multinational|obsolete|preventive}' },
   { title: 'Speaking Part 3: Công nghệ & việc làm', from: 'Is {privacy|epidemic|literacy|inflation} a worry for you?', to: 'Is online {privacy|erosion|obesity|landfill} a worry for you?' },
 ];

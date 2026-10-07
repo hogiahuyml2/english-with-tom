@@ -46,7 +46,7 @@
     quiz: [
       ['The ___ of the project made everyone happy. (succeed)', ['success', 'successful', 'successfully', 'succeeding'], 0, 'Sau the và trước of → danh từ: success.'],
       ['She spoke ___ to the audience. (confidence)', ['confident', 'confidently', 'confidence', 'confide'], 1, 'Bổ nghĩa cho động từ spoke → trạng từ confidently.'],
-      ['It is ___ to live without water. (possible)', ['possible', 'impossible', 'unpossible', 'dispossible'], 1, 'im- + possible = impossible.'],
+      ['No one can survive for weeks without water, so it is ___ to live without it. (possible)', ['possible', 'impossible', 'unpossible', 'dispossible'], 1, 'im- + possible = impossible.'],
       ['He is a very ___ student. (hard-work)', ['hard-working', 'hard-worked', 'hard-workful', 'hardly-working'], 0, 'Tính từ ghép: hard-working.'],
       ['Air ___ is a big problem in big cities. (pollute)', ['pollute', 'polluting', 'pollution', 'polluted'], 2, 'Danh từ: pollution.'],
       ['The film was so ___ that I fell asleep. (bore)', ['bored', 'boring', 'bore', 'boredom'], 1, 'Mô tả tính chất của bộ phim → boring.'],
@@ -225,7 +225,7 @@
       ['A: I\'m sorry. — B: Thank you.', 'A: I\'m sorry. — B: That\'s all right.', 'Đáp lời xin lỗi: That\'s all right / Never mind.']
     ],
     quiz: [
-      ['"Would you mind turning down the music?" — "___"', ['Yes, of course.', 'Not at all. Sorry.', 'You\'re welcome.', 'Never mind.'], 1, 'Mind = phiền; Not at all = không phiền → đồng ý.'],
+      ['"Would you mind turning down the music?" — "___"', ['Yes, I\'d love to.', 'Not at all. Sorry.', 'You\'re welcome.', 'Never mind.'], 1, 'Mind = phiền; Not at all = không phiền → đồng ý.'],
       ['"Thank you for the lovely gift." — "___"', ['That\'s a pity.', 'My pleasure.', 'I agree.', 'Yes, I do.'], 1, 'Đáp lại lời cảm ơn.'],
       ['"I\'m sorry I forgot your book." — "___"', ['That\'s all right.', 'Thanks a lot.', 'You\'re welcome.', 'Good idea.'], 0, 'Đáp lại lời xin lỗi.'],
       ['"Would you like to join our club?" — "___"', ['No, I don\'t.', 'I\'d love to, but I\'m busy.', 'Yes, I would not.', 'You\'re welcome.'], 1, 'Từ chối lời mời lịch sự.'],

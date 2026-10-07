@@ -170,7 +170,7 @@
       ['It was ___ a good film that I watched it twice.', ['so', 'such', 'too', 'very'], 1, 'such + a + adj + N + that.'],
       ['The coffee was ___ hot that I couldn\'t drink it.', ['so', 'such', 'too', 'enough'], 0, 'so + adj + that.'],
       ['___ it was cold, he went swimming.', ['Despite', 'In spite of', 'Although', 'However'], 2, 'Although + mệnh đề (S + V).'],
-      ['She is ___ to carry this heavy bag.', ['enough strong', 'strong enough', 'too strong', 'so strong'], 1, 'adj + enough + to V.'],
+      ['She is ___ to carry this heavy bag, so she carries it easily.', ['enough strong', 'strong enough', 'too strong', 'so strong'], 1, 'adj + enough + to V.'],
       ['He was ___ tired to walk any further.', ['so', 'such', 'too', 'enough'], 2, 'too + adj + to V.'],
       ['___ the heavy rain, we had a picnic.', ['Although', 'Despite', 'However', 'Even though'], 1, 'Despite + cụm danh từ.'],
       ['She speaks slowly ___ we can understand her.', ['in order to', 'so as to', 'so that', 'because of'], 2, 'so that + S + can + V.']
@@ -499,7 +499,7 @@
     ],
     mis: [['I would live in Hue when I was young.', 'I used to live in Hue when I was young.', 'would không dùng cho trạng thái.'], ['I used to live in Hue for five years.', 'I lived in Hue for five years.', 'Khoảng thời gian xác định → quá khứ đơn.'], ['I\'m used to wake up early.', 'I\'m used to waking up early.', 'be used to + V-ing.']],
     quiz: [
-      ['Every Sunday we ___ go fishing with Grandpa.', ['would', 'are used to', 'get used to', 'is'], 0, 'Thói quen lặp lại → would.'],
+      ['When I was a child, every Sunday we ___ go fishing with Grandpa.', ['would', 'are used to', 'get used to', 'is'], 0, 'Thói quen lặp lại → would.'],
       ['I ___ shy, but now I\'m confident.', ['would be', 'am used to be', 'used to be', 'get used to being'], 2, 'Trạng thái → used to be.'],
       ['She isn\'t used ___ in a big city.', ['live', 'living', 'to living', 'lived'], 2, 'be used to + V-ing: not used to living.'],
       ['He lived in Hanoi ___ ten years.', ['used to for', 'for', 'would for', 'is used to'], 1, 'Khoảng thời gian xác định → quá khứ đơn + for.']

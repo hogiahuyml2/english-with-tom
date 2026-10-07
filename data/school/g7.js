@@ -56,7 +56,7 @@
       ['I promise I ___ call you tonight.', ['going to', 'will', 'am', 'can to'], 1, 'Lời hứa → will.'],
       ['She ___ be a doctor when she grows up. (cô ấy dự định)', ['is going to', 'goes to', 'will to', 'going to'], 0, 'is going to + V.'],
       ['I think it ___ be hot tomorrow.', ['is', 'will', 'does', 'was'], 1, 'I think + dự đoán → will be.'],
-      ['___ you help me with this exercise, please?', ['Do', 'Will', 'Are', 'Did'], 1, 'Will you ...? dùng để nhờ vả/đề nghị.'],
+      ['I can\'t solve this exercise. ___ you help me with it, please?', ['Do', 'Will', 'Are', 'Did'], 1, 'Will you ...? dùng để nhờ vả/đề nghị.'],
       ["They ___ come to the party. They are busy.", ["won't", "don't going to", "aren't to", "doesn't"], 0, "won't = will not."]
     ]
   });
@@ -163,9 +163,9 @@
       ['She ___ goes to school by bike.', ['always', 'is always', 'goes always', 'always is'], 0, 'Trạng từ tần suất đứng trước động từ thường: always goes.'],
       ['He is ___ late for class. He is very punctual.', ['always', 'never', 'often', 'usually'], 1, 'very punctual → never late.'],
       ['My brother drives very ___.', ['careful', 'carefully', 'care', 'carefulness'], 1, 'Bổ nghĩa động từ → trạng từ carefully.'],
-      ['She sings ___. Everybody loves her voice.', ['good', 'well', 'goodly', 'best'], 1, 'good → trạng từ well.'],
+      ['She sings ___. Everybody loves her voice.', ['good', 'well', 'goodly', 'goodness'], 1, 'good → trạng từ well.'],
       ['We ___ eat out. We always cook at home.', ['often', 'rarely', 'always', 'usually'], 1, 'always cook at home → rarely eat out (hiếm khi ăn ngoài).'],
-      ['The students are working ___ for the exam.', ['hardly', 'hard', 'harder', 'hardy'], 1, 'work hard = làm việc chăm chỉ.'],
+      ['The students are working ___ for the exam.', ['hardly', 'hard', 'hardness', 'hardy'], 1, 'work hard = làm việc chăm chỉ.'],
       ['How ___ do you visit your grandparents? — Once a month.', ['long', 'far', 'often', 'much'], 2, 'Once a month → hỏi tần suất: How often.'],
       ['He can ___ swim across the river.', ['easy', 'easily', 'ease', 'easier'], 1, 'Bổ nghĩa cho động từ swim → trạng từ easily.']
     ]
@@ -204,7 +204,7 @@
       ['There ___ a lot of rain last week.', ['were', 'was', 'are', 'did'], 1, 'rain là danh từ không đếm được → was.'],
       ['We ___ in the park, so we didn\'t see the match.', ['wasn\'t', 'weren\'t', 'didn\'t', 'isn\'t'], 1, 'we → weren\'t.'],
       ['"___ there any eggs?" "No, there weren\'t."', ['Was', 'Were', 'Did', 'Are'], 1, 'eggs số nhiều, quá khứ → Were there…?'],
-      ['How ___ your holiday?', ['is', 'did', 'was', 'were'], 2, 'holiday số ít → was.'],
+      ['How ___ your holiday last month?', ['is', 'did', 'was', 'were'], 2, 'last month là quá khứ; holiday số ít → was.'],
       ['I ___ ten years old in 2020.', ['am', 'was', 'were', 'did'], 1, 'I + quá khứ → was.'],
       ['There ___ two bikes outside the school.', ['was', 'were', 'is', 'be'], 1, 'two bikes → were.'],
       ['Which is correct?', ['Did he was late?', 'Was he late?', 'Were he late?', 'Does he was late?'], 1, 'Câu hỏi với was: Was he late?']
@@ -402,7 +402,7 @@
     quiz: [
       ['She ___ her keys yesterday.', ['losed', 'lost', 'lose', 'has lost'], 1, 'lose → lost.'],
       ['"Where ___ you go last weekend?" "I went to Hue."', ['do', 'did', 'were', 'are'], 1, 'Wh- + did + S + V.'],
-      ['Who ___ the cake? It is delicious!', ['did make', 'made', 'make', 'makes'], 1, 'Hỏi chủ ngữ: Who made…?'],
+      ['Who ___ this cake yesterday? It is delicious!', ['did make', 'made', 'make', 'makes'], 1, 'yesterday → quá khứ đơn; hỏi chủ ngữ: Who made…?'],
       ['I ___ a famous singer at the airport last month.', ['seen', 'saw', 'see', 'sawed'], 1, 'see → saw.']
     ]
   });
@@ -507,7 +507,7 @@
       ['___ I use your phone, please? (rất lịch sự)', ['May', 'Do', 'Am', 'Will'], 0, 'May I…? lịch sự nhất trong các lựa chọn.'],
       ['I ___ get up at 5 yesterday because I had an early flight.', ['must', 'have to', 'had to', 'should'], 2, 'Quá khứ của have to/must → had to.'],
       ['You ___ be late for the exam. It\'s important.', ['mustn\'t', 'don\'t have to', 'needn\'t to', 'would'], 0, 'Không được (cấm) → mustn\'t.'],
-      ['He ___ be at home. His lights are on.', ['may', 'would', 'is', 'does'], 0, 'Khả năng → may.']
+      ['He ___ be at home. His lights are on.', ['may', 'cans', 'is', 'does'], 0, 'Khả năng → may.']
     ]
   });
 
@@ -529,7 +529,7 @@
     ],
     mis: [['She speaks well English.', 'She speaks English well.', 'Trạng từ cách thức đứng sau tân ngữ.'], ['The cake tastes well.', 'The cake tastes good.', 'Sau taste dùng tính từ.'], ['He hardly works, so he is tired. (ý: làm việc chăm chỉ)', 'He works hard, so he is tired.', 'hard ≠ hardly.']],
     quiz: [
-      ['She ___ plays the piano. She is a pianist.', ['good', 'well', 'goodly', 'best'], 1, 'Bổ nghĩa cho động từ → well.'],
+      ['She plays the piano ___. She is a pianist.', ['good', 'well', 'goodly', 'goodness'], 1, 'Bổ nghĩa cho động từ plays → well.'],
       ['The food ___ delicious.', ['tastes', 'tastes well', 'is tasting well', 'tastes goodly'], 0, 'tastes + tính từ.'],
       ['He ___ studies, so he failed the test.', ['hard', 'hardly', 'harder', 'hardest'], 1, 'hardly = hầu như không.'],
       ['I haven\'t seen her ___.', ['late', 'lately', 'latest', 'lateness'], 1, 'lately = gần đây.']

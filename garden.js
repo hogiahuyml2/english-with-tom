@@ -7,6 +7,7 @@ const path = require('path');
 const vm = require('vm');
 const crypto = require('crypto');
 const G = require('./js/garden-data.js');
+const VC = require('./js/vocab-conflict.js');
 
 module.exports = function (app, { db, requireAuth, now }) {
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
@@ -377,11 +378,7 @@ module.exports = function (app, { db, requireAuth, now }) {
     return { src: 'grammar', topic: 'Lớp ' + q.grade + ' · ' + q.title, q: q.q, opts: order.map((i) => q.opts[i]), idx: order.indexOf(q.idx), expl: q.expl };
   }
   // Tách nghĩa tiếng Việt thành các ý nhỏ để so trùng nghĩa (tránh 2 đáp án cùng đúng).
-  const meaningBits = (m) => String(m || '').toLowerCase().replace(/\([^)]*\)/g, ' ').split(/[,;/]|\bhoặc\b/).map((x) => x.replace(/\s+/g, ' ').trim()).filter(Boolean);
-  const sameMeaning = (a, b) => {
-    const x = meaningBits(a.meaning_vi), y = meaningBits(b.meaning_vi);
-    return x.some((p) => y.some((q) => p === q || (p.length >= 4 && q.length >= 4 && (p.indexOf(q) >= 0 || q.indexOf(p) >= 0))));
-  };
+  const sameMeaning = (a, b) => VC.conflict(a, b);   // trùng nghĩa hoặc đồng nghĩa (xem js/vocab-conflict.js)
   function pickVocab(uid, level) {
     const lv = ['KET', 'PET', 'FCE', 'IELTS'].includes(level) ? level : 'KET';
     const rows = db.prepare('SELECT id, word, pos, meaning_vi, topic FROM vocab_words WHERE level=? ORDER BY RANDOM() LIMIT 60').all(lv);

@@ -74,7 +74,7 @@ You: Thank you. I also want to {cancel|graduate|recover|argue} my hotel {reserva
 Manager: Let us discuss our {budget|exhibition|tradition|routine} for next year. || Hãy bàn về ngân sách năm sau.
 Sales: Our main {competitor|audience|habit|generation} has just lowered its prices. || Đối thủ cạnh tranh chính của ta vừa hạ giá.
 Manager: We should {negotiate|conserve|inspire|subscribe} with our suppliers to get a better price. || Ta nên đàm phán với nhà cung cấp để có giá tốt hơn.
-Sales: Good idea. We also need to {promote|rely|gather|afford} our new product. || Ý hay. Ta cũng cần quảng bá sản phẩm mới.
+Sales: Good idea. We also need to {promote|rely|gather|resign} our new product. || Ý hay. Ta cũng cần quảng bá sản phẩm mới.
 Manager: Yes. Then our {profit|poverty|drought|gossip} will grow. || Đúng vậy. Khi đó lợi nhuận sẽ tăng.
 Sales: And every {customer|journalist|immigrant|generation} will be happier. || Và mọi khách hàng sẽ hài lòng hơn.
 ` },

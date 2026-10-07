@@ -336,6 +336,7 @@ select.dg-sel.bad { border-color: #ef4444; background: rgba(239,68,68,.12); colo
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=47"></script>
+<script src="js/vocab-conflict.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -627,8 +628,9 @@ function showNewBadges(list) {
 /* ═══════════════════════════ Bộ máy câu hỏi ═══════════════════════════ */
 var G = null; // phiên chơi hiện tại
 function distract(w, key, n, sameLevel, topicFirst) {
-  var pool = S.words.filter(function (x) { return x.id !== w.id && (!sameLevel || x.level === w.level || inLevel(x, S.level)); });
-  if (pool.length < n) pool = S.words.filter(function (x) { return x.id !== w.id; });
+  var VC = window.EWTVocabConflict, ok = function (x) { return x.id !== w.id && !(VC && VC.conflict(w, x)); };   // đáp án nhiễu không được trùng nghĩa / đồng nghĩa với đáp án đúng
+  var pool = S.words.filter(function (x) { return ok(x) && (!sameLevel || x.level === w.level || inLevel(x, S.level)); });
+  if (pool.length < n) pool = S.words.filter(ok);
   var seen = {}; seen[w[key]] = 1;
   var samePos = function (x) { return x.pos === w.pos; }, sameTopic = function (x) { return x.topic === w.topic; };
   var pref;
@@ -699,7 +701,8 @@ function renderTeach(q) {
 function kindDistract(w, n) { // đáp án nhiễu cho collocation / nâng cấp
   var out = [], seen = {};
   if (w.kind === 'colloc') { seen[w.basic.toLowerCase()] = 1; w.extra.forEach(function (x) { if (!seen[x.toLowerCase()] && out.length < n) { seen[x.toLowerCase()] = 1; out.push(x); } }); }
-  var pool = shuffle((w.kind === 'colloc' ? S.colloc : S.upg).filter(function (x) { return x.id !== w.id; }));
+  var VC = window.EWTVocabConflict;
+  var pool = shuffle((w.kind === 'colloc' ? S.colloc : S.upg).filter(function (x) { return x.id !== w.id && !(w.kind === 'upgrade' && VC && VC.sameBasic(w, x)); }));
   if (w.kind === 'upgrade') seen[w.word.toLowerCase()] = 1;
   pool.sort(function (a, b) { return (b.pos === w.pos ? 1 : 0) - (a.pos === w.pos ? 1 : 0); });
   for (var i = 0; i < pool.length && out.length < n; i++) { var v = w.kind === 'colloc' ? pool[i].basic : pool[i].word; if (v && !seen[v.toLowerCase()]) { seen[v.toLowerCase()] = 1; out.push(v); } }
@@ -719,12 +722,12 @@ function renderMcq(q) {
   }
   else if (q.type === 'upgrade') {
     var um = w.exB.match(wordRe(w.basic)), ui = um.index + um[1].length;
-    body += '<div class="wp-scene">Thay phần gạch chân bằng một từ <b>mạnh hơn, trang trọng hơn</b></div><div class="wp-sit">' + esc(w.exB.slice(0, ui)) + '<u id="qBlank" style="text-decoration-color:var(--primary);text-underline-offset:5px;font-weight:700;">' + esc(w.basic) + '</u>' + esc(w.exB.slice(ui + w.basic.length)) + '</div>';
+    body += '<div class="wp-scene">Thay phần gạch chân bằng một từ <b>cùng nghĩa nhưng mạnh hơn, trang trọng hơn</b></div><div class="wp-sit">' + esc(w.exB.slice(0, ui)) + '<u id="qBlank" style="text-decoration-color:var(--primary);text-underline-offset:5px;font-weight:700;">' + esc(w.basic) + '</u>' + esc(w.exB.slice(ui + w.basic.length)) + '</div>';
   }
   else if (q.type === 'listen') body += '<div class="wp-pos" style="margin-bottom:6px;">Bấm loa và chọn từ bạn nghe được</div><button class="wp-sound" id="qSnd" style="width:64px;height:64px;font-size:28px;">🔊</button>';
   else {
     var m = w.ex.match(wordRe(w.word)), idx = m.index + m[1].length;
-    body += '<div class="wp-scene">📍 ' + esc(SCENES[w.topic] || w.topic) + '</div><div class="wp-sit">' + esc(w.ex.slice(0, idx)) + '<span class="wp-blank" id="qBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' + esc(w.ex.slice(idx + w.word.length)) + '</div>';
+    body += '<div class="wp-scene">📍 ' + esc(SCENES[w.topic] || w.topic) + '</div><div class="wp-sit">' + esc(w.ex.slice(0, idx)) + '<span class="wp-blank" id="qBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' + esc(w.ex.slice(idx + w.word.length)) + '</div>' + (w.exVi ? '<div class="wp-scene" style="font-size:14px;margin:0 0 6px;">💬 ' + esc(w.exVi) + '</div>' : '');
   }
   body += '<div class="wp-opts">' + opts.map(function (o, i) { return '<button class="wp-opt" data-i="' + i + '"><kbd>' + (i + 1) + '</kbd>' + esc(o.t) + '</button>'; }).join('') + '</div><div id="qFb"></div></div>';
   $('wpBody').innerHTML = body;

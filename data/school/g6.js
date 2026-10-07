@@ -113,7 +113,7 @@
       ["There aren't ___ chairs in the room.", ['some', 'any', 'a', 'an'], 1, 'Câu phủ định dùng any.'],
       ['There ___ some juice in the fridge.', ['are', 'is', 'am', 'be'], 1, 'juice không đếm được → is.'],
       ['How many bedrooms ___ there in your flat?', ['is', 'are', 'do', 'does'], 1, 'How many + danh từ số nhiều + are there?'],
-      ['There ___ a book and two pens on the desk.', ['is', 'are', 'have', 'has'], 0, 'Có nhiều danh từ, động từ hòa hợp với danh từ đứng gần nhất: "a book" (số ít) → is.'],
+      ['There ___ no students in the classroom.', ['is', 'are', 'has', 'have'], 1, 'students là danh từ số nhiều → There are no students.'],
       ['Are there any eggs? — No, ___.', ["there isn't", "there aren't", "it isn't", "they aren't"], 1, 'eggs số nhiều → No, there aren\'t.']
     ]
   });
@@ -462,7 +462,7 @@
       ['I\'m ___ because the lesson is too long.', ['bored', 'boring', 'bore', 'boredom'], 0, 'Cảm giác của người → bored.'],
       ['Which order is correct?', ['a brown small bag', 'a small brown bag', 'a bag small brown', 'a brown bag small'], 1, 'Kích thước trước màu sắc: small brown.'],
       ['They have two ___ cats.', ['cutes', 'cute', 'cuteness', 'cuter'], 1, 'Tính từ không thêm s: two cute cats.'],
-      ['It was an ___ day, so we went to bed early.', ['tiring', 'tired', 'tire', 'tiredness'], 0, 'Ngày làm người ta mệt → tiring.'],
+      ['It was a ___ day, so we went to bed early.', ['tiring', 'tired', 'tire', 'tiredness'], 0, 'Ngày làm người ta mệt → tiring.'],
       ['I have ___ eyes.', ['a big blue', 'big blue', 'blue big a', 'bigs blue'], 1, 'eyes số nhiều, không dùng a: big blue eyes.'],
       ['The park is ___.', ['a clean', 'cleans', 'clean', 'cleanly'], 2, 'Sau to be dùng tính từ: is clean.'],
       ['Mai looks very ___ today.', ['happily', 'happy', 'happiness', 'happier than'], 1, 'Sau look dùng tính từ: looks happy.']
@@ -500,7 +500,7 @@
       ['___ is your name? — My name is Nam.', ['Who', 'What', 'Where', 'How'], 1, 'Hỏi tên → What is your name?'],
       ['Where ___ you from? — I\'m from Da Nang.', ['is', 'am', 'are', 'do'], 2, 'you → are.'],
       ['"Are you a student?" "No, I ___."', ['amn\'t', 'isn\'t', 'am not', 'not am'], 2, 'Trả lời ngắn phủ định: No, I am not / I\'m not.'],
-      ['Which sentence is correct?', ['She is like pizza.', 'She likes pizza.', 'She is likes pizza.', 'She does like pizza.'], 1, 'like là động từ thường, không dùng be.']
+      ['Which sentence is correct?', ['She is like pizza.', 'She likes pizza.', 'She is likes pizza.', 'She like pizza.'], 1, 'like là động từ thường, không dùng be.']
     ]
   });
 

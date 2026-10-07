@@ -20,7 +20,8 @@
   function makeMcq(X, w, pool, dir, n) {
     n = n || 3;
     var seenVi = {}, seenW = {}; seenVi[normVi(w.vi)] = 1; seenW[norm(w.word)] = 1;
-    function usable(x) { return x.id !== w.id && x.kind === 'word' && x.vi && !seenVi[normVi(x.vi)] && !seenW[norm(x.word)]; }
+    var VC = window.EWTVocabConflict;
+    function usable(x) { return x.id !== w.id && x.kind === 'word' && x.vi && !seenVi[normVi(x.vi)] && !seenW[norm(x.word)] && !(VC && VC.conflict(w, x)); }
     var cands = X.shuffle(pool.filter(usable));
     var same = cands.filter(function (x) { return x.pos && x.pos === w.pos; });
     var rest = cands.filter(function (x) { return !(x.pos && x.pos === w.pos); });
@@ -43,7 +44,8 @@
     var shown = m[2], cap = /^[A-Z]/.test(shown), start = m.index + m[1].length;
     var sentence = w.ex.slice(0, start) + '_____' + w.ex.slice(start + shown.length);
     var exLow = w.ex.toLowerCase(), nWords = w.word.split(' ').length;
-    function usable(x) { return x.id !== w.id && x.kind === 'word' && norm(x.word) !== norm(w.word) && !gapRe(x.word).test(w.ex) && exLow.indexOf(x.word.toLowerCase()) < 0 && x.pos === w.pos; }
+    var VC = window.EWTVocabConflict;
+    function usable(x) { return x.id !== w.id && x.kind === 'word' && norm(x.word) !== norm(w.word) && !gapRe(x.word).test(w.ex) && exLow.indexOf(x.word.toLowerCase()) < 0 && x.pos === w.pos && !(VC && VC.conflict(w, x)); }
     var cands = X.shuffle(pool.filter(usable));
     var near = cands.filter(function (x) { return x.word.split(' ').length === nWords; });
     var order = near.concat(cands.filter(function (x) { return near.indexOf(x) < 0; }));

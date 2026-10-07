@@ -98,7 +98,7 @@
     ex: [['He admitted stealing the money.', 'Anh ta thừa nhận đã lấy tiền.'], ['She promised to help us.', 'Cô ấy hứa sẽ giúp chúng mình.'], ['The doctor advised me to rest.', 'Bác sĩ khuyên mình nên nghỉ ngơi.'], ['She accused him of lying.', 'Cô ấy buộc tội anh ta nói dối.'], ['They congratulated me on winning the prize.', 'Họ chúc mừng mình vì đã giành giải.'], ['He denied taking my pen.', 'Anh ấy phủ nhận việc lấy bút của mình.'], ['She apologised for being late.', 'Cô ấy xin lỗi vì đến muộn.'], ['The teacher warned us not to cheat.', 'Cô giáo cảnh báo chúng mình không được gian lận.']],
     mis: [['He suggested me to see a doctor.', 'He suggested that I see a doctor. / He suggested seeing a doctor.', 'suggest không + O + to V.'], ['She promised helping me.', 'She promised to help me.', 'promise + to V.'], ['He admitted to steal the money.', 'He admitted stealing the money.', 'admit + V-ing.'], ['She explained me the rule.', 'She explained the rule to me.', 'explain to sb.']],
     quiz: [
-      ['"I broke the window," he said. → He admitted ___ the window.', ['to break', 'breaking', 'break', 'to breaking'], 1, 'admit + V-ing.'],
+      ['"I broke the window," he said. → He admitted ___ the window.', ['to break', 'breaking', 'break', 'broke'], 1, 'admit + V-ing.'],
       ['"I will help you," she said. → She promised ___ me.', ['helping', 'to help', 'help', 'that help'], 1, 'promise + to V.'],
       ['"You should stop smoking," the doctor said. → The doctor advised him ___ smoking.', ['stop', 'to stop', 'stopping', 'for stop'], 1, 'advise + O + to V.'],
       ['"You stole my wallet!" she said. → She accused him ___ stealing her wallet.', ['for', 'of', 'to', 'about'], 1, 'accuse sb of + V-ing.'],
@@ -198,7 +198,7 @@
       ['She ___ for this company for 15 years by next year.', ['will work', 'will have been working', 'is working', 'works'], 1, 'Nhấn mạnh quá trình kéo dài → will have been working.'],
       ['I\'ll text you as soon as I ___.', ['will arrive', 'arrive', 'arrived', 'am going to arrive'], 1, 'as soon as + hiện tại đơn.'],
       ['"___ the car tomorrow?" "No, you can use it."', ['Will you using', 'Will you be using', 'Are you use', 'Do you using'], 1, 'Hỏi lịch sự về kế hoạch → Will you be using…?'],
-      ['He is ___ to win; he practises every day.', ['bound', 'about', 'due', 'being'], 0, 'be bound to = chắc chắn sẽ.']
+      ['With so much practice, he is ___ to win the prize. (chắc chắn sẽ)', ['bound', 'about', 'due', 'being'], 0, 'be bound to = chắc chắn sẽ.']
     ]
   });
 

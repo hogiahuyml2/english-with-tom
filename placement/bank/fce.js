@@ -41,14 +41,14 @@ module.exports = [
   cloze('fce-dog-3', 'vocab', 'B2', 'My sister and I just keep ____ on them when they are out.', ['a look', 'an eye', 'a view', 'a control'], 'B', S('p.132 · UoE Part 1 Q3'), A),
   cloze('fce-dog-4', 'vocab', 'B1', 'We all ____ the puppies for regular walks.', ['take', 'go', 'have', 'give'], 'A', S('p.132 · UoE Part 1 Q4'), A),
   cloze('fce-dog-5', 'vocab', 'B2', 'My parents teach the puppies how to ____ to different situations, such as crossing a busy road.', ['reply', 'respond', 'answer', 'return'], 'B', S('p.132 · UoE Part 1 Q5'), A),
-  cloze('fce-dog-6', 'vocab', 'C1', 'They also teach the puppies how to behave when they ____ people and other dogs.', ['encounter', 'experience', 'visit', 'undergo'], 'A', S('p.132 · UoE Part 1 Q6'), A),
+  cloze('fce-dog-6', 'vocab', 'C1', 'They also teach the puppies how to behave when they ____ people and other dogs.', ['encounter', 'experience', 'attend', 'undergo'], 'A', S('p.132 · UoE Part 1 Q6'), A),
   cloze('fce-dog-7', 'vocab', 'B2', 'It is very important for a guide dog to stay calm and focused and not to get ____ from its work.', ['entertained', 'confused', 'distracted', 'disturbed'], 'C', S('p.132 · UoE Part 1 Q7'), A),
 
   // ── Vocabulary and grammar review — shoppers (p.117) ──
   cloze('fce-shop-1', 'vocab', 'B2', 'We\'re always hunting for ____, and many of us plan our shopping and do not just buy on impulse.', ['values', 'cheapness', 'bargains', 'decreases'], 'C', S('p.117 · Vocabulary review Q1'), A),
   cloze('fce-shop-2', 'vocab', 'B2', 'Many of us plan our shopping and do not just ____ into shops and buy on impulse.', ['jump', 'pop', 'enter', 'pass'], 'B', S('p.117 · Vocabulary review Q2'), A),
-  cloze('fce-shop-4', 'vocab', 'B2', 'Many of my friends\' parents have a lot of influence on what they buy, even if they have ____ the money themselves from a part-time job.', ['earned', 'won', 'gained', 'acquired'], 'A', S('p.117 · Vocabulary review Q4'), A),
-  cloze('fce-shop-5', 'vocab', 'B2', 'We worry about our parents\' reaction to the clothes we ____.', ['invest', 'achieve', 'purchase', 'obtain'], 'C', S('p.117 · Vocabulary review Q5'), A),
+  cloze('fce-shop-4', 'vocab', 'B2', 'Many of my friends\' parents have a lot of influence on what they buy, even if they have ____ the money themselves from a part-time job.', ['earned', 'won', 'lent', 'borrowed'], 'A', S('p.117 · Vocabulary review Q4'), A),
+  cloze('fce-shop-5', 'vocab', 'B2', 'We worry about our parents\' reaction to the clothes we ____.', ['invest', 'achieve', 'purchase', 'earn'], 'C', S('p.117 · Vocabulary review Q5'), A),
   cloze('fce-shop-6', 'vocab', 'B2', 'The shops in my area operate in a highly ____ environment.', ['competent', 'competitive', 'contested', 'combative'], 'B', S('p.117 · Vocabulary review Q6'), A),
   cloze('fce-shop-7', 'vocab', 'C1', "The shops have to make sure they ____ for young people's tastes by having a wide range of fashion clothes.", ['offer', 'cater', 'sell', 'supply'], 'B', S('p.117 · Vocabulary review Q7'), A),
   cloze('fce-shop-8', 'vocab', 'C1', 'The shops have a wide range of fashion clothes in ____ at any one time.', ['stock', 'shelf', 'place', 'existence'], 'A', S('p.117 · Vocabulary review Q8'), A),

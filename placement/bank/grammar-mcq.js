@@ -89,7 +89,7 @@ const convert = {
   // B2 (FCE)
   'fce-how-1': ['most', 'all', 'once'], 'fce-how-3': ['on', 'off', 'out'], 'fce-how-7': ['up', 'on', 'off'], 'fce-how-8': ['better', 'prefer', 'like'],
   'fce-house-5': ['turned', 'came', 'got'], 'fce-house-6': ['despite', 'because', 'unless'], 'fce-house-7': ["don't", 'no', 'never'],
-  'fce-vol-1': ['who', 'whose', 'what'], 'fce-vol-5': ['for', 'so', 'more'], 'fce-vol-7': ['anything', 'everything', 'some'], 'fce-vol-8': ['make', 'do', 'put'],
+  'fce-vol-1': ['who', 'whose', 'what'], 'fce-vol-5': ['for', 'so', 'more'], 'fce-vol-7': ['anything', 'nothing', 'some'], 'fce-vol-8': ['make', 'do', 'put'],
 };
 // Gán lại bậc cho câu dễ nhất để có đủ câu mức A1 (đều là câu dễ nhất trong đề KET)
 const relabel = {

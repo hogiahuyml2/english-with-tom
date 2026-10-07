@@ -197,7 +197,7 @@
       ['This perfume ___ lovely.', ['is smelling', 'smells', 'smelling', 'smell'], 1, 'smell (có mùi) → dạng đơn.'],
       ['He ___ a lot of money, so he can buy anything.', ['has', 'is having', 'are having', 'having'], 0, 'have = có → dạng đơn.'],
       ['I ___ about my future at the moment.', ['think', 'am thinking', 'thinks', 'thought'], 1, 'Đang suy nghĩ → am thinking.'],
-      ['The chef ___ the sauce to check the flavour.', ['tastes', 'is tasting', 'taste', 'has tasted'], 1, 'Hành động nếm → is tasting.'],
+      ['At the moment, the chef ___ the sauce to check the flavour.', ['tastes', 'is tasting', 'taste', 'has tasted'], 1, 'At the moment + hành động nếm đang diễn ra → is tasting.'],
       ['I ___ you\'re tired. You look pale.', ['am believing', 'believe', 'believing', 'was believing'], 1, 'believe → dạng đơn.'],
       ['Which sentence is correct?', ['I am liking this song.', 'I like this song.', 'I am wanting a drink.', 'I am knowing him.'], 1, 'like là động từ trạng thái.'],
       ['"What are you doing?" "I ___ a book on the table."', ['am seeing', 'seeing', 'am looking at', 'look'], 2, 'Đang nhìn → am looking at.']
