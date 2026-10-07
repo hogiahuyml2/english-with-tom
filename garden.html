@@ -356,8 +356,8 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=7"></script>
-<script src="js/garden-art.js?v=5"></script>
+<script src="js/garden-data.js?v=8"></script>
+<script src="js/garden-art.js?v=6"></script>
 <script src="js/garden-world.js?v=7"></script>
 <script>
 (function () {
@@ -541,8 +541,9 @@ var TABS = [['plant', '🌸 Hoa'], ['tree', '🌳 Cây'], ['deco', '🪑 Trang t
 function renderShop() {
   $('tabs').innerHTML = TABS.map(function (t) { return '<button class="gd-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join('');
   var keep = $('items').scrollLeft;
-  var list = TAB === 'pet' ? D.PETS.map(function (p) { return { kind: 'pet', id: p.id, name: p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; })
-    : D.ITEMS.filter(function (i) { return TAB === 'deco' ? (i.kind === 'deco' || i.kind === 'ground') : i.kind === TAB; }).map(function (i) { return { kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; });
+  var byPrice = function (x, y) { return x.lvl - y.lvl || x.cost - y.cost; };
+  var list = TAB === 'pet' ? D.PETS.slice().sort(byPrice).map(function (p) { return { kind: 'pet', id: p.id, name: p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; })
+    : D.ITEMS.filter(function (i) { return TAB === 'deco' ? (i.kind === 'deco' || i.kind === 'ground') : i.kind === TAB; }).sort(byPrice).map(function (i) { return { kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; });
   $('items').innerHTML = list.map(function (x) {
     var lock = x.lvl > S.level, on = BRUSH && BRUSH.id === x.id;
     var info = x.kind === 'pet' ? '' : x.size ? '📐 ' + x.size : (x.grow ? '⏱ ' + fmtT(x.grow * 60000) + (x.y ? ' · +' + x.y + COIN : '') : '');

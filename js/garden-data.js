@@ -16,6 +16,15 @@
     { id: 'hydrangea', name: 'Cẩm tú cầu', kind: 'plant', cost: 140, lvl: 4, grow: 120, y: 20, b: 6, c: '#5B9BF0', c2: '#B9D5FF' },
     { id: 'orchid', name: 'Hoa lan', kind: 'plant', cost: 220, lvl: 5, grow: 180, y: 28, b: 8, c: '#E26BC8', c2: '#FFD6F4' },
     { id: 'starflower', name: 'Hoa ánh sao', kind: 'plant', cost: 400, lvl: 6, grow: 240, y: 45, b: 12, c: '#38D6C4', c2: '#FFF48A' },
+    { id: 'cosmos', name: 'Cúc cánh bướm', kind: 'plant', cost: 18, lvl: 2, grow: 35, y: 6, b: 3, c: '#FF7EB6', c2: '#F7C948' },
+    { id: 'poppy', name: 'Hoa anh túc', kind: 'plant', cost: 20, lvl: 2, grow: 40, y: 7, b: 3, c: '#F0453A', c2: '#2E2A33' },
+    { id: 'marigold', name: 'Cúc vạn thọ', kind: 'plant', cost: 35, lvl: 3, grow: 70, y: 11, b: 4, c: '#FF9A1F', c2: '#B85A00' },
+    { id: 'iris', name: 'Diên vĩ', kind: 'plant', cost: 50, lvl: 3, grow: 95, y: 14, b: 5, c: '#6D4DD8', c2: '#B7A2F5' },
+    { id: 'hibiscus', name: 'Dâm bụt', kind: 'plant', cost: 75, lvl: 4, grow: 110, y: 17, b: 6, c: '#FF4D6D', c2: '#FFD0DA' },
+    { id: 'bluebell', name: 'Chuông xanh', kind: 'plant', cost: 100, lvl: 4, grow: 150, y: 22, b: 7, c: '#5C8DF0', c2: '#BFD4FF' },
+    { id: 'dandelion', name: 'Bồ công anh', kind: 'plant', cost: 130, lvl: 5, grow: 200, y: 27, b: 8, c: '#FFD23F', c2: '#F5B21A' },
+    { id: 'peony', name: 'Mẫu đơn', kind: 'plant', cost: 260, lvl: 6, grow: 220, y: 36, b: 10, c: '#FF8FB0', c2: '#FFD6E2' },
+    { id: 'moonflower', name: 'Hoa nguyệt quang', kind: 'plant', cost: 600, lvl: 8, grow: 300, y: 60, b: 16, c: '#E8F1FF', c2: '#9FC2FF' },
     { id: 'pine', name: 'Cây thông', kind: 'tree', cost: 80, lvl: 2, grow: 300, y: 30, b: 9, c: '#2E8B57', c2: '#1F6B41' },
     { id: 'apple', name: 'Cây táo', kind: 'tree', cost: 120, lvl: 3, grow: 360, y: 36, b: 10, c: '#4CAF50', c2: '#E5334B' },
     { id: 'lemon', name: 'Cây chanh', kind: 'tree', cost: 160, lvl: 4, grow: 400, y: 42, b: 11, c: '#5FBF55', c2: '#FFE14D' },
@@ -59,7 +68,8 @@
   var PETS = [
     { id: 'bird', name: 'Chim sẻ', cost: 60, lvl: 1 }, { id: 'cat', name: 'Mèo con', cost: 80, lvl: 1 }, { id: 'dog', name: 'Cún con', cost: 100, lvl: 1 },
     { id: 'duck', name: 'Vịt vàng', cost: 80, lvl: 2 }, { id: 'bunny', name: 'Thỏ trắng', cost: 90, lvl: 2 }, { id: 'butterfly', name: 'Bướm', cost: 50, lvl: 2 },
-    { id: 'turtle', name: 'Rùa nhỏ', cost: 120, lvl: 3 }, { id: 'hamster', name: 'Chuột hamster', cost: 90, lvl: 3 }, { id: 'fox', name: 'Cáo nhỏ', cost: 300, lvl: 5 }
+    { id: 'turtle', name: 'Rùa nhỏ', cost: 120, lvl: 3 }, { id: 'hamster', name: 'Chuột hamster', cost: 90, lvl: 3 }, { id: 'fox', name: 'Cáo nhỏ', cost: 300, lvl: 5 },
+    { id: 'hedgehog', name: 'Nhím con', cost: 110, lvl: 3 }, { id: 'penguin', name: 'Cánh cụt', cost: 180, lvl: 4 }, { id: 'panda', name: 'Gấu trúc con', cost: 420, lvl: 6 }
   ];
   var LEVELS = [
     { n: 1, at: 0, title: 'Mầm non' }, { n: 2, at: 10, title: 'Vườn nhỏ xinh' }, { n: 3, at: 30, title: 'Vườn hoa' }, { n: 4, at: 60, title: 'Vườn rực rỡ' }, { n: 5, at: 100, title: 'Vườn mơ ước' },
