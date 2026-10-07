@@ -382,13 +382,13 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=12"></script>
+<script src="js/garden-data.js?v=13"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
-<script src="js/garden-art3.js?v=1"></script>
+<script src="js/garden-art3.js?v=2"></script>
 <script src="js/garden-world.js?v=9"></script>
 <script src="js/garden-world2.js?v=3"></script>
-<script src="js/garden-world3.js?v=1"></script>
+<script src="js/garden-world3.js?v=2"></script>
 <script>
 (function () {
 'use strict';
@@ -722,17 +722,21 @@ function drawSel() {
   if (QS.src === 'grammar') {
     h += '<select id="qgrade" aria-label="Lớp">' + TOPICS.grades.map(function (g) { return '<option value="' + g + '"' + (+QS.grade === g ? ' selected' : '') + '>Lớp ' + g + '</option>'; }).join('') + '</select>';
     h += '<select id="qlesson" aria-label="Chủ đề"><option value="">Tất cả chủ đề</option>' + TOPICS.lessons.filter(function (l) { return l.grade === +QS.grade; }).map(function (l) { return '<option value="' + l.id + '"' + (QS.lesson === l.id ? ' selected' : '') + '>' + esc(l.title) + '</option>'; }).join('') + '</select>';
-  } else h += '<select id="qlevel" aria-label="Cấp độ">' + TOPICS.levels.map(function (l) { return '<option value="' + l + '"' + (QS.level === l ? ' selected' : '') + '>' + l + '</option>'; }).join('') + '</select>';
+  } else {
+    var LVN = { KET: 'Lớp 6–7 · dễ (KET)', PET: 'Lớp 8–10 · vừa (PET)', FCE: 'Lớp 11–12 · nâng cao (FCE)', IELTS: 'Nâng cao hơn (IELTS)' };
+    h += '<select id="qlevel" aria-label="Cấp độ">' + TOPICS.levels.map(function (l) { return '<option value="' + l + '"' + (QS.level === l ? ' selected' : '') + '>' + (LVN[l] || l) + '</option>'; }).join('') + '</select>';
+    h += '<select id="qtype" aria-label="Dạng câu hỏi">' + [['mix', 'Hỗn hợp'], ['gap', 'Điền từ vào câu'], ['meaning', 'Hỏi nghĩa']].map(function (t) { return '<option value="' + t[0] + '"' + ((QS.vtype || 'mix') === t[0] ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('') + '</select>';
+  }
   $('qsel').innerHTML = h;
   $('qsel').onclick = function (e) { var b = e.target.closest('[data-qs]'); if (b) { QS.src = b.getAttribute('data-qs'); qSave(); drawSel(); nextQ(); } };
-  $('qsel').onchange = function (e) { if (e.target.id === 'qgrade') { QS.grade = +e.target.value; QS.lesson = ''; drawSel(); } else if (e.target.id === 'qlesson') QS.lesson = e.target.value; else if (e.target.id === 'qlevel') QS.level = e.target.value; qSave(); nextQ(); };
+  $('qsel').onchange = function (e) { if (e.target.id === 'qgrade') { QS.grade = +e.target.value; QS.lesson = ''; drawSel(); } else if (e.target.id === 'qlesson') QS.lesson = e.target.value; else if (e.target.id === 'qlevel') QS.level = e.target.value; else if (e.target.id === 'qtype') QS.vtype = e.target.value; qSave(); nextQ(); };
 }
 function nextQ() {
   $('qbody').innerHTML = '<p class="gd-sub">Đang tìm câu hỏi…</p>'; QLOCK = false;
-  var url = '/api/garden/quiz?src=' + QS.src + (QS.src === 'grammar' ? '&grade=' + QS.grade + '&lesson=' + encodeURIComponent(QS.lesson) : '&level=' + QS.level);
+  var url = '/api/garden/quiz?src=' + QS.src + (QS.src === 'grammar' ? '&grade=' + QS.grade + '&lesson=' + encodeURIComponent(QS.lesson) : '&level=' + QS.level + '&type=' + (QS.vtype || 'mix'));
   api(url).then(function (q) {
     QCUR = q; $('qsub').innerHTML = q.left > 0 ? 'Trả lời đúng để <b>lật thẻ thưởng</b>: 20–100 ' + COIN + ', hay trúng thẻ <b>+500</b>, <b>+1000</b>, <b>×2</b>, <b>×3</b> toàn bộ số xu hiện có, hoặc thẻ quà: <b>mở khoá thú cưng / khu mới</b>, <b>mua hoa-cây miễn phí</b>, <b>⚡ cho cây lớn ngay</b>! Kèm <b>+' + D.RULES.quizWater + ' 💧</b>. Hôm nay còn <b>' + q.left + '</b> câu có thưởng.' : 'Hôm nay bạn đã nhận đủ thưởng — vẫn có thể luyện thêm cho vui nhé!';
-    $('qbody').innerHTML = '<div class="gd-q"><div class="tp">' + esc(q.topic) + '</div><div class="qt">' + esc(q.q) + '</div></div><div class="gd-opts">' + q.opts.map(function (o, i) { return '<button class="gd-opt" data-oi="' + i + '">' + esc(o) + '</button>'; }).join('') + '</div><div id="qfb"></div>';
+    $('qbody').innerHTML = '<div class="gd-q"><div class="tp">' + esc(q.topic) + '</div><div class="qt">' + esc(q.q) + '</div>' + (q.ctx ? '<div class="tp" style="text-transform:none;font-weight:600;margin-top:4px">💬 ' + esc(q.ctx) + '</div>' : '') + '</div><div class="gd-opts">' + q.opts.map(function (o, i) { return '<button class="gd-opt" data-oi="' + i + '">' + esc(o) + '</button>'; }).join('') + '</div><div id="qfb"></div>';
     $('qbody').onclick = function (e) { var b = e.target.closest('[data-oi]'); if (b && !QLOCK) answer(+b.getAttribute('data-oi')); };
   }).catch(function (e) { $('qbody').innerHTML = '<p class="gd-sub">' + esc(e.message) + '</p>'; });
 }

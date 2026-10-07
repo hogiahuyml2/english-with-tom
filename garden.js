@@ -379,7 +379,34 @@ module.exports = function (app, { db, requireAuth, now }) {
   }
   // Tách nghĩa tiếng Việt thành các ý nhỏ để so trùng nghĩa (tránh 2 đáp án cùng đúng).
   const sameMeaning = (a, b) => VC.conflict(a, b);   // trùng nghĩa hoặc đồng nghĩa (xem js/vocab-conflict.js)
-  function pickVocab(uid, level) {
+  // Câu điền từ vào chỗ trống: lấy câu ví dụ của từ, kèm bản dịch tiếng Việt làm ngữ cảnh.
+  // Độ khó theo cấp: KET (lớp 6–7) đáp án nhiễu khác chủ đề/loại từ dễ phân biệt; PET (lớp 8–10) ưu tiên cùng chủ đề; FCE/IELTS (lớp 11–12 trở lên) cùng chủ đề + cùng loại từ.
+  const gapRe = (w) => new RegExp('(^|[^A-Za-z])(' + String(w).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-z])', 'i');
+  function pickVocabGap(uid, level) {
+    const lv = ['KET', 'PET', 'FCE', 'IELTS'].includes(level) ? level : 'KET';
+    const rows = db.prepare("SELECT id, word, pos, meaning_vi, topic, example_en, example_vi FROM vocab_words WHERE level=? AND (kind='word' OR kind IS NULL) ORDER BY RANDOM() LIMIT 90").all(lv);
+    const cand = rows.filter((r) => r.example_en && r.example_vi && gapRe(r.word).test(r.example_en));
+    if (cand.length < 1 || rows.length < 4) return null;
+    const rc = recent.get(uid) || [], w = cand.find((r) => rc.indexOf('g' + r.id) < 0) || cand[0]; remember(uid, 'g' + w.id);
+    const m = gapRe(w.word).exec(w.example_en), shown = m[2], start = m.index + m[1].length;
+    const sentence = w.example_en.slice(0, start) + '_____' + w.example_en.slice(start + shown.length);
+    const ok = rows.filter((r) => r.id !== w.id && !VC.conflict(w, r) && !gapRe(r.word).test(w.example_en) && w.example_en.toLowerCase().indexOf(r.word.toLowerCase()) < 0);
+    const samePos = (r) => r.pos === w.pos, sameTopic = (r) => r.topic === w.topic;
+    let pref;
+    if (lv === 'KET') pref = shuf(ok.filter(samePos)).concat(shuf(ok.filter((r) => !samePos(r))));
+    else pref = shuf(ok.filter((r) => sameTopic(r) && samePos(r))).concat(shuf(ok.filter((r) => !sameTopic(r) && samePos(r))), shuf(ok.filter((r) => sameTopic(r) && !samePos(r))), shuf(ok.filter((r) => !sameTopic(r) && !samePos(r))));
+    const d = [], seen = {}; seen[w.word.toLowerCase()] = 1;
+    for (const r of pref) { if (d.length >= 3) break; const k = r.word.toLowerCase(); if (!seen[k] && r.word.split(' ').length === w.word.split(' ').length) { seen[k] = 1; d.push(r); } }
+    if (d.length < 3) return null;
+    const cap = /^[A-Z]/.test(shown), show = (t) => (cap ? t.charAt(0).toUpperCase() + t.slice(1) : t);
+    const opts = shuf([{ t: shown, ok: true }].concat(d.map((r) => ({ t: show(r.word), ok: false }))));
+    return { src: 'vocab', topic: lv + ' · ' + w.topic + ' · điền từ', q: sentence, ctx: w.example_vi, opts: opts.map((o) => o.t), idx: opts.findIndex((o) => o.ok), expl: w.word + ' (' + w.pos + ') = ' + w.meaning_vi + '. ' + w.example_en };
+  }
+  function pickVocab(uid, level, type) {
+    if (type === 'gap' || (type !== 'meaning' && Math.random() < 0.5)) { const g = pickVocabGap(uid, level); if (g) return g; }
+    return pickVocabMeaning(uid, level);
+  }
+  function pickVocabMeaning(uid, level) {
     const lv = ['KET', 'PET', 'FCE', 'IELTS'].includes(level) ? level : 'KET';
     const rows = db.prepare('SELECT id, word, pos, meaning_vi, topic FROM vocab_words WHERE level=? ORDER BY RANDOM() LIMIT 60').all(lv);
     if (rows.length < 4) return null;
@@ -398,11 +425,11 @@ module.exports = function (app, { db, requireAuth, now }) {
   app.get('/api/garden/quiz', requireAuth, (req, res) => {
     settleFlips(req.user.id);
     const st = load(req.user), src = req.query.src === 'vocab' ? 'vocab' : 'grammar';
-    const q = src === 'vocab' ? pickVocab(req.user.id, String(req.query.level || '')) : pickGrammar(req.user.id, Number(req.query.grade) || 0, String(req.query.lesson || ''));
+    const q = src === 'vocab' ? pickVocab(req.user.id, String(req.query.level || ''), String(req.query.type || '')) : pickGrammar(req.user.id, Number(req.query.grade) || 0, String(req.query.lesson || ''));
     if (!q) return bad(res, 'Chưa có câu hỏi phù hợp, hãy chọn mục khác nhé.');
     const qid = crypto.randomBytes(6).toString('hex'); pending.set(qid, { uid: req.user.id, idx: q.idx, expl: q.expl, ts: Date.now(), opts: q.opts });
     for (const [k, v] of pending) if (Date.now() - v.ts > 15 * 60e3) pending.delete(k);
-    res.json({ qid, src: q.src, topic: q.topic, q: q.q, opts: q.opts, left: Math.max(0, G.RULES.quizCapDay - st.quiz_ok) });
+    res.json({ qid, src: q.src, topic: q.topic, q: q.q, ctx: q.ctx || '', opts: q.opts, left: Math.max(0, G.RULES.quizCapDay - st.quiz_ok) });
   });
   app.post('/api/garden/quiz/answer', requireAuth, (req, res) => {
     const p = pending.get(String((req.body || {}).qid)), pick = Number((req.body || {}).idx);

@@ -136,7 +136,27 @@
     { id: 'pirateship', name: 'Tàu hải tặc', kind: 'big', w: 3, h: 3, cost: 6000, lvl: 9, b: 100 },
     { id: 'brontosaurus', name: 'Khủng long cổ dài', kind: 'big', w: 4, h: 3, cost: 8000, lvl: 10, b: 130 },
     { id: 'volcano', name: 'Núi lửa nhỏ', kind: 'big', w: 4, h: 3, cost: 10000, lvl: 11, b: 150 },
-    { id: 'neontower', name: 'Tháp neon', kind: 'big', w: 2, h: 3, cost: 12000, lvl: 13, b: 160 }
+    { id: 'neontower', name: 'Tháp neon', kind: 'big', w: 2, h: 3, cost: 12000, lvl: 13, b: 160 },
+    // hoa / rau củ riêng của 10 khu
+    { id: 'bamboosprout', name: 'Măng tre', kind: 'plant', cost: 110, lvl: 4, grow: 130, y: 20, b: 4, c: '#D9EBA8', c2: '#8FB45A' },
+    { id: 'savannagrass', name: 'Cỏ lau vàng', kind: 'plant', cost: 190, lvl: 5, grow: 170, y: 28, b: 5, c: '#E8C860', c2: '#C9A22A' },
+    { id: 'birdparadise', name: 'Hoa thiên điểu', kind: 'plant', cost: 280, lvl: 6, grow: 200, y: 34, b: 6, c: '#FF8A2A', c2: '#3C7BE8' },
+    { id: 'cabbage', name: 'Bắp cải', kind: 'plant', cost: 170, lvl: 6, grow: 190, y: 30, b: 5, c: '#A8DC72', c2: '#6FB04A' },
+    { id: 'balloonflower', name: 'Hoa chuông kẹo', kind: 'plant', cost: 340, lvl: 7, grow: 220, y: 40, b: 6, c: '#B48CFF', c2: '#FFE8A0' },
+    { id: 'snowdrop', name: 'Hoa giọt tuyết', kind: 'plant', cost: 420, lvl: 8, grow: 250, y: 50, b: 7, c: '#FFFFFF', c2: '#7FD36B' },
+    { id: 'pineapple', name: 'Dứa nhiệt đới', kind: 'plant', cost: 560, lvl: 9, grow: 290, y: 66, b: 9, c: '#F2B632', c2: '#3C9A52' },
+    { id: 'fiddlehead', name: 'Dương xỉ cuộn', kind: 'plant', cost: 700, lvl: 10, grow: 320, y: 80, b: 10, c: '#5DBE55', c2: '#2F8A4A' },
+    { id: 'fireflower', name: 'Hoa lửa', kind: 'plant', cost: 900, lvl: 11, grow: 350, y: 100, b: 12, c: '#E8431F', c2: '#FFD23F' },
+    { id: 'neonflower', name: 'Hoa neon', kind: 'plant', cost: 1400, lvl: 13, grow: 400, y: 130, b: 16, c: '#3ADFFF', c2: '#FF5CC8' },
+    // cây riêng của các khu
+    { id: 'bambooclump', name: 'Bụi tre xanh', kind: 'tree', cost: 200, lvl: 4, grow: 300, y: 40, b: 9, c: '#62B43E', c2: '#86CC52' },
+    { id: 'acaciatree', name: 'Cây keo', kind: 'tree', cost: 360, lvl: 5, grow: 420, y: 55, b: 12, c: '#7C9638', c2: '#A8C257' },
+    { id: 'banana', name: 'Cây chuối', kind: 'tree', cost: 420, lvl: 6, grow: 450, y: 62, b: 13, c: '#3FAE5A', c2: '#FFD23F' },
+    { id: 'oaktree', name: 'Sồi cổ thụ', kind: 'tree', cost: 450, lvl: 6, grow: 480, y: 66, b: 14, c: '#3C8A3E', c2: '#B8733A' },
+    { id: 'frostpine', name: 'Thông băng giá', kind: 'tree', cost: 600, lvl: 8, grow: 540, y: 90, b: 17, c: '#6AA4B8', c2: '#fff' },
+    { id: 'cycad', name: 'Cây tuế cổ đại', kind: 'tree', cost: 900, lvl: 10, grow: 600, y: 115, b: 22, c: '#3C9A52', c2: '#E8A13A' },
+    { id: 'firetree', name: 'Cây dung nham', kind: 'tree', cost: 1200, lvl: 11, grow: 650, y: 140, b: 26, c: '#E8431F', c2: '#FFD23F' },
+    { id: 'neontree', name: 'Cây neon', kind: 'tree', cost: 1900, lvl: 13, grow: 720, y: 180, b: 34, c: '#3ADFFF', c2: '#FF5CC8' }
   ];
   var PETS = [
     { id: 'bird', name: 'Chim sẻ', cost: 60, lvl: 1 }, { id: 'cat', name: 'Mèo con', cost: 80, lvl: 1 }, { id: 'dog', name: 'Cún con', cost: 100, lvl: 1 },
@@ -144,7 +164,10 @@
     { id: 'turtle', name: 'Rùa nhỏ', cost: 120, lvl: 3 }, { id: 'hamster', name: 'Chuột hamster', cost: 90, lvl: 3 }, { id: 'fox', name: 'Cáo nhỏ', cost: 300, lvl: 5 },
     { id: 'hedgehog', name: 'Nhím con', cost: 110, lvl: 3 }, { id: 'penguin', name: 'Cánh cụt', cost: 180, lvl: 4 }, { id: 'panda', name: 'Gấu trúc con', cost: 420, lvl: 6 },
     { id: 'chick', name: 'Gà con', cost: 70, lvl: 3 }, { id: 'lamb', name: 'Cừu non', cost: 160, lvl: 3 }, { id: 'koifish', name: 'Cá koi', cost: 260, lvl: 5 }, { id: 'squirrel', name: 'Sóc nâu', cost: 300, lvl: 6 }, { id: 'goat', name: 'Dê núi', cost: 340, lvl: 7 },
-    { id: 'camel', name: 'Lạc đà con', cost: 460, lvl: 8 }, { id: 'seahorse', name: 'Cá ngựa', cost: 600, lvl: 10 }, { id: 'jellyfish', name: 'Sứa hồng', cost: 680, lvl: 10 }, { id: 'unicorn', name: 'Kỳ lân con', cost: 1000, lvl: 11 }, { id: 'alien', name: 'Chú ngoài hành tinh', cost: 1300, lvl: 12 }
+    { id: 'camel', name: 'Lạc đà con', cost: 460, lvl: 8 }, { id: 'seahorse', name: 'Cá ngựa', cost: 600, lvl: 10 }, { id: 'jellyfish', name: 'Sứa hồng', cost: 680, lvl: 10 }, { id: 'unicorn', name: 'Kỳ lân con', cost: 1000, lvl: 11 }, { id: 'alien', name: 'Chú ngoài hành tinh', cost: 1300, lvl: 12 },
+    { id: 'redpanda', name: 'Gấu trúc đỏ', cost: 380, lvl: 4 }, { id: 'giraffe', name: 'Hươu cao cổ con', cost: 480, lvl: 5 }, { id: 'parrot', name: 'Vẹt sặc sỡ', cost: 360, lvl: 6 }, { id: 'pony', name: 'Ngựa con', cost: 420, lvl: 6 },
+    { id: 'monkey', name: 'Khỉ con', cost: 520, lvl: 7 }, { id: 'polarbear', name: 'Gấu Bắc Cực con', cost: 700, lvl: 8 }, { id: 'crab', name: 'Cua đỏ', cost: 650, lvl: 9 }, { id: 'babydino', name: 'Khủng long con', cost: 1100, lvl: 10 },
+    { id: 'salamander', name: 'Kỳ nhông lửa', cost: 1250, lvl: 11 }, { id: 'robotdog', name: 'Chó robot', cost: 1700, lvl: 13 }
   ];
   var LEVELS = [
     { n: 1, at: 0, title: 'Mầm non' }, { n: 2, at: 10, title: 'Vườn nhỏ xinh' }, { n: 3, at: 30, title: 'Vườn hoa' }, { n: 4, at: 60, title: 'Vườn rực rỡ' }, { n: 5, at: 100, title: 'Vườn mơ ước' },
