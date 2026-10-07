@@ -404,6 +404,9 @@
     big: { b500: 500, b1000: 1000 }, mult: { x2: 2, x3: 3 }, multMin: 100,
     free: { free_plant: { n: 5, cls: 'plant', label: 'hoa' }, free_tree: { n: 2, cls: 'tree', label: 'cây' }, free_deco: { n: 3, cls: 'deco', label: 'đồ trang trí' }, free_big: { n: 1, cls: 'big', label: 'công trình lớn' }, free_pet: { n: 1, cls: 'pet', label: 'thú cưng' } },
     water: 10, boost: 1 };
+  // Kho đặc sản từng khu (5 hoa · 5 cây · 5 trang trí · 5 công trình · 5 thú cưng cho MỖI khu): xem js/garden-catalog.js + garden-cat-*.js
+  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
+  if (CAT) CAT.build({ zones: ZONES, items: ITEMS, pets: PETS });
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });
   var PBY = {}; PETS.forEach(function (i) { PBY[i.id] = i; });
 

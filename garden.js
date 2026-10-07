@@ -129,6 +129,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
         const zn = G.zoneOfCell(i), ll = landLv(st, zn);
         const fp = it.kind === 'big' ? G.footprint(i, it, ll) : (G.inLand(i, ll) ? [i] : null);
         if (!fp) return { err: it.kind === 'big' ? 'Công trình này không vừa chỗ — hãy chọn ô khác (cần đủ ' + it.w + '×' + it.h + ' ô trống trong đất của khu).' : 'Ô này nằm ngoài đất đã mở của khu — hãy mở rộng đất trước nhé.' };
+        if (it.z && it.z !== zn.id) return { err: 'Món này là đặc sản của khu "' + ((G.ZBY[it.z] || {}).name || it.z) + '" — chỉ đặt được ở khu đó nhé.' };
         if (fp.some((k) => G.isBlocked(k) || G.zoneOfCell(k).id !== G.zoneOfCell(i).id)) return { err: 'Đây là phong cảnh có sẵn của khu, hãy chọn ô đất trống khác nhé.' };
         if (fp.some((k) => st.tiles[k])) return { err: 'Chỗ này đã có đồ — cần ' + fp.length + ' ô trống liền nhau.' };
         if (st.zones.indexOf(G.zoneOfCell(i).id) < 0) return { err: 'Khu này chưa được mở.' };
@@ -255,6 +256,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
     const out = tx(() => {
       const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
       if (!pt) return { err: 'Thú cưng này không tồn tại.' };
+      if (pt.z && pt.z !== zid) return { err: 'Bé này là thú cưng đặc sản của khu "' + ((G.ZBY[pt.z] || {}).name || pt.z) + '" — chỉ nuôi được ở khu đó.' };
       if (!G.ZBY[zid] || st.zones.indexOf(zid) < 0) return { err: 'Hãy vào một khu của bạn rồi nhận nuôi thú cưng ở đó nhé — mỗi bé chỉ sống ở một khu.' };
       if (st.pets.filter((x) => x.z === zid).length >= G.petSlots(lvl)) return { err: 'Khu này đã đủ chỗ cho thú cưng — hãy lên cấp vườn để có thêm chỗ, hoặc nhận nuôi ở khu khác nhé.' };
       const bi = st.bag.pets.findIndex((x) => x.k === pt.id); let nm = pt.name, used = null;

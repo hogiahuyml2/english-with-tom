@@ -235,7 +235,8 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-card .f { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; display: grid; place-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.25); border: 4px solid #fff; }
 .gd-card .back { background: repeating-linear-gradient(45deg, #7C5CFF 0 10px, #6F58EE 10px 20px); font-size: 44px; color: #fff; text-shadow: 0 3px 0 rgba(0,0,0,.25); }
 .gd-card .front { transform: rotateY(180deg); background: linear-gradient(180deg, #FFF8D6, #FFE08A); color: #8A4B00; text-align: center; font-weight: 800; line-height: 1.1; }
-.gd-card .front strong { display: block; font-size: 30px; } .gd-card .cf-svg { display: block; width: 44px; height: 44px; margin: 2px auto; } .gd-badge { background: #EF4444; color: #fff; border-radius: 99px; padding: 0 6px; font-size: 11px; margin-left: 2px; } s.cost { opacity: .6; } .gd-card .front small { font-size: 11px; font-weight: 800; opacity: .85; } .gd-card.dim .front { opacity: .55; filter: grayscale(.4); }
+.gd-card .front strong { display: block; font-size: 30px; } .gd-card .cf-svg { display: block; width: 44px; height: 44px; margin: 2px auto; } .gd-tab.sm { background: #D9F0C8; border-color: #4F8A5A; color: #1F4F2A; } .gd-tab.sm.on { background: #4F8A5A; color: #fff; } .cxs { color: #E8A82C; font-size: 11px; letter-spacing: 1px; }
+.gd-badge { background: #EF4444; color: #fff; border-radius: 99px; padding: 0 6px; font-size: 11px; margin-left: 2px; } s.cost { opacity: .6; } .gd-card .front small { font-size: 11px; font-weight: 800; opacity: .85; } .gd-card.dim .front { opacity: .55; filter: grayscale(.4); }
 .gd-card.big .front { background: linear-gradient(180deg, #FFEFA0, #FF9A3C, #FF5E7E); color: #fff; text-shadow: 0 2px 0 rgba(120,30,0,.5); animation: gdJackpot .8s ease-in-out infinite; } .gd-card.big .front strong { font-size: 34px; } @keyframes gdJackpot { 50% { box-shadow: 0 0 0 6px rgba(255,214,63,.7), 0 0 36px 12px rgba(255,160,40,.8); } }
 .gd-prize { margin-top: 12px; font-size: 18px; font-weight: 800; color: #166534; min-height: 26px; } .gd-prize.jp { color: #C2410C; font-size: 22px; }
 .gd-toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; } .gd-toast.on { opacity: 1; }
@@ -423,7 +424,12 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=14"></script>
+<script src="js/garden-catalog.js?v=1"></script>
+<script src="js/garden-cat-a.js?v=1"></script>
+<script src="js/garden-cat-b.js?v=1"></script>
+<script src="js/garden-cat-c.js?v=1"></script>
+<script src="js/garden-cat-d.js?v=1"></script>
+<script src="js/garden-data.js?v=15"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
 <script src="js/garden-art3.js?v=2"></script>
@@ -436,6 +442,10 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-world6.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-culture.js?v=1"></script>
+<script src="js/garden-gen1.js?v=1"></script>
+<script src="js/garden-gen2.js?v=1"></script>
+<script src="js/garden-gen3.js?v=1"></script>
+<script src="js/garden-gen4.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -632,6 +642,7 @@ setInterval(wander, 3400);
 
 /* ───────── khay cửa hàng ───────── */
 var TABS = [['bag', '🧺 Giỏ'], ['plant', '🌸 Hoa'], ['tree', '🌳 Cây'], ['deco', '🪑 Trang trí'], ['big', '🏠 Công trình'], ['pet', '🐾 Thú cưng']];
+var SMODE = 'zone';
 var CLS = { plant: 'plant', tree: 'tree', deco: 'deco', ground: 'deco', big: 'big', pet: 'pet' }, CLSN = { plant: '🌸 hoa', tree: '🌳 cây', deco: '🪑 trang trí', big: '🏠 công trình', pet: '🐾 thú cưng', boost: '⚡ lớn ngay' };
 function bagOf() { return (S && S.bag) || { items: {}, pets: [], free: {} }; }
 function bagN(id) { return bagOf().items[id] | 0; }
@@ -642,21 +653,23 @@ function bagCount() { var b = bagOf(), n = b.pets.length; Object.keys(b.items).f
 function priceOf(it, kind) { return bagN(it.id) > 0 || bagPetN(it.id) > 0 || (it.cost > 0 && freeN(kind) > 0) ? 0 : it.cost; }
 function renderShop() {
   var bg = bagOf(), nb = VISIT ? 0 : bagCount();
-  $('tabs').innerHTML = TABS.filter(function (t) { return !(VISIT && t[0] === 'bag'); }).map(function (t) { return '<button class="gd-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[0] === 'bag' && nb ? ' <b class="gd-badge">' + nb + '</b>' : '') + '</button>'; }).join('');
+  var zin = !!D.ZBY[VIEW], mode = zin ? SMODE : 'basic', zn = zin ? D.ZBY[VIEW].name : '';
+  var inShop = function (o) { return mode === 'zone' ? o.z === VIEW : !o.z; };
+  $('tabs').innerHTML = (VISIT ? '' : (zin ? '<button class="gd-tab sm' + (mode === 'zone' ? ' on' : '') + '" data-sm="zone" title="Đặc sản chỉ có ở khu này">🌟 Khu này</button>' : '') + '<button class="gd-tab sm' + (mode === 'basic' ? ' on' : '') + '" data-sm="basic" title="Món cơ bản dùng được ở mọi khu">🌱 Cơ bản</button>') + TABS.filter(function (t) { return !(VISIT && t[0] === 'bag'); }).map(function (t) { return '<button class="gd-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[0] === 'bag' && nb ? ' <b class="gd-badge">' + nb + '</b>' : '') + '</button>'; }).join('');
   var keep = $('items').scrollLeft;
   var byPrice = function (x, y) { return x.lvl - y.lvl || x.cost - y.cost; };
-  var mkItem = function (i) { return { kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; };
-  var mkPet = function (p, nm) { return { kind: 'pet', id: p.id, name: nm || p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; };
+  var mkItem = function (i) { return { cx: i.cx, z: i.z, kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; };
+  var mkPet = function (p, nm) { return { cx: p.cx, z: p.z, kind: 'pet', id: p.id, name: nm || p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; };
   var list, i;
   if (TAB === 'bag') {
     list = [];
     Object.keys(bg.items).forEach(function (id) { var it = D.BY[id]; if (it) { var x = mkItem(it); x.n = bg.items[id]; x.bag = 1; list.push(x); } });
     bg.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (pt) { var x = mkPet(pt, p.name); x.bag = 1; x.n = 1; list.push(x); } });
-  } else list = TAB === 'pet' ? D.PETS.slice().sort(byPrice).map(function (p) { return mkPet(p); })
-    : D.ITEMS.filter(function (i) { return TAB === 'deco' ? (i.kind === 'deco' || i.kind === 'ground') : i.kind === TAB; }).sort(byPrice).map(mkItem);
+  } else list = TAB === 'pet' ? D.PETS.filter(inShop).sort(byPrice).map(function (p) { return mkPet(p); })
+    : D.ITEMS.filter(function (i) { return inShop(i) && (TAB === 'deco' ? (i.kind === 'deco' || i.kind === 'ground') : i.kind === TAB); }).sort(byPrice).map(mkItem);
   $('items').innerHTML = list.length ? list.map(function (x) {
     var inb = x.kind === 'pet' ? bagPetN(x.id) : bagN(x.id), lock = x.lvl > S.level && !inb, on = BRUSH && BRUSH.id === x.id, fr = !inb && x.cost > 0 && freeN(x.kind) > 0;
-    var info = x.kind === 'pet' ? '' : x.size ? '📐 ' + x.size : (x.grow ? '⏱ ' + fmtT(x.grow * 60000) + (x.y ? ' · +' + x.y + COIN : '') : '');
+    var info = x.kind === 'pet' ? (x.cx ? '<span class="cxs">' + '★'.repeat(x.cx) + '</span>' : '') : x.size ? '📐 ' + x.size : (x.grow ? '⏱ ' + fmtT(x.grow * 60000) + (x.y ? ' · +' + x.y + COIN : '') : '');
     var price = x.bag ? '<span class="free">🧺 ×' + x.n + (x.kind === 'pet' ? ' · nhận nuôi' : ' · đặt ngay') + '</span>' : inb ? '<span class="free">🧺 ×' + inb + ' trong giỏ</span>' : fr ? '<s class="cost">' + x.cost + '</s> <span class="free">Miễn phí 🎟️</span>' : (x.cost ? '<span class="cost">' + x.cost + ' ' + COIN + '</span>' : '<span class="free">Miễn phí</span>');
     return '<button class="gd-it' + (lock ? ' lock' : '') + (on ? ' on' : '') + '" data-pick="' + x.id + '" data-kind="' + x.kind + '">' + (lock ? '<span class="lk">🔒 Cấp ' + x.lvl + '</span>' : '') + x.svg + '<b>' + esc(x.name) + '</b><small>' + price + '</small>' + (info ? '<small>' + info + '</small>' : '') + '</button>';
   }).join('') : '<p class="gd-sub" style="padding:14px;margin:0">🧺 Giỏ đang trống. Món đã mua mà bạn dọn đi sẽ tự vào đây để dùng lại; thẻ thưởng cũng có thể tặng thú cưng, phiếu miễn phí…</p>';
@@ -713,6 +726,7 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('.gt'))) { onTile(+el.getAttribute('data-i')); return; }
   if ($('pop') && !t.closest('.gd-pop')) closePop();
   if ((el = t.closest('[data-tool]'))) { var tn = el.getAttribute('data-tool'); TOOL = TOOL === tn ? null : tn; BRUSH = null; closePop(); render(); return; }
+  if ((el = t.closest('[data-sm]'))) { SMODE = el.getAttribute('data-sm'); renderShop(); return; }
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); renderShop(); return; }
   if (t.closest('#hq')) { var on = !$('stage').classList.contains('gd-hq'); setHq(on); try { localStorage.setItem('ewt-garden-hq', on ? '1' : '0'); } catch (er) {} return; }
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
