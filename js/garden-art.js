@@ -106,8 +106,9 @@
   function itemSvg(it, stage, size, cls) {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + it.name + '"><g class="' + (it.img ? '' : 'bvS') + '" transform="translate(50 92) scale(' + (it.kind === 'plant' ? 1.3 : it.kind === 'deco' ? 1.06 : 1.02) + ') translate(-50 -92)">' + drawItem(it, stage == null ? 3 : stage) + '</g></svg>';
   }
-  function petSvg(pt, size, cls) {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + pt.name + '"><g class="bvS">' + (PET[pt.id] || function () { return ''; })() + '</g></svg>';
+  function petSvg(pt, size, cls, outfit) {
+    var body = (outfit && API.dressedPet && API.dressedPet(pt.id, outfit)) || (PET[pt.id] || function () { return ''; })();
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + (size || 64) + '" height="' + (size || 64) + '"' + (cls ? ' class="' + cls + '"' : '') + ' role="img" aria-label="' + pt.name + '"><g class="bvS">' + body + '</g></svg>';
   }
   var API = { draw: drawItem, itemSvg: itemSvg, petSvg: petSvg, shade: shade, BLOOM: BLOOM, DECO: DECO, PET: PET, TREEX: TREEX, K: { INK: INK, C: C, E: E, R: R, P: P, L: L, SH: SH, G1: G1, G2: G2, G3: G3, leaf: leaf, stem: stem, eyes: eyes } };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenArt = API;

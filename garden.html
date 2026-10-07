@@ -209,6 +209,7 @@
 .gd-fold { margin-left: auto; border: 2px solid #7A4A1E; background: #E8C48C; color: #6B3E12; border-radius: 10px; width: 38px; height: 34px; font-size: 16px; font-weight: 800; cursor: pointer; flex: none; }
 .gd-items { flex: 1; display: flex; gap: 10px; overflow-x: auto; padding: 6px 14px 12px; align-items: stretch; scrollbar-width: thin; scrollbar-color: #E8B97A #8F5A2B; }
 .gd-it { position: relative; flex: none; width: 104px; border: 3px solid #E8C48C; background: linear-gradient(180deg, #FFF8EA, #FFEBC6); border-radius: 16px; padding: 5px 4px 6px; text-align: center; cursor: pointer; font-family: inherit; color: #5A3410; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; box-shadow: 0 3px 0 #7A4A1E; }
+.gd-bd { width: 176px; cursor: pointer; gap: 1px; padding-bottom: 4px; } .gd-bd .bdth { display: flex; flex-wrap: nowrap; justify-content: center; gap: 0; margin: 15px 0 1px; } .gd-bd .bdth svg { flex: none; width: 28px; height: 28px; } .gd-bd b { font-size: 12.5px; line-height: 1.15; }
 .gd-it:hover { border-color: #FFD23F; transform: translateY(-2px); } .gd-it.on { border-color: #6F58EE; background: #EEEAFF; box-shadow: 0 0 0 3px rgba(111,88,238,.45), 0 3px 0 #4B3AB8; } .gd-it.lock { opacity: .6; filter: grayscale(.4); }
 .gd-it svg { width: 64px; height: 64px; display: block; flex: none; } .gd-it b { display: block; font-size: 12px; line-height: 1.2; } .gd-it small { display: block; font-size: 11.5px; color: #8A5A2E; font-weight: 800; margin-top: 1px; }
 .gd-it .cost { color: #92400E; } .gd-it .free { color: #16a34a; } .gd-it .lk { position: absolute; top: 3px; right: 3px; background: #1f2937; color: #fff; border-radius: 99px; font-size: 10px; font-weight: 800; padding: 1px 7px; z-index: 2; }
@@ -500,7 +501,8 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-cat-d.js?v=2"></script>
 <script src="js/garden-cat-e.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
-<script src="js/garden-data.js?v=17"></script>
+<script src="js/garden-bundles.js?v=1"></script>
+<script src="js/garden-data.js?v=18"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
 <script src="js/garden-art3.js?v=2"></script>
@@ -516,11 +518,12 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-art5.js?v=1"></script>
 <script src="js/garden-art6.js?v=1"></script>
+<script src="js/garden-art7.js?v=1"></script>
 <script src="js/garden-culture.js?v=2"></script>
 <script src="js/garden-gen1.js?v=3"></script>
 <script src="js/garden-gen2.js?v=3"></script>
 <script src="js/garden-gen3.js?v=3"></script>
-<script src="js/garden-gen4.js?v=3"></script>
+<script src="js/garden-gen4.js?v=4"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-sound.js?v=2"></script>
@@ -707,7 +710,7 @@ function renderTools() {
 /* ───────── thú cưng đi dạo ───────── */
 function renderPets(ts) {
   var el = $('pets'), h = '', dm = zdim(D.ZBY[VIEW]);
-  S.pets.filter(function (p) { return p.z === VIEW; }).forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
+  S.pets.filter(function (p) { return p.z === VIEW; }).forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%', '', p.o && D.BD ? D.BD.OBY[p.o].acc : null) + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
   el.innerHTML = h;
 }
 function wander() {
@@ -728,7 +731,7 @@ function bagOf() { return (S && S.bag) || { items: {}, pets: [], free: {} }; }
 function bagN(id) { return bagOf().items[id] | 0; }
 function bagPetN(k) { return bagOf().pets.filter(function (p) { return p.k === k; }).length; }
 function freeN(kind) { return (bagOf().free[CLS[kind]] | 0); }
-function bagCount() { var b = bagOf(), n = b.pets.length; Object.keys(b.items).forEach(function (k) { n += b.items[k]; }); return n; }
+function bagCount() { var b = bagOf(), n = b.pets.length; Object.keys(b.items).forEach(function (k) { n += b.items[k]; }); Object.keys(b.outfits || {}).forEach(function (k) { n += b.outfits[k]; }); return n; }
 // Giá thật phải trả cho một món ở thời điểm này (0 nếu có trong giỏ hoặc còn phiếu miễn phí)
 function priceOf(it, kind) { return bagN(it.id) > 0 || bagPetN(it.id) > 0 || (it.cost > 0 && freeN(kind) > 0) ? 0 : it.cost; }
 function renderShop() {
@@ -736,13 +739,15 @@ function renderShop() {
   var zin = !!D.ZBY[VIEW], evs = (S.events && S.events.active) || [], evId = SMODE.indexOf('ev:') === 0 ? SMODE.slice(3) : '';
   if (evId && !evs.some(function (e) { return e.id === evId; })) { SMODE = 'zone'; evId = ''; }
   var byPrice = function (x, y) { return x.lvl - y.lvl || x.cost - y.cost; };
-  var mode = evId ? 'ev' : zin && SMODE === 'zone' ? 'zone' : 'all', zn = zin ? D.ZBY[VIEW].name : '', evo = evId ? evs.filter(function (e) { return e.id === evId; })[0] : null;
+  var mode = SMODE === 'bd' && !VISIT && D.BD ? 'bd' : evId ? 'ev' : zin && SMODE === 'zone' ? 'zone' : 'all', zn = zin ? D.ZBY[VIEW].name : '', evo = evId ? evs.filter(function (e) { return e.id === evId; })[0] : null;
   var inShop = function (o) { return mode === 'ev' ? o.ev === evId : mode === 'zone' ? o.z === VIEW : !o.ev; };
   var q = mode === 'all' ? noAcc(SHOPQ).trim() : '', skey = mode + '|' + TAB + '|' + q + '|' + VIEW; if (skey !== SHOPKEY) { SHOPKEY = skey; SHOPN = 60; }
   var sq = $('shopq'); if (sq) sq.style.display = mode === 'all' && TAB !== 'bag' ? '' : 'none';
   var ord = function (o) { return o.z === VIEW ? 0 : !o.z ? 1 : 2 + (ZI[o.z] || 0); };
   var sorter = mode === 'all' ? function (x, y) { return ord(x) - ord(y) || byPrice(x, y); } : byPrice;
   $('tabs').innerHTML = (VISIT ? '' : (zin ? '<button class="gd-tab sm' + (mode === 'zone' ? ' on' : '') + '" data-sm="zone" title="Gợi ý: các món đặc trưng của khu này, tìm cho nhanh">⭐ Gợi ý khu này</button>' : '') + '<button class="gd-tab sm' + (mode === 'all' ? ' on' : '') + '" data-sm="all" title="Tất cả các món trong game (món có 📍 chỉ đặt được ở khu của nó)">📚 Tất cả</button>') + evs.map(function (e) { return '<button class="gd-tab sm ev' + (mode === 'ev' && evId === e.id ? ' on' : '') + '" data-sm="ev:' + e.id + '" title="Món giới hạn của sự kiện — chỉ mua được trong lúc sự kiện diễn ra">' + e.icon + ' ' + esc(e.short) + '</button>'; }).join('') + TABS.filter(function (t) { return !(VISIT && t[0] === 'bag'); }).map(function (t) { return '<button class="gd-tab' + (TAB === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[0] === 'bag' && nb ? ' <b class="gd-badge">' + nb + '</b>' : '') + '</button>'; }).join('');
+  if (D.BD && !VISIT) $('tabs').insertAdjacentHTML('beforeend', '<button class="gd-tab sm bd' + (mode === 'bd' ? ' on' : '') + '" data-sm="bd" title="Mua trọn bộ lễ hội / ẩm thực của các nước, giảm ' + D.BD.PCT + '%">🎁 Bộ ưu đãi</button>');
+  if (mode === 'bd') { renderBundles(); return; }
   var keep = $('items').scrollLeft;
   var mkItem = function (i) { return { ev: i.ev, cx: i.cx, z: i.z, kind: i.kind, id: i.id, name: i.name, cost: i.cost, lvl: i.lvl, grow: i.grow, y: i.y, size: i.kind === 'big' ? i.w + '×' + i.h + ' ô' : '', svg: i.kind === 'big' ? W.bigSvg(i.id) : A.itemSvg(i, 3, 64) }; };
   var mkPet = function (p, nm) { return { ev: p.ev, cx: p.cx, z: p.z, kind: 'pet', id: p.id, name: nm || p.name, cost: p.cost, lvl: p.lvl, svg: A.petSvg(p, 64) }; };
@@ -771,6 +776,35 @@ function renderShop() {
   if (mode === 'all' && TAB !== 'bag') $('note').innerHTML = H('📚 Tất cả các món trong game' + (zin ? ' — xếp món của khu này lên đầu' : '') + '. Món có nhãn 📍 chỉ mua và đặt được ở khu của nó.');
   if (mode === 'zone' && TAB !== 'bag') $('note').innerHTML = H('⭐ Gợi ý: các món ĐẶC TRƯNG của khu "' + esc(zn) + '" — chỉ đặt được ở đây. Muốn xem mọi món, bấm 📚 Tất cả.');
   if (mode === 'ev' && evo && TAB !== 'bag') $('note').innerHTML = H('🎉 ' + evo.name + ': món GIỚI HẠN — chỉ mua được đến hết ' + fmtD(evo.to) + ' (' + (evo.left ? 'còn ' + evo.left + ' ngày' : 'hôm nay là ngày cuối') + '). Mua rồi thì giữ mãi và dùng được ở mọi khu!');
+}
+
+
+/* ───────── bộ ưu đãi & trang phục ───────── */
+function renderBundles() {
+  var BDm = D.BD, zi = {}, h = '';
+  $('shopq').style.display = 'none';
+  var bds = BDm.BUNDLES.slice().sort(function (a, b) { return (a.z === VIEW ? 0 : 1) - (b.z === VIEW ? 0 : 1) || ZI[a.z] - ZI[b.z]; });
+  var thumb = function (id) { return BDm.OBY[id] ? A.outfitSvg(BDm.OBY[id], 28) : A.itemSvg(D.BY[id], 3, 28); };
+  bds.forEach(function (b) {
+    var z = D.ZBY[b.z], pr = BDm.priceOf(b, D.BY), lock = z.lvl > S.level;
+    h += '<div class="gd-it gd-bd' + (lock ? ' lock' : '') + '"' + (lock ? '' : ' data-bdbuy="' + b.id + '"') + ' title="Bấm để mua trọn bộ">' + (lock ? '<span class="lk">🔒 Cấp ' + z.lvl + '</span>' : '') + '<span class="zb">' + b.icon + ' ' + esc(z.name) + '</span><div class="bdth">' + b.items.map(thumb).join('') + '</div><b title="' + b.items.length + ' món' + (b.kind === 'fest' ? ' + trang phục thú cưng' : '') + '">' + esc(b.name) + '</b><small><s class="cost">' + pr.full + '</s> <span class="cost">' + pr.price + ' ' + COIN + '</span> <span class="evb">−' + BDm.PCT + '%</span></small></div>';
+  });
+  BDm.OUTFITS.forEach(function (o) {
+    var z = D.ZBY[o.z], lock = o.lvl > S.level, n = (bagOf().outfits || {})[o.id] | 0;
+    h += '<div class="gd-it gd-bd' + (lock ? ' lock' : '') + '"' + (lock ? '' : ' data-ofbuy="' + o.id + '"') + ' title="Bấm để mua"><span class="zb">👗 ' + esc(z.name) + '</span><div class="bdth">' + A.outfitSvg(o, 40) + '</div><b>' + esc(o.name) + '</b><small><span class="cost">' + o.cost + ' ' + COIN + '</span>' + (n ? ' · 🧺 ×' + n : '') + '</small></div>';
+  });
+  $('items').innerHTML = h;
+  $('note').innerHTML = H('🎁 Mua trọn bộ rẻ hơn ' + BDm.PCT + '% so với mua lẻ. Đồ trang trí vào Giỏ (tab 🧺), mỗi món chỉ đặt được ở khu của nó. Trang phục: mở thú cưng của bạn rồi chọn "👗 Mặc đồ" (một số bé đặc biệt chưa mặc được).');
+}
+async function buyBundle(id) {
+  var b = D.BD.BDBY[id], pr = D.BD.priceOf(b, D.BY).price;
+  if (!(await ewtConfirm('Mua "' + b.name + '" (' + b.items.length + ' món) giá ' + pr + ' xu? Bạn đang có ' + COINS + ' xu.'))) return;
+  api('/api/garden/bundle/buy', { id: id }).then(function (d) { setState(d); toast('🎁 Đã mua ' + b.name + ' — đồ nằm trong Giỏ 🧺!', 3200); if (window.ewtCelebrate) window.ewtCelebrate(['sparkles', 'star'], { count: 10, from: $('xu') }); }).catch(function (e) { toast(e.message, 3600); });
+}
+async function buyOutfit(id) {
+  var o = D.BD.OBY[id];
+  if (!(await ewtConfirm('Mua "' + o.name + '" giá ' + o.cost + ' xu?'))) return;
+  api('/api/garden/outfit/buy', { id: id }).then(function (d) { setState(d); toast('👗 Đã mua ' + o.name + '!', 3000); }).catch(function (e) { toast(e.message, 3600); });
 }
 
 /* ───────── thao tác ───────── */
@@ -820,8 +854,10 @@ document.addEventListener('click', async function (e) {
   if ((el = t.closest('.gt'))) { onTile(+el.getAttribute('data-i')); return; }
   if ($('pop') && !t.closest('.gd-pop')) closePop();
   if ((el = t.closest('[data-tool]'))) { var tn = el.getAttribute('data-tool'); TOOL = TOOL === tn ? null : tn; BRUSH = null; closePop(); render(); return; }
+  if ((el = t.closest('[data-bdbuy]'))) { buyBundle(el.getAttribute('data-bdbuy')); return; }
+  if ((el = t.closest('[data-ofbuy]'))) { buyOutfit(el.getAttribute('data-ofbuy')); return; }
   if ((el = t.closest('[data-sm]'))) { SMODE = el.getAttribute('data-sm'); renderShop(); return; }
-  if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); renderShop(); return; }
+  if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); if (SMODE === 'bd') SMODE = 'zone'; renderShop(); return; }
   if (t.closest('#hq')) { var on = !$('stage').classList.contains('gd-hq'); setHq(on); try { localStorage.setItem('ewt-garden-hq', on ? '1' : '0'); } catch (er) {} return; }
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
   if (t.closest('[data-more]')) { SHOPN += 60; renderShop(); return; }
@@ -861,12 +897,24 @@ document.addEventListener('mouseover', function (e) {
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePop(); $('quiz').classList.remove('on'); $('petm').classList.remove('on'); $('frm').classList.remove('on'); $('evm').classList.remove('on'); $('trm').classList.remove('on'); } if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('gt')) { e.preventDefault(); onTile(+e.target.getAttribute('data-i')); } });
 
 /* ───────── thú cưng: thẻ chăm sóc ───────── */
+function openDress(pid) {
+  var p = S.pets.filter(function (x) { return x.id === pid; })[0]; if (!p || !D.BD) return; var pt = D.PBY[p.k], have = bagOf().outfits || {}, h = '';
+  if (!A.dressedPet(p.k, 'fez')) { toast('Bé ' + p.name + ' chưa có dáng để mặc đồ — thử với bé khác nhé! 🐾', 3200); return; }
+  var ids = Object.keys(have).filter(function (k) { return have[k] > 0 && D.BD.OBY[k]; }); if (p.o && ids.indexOf(p.o) < 0) ids.unshift(p.o);
+  ids.forEach(function (id) { var o = D.BD.OBY[id]; h += '<button class="gd-it' + (p.o === id ? ' on' : '') + '" data-wear="' + id + '"><span class="gd-th">' + A.petSvg(pt, 64, '', o.acc) + '</span><b>' + esc(o.name) + '</b><small>' + (p.o === id ? '✅ Đang mặc' : '🧺 ×' + (have[id] | 0)) + '</small></button>'; });
+  $('petbody').innerHTML = '<h3 style="margin:0 0 6px;text-align:center">👗 Mặc đồ cho ' + esc(p.name) + '</h3>' + (h ? '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + h + '</div>' : '<p class="gd-sub" style="text-align:center">Bạn chưa có trang phục nào. Mua ở cửa hàng, mục 🎁 Bộ ưu đãi nhé!</p>') + '<div class="gd-act" style="justify-content:center;margin-top:8px">' + (p.o ? '<button class="gd-btn" id="pundress">🧥 Cởi đồ</button>' : '') + '<button class="gd-btn" id="pback">← Quay lại</button></div>';
+  var go = function (o) { api('/api/garden/pet/dress', { pid: pid, outfit: o }).then(function (d) { setState(d); openPet(pid); }).catch(function (er) { toast(er.message); }); };
+  Array.prototype.forEach.call($('petbody').querySelectorAll('[data-wear]'), function (b) { b.onclick = function () { go(b.getAttribute('data-wear')); }; });
+  if ($('pundress')) $('pundress').onclick = function () { go(null); };
+  $('pback').onclick = function () { openPet(pid); };
+}
 function openPet(pid) {
   if (VISIT) return;
   var p = S.pets.filter(function (x) { return x.id === pid; })[0]; if (!p) return; var pt = D.PBY[p.k];
-  $('petbody').innerHTML = '<div style="text-align:center"><div style="width:120px;height:120px;margin:0 auto">' + A.petSvg(pt, '100%') + '</div><h3 style="margin:6px 0 2px">' + esc(p.name) + '</h3><p class="gd-sub">' + esc(pt.name) + ' · ' + H(p.fed ? '💗 Đã được ăn hôm nay, bé rất vui!' : '🍪 Bé đang đói, cho ăn nhé (+' + D.RULES.feedXu + ' 🪙).') + '</p></div><div class="gd-act" style="justify-content:center"><button class="gd-btn pri" id="pfeed"' + (p.fed ? ' disabled' : '') + '>🍪 Cho ăn</button><button class="gd-btn" id="pren">✏️ Đổi tên</button><button class="gd-btn" id="prel">👋 Tạm biệt</button></div>';
+  $('petbody').innerHTML = '<div style="text-align:center"><div style="width:120px;height:120px;margin:0 auto">' + A.petSvg(pt, '100%', '', p.o && D.BD ? D.BD.OBY[p.o].acc : null) + '</div><h3 style="margin:6px 0 2px">' + esc(p.name) + '</h3><p class="gd-sub">' + esc(pt.name) + ' · ' + H(p.fed ? '💗 Đã được ăn hôm nay, bé rất vui!' : '🍪 Bé đang đói, cho ăn nhé (+' + D.RULES.feedXu + ' 🪙).') + '</p></div><div class="gd-act" style="justify-content:center"><button class="gd-btn pri" id="pfeed"' + (p.fed ? ' disabled' : '') + '>🍪 Cho ăn</button><button class="gd-btn" id="pdress">👗 Mặc đồ</button><button class="gd-btn" id="pren">✏️ Đổi tên</button><button class="gd-btn" id="prel">👋 Tạm biệt</button></div>';
   $('petm').classList.add('on');
   $('pfeed').onclick = function () { api('/api/garden/pet/feed', { pid: pid }).then(function (d) { setState(d); $('petm').classList.remove('on'); toast('💗 ' + p.name + ' ăn no rồi!' + (d.gained ? ' +' + d.gained + ' 🪙' : '')); }).catch(function (er) { toast(er.message); }); };
+  $('pdress').onclick = function () { openDress(pid); };
   $('pren').onclick = async function () { var nm = (await ewtPrompt('Tên mới cho bé:', p.name)); if (nm && nm.trim()) api('/api/garden/pet/rename', { pid: pid, name: nm }).then(function (d) { setState(d); $('petm').classList.remove('on'); }).catch(function (er) { toast(er.message); }); };
   $('prel').onclick = async function () { if ((await ewtConfirm('Cất ' + p.name + ' vào giỏ? Bạn có thể nhận nuôi lại miễn phí ở tab Giỏ.'))) api('/api/garden/pet/release', { pid: pid }).then(function (d) { setState(d); $('petm').classList.remove('on'); toast('🧺 Đã cất ' + p.name + ' vào giỏ.'); }).catch(function (er) { toast(er.message); }); };
 }

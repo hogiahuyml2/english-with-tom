@@ -44,10 +44,11 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   // Giỏ hàng: đồ đã mua nhưng đang cất (items), thú cưng đang cất (pets), phiếu miễn phí (free)
   const FREE_CLS = { plant: 'plant', tree: 'tree', deco: 'deco', ground: 'deco', big: 'big' };
   function normBag(b) {
-    const o = { items: {}, pets: [], free: { plant: 0, tree: 0, deco: 0, big: 0, pet: 0, boost: 0 } };
+    const o = { items: {}, outfits: {}, pets: [], free: { plant: 0, tree: 0, deco: 0, big: 0, pet: 0, boost: 0 } };
     if (!b || typeof b !== 'object') return o;
     Object.keys(b.items || {}).forEach((k) => { const n = Math.floor(Number(b.items[k])); if (G.BY[k] && n > 0) o.items[k] = Math.min(n, 999); });
     (Array.isArray(b.pets) ? b.pets : []).slice(0, 60).forEach((p) => { if (p && G.PBY[p.k]) o.pets.push({ k: p.k, name: String(p.name || G.PBY[p.k].name).replace(/[<>]/g, '').slice(0, 16) }); });
+    Object.keys(b.outfits || {}).forEach((k) => { const n = Math.floor(Number(b.outfits[k])); if (G.BD && G.BD.OBY[k] && n > 0) o.outfits[k] = Math.min(n, 99); });
     Object.keys(o.free).forEach((k) => { const n = Math.floor(Number((b.free || {})[k])); if (n > 0) o.free[k] = Math.min(n, 9999); });
     return o;
   }
@@ -101,7 +102,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   function view(st) {
     const beauty = G.beautyOf(st), level = G.levelOf(beauty), nl = G.nextLevel(beauty), t = Date.now(), R = G.RULES;
     return {
-      name: st.name, zones: st.zones, land: st.land, bag: st.bag, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, z: p.z, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
+      name: st.name, zones: st.zones, land: st.land, bag: st.bag, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, z: p.z, o: p.o || null, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
       next: nl ? { level: nl.n, need: nl.at - beauty, title: nl.title } : null, slots: G.petSlots(level),
       quests: X ? X.questsView(st) : null, events: X ? X.eventsView(st) : null, passport: Object.keys(st.passport || {}).filter((k) => st.passport[k] && st.passport[k].stamp),
       left: { yield: Math.max(0, R.yieldCapDay - st.yield_xu), feed: Math.max(0, R.feedCapDay - st.feed_xu), quiz: Math.max(0, R.quizCapDay - st.quiz_ok) }, now: t, quizTotal: st.quiz_total
@@ -274,6 +275,51 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     if (out.err) return bad(res, out.err);
     reply(res, req.user, out.st, { used: out.used });
   });
+  /* ───── bộ ưu đãi (lễ hội / ẩm thực) và trang phục thú cưng ───── */
+  app.post('/api/garden/bundle/buy', requireAuth, (req, res) => {
+    const b = G.BD && G.BD.BDBY[String((req.body || {}).id)];
+    const out = tx(() => {
+      const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+      if (!b) return { err: 'Bộ này không tồn tại.' };
+      const z = G.ZBY[b.z]; if (z && z.lvl > lvl) return { err: 'Cần vườn cấp ' + z.lvl + ' để mua bộ này.' };
+      const pr = G.BD.priceOf(b, G.BY).price;
+      const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(pr, req.user.id, pr);
+      if (!r.changes) return { err: 'Chưa đủ xu (cần ' + pr + ' 🪙).' };
+      b.items.forEach((id) => { if (G.BD.OBY[id]) st.bag.outfits[id] = Math.min(99, (st.bag.outfits[id] | 0) + 1); else bagAdd(st, id, 1); });
+      save(st); return { st, pr };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { paid: out.pr });
+  });
+  app.post('/api/garden/outfit/buy', requireAuth, (req, res) => {
+    const o = G.BD && G.BD.OBY[String((req.body || {}).id)];
+    const out = tx(() => {
+      const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+      if (!o) return { err: 'Trang phục này không tồn tại.' };
+      if (o.lvl > lvl) return { err: 'Cần vườn cấp ' + o.lvl + ' để mua trang phục này.' };
+      const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(o.cost, req.user.id, o.cost);
+      if (!r.changes) return { err: 'Chưa đủ xu (cần ' + o.cost + ' 🪙).' };
+      st.bag.outfits[o.id] = Math.min(99, (st.bag.outfits[o.id] | 0) + 1); save(st); return { st };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st);
+  });
+  app.post('/api/garden/pet/dress', requireAuth, (req, res) => {
+    const oid = (req.body || {}).outfit;
+    const out = tx(() => {
+      const st = load(req.user), p = st.pets.find((x) => x.id === (req.body || {}).pid);
+      if (!p) return { err: 'Không thấy thú cưng này.' };
+      if (oid) {
+        if (!G.BD || !G.BD.OBY[oid]) return { err: 'Trang phục không tồn tại.' };
+        if (!(st.bag.outfits[oid] > 0)) return { err: 'Bạn chưa có trang phục này trong giỏ.' };
+        st.bag.outfits[oid]--; if (!st.bag.outfits[oid]) delete st.bag.outfits[oid];
+      }
+      if (p.o) st.bag.outfits[p.o] = Math.min(99, (st.bag.outfits[p.o] | 0) + 1);
+      p.o = oid || null; save(st); return { st };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st);
+  });
   app.post('/api/garden/pet/feed', requireAuth, (req, res) => {
     const out = tx(() => {
       const st = load(req.user), p = st.pets.find((x) => x.id === (req.body || {}).pid);
@@ -295,6 +341,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   app.post('/api/garden/pet/release', requireAuth, (req, res) => {
     const st = load(req.user), p = st.pets.find((x) => x.id === (req.body || {}).pid);
     if (!p) return bad(res, 'Không thấy thú cưng này.');
+    if (p.o) st.bag.outfits[p.o] = Math.min(99, (st.bag.outfits[p.o] | 0) + 1);
     st.pets = st.pets.filter((x) => x !== p); if (st.bag.pets.length < 60) st.bag.pets.push({ k: p.k, name: p.name });   // cất vào giỏ, nhận nuôi lại miễn phí
     save(st); reply(res, req.user, st, { stored: p.name });
   });

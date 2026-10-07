@@ -465,6 +465,7 @@
   var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd', 'e'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
   if (CAT) CAT.build({ zones: ZONES, items: ITEMS, pets: PETS });
   var EV = root.EWTGardenEvents || (typeof require === 'function' ? require('./garden-events.js') : null); if (EV) EV.build({ items: ITEMS, pets: PETS });   // món giới hạn theo sự kiện
+  var BD = root.EWTGardenBundles || (typeof require === 'function' ? require('./garden-bundles.js') : null); if (BD) BD.build({ items: ITEMS });   // món trong các bộ lễ hội / ẩm thực
   var BY = {}; ITEMS.forEach(function (i) { BY[i.id] = i; });
   var PBY = {}; PETS.forEach(function (i) { PBY[i.id] = i; });
 
@@ -486,6 +487,6 @@
     Object.keys(state.land || {}).forEach(function (k) { b += (state.land[k] | 0) * 2; }); return b;
   }
 
-  var API = { EV: EV, ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
+  var API = { BD: BD, EV: EV, ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);
