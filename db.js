@@ -576,6 +576,17 @@ CREATE INDEX IF NOT EXISTS idx_mcq_assign_user ON mcq_assign(user_id);
 CREATE INDEX IF NOT EXISTS idx_mcq_att ON mcq_attempts(test_id, user_id);
 `, 'mcq tables');
 
+// Đề trắc nghiệm: chọn ngẫu nhiên N câu cho mỗi học sinh; bật/tắt riêng điểm / đáp án (reveal) / giải thích
+try {
+  const hadExp = db.prepare('PRAGMA table_info(mcq_tests)').all().some(c => c.name === 'show_exp');
+  safeAlter('PRAGMA table_info(mcq_tests)', [
+    ['pick_n',     'ALTER TABLE mcq_tests ADD COLUMN pick_n INTEGER NOT NULL DEFAULT 0'],
+    ['show_score', 'ALTER TABLE mcq_tests ADD COLUMN show_score INTEGER NOT NULL DEFAULT 1'],
+    ['show_exp',   'ALTER TABLE mcq_tests ADD COLUMN show_exp INTEGER NOT NULL DEFAULT 0'],
+  ]);
+  if (!hadExp) db.exec('UPDATE mcq_tests SET show_exp=reveal'); // đề cũ: đang hiện đáp án thì giữ nguyên việc hiện giải thích
+} catch (e) { console.warn('[DB] mcq migration:', e.message); }
+
 // Mở rộng kho từ: loại mục (word / colloc / upgrade) + các trường phụ
 safeAlter('PRAGMA table_info(vocab_words)', [
   ['kind',          "ALTER TABLE vocab_words ADD COLUMN kind TEXT NOT NULL DEFAULT 'word'"],

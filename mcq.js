@@ -48,6 +48,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     if (b.all_students) for (const r of db.prepare("SELECT id FROM users WHERE role='student'").all()) set.add(Number(r.id));
     return set;
   }
+  const effN = (t, n) => (t.pick_n > 0 && t.pick_n < n ? t.pick_n : n);
   const fmtLimit = (t) => (t.duration_min ? t.duration_min + ' phút' : 'không giới hạn thời gian');
 
   // ── Chấm điểm một lượt làm bài (theo hoán vị đã lưu) ──
@@ -92,10 +93,19 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
   }
   function resultPayload(test, att, forceReveal) {
     const answers = J(att.answers, []);
-    const out = { attemptId: att.id, status: att.status, score: att.score, total: att.total, percent: att.total ? Math.round(att.score / att.total * 100) : 0,
+    const hideScore = !test.show_score && !forceReveal && att.status === 'done';
+    const out = { attemptId: att.id, status: att.status, score: hideScore ? null : att.score, total: att.total, percent: hideScore ? null : (att.total ? Math.round(att.score / att.total * 100) : 0), scoreHidden: hideScore,
       autoSubmit: att.auto_submit || null, leaves: att.leaves, awayMs: att.away_ms, usedMs: att.finished_at ? att.finished_at - att.started_at : null,
-      reveal: !!test.reveal, review: null };
-    if (att.status === 'done' && (test.reveal || forceReveal)) out.review = reviewOf(test, att, answers);
+      reveal: !!test.reveal, showExp: !!test.show_exp, review: null };
+    if (att.status === 'done' && (test.reveal || test.show_exp || forceReveal)) {
+      out.review = reviewOf(test, att, answers).map(x => {
+        if (forceReveal) return x;
+        const y = { n: x.n, q: x.q, opts: x.opts, chosen: x.chosen };
+        if (test.reveal) { y.correct = x.correct; y.ok = x.ok; }
+        if (test.show_exp) y.exp = x.exp;
+        return y;
+      });
+    }
     return out;
   }
 
@@ -155,18 +165,20 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     const maxLeaves = Math.max(0, Math.min(20, parseInt(b.max_leaves, 10) || 0));
     const deadline = b.deadline ? String(b.deadline).slice(0, 25) : null;
     if (deadline && Number.isNaN(new Date(deadline.includes('T') ? deadline : deadline.replace(' ', 'T')).getTime())) return res.status(400).json({ error: 'Hạn nộp không hợp lệ.' });
+    const pickN = Math.max(0, parseInt(b.pick_n, 10) || 0);
+    if (pickN > questions.length) return res.status(400).json({ error: 'Số câu mỗi học sinh (' + pickN + ') lớn hơn số câu trong ngân hàng (' + questions.length + ').' });
     const rec = collectRecipients(b);
     if (!rec.size) return res.status(400).json({ error: 'Chưa chọn học sinh nào nhận đề (chọn lớp, tick học sinh hoặc nhập email).' });
     try {
       db.exec('BEGIN');
-      const r = db.prepare('INSERT INTO mcq_tests (teacher_id,title,note,questions,duration_min,max_leaves,shuffle_q,shuffle_o,reveal,deadline,source_name,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
-        .run(req.user.id, title, String(b.note || '').trim().slice(0, 400) || null, JSON.stringify(questions), duration, maxLeaves, b.shuffle_q === false ? 0 : 1, b.shuffle_o === false ? 0 : 1, b.reveal ? 1 : 0, deadline, String(b.source_name || '').slice(0, 120) || null, now());
+      const r = db.prepare('INSERT INTO mcq_tests (teacher_id,title,note,questions,duration_min,max_leaves,shuffle_q,shuffle_o,reveal,deadline,source_name,created_at,pick_n,show_score,show_exp) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+        .run(req.user.id, title, String(b.note || '').trim().slice(0, 400) || null, JSON.stringify(questions), duration, maxLeaves, b.shuffle_q === false ? 0 : 1, b.shuffle_o === false ? 0 : 1, b.reveal ? 1 : 0, deadline, String(b.source_name || '').slice(0, 120) || null, now(), pickN >= questions.length ? 0 : pickN, b.show_score === false ? 0 : 1, b.show_exp ? 1 : 0);
       const id = Number(r.lastInsertRowid);
       const ins = db.prepare('INSERT OR IGNORE INTO mcq_assign (test_id,user_id,assigned_at) VALUES (?,?,?)');
       for (const uid of rec) ins.run(id, uid, now());
       db.exec('COMMIT');
       const t = { duration_min: duration };
-      for (const uid of rec) { try { notifyUser(uid, 'mcq', '📝 Đề trắc nghiệm mới: ' + title, questions.length + ' câu · ' + fmtLimit(t) + (deadline ? ' · hạn ' + deadline.replace('T', ' ') : ''), 'mcq.html?id=' + id); } catch (e) {} }
+      for (const uid of rec) { try { notifyUser(uid, 'mcq', '📝 Đề trắc nghiệm mới: ' + title, effN({ pick_n: pickN }, questions.length) + ' câu · ' + fmtLimit(t) + (deadline ? ' · hạn ' + deadline.replace('T', ' ') : ''), 'mcq.html?id=' + id); } catch (e) {} }
       res.json({ ok: true, id, recipients: rec.size });
     } catch (e) {
       try { db.exec('ROLLBACK'); } catch (_) {}
@@ -182,7 +194,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     const rec = collectRecipients(req.body || {});
     if (!rec.size) return res.status(400).json({ error: 'Chưa chọn học sinh nào.' });
     let added = 0; const ins = db.prepare('INSERT OR IGNORE INTO mcq_assign (test_id,user_id,assigned_at) VALUES (?,?,?)');
-    for (const uid of rec) if (Number(ins.run(t.id, uid, now()).changes || 0)) { added++; try { notifyUser(uid, 'mcq', '📝 Đề trắc nghiệm mới: ' + t.title, J(t.questions, []).length + ' câu · ' + fmtLimit(t), 'mcq.html?id=' + t.id); } catch (e) {} }
+    for (const uid of rec) if (Number(ins.run(t.id, uid, now()).changes || 0)) { added++; try { notifyUser(uid, 'mcq', '📝 Đề trắc nghiệm mới: ' + t.title, effN(t, J(t.questions, []).length) + ' câu · ' + fmtLimit(t), 'mcq.html?id=' + t.id); } catch (e) {} }
     res.json({ ok: true, added, already: rec.size - added });
   });
 
@@ -192,7 +204,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
       res.json({ tests: rows.map(t => {
         const assignedN = Number(db.prepare('SELECT COUNT(*) c FROM mcq_assign WHERE test_id=?').get(t.id).c);
         const st = db.prepare("SELECT COUNT(*) c, AVG(score*100.0/total) a FROM mcq_attempts WHERE test_id=? AND status='done' AND voided=0").get(t.id);
-        return { id: t.id, title: t.title, questions: J(t.questions, []).length, duration: t.duration_min, deadline: t.deadline || '', reveal: !!t.reveal, maxLeaves: t.max_leaves, created: t.created_at, assigned: assignedN, done: Number(st.c || 0), avg: st.a == null ? null : Math.round(Number(st.a)) };
+        return { id: t.id, title: t.title, questions: J(t.questions, []).length, pick: effN(t, J(t.questions, []).length), duration: t.duration_min, deadline: t.deadline || '', reveal: !!t.reveal, showScore: !!t.show_score, showExp: !!t.show_exp, maxLeaves: t.max_leaves, created: t.created_at, assigned: assignedN, done: Number(st.c || 0), avg: st.a == null ? null : Math.round(Number(st.a)) };
       }) });
     } catch (e) { console.error('[mcq/list]', e.message); res.status(500).json({ error: 'Không tải được danh sách đề.' }); }
   });
@@ -205,6 +217,10 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     const b = req.body || {};
     try {
       if (b.reveal !== undefined) db.prepare('UPDATE mcq_tests SET reveal=? WHERE id=?').run(b.reveal ? 1 : 0, t.id);
+      if (b.show_score !== undefined) db.prepare('UPDATE mcq_tests SET show_score=? WHERE id=?').run(b.show_score ? 1 : 0, t.id);
+      if (b.show_exp !== undefined) db.prepare('UPDATE mcq_tests SET show_exp=? WHERE id=?').run(b.show_exp ? 1 : 0, t.id);
+      if (b.duration_min !== undefined) db.prepare('UPDATE mcq_tests SET duration_min=? WHERE id=?').run(Math.max(0, Math.min(300, parseInt(b.duration_min, 10) || 0)), t.id); // chỉ áp dụng cho lượt làm mới
+      if (b.pick_n !== undefined) { const n = Math.max(0, parseInt(b.pick_n, 10) || 0); if (n > J(t.questions, []).length) return res.status(400).json({ error: 'Số câu lớn hơn ngân hàng câu hỏi.' }); db.prepare('UPDATE mcq_tests SET pick_n=? WHERE id=?').run(n >= J(t.questions, []).length ? 0 : n, t.id); } // chỉ áp dụng cho lượt làm mới
       if (b.deadline !== undefined) db.prepare('UPDATE mcq_tests SET deadline=? WHERE id=?').run(b.deadline ? String(b.deadline).slice(0, 25) : null, t.id);
       if (b.max_leaves !== undefined) db.prepare('UPDATE mcq_tests SET max_leaves=? WHERE id=?').run(Math.max(0, Math.min(20, parseInt(b.max_leaves, 10) || 0)), t.id);
       if (b.title !== undefined && String(b.title).trim()) db.prepare('UPDATE mcq_tests SET title=? WHERE id=?').run(String(b.title).trim().slice(0, 100), t.id);
@@ -255,18 +271,18 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     try {
       const qs = J(t.questions, []);
       const studs = db.prepare('SELECT u.id,u.name,u.email FROM mcq_assign a JOIN users u ON u.id=a.user_id WHERE a.test_id=? ORDER BY u.name').all(t.id);
-      const wrong = qs.map(() => 0); let doneN = 0;
+      const wrong = qs.map(() => 0), seen = qs.map(() => 0); let doneN = 0;
       const students = studs.map(u => {
         const a = sweep(activeAttempt(t.id, u.id));
-        const o = { id: u.id, name: u.name, email: u.email, status: a ? a.status : 'new', score: null, total: qs.length, percent: null, usedMs: null, leaves: a ? a.leaves : 0, awayMs: a ? a.away_ms : 0, auto: a ? a.auto_submit : null, startedAt: a ? a.started_at : null };
+        const o = { id: u.id, name: u.name, email: u.email, status: a ? a.status : 'new', score: null, total: effN(t, qs.length), percent: null, usedMs: null, leaves: a ? a.leaves : 0, awayMs: a ? a.away_ms : 0, auto: a ? a.auto_submit : null, startedAt: a ? a.started_at : null };
         if (a && a.status === 'done') {
           o.score = a.score; o.total = a.total; o.percent = a.total ? Math.round(a.score / a.total * 100) : 0; o.usedMs = a.finished_at - a.started_at; doneN++;
-          const g = grade(t, a, J(a.answers, [])); g.per.forEach(p => { if (!p.ok) wrong[p.qi]++; });
+          const g = grade(t, a, J(a.answers, [])); g.per.forEach(p => { seen[p.qi]++; if (!p.ok) wrong[p.qi]++; });
         }
         return o;
       });
-      res.json({ test: { id: t.id, title: t.title, total: qs.length, duration: t.duration_min, maxLeaves: t.max_leaves, reveal: !!t.reveal, deadline: t.deadline || '' }, students,
-        hardest: qs.map((q, i) => ({ n: i + 1, q: q.q.slice(0, 140), wrong: wrong[i], of: doneN })).filter(x => x.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 8) });
+      res.json({ test: { id: t.id, title: t.title, total: effN(t, qs.length), bank: qs.length, showScore: !!t.show_score, showExp: !!t.show_exp, duration: t.duration_min, maxLeaves: t.max_leaves, reveal: !!t.reveal, deadline: t.deadline || '' }, students,
+        hardest: qs.map((q, i) => ({ n: i + 1, q: q.q.slice(0, 140), wrong: wrong[i], of: seen[i] })).filter(x => x.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 8) });
     } catch (e) { console.error('[mcq/results]', e.message); res.status(500).json({ error: 'Không tải được kết quả.' }); }
   });
 
@@ -295,14 +311,14 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
   // ───────────── Học sinh ─────────────
   app.get('/api/mcq/mine', requireAuth, (req, res) => {
     try {
-      const rows = db.prepare(`SELECT t.id,t.title,t.note,t.duration_min,t.deadline,t.reveal,t.questions,u.name AS teacher FROM mcq_assign a JOIN mcq_tests t ON t.id=a.test_id LEFT JOIN users u ON u.id=t.teacher_id WHERE a.user_id=? ORDER BY t.id DESC LIMIT 60`).all(req.user.id);
+      const rows = db.prepare(`SELECT t.id,t.title,t.note,t.duration_min,t.deadline,t.reveal,t.show_score,t.pick_n,t.questions,u.name AS teacher FROM mcq_assign a JOIN mcq_tests t ON t.id=a.test_id LEFT JOIN users u ON u.id=t.teacher_id WHERE a.user_id=? ORDER BY t.id DESC LIMIT 60`).all(req.user.id);
       const t0 = Date.now();
       res.json({ tests: rows.map(r => {
         const a = sweep(activeAttempt(r.id, req.user.id));
         const dl = r.deadline ? new Date(r.deadline.includes('T') ? r.deadline : r.deadline.replace(' ', 'T')).getTime() : 0;
         let status = a ? (a.status === 'done' ? 'done' : 'in_progress') : 'new';
         if (status === 'new' && dl && t0 > dl) status = 'expired';
-        return { id: r.id, title: r.title, note: r.note || '', duration: r.duration_min, deadline: r.deadline || '', teacher: r.teacher || '', questions: J(r.questions, []).length, status, score: a && a.status === 'done' ? a.score : null, total: a && a.status === 'done' ? a.total : null };
+        return { id: r.id, title: r.title, note: r.note || '', duration: r.duration_min, deadline: r.deadline || '', teacher: r.teacher || '', questions: effN(r, J(r.questions, []).length), status, score: a && a.status === 'done' && r.show_score ? a.score : null, scoreHidden: !!(a && a.status === 'done' && !r.show_score), total: a && a.status === 'done' ? a.total : null };
       }) });
     } catch (e) { console.error('[mcq/mine]', e.message); res.status(500).json({ error: 'Không tải được đề.' }); }
   });
@@ -313,7 +329,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     const owner = isOwner(req.user, t);
     if (!owner && !assigned(t.id, req.user.id)) return res.status(403).json({ error: 'Đề này chưa được giao cho bạn.' });
     const a = owner ? null : sweep(activeAttempt(t.id, req.user.id));
-    const info = { id: t.id, title: t.title, note: t.note || '', teacher: t.teacher_name || '', duration: t.duration_min, total: J(t.questions, []).length, maxLeaves: t.max_leaves, deadline: t.deadline || '', reveal: !!t.reveal, owner, status: a ? (a.status === 'done' ? 'done' : 'in_progress') : 'new', serverNow: Date.now() };
+    const info = { id: t.id, title: t.title, note: t.note || '', teacher: t.teacher_name || '', duration: t.duration_min, total: effN(t, J(t.questions, []).length), maxLeaves: t.max_leaves, deadline: t.deadline || '', reveal: !!t.reveal, owner, status: a ? (a.status === 'done' ? 'done' : 'in_progress') : 'new', serverNow: Date.now() };
     if (a && a.status === 'done') info.result = resultPayload(t, a, false);
     res.json(info);
   });
@@ -329,7 +345,9 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
       if (!a) {
         const dl = t.deadline ? new Date(t.deadline.includes('T') ? t.deadline : t.deadline.replace(' ', 'T')).getTime() : 0;
         if (dl && Date.now() > dl) return res.status(403).json({ error: 'Đề này đã quá hạn làm bài.' });
-        const qOrder = t.shuffle_q ? shuffle(range(qs.length)) : range(qs.length);
+        const n = effN(t, qs.length);
+        let qOrder = n < qs.length ? shuffle(range(qs.length)).slice(0, n) : range(qs.length); // mỗi học sinh một bộ câu ngẫu nhiên riêng
+        qOrder = t.shuffle_q ? shuffle(qOrder) : qOrder.sort((x, y) => x - y);
         const perm = { q: qOrder, o: qOrder.map(qi => t.shuffle_o ? shuffle(range(qs[qi].opts.length)) : range(qs[qi].opts.length)) };
         const t0 = Date.now(), ends = t.duration_min ? t0 + t.duration_min * 60000 : 0;
         const r = db.prepare('INSERT INTO mcq_attempts (test_id,user_id,started_at,ends_at,perm,answers) VALUES (?,?,?,?,?,?)').run(t.id, req.user.id, t0, ends, JSON.stringify(perm), JSON.stringify(qOrder.map(() => null)));
