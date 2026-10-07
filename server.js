@@ -290,6 +290,7 @@ app.use('/api', (req, res, next) => (['POST', 'PUT', 'PATCH', 'DELETE'].includes
 app.use(['/api/grade-writing', '/api/grade-aptis-writing', '/api/writing-hints', '/api/writing-vocab'], onlyPost(rlAiStudent));
 app.use(['/api/teacher/ai-grade', '/api/teacher/model-answer', '/api/lesson-vocab/ai-cards', '/api/lesson-vocab/ai-questions', '/api/lesson-vocab/extract'], onlyPost(rlAiTeacher));
 app.use(['/api/upload', '/api/upload-recording'], onlyPost(rlUpload));
+try { require('./access')(app, { db, requireRole }); } catch (e) { console.error('[access] Không khởi động được:', e.message); } // nhật ký truy cập (phải đặt trước các route /api để ghi được thao tác)
 
 function requireAuth(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Bạn cần đăng nhập.' });

@@ -576,6 +576,39 @@ CREATE INDEX IF NOT EXISTS idx_mcq_assign_user ON mcq_assign(user_id);
 CREATE INDEX IF NOT EXISTS idx_mcq_att ON mcq_attempts(test_id, user_id);
 `, 'mcq tables');
 
+// Nhật ký truy cập (lượt xem trang, thao tác của người dùng) — xem access.js / access.html
+tryExec(`
+CREATE TABLE IF NOT EXISTS access_views (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts INTEGER NOT NULL,
+  day TEXT NOT NULL,
+  user_id INTEGER,
+  vid TEXT,
+  path TEXT NOT NULL,
+  title TEXT,
+  ref TEXT,
+  device TEXT,
+  browser TEXT,
+  country TEXT,
+  ip TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_access_views_day ON access_views(day, vid, ts);
+CREATE INDEX IF NOT EXISTS idx_access_views_user ON access_views(user_id, ts);
+CREATE TABLE IF NOT EXISTS access_actions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ts INTEGER NOT NULL,
+  day TEXT NOT NULL,
+  user_id INTEGER,
+  cat TEXT NOT NULL,
+  label TEXT NOT NULL,
+  path TEXT,
+  status INTEGER,
+  ip TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_access_actions_day ON access_actions(day, ts);
+CREATE INDEX IF NOT EXISTS idx_access_actions_user ON access_actions(user_id, ts);
+`, 'access log tables');
+
 // Đề trắc nghiệm: chọn ngẫu nhiên N câu cho mỗi học sinh; bật/tắt riêng điểm / đáp án (reveal) / giải thích
 try {
   const hadExp = db.prepare('PRAGMA table_info(mcq_tests)').all().some(c => c.name === 'show_exp');
