@@ -85,14 +85,19 @@
 .gd-tool { width: 64px; border: 2px solid #E8C48C; background: linear-gradient(180deg, #FFF6E2, #FFE2AA); color: #6B3E12; border-radius: 14px; padding: 6px 2px 5px; font: 800 10.5px inherit; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.15; transition: transform .1s; }
 .gd-tool .ic { margin: 0 auto 2px; width: 36px; height: 36px; } .gd-tool:hover { transform: translateY(-2px); } .gd-tool.on { background: linear-gradient(180deg, #A58BFF, #6F58EE); color: #fff; border-color: #fff; box-shadow: 0 0 0 3px rgba(111,88,238,.5); } .gd-tool:disabled { opacity: .5; cursor: not-allowed; } .gd-tool small { font-size: 9.5px; font-weight: 700; opacity: .85; }
 /* khu vực chơi */
-.gd-play { position: absolute; z-index: 5; left: 98px; right: 22px; top: var(--top); bottom: var(--tray); display: flex; align-items: center; justify-content: center; padding-bottom: 34px; }
+.gd-play { position: absolute; z-index: 5; left: 98px; right: 22px; top: var(--top); bottom: var(--tray); display: flex; padding-bottom: 34px; overflow: auto; overscroll-behavior: contain; }
+.gd-play > .gd-lawn { margin: auto; }
+.gd-lawn.tiny .tm, .gd-lawn.tiny .wd { display: none; }
+.gd-zctl { position: absolute; z-index: 7; right: 30px; top: calc(var(--top) + 6px); display: none; gap: 6px; align-items: center; justify-content: flex-end; flex-wrap: wrap; max-width: 70%; } .gd-stage:not(.map) .gd-zctl { display: flex; } body.visit .gd-zctl .tomod { display: none; } @media (max-width: 640px) { .gd-zctl { right: 10px; max-width: 78%; } }
+.gd-zsz { font-size: 12px; font-weight: 800; color: #fff; background: rgba(60,40,10,.55); border-radius: 99px; padding: 3px 10px; white-space: nowrap; } 
 .gd-lawn { position: relative; --ts: 64px; width: calc(var(--ts) * var(--cols) + 42px); padding: 14px; border-radius: 22px; background: #7A5230; border: 7px solid #B98046; box-shadow: inset 0 0 0 3px #D9A566, 0 14px 0 -2px rgba(70,40,10,.35), 0 22px 34px rgba(30,60,20,.45); flex: none; touch-action: manipulation; }
 .gd-lawn::before { content: ""; position: absolute; inset: 0; border-radius: 15px; pointer-events: none; box-shadow: inset 0 0 14px rgba(40,20,0,.35); z-index: 3; }
 .gd-zwrap { position: relative; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); border-radius: 8px; overflow: hidden; }
 .gd-zsvg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.gd-zscn { position: absolute; left: 0; top: 0; width: calc(var(--ts) * 7); height: calc(var(--ts) * 5); display: block; pointer-events: none; }
 .gd-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols), var(--ts)); grid-auto-rows: var(--ts); }
 .gt { position: relative; cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
-.gt::before { content: ""; position: absolute; inset: 3px; border-radius: 12px; background: radial-gradient(circle at 20% 30%, rgba(255,255,255,.22) 0 2px, transparent 3px), radial-gradient(circle at 70% 65%, rgba(60,120,40,.25) 0 2px, transparent 3px), radial-gradient(circle at 45% 80%, rgba(255,255,255,.16) 0 1.5px, transparent 2.5px), var(--bed, #92D46D); box-shadow: inset 0 0 0 2px var(--bedl, rgba(70,120,40,.4)), 0 3px 0 rgba(70,40,10,.3); }
+.gt::before { content: ""; position: absolute; inset: max(1px, calc(var(--ts) * .05)); border-radius: calc(var(--ts) * .18); background: radial-gradient(circle at 20% 30%, rgba(255,255,255,.22) 0 2px, transparent 3px), radial-gradient(circle at 70% 65%, rgba(60,120,40,.25) 0 2px, transparent 3px), radial-gradient(circle at 45% 80%, rgba(255,255,255,.16) 0 1.5px, transparent 2.5px), var(--bed, #92D46D); box-shadow: inset 0 0 0 2px var(--bedl, rgba(70,120,40,.4)), 0 3px 0 rgba(70,40,10,.3); }
 .gt.alt::before { background-color: var(--bed2, #87C964); }
 .gt.cov::before, .gt.bigc::before { display: none; } .gt.cov::after, .gt.bigc::after { display: none; } .gt.bigc { z-index: 4; }
 .bigart { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 4; } .bigart svg { width: 100%; height: 100%; display: block; overflow: visible; }
@@ -126,7 +131,7 @@
 .jet { animation: gdJet 1.2s ease-out infinite; } .jet.j2 { animation-name: gdJet2; } @keyframes gdJet { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-14px, 30px); opacity: 0; } } @keyframes gdJet2 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(14px, 30px); opacity: 0; } }
 .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: gdFlame .45s ease-in-out infinite alternate; } @keyframes gdFlame { to { transform: scale(.9, 1.12) skewX(4deg); } } .flag { transform-box: fill-box; transform-origin: 0 50%; animation: gdFlag 1.6s ease-in-out infinite; } @keyframes gdFlag { 50% { transform: scaleX(.8) skewY(6deg); } }
 /* ───────── Bản đồ các khu ───────── */
-.gd-map { display: none; position: absolute; z-index: 5; left: 14px; right: 14px; top: var(--top); bottom: var(--tray); padding: 4px 4px 12px; overflow: auto; align-content: center; justify-content: center; gap: 14px; grid-template-columns: repeat(var(--mc, 3), max-content); } .gd-stage.map .gd-map { display: grid; } .gd-stage.map .gd-play { display: none; } .gd-stage.map { --tray: 14px; } .gd-stage.map .gd-dock, .gd-stage.map .gd-tray { display: none; }
+.gd-map { display: none; position: absolute; z-index: 5; left: 14px; right: 14px; top: var(--top); bottom: var(--tray); padding: 4px 4px 12px; overflow: auto; align-content: start; justify-content: center; gap: 14px; grid-template-columns: repeat(var(--mc, 3), minmax(0, 1fr)); } .gd-zcard .zf { white-space: normal; text-wrap: balance; } .gd-stage.map .gd-map { display: grid; } .gd-stage.map .gd-play { display: none; } .gd-stage.map { --tray: 14px; } .gd-stage.map .gd-dock, .gd-stage.map .gd-tray { display: none; }
 .gd-zcard { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; border: 4px solid #C98E55; border-radius: 22px; background: linear-gradient(180deg, rgba(255,246,226,.97), rgba(255,231,184,.97)); padding: 8px 10px 10px; cursor: pointer; font-family: inherit; color: #6B3E12; box-shadow: 0 10px 22px rgba(60,30,5,.38), inset 0 2px 0 #fff; transition: transform .2s, box-shadow .2s; }
 .gd-zcard:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 18px 30px rgba(60,30,5,.45), 0 0 0 4px rgba(255,210,63,.7), inset 0 2px 0 #fff; }
 .gd-zcard .zh { font-weight: 800; font-size: 15px; display: flex; align-items: center; gap: 6px; } .gd-zcard .zf { font-size: 11.5px; font-weight: 700; color: #8A5A2E; text-align: center; line-height: 1.3; max-width: 100%; }
@@ -142,6 +147,14 @@
 .gd-lawn.z-winter { --bed: #F3F9FF; --bed2: #E1ECF7; --bedl: rgba(120,160,200,.55); background: repeating-linear-gradient(90deg, #EAF4FF 0 10px, #BFD6EC 10px 12px); border-color: #A9C6E0; }
 .gd-lawn.z-beach { --bed: #F3DE9F; --bed2: #EBD08A; --bedl: rgba(180,140,60,.5); background: repeating-linear-gradient(90deg, #E9C97C 0 12px, #C9A253 12px 14px); border-color: #B8883A; }
 .gd-lawn.z-magic { --bed: #7C58D8; --bed2: #6B47C4; --bedl: rgba(225,195,255,.65); background: repeating-linear-gradient(90deg, #8B63E0 0 10px, #5A38B0 10px 12px); border-color: #C9A8FF; box-shadow: inset 0 0 0 3px #E3CCFF, 0 0 26px 6px rgba(160,110,255,.5), 0 14px 0 -2px rgba(40,20,90,.4), 0 22px 34px rgba(30,20,80,.5); }
+.gd-lawn.z-sakura { --bed: #F9D9E6; --bed2: #F3C7DA; --bedl: rgba(214,120,160,.4); background: repeating-linear-gradient(90deg, #F7C6D8 0 10px, #E39BB8 10px 12px); border-color: #E7A1BD; }
+.gd-lawn.z-autumn { --bed: #E8B86C; --bed2: #DDA654; --bedl: rgba(150,90,30,.4); background: repeating-linear-gradient(90deg, #B7692F 0 12px, #8F4E1F 12px 14px); border-color: #A5622A; }
+.gd-lawn.z-mountain { --bed: #BCCBB1; --bed2: #AEC0A3; --bedl: rgba(90,110,90,.4); background: repeating-linear-gradient(45deg, #A9B0B8 0 9px, #8A929C 9px 11px); border-color: #7C8590; }
+.gd-lawn.z-desert { --bed: #F3D994; --bed2: #ECCD80; --bedl: rgba(180,130,50,.45); background: repeating-linear-gradient(90deg, #E6C277 0 12px, #C79B4A 12px 14px); border-color: #B8883A; }
+.gd-lawn.z-candy { --bed: #FFD2E7; --bed2: #FFC1DD; --bedl: rgba(220,90,150,.4); background: repeating-linear-gradient(45deg, #fff 0 8px, #FF8FB8 8px 16px); border-color: #FF6B9A; }
+.gd-lawn.z-ocean { --bed: #6EC7F1; --bed2: #5FB9E6; --bedl: rgba(255,255,255,.5); background: repeating-linear-gradient(90deg, #2B7FC0 0 10px, #1E5F9A 10px 12px); border-color: #7CC8F0; box-shadow: inset 0 0 0 3px #A8E0FF, 0 14px 0 -2px rgba(10,40,90,.4), 0 22px 34px rgba(10,40,90,.5); }
+.gd-lawn.z-sky { --bed: #E8F4FF; --bed2: #D9ECFF; --bedl: rgba(130,170,220,.5); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px, #CFE3F7 10px 12px); border-color: #BBD5F2; }
+.gd-lawn.z-space { --bed: #3B4088; --bed2: #30357A; --bedl: rgba(170,180,255,.5); background: repeating-linear-gradient(90deg, #5A6288 0 10px, #343B5E 10px 12px); border-color: #8FA0FF; box-shadow: inset 0 0 0 3px #B7C2FF, 0 0 26px 6px rgba(110,130,255,.45), 0 14px 0 -2px rgba(10,10,40,.5), 0 22px 34px rgba(10,10,50,.55); }
 .gd-lawn.z-palace { background: repeating-linear-gradient(90deg, #F6F1E3 0 12px, #CFC7B1 12px 14px); border-color: #D6BE7A; }
 .gd-zin { animation: gdZin .5s cubic-bezier(.2,1.2,.4,1); } @keyframes gdZin { from { transform: scale(.55); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .gd-zbar { pointer-events: auto; display: none; align-items: center; gap: 6px; margin-top: 6px; } .gd-stage:not(.map) .gd-zbar { display: flex; } @media (min-width: 901px) { .gd-stage:not(.map) { --top: 120px; } } @media (max-width: 900px) { .gd-stage:not(.map) { --top: 168px; } } @media (max-width: 640px) { .gd-stage:not(.map) { --top: 150px; } } .gd-stage:not(.map) .gd-gname { display: none; }
@@ -322,6 +335,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 
     <div class="gd-map" id="map"></div>
     <div class="gd-play" id="play"><div class="gd-lawn" id="lawn"></div></div>
+    <div class="gd-zctl" id="zctl"><span class="gd-zsz" id="zsize"></span><button class="gd-zbtn tomod" id="zexp">⛏️ Mở rộng đất</button><button class="gd-zbtn" id="zminus" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button class="gd-zbtn" id="zfit" aria-label="Vừa màn hình" title="Vừa màn hình">⤢</button><button class="gd-zbtn" id="zplus" aria-label="Phóng to" title="Phóng to">+</button></div>
     <div class="gd-hint" id="hint"></div>
 
     <div class="gd-tray" id="tray">
@@ -357,9 +371,10 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=47"></script>
-<script src="js/garden-data.js?v=8"></script>
+<script src="js/garden-data.js?v=9"></script>
 <script src="js/garden-art.js?v=6"></script>
-<script src="js/garden-world.js?v=7"></script>
+<script src="js/garden-world.js?v=8"></script>
+<script src="js/garden-world2.js?v=1"></script>
 <script>
 (function () {
 'use strict';
@@ -434,12 +449,16 @@ function buildScene() {
 function timeOfDay() { var h = new Date().getHours(); $('stage').classList.toggle('night', h >= 19 || h < 5); $('stage').classList.toggle('dusk', (h >= 17 && h < 19) || (h >= 5 && h < 6.5)); }
 
 /* ───────── bản đồ các khu & vẽ từng khu ───────── */
-var JUSTPLACED = -1, VIEW = 'map', COLS = D.COLS, ROWS = D.ROWS, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null;
+var JUSTPLACED = -1, VIEW = 'map', MAXC = D.MAXC, BASEC = D.BASEC, BASER = D.BASER, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null, ZOOM = 1;
+var ZORDER = D.ZONES.slice().sort(function (a, b) { return (a.lvl - b.lvl) || (a.cost - b.cost); });
+function zlv(z) { return (S && S.land && S.land[z.id]) | 0; }
+function zdim(z) { return D.landOf(zlv(z)); }
 function zoneUnlocked(id) { return S.zones.indexOf(id) >= 0; }
 function cellsHtml(z, ts, mini) {
-  var h = '', c, gi, t, it, alt, inner, cls, now = NOW(), blocked;
-  for (c = 0; c < PER; c++) {
-    gi = z.i * PER + c; blocked = z.mask[c]; t = S.tiles[gi]; it = t && D.BY[t.k]; inner = ''; alt = ((Math.floor(c / COLS) + c % COLS) % 2) ? ' alt' : ''; cls = 'gt' + alt + (blocked ? ' blk' : '');
+  var h = '', c, r, gi, t, it, alt, inner, cls, now = NOW(), blocked, d = zdim(z), tc;
+  for (tc = 0; tc < d.c * d.r; tc++) {
+    r = Math.floor(tc / d.c); c = tc % d.c;
+    gi = z.i * PER + r * MAXC + c; blocked = (r < BASER && c < BASEC) ? z.mask[r * BASEC + c] : 0; t = S.tiles[gi]; it = t && D.BY[t.k]; inner = ''; alt = ((r + c) % 2) ? ' alt' : ''; cls = 'gt' + alt + (blocked ? ' blk' : '');
     if (t && t.ref != null) cls += ' cov';
     if (it && it.kind === 'big') { cls += ' bigc'; inner = '<div class="bigart" style="width:calc(var(--ts) * ' + it.w + ');height:calc(var(--ts) * ' + it.h + ')">' + W.bigSvg(it.id) + '</div>'; }
     else if (it) {
@@ -454,28 +473,30 @@ function cellsHtml(z, ts, mini) {
   }
   return h;
 }
-function planted(z) { var n = 0, c; for (c = 0; c < PER; c++) if (!z.mask[c] && S.tiles[z.i * PER + c]) n++; return n; }
+function planted(z) { var n = 0, c, r, d = zdim(z); for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) if (!((r < BASER && c < BASEC) && z.mask[r * BASEC + c]) && S.tiles[z.i * PER + r * MAXC + c]) n++; return n; }
 function layout(z) {
-  var pl = $('play'), W0 = pl.clientWidth, Hh = pl.clientHeight - 34, ts = Math.max(30, Math.min(100, Math.floor(Math.min((W0 - 44) / COLS, (Hh - 44) / ROWS))));
-  $('lawn').style.setProperty('--ts', ts + 'px'); return ts;
+  var d = zdim(z), pl = $('play'), W0 = pl.clientWidth, Hh = pl.clientHeight - 34, fit = Math.floor(Math.min((W0 - 44) / d.c, (Hh - 44) / d.r)), mn = innerWidth <= 640 ? 26 : 22;
+  var ts = Math.max(mn, Math.min(100, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
+  $('lawn').style.setProperty('--ts', ts + 'px'); $('lawn').classList.toggle('tiny', ts < 34); return ts;
 }
 function renderMap() {
-  var m = $('map'), narrow = innerWidth <= 900, mc = narrow ? 2 : 3, rows = Math.ceil(D.ZONES.length / mc), cw = m.clientWidth - 8, ch = m.clientHeight - 16;
-  var tsW = Math.floor(((cw - 14 * (mc - 1)) / mc - 48) / COLS), tsH = Math.floor((ch / rows - 14 * (rows - 1) / rows - 112) / ROWS), ts = Math.max(narrow ? 17 : 22, Math.min(46, tsW, tsH));
+  var m = $('map'), narrow = innerWidth <= 900, mc = narrow ? 2 : (innerWidth > 1400 ? 4 : 3), cw = m.clientWidth - 8;
+  var tsW = Math.floor(((cw - 14 * (mc - 1)) / mc - 48) / BASEC), ts = Math.max(narrow ? 17 : 22, Math.min(40, tsW));
   m.style.setProperty('--mc', mc);
-  m.innerHTML = D.ZONES.map(function (z) {
-    var open = zoneUnlocked(z.id), pl = planted(z), canLv = z.lvl <= S.level;
+  m.innerHTML = ZORDER.map(function (z) {
+    var open = zoneUnlocked(z.id), pl = planted(z), canLv = z.lvl <= S.level, d = zdim(z), zts = Math.max(6, ts * Math.min(BASEC / d.c, BASER / d.r)), plots = z.plots + (d.cells - BASEC * BASER);
     var lock = open ? '' : '<div class="lk">🔒 ' + (VISIT ? 'Chưa mở' : (canLv ? 'Mở khu: ' + z.cost + ' ' + COIN : 'Cần vườn cấp ' + z.lvl)) + '</div>';
     return '<button class="gd-zcard' + (open ? '' : ' lock') + '" data-zone="' + z.id + '" aria-label="' + esc(z.name) + '"><div class="zh">' + z.icon + ' ' + esc(z.name) + '</div>' +
-      '<div class="gd-lawn z-' + z.id + '" style="--ts:' + ts + 'px;--cols:' + COLS + ';--rows:' + ROWS + '"><div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid">' + cellsHtml(z, ts, true) + '</div></div></div>' +
-      (open ? '<span class="zp">🌱 ' + pl + '/' + z.plots + ' ô đã trồng</span>' : '') + '<div class="zf">' + esc(z.desc) + '</div>' + lock + '</button>';
+      '<div class="gd-lawn z-' + z.id + '" style="--ts:' + zts.toFixed(2) + 'px;--cols:' + d.c + ';--rows:' + d.r + '"><div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid">' + cellsHtml(z, zts, true) + '</div></div></div>' +
+      (open ? '<span class="zp">🌱 ' + pl + '/' + plots + ' ô đã trồng · ' + d.c + '×' + d.r + '</span>' : '') + '<div class="zf">' + esc(z.desc) + '</div>' + lock + '</button>';
   }).join('');
 }
 function ensureLawn(z) {
   var lawn = $('lawn');
-  if (LAWNZ !== z.id) {
-    LAWNZ = z.id; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
-    lawn.style.setProperty('--cols', COLS); lawn.style.setProperty('--rows', ROWS);
+  var key = z.id + ':' + zlv(z);
+  if (LAWNZ !== key) {
+    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
+    var dm = zdim(z); lawn.style.setProperty('--cols', dm.c); lawn.style.setProperty('--rows', dm.r);
   }
 }
 function render() {
@@ -493,13 +514,22 @@ function render() {
   var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
   $('grid').innerHTML = cellsHtml(z, ts, false); JUSTPLACED = -1;
   $('zname').textContent = z.icon + ' ' + z.name;
-  var ul = D.ZONES.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(z); $('zprev').disabled = ix <= 0; $('znext').disabled = ix >= ul.length - 1;
+  var ul = ZORDER.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(z); $('zprev').disabled = ix <= 0; $('znext').disabled = ix >= ul.length - 1;
+  var dm = zdim(z), nxl = D.LAND[zlv(z) + 1]; $('zsize').textContent = dm.c + '×' + dm.r + ' · ' + dm.cells + ' ô';
+  $('zexp').textContent = nxl ? '⛏️ Mở rộng · ' + nxl.cost + ' 🪙' : '✅ Đất đã rộng hết cỡ'; $('zexp').disabled = !nxl; $('zexp').title = nxl ? 'Mở rộng lên ' + nxl.c + '×' + nxl.r + ' ô (' + nxl.cells + ' ô), cần vườn cấp ' + nxl.lvl : '';
   renderPets(ts); renderShop(); renderTools();
 }
 function enterZone(id) {
   if (!D.ZBY[id]) return; var z = D.ZBY[id];
   if (!zoneUnlocked(id)) { if (VISIT) return toast('Khu này bạn ấy chưa mở.'); return askUnlock(z); }
   VIEW = id; LAWNZ = null; TOOL = null; BRUSH = null; closePop(); render(); $('lawn').classList.remove('gd-zin'); void $('lawn').offsetWidth; $('lawn').classList.add('gd-zin');
+}
+function expandLand() {
+  var z = D.ZBY[VIEW]; if (!z || VISIT) return; var nx = D.LAND[zlv(z) + 1];
+  if (!nx) return toast('Đất khu này đã rộng hết cỡ rồi! 🎉');
+  if (nx.lvl > S.level) return toast('Cần vườn cấp ' + nx.lvl + ' để mở rộng đất lên ' + nx.c + '×' + nx.r + ' ô. Trang trí thêm để lên cấp nhé!', 3800);
+  if (!confirm('Mở rộng đất khu "' + z.name + '" lên ' + nx.c + '×' + nx.r + ' (' + nx.cells + ' ô) với giá ' + nx.cost + ' xu?\nCác ô sẽ nhỏ lại để vừa màn hình. (Bạn đang có ' + COINS + ' xu)')) return;
+  api('/api/garden/land/expand', { zone: z.id }).then(function (d) { setState(d); LAWNZ = null; ZOOM = 1; render(); toast('🎉 Đất khu "' + z.name + '" đã rộng ' + nx.c + '×' + nx.r + ' ô!', 3400); if (window.ewtCelebrate) window.ewtCelebrate(['party-popper', 'star', 'sparkles'], { count: 14, from: $('xu') }); }).catch(function (e) { toast(e.message, 3600); });
 }
 function toMap() { VIEW = 'map'; TOOL = null; BRUSH = null; closePop(); render(); }
 function askUnlock(z) {
@@ -523,15 +553,15 @@ function renderTools() {
 
 /* ───────── thú cưng đi dạo ───────── */
 function renderPets(ts) {
-  var el = $('pets'), h = '';
-  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (COLS - 1), y: Math.random() * (ROWS - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
+  var el = $('pets'), h = '', dm = zdim(D.ZBY[VIEW]);
+  S.pets.forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 , farm: [['pf', 6], ['lf', 3]], sakura: [['pf', 16], ['lf', 4]], autumn: [['lf', 16], ['pf', 3]], mountain: [['gl', 7], ['pf', 3]], desert: [['gl', 6]], candy: [['pt', 10], ['gl', 6]], ocean: [['gl', 16]], sky: [['pt', 8], ['gl', 8]], space: [['gl', 18]]}; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%') + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
   el.innerHTML = h;
 }
 function wander() {
   if (!S || document.hidden || VIEW === 'map') return; var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
   [].forEach.call(document.querySelectorAll('.gd-pet'), function (el) {
     var id = el.getAttribute('data-pid'), q = PETPOS[id]; if (!q || Math.random() < 0.35) return;
-    var nx = Math.max(0, Math.min(COLS - 1, q.x + (Math.random() * 3 - 1.5))), ny = Math.max(0, Math.min(ROWS - 1, q.y + (Math.random() * 3 - 1.5)));
+    var dm = zdim(D.ZBY[VIEW]), nx = Math.max(0, Math.min(dm.c - 1, q.x + (Math.random() * 3 - 1.5))), ny = Math.max(0, Math.min(dm.r - 1, q.y + (Math.random() * 3 - 1.5)));
     q.f = nx >= q.x ? 1 : -1; q.x = nx; q.y = ny; el.style.transform = 'translate(' + nx * ts + 'px,' + ny * ts + 'px)'; el.firstChild.style.transform = 'scaleX(' + q.f + ')';
   });
 }
@@ -564,7 +594,7 @@ function onTile(i) {
   if (TOOL === 'harvest') return doHarvest(i);
   if (TOOL === 'remove') { if (!it) return toast('Ô này đang trống.'); return api('/api/garden/remove', { i: i }).then(function (d) { setState(d); if (d.refund) toast('Đã dọn. Hoàn lại ' + d.refund + ' 🪙'); }).catch(function (e) { toast(e.message); }); }
   if (!it) {
-    if (BRUSH && BRUSH.kind === 'big') { var bi = D.BY[BRUSH.id], fp = D.footprint(i, bi); if (!fp || fp.some(function (k) { return D.isBlocked(k) || S.tiles[k]; })) return toast('Cần đủ ' + bi.w + '×' + bi.h + ' ô trống liền nhau (chạm vào ô góc trên-trái). Hãy chọn chỗ khác nhé.', 3600); }
+    if (BRUSH && BRUSH.kind === 'big') { var bi = D.BY[BRUSH.id], fp = D.footprint(i, bi, zlv(D.zoneOfCell(i))); if (!fp || fp.some(function (k) { return D.isBlocked(k) || S.tiles[k]; })) return toast('Cần đủ ' + bi.w + '×' + bi.h + ' ô trống liền nhau (chạm vào ô góc trên-trái). Hãy chọn chỗ khác nhé.', 3600); }
     if (BRUSH && BRUSH.kind !== 'pet') return api('/api/garden/place', { i: i, item: BRUSH.id }).then(function (d) { JUSTPLACED = i; setState(d); var e = tileEl(i); if (e && BRUSH.cost) floatText(e, '-' + BRUSH.cost + ' 🪙'); }).catch(function (e) { toast(e.message, 3600); if (e.data && e.data.need) $('earn').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 600 }); });
     return toast('Chọn một món ở khay cửa hàng bên dưới rồi chạm vào ô đất nhé 🌱');
   }
@@ -606,7 +636,9 @@ document.addEventListener('click', function (e) {
   if (t.closest('#harvAll')) { api('/api/garden/harvest-all', {}).then(function (d) { setState(d); toast('🧺 Thu hoạch ' + d.count + ' cây, nhận ' + d.gained + ' 🪙'); if (window.ewtCelebrate) window.ewtCelebrate(['star', 'sparkles', 'coin'], { count: 10, from: $('xu') }); }).catch(function (er) { toast(er.message); }); return; }
   if ((el = t.closest('[data-zone]'))) { enterZone(el.getAttribute('data-zone')); return; }
   if (t.closest('#toMap') || t.closest('#toMapTool')) { toMap(); return; }
-  if (t.closest('#zprev') || t.closest('#znext')) { var ul = D.ZONES.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(D.ZBY[VIEW]) + (t.closest('#znext') ? 1 : -1); if (ul[ix]) enterZone(ul[ix].id); return; }
+  if (t.closest('#zprev') || t.closest('#znext')) { var ul = ZORDER.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(D.ZBY[VIEW]) + (t.closest('#znext') ? 1 : -1); if (ul[ix]) enterZone(ul[ix].id); return; }
+  if (t.closest('#zplus') || t.closest('#zminus') || t.closest('#zfit')) { ZOOM = t.closest('#zfit') ? 1 : Math.max(.5, Math.min(3, ZOOM * (t.closest('#zplus') ? 1.25 : .8))); render(); return; }
+  if (t.closest('#zexp')) { expandLand(); return; }
   if (t.closest('#gname') && !VISIT) { var nm = prompt('Đặt tên cho khu vườn của bạn:', S.name); if (nm && nm.trim()) api('/api/garden/name', { name: nm }).then(setState).catch(function (er) { toast(er.message); }); return; }
   if ((el = t.closest('.gd-pet'))) { openPet(el.getAttribute('data-pid')); return; }
   if (t.closest('#earn')) { openQuiz(); return; }
@@ -624,7 +656,7 @@ function clearPv() { PV.forEach(function (e) { e.classList.remove('pv-ok', 'pv-b
 document.addEventListener('mouseover', function (e) {
   var c = e.target.closest && e.target.closest('.gt'); if (PV.length) clearPv();
   if (!c || VISIT || !BRUSH || BRUSH.kind !== 'big' || c.classList.contains('blk')) return;
-  var i = +c.getAttribute('data-i'), fp = D.footprint(i, D.BY[BRUSH.id]), ok = !!fp && fp.every(function (k) { return !D.isBlocked(k) && !S.tiles[k]; });
+  var i = +c.getAttribute('data-i'), fp = D.footprint(i, D.BY[BRUSH.id], zlv(D.zoneOfCell(i))), ok = !!fp && fp.every(function (k) { return !D.isBlocked(k) && !S.tiles[k]; });
   (fp || [i]).forEach(function (k) { var el = tileEl(k); if (el) { el.classList.add(ok ? 'pv-ok' : 'pv-bad'); PV.push(el); } });
 });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePop(); $('quiz').classList.remove('on'); $('petm').classList.remove('on'); $('frm').classList.remove('on'); } if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('gt')) { e.preventDefault(); onTile(+e.target.getAttribute('data-i')); } });

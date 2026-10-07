@@ -18,7 +18,7 @@ module.exports = function (app, { db, requireAuth, now }) {
     water INTEGER NOT NULL DEFAULT 10, water_day TEXT, yield_day TEXT, yield_xu INTEGER NOT NULL DEFAULT 0, feed_day TEXT, feed_xu INTEGER NOT NULL DEFAULT 0,
     quiz_day TEXT, quiz_ok INTEGER NOT NULL DEFAULT 0, quiz_total INTEGER NOT NULL DEFAULT 0, created_at TEXT, updated_at TEXT)`);
 
-  for (const c of ['share TEXT', 'open INTEGER NOT NULL DEFAULT 1', 'zones TEXT', 'v INTEGER NOT NULL DEFAULT 1']) { try { db.exec('ALTER TABLE garden ADD COLUMN ' + c); } catch (_) {} }
+  for (const c of ['share TEXT', 'open INTEGER NOT NULL DEFAULT 1', 'zones TEXT', 'v INTEGER NOT NULL DEFAULT 1', 'land TEXT']) { try { db.exec('ALTER TABLE garden ADD COLUMN ' + c); } catch (_) {} }
 
   const givenName = (n) => String(n || 'bạn').trim().split(/\s+/).slice(-1)[0] || 'bạn';
   const coinsOf = (uid) => { db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(uid); return one('SELECT coins FROM word_game WHERE user_id=?', uid).coins; };
@@ -28,22 +28,32 @@ module.exports = function (app, { db, requireAuth, now }) {
   function migrate(old) {
     const tiles = new Array(G.TOTAL).fill(null), zones = ['cottage'];
     let zi = 0, c = 0;
-    const nextFree = () => { for (;;) { const z = G.ZONES[zi]; if (!z) return -1; while (c < G.PER && (z.mask[c] || tiles[zi * G.PER + c])) c++; if (c < G.PER) return zi * G.PER + c; zi++; c = 0; if (G.ZONES[zi] && zones.indexOf(G.ZONES[zi].id) < 0) zones.push(G.ZONES[zi].id); } };
+    const cellAt = (z, k) => z * G.PER + Math.floor(k / G.BASEC) * G.MAXC + (k % G.BASEC);
+    const nextFree = () => { for (;;) { const z = G.ZONES[zi]; if (!z) return -1; while (c < z.cells && (z.mask[c] || tiles[cellAt(zi, c)])) c++; if (c < z.cells) return cellAt(zi, c); zi++; c = 0; if (G.ZONES[zi] && zones.indexOf(G.ZONES[zi].id) < 0) zones.push(G.ZONES[zi].id); } };
     old.forEach((t) => { if (!t) return; const k = nextFree(); if (k >= 0) tiles[k] = t; });
     return { tiles, zones };
   }
+  // Vườn phiên bản 2 (mỗi khu 35 ô) → phiên bản 3 (mỗi khu có khung lớn để mở rộng đất)
+  function remapV2(old) {
+    const t = new Array(G.TOTAL).fill(null);
+    (old || []).forEach((x, i) => { if (!x) return; const n = G.remapOld(i); if (n < t.length) t[n] = x.ref != null ? { ref: G.remapOld(x.ref) } : x; });
+    return t;
+  }
   function fromRow(r) {
     const st = { uid: r.user_id, name: r.name, size: 5, tiles: J(r.tiles, []), zones: J(r.zones, null), pets: J(r.pets, []), water: r.water, water_day: r.water_day, yield_day: r.yield_day, yield_xu: r.yield_xu, feed_day: r.feed_day, feed_xu: r.feed_xu, quiz_day: r.quiz_day, quiz_ok: r.quiz_ok, quiz_total: r.quiz_total };
+    st.land = J(r.land, {}); if (!st.land || typeof st.land !== 'object' || Array.isArray(st.land)) st.land = {};
     if ((r.v || 1) < 2 || !Array.isArray(st.zones)) { const m = migrate(st.tiles); st.tiles = m.tiles; st.zones = m.zones; }
+    else if ((r.v || 1) < 3) st.tiles = remapV2(st.tiles);
     if (st.tiles.length !== G.TOTAL) { const t = new Array(G.TOTAL).fill(null); st.tiles.forEach((x, i) => { if (i < t.length) t[i] = x; }); st.tiles = t; }
     st.zones = st.zones.filter((id) => G.ZBY[id]); if (st.zones.indexOf('cottage') < 0) st.zones.unshift('cottage');
+    Object.keys(st.land).forEach((k) => { const n = Number(st.land[k]); if (!G.ZBY[k] || !Number.isInteger(n) || n < 1) delete st.land[k]; else st.land[k] = Math.min(n, G.LAND.length - 1); });
     return st;
   }
   function load(user) {
     let r = one('SELECT * FROM garden WHERE user_id=?', user.id);
     if (!r) {
       db.prepare('INSERT INTO garden (user_id,name,size,tiles,zones,v,pets,water,water_day,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
-        .run(user.id, 'Vườn của ' + givenName(user.name), 5, JSON.stringify(new Array(G.TOTAL).fill(null)), JSON.stringify(['cottage']), 2, '[]', G.RULES.waterFree, vnDay(), now(), now());
+        .run(user.id, 'Vườn của ' + givenName(user.name), 5, '[]', JSON.stringify(['cottage']), 3, '[]', G.RULES.waterFree, vnDay(), now(), now());
       r = one('SELECT * FROM garden WHERE user_id=?', user.id);
     }
     const st = fromRow(r);
@@ -54,14 +64,17 @@ module.exports = function (app, { db, requireAuth, now }) {
     if (st.quiz_day !== today) { st.quiz_day = today; st.quiz_ok = 0; }
     return st;
   }
+  // Chỉ lưu đến ô cuối cùng có đồ (khung ô rất lớn, phần lớn để trống)
+  function trimTiles(t) { let n = t.length; while (n > 0 && !t[n - 1]) n--; return t.slice(0, n); }
+  const landLv = (st, z) => (z ? st.land[z.id] | 0 : 0);
   function save(st) {
-    db.prepare('UPDATE garden SET name=?,size=?,tiles=?,zones=?,v=2,pets=?,water=?,water_day=?,yield_day=?,yield_xu=?,feed_day=?,feed_xu=?,quiz_day=?,quiz_ok=?,quiz_total=?,updated_at=? WHERE user_id=?')
-      .run(st.name, st.size, JSON.stringify(st.tiles), JSON.stringify(st.zones), JSON.stringify(st.pets), st.water, st.water_day, st.yield_day, st.yield_xu, st.feed_day, st.feed_xu, st.quiz_day, st.quiz_ok, st.quiz_total, now(), st.uid);
+    db.prepare('UPDATE garden SET name=?,size=?,tiles=?,zones=?,land=?,v=3,pets=?,water=?,water_day=?,yield_day=?,yield_xu=?,feed_day=?,feed_xu=?,quiz_day=?,quiz_ok=?,quiz_total=?,updated_at=? WHERE user_id=?')
+      .run(st.name, st.size, JSON.stringify(trimTiles(st.tiles)), JSON.stringify(st.zones), JSON.stringify(st.land || {}), JSON.stringify(st.pets), st.water, st.water_day, st.yield_day, st.yield_xu, st.feed_day, st.feed_xu, st.quiz_day, st.quiz_ok, st.quiz_total, now(), st.uid);
   }
   function view(st) {
     const beauty = G.beautyOf(st), level = G.levelOf(beauty), nl = G.nextLevel(beauty), t = Date.now(), R = G.RULES;
     return {
-      name: st.name, zones: st.zones, tiles: st.tiles, pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
+      name: st.name, zones: st.zones, land: st.land, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
       next: nl ? { level: nl.n, need: nl.at - beauty, title: nl.title } : null, slots: G.petSlots(level),
       left: { yield: Math.max(0, R.yieldCapDay - st.yield_xu), feed: Math.max(0, R.feedCapDay - st.feed_xu), quiz: Math.max(0, R.quizCapDay - st.quiz_ok) }, now: t, quizTotal: st.quiz_total
     };
@@ -85,8 +98,9 @@ module.exports = function (app, { db, requireAuth, now }) {
         const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
         if (!it) return { err: 'Món này không tồn tại.' };
         if (!Number.isInteger(i) || i < 0 || i >= st.tiles.length) return { err: 'Ô đất không hợp lệ.' };
-        const fp = it.kind === 'big' ? G.footprint(i, it) : [i];
-        if (!fp) return { err: 'Công trình này không vừa chỗ — hãy chọn ô khác (cần đủ ' + it.w + '×' + it.h + ' ô trống).' };
+        const zn = G.zoneOfCell(i), ll = landLv(st, zn);
+        const fp = it.kind === 'big' ? G.footprint(i, it, ll) : (G.inLand(i, ll) ? [i] : null);
+        if (!fp) return { err: it.kind === 'big' ? 'Công trình này không vừa chỗ — hãy chọn ô khác (cần đủ ' + it.w + '×' + it.h + ' ô trống trong đất của khu).' : 'Ô này nằm ngoài đất đã mở của khu — hãy mở rộng đất trước nhé.' };
         if (fp.some((k) => G.isBlocked(k) || G.zoneOfCell(k).id !== G.zoneOfCell(i).id)) return { err: 'Đây là phong cảnh có sẵn của khu, hãy chọn ô đất trống khác nhé.' };
         if (fp.some((k) => st.tiles[k])) return { err: 'Chỗ này đã có đồ — cần ' + fp.length + ' ô trống liền nhau.' };
         if (st.zones.indexOf(G.zoneOfCell(i).id) < 0) return { err: 'Khu này chưa được mở.' };
@@ -111,7 +125,7 @@ module.exports = function (app, { db, requireAuth, now }) {
         const t = st.tiles[i]; if (!t) return { err: 'Ô này đang trống.' };
         const it = G.BY[t.k]; let back = 0;
         if (it && (it.kind === 'deco' || it.kind === 'ground' || it.kind === 'big') && it.cost > 0) { back = Math.floor(it.cost * G.RULES.sellBack); if (back) addCoins(req.user.id, back); }
-        (it && it.kind === 'big' ? G.footprint(i, it) || [i] : [i]).forEach((k) => { st.tiles[k] = null; });
+        (it && it.kind === 'big' ? G.footprint(i, it, G.LAND.length - 1) || [i] : [i]).forEach((k) => { st.tiles[k] = null; });
         save(st); return { st, back };
       });
       if (out.err) return bad(res, out.err);
@@ -151,6 +165,23 @@ module.exports = function (app, { db, requireAuth, now }) {
     const out = tx(() => { const st = load(req.user); let n = 0, xu = 0; st.tiles.forEach((t, i) => { const h = t && harvestOne(st, i, req.user.id); if (h) { n++; xu += h.gain; } }); if (n) save(st); return { st, n, xu }; });
     if (!out.n) return bad(res, 'Chưa có cây nào nở để thu hoạch.');
     reply(res, req.user, out.st, { gained: out.xu, count: out.n });
+  });
+
+  // Mở rộng đất của một khu (đã mở): lưới ô to hơn, ô nhỏ lại để vừa màn hình
+  app.post('/api/garden/land/expand', requireAuth, (req, res) => {
+    const z = G.ZBY[String((req.body || {}).zone)];
+    const out = tx(() => {
+      const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+      if (!z) return { err: 'Khu này không tồn tại.' };
+      if (st.zones.indexOf(z.id) < 0) return { err: 'Hãy mở khu này trước khi mở rộng đất.' };
+      const cur = landLv(st, z), nx = G.LAND[cur + 1];
+      if (!nx) return { err: 'Khu này đã mở rộng hết cỡ rồi!' };
+      if (nx.lvl > lvl) return { err: 'Cần vườn cấp ' + nx.lvl + ' để mở rộng đất lên ' + nx.c + '×' + nx.r + ' ô.' };
+      if (nx.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(nx.cost, req.user.id, nx.cost); if (!r.changes) return { err: 'Chưa đủ xu để mở rộng đất (cần ' + nx.cost + ' 🪙).', need: nx.cost }; }
+      st.land[z.id] = cur + 1; save(st); return { st };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st);
   });
 
   // Mở thêm một khu mới (cần đủ cấp vườn và xu)

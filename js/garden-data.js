@@ -73,11 +73,20 @@
   ];
   var LEVELS = [
     { n: 1, at: 0, title: 'Mầm non' }, { n: 2, at: 10, title: 'Vườn nhỏ xinh' }, { n: 3, at: 30, title: 'Vườn hoa' }, { n: 4, at: 60, title: 'Vườn rực rỡ' }, { n: 5, at: 100, title: 'Vườn mơ ước' },
-    { n: 6, at: 160, title: 'Vườn cổ tích' }, { n: 7, at: 240, title: 'Vườn thượng uyển' }, { n: 8, at: 340, title: 'Vườn thần tiên' }, { n: 9, at: 480, title: 'Vườn huyền thoại' }, { n: 10, at: 650, title: 'Khu vườn của Tom' }
+    { n: 6, at: 160, title: 'Vườn cổ tích' }, { n: 7, at: 240, title: 'Vườn thượng uyển' }, { n: 8, at: 340, title: 'Vườn thần tiên' }, { n: 9, at: 480, title: 'Vườn huyền thoại' }, { n: 10, at: 650, title: 'Khu vườn của Tom' },
+    { n: 11, at: 850, title: 'Vườn pha lê' }, { n: 12, at: 1100, title: 'Vườn ngân hà' }, { n: 13, at: 1400, title: 'Vườn bất tử' }, { n: 14, at: 1800, title: 'Vườn vô cực' }
   ];
-  // Các khu của EWT Garden: mỗi khu là một lưới cols×rows; "blocks" là phong cảnh có sẵn (nhà, cung điện, sông, hồ…) — học sinh chỉ xây trên các ô còn trống.
-  // nb:1 = chỉ là hình trang trí, không chiếm ô. Chỉ số ô toàn vườn = vị trí khu × 35 + (hàng × 7 + cột).
-  var COLS = 7, ROWS = 5, PER = COLS * ROWS;
+  // Các khu của EWT Garden: mỗi khu có một "khung ô" tối đa MAXC×MAXR; đất của khu mở rộng dần (xem LAND) từ góc trên-trái.
+  // "blocks" là phong cảnh có sẵn (nhà, cung điện, sông, hồ…) nằm trong vùng đất gốc 7×5 — học sinh chỉ xây trên các ô còn trống.
+  // nb:1 = chỉ là hình trang trí, không chiếm ô. Chỉ số ô toàn vườn = vị trí khu × PER + (hàng × MAXC + cột).
+  var BASEC = 7, BASER = 5, MAXC = 20, MAXR = 14, PER = MAXC * MAXR;
+  var COLS = BASEC, ROWS = BASER;
+  // Các mức mở rộng đất của MỌI khu (mỗi ô nhỏ lại để vừa màn hình, càng mở rộng càng nhiều ô)
+  var LAND = [
+    { c: 7, r: 5, cost: 0, lvl: 1 }, { c: 9, r: 6, cost: 120, lvl: 2 }, { c: 11, r: 7, cost: 300, lvl: 3 }, { c: 13, r: 8, cost: 600, lvl: 4 },
+    { c: 15, r: 10, cost: 1100, lvl: 5 }, { c: 17, r: 11, cost: 1800, lvl: 6 }, { c: 20, r: 12, cost: 2800, lvl: 8 }, { c: 20, r: 14, cost: 4200, lvl: 10 }
+  ];
+  LAND.forEach(function (l) { l.cells = l.c * l.r; });
   var ZONES = [
     { id: 'cottage', name: 'Vườn nhà Tom', icon: '🏡', desc: 'Căn nhà nhỏ ấm áp, lối đi lát đá dẫn ra cổng.', cost: 0, lvl: 1, blocks: [{ k: 'house', x: 0, y: 0, w: 2, h: 2 }, { k: 'pathv', x: 3, y: 0, w: 1, h: 5 }, { k: 'gate', x: 3, y: 4, w: 1, h: 1, nb: 1 }, { k: 'well', x: 6, y: 0, w: 1, h: 1 }] },
     { id: 'hill', name: 'Đồi gió', icon: '🌬️', desc: 'Cối xay gió quay trên đồi cỏ xanh mướt.', cost: 300, lvl: 2, blocks: [{ k: 'windmill', x: 5, y: 0, w: 2, h: 3 }, { k: 'pathh', x: 0, y: 3, w: 7, h: 1 }] },
@@ -87,24 +96,41 @@
     { id: 'palace', name: 'Cung điện hoa', icon: '🏰', desc: 'Cung điện lộng lẫy với đài phun nước và lối đi hoàng gia.', cost: 2500, lvl: 7, blocks: [{ k: 'palace', x: 1, y: 0, w: 5, h: 2 }, { k: 'fountain', x: 3, y: 2, w: 1, h: 1 }, { k: 'pathv', x: 3, y: 3, w: 1, h: 2 }] },
     { id: 'winter', name: 'Vườn mùa đông', icon: '❄️', desc: 'Tuyết rơi lấp lánh, nhà gỗ ấm cúng và hồ băng.', cost: 3500, lvl: 8, blocks: [{ k: 'cabin', x: 0, y: 0, w: 2, h: 2, snow: 1 }, { k: 'pathv', x: 3, y: 0, w: 1, h: 3, snow: 1 }, { k: 'snowman', x: 6, y: 0, w: 1, h: 1 }, { k: 'icepond', x: 4, y: 3, w: 3, h: 2 }, { k: 'snowpine', x: 2, y: 4, w: 1, h: 1 }] },
     { id: 'beach', name: 'Khu biển', icon: '🏖️', desc: 'Biển xanh sóng vỗ, hải đăng trắng đỏ và chòi dừa.', cost: 5000, lvl: 9, blocks: [{ k: 'sea', x: 0, y: 0, w: 5, h: 1 }, { k: 'lighthouse', x: 5, y: 0, w: 2, h: 2 }, { k: 'pier', x: 0, y: 1, w: 1, h: 2 }, { k: 'tikihut', x: 5, y: 3, w: 2, h: 2 }, { k: 'palm', x: 3, y: 2, w: 1, h: 1 }] },
-    { id: 'magic', name: 'Khu phép thuật', icon: '🔮', desc: 'Tháp pháp sư, hồ ánh sáng và ngôi nhà nấm huyền bí.', cost: 8000, lvl: 10, blocks: [{ k: 'wizard', x: 0, y: 0, w: 2, h: 3 }, { k: 'glowpool', x: 4, y: 1, w: 3, h: 2 }, { k: 'mushhouse', x: 5, y: 3, w: 2, h: 2 }, { k: 'portal', x: 3, y: 4, w: 1, h: 1 }, { k: 'crystals', x: 3, y: 0, w: 1, h: 1 }] }
+    { id: 'magic', name: 'Khu phép thuật', icon: '🔮', desc: 'Tháp pháp sư, hồ ánh sáng và ngôi nhà nấm huyền bí.', cost: 8000, lvl: 10, blocks: [{ k: 'wizard', x: 0, y: 0, w: 2, h: 3 }, { k: 'glowpool', x: 4, y: 1, w: 3, h: 2 }, { k: 'mushhouse', x: 5, y: 3, w: 2, h: 2 }, { k: 'portal', x: 3, y: 4, w: 1, h: 1 }, { k: 'crystals', x: 3, y: 0, w: 1, h: 1 }] },
+    // ── 9 khu mới (thêm vào cuối để không đổi chỉ số ô của vườn đã có) ──
+    { id: 'farm', name: 'Nông trại vui vẻ', icon: '🚜', desc: 'Chuồng đỏ, ruộng rau xanh mướt và bù nhìn canh đồng.', cost: 800, lvl: 3, blocks: [{ k: 'barn', x: 0, y: 0, w: 3, h: 2 }, { k: 'cropfield', x: 4, y: 0, w: 3, h: 2 }, { k: 'pathh', x: 0, y: 2, w: 7, h: 1 }, { k: 'scarecrow', x: 3, y: 3, w: 1, h: 1 }, { k: 'haystack', x: 6, y: 4, w: 1, h: 1 }] },
+    { id: 'sakura', name: 'Vườn anh đào', icon: '🌸', desc: 'Cổng torii đỏ, tháp chùa và hồ cá koi dưới tán hoa anh đào.', cost: 2000, lvl: 5, blocks: [{ k: 'sakuratree', x: 0, y: 0, w: 2, h: 2 }, { k: 'pagoda', x: 4, y: 0, w: 3, h: 3 }, { k: 'lantern', x: 3, y: 1, w: 1, h: 1 }, { k: 'koipond', x: 0, y: 2, w: 3, h: 2 }, { k: 'torii', x: 3, y: 3, w: 1, h: 2 }] },
+    { id: 'autumn', name: 'Rừng thu vàng', icon: '🍁', desc: 'Lá phong đỏ rực, đống lá khô và vườn bí ngô mùa thu.', cost: 2800, lvl: 6, blocks: [{ k: 'cabin', x: 0, y: 0, w: 2, h: 2 }, { k: 'pathv', x: 3, y: 0, w: 1, h: 3 }, { k: 'mapletree', x: 4, y: 0, w: 2, h: 2 }, { k: 'leafpile', x: 3, y: 3, w: 1, h: 1 }, { k: 'pumpkinpatch', x: 5, y: 3, w: 2, h: 2 }] },
+    { id: 'mountain', name: 'Núi non hùng vĩ', icon: '⛰️', desc: 'Đỉnh núi cắm cờ, thác nước trắng xoá và nhà nghỉ trên núi.', cost: 3200, lvl: 7, blocks: [{ k: 'cabin', x: 0, y: 0, w: 2, h: 2, snow: 1 }, { k: 'peak', x: 3, y: 0, w: 4, h: 3 }, { k: 'flagpole', x: 2, y: 2, w: 1, h: 1 }, { k: 'waterfall', x: 0, y: 3, w: 2, h: 2 }] },
+    { id: 'desert', name: 'Sa mạc kim tự tháp', icon: '🏜️', desc: 'Kim tự tháp cổ, ốc đảo xanh và lều của người du mục.', cost: 4200, lvl: 8, blocks: [{ k: 'pyramid', x: 0, y: 0, w: 3, h: 2 }, { k: 'cactus', x: 3, y: 0, w: 1, h: 1 }, { k: 'palm', x: 6, y: 0, w: 1, h: 1 }, { k: 'tent', x: 0, y: 3, w: 2, h: 2 }, { k: 'oasis', x: 4, y: 2, w: 3, h: 2 }] },
+    { id: 'candy', name: 'Xứ sở kẹo ngọt', icon: '🍭', desc: 'Nhà bánh quy, sông sô-cô-la và những cây kẹo mút khổng lồ.', cost: 6000, lvl: 9, blocks: [{ k: 'candyhouse', x: 0, y: 0, w: 3, h: 2 }, { k: 'lollipop', x: 3, y: 0, w: 1, h: 1 }, { k: 'chocoriver', x: 0, y: 3, w: 5, h: 1 }, { k: 'cupcake', x: 5, y: 2, w: 2, h: 2 }, { k: 'lollipop', x: 6, y: 0, w: 1, h: 1 }] },
+    { id: 'ocean', name: 'Đại dương san hô', icon: '🐠', desc: 'Rạn san hô rực rỡ, tàu đắm cổ và rương kho báu dưới đáy biển.', cost: 9000, lvl: 10, blocks: [{ k: 'coralreef', x: 0, y: 0, w: 3, h: 2 }, { k: 'seaweed', x: 3, y: 1, w: 1, h: 2 }, { k: 'treasure', x: 6, y: 0, w: 1, h: 1 }, { k: 'shipwreck', x: 4, y: 3, w: 3, h: 2 }] },
+    { id: 'sky', name: 'Thiên đường mây', icon: '☁️', desc: 'Lâu đài trên mây, cầu vồng bảy sắc và khinh khí cầu bay lượn.', cost: 12000, lvl: 11, blocks: [{ k: 'rainbow', x: 2, y: 0, w: 5, h: 1, nb: 1 }, { k: 'cloudcastle', x: 0, y: 0, w: 3, h: 3 }, { k: 'balloon', x: 5, y: 3, w: 1, h: 2 }] },
+    { id: 'space', name: 'Trạm vũ trụ', icon: '🚀', desc: 'Tên lửa chờ phóng, căn cứ Mặt Trăng và vệ tinh lấp lánh.', cost: 16000, lvl: 12, blocks: [{ k: 'rocket', x: 0, y: 0, w: 2, h: 3 }, { k: 'moonbase', x: 3, y: 0, w: 3, h: 2 }, { k: 'satellite', x: 6, y: 0, w: 1, h: 1 }, { k: 'crater', x: 3, y: 3, w: 2, h: 2 }] }
   ];
   ZONES.forEach(function (z, zi) {
-    z.i = zi; z.cols = COLS; z.rows = ROWS; z.cells = PER; z.mask = new Array(PER).fill(0);
-    z.blocks.forEach(function (b) { if (b.nb) return; for (var yy = b.y; yy < b.y + b.h; yy++) for (var xx = b.x; xx < b.x + b.w; xx++) z.mask[yy * COLS + xx] = 1; });
-    z.plots = z.mask.filter(function (m) { return !m; }).length;
+    z.i = zi; z.cols = BASEC; z.rows = BASER; z.cells = BASEC * BASER; z.mask = new Array(BASEC * BASER).fill(0);
+    z.blocks.forEach(function (b) { if (b.nb) return; for (var yy = b.y; yy < b.y + b.h; yy++) for (var xx = b.x; xx < b.x + b.w; xx++) z.mask[yy * BASEC + xx] = 1; });
+    z.plots = z.mask.filter(function (m) { return !m; }).length;   // số ô trống ở đất gốc
   });
   var ZBY = {}; ZONES.forEach(function (z) { ZBY[z.id] = z; });
   var TOTAL = ZONES.length * PER;
-  // Các ô mà một công trình lớn đặt tại ô i sẽ chiếm (null nếu tràn ra ngoài khu)
-  function footprint(i, it) {
-    var w = (it && it.w) || 1, h = (it && it.h) || 1, z = Math.floor(i / PER), c = i % PER, col = c % COLS, row = Math.floor(c / COLS), out = [], dx, dy;
-    if (z < 0 || z >= ZONES.length || col + w > COLS || row + h > ROWS) return null;
-    for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) out.push(z * PER + (row + dy) * COLS + col + dx);
+  // Kích thước đất hiện tại của một khu theo mức mở rộng
+  function landOf(lv) { return LAND[Math.max(0, Math.min(LAND.length - 1, lv | 0))]; }
+  // Các ô mà một công trình lớn đặt tại ô i sẽ chiếm (null nếu tràn ra ngoài đất đã mở của khu)
+  function footprint(i, it, lv) {
+    var w = (it && it.w) || 1, h = (it && it.h) || 1, z = Math.floor(i / PER), c = i % PER, col = c % MAXC, row = Math.floor(c / MAXC), out = [], dx, dy, ld = landOf(lv);
+    if (z < 0 || z >= ZONES.length || col + w > ld.c || row + h > ld.r) return null;
+    for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) out.push(z * PER + (row + dy) * MAXC + col + dx);
     return out;
   }
   function zoneOfCell(i) { return ZONES[Math.floor(i / PER)] || null; }
-  function isBlocked(i) { var z = zoneOfCell(i); return !z || !!z.mask[i % PER]; }
+  // Ô thuộc phong cảnh có sẵn (chỉ nằm trong vùng đất gốc 7×5)
+  function isBlocked(i) { var z = zoneOfCell(i); if (!z) return true; var c = i % PER, col = c % MAXC, row = Math.floor(c / MAXC); return col < BASEC && row < BASER && !!z.mask[row * BASEC + col]; }
+  // Ô có nằm trong đất đã mở của khu không
+  function inLand(i, lv) { var c = i % PER, col = c % MAXC, row = Math.floor(c / MAXC), ld = landOf(lv); return i >= 0 && i < TOTAL && col < ld.c && row < ld.r; }
+  // Chuyển chỉ số ô của vườn đời cũ (mỗi khu 7×5 = 35 ô) sang chỉ số mới
+  function remapOld(i) { var z = Math.floor(i / 35), c = i % 35; return z * PER + Math.floor(c / BASEC) * MAXC + (c % BASEC); }
   var SIZES = [{ n: 5, cost: 0 }, { n: 6, cost: 80 }, { n: 7, cost: 200 }, { n: 8, cost: 400 }, { n: 9, cost: 700 }, { n: 10, cost: 1000 }];
   var RULES = {
     waterFree: 10,        // lượt tưới miễn phí mỗi ngày
@@ -134,9 +160,10 @@
   function remainMs(item, tile, now) { return Math.max(0, growMs(item, tile.w) - (now - (tile.at || 0))); }
   function beautyOf(state) {
     var b = 0; (state.tiles || []).forEach(function (t) { if (t && BY[t.k]) b += BY[t.k].b; });
-    (state.pets || []).forEach(function (p) { b += 5; }); b += Math.max(0, ((state.zones || []).length || 1) - 1) * 8; return b;
+    (state.pets || []).forEach(function (p) { b += 5; }); b += Math.max(0, ((state.zones || []).length || 1) - 1) * 8;
+    Object.keys(state.land || {}).forEach(function (k) { b += (state.land[k] | 0) * 2; }); return b;
   }
 
-  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
+  var API = { ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);

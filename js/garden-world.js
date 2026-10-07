@@ -411,7 +411,6 @@
     var th = THEME[z.id] || THEME.cottage, R = rnd(z.i * 977 + 11), s = '', i, gx, gy;
     s += '<svg class="gd-zsvg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + DEFS +
       '<linearGradient id="zw-ground-' + z.id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + th.g1 + '"/><stop offset="1" stop-color="' + th.g2 + '"/></linearGradient>' +
-      '<linearGradient id="zw-water" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62C6F6"/><stop offset="1" stop-color="#A8E4FF"/></linearGradient>' +
       '<filter id="bg-noiseA" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012 .018" numOctaves="3" seed="' + (z.i * 7 + 3) + '"/><feColorMatrix type="matrix" values="0 0 0 0 .05  0 0 0 0 .2  0 0 0 0 .05  0 0 0 1.1 -.42"/></filter>' +
       '<filter id="bg-noiseB" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="2" seed="' + (z.i * 5 + 1) + '"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 -.45"/></filter></defs>';
     s += '<rect width="' + W + '" height="' + H + '" fill="url(#zw-ground-' + z.id + ')"/>';
@@ -420,11 +419,15 @@
     if (z.id === 'winter') { for (i = 0; i < 60; i++) { gx = R() * W; gy = R() * H; s += '<circle cx="' + gx + '" cy="' + gy + '" r="2.4" fill="#fff"/>'; } }
     else if (z.id === 'beach') { for (i = 0; i < 40; i++) { gx = R() * W; gy = 100 + R() * 400; s += '<path d="M' + gx + ' ' + gy + 'q8 -5 16 0" stroke="rgba(190,150,70,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>'; } for (i = 0; i < 7; i++) s += '<path d="M' + (R() * W) + ' ' + (130 + R() * 340) + 'l5 -9l5 9z" fill="#FF8FB8" opacity=".85"/>'; }
     else if (z.id === 'magic') { for (i = 0; i < 70; i++) s += '<circle class="spk" style="animation-delay:' + (-R() * 3).toFixed(2) + 's" cx="' + (R() * W) + '" cy="' + (R() * H) + '" r="' + (1.2 + R() * 2).toFixed(1) + '" fill="#E9D8FF"/>'; }
-    else { for (i = 0; i < 90; i++) { gx = R() * W; gy = R() * H; s += '<path d="M' + gx + ' ' + gy + 'l-3 -8m3 8l0 -10m0 10l3 -8" stroke="rgba(30,100,30,.35)" stroke-width="2" stroke-linecap="round"/>'; } for (i = 0; i < 36; i++) s += '<circle cx="' + (R() * W) + '" cy="' + (R() * H) + '" r="3.4" fill="' + ['#fff', '#FFE14D', '#FF9EBD', '#C9A8FF'][i % 4] + '"/>'; }
+    else if (!th.noGrass) { for (i = 0; i < 90; i++) { gx = R() * W; gy = R() * H; s += '<path d="M' + gx + ' ' + gy + 'l-3 -8m3 8l0 -10m0 10l3 -8" stroke="rgba(30,100,30,.35)" stroke-width="2" stroke-linecap="round"/>'; } for (i = 0; i < 36; i++) s += '<circle cx="' + (R() * W) + '" cy="' + (R() * H) + '" r="3.4" fill="' + ['#fff', '#FFE14D', '#FF9EBD', '#C9A8FF'][i % 4] + '"/>'; }
+    if (th.ground) s += th.ground(R, W, H);   // hoạ tiết nền riêng của khu mới (không nằm trong phong cảnh)
+    if (z.id === 'winter') for (i = 0; i < 34; i++) s += '<circle class="snowf" style="animation-delay:' + (-R() * 7).toFixed(2) + 's;animation-duration:' + (5 + R() * 4).toFixed(1) + 's" cx="' + (R() * W).toFixed(0) + '" cy="-10" r="' + (2 + R() * 2.4).toFixed(1) + '" fill="#fff" opacity=".9"/>';
+    s += '</svg>';
+    // lớp phong cảnh: chỉ phủ vùng đất gốc 7×5 (đất mở rộng là đất trống để học sinh xây)
+    s += '<svg class="gd-zscn" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + DEFS + '<linearGradient id="zw-water" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62C6F6"/><stop offset="1" stop-color="#A8E4FF"/></linearGradient></defs>';
     // phong cảnh dựng sẵn: vẽ theo thứ tự từ trên xuống dưới để che nhau đúng
     z.blocks.slice().sort(function (a, b) { return (a.y + a.h) - (b.y + b.h) || a.x - b.x; }).forEach(function (b) { if (ART[b.k]) s += lit(ART[b.k](b), NOBEVEL[b.k] ? '' : 'bvL'); });
     s += lights(z, R);
-    if (z.id === 'winter') for (i = 0; i < 34; i++) s += '<circle class="snowf" style="animation-delay:' + (-R() * 7).toFixed(2) + 's;animation-duration:' + (5 + R() * 4).toFixed(1) + 's" cx="' + (R() * W).toFixed(0) + '" cy="-10" r="' + (2 + R() * 2.4).toFixed(1) + '" fill="#fff" opacity=".9"/>';
     s += '</svg>';
     return (cache[z.id] = s);
   }
