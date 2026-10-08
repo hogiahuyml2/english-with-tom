@@ -225,6 +225,27 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     reply(res, req.user, out.st, { gained: out.xu, count: out.n });
   });
 
+  // Cho NHIỀU cây lớn ngay: dùng phiếu "lớn nhanh" trước, rồi trừ xu theo thời gian còn lại; ô nào đủ xu thì lớn (ưu tiên cây rẻ trước)
+  app.post('/api/garden/grow-many', requireAuth, (req, res) => {
+    const cells = cellsOf(req.body), useFree = (req.body || {}).free !== false;
+    const out = txStrict(() => {
+      const st = load(req.user), now = Date.now(); let coins = coinsOf(req.user.id), n = 0, spent = 0, vouchers = 0, short = 0;
+      const list = cells.map((i) => { const t = st.tiles[i], it = t && G.BY[t.k]; if (!it || (it.kind !== 'plant' && it.kind !== 'tree') || G.stageOf(it, t, now) >= 3) return null; return { i, t, it, cost: G.boostCost(G.remainMs(it, t, now)) }; }).filter(Boolean).sort((a, b) => a.cost - b.cost);
+      if (!list.length) return { err: 'Không có cây nào đang lớn trong các ô đã chọn.' };
+      for (const x of list) {
+        if (useFree && st.bag.free.boost > 0) { st.bag.free.boost--; vouchers++; }
+        else if (coins >= x.cost) { coins -= x.cost; spent += x.cost; }
+        else { short++; continue; }
+        x.t.at = now - G.growMs(x.it, x.t.w) - 1000; n++;
+      }
+      if (!n) return { err: 'Chưa đủ xu để cho cây lớn ngay (cây rẻ nhất cần ' + list[0].cost + ' 🪙).', need: list[0].cost };
+      if (spent) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(spent, req.user.id, spent); if (!r.changes) return { err: 'Chưa đủ xu.', need: spent }; }
+      save(st); return { st, n, spent, vouchers, short };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { grown: out.n, spent: out.spent, vouchers: out.vouchers, short: out.short });
+  });
+
   // Dọn sạch / làm mới một khu: mọi món (và thú cưng, trang phục) của khu đó về lại giỏ
   app.post('/api/garden/clear', requireAuth, (req, res) => {
     const z = G.ZBY[String((req.body || {}).zone)];

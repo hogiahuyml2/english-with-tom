@@ -832,6 +832,7 @@ function msClassify() {
     if (!it) { c.empty.push(i); return; } c.items.push(i);
     if (it.kind === 'plant' || it.kind === 'tree') { c.plants.push(i); if (D.stageOf(it, t, now) >= 3) c.ready.push(i); else c.grow.push(i); }
   });
+  c.growCost = 0; var vch = (bagOf().free.boost | 0); c.grow.slice().map(function (i) { var t = S.tiles[i]; return D.boostCost(D.remainMs(D.BY[t.k], t, now)); }).sort(function (x, y) { return x - y; }).forEach(function (v, k) { if (k >= vch) c.growCost += v; });
   return c;
 }
 function renderMbar() {
@@ -839,8 +840,8 @@ function renderMbar() {
   var c = msClassify(), br = BRUSH && BRUSH.kind !== 'pet' ? D.BY[BRUSH.id] : null, h = '<b>' + (c.n ? '☑️ ' + c.n + ' ô' : '☑️ Chưa chọn ô') + '</b>';
   if (br) { var perN = bagN(br.id) > 0 ? 'có ' + bagN(br.id) + ' trong giỏ' : (br.cost + ' 🪙/ô'); h += '<button class="go" data-m="place"' + (c.empty.length ? '' : ' disabled') + ' title="' + esc(br.name) + ' — ' + perN + '">🌱 Đặt ' + esc(br.name) + ' ×' + c.empty.length + '</button>'; }
   else h += '<button disabled title="Chọn một món ở cửa hàng bên dưới trước">🌱 Đặt (chọn món ở cửa hàng)</button>';
-  h += '<button data-m="water"' + (c.grow.length ? '' : ' disabled') + '>💧 Tưới ×' + c.grow.length + '</button><button data-m="harvest"' + (c.ready.length ? '' : ' disabled') + '>🧺 Thu hoạch ×' + c.ready.length + '</button><button data-m="remove"' + (c.items.length ? '' : ' disabled') + '>🧹 Dọn ×' + c.items.length + '</button>';
-  h += '<button data-m="selEmpty">▫️ Tất cả ô trống</button><button data-m="selPlants">🌸 Tất cả cây</button><button data-m="selAll">📦 Tất cả món</button><button data-m="none">Bỏ chọn</button><button class="x" data-m="exit">✕ Thoát</button>';
+  h += '<button data-m="water"' + (c.grow.length ? '' : ' disabled') + '>💧 Tưới ×' + c.grow.length + '</button><button data-m="grow"' + (c.grow.length ? '' : ' disabled') + ' title="Dùng xu để các cây đã chọn lớn ngay (phiếu lớn nhanh được dùng trước)">⚡ Lớn ngay ×' + c.grow.length + (c.growCost ? ' · ' + c.growCost + ' 🪙' : '') + '</button><button data-m="harvest"' + (c.ready.length ? '' : ' disabled') + '>🧺 Thu hoạch ×' + c.ready.length + '</button><button data-m="remove"' + (c.items.length ? '' : ' disabled') + '>🧹 Dọn ×' + c.items.length + '</button>';
+  h += '<button data-m="selEmpty">▫️ Tất cả ô trống</button><button data-m="selGrow">🌱 Cây đang lớn</button><button data-m="selPlants">🌸 Tất cả cây</button><button data-m="selAll">📦 Tất cả món</button><button data-m="none">Bỏ chọn</button><button class="x" data-m="exit">✕ Thoát</button>';
   b.innerHTML = h.replace(/🪙/g, COIN);
 }
 function msSelectWhere(pred) {
@@ -853,6 +854,7 @@ async function msAction(a) {
   try {
     if (a === 'none') { MSEL = {}; render(); return; } if (a === 'exit') { TOOL = null; MSEL = {}; render(); return; }
     if (a === 'selEmpty') return msSelectWhere(function (it) { return !it; });
+    if (a === 'selGrow') return msSelectWhere(function (it, t) { return it && (it.kind === 'plant' || it.kind === 'tree') && D.stageOf(it, t, NOW()) < 3; });
     if (a === 'selPlants') return msSelectWhere(function (it) { return it && (it.kind === 'plant' || it.kind === 'tree'); });
     if (a === 'selAll') return msSelectWhere(function (it) { return !!it; });
     if (a === 'place') {
@@ -863,6 +865,12 @@ async function msAction(a) {
       return done(d, '🌱 Đã đặt ' + d.placed + ' × ' + br.name + (d.paid ? ' · -' + d.paid + ' 🪙' : '') + (d.skipped ? ' · bỏ qua ' + d.skipped + ' ô không đặt được' : '') + (d.stopped ? ' · dừng vì hết xu' : ''));
     }
     if (a === 'water') { var dw = await api('/api/garden/water-many', { cells: c.grow }); return done(dw, '💧 Đã tưới ' + dw.watered + ' cây' + (dw.noWater ? ' · hết lượt tưới' : '')); }
+    if (a === 'grow') {
+      if (!c.grow.length) return toast('Chưa chọn cây nào đang lớn.');
+      if (!(await ewtConfirm('Cho ' + c.grow.length + ' cây lớn ngay?' + (c.growCost ? '\nTốn khoảng ' + c.growCost + ' xu (bạn đang có ' + COINS + ' xu)' : '\nDùng phiếu lớn nhanh, không tốn xu') + '. Nếu không đủ xu, hệ thống sẽ cho lớn các cây rẻ nhất trước.'))) return;
+      var dg = await api('/api/garden/grow-many', { cells: c.grow });
+      return done(dg, '⚡ ' + dg.grown + ' cây đã lớn' + (dg.spent ? ' · -' + dg.spent + ' 🪙' : '') + (dg.vouchers ? ' · dùng ' + dg.vouchers + ' phiếu' : '') + (dg.short ? ' · ' + dg.short + ' cây chưa đủ xu' : ''));
+    }
     if (a === 'harvest') { var dh = await api('/api/garden/harvest-many', { cells: c.ready }); return done(dh, '🧺 Thu hoạch ' + dh.count + ' cây · +' + dh.gained + ' 🪙'); }
     if (a === 'remove') {
       if (c.items.length > 3 && !(await ewtConfirm('Dọn ' + c.items.length + ' món đã chọn? Món đã mua sẽ về 🧺 Giỏ để dùng lại.'))) return;
