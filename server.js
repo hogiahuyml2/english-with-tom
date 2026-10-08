@@ -539,9 +539,28 @@ app.get('/api/health', (req, res) => {
     exercises: _exById.size,       // số đề đã nạp vào RAM
     assigned: _assignedSet.size,
     submitted: _submittedSet.size,
-    t: Date.now()
+    t: Date.now(),
+    disk: _diskInfo(),
+    dbWrite: _dbWriteProbe()
   });
 });
+// Chẩn đoán đĩa & khả năng ghi database (không lộ dữ liệu người dùng)
+function _diskInfo() {
+  try {
+    const f = fs.statfsSync(DATA_DIR), mb = x => Math.round(x * f.bsize / 1048576);
+    let up = 0, bk = 0;
+    try { up = fs.readdirSync(uploadsDir).length; } catch (e) {}
+    try { bk = fs.readdirSync(path.join(DATA_DIR, 'backups')).length; } catch (e) {}
+    return { freeMB: mb(f.bavail), totalMB: mb(f.blocks), uploadFiles: up, backupFiles: bk };
+  } catch (e) { return { error: e.message }; }
+}
+function _dbWriteProbe() {
+  try {
+    db.exec('CREATE TABLE IF NOT EXISTS _probe (id INTEGER PRIMARY KEY, t INTEGER)');
+    db.prepare('INSERT OR REPLACE INTO _probe (id,t) VALUES (1,?)').run(Date.now());
+    return 'ok';
+  } catch (e) { return 'ERROR: ' + e.message; }
+}
 
 // Cho giao diện biết tính năng nào đã bật
 app.get('/api/config', (req, res) => {
