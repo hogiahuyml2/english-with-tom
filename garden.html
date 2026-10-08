@@ -580,7 +580,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <div class="gd-modal" id="xum"><div class="gd-box" style="max-width:420px">
   <h3 id="xuh">💰 Tặng xu</h3><p class="gd-sub" id="xusub"></p>
   <div class="gd-qk" id="xuq"></div>
-  <input class="gd-field-in" id="xuamt" type="number" min="10" max="5000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 5.000)">
+  <input class="gd-field-in" id="xuamt" type="number" min="10" max="50000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 50.000)">
   <input class="gd-field-in" id="xunote" maxlength="60" placeholder="Lời nhắn (không bắt buộc)" style="margin-top:8px">
   <div class="gd-act"><button class="gd-btn" id="xuclose">Đóng</button><button class="gd-btn pri" id="xusend">💰 Tặng xu</button></div>
 </div></div>
@@ -1561,9 +1561,9 @@ document.addEventListener('click', function (e) {
   if (t.closest('#xuclose') || t === $('xum')) { $('xum').classList.remove('on'); return; }
   if ((el = t.closest('[data-xuq]'))) { $('xuamt').value = el.getAttribute('data-xuq'); return; }
   if (t.closest('#xusend') && XU) {
-    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 5000)) return toast('Nhập số xu từ 10 đến 5.000 nhé.');
+    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 50000)) return toast('Nhập số xu từ 10 đến 50.000 nhé.');
     var xb = $('xusend'); xb.disabled = true;
-    api('/api/garden/xu/send', { to: XU.to, xu: xv, note: $('xunote').value || '' }).then(function (d) { COINS = d.coins; render(); $('xum').classList.remove('on'); xb.disabled = false; toast('💰 Đã tặng ' + xv + ' xu cho ' + d.to + '! Hôm nay còn tặng được ' + d.left + ' xu.', 4200); celebrate(8); if (QTAB === 'f' && $('qstm').classList.contains('on')) drawQst(); }).catch(function (er) { xb.disabled = false; toast(er.message, 4200); });
+    api('/api/garden/xu/send', { to: XU.to, xu: xv, note: $('xunote').value || '' }).then(function (d) { COINS = d.coins; render(); $('xum').classList.remove('on'); xb.disabled = false; toast('💰 Đã tặng ' + xv + ' xu cho ' + d.to + '!', 4200); celebrate(8); if (QTAB === 'f' && $('qstm').classList.contains('on')) drawQst(); }).catch(function (er) { xb.disabled = false; toast(er.message, 4200); });
     return;
   }
   if (t.closest('#ntclose') || t === $('ntm')) { $('ntm').classList.remove('on'); return; }
@@ -1590,9 +1590,9 @@ document.addEventListener('input', function (e) { if (e.target && e.target.id ==
 /* ───────── tặng xu · sticker & lời nhắn nổi ───────── */
 var XU = null, NT = null, NOTES = [], NKEY = '', STICKERS = ['🌸', '🌻', '🌷', '💐', '🌈', '⭐', '✨', '💖', '😍', '👍', '👏', '🎉', '🦋', '🐰', '🐶', '🍀', '🌟', '😊', '🥰', '🏆'];
 function openXu(token, name) {
-  XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 5.000 xu mỗi lần · 100.000 xu mỗi ngày cho một bạn · 300.000 xu mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
-  $('xuq').innerHTML = [50, 100, 500, 1000, 2000, 5000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
-  if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 5.000 xu mỗi lần · 100.000 xu mỗi ngày cho một bạn · 300.000 xu mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
+  XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 50.000 xu mỗi lần · 300.000 xu mỗi ngày cho một bạn · tối đa 20 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
+  $('xuq').innerHTML = [500, 1000, 5000, 10000, 20000, 50000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
+  if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 50.000 xu mỗi lần · 300.000 xu mỗi ngày cho một bạn · tối đa 20 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
 }
 function drawNoteModal() { $('ntst').innerHTML = STICKERS.map(function (s) { return '<button data-nts="' + s + '" class="' + (NT.st === s ? 'on' : '') + '">' + s + '</button>'; }).join(''); $('ntsend').disabled = false; }
 function openNote(token, name) { NT = { to: token, name: name, st: '' }; $('nth').textContent = '🎈 Thả sticker trong vườn của ' + name; $('ntxt').value = ''; drawNoteModal(); $('ntm').classList.add('on'); }
