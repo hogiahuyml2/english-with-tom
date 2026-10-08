@@ -1487,13 +1487,19 @@ app.post('/api/admin/create-teacher', requireRole('admin'), (req, res) => {
   res.json({ id: Number(r.lastInsertRowid) });
 });
 
-// Danh sách người dùng
+// Danh sách người dùng (phân trang + tìm kiếm phía máy chủ — hàng chục nghìn tài khoản vẫn nhẹ)
 app.get('/api/admin/users', requireRole('admin'), (req, res) => {
+  const q = String(req.query.q || '').trim().toLowerCase().slice(0, 80);
+  const limit = Math.max(1, Math.min(200, parseInt(req.query.limit, 10) || 50)), offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+  const where = q ? "WHERE LOWER(u.name) LIKE ? ESCAPE '\\' OR LOWER(u.email) LIKE ? ESCAPE '\\'" : '';
+  const like = '%' + q.replace(/[\\%_]/g, (c) => '\\' + c) + '%', args = q ? [like, like] : [];
   const rows = db.prepare(`
     SELECT u.id, u.name, u.email, u.role, u.email_verified, u.created_at,
            (SELECT COUNT(*) FROM submissions s WHERE s.user_id = u.id) AS submissions
-    FROM users u ORDER BY u.id DESC`).all();
-  res.json({ users: rows });
+    FROM users u ${where} ORDER BY u.id DESC LIMIT ? OFFSET ?`).all(...args, limit, offset);
+  const total = db.prepare(`SELECT COUNT(*) c FROM users u ${where}`).get(...args).c;
+  const counts = {}; db.prepare('SELECT role, COUNT(*) c FROM users GROUP BY role').all().forEach((r) => { counts[r.role] = r.c; });
+  res.json({ users: rows, total, counts, offset, limit });
 });
 
 // Đổi vai trò

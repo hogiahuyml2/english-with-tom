@@ -16,6 +16,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=25">
 <script src="js/dialog.js?v=1"></script>
+<style>
+.adm-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 18px; padding: 6px; background: var(--surface, #fff); border: 1px solid var(--border); border-radius: 16px; position: sticky; top: 8px; z-index: 20; scrollbar-width: none; box-shadow: 0 6px 18px rgba(60,40,10,.08); }
+.adm-tabs::-webkit-scrollbar { display: none; }
+.adm-tab { flex: none; border: 0; background: transparent; color: var(--text-muted); font: 700 14px inherit; font-family: inherit; padding: 10px 16px; border-radius: 12px; cursor: pointer; white-space: nowrap; min-height: 42px; }
+.adm-tab:hover { background: var(--primary-soft); color: var(--primary); }
+.adm-tab.on { background: linear-gradient(135deg, var(--primary), var(--primary-2, var(--primary))); color: #fff; box-shadow: 0 4px 12px rgba(111,88,238,.35); }
+.adm-pane { display: none; } .adm-pane.on { display: block; animation: admIn .18s ease; }
+@keyframes admIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.adm-pane > .card { margin-bottom: 0; }
+@media (max-width: 640px) { .adm-tab { padding: 9px 12px; font-size: 13px; } .stat-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+</style>
 </head>
 <body data-page="" data-guard="admin">
 <div id="site-header"></div>
@@ -38,55 +49,15 @@
       <div class="stat-card accent"><div class="label">Đề trong ngân hàng</div><div class="value" id="stEx">–</div></div>
     </div>
 
-    <div class="card" style="margin-bottom:24px;">
-      <div class="card-head"><h3>📈 Quản lý truy cập</h3></div>
-      <div style="font-size:14px;color:var(--text-muted);margin-bottom:12px;">Mỗi ngày có bao nhiêu lượt truy cập, ai truy cập, bao nhiêu lượt có đăng nhập, người dùng đã làm gì trên web.</div>
-      <a class="btn btn-primary" href="access.html">Mở trang Quản lý truy cập</a>
+    <div class="adm-tabs" role="tablist" aria-label="Các mục quản trị">
+      <button class="adm-tab on" data-tab="users" role="tab">👥 Người dùng</button>
+      <button class="adm-tab" data-tab="teacher" role="tab">👨‍🏫 Cấp tài khoản GV</button>
+      <button class="adm-tab" data-tab="bank" role="tab">📚 Ngân hàng đề</button>
+      <button class="adm-tab" data-tab="access" role="tab">📈 Truy cập</button>
+      <button class="adm-tab" data-tab="mail" role="tab">📧 Email</button>
+      <button class="adm-tab" data-tab="backup" role="tab">💾 Sao lưu</button>
     </div>
-
-    <!-- Sao lưu & bảo trì -->
-    <div class="card" style="margin-bottom:24px;">
-      <div class="card-head"><h3>📧 Gửi email (quên mật khẩu, nhắc hạn)</h3></div>
-      <div id="mailStatus" style="font-size:14px;color:var(--text-muted);">Đang kiểm tra…</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-        <input type="email" id="mailTo" placeholder="Email nhận thử (để trống = email của bạn)" style="flex:1;min-width:220px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;">
-        <button class="btn btn-primary" id="mailTestBtn">Gửi email thử</button>
-        <button class="btn" id="mailRefreshBtn">↻ Kiểm tra lại</button>
-      </div>
-      <div id="mailTestOut" style="margin-top:10px;font-size:13.5px;"></div>
-      <div id="mailLog" style="margin-top:12px;overflow-x:auto;"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h3>💾 Sao lưu dữ liệu</h3></div>
-      <p style="font-size:14px; color:var(--text-muted); margin-bottom:14px;">Tải về bản sao toàn bộ database (người dùng, bài làm, đề thi). Nên backup định kỳ trước mỗi lần cập nhật lớn.</p>
-      <a class="btn btn-primary" href="/api/admin/backup-db" download>⬇️ Tải về file backup (.db)</a>
-
-      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
-          <div>
-            <div style="font-weight:700;font-size:14px;">🕐 Sao lưu tự động</div>
-            <div style="font-size:12.5px;color:var(--text-muted);">Hệ thống tự động sao lưu mỗi 6 tiếng, giữ 30 bản gần nhất — không cần bạn phải nhớ bấm tải về.</div>
-          </div>
-          <button class="btn btn-sm" onclick="runBackupNow()" id="abRunBtn">🔄 Sao lưu ngay</button>
-        </div>
-        <div id="abMsg" style="display:none;margin-bottom:10px;font-size:13px;padding:8px 12px;border-radius:8px;"></div>
-        <div id="abList" style="font-size:13px;color:var(--text-muted);">Đang tải danh sách...</div>
-      </div>
-    </div>
-
-    <!-- Cấp tài khoản giáo viên -->
-    <div class="card">
-      <div class="card-head"><h3>👨‍🏫 Cấp tài khoản giáo viên</h3></div>
-      <div id="ctMsg" style="display:none; margin-bottom:12px;" class="note"></div>
-      <div class="grid grid-3" style="gap:12px;">
-        <div class="field" style="margin:0;"><label>Họ tên</label><input type="text" id="ctName" placeholder="Cô Lan"></div>
-        <div class="field" style="margin:0;"><label>Email</label><input type="email" id="ctEmail" placeholder="gv@email.com"></div>
-        <div class="field" style="margin:0;"><label>Mật khẩu</label><input type="text" id="ctPass" placeholder="Tối thiểu 6 ký tự"></div>
-      </div>
-      <button class="btn btn-primary" id="ctBtn" style="margin-top:12px;">Tạo tài khoản giáo viên</button>
-    </div>
-
+    <div class="adm-pane on" data-pane="users" role="tabpanel">
     <!-- Người dùng -->
     <div class="card">
       <div class="card-head">
@@ -106,7 +77,7 @@
         <button class="btn btn-sm btn-primary" onclick="bulkRoleUsers()">Đổi role</button>
         <button class="btn btn-sm" style="color:#fff;background:var(--danger,#e53e3e);border-color:var(--danger,#e53e3e);" onclick="bulkDeleteUsers()">🗑️ Xoá đã chọn</button>
       </div>
-      <input type="search" id="userSearch" placeholder="🔍 Tìm theo tên hoặc email…" autocomplete="off" style="width:100%;max-width:360px;margin:0 0 10px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-size:14px;" oninput="usersSearchChanged()">
+      <input type="search" id="userSearch" placeholder="🔍 Tìm theo tên hoặc email…" autocomplete="off" style="width:100%;max-width:360px;margin:0 0 10px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-size:14px;" oninput="usersSearchChanged()"> <span id="userCount" style="font-size:13px;color:var(--text-muted);margin-left:8px;"></span>
       <div style="overflow-x:auto;">
         <table class="table" style="min-width:640px;">
           <thead><tr>
@@ -118,6 +89,22 @@
       </div>
     </div>
 
+    </div>
+    <div class="adm-pane" data-pane="teacher" role="tabpanel">
+    <!-- Cấp tài khoản giáo viên -->
+    <div class="card">
+      <div class="card-head"><h3>👨‍🏫 Cấp tài khoản giáo viên</h3></div>
+      <div id="ctMsg" style="display:none; margin-bottom:12px;" class="note"></div>
+      <div class="grid grid-3" style="gap:12px;">
+        <div class="field" style="margin:0;"><label>Họ tên</label><input type="text" id="ctName" placeholder="Cô Lan"></div>
+        <div class="field" style="margin:0;"><label>Email</label><input type="email" id="ctEmail" placeholder="gv@email.com"></div>
+        <div class="field" style="margin:0;"><label>Mật khẩu</label><input type="text" id="ctPass" placeholder="Tối thiểu 6 ký tự"></div>
+      </div>
+      <button class="btn btn-primary" id="ctBtn" style="margin-top:12px;">Tạo tài khoản giáo viên</button>
+    </div>
+
+    </div>
+    <div class="adm-pane" data-pane="bank" role="tabpanel">
     <!-- Đề bài -->
     <div class="card">
       <div class="card-head"><h3>📚 Ngân hàng đề</h3></div>
@@ -139,6 +126,50 @@
       </div>
     </div>
 
+    </div>
+    <div class="adm-pane" data-pane="access" role="tabpanel">
+    <div class="card">
+      <div class="card-head"><h3>📈 Quản lý truy cập</h3></div>
+      <div style="font-size:14px;color:var(--text-muted);margin-bottom:12px;">Mỗi ngày có bao nhiêu lượt truy cập, ai truy cập, bao nhiêu lượt có đăng nhập, người dùng đã làm gì trên web.</div>
+      <a class="btn btn-primary" href="access.html">Mở trang Quản lý truy cập</a>
+    </div>
+
+    </div>
+    <div class="adm-pane" data-pane="mail" role="tabpanel">
+    <!-- Sao lưu & bảo trì -->
+    <div class="card">
+      <div class="card-head"><h3>📧 Gửi email (quên mật khẩu, nhắc hạn)</h3></div>
+      <div id="mailStatus" style="font-size:14px;color:var(--text-muted);">Đang kiểm tra…</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <input type="email" id="mailTo" placeholder="Email nhận thử (để trống = email của bạn)" style="flex:1;min-width:220px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-family:inherit;">
+        <button class="btn btn-primary" id="mailTestBtn">Gửi email thử</button>
+        <button class="btn" id="mailRefreshBtn">↻ Kiểm tra lại</button>
+      </div>
+      <div id="mailTestOut" style="margin-top:10px;font-size:13.5px;"></div>
+      <div id="mailLog" style="margin-top:12px;overflow-x:auto;"></div>
+    </div>
+
+    </div>
+    <div class="adm-pane" data-pane="backup" role="tabpanel">
+    <div class="card">
+      <div class="card-head"><h3>💾 Sao lưu dữ liệu</h3></div>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:14px;">Tải về bản sao toàn bộ database (người dùng, bài làm, đề thi). Nên backup định kỳ trước mỗi lần cập nhật lớn.</p>
+      <a class="btn btn-primary" href="/api/admin/backup-db" download>⬇️ Tải về file backup (.db)</a>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;font-size:14px;">🕐 Sao lưu tự động</div>
+            <div style="font-size:12.5px;color:var(--text-muted);">Hệ thống tự động sao lưu mỗi 6 tiếng, giữ 30 bản gần nhất — không cần bạn phải nhớ bấm tải về.</div>
+          </div>
+          <button class="btn btn-sm" onclick="runBackupNow()" id="abRunBtn">🔄 Sao lưu ngay</button>
+        </div>
+        <div id="abMsg" style="display:none;margin-bottom:10px;font-size:13px;padding:8px 12px;border-radius:8px;"></div>
+        <div id="abList" style="font-size:13px;color:var(--text-muted);">Đang tải danh sách...</div>
+      </div>
+    </div>
+
+    </div>
   </div>
 </section>
 
@@ -152,8 +183,8 @@
   async function api(path, opts){ var r = await fetch(path, Object.assign({credentials:'same-origin'}, opts||{})); return { ok:r.ok, data: await r.json().catch(function(){return{};}) }; }
   function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
 
-  /* Danh sách người dùng: chỉ dựng 50 dòng mỗi lần (có ô tìm kiếm + "Xem thêm") để trang không bị đơ khi có hàng nghìn tài khoản */
-  var USERS = [], USHOW = 50, USEARCH_T = null;
+  /* Danh sách người dùng: máy chủ trả từng trang 50 người (có tìm kiếm) — hàng chục nghìn tài khoản vẫn mượt */
+  var USERS = [], UTOTAL = 0, USEARCH_T = null, UQ = '', UBUSY = false;
   function userRowHtml(u){
     var isSelf = u.id===(me&&me.id);
     var chk = isSelf ? '<td></td>' : '<td><input type="checkbox" class="userChk" value="'+u.id+'" onchange="onUserChkChange()"></td>';
@@ -166,25 +197,29 @@
     return '<tr>'+chk+'<td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+rc+del+'</td></tr>';
   }
   function renderUsers(){
-    var q = (document.getElementById('userSearch').value||'').trim().toLowerCase();
-    var list = q ? USERS.filter(function(u){ return (u.name||'').toLowerCase().indexOf(q)>=0 || (u.email||'').toLowerCase().indexOf(q)>=0; }) : USERS;
-    var shown = list.slice(0, USHOW);
-    var html = shown.map(userRowHtml).join('');
-    if (list.length > shown.length) html += '<tr><td colspan="7" style="text-align:center;padding:12px;"><button class="btn btn-sm" onclick="usersMore()">⬇ Xem thêm ('+(list.length-shown.length)+' người nữa)</button></td></tr>';
-    document.getElementById('usersBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">'+(q?'Không tìm thấy người dùng phù hợp.':'Chưa có người dùng.')+'</td></tr>';
+    var html = USERS.map(userRowHtml).join('');
+    if (UTOTAL > USERS.length) html += '<tr><td colspan="7" style="text-align:center;padding:12px;"><button class="btn btn-sm" onclick="usersMore()">⬇ Xem thêm ('+(UTOTAL-USERS.length)+' người nữa)</button></td></tr>';
+    document.getElementById('usersBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">'+(UQ?'Không tìm thấy người dùng phù hợp.':'Chưa có người dùng.')+'</td></tr>';
     var hdr = document.getElementById('chkAllUsers'); if (hdr){ hdr.checked = false; hdr.indeterminate = false; }
     var bar = document.getElementById('userBulkBar'); if (bar) bar.style.display = 'none';
+    var c = document.getElementById('userCount'); if (c) c.textContent = UQ ? ('Tìm thấy '+UTOTAL+' người') : '';
   }
-  function usersMore(){ USHOW += 50; var y = window.scrollY; renderUsers(); window.scrollTo(0, y); }
-  function usersSearchChanged(){ clearTimeout(USEARCH_T); USEARCH_T = setTimeout(function(){ USHOW = 50; renderUsers(); }, 200); }
-  async function loadUsers(){
-    var res = await api('/api/admin/users');
-    USERS = res.data.users || [];
-    document.getElementById('stUsers').textContent = USERS.length;
-    document.getElementById('stStudents').textContent = USERS.filter(function(u){ return u.role==='student'; }).length;
-    document.getElementById('stTeachers').textContent = USERS.filter(function(u){ return u.role==='teacher'; }).length;
-    renderUsers();
+  async function fetchUsers(append){
+    if (UBUSY) return; UBUSY = true;
+    try {
+      var res = await api('/api/admin/users?limit=50&offset='+(append?USERS.length:0)+(UQ?'&q='+encodeURIComponent(UQ):''));
+      var d = res.data || {};
+      USERS = append ? USERS.concat(d.users||[]) : (d.users||[]); UTOTAL = d.total||0;
+      var c = d.counts || {};
+      document.getElementById('stUsers').textContent = (c.student||0)+(c.teacher||0)+(c.admin||0);
+      document.getElementById('stStudents').textContent = c.student||0;
+      document.getElementById('stTeachers').textContent = c.teacher||0;
+      renderUsers();
+    } finally { UBUSY = false; }
   }
+  function usersMore(){ var y = window.scrollY; fetchUsers(true).then(function(){ window.scrollTo(0, y); }); }
+  function usersSearchChanged(){ clearTimeout(USEARCH_T); USEARCH_T = setTimeout(function(){ UQ = (document.getElementById('userSearch').value||'').trim(); fetchUsers(false); }, 300); }
+  function loadUsers(){ return fetchUsers(false); }
   // một bộ lắng nghe chung cho cả bảng (thay vì gắn riêng cho từng dòng)
   (function(){
     var body = document.getElementById('usersBody');
@@ -379,9 +414,24 @@
     }
   }
 
+  /* Chuyển mục bằng tab: mỗi mục chỉ tải dữ liệu lần đầu mở (đỡ nặng, không phải cuộn dài) */
+  var LOADED = {}, TABKEY = 'ewt-admin-tab';
+  var LOADERS = { users: function(){ return loadUsers(); }, bank: function(){ return loadExercises(); }, mail: function(){ return loadMail(); }, backup: function(){ return loadBackupList(); } };
+  function showAdmTab(name, noSave){
+    if (!document.querySelector('.adm-pane[data-pane="'+name+'"]')) name = 'users';
+    Array.prototype.forEach.call(document.querySelectorAll('.adm-tab'), function(b){ var on = b.getAttribute('data-tab')===name; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    Array.prototype.forEach.call(document.querySelectorAll('.adm-pane'), function(p){ p.classList.toggle('on', p.getAttribute('data-pane')===name); });
+    if (!LOADED[name] && LOADERS[name]) { LOADED[name] = 1; LOADERS[name](); }
+    if (!noSave) { try { localStorage.setItem(TABKEY, name); } catch (e) {} history.replaceState(null, '', '#' + name); }
+  }
+  document.querySelector('.adm-tabs').addEventListener('click', function(e){ var b = e.target.closest('.adm-tab'); if (b) showAdmTab(b.getAttribute('data-tab')); });
   (async function(){
     var m = await api('/api/me'); me = m.data.user;
-    loadUsers(); loadExercises(); loadBackupList();
+    var start = (location.hash||'').slice(1); if (!start) { try { start = localStorage.getItem(TABKEY) || ''; } catch (e) {} }
+    showAdmTab(start || 'users', true);
+    if (!LOADED.users) api('/api/admin/users?limit=1').then(function(r){ var c=(r.data||{}).counts||{}; document.getElementById('stUsers').textContent=(c.student||0)+(c.teacher||0)+(c.admin||0); document.getElementById('stStudents').textContent=c.student||0; document.getElementById('stTeachers').textContent=c.teacher||0; });
+    // số đề trong ngân hàng ở thẻ thống kê (chỉ đếm, không dựng bảng)
+    api('/api/exercises').then(function(r){ var n = (r.data.exercises||[]).length; document.getElementById('stEx').textContent = n; });
   })();
 
   /* ===== Email: trạng thái + gửi thử + nhật ký ===== */
@@ -409,7 +459,6 @@
     else out.innerHTML = '<span style="color:var(--danger)">❌ '+esc((r.data&&(r.data.hint||r.data.error))||'Gửi thất bại')+'</span>' + (r.data&&r.data.detail ? '<div style="color:var(--text-faint);margin-top:4px;">Chi tiết: '+esc(r.data.detail)+'</div>' : '');
     loadMail();
   };
-  loadMail();
 </script>
 </body>
 </html>
