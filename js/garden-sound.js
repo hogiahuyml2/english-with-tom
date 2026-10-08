@@ -116,7 +116,7 @@
     madagascar: ['0:7:1 1:9:1 2:12:1 3:9:1 4:7:2 6:4:1 7:7:1 8:9:1 9:12:1 10:14:2', '0:12:1 1:14:1 2:16:1 3:14:1 4:12:2 6:9:1 7:12:1 8:14:1 9:16:1 10:19:2']
   };
   /* hệ số cân bằng âm lượng từng khu (đo bằng cách dựng thử từng cảnh nhạc) để khu nào cũng nghe vừa tai như nhau */
-  var TRIM = {"map":1.46,"cottage":1.12,"hill":0.94,"river":1.16,"pond":1.21,"forest":0.87,"palace":1.32,"winter":1.18,"beach":0.92,"magic":1.11,"farm":1.23,"sakura":1.03,"autumn":0.97,"mountain":0.59,"desert":1.24,"candy":1.05,"ocean":1.03,"sky":1.21,"space":0.92,"bamboo":0.85,"savanna":1.28,"jungle":1.44,"village":1.08,"funfair":0.92,"arctic":1.26,"pirate":0.88,"dino":0.67,"volcano":0.67,"cyber":1.18,"vietnam":1.25,"thailand":1.46,"japan":1.18,"china":1.37,"india":1.52,"indonesia":1.17,"france":1.15,"italy":1.11,"netherlands":1.14,"uk":1.24,"germany":0.98,"usa":1.09,"greece":0.97,"sweden":1.37,"switzerland":0.52,"korea":1.15,"turkey":1.04,"australia":0.6,"canada":0.96,"mexico":1.04,"brazil":1.08,"egypt":1.07,"morocco":1.13,"spain":1.05,"russia":1.37,"ireland":0.98,"norway":1.21,"peru":0.59,"argentina":1.01,"cuba":0.97,"chile":0.78,"kenya":1.11,"southafrica":1.61,"ethiopia":0.98,"madagascar":0.86};
+  var TRIM = {"map":1.35,"cottage":1.12,"hill":0.87,"river":1.18,"pond":1.16,"forest":0.72,"palace":1.24,"winter":1.08,"beach":0.93,"magic":1.04,"farm":1.18,"sakura":0.94,"autumn":0.72,"mountain":0.58,"desert":1.18,"candy":0.99,"ocean":0.86,"sky":1.22,"space":0.84,"bamboo":0.68,"savanna":1.21,"jungle":1.4,"village":0.95,"funfair":0.87,"arctic":1.12,"pirate":0.83,"dino":0.57,"volcano":0.56,"cyber":1.18,"vietnam":1.09,"thailand":1.12,"japan":1.0,"china":1.28,"india":1.45,"indonesia":0.89,"france":1.12,"italy":1.04,"netherlands":1.1,"uk":1.03,"germany":1.0,"usa":1.05,"greece":0.91,"sweden":1.23,"switzerland":0.56,"korea":1.03,"turkey":0.94,"australia":0.51,"canada":0.89,"mexico":0.95,"brazil":1.06,"egypt":0.97,"morocco":1.09,"spain":1.01,"russia":1.23,"ireland":0.93,"norway":1.07,"peru":0.58,"argentina":0.97,"cuba":0.95,"chile":0.79,"kenya":1.03,"southafrica":1.49,"ethiopia":0.94,"madagascar":0.82};
   var CHORDS = [[0, 3, 4, 0], [0, 4, 3, 4], [0, 2, 3, 4]];
   var mtof = function (m) { return 440 * Math.pow(2, (m - 69) / 12); };
   function hash(str) { var h = 2166136261, i; for (i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return h >>> 0; }
@@ -230,11 +230,12 @@
     var orn = function (a) { var occ = {}, out = clone(a); a.forEach(function (e) { occ[e.s] = 1; }); a.forEach(function (e) { if (e.len >= 2 && e.s > 0 && !occ[e.s - 1]) { out.push({ s: e.s - 1, deg: cl(e.deg + (e.s % 2 ? 1 : -1)), len: 1 }); occ[e.s - 1] = 1; } }); return out.sort(bys); };
     var answer = function (x, y) { var h = span / 2; return clone(x).filter(function (e) { return e.s < h; }).concat(clone(y).filter(function (e) { return e.s >= h; })).sort(bys); };
     var cad = function (a) { var o = clone(a); if (o.length) { var e = o[o.length - 1]; e.deg = Math.round(e.deg / L) * L; e.len = Math.max(e.len, 2); } return o; };
+    var vary = function (a) { var o = clone(a), mid = span / 2; o.forEach(function (e, i) { if (e.s >= mid) e.deg = cl(e.deg + (i % 3 === 0 ? 1 : i % 3 === 1 ? -1 : 0)); }); return orn(o); };
     var A = sc.A, B = sc.B, C = shift(B, 2), D = invert(A), E = orn(A), F = answer(A, B), G = retro(B), H = shift(A, -2), I = answer(B, A);
     var base = [
-      { ph: A }, { ph: A }, { ph: B }, { ph: cad(A) },
-      { ph: C, alt: 1 }, { ph: D, alt: 1 }, { ph: C, alt: 1 }, { ph: cad(B), alt: 1 },
-      { ph: E, hi: 1 }, { ph: F, hi: 1 }, { ph: E, hi: 1 }, { ph: cad(B), hi: 1 },
+      { ph: A }, { ph: vary(A) }, { ph: B }, { ph: cad(A) },
+      { ph: C, alt: 1 }, { ph: D, alt: 1 }, { ph: vary(C), alt: 1 }, { ph: cad(B), alt: 1 },
+      { ph: E, hi: 1 }, { ph: F, hi: 1 }, { ph: vary(E), hi: 1 }, { ph: cad(B), hi: 1 },
       { ph: G }, { ph: H }, { ph: I }, { ph: cad(A) }
     ];
     // nửa sau: cùng cấu trúc nhưng dịch lên/xuống vài bậc → nghe như chuyển giọng, không lặp y nguyên
@@ -255,21 +256,25 @@
   function fitChords(sc) {
     var L = sc.L, tri = L === 5 ? [0, 2, 3] : [0, 2, 4], out = [], prev = -1;
     sc.form.forEach(function (f, i) {
-      if (sc.drone) { out.push(0); return; }
-      var best = 0, bs = -99, c, pos = i % 4;
-      for (c = 0; c < L; c++) {
-        var set = {}, sco = 0; tri.forEach(function (k) { set[(c + k) % L] = 1; });
-        f.ph.forEach(function (e, j) { var dg = ((e.deg % L) + L) % L, w = (e.s % sc.bar === 0 ? 3 : e.s % 2 === 0 ? 2 : 1) * (e.len >= 2 ? 1.4 : 1); if (j === 0 || j === f.ph.length - 1) w *= 1.6; if (set[dg]) sco += w; });
-        if (c === 0 && (pos === 0 || pos === 3)) sco += 2.4; if (c === prev) sco -= .9;
-        if (sco > bs) { bs = sco; best = c; }
+      if (sc.drone) { out.push([0, 0]); return; }
+      var pos = i % 4, pair = [], h;
+      for (h = 0; h < 2; h++) {
+        var best = 0, bs = -99, c, notes = f.ph.filter(function (e) { return h === 0 ? e.s < sc.bar : e.s >= sc.bar; });
+        for (c = 0; c < L; c++) {
+          var set = {}, sco = 0; tri.forEach(function (k) { set[(c + k) % L] = 1; });
+          notes.forEach(function (e, j) { var dg = ((e.deg % L) + L) % L, w = (e.s % sc.bar === 0 ? 3 : e.s % 2 === 0 ? 2 : 1) * (e.len >= 2 ? 1.4 : 1); if (j === 0 || j === notes.length - 1) w *= 1.4; if (set[dg]) sco += w; });
+          if (c === 0 && ((pos === 0 && h === 0) || (pos === 3 && h === 1))) sco += 2.6; if (c === prev) sco -= 1.1;
+          if (sco > bs) { bs = sco; best = c; }
+        }
+        pair.push(best); prev = best;
       }
-      out.push(best); prev = best;
+      out.push(pair);
     });
     return out;
   }
   /* sơ đồ năng lượng: mở đầu nhẹ → vào nhịp → cao trào → dịu lại, mỗi 4 câu một nấc */
-  var ENG = [1, 2, 2, 3, 2, 3, 3, 2];
-  function energy(fi, cyc, nUnits) { var g = Math.floor(fi / 4), e = ENG[g % ENG.length]; if (g === 0) e = cyc === 0 ? 1 : 2; if (g === Math.floor((nUnits - 1) / 4)) e = Math.min(e, 2); return e; }
+  var ENG = [2, 2, 3, 3, 2, 3, 3, 2];
+  function energy(fi, cyc, nUnits) { var g = Math.floor(fi / 4), e = ENG[g % ENG.length]; if (g === 0 && cyc === 0) e = fi < 2 ? 1 : 2; if (g === Math.floor((nUnits - 1) / 4)) e = Math.min(e, 2); return e; }
 
   /* ───── cảnh nhạc ───── */
   P.scene = function (key, o) {
@@ -279,15 +284,15 @@
     var sc = { sk: sk, key: key, p: p, night: !!o.night, ev: o.events || [], R: rng(hash(key) + 17), mus: c.createGain(), amb: c.createGain(), srcs: [], t0: now + .25, n: 0, ph: null, ev2: {} };
     sc.trim = TRIM[key] || 1; sc.mus.gain.setValueAtTime(.0001, now); sc.mus.gain.linearRampToValueAtTime(E.opt.mus ? sc.trim : 0, now + 1.6); sc.mus.connect(E.bus);
     sc.amb.gain.setValueAtTime(.0001, now); sc.amb.gain.linearRampToValueAtTime(E.opt.amb ? sc.trim : 0, now + 2.2); sc.amb.connect(E.out);
-    var S = SC[p.sc], L = S.length; sc.S = S; sc.L = L; sc.step = 30 / p.bpm; sc.bar = p.sig * 2;
+    var S = SC[p.sc], L = S.length; sc.S = S; sc.L = L; sc.step = 30 / Math.max(p.bpm, 98); sc.bar = p.sig * 2;
     var zg = ZG[key] || ['pulse', 'warm']; sc.gr = GR[zg[0]]; if (!sc.gr || sc.gr.s !== p.sig) sc.gr = GR[p.sig === 3 ? 'waltz' : 'pulse'] || { s: p.sig, n: '', c: {}, x: {}, b: '', f: 'tom' };
-    sc.pad = zg[1] || 'warm'; sc.arp = zg[2] || null; sc.drone = sc.pad === 'drone';
+    sc.pad = zg[1] || 'warm'; sc.arp = zg[2] || null; sc.arpDef = !sc.arp; if (!sc.arp) { var plk = { pluck: 1, harp: 1, kalimba: 1, marimba: 1, bell: 1, music: 1, koto: 1, valiha: 1, banjo: 1, mandolin: 1, gamelan: 1, carillon: 1, charango: 1, oud: 1, sitar: 1 }; sc.arp = plk[p.lead] ? p.lead : (p.l2 && plk[p.l2] ? p.l2 : 'pluck'); } sc.drone = sc.pad === 'drone';
     // độ "mạnh" của từng phách theo nhịp trống → giai điệu tự sinh sẽ rơi đúng vào các điểm nhấn của nhịp điệu
     var span0 = sc.bar * 2, acc = [], ai; for (ai = 0; ai < span0; ai++) { acc[ai] = 0; Object.keys(sc.gr.c).forEach(function (v) { var ch0 = sc.gr.c[v].charAt(ai); acc[ai] += ch0 === 'X' ? 3 : ch0 === 'x' ? 2 : ch0 === 'o' ? .5 : 0; }); }
     // hai câu nhạc (A, B) cùng nhịp, khác cao độ → lặp lại có biến tấu, dễ nhớ như một "chủ đề"
     var mk = function (R, base) {
       var on = [], deg = base, s0, ev2 = [];
-      for (s0 = 0; s0 < span0; s0++) { var pr = s0 === 0 ? 1 : acc[s0] >= 2 ? .8 : s0 % 2 === 0 ? p.d * .95 : p.d * .4; if (R() < pr) on.push(s0); }
+      for (s0 = 0; s0 < span0; s0++) { var pr = s0 === 0 ? 1 : acc[s0] >= 2 ? .8 : s0 % 2 === 0 ? Math.max(p.d, .55) * .95 : Math.max(p.d, .55) * .45; if (R() < pr) on.push(s0); }
       if (on.length < 4) on = [0, Math.floor(span0 * .3), Math.floor(span0 * .55), Math.floor(span0 * .8)];
       on.forEach(function (st, i) {
         var tgt = base + Math.round(2.2 * Math.sin(Math.PI * st / span0)), r = R(); deg += deg < tgt ? (r < .66 ? 1 : -1) : deg > tgt ? (r < .66 ? -1 : 1) : (r < .5 ? 1 : -1); if (R() < .12) deg += R() < .5 ? 2 : -2;
@@ -334,23 +339,27 @@
     var tri = function (c0) { var i3 = L === 5 ? [0, 2, 3] : [0, 2, 4]; return i3.map(function (k) { return c0 + k; }); };
     while (sc.t0 + sc.n * st < T) {
       var n = sc.n, t = sc.t0 + n * st, s = n % sc.bar, u2 = sc.bar * 2, s2 = n % u2, unit = Math.floor(n / u2), fi = unit % sc.form.length, cyc = Math.floor(unit / sc.form.length), fe = sc.form[fi], phrase = fe.ph, hiO = (fe.hi && cyc % 2 === 1) ? 1 : 0, VV = (fe.alt && V2 && cyc % 2 === 0) ? V2 : V;
-      var e = energy(fi, cyc, sc.form.length), gr = sc.gr, chd = sc.chords[fi], eg = e === 1 ? .8 : e === 2 ? 1 : 1.15, fif = L === 5 ? 3 : 4;
+      var e = energy(fi, cyc, sc.form.length), gr = sc.gr, chd = sc.chords[fi][s2 >= sc.bar ? 1 : 0], brk = (e >= 2 && fi % 8 === 6), eg = e === 1 ? .8 : e === 2 ? 1 : 1.15, fif = L === 5 ? 3 : 4;
       var ho = { r: note(chd, 0), cp: note(chd + (L === 5 ? 2 : 2), 1), fifth: sc.drone ? 1 : 0 };
+      var ih = function (a, b, c) { var x = Math.imul((a * 73856093) ^ (b * 19349663) ^ (c * 83492791), 2654435761) >>> 0; return (x % 1000) / 1000; };
+      var vch = function (ch, vi) { var u = fi + cyc * 131; if (brk && ch !== 'X') return '.'; if (ch === '.') return (e >= 2 && s2 % 2 === 1 && ih(u, s2, vi) < (e === 3 ? .2 : .1)) ? 'o' : '.'; if (ch === 'x' && ih(u, s2, vi + 9) < .1) return 'o'; if (ch === 'o' && ih(u, s2, vi + 5) < .25) return '.'; return ch; };
       var hit = function (voice, ch, mul) { var f = HIT[voice]; if (!f || ch === '.' || ch === undefined || ch === '') return; var vel = (ch === 'X' ? 1.3 : ch === 'x' ? 1 : .5) * eg * (mul || 1) * (.92 + sc.R() * .16); f(E, sc.mus, t, vel, ho); };
       // 1) thảm nền: đổi hợp âm mỗi câu nhạc (2 ô nhịp)
-      if (s2 === 0) { var pf = sc.drone ? [mtof(note(0, -2)), mtof(note(0, -2) + 7), mtof(note(0, -1))] : tri(chd).map(function (d) { return mtof(note(d, -1)); }); padV(E, sc.mus, pf, t, st * u2, sc.pad === 'bowl' ? .07 : .05, sc.pad); }
+      if (sc.drone ? s2 === 0 : s === 0) { var pf = sc.drone ? [mtof(note(0, -2)), mtof(note(0, -2) + 7), mtof(note(0, -1))] : tri(chd).map(function (d) { return mtof(note(d, -1)); }); padV(E, sc.mus, pf, t, st * (sc.drone ? u2 : sc.bar), sc.pad === 'bowl' ? .07 : .05, sc.pad); }
       // 2) bass bám đúng các điểm nhấn của nhịp trống
-      if (e >= 1 && gr.b) { var bc = gr.b.charAt(s2); if (bc !== '.' && !(e === 1 && bc !== 'X')) { var bd = bc === '5' ? chd + fif : chd; pluckV(E, sc.mus, mtof(note(bd, bc === '8' ? -1 : -2)), t, bc === 'X' ? .7 : .45, (bc === 'X' ? .16 : .12) * (p.bass ? 1.1 : .85), { type: 'triangle', cut: 700 }); } }
+      if (e >= 1 && gr.b) { var bc = gr.b.charAt(s2); if (bc === '.' && e >= 2 && s2 % 2 === 1 && !brk && ih(fi + cyc * 131, s2, 77) < .24) bc = '5'; if (brk && bc !== 'X') bc = '.'; if (bc !== '.' && !(e === 1 && bc !== 'X')) { var bd = bc === '5' ? chd + fif : chd; pluckV(E, sc.mus, mtof(note(bd, bc === '8' ? -1 : -2)), t, bc === 'X' ? .7 : .45, (bc === 'X' ? .16 : .12) * (p.bass ? 1.1 : .85), { type: 'triangle', cut: 700 }); } }
       // 3) nhịp điệu đặc trưng của khu: lớp chính từ đoạn 2, lớp tô điểm ở cao trào
-      if (e >= 1) Object.keys(gr.c).forEach(function (v) { hit(v, gr.c[v].charAt(s2), e === 1 ? .8 : 1); });
-      if (e >= 2) Object.keys(gr.x).forEach(function (v) { hit(v, gr.x[v].charAt(s2), e === 3 ? 1.1 : .9); });
+      if (e >= 1) Object.keys(gr.c).forEach(function (v, vi) { hit(v, vch(gr.c[v].charAt(s2), vi), e === 1 ? .8 : 1); });
+      if (e >= 2) Object.keys(gr.x).forEach(function (v, vi) { var ch1 = vch(gr.x[v].charAt(s2), vi + 4); hit(v, ch1, e === 3 ? 1.1 : .9); if (e === 3 && ch1 !== '.' && !brk && /^(shaker|hat|ching|tek|tak|block)$/.test(v) && ih(fi, s2, vi + 31) < .55) { var h2 = HIT[v]; h2(E, sc.mus, t + st * .5, .55, ho); } });
       // 4) luyến láy cuối mỗi 4 câu rồi "nổ" vào câu mới → các đoạn nối khít nhau
+      if (e >= 3 && fi % 4 === 1 && s2 >= u2 - 2 && HIT[gr.f || 'tom']) { HIT[gr.f || 'tom'](E, sc.mus, t, .6 * eg, ho); }
       if (e >= 2 && fi % 4 === 3 && s2 >= u2 - 4) { var fv = gr.f || 'tom', fvel = .55 + (s2 - (u2 - 4)) * .2; if (HIT[fv]) { HIT[fv](E, sc.mus, t, fvel * eg, ho); if (s2 >= u2 - 2) HIT[fv](E, sc.mus, t + st * .5, fvel * eg * .85, ho); } }
       if (e >= 2 && fi % 4 === 0 && s2 === 0 && !gr.c.gong) { HIT.crash(E, sc.mus, t, eg, ho); HIT.chime(E, sc.mus, t, 1, ho); }
-      // 5) rải nốt arpeggio theo hợp âm (khu có chọn)
-      if (sc.arp && VO[sc.arp] && e >= (sc.pad === 'organ' || sc.key === 'magic' ? 1 : 2) && s % (sc.key === 'cyber' ? 1 : 2) === 0) { var t3 = tri(chd), ai2 = (s2 / (sc.key === 'cyber' ? 1 : 2)) | 0; VO[sc.arp](E, sc.mus, mtof(note(t3[[0, 1, 2, 1][ai2 % 4]], 1)), t, st * 1.6, .06 * eg); }
+      // 5) ostinato rải nốt theo hợp âm, đổi kiểu mỗi nửa câu để không bị lặp
+      if (sc.arp && VO[sc.arp] && e >= (sc.pad === 'organ' || sc.key === 'magic' ? 1 : 2)) { var fast = sc.key === 'cyber' || (e === 3 && p.sig === 4 && sc.step > .27), iv = fast ? 1 : 2; if (s % iv === 0) { var t3 = tri(chd).concat([chd + L]), pats = [[0, 1, 2, 1], [0, 2, 1, 2], [2, 1, 0, 1], [0, 1, 2, 3], [3, 2, 1, 2]], pt = pats[(fi + (s2 >= sc.bar ? 1 : 0) + cyc) % pats.length], ai2 = (s2 / iv) | 0; if (!brk) VO[sc.arp](E, sc.mus, mtof(note(t3[pt[ai2 % 4]], 1)), t, st * 1.6, (sc.arpDef ? .042 : .06) * eg); } }
       // 6) giai điệu chính: cao trào thì nhạc cụ phụ đệm thêm quãng 8 cao
-      phrase.forEach(function (e0) { if (e0.s === s2) { var f = mtof(note(e0.deg, hiO)), len = e0.len * st; VV(E, sc.mus, f, t, len, .16 * (s2 === 0 ? 1.1 : .9)); if (V2 && (e >= 3 ? 1 : sc.R() < .38 * (e >= 2 ? 1 : .4))) V2(E, sc.mus, mtof(note(e0.deg + (sc.R() < .5 ? 2 : -1), 1 + hiO)), t + st * .5, len, e >= 3 ? .09 : .08); } });
+      phrase.forEach(function (e0) { if (e0.s === s2) { var f = mtof(note(e0.deg, hiO)), len = e0.len * st; VV(E, sc.mus, f, t, len, .16 * (s2 === 0 ? 1.1 : .9)); if (e >= 2 && e0.len >= 3 && ih(fi, e0.s, 5) < .5) VV(E, sc.mus, mtof(note(e0.deg + 1, hiO)), t + st * (e0.len - 1), st, .08);
+        if (V2 && (e >= 3 ? 1 : sc.R() < .38 * (e >= 2 ? 1 : .4))) V2(E, sc.mus, mtof(note(e0.deg + (sc.R() < .5 ? 2 : -1), 1 + hiO)), t + st * .5, len, e >= 3 ? .09 : .08); } });
       // lớp nhạc sự kiện
       sc.ev.forEach(function (id) {
         if (id === 'tet') { if (s % 4 === 0) drumV(E, sc.mus, t, .12, 150, 60, .22); if (s === 2) noiseV(E, sc.mus, t, .04, .04, 'bandpass', 3200, 3); if (s === 0 && Math.floor(n / sc.bar) % 4 === 0) VO.gamelan(E, sc.mus, mtof(p.r - 12), t, 3, .1); if (sc.R() < .22) VO.bell(E, sc.mus, mtof(p.r + 24 + [0, 2, 4, 7, 9][Math.floor(sc.R() * 5)]), t, 1, .05); }
