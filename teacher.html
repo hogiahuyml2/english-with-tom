@@ -1106,7 +1106,7 @@
 <div id="site-footer"></div>
 <script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=48"></script>
+<script src="js/main.js?v=49"></script>
 <script>
   /* ===== TABS ===== */
   var TABS = ['create','groups','assign','grade','bank','students'];
@@ -1126,6 +1126,7 @@
   var _stuData = [];
   var _stuSortKey = 'last_active';
   var _stuSortDir = -1;
+  var _stuShow = 50, _stuFKey = '';   // chỉ dựng 50 dòng mỗi lần để bảng không bị đơ khi có hàng nghìn học sinh
   var SP_PROG_COLOR_STU = { KET:'#0ea5e9', PET:'#8b5cf6', FCE:'#f59e0b', IELTS:'#ec4899', APTIS:'#10b981' };
 
   function loadMyStudents() {
@@ -1162,6 +1163,7 @@
       return _stuSortDir * (av < bv ? -1 : av > bv ? 1 : 0);
     });
 
+    var fkey = [q, filterProg, filterGroup].join('|'); if (fkey !== _stuFKey) { _stuFKey = fkey; _stuShow = 50; }
     renderStudentTable(list);
     var lbl = document.getElementById('stuCountLabel');
     lbl.textContent = list.length < _stuData.length
@@ -1189,6 +1191,7 @@
       tbody.innerHTML = '<tr><td colspan="7" class="stu-empty">Không tìm thấy học sinh nào phù hợp.</td></tr>';
       return;
     }
+    var _stuAll = list.length; list = list.slice(0, _stuShow);
     tbody.innerHTML = list.map(function(s) {
       var initials = (s.name || s.email || '?').charAt(0).toUpperCase();
       var nameBtn = s.id
@@ -1236,7 +1239,7 @@
         + (s.id ? '<a class="btn btn-sm" href="chat.html?u='+s.id+'" title="Nhắn tin học sinh">💬</a>' : '')
         + '</td>'
         + '</tr>';
-    }).join('');
+    }).join('') + (_stuAll > list.length ? '<tr><td colspan="7" class="stu-empty"><button class="btn btn-sm" onclick="_stuShow += 50; applyStudentFilter();">⬇ Xem thêm (' + (_stuAll - list.length) + ' học sinh nữa)</button></td></tr>' : '');
   }
 
   /* ══════════════════════════════════════════════════════

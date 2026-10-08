@@ -106,6 +106,7 @@
         <button class="btn btn-sm btn-primary" onclick="bulkRoleUsers()">Đổi role</button>
         <button class="btn btn-sm" style="color:#fff;background:var(--danger,#e53e3e);border-color:var(--danger,#e53e3e);" onclick="bulkDeleteUsers()">🗑️ Xoá đã chọn</button>
       </div>
+      <input type="search" id="userSearch" placeholder="🔍 Tìm theo tên hoặc email…" autocomplete="off" style="width:100%;max-width:360px;margin:0 0 10px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-size:14px;" oninput="usersSearchChanged()">
       <div style="overflow-x:auto;">
         <table class="table" style="min-width:640px;">
           <thead><tr>
@@ -143,7 +144,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=48"></script>
+<script src="js/main.js?v=49"></script>
 <script>
   var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị' };
   var me = null;
@@ -151,49 +152,64 @@
   async function api(path, opts){ var r = await fetch(path, Object.assign({credentials:'same-origin'}, opts||{})); return { ok:r.ok, data: await r.json().catch(function(){return{};}) }; }
   function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
 
+  /* Danh sách người dùng: chỉ dựng 50 dòng mỗi lần (có ô tìm kiếm + "Xem thêm") để trang không bị đơ khi có hàng nghìn tài khoản */
+  var USERS = [], USHOW = 50, USEARCH_T = null;
+  function userRowHtml(u){
+    var isSelf = u.id===(me&&me.id);
+    var chk = isSelf ? '<td></td>' : '<td><input type="checkbox" class="userChk" value="'+u.id+'" onchange="onUserChkChange()"></td>';
+    var sel = '<select data-id="'+u.id+'" class="roleSel" '+(isSelf?'disabled':'')+'>'+
+      ['student','teacher','admin'].map(function(r){ return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+roleLabel[r]+'</option>'; }).join('')+'</select>';
+    var verified = u.email_verified ? '<span class="badge badge-done">✓</span>' : '<span class="badge badge-todo">chưa</span>';
+    var del = isSelf ? '<span style="color:var(--text-faint);font-size:12px;">(bạn)</span>'
+      : '<button class="btn btn-sm delUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button>';
+    var rc = isSelf ? '' : '<button class="btn btn-sm rcUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" title="Cấp mã OTP đặt lại mật khẩu">🔑 Cấp mã</button> ';
+    return '<tr>'+chk+'<td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+rc+del+'</td></tr>';
+  }
+  function renderUsers(){
+    var q = (document.getElementById('userSearch').value||'').trim().toLowerCase();
+    var list = q ? USERS.filter(function(u){ return (u.name||'').toLowerCase().indexOf(q)>=0 || (u.email||'').toLowerCase().indexOf(q)>=0; }) : USERS;
+    var shown = list.slice(0, USHOW);
+    var html = shown.map(userRowHtml).join('');
+    if (list.length > shown.length) html += '<tr><td colspan="7" style="text-align:center;padding:12px;"><button class="btn btn-sm" onclick="usersMore()">⬇ Xem thêm ('+(list.length-shown.length)+' người nữa)</button></td></tr>';
+    document.getElementById('usersBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">'+(q?'Không tìm thấy người dùng phù hợp.':'Chưa có người dùng.')+'</td></tr>';
+    var hdr = document.getElementById('chkAllUsers'); if (hdr){ hdr.checked = false; hdr.indeterminate = false; }
+    var bar = document.getElementById('userBulkBar'); if (bar) bar.style.display = 'none';
+  }
+  function usersMore(){ USHOW += 50; var y = window.scrollY; renderUsers(); window.scrollTo(0, y); }
+  function usersSearchChanged(){ clearTimeout(USEARCH_T); USEARCH_T = setTimeout(function(){ USHOW = 50; renderUsers(); }, 200); }
   async function loadUsers(){
-    clearSelectionUsers();
     var res = await api('/api/admin/users');
-    var rows = res.data.users || [];
-    document.getElementById('stUsers').textContent = rows.length;
-    document.getElementById('stStudents').textContent = rows.filter(u=>u.role==='student').length;
-    document.getElementById('stTeachers').textContent = rows.filter(u=>u.role==='teacher').length;
+    USERS = res.data.users || [];
+    document.getElementById('stUsers').textContent = USERS.length;
+    document.getElementById('stStudents').textContent = USERS.filter(function(u){ return u.role==='student'; }).length;
+    document.getElementById('stTeachers').textContent = USERS.filter(function(u){ return u.role==='teacher'; }).length;
+    renderUsers();
+  }
+  // một bộ lắng nghe chung cho cả bảng (thay vì gắn riêng cho từng dòng)
+  (function(){
     var body = document.getElementById('usersBody');
-    body.innerHTML = rows.map(function(u){
-      var isSelf = u.id===(me&&me.id);
-      var chk = isSelf ? '<td></td>' : '<td><input type="checkbox" class="userChk" value="'+u.id+'" onchange="onUserChkChange()"></td>';
-      var sel = '<select data-id="'+u.id+'" class="roleSel" '+(isSelf?'disabled':'')+'>'+
-        ['student','teacher','admin'].map(function(r){ return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+roleLabel[r]+'</option>'; }).join('')+'</select>';
-      var verified = u.email_verified ? '<span class="badge badge-done">✓</span>' : '<span class="badge badge-todo">chưa</span>';
-      var del = isSelf ? '<span style="color:var(--text-faint);font-size:12px;">(bạn)</span>'
-        : '<button class="btn btn-sm delUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button>';
-      var rc = isSelf ? '' : '<button class="btn btn-sm rcUser" data-id="'+u.id+'" data-name="'+esc(u.name)+'" title="Cấp mã OTP đặt lại mật khẩu">🔑 Cấp mã</button> ';
-      del = rc + del;
-      return '<tr>'+chk+'<td>'+esc(u.name)+'</td><td style="font-size:13px;">'+esc(u.email)+'</td><td>'+sel+'</td><td>'+verified+'</td><td>'+u.submissions+'</td><td>'+del+'</td></tr>';
-    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-faint);">Chưa có người dùng.</td></tr>';
-
-    document.querySelectorAll('.roleSel').forEach(function(s){
-      s.onchange = async function(){
-        var r = await api('/api/admin/users/'+s.getAttribute('data-id')+'/role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role:s.value})});
-        if (!r.ok) { ewtAlert(r.data.error||'Lỗi'); loadUsers(); }
-      };
+    body.addEventListener('change', async function(e){
+      var s = e.target.closest && e.target.closest('.roleSel'); if (!s) return;
+      var r = await api('/api/admin/users/'+s.getAttribute('data-id')+'/role', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role:s.value})});
+      if (!r.ok) { ewtAlert(r.data.error||'Lỗi'); loadUsers(); } else { var u = USERS.filter(function(x){ return String(x.id)===s.getAttribute('data-id'); })[0]; if (u) u.role = s.value; }
     });
-    document.querySelectorAll('.rcUser').forEach(function(b){
-      b.onclick = async function(){
+    body.addEventListener('click', async function(e){
+      var b = e.target.closest && e.target.closest('.rcUser');
+      if (b) {
         var r = await api('/api/admin/users/'+b.getAttribute('data-id')+'/reset-code', {method:'POST'});
         if (!r.ok) { ewtAlert(r.data.error||'Lỗi'); return; }
         var d = r.data;
         (await ewtPrompt('Mã OTP đặt lại mật khẩu cho "'+d.name+'" (hiệu lực '+d.minutes+' phút).\nGửi mã này cho học sinh; học sinh vào trang Quên mật khẩu → nhập email → bấm "Gửi mã" rồi nhập MÃ NÀY thay cho mã trong email.\nHoặc gửi link bên dưới:', d.code + '   |   ' + d.link));
-      };
-    });
-    document.querySelectorAll('.delUser').forEach(function(b){
-      b.onclick = async function(){
+        return;
+      }
+      b = e.target.closest && e.target.closest('.delUser');
+      if (b) {
         if (!(await ewtConfirm('Xoá tài khoản "'+b.getAttribute('data-name')+'"? Mọi bài làm của họ cũng bị xoá.'))) return;
-        var r = await api('/api/admin/users/'+b.getAttribute('data-id'), {method:'DELETE'});
-        if (r.ok) loadUsers(); else ewtAlert(r.data.error||'Lỗi');
-      };
+        var r2 = await api('/api/admin/users/'+b.getAttribute('data-id'), {method:'DELETE'});
+        if (r2.ok) loadUsers(); else ewtAlert(r2.data.error||'Lỗi');
+      }
     });
-  }
+  })();
 
   function onUserChkChange(){
     var all  = document.querySelectorAll('#usersBody .userChk');
@@ -248,14 +264,14 @@
     var res = await api('/api/exercises');
     var rows = res.data.exercises || [];
     document.getElementById('stEx').textContent = rows.length;
-    var body = document.getElementById('exBody');
+    var body = document.getElementById('exBody'), allRows = rows; rows = allRows.slice(0, window.EXSHOW || 100);
     body.innerHTML = rows.map(function(e){
       return '<tr>'
         +'<td><input type="checkbox" class="exChk" value="'+e.id+'" onchange="onExChkChange()"></td>'
         +'<td>'+esc(e.title)+'</td><td>'+esc(e.program)+'</td><td>'+esc(e.skill)+'</td>'
         +'<td><button class="btn btn-sm delEx" data-id="'+e.id+'" data-name="'+esc(e.title)+'" style="color:var(--danger);border-color:var(--danger);">Xoá</button></td>'
         +'</tr>';
-    }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa có đề.</td></tr>';
+    }).join('') + (allRows.length > rows.length ? '<tr><td colspan="5" style="text-align:center;padding:12px;"><button class="btn btn-sm" onclick="window.EXSHOW=(window.EXSHOW||100)+100;loadExercises()">⬇ Xem thêm ('+(allRows.length-rows.length)+' đề nữa)</button></td></tr>' : '') || '<tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Chưa có đề.</td></tr>';
     document.querySelectorAll('.delEx').forEach(function(b){
       b.onclick = async function(){
         if (!(await ewtConfirm('Xoá đề "'+b.getAttribute('data-name')+'"?'))) return;

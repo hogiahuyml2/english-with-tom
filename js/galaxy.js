@@ -38,6 +38,10 @@
     var cp = get('ewt-palette', ''), pp = PALETTES.filter(function (x) { return x.k === cp; })[0]; fx.scene = pp ? pp.scene : 'stars'; fx.v = 2;
     set('ewt-fx', JSON.stringify(fx));
   }
+  /* Chế độ MƯỢT: trang quản lý (nhiều bảng dữ liệu) và máy yếu sẽ giảm nền động — tránh giật khi bấm các tab nặng. Người dùng có thể tự bật/tắt trong bảng "Giao diện" (fx.lite). */
+  var HEAVY_PAGE = /\/(teacher[a-z-]*|admin|access|school-admin|placement-admin|school-merge)\.html$/.test(location.pathname);
+  var LOW_END = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.connection && navigator.connection.saveData);
+  function isLite() { return typeof fx.lite === 'boolean' ? fx.lite : (HEAVY_PAGE || !!LOW_END); }
   function saveFx() { set('ewt-fx', JSON.stringify(fx)); }
 
   function palette() { return root.getAttribute('data-palette') || ''; }
@@ -54,6 +58,7 @@
   var css = '' +
     '#fx-layer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}' +
     '#fx-canvas{position:absolute;inset:0;width:100%;height:100%}' +
+    'html.fx-lite .fx-blob{animation:none!important}html.fx-lite body,html.fx-lite .course-card,html.fx-lite .sc-card,html.fx-lite .stat-card,html.fx-lite .feature,html.fx-lite .card{animation:none!important}html.fx-lite .fx-deco,html.fx-lite .fx-glow{display:none!important}' +
     '.fx-blob{position:absolute;border-radius:50%;background:radial-gradient(circle at center,var(--primary) 0%,transparent 65%);opacity:.10;will-change:transform}' +
     '[data-theme="dark"] .fx-blob{opacity:.16}' +
     '.fx-blob.b1{width:60vmax;height:60vmax;left:-18vmax;top:-22vmax;animation:fxDrift1 38s ease-in-out infinite alternate}' +
@@ -336,7 +341,7 @@
   function frame(t) {
     if (!running) return;
     requestAnimationFrame(frame);
-    var dt = Math.min(50, t - last); if (dt < 16) return; last = t;
+    var dt = Math.min(50, t - last); if (dt < (isLite() ? 42 : 16)) return; last = t;
     ctx.clearRect(0, 0, W, H);
     var dark = isDark();
     if (fx.stars && S) S.draw(dt / 1000, t / 1000, dark);
@@ -402,7 +407,8 @@
       '<div class="pal-sec">Hiệu ứng</div>' +
       '<div class="pal-row"><span>🌠 Nền động (hạt, sao, cánh hoa...)</span>' + sw(fx.stars, 'stars') + '</div>' +
       '<div class="pal-row"><span>🖱️ Vệt sáng theo con trỏ</span>' + sw(fx.trail, 'trail') + '</div>' +
-      '<div class="pal-row"><span>🎞️ Chuyển động mềm mại (hiện dần, nghiêng thẻ)</span>' + sw(fx.motion, 'motion') + '</div>';
+      '<div class="pal-row"><span>🎞️ Chuyển động mềm mại (hiện dần, nghiêng thẻ)</span>' + sw(fx.motion, 'motion') + '</div>' +
+      '<div class="pal-row"><span>⚡ Chế độ mượt (nhẹ máy, hết giật)</span>' + sw(isLite(), 'lite') + '</div>';
   }
   function syncPopover() { if (pop.classList.contains('open')) render(); }
   function place(btn) {
@@ -413,6 +419,7 @@
   function applyFx() {
     root.classList.toggle('fx-stars', !!fx.stars);
     root.classList.toggle('fx-motion', !!fx.motion);
+    root.classList.toggle('fx-lite', isLite());
     layer.style.display = (fx.stars || fx.motion || fx.trail) ? '' : 'none';
     var blobs = layer.querySelectorAll('.fx-blob');
     Array.prototype.forEach.call(blobs, function (b) { b.style.display = fx.motion || fx.stars ? '' : 'none'; b.style.animation = fx.motion ? '' : 'none'; });
@@ -435,7 +442,7 @@
       setTimeout(render, 60); return;
     }
     var f = t.closest('[data-fx]');
-    if (f) { var key = f.getAttribute('data-fx'); fx[key] = !fx[key]; saveFx(); applyFx(); render(); }
+    if (f) { var key = f.getAttribute('data-fx'); if (key === 'lite') fx.lite = !isLite(); else fx[key] = !fx[key]; saveFx(); applyFx(); render(); }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') pop.classList.remove('open'); });
   window.addEventListener('scroll', function () { pop.classList.remove('open'); }, { passive: true });

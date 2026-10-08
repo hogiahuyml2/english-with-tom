@@ -679,7 +679,7 @@ window.ewtInstallCard = function (mount) {
 /* Hiệu ứng galaxy/stars + bộ chọn bảng màu */
 (function () {
   var s = document.createElement('script');
-  s.src = 'js/galaxy.js?v=6';
+  s.src = 'js/galaxy.js?v=7';
   s.async = true;
   document.head.appendChild(s);
 })();
