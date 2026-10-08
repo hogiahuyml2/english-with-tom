@@ -386,6 +386,10 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-tri { position: relative; text-align: center; cursor: pointer; } .gd-tri .qty { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; } .gd-tri .qty i { font-style: normal; width: 24px; height: 24px; border-radius: 50%; background: #F59E0B; color: #fff; font-weight: 900; line-height: 24px; } .gd-tri .qty input { width: 52px; text-align: center; font: 800 14px inherit; font-family: inherit; padding: 3px 2px; border: 2px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); -moz-appearance: textfield; } .gd-tri .qty input::-webkit-inner-spin-button { display: none; }
 #items.stk .gd-it { outline: 2px dashed #7C3AED; outline-offset: -3px; } .gd-tab.stk.on { background: #7C3AED; color: #fff; border-color: #7C3AED; }
 body.visit .gd-visit { gap: 8px; } .gd-visit .gd-btn { padding: 7px 11px; }
+.gd-zcard.lock, .gd-zcard.lock * { animation-play-state: paused !important; }
+.gd-zcard { content-visibility: auto; contain-intrinsic-size: auto 300px; }
+.gd-nb { left: 0; animation-name: nbfly2; } @keyframes nbfly2 { from { transform: translate3d(-110%, 0, 0); } to { transform: translate3d(calc(100vw + 20px), 0, 0); } }
+body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: none !important; } @media (prefers-reduced-motion: reduce) { .gd-nb { left: var(--x, 8%); animation: none !important; } }
 </style>
 </head>
 <body data-page="garden" data-guard="auth">
@@ -605,7 +609,7 @@ body.visit .gd-visit { gap: 8px; } .gd-visit .gd-btn { padding: 7px 11px; }
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=51"></script>
+<script src="js/main.js?v=52"></script>
 <script src="js/garden-catalog.js?v=1"></script>
 <script src="js/garden-cat-a.js?v=2"></script>
 <script src="js/garden-cat-b.js?v=2"></script>
@@ -661,7 +665,7 @@ function sfxApi(u, d) { var k = String(u).replace('/api/garden/', ''), m = { pla
 function api(url, body) { return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; SND('err'); throw e; } sfxApi(url, d); return d; }); }); }
 function NOW() { return Date.now() + SKEW; }
 function fmtT(ms) { var m = Math.ceil(ms / 60000); if (m < 1) return '<1 ph'; if (m < 60) return m + ' ph'; var h = Math.floor(m / 60); return h + 'g' + (m % 60 ? (m % 60) + 'p' : ''); }
-function setState(d) { S = d.garden; if (!VISIT) COINS = d.coins; if (typeof d.inbox === 'number') INBOX = d.inbox; if (typeof d.trades === 'number') TRADES = d.trades; SKEW = (S.now || Date.now()) - Date.now(); render(); if (window.updDots) window.updDots(); }
+function setState(d) { S = d.garden; try { LASTSIG = ''; } catch (e) {} if (!VISIT) COINS = d.coins; if (typeof d.inbox === 'number') INBOX = d.inbox; if (typeof d.trades === 'number') TRADES = d.trades; SKEW = (S.now || Date.now()) - Date.now(); render(); if (window.updDots) window.updDots(); }
 
 /* ───────── biểu tượng vẽ tay (thay emoji) ───────── */
 var ICONS = {
@@ -753,17 +757,45 @@ function layout(z) {
   var ts = Math.max(mn, Math.min(100, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
   $('lawn').style.setProperty('--ts', ts + 'px'); $('lawn').classList.toggle('tiny', ts < 34); return ts;
 }
+/* Bản đồ khu vườn: chỉ dựng "khung" thẻ ngay; phần tranh phong cảnh nặng chỉ dựng khi thẻ gần lọt vào màn hình (IntersectionObserver),
+   và chỉ thay thẻ nào thực sự thay đổi → mượt trên iPad/máy yếu (trước đây dựng lại ~30.000 phần tử mỗi lần). */
+var MAPIO = null, SCENEC = {};
+function sceneStatic(z) { var k = z.id + ':' + zlv(z); return SCENEC[k] || (SCENEC[k] = W.zoneSvg(z) + W.decorSvg(z, zlv(z))); }
+function cardSig(z, open, zts) { var d = zdim(z), s = (open ? 1 : 0) + '|' + zlv(z) + '|' + zts.toFixed(2) + '|' + (S.level >= z.lvl ? 1 : 0), r, c, gi, t, it, now = NOW(); if (open) for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) { gi = z.i * PER + r * MAXC + c; t = S.tiles[gi]; if (t) { it = D.BY[t.k]; s += ',' + gi + (t.ref != null ? 'r' : t.k + (it && (it.kind === 'plant' || it.kind === 'tree') ? D.stageOf(it, t, now) : '')); } } return s; }
+function cardHtml(z, ts) {
+  var open = zoneUnlocked(z.id), pl = open ? planted(z) : 0, canLv = z.lvl <= S.level, d = zdim(z), zts = Math.max(6, ts * Math.min(BASEC / d.c, BASER / d.r)), plots = D.plotsOf(z, zlv(z));
+  var lock = open ? '' : '<div class="lk">🔒 ' + (VISIT ? 'Chưa mở' : (canLv ? 'Mở khu: ' + z.cost + ' ' + COIN : 'Cần vườn cấp ' + z.lvl)) + '</div>';
+  return '<button class="gd-zcard' + (open ? '' : ' lock') + '" data-zone="' + z.id + '" data-sig="' + cardSig(z, open, zts) + '|' + pl + '|' + (VISIT ? 1 : 0) + '|' + (canLv ? 1 : 0) + '" data-zts="' + zts.toFixed(2) + '" aria-label="' + esc(z.name) + '"><div class="zh">' + z.icon + ' ' + esc(z.name) + '</div>' +
+    '<div class="gd-lawn z-' + z.id + '" data-lazy="1" style="--ts:' + zts.toFixed(2) + 'px;--cols:' + d.c + ';--rows:' + d.r + '"></div>' +
+    (open ? '<span class="zp">🌱 ' + pl + '/' + plots + ' ô đã trồng · ' + d.c + '×' + d.r + '</span>' : '') + '<div class="zf">' + esc(z.desc) + '</div>' + lock + '</button>';
+}
+function fillCard(card) {
+  var lawn = card.querySelector('[data-lazy]'); if (!lawn) return; var z = D.ZBY[card.getAttribute('data-zone')]; if (!z) return;
+  var open = !card.classList.contains('lock'), zts = parseFloat(card.getAttribute('data-zts')) || 12;
+  lawn.removeAttribute('data-lazy'); lawn.innerHTML = '<div class="gd-zwrap">' + sceneStatic(z) + (open ? '<div class="gd-grid">' + cellsHtml(z, zts, true) + '</div>' : '') + '</div>';
+}
+function observeCards(m) {
+  var cards = m.querySelectorAll('.gd-zcard');
+  if (!('IntersectionObserver' in window)) { for (var i = 0; i < cards.length; i++) fillCard(cards[i]); return; }
+  if (!MAPIO) MAPIO = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { MAPIO.unobserve(e.target); fillCard(e.target); } }); }, { rootMargin: '500px 0px' });
+  for (var j = 0; j < cards.length; j++) if (cards[j].querySelector('[data-lazy]')) MAPIO.observe(cards[j]);
+}
 function renderMap() {
   var m = $('map'), narrow = innerWidth <= 900, mc = narrow ? 2 : (innerWidth > 1400 ? 4 : 3), cw = m.clientWidth - 8;
   var tsW = Math.floor(((cw - 14 * (mc - 1)) / mc - 48) / BASEC), ts = Math.max(narrow ? 17 : 22, Math.min(40, tsW));
   m.style.setProperty('--mc', mc);
-  m.innerHTML = ZORDER.map(function (z) {
-    var open = zoneUnlocked(z.id), pl = planted(z), canLv = z.lvl <= S.level, d = zdim(z), zts = Math.max(6, ts * Math.min(BASEC / d.c, BASER / d.r)), plots = D.plotsOf(z, zlv(z));
-    var lock = open ? '' : '<div class="lk">🔒 ' + (VISIT ? 'Chưa mở' : (canLv ? 'Mở khu: ' + z.cost + ' ' + COIN : 'Cần vườn cấp ' + z.lvl)) + '</div>';
-    return '<button class="gd-zcard' + (open ? '' : ' lock') + '" data-zone="' + z.id + '" aria-label="' + esc(z.name) + '"><div class="zh">' + z.icon + ' ' + esc(z.name) + '</div>' +
-      '<div class="gd-lawn z-' + z.id + '" style="--ts:' + zts.toFixed(2) + 'px;--cols:' + d.c + ';--rows:' + d.r + '"><div class="gd-zwrap">' + W.zoneSvg(z) + W.decorSvg(z, zlv(z)) + '<div class="gd-grid">' + cellsHtml(z, zts, true) + '</div></div></div>' +
-      (open ? '<span class="zp">🌱 ' + pl + '/' + plots + ' ô đã trồng · ' + d.c + '×' + d.r + '</span>' : '') + '<div class="zf">' + esc(z.desc) + '</div>' + lock + '</button>';
-  }).join('');
+  var lk = mc + '|' + ts + '|' + ZORDER.length;
+  if (m.getAttribute('data-lk') !== lk || m.children.length !== ZORDER.length) {
+    m.setAttribute('data-lk', lk); m.innerHTML = ZORDER.map(function (z) { return cardHtml(z, ts); }).join(''); observeCards(m); return;
+  }
+  var changed = false;
+  ZORDER.forEach(function (z, i) {
+    var card = m.children[i], open = zoneUnlocked(z.id), d = zdim(z), zts = Math.max(6, ts * Math.min(BASEC / d.c, BASER / d.r)), pl = open ? planted(z) : 0, canLv = z.lvl <= S.level;
+    var sig = cardSig(z, open, zts) + '|' + pl + '|' + (VISIT ? 1 : 0) + '|' + (canLv ? 1 : 0);
+    if (card.getAttribute('data-sig') === sig) return;
+    var tmp = document.createElement('div'); tmp.innerHTML = cardHtml(z, ts); m.replaceChild(tmp.firstChild, card); changed = true;
+  });
+  if (changed) observeCards(m);
 }
 function ensureLawn(z) {
   var lawn = $('lawn');
@@ -785,6 +817,7 @@ function render() {
   $('stage').classList.toggle('map', !z);
   $('stage').classList.toggle('multi', !!z && TOOL === 'multi' && !VISIT);
   if (!z) { renderMap(); renderTools(); return; }
+  var mp = $('map'); if (mp.firstChild) { mp.innerHTML = ''; mp.removeAttribute('data-lk'); }   // đang ở trong khu: bỏ bản đồ để nhẹ máy
   ensureLawn(z); layout(z);
   var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
   $('grid').innerHTML = cellsHtml(z, ts, false); JUSTPLACED = -1;
@@ -1640,8 +1673,11 @@ if (VQ) {
   api('/api/garden').then(function (d) { setState(d); loadNotes(''); if (QP.get('tab') === 'friends') openQuests('f'); }).catch(function (e) { $('hint').textContent = e.message; });
   fetch('/api/me/avatar', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (d && d.cfg && window.ewtAvatarInto) window.ewtAvatarInto($('gav'), d.cfg, 62); }).catch(function () {});
 }
-setInterval(function () { if (S && !document.hidden && !$('pop')) render(); }, 20000);
-window.addEventListener('resize', function () { if (S) render(); });
+/* Chỉ vẽ lại định kỳ khi có cây đổi giai đoạn; đổi cỡ màn hình thì chờ ngừng kéo rồi mới vẽ (iPad xoay màn hình rất hay gọi) */
+var LASTSIG = '', RZT = 0, RZW = innerWidth, RZH = innerHeight;
+function growSig() { var s = '', i, t, it, now = NOW(); if (!S) return s; for (i = 0; i < S.tiles.length; i++) { t = S.tiles[i]; if (t && t.ref == null && (it = D.BY[t.k]) && (it.kind === 'plant' || it.kind === 'tree')) s += D.stageOf(it, t, now); else if (t && t.ref == null && it && it.kind === 'ground') s += 'g'; } return s; }
+setInterval(function () { if (S && !document.hidden && !$('pop')) { var g = growSig(); if (g !== LASTSIG) { LASTSIG = g; render(); } } }, 20000);
+window.addEventListener('resize', function () { clearTimeout(RZT); RZT = setTimeout(function () { if (S && (Math.abs(innerWidth - RZW) > 1 || Math.abs(innerHeight - RZH) > 40)) { RZW = innerWidth; RZH = innerHeight; render(); } }, 250); });
 })();
 </script>
 </body>

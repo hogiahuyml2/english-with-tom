@@ -39,7 +39,7 @@
     set('ewt-fx', JSON.stringify(fx));
   }
   /* Chế độ MƯỢT: trang quản lý (nhiều bảng dữ liệu) và máy yếu sẽ giảm nền động — tránh giật khi bấm các tab nặng. Người dùng có thể tự bật/tắt trong bảng "Giao diện" (fx.lite). */
-  var HEAVY_PAGE = /\/(teacher[a-z-]*|admin|access|school-admin|placement-admin|school-merge)\.html$/.test(location.pathname);
+  var HEAVY_PAGE = /\/(teacher[a-z-]*|admin|access|school-admin|placement-admin|school-merge|garden)\.html$/.test(location.pathname);
   var LOW_END = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4) || (navigator.connection && navigator.connection.saveData);
   function isLite() { return typeof fx.lite === 'boolean' ? fx.lite : (HEAVY_PAGE || !!LOW_END); }
   function saveFx() { set('ewt-fx', JSON.stringify(fx)); }
