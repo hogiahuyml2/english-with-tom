@@ -420,6 +420,7 @@
     root.classList.toggle('fx-stars', !!fx.stars);
     root.classList.toggle('fx-motion', !!fx.motion);
     root.classList.toggle('fx-lite', isLite());
+    root.classList.toggle('fx-nomotion', !fx.motion);
     layer.style.display = (fx.stars || fx.motion || fx.trail) ? '' : 'none';
     var blobs = layer.querySelectorAll('.fx-blob');
     Array.prototype.forEach.call(blobs, function (b) { b.style.display = fx.motion || fx.stars ? '' : 'none'; b.style.animation = fx.motion ? '' : 'none'; });
@@ -448,4 +449,5 @@
   window.addEventListener('scroll', function () { pop.classList.remove('open'); }, { passive: true });
 
   readColor(); resize(); applyFx();
+  (function () { var q = document.createElement('script'); q.src = 'js/touchfx.js?v=1'; q.async = true; document.head.appendChild(q); })();
 })();

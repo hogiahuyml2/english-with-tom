@@ -93,5 +93,53 @@ module.exports = {
   morocco: [
     ['What colour is the star on the flag of Morocco?', ['Green', 'Blue', 'Yellow', 'White'], 'The flag of Morocco has a green star on a red background.'],
     ['The Koutoubia Mosque is in ___.', ['Marrakech', 'Paris', 'Rome', 'Tokyo'], 'The Koutoubia Mosque is in Marrakech.'],
-    ['Moroccan mint tea is a ___ drink.', ['sweet', 'cold', 'sour', 'bitter'], 'Moroccan mint tea is a sweet drink.'] ]
+    ['Moroccan mint tea is a ___ drink.', ['sweet', 'cold', 'sour', 'bitter'], 'Moroccan mint tea is a sweet drink.'] ],
+  spain: [
+    ['Sagrada Família is in ___.', ['Barcelona', 'Paris', 'London', 'Moscow'], 'Sagrada Família is in Barcelona.'],
+    ['Paella is made with ___.', ['rice', 'noodles', 'bread', 'cheese'], 'Paella is a rice dish.'],
+    ['Many villages in southern Spain have ___ houses.', ['white', 'black', 'green', 'purple'], 'Many villages in southern Spain have white houses.'] ],
+  russia: [
+    ['The capital of Russia is ___.', ['Moscow', 'Madrid', 'Dublin', 'Oslo'], 'The capital of Russia is Moscow.'],
+    ['A matryoshka has smaller dolls ___ it.', ['inside', 'outside', 'under', 'behind'], 'A matryoshka has smaller dolls inside it.'],
+    ['What colour is the middle stripe on the flag of Russia?', ['Blue', 'Red', 'Green', 'Yellow'], 'The middle stripe is blue.'] ],
+  ireland: [
+    ['The colours of the Irish flag are green, white and ___.', ['orange', 'red', 'blue', 'black'], 'The Irish flag is green, white and orange.'],
+    ['The Cliffs of Moher are next to the ___.', ['sea', 'desert', 'forest', 'city'], 'The Cliffs of Moher are by the sea.'],
+    ['The symbol of Ireland is the ___.', ['harp', 'drum', 'piano', 'violin'], 'The harp is a symbol of Ireland.'] ],
+  norway: [
+    ['The flag of Norway is red with a blue and white ___.', ['cross', 'star', 'circle', 'moon'], 'The flag of Norway has a cross.'],
+    ['A rorbu is a house for ___.', ['fishermen', 'pilots', 'teachers', 'singers'], 'A rorbu is a cabin for fishermen.'],
+    ['The Vikings travelled by ___.', ['ship', 'plane', 'train', 'bike'], 'The Vikings sailed in ships.'] ],
+  peru: [
+    ['Machu Picchu was built by the ___.', ['Incas', 'Romans', 'Vikings', 'Egyptians'], 'Machu Picchu was built by the Incas.'],
+    ['An alpaca has soft ___.', ['wool', 'scales', 'feathers', 'shells'], 'An alpaca has soft wool.'],
+    ['A quipu is made of strings and ___.', ['knots', 'glass', 'paper', 'metal'], 'A quipu is made of strings with knots.'] ],
+  argentina: [
+    ['The capital of Argentina is ___.', ['Buenos Aires', 'Lima', 'Madrid', 'Rome'], 'The capital of Argentina is Buenos Aires.'],
+    ['Perito Moreno is a famous ___.', ['glacier', 'desert', 'volcano', 'island'], 'Perito Moreno is a glacier.'],
+    ['Tango is a kind of ___.', ['dance', 'fruit', 'car', 'sport'], 'Tango is a kind of dance and music.'] ],
+  cuba: [
+    ['Havana is the capital of ___.', ['Cuba', 'Chile', 'Peru', 'Spain'], 'Havana is the capital of Cuba.'],
+    ['The red triangle of the Cuban flag has a white ___.', ['star', 'moon', 'sun', 'cross'], 'There is a white star in the red triangle.'],
+    ['People play the conga drum with their ___.', ['hands', 'feet', 'eyes', 'ears'], 'People play the conga with their hands.'] ],
+  chile: [
+    ['Moai statues are on ___ Island.', ['Easter', 'Christmas', 'Coconut', 'Rainy'], 'Moai are on Easter Island.'],
+    ['What colour is the star on the flag of Chile?', ['White', 'Red', 'Yellow', 'Black'], 'The star on the flag of Chile is white.'],
+    ['The copihue is the national ___ of Chile.', ['flower', 'animal', 'song', 'food'], 'The copihue is the national flower.'] ],
+  kenya: [
+    ['Mount Kilimanjaro is the tallest mountain in ___.', ['Africa', 'Asia', 'Europe', 'Australia'], 'Kilimanjaro is the tallest mountain in Africa.'],
+    ['People go on a ___ to see wild animals.', ['safari', 'party', 'concert', 'picnic'], 'People go on a safari to see wild animals.'],
+    ['The Maasai live in villages called ___.', ['bomas', 'castles', 'igloos', 'towers'], 'Maasai villages are called bomas.'] ],
+  southafrica: [
+    ['Table Mountain is above ___.', ['Cape Town', 'Nairobi', 'Cairo', 'Lima'], 'Table Mountain is above Cape Town.'],
+    ['A vuvuzela makes a ___ sound.', ['loud', 'quiet', 'sweet', 'wet'], 'A vuvuzela makes a loud sound.'],
+    ['The king protea is the national ___ of South Africa.', ['flower', 'animal', 'bird', 'food'], 'The king protea is the national flower.'] ],
+  ethiopia: [
+    ['Ethiopia is the home of ___.', ['coffee', 'kimchi', 'sushi', 'tacos'], 'Ethiopia is the home of coffee.'],
+    ['A jebena is a ___ pot.', ['coffee', 'rice', 'soup', 'flower'], 'A jebena is a coffee pot.'],
+    ['The churches of Lalibela are cut into ___.', ['rock', 'ice', 'sand', 'wood'], 'The churches of Lalibela are cut into rock.'] ],
+  madagascar: [
+    ['Lemurs are wild animals from ___.', ['Madagascar', 'Canada', 'Norway', 'Peru'], 'Lemurs are wild animals from Madagascar.'],
+    ['Vanilla comes from an ___.', ['orchid', 'apple', 'onion', 'egg'], 'Vanilla comes from an orchid.'],
+    ['On the flag of Madagascar, white is on the ___.', ['left', 'right', 'top', 'bottom'], 'White is on the left.'] ]
 };

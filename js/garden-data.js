@@ -258,7 +258,57 @@
     { id: 'frostpine', name: 'Thông băng giá', kind: 'tree', cost: 600, lvl: 8, grow: 540, y: 90, b: 17, c: '#6AA4B8', c2: '#fff' },
     { id: 'cycad', name: 'Cây tuế cổ đại', kind: 'tree', cost: 900, lvl: 10, grow: 600, y: 115, b: 22, c: '#3C9A52', c2: '#E8A13A' },
     { id: 'firetree', name: 'Cây dung nham', kind: 'tree', cost: 1200, lvl: 11, grow: 650, y: 140, b: 26, c: '#E8431F', c2: '#FFD23F' },
-    { id: 'neontree', name: 'Cây neon', kind: 'tree', cost: 1900, lvl: 13, grow: 720, y: 180, b: 34, c: '#3ADFFF', c2: '#FF5CC8' }
+    { id: 'neontree', name: 'Cây neon', kind: 'tree', cost: 1900, lvl: 13, grow: 720, y: 180, b: 34, c: '#3ADFFF', c2: '#FF5CC8' },
+    // ── 12 khu quốc gia mới (châu Mỹ, châu Âu, châu Phi): công trình + vật phẩm văn hoá (hình vẽ ở garden-world9/10/11.js) ──
+    { id: 'sagrada', name: 'Nhà thờ Sagrada Família', kind: 'big', w: 3, h: 3, cost: 12000, lvl: 15, b: 160 },
+    { id: 'pueblo', name: 'Làng trắng Andalusia', kind: 'big', w: 2, h: 2, cost: 5200, lvl: 15, b: 76 },
+    { id: 'flamencofan', name: 'Quạt flamenco', kind: 'deco', cost: 640, lvl: 15, b: 18 },
+    { id: 'paellapan', name: 'Chảo paella', kind: 'deco', cost: 700, lvl: 15, b: 18 },
+    { id: 'stbasil', name: 'Nhà thờ Thánh Basil', kind: 'big', w: 3, h: 3, cost: 12400, lvl: 17, b: 164 },
+    { id: 'izba', name: 'Nhà gỗ izba', kind: 'big', w: 2, h: 2, cost: 5400, lvl: 17, b: 78 },
+    { id: 'ruflag', name: 'Cờ Nga', kind: 'deco', cost: 620, lvl: 17, b: 17 },
+    { id: 'matryoshka', name: 'Búp bê matryoshka', kind: 'deco', cost: 740, lvl: 17, b: 19 },
+    { id: 'moher', name: 'Vách đá Moher', kind: 'big', w: 3, h: 3, cost: 12800, lvl: 19, b: 168 },
+    { id: 'irishcottage', name: 'Nhà tranh Ai-len', kind: 'big', w: 2, h: 2, cost: 5600, lvl: 19, b: 80 },
+    { id: 'ieflag', name: 'Cờ Ai-len', kind: 'deco', cost: 640, lvl: 19, b: 17 },
+    { id: 'celticharp', name: 'Đàn hạc Celtic', kind: 'deco', cost: 780, lvl: 19, b: 19 },
+    { id: 'stavechurch', name: 'Nhà thờ gỗ stave', kind: 'big', w: 3, h: 3, cost: 13200, lvl: 21, b: 172 },
+    { id: 'rorbu', name: 'Nhà rorbu bên vịnh', kind: 'big', w: 2, h: 2, cost: 5800, lvl: 21, b: 82 },
+    { id: 'noflag', name: 'Cờ Na Uy', kind: 'deco', cost: 660, lvl: 21, b: 17 },
+    { id: 'vikingship', name: 'Thuyền Viking', kind: 'deco', cost: 800, lvl: 21, b: 19 },
+    { id: 'troll', name: 'Quỷ núi troll', kind: 'deco', cost: 760, lvl: 21, b: 18 },
+    { id: 'machupicchu', name: 'Thành cổ Machu Picchu', kind: 'big', w: 3, h: 3, cost: 13600, lvl: 23, b: 176 },
+    { id: 'andeanhouse', name: 'Nhà đá Andes', kind: 'big', w: 2, h: 2, cost: 6000, lvl: 23, b: 84 },
+    { id: 'panflute', name: 'Sáo pan', kind: 'deco', cost: 680, lvl: 23, b: 18 },
+    { id: 'quipu', name: 'Dây quipu Inca', kind: 'deco', cost: 720, lvl: 23, b: 19 },
+    { id: 'perito', name: 'Sông băng Perito Moreno', kind: 'big', w: 3, h: 3, cost: 14000, lvl: 25, b: 180 },
+    { id: 'laboca', name: 'Phố La Boca', kind: 'big', w: 2, h: 2, cost: 6200, lvl: 25, b: 86 },
+    { id: 'mategourd', name: 'Trà mate', kind: 'deco', cost: 700, lvl: 25, b: 18 },
+    { id: 'bandoneon', name: 'Đàn bandoneon', kind: 'deco', cost: 760, lvl: 25, b: 19 },
+    { id: 'capitolio', name: 'Toà nhà Capitolio', kind: 'big', w: 3, h: 3, cost: 14400, lvl: 27, b: 184 },
+    { id: 'vintagecar', name: 'Xe cổ Cuba', kind: 'big', w: 2, h: 2, cost: 6400, lvl: 27, b: 88 },
+    { id: 'cuflag', name: 'Cờ Cuba', kind: 'deco', cost: 680, lvl: 27, b: 17 },
+    { id: 'congadrum', name: 'Trống conga', kind: 'deco', cost: 740, lvl: 27, b: 19 },
+    { id: 'moai', name: 'Tượng Moai', kind: 'big', w: 3, h: 3, cost: 14800, lvl: 29, b: 188 },
+    { id: 'palafito', name: 'Nhà palafito Chiloé', kind: 'big', w: 2, h: 2, cost: 6600, lvl: 29, b: 90 },
+    { id: 'clflag', name: 'Cờ Chile', kind: 'deco', cost: 700, lvl: 29, b: 17 },
+    { id: 'copihue', name: 'Hoa copihue (quốc hoa)', kind: 'deco', cost: 720, lvl: 29, b: 18 },
+    { id: 'kilimanjaro', name: 'Núi Kilimanjaro', kind: 'big', w: 3, h: 3, cost: 15200, lvl: 31, b: 192 },
+    { id: 'maasaiboma', name: 'Làng Maasai', kind: 'big', w: 2, h: 2, cost: 6800, lvl: 31, b: 92 },
+    { id: 'maasaishield', name: 'Khiên Maasai', kind: 'deco', cost: 760, lvl: 31, b: 19 },
+    { id: 'safarijeep', name: 'Xe jeep safari', kind: 'deco', cost: 820, lvl: 31, b: 19 },
+    { id: 'tablemountain', name: 'Núi Bàn', kind: 'big', w: 3, h: 3, cost: 15600, lvl: 33, b: 196 },
+    { id: 'ndebele', name: 'Nhà vẽ Ndebele', kind: 'big', w: 2, h: 2, cost: 7000, lvl: 33, b: 94 },
+    { id: 'vuvuzela', name: 'Kèn vuvuzela', kind: 'deco', cost: 740, lvl: 33, b: 18 },
+    { id: 'proteaflower', name: 'Hoa protea vua', kind: 'deco', cost: 780, lvl: 33, b: 19 },
+    { id: 'lalibela', name: 'Nhà thờ đá Lalibela', kind: 'big', w: 3, h: 3, cost: 16000, lvl: 35, b: 200 },
+    { id: 'tukul', name: 'Nhà tukul', kind: 'big', w: 2, h: 2, cost: 7200, lvl: 35, b: 96 },
+    { id: 'jebena', name: 'Bình cà phê jebena', kind: 'deco', cost: 780, lvl: 35, b: 19 },
+    { id: 'meskelcross', name: 'Thập giá Ethiopia', kind: 'deco', cost: 800, lvl: 35, b: 19 },
+    { id: 'baobabs', name: 'Đại lộ bao báp', kind: 'big', w: 3, h: 3, cost: 16400, lvl: 37, b: 204 },
+    { id: 'tsingy', name: 'Rừng đá Tsingy', kind: 'big', w: 2, h: 2, cost: 7400, lvl: 37, b: 98 },
+    { id: 'mgflag', name: 'Cờ Madagascar', kind: 'deco', cost: 720, lvl: 37, b: 17 },
+    { id: 'vanilla', name: 'Quả vani', kind: 'deco', cost: 760, lvl: 37, b: 19 }
   ];
   var PETS = [
     { id: 'bird', name: 'Chim sẻ', cost: 60, lvl: 1 }, { id: 'cat', name: 'Mèo con', cost: 80, lvl: 1 }, { id: 'dog', name: 'Cún con', cost: 100, lvl: 1 },
@@ -277,6 +327,11 @@
     { n: 6, at: 160, title: 'Vườn cổ tích' }, { n: 7, at: 240, title: 'Vườn thượng uyển' }, { n: 8, at: 340, title: 'Vườn thần tiên' }, { n: 9, at: 480, title: 'Vườn huyền thoại' }, { n: 10, at: 650, title: 'Khu vườn của Tom' },
     { n: 11, at: 850, title: 'Vườn pha lê' }, { n: 12, at: 1100, title: 'Vườn ngân hà' }, { n: 13, at: 1400, title: 'Vườn bất tử' }, { n: 14, at: 1800, title: 'Vườn vô cực' }
   ];
+  /* Cấp 15 → 100: mỗi 5 cấp đổi một danh hiệu; ngưỡng "điểm đẹp" tăng dần (cấp 100 cần ~48.000 điểm đẹp) để đi lâu dài cùng 60+ khu vườn */
+  (function () {
+    var tiers = ['Vườn Thiên Hà', 'Vườn Tinh Vân', 'Vườn Cực Quang', 'Vườn Thần Thoại', 'Vườn Bất Tận', 'Vườn Cầu Vồng', 'Vườn Hoàng Kim', 'Vườn Kim Cương', 'Vườn Ngọc Bích', 'Vườn Phượng Hoàng', 'Vườn Rồng Thiêng', 'Vườn Thiên Đường', 'Vườn Vĩnh Hằng', 'Vườn Tinh Tú', 'Vườn Vũ Trụ', 'Vườn Đại Đế', 'Vườn Tối Thượng'], roman = ['I', 'II', 'III', 'IV', 'V'], n, k;
+    for (n = 15; n <= 100; n++) { k = n - 14; LEVELS.push({ n: n, at: 1800 + Math.round(k * 95 + 5.2 * k * k), title: n === 100 ? 'Huyền thoại EWT Garden' : tiers[Math.floor((n - 15) / 5)] + ' ' + roman[(n - 15) % 5] }); }
+  })();
   // Các khu của EWT Garden: mỗi khu có một "khung ô" tối đa MAXC×MAXR; đất của khu mở rộng dần (xem LAND) từ góc trên-trái.
   // "blocks" là phong cảnh có sẵn (nhà, cung điện, sông, hồ…) nằm trong vùng đất gốc 7×5 — học sinh chỉ xây trên các ô còn trống.
   // nb:1 = chỉ là hình trang trí, không chiếm ô. Chỉ số ô toàn vườn = vị trí khu × PER + (hàng × MAXC + cột).
@@ -343,6 +398,18 @@
     ,{ id: 'brazil', name: 'Brazil Culture Park', icon: '⚽', desc: 'Công viên văn hoá Brazil: tượng Chúa Cứu Thế, xe diễu hành Carnival, bóng đá và rừng Amazon.', cost: 24000, lvl: 14, blocks: [{ k: 'christredeemer', x: 0, y: 0, w: 3, h: 3 }, { k: 'carnival', x: 4, y: 0, w: 2, h: 2 }, { k: 'toucanpost', x: 3, y: 1, w: 1, h: 1 }, { k: 'braball', x: 6, y: 2, w: 1, h: 1 }] }
     ,{ id: 'egypt', name: 'Egypt Culture Park', icon: '🐫', desc: 'Công viên văn hoá Ai Cập: kim tự tháp Giza, đền Karnak, biểu tượng Ankh và bọ hung Scarab.', cost: 26000, lvl: 14, blocks: [{ k: 'giza', x: 0, y: 0, w: 3, h: 3 }, { k: 'karnak', x: 4, y: 0, w: 2, h: 2 }, { k: 'ankh', x: 3, y: 1, w: 1, h: 1 }, { k: 'scarab', x: 6, y: 2, w: 1, h: 1 }] }
     ,{ id: 'morocco', name: 'Morocco Culture Park', icon: '🍵', desc: 'Công viên văn hoá Ma-rốc: tháp Koutoubia, nhà riad có sân trong, ấm trà bạc hà và quốc kỳ sao xanh.', cost: 28000, lvl: 14, blocks: [{ k: 'koutoubia', x: 0, y: 0, w: 3, h: 3 }, { k: 'riad', x: 4, y: 0, w: 2, h: 2 }, { k: 'maflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'moroccanteapot', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'spain', name: 'Spain Culture Park', icon: '💃', desc: 'Công viên văn hoá Tây Ban Nha: nhà thờ Sagrada Família, làng trắng Andalusia, quạt flamenco và chảo paella.', cost: 26000, lvl: 15, blocks: [{ k: 'sagrada', x: 0, y: 0, w: 3, h: 3 }, { k: 'pueblo', x: 4, y: 0, w: 2, h: 2 }, { k: 'flamencofan', x: 3, y: 1, w: 1, h: 1 }, { k: 'paellapan', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'russia', name: 'Russia Culture Park', icon: '🪆', desc: 'Công viên văn hoá Nga: nhà thờ Thánh Basil, nhà gỗ izba, búp bê matryoshka và quốc kỳ ba sọc.', cost: 28000, lvl: 17, blocks: [{ k: 'stbasil', x: 0, y: 0, w: 3, h: 3 }, { k: 'izba', x: 4, y: 0, w: 2, h: 2 }, { k: 'ruflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'matryoshka', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'ireland', name: 'Ireland Culture Park', icon: '☘️', desc: 'Công viên văn hoá Ai-len: vách đá Moher, nhà tranh trắng, đàn hạc Celtic và quốc kỳ xanh – trắng – cam.', cost: 30000, lvl: 19, blocks: [{ k: 'moher', x: 0, y: 0, w: 3, h: 3 }, { k: 'irishcottage', x: 4, y: 0, w: 2, h: 2 }, { k: 'ieflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'celticharp', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'norway', name: 'Norway Culture Park', icon: '🧌', desc: 'Công viên văn hoá Na Uy: nhà thờ gỗ stave, nhà rorbu đỏ bên vịnh, thuyền Viking và quốc kỳ chữ thập.', cost: 32000, lvl: 21, blocks: [{ k: 'stavechurch', x: 0, y: 0, w: 3, h: 3 }, { k: 'rorbu', x: 4, y: 0, w: 2, h: 2 }, { k: 'noflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'vikingship', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'peru', name: 'Peru Culture Park', icon: '🦙', desc: 'Công viên văn hoá Peru: thành cổ Machu Picchu, nhà đá vùng Andes, sáo pan và dây quipu của người Inca.', cost: 34000, lvl: 23, blocks: [{ k: 'machupicchu', x: 0, y: 0, w: 3, h: 3 }, { k: 'andeanhouse', x: 4, y: 0, w: 2, h: 2 }, { k: 'panflute', x: 3, y: 1, w: 1, h: 1 }, { k: 'quipu', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'argentina', name: 'Argentina Culture Park', icon: '🧉', desc: 'Công viên văn hoá Argentina: sông băng Perito Moreno, phố La Boca rực rỡ, trà mate và đàn bandoneon tango.', cost: 36000, lvl: 25, blocks: [{ k: 'perito', x: 0, y: 0, w: 3, h: 3 }, { k: 'laboca', x: 4, y: 0, w: 2, h: 2 }, { k: 'mategourd', x: 3, y: 1, w: 1, h: 1 }, { k: 'bandoneon', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'cuba', name: 'Cuba Culture Park', icon: '🚗', desc: 'Công viên văn hoá Cuba: toà Capitolio ở Havana, xe cổ nhiều màu, trống conga và quốc kỳ sao trắng.', cost: 38000, lvl: 27, blocks: [{ k: 'capitolio', x: 0, y: 0, w: 3, h: 3 }, { k: 'vintagecar', x: 4, y: 0, w: 2, h: 2 }, { k: 'cuflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'congadrum', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'chile', name: 'Chile Culture Park', icon: '🗿', desc: 'Công viên văn hoá Chile: tượng Moai đảo Phục Sinh, nhà palafito Chiloé, hoa copihue và quốc kỳ sao trắng.', cost: 40000, lvl: 29, blocks: [{ k: 'moai', x: 0, y: 0, w: 3, h: 3 }, { k: 'palafito', x: 4, y: 0, w: 2, h: 2 }, { k: 'clflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'copihue', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'kenya', name: 'Kenya Culture Park', icon: '🦒', desc: 'Công viên văn hoá Kenya: núi Kilimanjaro phía xa, làng Maasai, khiên Maasai và xe jeep đi safari.', cost: 42000, lvl: 31, blocks: [{ k: 'kilimanjaro', x: 0, y: 0, w: 3, h: 3 }, { k: 'maasaiboma', x: 4, y: 0, w: 2, h: 2 }, { k: 'maasaishield', x: 3, y: 1, w: 1, h: 1 }, { k: 'safarijeep', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'southafrica', name: 'South Africa Culture Park', icon: '🦏', desc: 'Công viên văn hoá Nam Phi: Núi Bàn, nhà vẽ hoa văn Ndebele, kèn vuvuzela và hoa protea vua.', cost: 44000, lvl: 33, blocks: [{ k: 'tablemountain', x: 0, y: 0, w: 3, h: 3 }, { k: 'ndebele', x: 4, y: 0, w: 2, h: 2 }, { k: 'vuvuzela', x: 3, y: 1, w: 1, h: 1 }, { k: 'proteaflower', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'ethiopia', name: 'Ethiopia Culture Park', icon: '☕', desc: 'Công viên văn hoá Ethiopia: nhà thờ đá Lalibela, nhà tukul, bình cà phê jebena và thập giá Ethiopia.', cost: 46000, lvl: 35, blocks: [{ k: 'lalibela', x: 0, y: 0, w: 3, h: 3 }, { k: 'tukul', x: 4, y: 0, w: 2, h: 2 }, { k: 'jebena', x: 3, y: 1, w: 1, h: 1 }, { k: 'meskelcross', x: 6, y: 2, w: 1, h: 1 }] }
+    ,{ id: 'madagascar', name: 'Madagascar Culture Park', icon: '🐒', desc: 'Công viên văn hoá Madagascar: đại lộ bao báp, rừng đá Tsingy, quả vani và quốc kỳ ba màu.', cost: 48000, lvl: 37, blocks: [{ k: 'baobabs', x: 0, y: 0, w: 3, h: 3 }, { k: 'tsingy', x: 4, y: 0, w: 2, h: 2 }, { k: 'mgflag', x: 3, y: 1, w: 1, h: 1 }, { k: 'vanilla', x: 6, y: 2, w: 1, h: 1 }] }
   ];
   ZONES.forEach(function (z, zi) {
     z.i = zi; z.cols = BASEC; z.rows = BASER; z.cells = BASEC * BASER; z.mask = new Array(BASEC * BASER).fill(0);
@@ -398,6 +465,18 @@
     ,brazil: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['braball', 1, 1, 2], ['victoria', 1, 1, 1], ['carnival', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
     ,egypt: [['ptree', 1, 1, 2], ['pbush', 1, 1, 2], ['prock', 1, 1, 3], ['pflower', 1, 1, 1], ['scarab', 1, 1, 2], ['obelisk', 1, 1, 1], ['papyrus', 1, 1, 2], ['karnak', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
     ,morocco: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['moroccanteapot', 1, 1, 2], ['moroccanlamp', 1, 1, 1], ['carpet', 1, 1, 1], ['riad', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,spain: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 3], ['paellapan', 1, 1, 2], ['flamencofan', 1, 1, 1], ['pueblo', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,russia: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 2], ['matryoshka', 1, 1, 2], ['izba', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,ireland: [['ptree', 1, 1, 3], ['pbush', 1, 1, 4], ['prock', 1, 1, 3], ['pflower', 1, 1, 3], ['celticharp', 1, 1, 1], ['irishcottage', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,norway: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 2], ['vikingship', 1, 1, 1], ['troll', 1, 1, 1], ['rorbu', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,peru: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 4], ['pflower', 1, 1, 2], ['panflute', 1, 1, 2], ['quipu', 1, 1, 1], ['andeanhouse', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,argentina: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['mategourd', 1, 1, 2], ['bandoneon', 1, 1, 1], ['laboca', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,cuba: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['congadrum', 1, 1, 2], ['vintagecar', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,chile: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 4], ['pflower', 1, 1, 2], ['copihue', 1, 1, 2], ['palafito', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,kenya: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 1], ['maasaishield', 1, 1, 2], ['safarijeep', 1, 1, 1], ['maasaiboma', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,southafrica: [['ptree', 1, 1, 3], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 3], ['vuvuzela', 1, 1, 2], ['proteaflower', 1, 1, 2], ['ndebele', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,ethiopia: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 2], ['jebena', 1, 1, 2], ['meskelcross', 1, 1, 1], ['tukul', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
+    ,madagascar: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['vanilla', 1, 1, 2], ['tsingy', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
   };
   function genDecor(z) {
     var out = [], used = new Array(MAXC * MAXR).fill(0), kinds = DECOR_KINDS[z.id] || DEC_BASE, tw = 0, i, L, t, k, r;
@@ -451,7 +530,7 @@
     yieldCapDay: 40,      // xu tối đa nhận từ thu hoạch mỗi ngày
     feedXu: 1, feedCapDay: 5, // cho thú cưng ăn: +1 xu / con, tối đa 5 xu mỗi ngày
     quizWater: 1, quizCapDay: 150, // trả lời đúng: +1 lượt tưới và được lật thẻ thưởng (xem FLIP); tối đa 150 câu đúng được thưởng mỗi ngày
-    maxPets: 6, sellBack: 0.5,
+    maxPets: 12, sellBack: 0.5,
     boostRate: 0.5, boostMin: 3 // cho cây lớn ngay: 0,5 xu mỗi phút còn lại (cây chờ càng lâu càng tốn), tối thiểu 3 xu
   };
   // Thẻ thưởng khi trả lời đúng: lật 1 trong 3 thẻ. Thẻ thường 20–100 xu; thẻ lớn +500 / +1000 xu; thẻ nhân ×2 / ×3 TOÀN BỘ số xu hiện có (không giới hạn trên);
@@ -462,7 +541,7 @@
     free: { free_plant: { n: 5, cls: 'plant', label: 'hoa' }, free_tree: { n: 2, cls: 'tree', label: 'cây' }, free_deco: { n: 3, cls: 'deco', label: 'đồ trang trí' }, free_big: { n: 1, cls: 'big', label: 'công trình lớn' }, free_pet: { n: 1, cls: 'pet', label: 'thú cưng' } },
     water: 10, boost: 1 };
   // Kho đặc sản từng khu (5 hoa · 5 cây · 5 trang trí · 5 công trình · 5 thú cưng cho MỖI khu): xem js/garden-catalog.js + garden-cat-*.js
-  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd', 'e'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
+  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd', 'e', 'f'].forEach(function (k) { require('./garden-cat-' + k + '.js'); }); return c; })() : null);
   if (CAT) CAT.build({ zones: ZONES, items: ITEMS, pets: PETS });
   var EV = root.EWTGardenEvents || (typeof require === 'function' ? require('./garden-events.js') : null); if (EV) EV.build({ items: ITEMS, pets: PETS });   // món giới hạn theo sự kiện
   var BD = root.EWTGardenBundles || (typeof require === 'function' ? require('./garden-bundles.js') : null); if (BD) BD.build({ items: ITEMS });   // món trong các bộ lễ hội / ẩm thực

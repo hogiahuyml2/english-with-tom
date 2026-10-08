@@ -7,7 +7,7 @@
 (function (root) {
   'use strict';
   var SC = { pmaj: [0, 2, 4, 7, 9], pmin: [0, 3, 5, 7, 10], maj: [0, 2, 4, 5, 7, 9, 11], dor: [0, 2, 3, 5, 7, 9, 10], mix: [0, 2, 4, 5, 7, 9, 10], lyd: [0, 2, 4, 6, 7, 9, 11],
-    hira: [0, 2, 3, 7, 8], yo: [0, 2, 5, 7, 9], pelog: [0, 1, 3, 7, 8], hijaz: [0, 1, 4, 5, 7, 8, 10], bhai: [0, 1, 4, 5, 7, 8, 11], blues: [0, 3, 5, 6, 7, 10], hmin: [0, 2, 3, 5, 7, 8, 11], whole: [0, 2, 4, 6, 8, 10], phryg: [0, 1, 3, 5, 7, 8, 10], min: [0, 2, 3, 5, 7, 8, 10] };
+    hira: [0, 2, 3, 7, 8], yo: [0, 2, 5, 7, 9], pelog: [0, 1, 3, 7, 8], hijaz: [0, 1, 4, 5, 7, 8, 10], bhai: [0, 1, 4, 5, 7, 8, 11], blues: [0, 3, 5, 6, 7, 10], hmin: [0, 2, 3, 5, 7, 8, 11], ambassel: [0, 1, 5, 7, 8], bati: [0, 4, 5, 7, 11], whole: [0, 2, 4, 6, 8, 10], phryg: [0, 1, 3, 5, 7, 8, 10], min: [0, 2, 3, 5, 7, 8, 10] };
   /* Hồ sơ âm nhạc từng khu: sc thang âm · r nốt gốc (MIDI) · bpm · sig số phách/ô nhịp · lead nhạc cụ chính · l2 nhạc cụ phụ · pad nền · bass · d mật độ nốt (0–1) · rh nhịp · amb âm thanh môi trường */
   var PROF = {
     map: { sc: 'pmaj', r: 60, bpm: 84, sig: 4, lead: 'kalimba', pad: 'warm', d: .45, amb: ['birds'] },
@@ -61,10 +61,61 @@
     mexico: { sc: 'maj', r: 62, bpm: 112, sig: 3, lead: 'mandolin', l2: 'accord', pad: null, bass: 1, d: .65, rh: 'oom', amb: [] },
     brazil: { sc: 'pmaj', r: 60, bpm: 100, sig: 4, lead: 'banjo', l2: 'marimba', pad: null, bass: 1, d: .6, rh: 'shaker', amb: ['birds', 'night'] },
     egypt: { sc: 'hijaz', r: 60, bpm: 80, sig: 4, lead: 'oud', l2: 'flute', pad: null, d: .45, rh: 'tab', amb: ['wind'] },
-    morocco: { sc: 'hijaz', r: 57, bpm: 92, sig: 4, lead: 'oud', l2: 'banjo', pad: null, bass: 1, d: .5, rh: 'tab', amb: ['wind'] }
+    morocco: { sc: 'hijaz', r: 57, bpm: 92, sig: 4, lead: 'oud', l2: 'banjo', pad: null, bass: 1, d: .5, rh: 'tab', amb: ['wind'] },
+    spain: { sc: 'hijaz', r: 52, bpm: 150, sig: 3, lead: 'oud', l2: 'mandolin', pad: null, bass: 1, d: .6, rh: 'clap', amb: [] },
+    russia: { sc: 'hmin', r: 57, bpm: 112, sig: 4, lead: 'balalaika', l2: 'accord', pad: null, bass: 1, d: .55, rh: 'drum', amb: ['wind'] },
+    ireland: { sc: 'mix', r: 62, bpm: 150, sig: 3, lead: 'whistle', l2: 'harp', pad: null, d: .6, rh: 'jig', amb: ['wind', 'birds'] },
+    norway: { sc: 'dor', r: 55, bpm: 100, sig: 4, lead: 'fiddle', l2: 'music', pad: 'warm', d: .5, amb: ['wind', 'waves'] },
+    peru: { sc: 'pmin', r: 57, bpm: 104, sig: 4, lead: 'panpipe', l2: 'charango', pad: null, d: .55, rh: 'drum', amb: ['wind'] },
+    argentina: { sc: 'hmin', r: 57, bpm: 120, sig: 4, lead: 'bandoneon', l2: 'pluck', pad: null, bass: 1, d: .6, rh: 'tango', amb: [] },
+    cuba: { sc: 'maj', r: 60, bpm: 112, sig: 4, lead: 'marimba', l2: 'pluck', pad: null, bass: 1, d: .65, rh: 'conga', amb: ['waves'] },
+    chile: { sc: 'maj', r: 62, bpm: 132, sig: 3, lead: 'pluck', l2: 'flute', pad: null, bass: 1, d: .6, rh: 'tick', amb: ['wind', 'waves'] },
+    kenya: { sc: 'pmaj', r: 60, bpm: 108, sig: 4, lead: 'kalimba', l2: 'marimba', pad: null, d: .65, rh: 'djembe', amb: ['birds'] },
+    southafrica: { sc: 'pmaj', r: 57, bpm: 100, sig: 4, lead: 'marimba', l2: 'harp', pad: 'warm', bass: 1, d: .6, rh: 'djembe', amb: ['birds'] },
+    ethiopia: { sc: 'ambassel', r: 59, bpm: 92, sig: 4, lead: 'masenqo', l2: 'kalimba', pad: null, d: .5, rh: 'tab', amb: ['wind'] },
+    madagascar: { sc: 'pmaj', r: 62, bpm: 150, sig: 3, lead: 'valiha', l2: 'kalimba', pad: null, d: .7, rh: 'salegy', amb: ['birds', 'waves'] }
+  };
+  /* Giai điệu "đặc trưng quốc gia" soạn riêng cho từng khu quốc gia: mỗi câu dài 2 ô nhịp, dạng "bước:cao độ(nửa cung so với nốt gốc):độ dài" — câu A và câu B xen kẽ.
+     Mỗi khu dùng thang âm + nhạc cụ + nhịp điệu của nước đó (flamenco 12 phách, jig 6/8 Ai-len, tango, son Cuba, salegy Madagascar, thang âm 5 nốt Andes/Ethiopia...). Đây là các câu nhạc tự soạn, không trích bản nhạc có bản quyền. */
+  var MEL = {
+    vietnam: ['0:7:3 3:9:1 4:12:2 6:9:1 7:7:1 8:5:3 11:2:1 12:0:4', '0:12:3 3:14:1 4:12:2 6:9:1 7:7:1 8:9:3 11:7:1 12:5:2 14:0:2'],
+    thailand: ['0:7:1 1:9:1 2:12:1 3:9:1 4:7:2 6:4:1 7:2:1 8:4:1 9:7:1 10:9:2 12:12:3', '0:12:1 1:14:1 2:16:1 3:14:1 4:12:2 6:9:1 7:7:1 8:9:1 9:12:1 10:14:2 12:12:3'],
+    japan: ['0:7:3 4:8:2 6:7:1 7:3:1 8:2:3 12:0:4', '0:12:3 4:14:2 6:15:1 7:14:1 8:12:2 10:8:2 12:7:4'],
+    china: ['0:9:2 2:12:2 4:14:1 5:12:1 6:9:2 8:7:1 9:9:1 10:12:2 12:9:4', '0:14:2 2:16:2 4:19:1 5:16:1 6:14:2 8:12:1 9:14:1 10:16:2 12:12:4'],
+    india: ['0:0:2 2:1:1 3:4:2 5:5:1 6:7:3 9:5:1 10:4:1 11:1:1 12:0:3', '0:7:2 2:8:1 3:11:2 5:12:1 6:11:2 8:8:1 9:7:1 10:5:1 11:4:1 12:0:3'],
+    indonesia: ['0:7:2 2:8:2 4:7:2 6:3:2 8:1:2 10:3:2 12:0:4', '0:12:2 2:13:2 4:12:2 6:8:2 8:7:2 10:3:2 12:0:4'],
+    france: ['0:12:2 2:11:1 3:9:2 5:7:1 6:9:2 8:7:1 9:5:2 11:4:1', '0:7:2 2:9:1 3:11:2 5:12:1 6:11:2 8:9:1 9:7:2 11:5:1'],
+    italy: ['0:7:1 1:8:1 2:11:1 3:12:1 4:11:1 5:8:1 6:7:1 7:8:1 8:11:1 9:12:2 11:7:1', '0:12:1 1:11:1 2:8:1 3:7:1 4:8:1 5:11:1 6:12:1 7:14:1 8:12:1 9:11:1 10:8:2'],
+    netherlands: ['0:12:2 2:14:2 4:16:2 6:14:2 8:12:2 10:9:2 12:7:4', '0:7:2 2:9:2 4:11:2 6:12:2 8:14:2 10:12:2 12:7:4'],
+    uk: ['0:7:2 2:9:1 3:10:1 4:12:2 6:10:1 7:9:1 8:7:2 10:5:1 11:3:1 12:2:3', '0:12:2 2:14:1 3:15:1 4:17:2 6:15:1 7:14:1 8:12:2 10:10:1 11:9:1 12:7:3'],
+    germany: ['0:7:1 1:7:1 2:9:2 4:11:2 6:12:2 8:11:1 9:9:1 10:7:2 12:4:1 13:5:1 14:7:2', '0:12:1 1:12:1 2:14:2 4:16:2 6:17:2 8:16:1 9:14:1 10:12:2 12:7:2 14:4:2'],
+    usa: ['0:7:1 1:10:1 2:12:2 4:10:1 5:7:1 6:6:1 7:5:2 9:3:1 10:0:2 12:3:1 13:5:1 14:7:2', '0:12:1 1:15:1 2:17:2 4:15:1 5:12:1 6:10:1 7:7:2 9:5:1 10:3:1 11:0:1 12:3:1 13:0:3'],
+    greece: ['0:7:1 1:8:1 2:7:1 3:5:1 4:4:2 6:1:1 7:0:1 8:1:1 9:4:1 10:5:1 11:7:2 13:5:1 14:4:2', '0:12:1 1:13:1 2:12:1 3:10:1 4:8:2 6:7:1 7:5:1 8:7:1 9:8:1 10:10:1 11:12:2 13:8:1 14:7:2'],
+    sweden: ['0:7:3 3:9:1 4:10:1 5:9:1 6:7:3 9:5:1 10:3:1 11:2:1', '0:12:3 3:10:1 4:9:1 5:7:1 6:5:3 9:3:1 10:2:1 11:0:1'],
+    switzerland: ['0:0:3 3:4:1 4:7:3 7:4:1 8:7:2 10:9:2 12:7:4', '0:7:3 3:12:1 4:16:3 7:12:1 8:9:2 10:7:2 12:4:4'],
+    korea: ['0:7:3 3:9:1 4:12:2 6:9:1 7:7:1 8:5:2 10:7:2 12:9:1 13:7:1 14:5:2', '0:12:3 3:14:1 4:12:2 6:9:2 8:7:2 10:5:2 12:2:1 13:0:3'],
+    turkey: ['0:7:1 1:8:1 2:7:1 3:5:2 5:4:1 6:5:1 7:7:2 9:8:1 10:7:1 11:5:1 12:4:3', '0:12:1 1:13:1 2:12:1 3:10:2 5:8:1 6:10:1 7:12:2 9:13:1 10:12:1 11:10:1 12:8:3'],
+    australia: ['0:7:2 2:9:2 4:12:3 7:9:1 8:7:2 10:4:2 12:0:4', '0:12:2 2:14:2 4:16:3 7:14:1 8:12:2 10:9:2 12:7:4'],
+    canada: ['0:7:2 2:9:1 3:11:1 4:12:2 6:11:1 7:9:1 8:7:2 10:4:2 12:7:2 14:5:2', '0:12:2 2:14:1 3:16:1 4:17:2 6:16:1 7:14:1 8:12:2 10:9:2 12:7:2 14:0:2'],
+    mexico: ['0:12:1 1:12:1 2:11:1 3:9:2 5:7:1 6:9:1 7:11:1 8:12:2 10:9:1 11:7:1', '0:7:1 1:7:1 2:9:1 3:11:2 5:12:1 6:14:1 7:12:1 8:11:2 10:9:1 11:7:1'],
+    brazil: ['0:7:1 2:9:1 3:12:1 5:9:1 6:7:1 8:4:1 10:7:1 11:9:2 13:12:1 14:9:2', '0:12:1 2:14:1 3:16:1 5:14:1 6:12:1 8:9:1 10:12:1 11:14:2 13:16:1 14:12:2'],
+    egypt: ['0:7:2 2:8:1 3:7:1 4:5:2 6:4:2 8:5:1 9:7:1 10:8:2 12:7:3', '0:12:2 2:13:1 3:12:1 4:10:2 6:8:2 8:7:1 9:8:1 10:10:2 12:12:3'],
+    morocco: ['0:4:2 2:5:1 3:7:1 4:8:2 6:7:1 7:5:1 8:4:2 10:1:1 11:0:1 12:1:3', '0:12:2 2:13:1 3:12:1 4:10:2 6:8:2 8:7:1 9:8:1 10:7:2 12:4:3'],
+    spain: ['0:12:2 2:13:1 3:12:1 4:10:2 6:8:1 7:7:1 8:5:2 10:4:1 11:0:1', '0:7:1 1:8:1 2:7:2 4:5:1 5:4:1 6:5:2 8:7:1 9:8:1 10:7:1 11:12:1'],
+    russia: ['0:7:2 2:8:1 3:7:1 4:5:2 6:3:2 8:2:1 9:3:1 10:5:2 12:3:2 14:0:2', '0:12:2 2:11:1 3:12:1 4:8:2 6:7:2 8:5:1 9:7:1 10:8:2 12:7:2 14:0:2'],
+    ireland: ['0:7:1 1:9:1 2:7:1 3:4:1 4:2:1 5:4:1 6:7:1 7:9:1 8:12:1 9:9:1 10:7:1 11:9:1', '0:12:1 1:14:1 2:12:1 3:9:1 4:7:1 5:9:1 6:12:2 8:9:1 9:7:1 10:4:1 11:2:1'],
+    norway: ['0:0:2 2:3:1 3:5:1 4:7:2 6:5:1 7:3:1 8:2:2 10:3:1 11:2:1 12:0:3', '0:7:2 2:10:1 3:9:1 4:7:2 6:5:1 7:7:1 8:5:2 10:3:1 11:2:1 12:0:3'],
+    peru: ['0:12:2 2:10:1 3:7:1 4:5:2 6:7:1 7:5:1 8:3:2 10:5:1 11:3:1 12:0:3', '0:7:2 2:10:1 3:12:1 4:15:2 6:12:1 7:10:1 8:7:2 10:5:1 11:3:1 12:0:3'],
+    argentina: ['0:7:2 2:8:1 3:11:1 4:12:3 7:11:1 8:8:2 10:7:1 11:5:1 12:3:3', '0:12:2 2:11:1 3:8:1 4:7:3 7:5:1 8:3:2 10:5:1 11:7:1 12:0:3'],
+    cuba: ['0:7:1 1:7:1 3:9:1 4:12:2 6:9:1 7:7:1 8:4:2 10:7:1 11:9:1 12:7:2 14:4:2', '0:12:1 1:12:1 3:14:1 4:16:2 6:14:1 7:12:1 8:9:2 10:12:1 11:14:1 12:12:2 14:7:2'],
+    chile: ['0:7:1 1:9:1 2:11:1 3:12:2 5:11:1 6:9:1 7:7:1 8:9:2 10:7:1 11:4:1', '0:12:1 1:11:1 2:9:1 3:7:2 5:9:1 6:11:1 7:12:1 8:14:2 10:12:1 11:7:1'],
+    kenya: ['0:7:1 1:9:1 2:12:1 3:9:1 4:7:1 5:4:1 6:7:2 8:9:1 9:12:1 10:14:1 11:12:1 12:9:1 13:7:1 14:4:2', '0:12:1 1:14:1 2:16:1 3:14:1 4:12:1 5:9:1 6:12:2 8:14:1 9:16:1 10:19:1 11:16:1 12:14:1 13:12:1 14:9:2'],
+    southafrica: ['0:7:2 2:9:1 3:12:1 4:9:2 6:7:1 7:4:1 8:7:2 10:9:2 12:12:3', '0:12:2 2:14:1 3:16:1 4:14:2 6:12:1 7:9:1 8:7:2 10:4:2 12:0:3'],
+    ethiopia: ['0:7:2 2:8:1 3:7:1 4:5:3 7:1:1 8:0:2 10:1:1 11:5:1 12:7:3', '0:12:2 2:13:1 3:12:1 4:8:3 7:7:1 8:5:2 10:7:1 11:8:1 12:12:3'],
+    madagascar: ['0:7:1 1:9:1 2:12:1 3:9:1 4:7:2 6:4:1 7:7:1 8:9:1 9:12:1 10:14:2', '0:12:1 1:14:1 2:16:1 3:14:1 4:12:2 6:9:1 7:12:1 8:14:1 9:16:1 10:19:2']
   };
   /* hệ số cân bằng âm lượng từng khu (đo bằng cách dựng thử từng cảnh nhạc) để khu nào cũng nghe vừa tai như nhau */
-  var TRIM = {"map":1.26,"cottage":0.89,"hill":0.56,"river":1.12,"pond":1.12,"forest":0.79,"palace":1,"winter":1.12,"beach":0.79,"magic":1,"farm":1.12,"sakura":2.24,"autumn":0.71,"mountain":0.79,"desert":1.12,"candy":1.26,"ocean":0.79,"sky":1.12,"space":0.79,"bamboo":1.26,"savanna":1.58,"jungle":1.78,"village":0.89,"funfair":0.79,"arctic":1,"pirate":0.79,"dino":0.55,"volcano":0.79,"cyber":1.12,"vietnam":2.51,"thailand":1.58,"japan":2.24,"china":1.58,"india":2,"indonesia":1.41,"france":0.79,"italy":1,"netherlands":1.58,"uk":1.12,"germany":0.79,"usa":1.41,"greece":0.89,"sweden":2,"switzerland":0.79};
+  var TRIM = {"map":1.26,"cottage":0.89,"hill":0.56,"river":1.12,"pond":1.12,"forest":0.79,"palace":1,"winter":1.12,"beach":0.79,"magic":1,"farm":1.12,"sakura":2.24,"autumn":0.71,"mountain":0.79,"desert":1.12,"candy":1.26,"ocean":0.79,"sky":1.12,"space":0.79,"bamboo":1.26,"savanna":1.58,"jungle":1.78,"village":0.89,"funfair":0.79,"arctic":1,"pirate":0.79,"dino":0.55,"volcano":0.79,"cyber":1.12,"vietnam":2.51,"thailand":1.58,"japan":1.64,"china":1.58,"india":2,"indonesia":1.41,"france":1.03,"italy":1,"netherlands":1.58,"uk":1.12,"germany":1.08,"usa":1.15,"greece":0.89,"sweden":1.46,"switzerland":0.49,"australia":0.58,"brazil":1.21,"chile":0.84,"egypt":1.37,"kenya":1.21,"korea":1.53,"morocco":1.24,"peru":0.5,"russia":1.37,"southafrica":1.16};
   var CHORDS = [[0, 3, 4, 0], [0, 4, 3, 4], [0, 2, 3, 4]];
   var mtof = function (m) { return 440 * Math.pow(2, (m - 69) / 12); };
   function hash(str) { var h = 2166136261, i; for (i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return h >>> 0; }
@@ -118,6 +169,14 @@
     erhu: function (E, d, f, t, dur, v) { sustain(E, d, f, t, Math.max(.6, dur), v * .55, { type: 'sawtooth', att: .1, cut: 2300, vib: 5.5, vd: 16 }); },
     accord: function (E, d, f, t, dur, v) { sustain(E, d, f, t, Math.max(.3, dur), v * .5, { type: 'sawtooth', type2: 'square', det: 1.006, att: .035, cut: 2000, vib: 4.5, vd: 4 }); },
     synth: function (E, d, f, t, dur, v) { pluckV(E, d, f, t, Math.max(.18, dur * .7), v * .6, { type: 'square', cut: 3200, q: 4 }); },
+    whistle: function (E, d, f, t, dur, v) { sustain(E, d, f * 2, t, Math.max(.28, dur * .9), v * .5, { type: 'sine', type2: 'triangle', det: 1.003, att: .03, vib: 5.5, vd: 5, breath: 1, cut: 5200 }); },
+    panpipe: function (E, d, f, t, dur, v) { sustain(E, d, f, t, Math.max(.4, dur), v * .8, { type: 'sine', type2: 'triangle', det: 1.001, att: .07, vib: 0, vd: 0, breath: 1, cut: 3200 }); },
+    charango: function (E, d, f, t, dur, v) { var n = Math.max(2, Math.min(4, Math.round(dur / .1))), k; for (k = 0; k < n; k++) pluckV(E, d, f * 2, t + k * .06, .2, v * (k ? .5 : .8), { type: 'triangle', type2: 'square', cut: 6200, q: 2 }); },
+    balalaika: function (E, d, f, t, dur, v) { var n = Math.max(3, Math.min(7, Math.round(dur / .07))), k; for (k = 0; k < n; k++) pluckV(E, d, f, t + k * .06, .16, v * (k ? .5 : .85), { type: 'triangle', type2: 'sawtooth', cut: 4200, q: 2 }); },
+    bandoneon: function (E, d, f, t, dur, v) { sustain(E, d, f, t, Math.max(.35, dur), v * .55, { type: 'sawtooth', type2: 'square', det: 1.008, att: .05, cut: 1700, vib: 5, vd: 6 }); },
+    valiha: function (E, d, f, t, dur, v) { pluckV(E, d, f, t, 1.3, v * .9, { type: 'triangle', cut: 6000, q: 2 }); partials(E, d, f, t, .8, v * .25, [2, 3.01], [1, .5]); },
+    fiddle: function (E, d, f, t, dur, v) { sustain(E, d, f, t, Math.max(.3, dur), v * .5, { type: 'sawtooth', att: .04, cut: 2900, vib: 6, vd: 9 }); },
+    masenqo: function (E, d, f, t, dur, v) { sustain(E, d, f, t, Math.max(.5, dur), v * .5, { type: 'sawtooth', type2: 'square', det: 1.01, att: .09, cut: 1900, vib: 5, vd: 22 }); },
     dan: function (E, d, f, t, dur, v) { var c = E.ctx, g = g0(c, d, t, v * .75, Math.max(.9, dur * 1.4), .02), o = c.createOscillator(), l = c.createOscillator(), lg = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f * .955, t); o.frequency.exponentialRampToValueAtTime(f, t + .16); l.frequency.value = 4.2; lg.gain.value = 14; l.connect(lg); lg.connect(o.detune); o.connect(g); o.start(t); l.start(t); o.stop(t + dur * 1.4 + 1); l.stop(t + dur * 1.4 + 1); partials(E, d, f, t, .5, v * .2, [2, 3], [1, .5]); }
   };
   function drumV(E, d, t, v, f0, f1, dur) { var c = E.ctx, o = c.createOscillator(), g = g0(c, d, t, v, dur || .22, .004); o.type = 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + (dur || .22) * .9); o.connect(g); o.start(t); o.stop(t + (dur || .22) + .05); }
@@ -136,7 +195,8 @@
     var S = SC[p.sc], L = S.length; sc.S = S; sc.L = L; sc.step = 30 / p.bpm; sc.bar = p.sig * 2;
     // hai câu nhạc (A, B) cùng nhịp, khác cao độ → lặp lại có biến tấu, dễ nhớ như một "chủ đề"
     var mk = function (R, base) { var ev2 = [], deg = base, s; for (s = 0; s < sc.bar * 2; s++) { var strong = (s % 2 === 0) ? 1 : .55, big = (s % sc.bar === 0) ? 1.4 : 1; if (R() < p.d * strong * big * 1.15) { var r = R(); deg += r < .38 ? 1 : r < .76 ? -1 : r < .88 ? 2 : r < .96 ? -2 : (R() < .5 ? 3 : -3); deg = Math.max(-3, Math.min(L + 3, deg)); ev2.push({ s: s, deg: deg, len: R() < .3 ? 3 : R() < .5 ? 2 : 1 }); } } if (!ev2.length) ev2.push({ s: 0, deg: base, len: 3 }); return ev2; };
-    sc.A = mk(sc.R, 2); sc.B = mk(sc.R, 3); sc.prog = CHORDS[hash(key) % CHORDS.length];
+    var pm = function (str) { return String(str).trim().split(/\s+/).map(function (x) { var q = x.split(':'); return { s: +q[0], st: +q[1], len: +q[2] || 1 }; }); };
+    if (MEL[key]) { sc.A = pm(MEL[key][0]); sc.B = pm(MEL[key][1] || MEL[key][0]); } else { sc.A = mk(sc.R, 2); sc.B = mk(sc.R, 3); } sc.prog = CHORDS[hash(key) % CHORDS.length];
     E.amb(sc); E.cur = sc;
     sc.next = { bird: now + 1.5 + sc.R() * 3, drop: now + 2, fire: now + 1, spark: now + 2 };
   };
@@ -177,10 +237,16 @@
       if (p.rh === 'wood' && s === 0) { drumV(E, sc.mus, t, .12, 900, 520, .08); }
       if (p.rh === 'tick') { if (s % 2 === 0) noiseV(E, sc.mus, t, .035, .03, 'highpass', 8000); if (s === 4) drumV(E, sc.mus, t, .12, 140, 60, .16); }
       if (p.rh === 'tab') { if (s === 0 || s === 5) drumV(E, sc.mus, t, .15, 190, 95, .2); if (s === 3 || s === 7) noiseV(E, sc.mus, t, .05, .05, 'bandpass', 2400, 2); }
+      if (p.rh === 'clap') { if ([2, 5, 7, 9, 11].indexOf(sc.n % 12) >= 0) noiseV(E, sc.mus, t, .07, .05, 'bandpass', 2600, 1.5); if (s === 0) drumV(E, sc.mus, t, .12, 170, 80, .16); }
+      if (p.rh === 'conga') { if (s === 3 || s === 6 || s === 10 || s === 14) drumV(E, sc.mus, t, .14, 260, 170, .12); if (s === 0 || s === 8) drumV(E, sc.mus, t, .16, 150, 80, .2); if (s === 2 || s === 12) noiseV(E, sc.mus, t, .035, .04, 'bandpass', 4200, 2); }
+      if (p.rh === 'djembe') { var dj = [0, 3, 6, 8, 11, 14]; if (dj.indexOf(s) >= 0) drumV(E, sc.mus, t, s === 0 ? .2 : .13, s % 2 ? 330 : 190, s % 2 ? 210 : 90, .14); if (s % 4 === 2) noiseV(E, sc.mus, t, .03, .04, 'bandpass', 3600, 2); }
+      if (p.rh === 'jig') { if (s === 0 || s === 3) drumV(E, sc.mus, t, s === 0 ? .18 : .1, 200, 100, .12); if (s === 1 || s === 4) noiseV(E, sc.mus, t, .02, .03, 'highpass', 7000); }
+      if (p.rh === 'tango') { if (s === 0 || s === 6 || s === 10) drumV(E, sc.mus, t, .14, 160, 70, .16); if (s === 3 || s === 8 || s === 13) noiseV(E, sc.mus, t, .05, .05, 'bandpass', 2200, 2); }
+      if (p.rh === 'salegy') { if (s === 0 || s === 3) drumV(E, sc.mus, t, .15, 190, 95, .12); if (s === 2 || s === 5) noiseV(E, sc.mus, t, .04, .04, 'bandpass', 3800, 2); if (s === 1 || s === 4) noiseV(E, sc.mus, t, .02, .03, 'highpass', 7000); }
       if (p.rh === 'drum') { if (s === 0 || s === 4) drumV(E, sc.mus, t, .22, 120, 48, .3); }
       if (p.rh === 'gong' && s === 0 && bar % 4 === 0) VO.gamelan(E, sc.mus, mtof(p.r - 24), t, 3, .12);
       if (p.rh === 'cow' && s % sc.bar === 3 && sc.R() < .35) partials(E, sc.mus, 820 + sc.R() * 100, t, .5, .05, [1, 1.51, 2.4], [1, .6, .3]);
-      phrase.forEach(function (e) { if (e.s === s) { var f = mtof(note(e.deg, 0)), len = e.len * st; V(E, sc.mus, f, t, len, .16 * (s === 0 ? 1.1 : .9)); if (V2 && sc.R() < .38) V2(E, sc.mus, mtof(note(e.deg + (sc.R() < .5 ? 2 : -1), 1)), t + st * .5, len, .08); } });
+      phrase.forEach(function (e) { if (e.s === s) { var f = mtof(e.st != null ? p.r + e.st : note(e.deg, 0)), len = e.len * st; V(E, sc.mus, f, t, len, .16 * (s === 0 ? 1.1 : .9)); if (V2 && sc.R() < .38) V2(E, sc.mus, e.st != null ? mtof(p.r + e.st + 12) : mtof(note(e.deg + (sc.R() < .5 ? 2 : -1), 1)), t + st * .5, len, .08); } });
       // lớp nhạc sự kiện
       sc.ev.forEach(function (id) {
         if (id === 'tet') { if (s % 4 === 0) drumV(E, sc.mus, t, .12, 150, 60, .22); if (s === 2) noiseV(E, sc.mus, t, .04, .04, 'bandpass', 3200, 3); if (s === 0 && bar % 4 === 0) VO.gamelan(E, sc.mus, mtof(p.r - 12), t, 3, .1); if (sc.R() < .22) VO.bell(E, sc.mus, mtof(p.r + 24 + [0, 2, 4, 7, 9][Math.floor(sc.R() * 5)]), t, 1, .05); }
@@ -231,7 +297,7 @@
     return true;
   }
   function stop() { S.on = false; S.pref.on = 0; save(); clearInterval(S.timer); if (S.eng && S.eng.cur) { S.eng.fade(S.eng.cur); S.eng.cur = null; } }
-  var NAMES = { pluck: 'đàn dây gảy', koto: 'đàn koto', harp: 'đàn hạc', banjo: 'đàn banjo', oud: 'đàn oud', sitar: 'đàn sitar', mandolin: 'đàn mandolin', kalimba: 'đàn kalimba', marimba: 'đàn marimba', bell: 'chuông', music: 'hộp nhạc', gamelan: 'gamelan', carillon: 'chuông tháp', flute: 'sáo', horn: 'kèn alphorn', erhu: 'đàn nhị', accord: 'đàn accordion', synth: 'synthesizer', dan: 'đàn bầu' };
+  var NAMES = { pluck: 'đàn dây gảy', koto: 'đàn koto', harp: 'đàn hạc', banjo: 'đàn banjo', oud: 'đàn oud', sitar: 'đàn sitar', mandolin: 'đàn mandolin', kalimba: 'đàn kalimba', marimba: 'đàn marimba', bell: 'chuông', music: 'hộp nhạc', gamelan: 'gamelan', carillon: 'chuông tháp', flute: 'sáo', horn: 'kèn alphorn', erhu: 'đàn nhị', accord: 'đàn accordion', synth: 'synthesizer', dan: 'đàn bầu', whistle: 'sáo tin whistle', panpipe: 'sáo pan Andes', charango: 'đàn charango', balalaika: 'đàn balalaika', bandoneon: 'đàn bandoneon', valiha: 'đàn valiha', fiddle: 'vĩ cầm dân gian', masenqo: 'đàn masenqo' };
   var AMBN = { waves: 'sóng vỗ', deepwaves: 'sóng biển sâu', wind: 'gió', brook: 'suối chảy', fire: 'lửa & dung nham', space: 'không gian', hum: 'tiếng máy', tanpura: 'dây tanpura', birds: 'chim hót', night: 'dế đêm', sparkle: 'ánh lấp lánh' };
   function describe(key) { var p = PROF[key] || PROF.map, a = [NAMES[p.lead]]; if (p.l2 && p.l2 !== p.lead) a.push(NAMES[p.l2]); var m = a.join(' + '), e = (p.amb || []).filter(function (x, i, r) { return AMBN[x] && r.indexOf(x) === i; }).map(function (x) { return AMBN[x]; }); return m + (e.length ? ' · ' + e.join(', ') : ''); }
   var API = {

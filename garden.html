@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=25">
+<link rel="stylesheet" href="css/style.css?v=26">
 <style>
 .gd-wrap { max-width: 1760px; margin: 0 auto; padding: 8px 10px 40px; }
 /* ───────── Màn hình game ───────── */
@@ -264,6 +264,18 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-lawn.z-brazil { --bed: #BEEBA0; --bed2: #AEE090; --bedl: rgba(40,120,50,.4); background: repeating-linear-gradient(90deg, #009C3B 0 12px, #FFDF00 12px 14px); border-color: #009C3B; }
 .gd-lawn.z-egypt { --bed: #F2E2B0; --bed2: #E8D498; --bedl: rgba(180,130,50,.45); background: repeating-linear-gradient(90deg, #C09300 0 12px, #1A1A1A 12px 14px); border-color: #C09300; }
 .gd-lawn.z-morocco { --bed: #F0D8B6; --bed2: #E6CAA0; --bedl: rgba(170,100,60,.4); background: repeating-linear-gradient(90deg, #C1272D 0 12px, #006233 12px 14px); border-color: #C1272D; }
+.gd-lawn.z-spain { --bed: #F6E2B0; --bed2: #EED49A; --bedl: rgba(170,100,50,.4); background: repeating-linear-gradient(90deg, #C60B1E 0 12px,#FFC400 12px 24px); border-color: #C60B1E; }
+.gd-lawn.z-russia { --bed: #E0EEDD; --bed2: #D0E4CC; --bedl: rgba(80,120,90,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px,#0039A6 10px 20px,#D52B1E 20px 30px); border-color: #0039A6; }
+.gd-lawn.z-ireland { --bed: #C8EEA8; --bed2: #B8E49A; --bedl: rgba(50,130,50,.4); background: repeating-linear-gradient(90deg, #169B62 0 10px,#FFFFFF 10px 20px,#FF883E 20px 30px); border-color: #169B62; }
+.gd-lawn.z-norway { --bed: #D8EAD0; --bed2: #C8E0C0; --bedl: rgba(60,110,80,.4); background: repeating-linear-gradient(90deg, #BA0C2F 0 12px,#FFFFFF 12px 14px,#00205B 14px 22px,#FFFFFF 22px 24px); border-color: #00205B; }
+.gd-lawn.z-peru { --bed: #E4E8B8; --bed2: #D6DCA4; --bedl: rgba(110,120,50,.4); background: repeating-linear-gradient(90deg, #D91023 0 12px,#FFFFFF 12px 24px); border-color: #D91023; }
+.gd-lawn.z-argentina { --bed: #C8EEB0; --bed2: #B8E4A0; --bedl: rgba(60,130,80,.4); background: repeating-linear-gradient(90deg, #74ACDF 0 12px,#FFFFFF 12px 24px); border-color: #74ACDF; }
+.gd-lawn.z-cuba { --bed: #C4EEA8; --bed2: #B2E496; --bedl: rgba(50,140,60,.4); background: repeating-linear-gradient(90deg, #002A8F 0 8px,#FFFFFF 8px 16px); border-color: #002A8F; }
+.gd-lawn.z-chile { --bed: #DDE4B8; --bed2: #CED8A4; --bedl: rgba(90,120,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px,#D52B1E 10px 20px,#0039A6 20px 30px); border-color: #D52B1E; }
+.gd-lawn.z-kenya { --bed: #F0E0A0; --bed2: #E6D288; --bedl: rgba(160,120,50,.4); background: repeating-linear-gradient(90deg, #000000 0 10px,#BB0000 10px 20px,#006600 20px 30px); border-color: #BB0000; }
+.gd-lawn.z-southafrica { --bed: #D8E8A8; --bed2: #CADC94; --bedl: rgba(100,130,50,.4); background: repeating-linear-gradient(90deg, #007749 0 10px,#FFB612 10px 20px,#DE3831 20px 30px); border-color: #007749; }
+.gd-lawn.z-ethiopia { --bed: #E4EAB0; --bed2: #D6DC9C; --bedl: rgba(110,130,50,.4); background: repeating-linear-gradient(90deg, #078930 0 10px,#FCDD09 10px 20px,#DA121A 20px 30px); border-color: #078930; }
+.gd-lawn.z-madagascar { --bed: #C4EEA8; --bed2: #B2E496; --bedl: rgba(50,140,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px,#FC3D32 10px 20px,#007E3A 20px 30px); border-color: #007E3A; }
 .gd-nof { font-size: 40px; line-height: 1; height: 56px; display: grid; place-items: center; }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
 .gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
@@ -509,16 +521,17 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=49"></script>
+<script src="js/main.js?v=50"></script>
 <script src="js/garden-catalog.js?v=1"></script>
 <script src="js/garden-cat-a.js?v=2"></script>
 <script src="js/garden-cat-b.js?v=2"></script>
 <script src="js/garden-cat-c.js?v=2"></script>
 <script src="js/garden-cat-d.js?v=2"></script>
 <script src="js/garden-cat-e.js?v=1"></script>
+<script src="js/garden-cat-f.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
-<script src="js/garden-bundles.js?v=1"></script>
-<script src="js/garden-data.js?v=18"></script>
+<script src="js/garden-bundles.js?v=2"></script>
+<script src="js/garden-data.js?v=19"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
 <script src="js/garden-art3.js?v=2"></script>
@@ -531,18 +544,22 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-world6.js?v=1"></script>
 <script src="js/garden-world7.js?v=1"></script>
 <script src="js/garden-world8.js?v=1"></script>
+<script src="js/garden-world9.js?v=1"></script>
+<script src="js/garden-world10.js?v=1"></script>
+<script src="js/garden-world11.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-art5.js?v=1"></script>
-<script src="js/garden-art6.js?v=1"></script>
+<script src="js/garden-art6.js?v=2"></script>
 <script src="js/garden-art7.js?v=1"></script>
+<script src="js/garden-art8.js?v=1"></script>
 <script src="js/garden-culture.js?v=2"></script>
 <script src="js/garden-gen1.js?v=3"></script>
 <script src="js/garden-gen2.js?v=3"></script>
 <script src="js/garden-gen3.js?v=3"></script>
-<script src="js/garden-gen4.js?v=4"></script>
+<script src="js/garden-gen4.js?v=5"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
-<script src="js/garden-sound.js?v=2"></script>
+<script src="js/garden-sound.js?v=3"></script>
 <script>
 (function () {
 'use strict';
@@ -1006,7 +1023,7 @@ $('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') go
 $('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
 
 /* ───────── nhiệm vụ · quà thầy cô · lớp học ───────── */
-var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma' };
+var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma', cuba: 'cu', chile: 'cl', norway: 'no', russia: 'ru', ireland: 'ie', madagascar: 'mg' };
 function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch (e) {} }
 function claimable() { var q = S && S.quests; if (!q) return 0; var n = 0; q.daily.concat(q.weekly).forEach(function (x) { if (x.p >= x.goal && !x.claimed) n++; }); q.streak.miles.forEach(function (m) { if (m.ready) n++; }); return n; }
 window.updDots = function () { var n = (S && !VISIT ? claimable() : 0) + INBOX + TRADES, d = $('questDot'); if (d) { d.textContent = n; d.style.display = n ? '' : 'none'; } };
@@ -1054,7 +1071,7 @@ function contribute(pid) { var v = +($('cin' + pid) || {}).value; if (!(v >= 1))
 /* ───────── Hộ chiếu văn hoá ───────── */
 function stamped(zid) { return (S.passport || []).indexOf(zid) >= 0; }
 function openPassport() {
-  var ids = Object.keys(CULT()).sort(function (a, b) { return D.ZBY[a].lvl - D.ZBY[b].lvl || D.ZBY[a].cost - D.ZBY[b].cost; }), n = ids.filter(stamped).length, nx = n < 5 ? 5 : n < 10 ? 10 : n < 15 ? 15 : n < 20 ? 20 : n < 23 ? 23 : 0;
+  var ids = Object.keys(CULT()).sort(function (a, b) { return D.ZBY[a].lvl - D.ZBY[b].lvl || D.ZBY[a].cost - D.ZBY[b].cost; }), n = ids.filter(stamped).length, nx = [5, 10, 15, 20, 23, 25, 30, 35].filter(function (m) { return n < m; })[0] || 0;
   $('pspsub').innerHTML = 'Chạm vào công trình trong các khu quốc gia để học từ vựng và câu tiếng Anh, rồi làm mini-quiz để nhận <b>dấu hộ chiếu</b> + quà. Bạn đã có <b>' + n + '/' + ids.length + '</b> dấu.' + (nx ? ' Đủ ' + nx + ' dấu sẽ có quà lớn!' : ' 🏅 Bạn đã đủ tất cả!');
   $('pspgrid').innerHTML = ids.map(function (id) {
     var z = D.ZBY[id], open = S.zones.indexOf(id) >= 0, fl = FLAGOF[id], r = fl ? EWTFlags.RATIO[fl] : 0;

@@ -74,6 +74,18 @@
     // Ma-rốc (2:3): nền đỏ #C1272D; sao năm cánh xanh lá #006233 chỉ vẽ nét viền (ngôi sao Solomon) ở chính giữa
     ma: { w: 300, h: 200, body: function () {
       return '<g transform="scale(.0033333333)"><path fill="#C1272D" d="m0 0h90000v60000H0z"/><path fill="none" stroke="#006233" stroke-width="1426" d="m45000 17308 7460 22960-19531-14190h24142L37540 40268z"/></g>'; } },
+    // Cuba (1:2): 5 dải ngang bằng nhau xanh #002A8F / trắng; tam giác đều đỏ #CB1515 ở cạnh cột cờ với sao trắng — theo bản vẽ SVG công khai của Wikimedia (30×15)
+    cu: { w: 300, h: 150, body: function () { return '<g transform="scale(10)"><path fill="#002a8f" d="m0 0h30v15H0z"/><path fill="#fff" d="m3 3h27v3H9v3h21v3H3z"/><path fill="#cb1515" d="m12.99 7.5L0 15V0z"/><path fill="#fff" d="m4.33 5-1.469 4.523 3.847-2.796H1.952L5.8 9.523z"/></g>'; } },
+    // Chile (2:3): nửa trên trắng, nửa dưới đỏ #DA291C; ô vuông xanh #0032A0 ở góc trên cột cờ có sao trắng 5 cánh — theo bản vẽ SVG công khai của Wikimedia (900×600)
+    cl: { w: 300, h: 200, body: function () { return '<g transform="scale(.3333333)"><path fill="#fff" d="M0 0h900v600H0z"/><path fill="#0032A0" d="M0 0h300v450H0z"/><path fill="#DA291C" d="M0 300h900v300H0z"/><path fill="#0032A0" d="M0 0h300v300H0z"/><g fill="#fff" transform="translate(150 150)">' + [0, 72, 144, 216, 288].map(function (r) { return '<g transform="rotate(' + r + ')"><path d="M0-75V0h37.5" transform="rotate(18 0 -75)"/><path d="M0-75V0h37.5" transform="scale(-1 1) rotate(18 0 -75)"/></g>'; }).join('') + '</g></g>'; } },
+    // Na Uy (16:22 = 8:11): nền đỏ #BA0C2F, chữ thập Bắc Âu trắng viền ngoài, chữ thập xanh #00205B ở trong (Wikimedia, 22×16)
+    no: { w: 220, h: 160, body: function () { return '<g transform="scale(10)"><rect width="22" height="16" fill="#ba0c2f"/><path d="M0,8h22M8,0v16" stroke="#fff" stroke-width="4"/><path d="M0,8h22M8,0v16" stroke="#00205b" stroke-width="2"/></g>'; } },
+    // Nga (2:3): ba dải ngang bằng nhau — trắng, xanh #0039A6, đỏ #D52B1E
+    ru: { w: 300, h: 200, body: function () { var u = 200 / 3; return rc(0, 0, 300, u, '#FFFFFF') + rc(0, u, 300, u, '#0039A6') + rc(0, 2 * u, 300, u, '#D52B1E'); } },
+    // Ai-len (1:2): ba dải dọc bằng nhau — xanh lá #169B62, trắng, cam #FF883E
+    ie: { w: 300, h: 150, body: function () { return rc(0, 0, 100, 150, '#169B62') + rc(100, 0, 100, 150, '#FFFFFF') + rc(200, 0, 100, 150, '#FF883E'); } },
+    // Madagascar (2:3): dải dọc trắng chiếm 1/3 cạnh cột cờ; hai dải ngang bên phải — đỏ #FC3D32 ở trên, xanh lá #007E3A ở dưới
+    mg: { w: 300, h: 200, body: function () { return rc(0, 0, 100, 200, '#FFFFFF') + rc(100, 0, 200, 100, '#FC3D32') + rc(100, 100, 200, 100, '#007E3A'); } },
     // Indonesia (2:3): hai dải ngang bằng nhau — đỏ ở trên, trắng ở dưới
     id: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#CE1126') + rc(0, 100, 300, 100, '#FFFFFF'); } }
   };

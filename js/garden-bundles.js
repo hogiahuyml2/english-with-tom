@@ -2,7 +2,7 @@
    Mỗi khu có 8 món trang trí riêng (4 lễ hội + 4 ẩm thực — chỉ đặt được ở khu đó) và 1 trang phục. Dùng chung cho máy chủ và trình duyệt. */
 (function (root) {
   'use strict';
-  var Z = { korea: 12, turkey: 12, australia: 13, canada: 13, mexico: 13, brazil: 14, egypt: 14, morocco: 14 };
+  var Z = { korea: 12, turkey: 12, australia: 13, canada: 13, mexico: 13, brazil: 14, egypt: 14, morocco: 14, spain: 15, russia: 17, ireland: 19, norway: 21, peru: 23, argentina: 25, cuba: 27, chile: 29, kenya: 31, southafrica: 33, ethiopia: 35, madagascar: 37 };
   // [id, tên] — 4 món lễ hội rồi 4 món ẩm thực của từng khu
   var DEF = {
     korea: { fest: 'Bộ lễ hội Hàn Quốc', food: 'Bộ ẩm thực Hàn Quốc', of: ['of_korea', 'Mũ gat truyền thống', 'gat'],
@@ -29,6 +29,42 @@
     morocco: { fest: 'Bộ lễ hội Ma-rốc', food: 'Bộ ẩm thực Ma-rốc', of: ['of_morocco', 'Mũ fez Ma-rốc', 'fez'],
       f: [['ma_gate', 'Cổng vòm zellige'], ['ma_bendir', 'Trống bendir'], ['ma_khamsa', 'Bàn tay Khamsa'], ['ma_slipper', 'Dép babouche']],
       e: [['ma_tagine', 'Nồi tagine'], ['ma_couscous', 'Đĩa couscous'], ['ma_pastilla', 'Bánh pastilla'], ['ma_dates', 'Khay chà là & hạnh nhân']] }
+    ,spain: { fest: 'Bộ lễ hội Tây Ban Nha', food: 'Bộ ẩm thực Tây Ban Nha', of: ['of_spain', 'Mũ cordobés', 'cordobes'],
+      f: [['es_castanets', 'Castañuelas'], ['es_guitar', 'Guitar flamenco'], ['es_azulejo', 'Gạch azulejo'], ['es_peineta', 'Lược peineta']],
+      e: [['es_tortilla', 'Bánh trứng khoai tortilla'], ['es_churros', 'Churros chấm sô-cô-la'], ['es_gazpacho', 'Súp lạnh gazpacho'], ['es_tapas', 'Đĩa tapas']] }
+    ,russia: { fest: 'Bộ lễ hội Nga', food: 'Bộ ẩm thực Nga', of: ['of_russia', 'Mũ ushanka', 'ushanka'],
+      f: [['ru_balalaika', 'Đàn balalaika'], ['ru_khokhloma', 'Bát gỗ Khokhloma'], ['ru_egg', 'Trứng trang trí kiểu Fabergé'], ['ru_sled', 'Xe trượt tuyết gỗ']],
+      e: [['ru_borscht', 'Súp củ cải borscht'], ['ru_pelmeni', 'Sủi cảo pelmeni'], ['ru_blini', 'Bánh kếp blini'], ['ru_pirozhki', 'Bánh nhân pirozhki']] }
+    ,ireland: { fest: 'Bộ lễ hội Ai-len', food: 'Bộ ẩm thực Ai-len', of: ['of_ireland', 'Mũ nồi kẻ ca-rô', 'flatcap'],
+      f: [['ie_whistle', 'Sáo tin whistle'], ['ie_bodhran', 'Trống bodhrán'], ['ie_claddagh', 'Nhẫn Claddagh'], ['ie_knot', 'Hoa văn nút thắt Celtic']],
+      e: [['ie_soda', 'Bánh mì soda'], ['ie_stew', 'Món hầm Ai-len'], ['ie_colcannon', 'Khoai nghiền colcannon'], ['ie_barmbrack', 'Bánh trái cây barmbrack']] }
+    ,norway: { fest: 'Bộ lễ hội Na Uy', food: 'Bộ ẩm thực Na Uy', of: ['of_norway', 'Mũ giáp Viking', 'viking'],
+      f: [['no_fiddle', 'Đàn Hardanger'], ['no_skis', 'Ván trượt tuyết'], ['no_rosemal', 'Đĩa vẽ hoa rosemaling'], ['no_spark', 'Xe trượt kiểu spark']],
+      e: [['no_salmon', 'Cá hồi Na Uy'], ['no_waffle', 'Bánh vafler'], ['no_brunost', 'Phô mai nâu brunost'], ['no_lefse', 'Bánh lefse']] }
+    ,peru: { fest: 'Bộ lễ hội Peru', food: 'Bộ ẩm thực Peru', of: ['of_peru', 'Mũ chullo Andes', 'chullo'],
+      f: [['pe_charango', 'Đàn charango'], ['pe_tumi', 'Dao tumi nghi lễ'], ['pe_totora', 'Thuyền cói totora'], ['pe_textile', 'Tấm dệt Andes']],
+      e: [['pe_ceviche', 'Cá trộn ceviche'], ['pe_lomo', 'Bò xào lomo saltado'], ['pe_papa', 'Khoai tây Andes nhiều màu'], ['pe_chicha', 'Nước ngô tím chicha morada']] }
+    ,argentina: { fest: 'Bộ lễ hội Argentina', food: 'Bộ ẩm thực Argentina', of: ['of_argentina', 'Mũ gaucho', 'gaucho'],
+      f: [['ar_tango', 'Đôi giày tango'], ['ar_polo', 'Gậy polo & bóng'], ['ar_bolas', 'Dây boleadoras'], ['ar_guitar', 'Đàn guitar gaucho']],
+      e: [['ar_empanada', 'Bánh empanada'], ['ar_asado', 'Giá nướng asado'], ['ar_alfajor', 'Bánh alfajor'], ['ar_dulce', 'Hũ dulce de leche']] }
+    ,cuba: { fest: 'Bộ lễ hội Cuba', food: 'Bộ ẩm thực Cuba', of: ['of_cuba', 'Mũ cói Panama', 'panama'],
+      f: [['cu_trumpet', 'Kèn trumpet'], ['cu_bongo', 'Trống bongo'], ['cu_tres', 'Đàn tres'], ['cu_fan', 'Quạt abanico']],
+      e: [['cu_cubano', 'Bánh mì Cubano'], ['cu_ropa', 'Thịt xé ropa vieja'], ['cu_tostones', 'Chuối chiên tostones'], ['cu_flan', 'Bánh flan caramel']] }
+    ,chile: { fest: 'Bộ lễ hội Chile', food: 'Bộ ẩm thực Chile', of: ['of_chile', 'Mũ cói chupalla', 'chupalla'],
+      f: [['cl_quena', 'Sáo quena'], ['cl_cueca', 'Khăn tay cueca'], ['cl_kultrun', 'Trống kultrun'], ['cl_pomaire', 'Bình gốm Pomaire']],
+      e: [['cl_empanada', 'Bánh empanada de pino'], ['cl_completo', 'Bánh mì kẹp completo'], ['cl_pastel', 'Bánh ngô pastel de choclo'], ['cl_sopaipilla', 'Bánh sopaipilla']] }
+    ,kenya: { fest: 'Bộ lễ hội Kenya', food: 'Bộ ẩm thực Kenya', of: ['of_kenya', 'Mũ safari', 'safari'],
+      f: [['ke_shuka', 'Chăn shúka đỏ Maasai'], ['ke_collar', 'Vòng cổ hạt cườm Maasai'], ['ke_binoc', 'Ống nhòm safari'], ['ke_kiondo', 'Giỏ kiondo']],
+      e: [['ke_ugali', 'Bột ngô ugali'], ['ke_nyama', 'Thịt nướng nyama choma'], ['ke_chapati', 'Bánh chapati'], ['ke_sukuma', 'Rau xào sukuma wiki']] }
+    ,southafrica: { fest: 'Bộ lễ hội Nam Phi', food: 'Bộ ẩm thực Nam Phi', of: ['of_southafrica', 'Mũ lưỡi trai Springbok', 'springbok'],
+      f: [['za_rugby', 'Bóng bầu dục'], ['za_boots', 'Ủng gumboot nhảy múa'], ['za_braai', 'Lò nướng braai'], ['za_basket', 'Giỏ đan Zulu']],
+      e: [['za_bobotie', 'Món bobotie'], ['za_biltong', 'Thịt khô biltong'], ['za_bunny', 'Bánh mì bunny chow'], ['za_koek', 'Bánh koeksister']] }
+    ,ethiopia: { fest: 'Bộ lễ hội Ethiopia', food: 'Bộ ẩm thực Ethiopia', of: ['of_ethiopia', 'Khăn shamma', 'shamma'],
+      f: [['et_masenqo', 'Đàn masenqo'], ['et_mesob', 'Bàn đan mesob'], ['et_umbrella', 'Ô nghi lễ'], ['et_cups', 'Bộ tách cà phê sini']],
+      e: [['et_injera', 'Bánh injera'], ['et_doro', 'Gà hầm doro wat'], ['et_shiro', 'Món shiro'], ['et_dabo', 'Bánh mì dabo']] }
+    ,madagascar: { fest: 'Bộ lễ hội Madagascar', food: 'Bộ ẩm thực Madagascar', of: ['of_madagascar', 'Mũ rơm salova', 'salova'],
+      f: [['mg_valiha', 'Đàn valiha'], ['mg_lamba', 'Khăn lamba'], ['mg_raffia', 'Giỏ cọ raffia'], ['mg_zebu', 'Tượng bò zebu']],
+      e: [['mg_romazava', 'Món romazava'], ['mg_vary', 'Cơm vary amin anana'], ['mg_mofo', 'Bánh mofo gasy'], ['mg_koba', 'Bánh koba']] }
   };
   var PCT = 20, BUNDLES = [], OUTFITS = [], OBY = {}, BDBY = {}, ITEMS = [];
   Object.keys(DEF).forEach(function (zid) {
