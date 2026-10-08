@@ -291,6 +291,22 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 @media (max-width: 900px) { .gd-top { flex-wrap: wrap; padding: 8px 10px; gap: 8px; } .gd-sign { order: 3; flex-basis: 100%; flex-direction: row; justify-content: center; gap: 10px; } .gd-logo h1 { font-size: 21px; } .gd-logo .mk { width: 30px; height: 30px; } .gd-gname { margin-top: 0; font-size: 13px; padding: 3px 12px; } .gd-stage { --top: 128px; --tray: 170px; } .gd-me .av { width: 46px; height: 46px; } .gd-bar { width: 120px; } .gd-me .nx { display: none; } .gd-pill { min-height: 36px; font-size: 14px; padding: 3px 11px 3px 7px; } .gd-earn { min-height: 38px; padding: 5px 12px; font-size: 13px; } .gd-note { display: none; } }
 @media (max-width: 640px) { .gd-wrap { padding: 4px 4px 30px; } .gd-stage { border-width: 3px; border-radius: 20px; height: clamp(600px, calc(100svh - 120px), 820px); --top: 124px; --tray: 160px; } .gd-dock { left: 6px; padding: 5px; gap: 5px; } .gd-tool { width: 50px; padding: 4px 1px; font-size: 9px; } .gd-tool .ic { width: 28px; height: 28px; } .gd-tool small { display: none; } .gd-play { left: 66px; right: 6px; } .gd-it { width: 88px; } .gd-it svg { width: 52px; height: 52px; } .gd-hint { max-width: calc(100% - 90px); font-size: 12px; left: calc(50% + 28px); } .gd-me .lv { font-size: 12px; } .gd-sun, .gd-moon { right: 6%; transform: scale(.7); } }
 @media (max-width: 640px) { .gd-stage.map .gd-map { top: calc(var(--top) + 16px); } .gd-zcard .zh { font-size: 13px; } .gd-zcard .zf { display: none; } .gd-map { left: 6px; right: 6px; gap: 10px; } .gd-top { padding: 6px 8px; gap: 6px; align-items: center; } .gd-me { padding: 4px 10px 4px 4px; gap: 6px; border-width: 2px; border-radius: 16px; } .gd-me .av { width: 36px; height: 36px; border-width: 2px; font-size: 20px; } .gd-me .lv { font-size: 11px; } .gd-bar { width: 84px; height: 9px; margin: 3px 0 0; } .gd-res { gap: 5px; } .gd-pill { min-height: 32px; font-size: 13px; padding: 2px 9px 2px 6px; border-width: 2px; } .gd-pill.btn { padding: 2px 9px; font-size: 0; } .gd-pill.btn::before { content: none; } .gd-earn { min-height: 34px; padding: 4px 11px; font-size: 12px; border-width: 2px; } .gd-sign { flex-direction: row; gap: 6px; } .gd-logo h1 { font-size: 17px; text-shadow: 0 2px 0 #2E8B57; } .gd-logo .mk { display: none; } .gd-gname { font-size: 12px; padding: 2px 10px; border-width: 2px; } .gd-stage { --top: 104px; } .gd-hint { border-radius: 14px; padding: 4px 10px; font-size: 11.5px; max-width: calc(100% - 84px); bottom: calc(var(--tray) + 6px); } .gd-pop { width: 200px; } }
+/* Điện thoại (Android/iOS): khu đang chơi — xếp lại thứ tự từ trên xuống: thông tin → thanh khu → thanh công cụ phóng/thu → bản đồ → khay cửa hàng, không còn chồng nhau */
+@media (max-width: 640px) {
+  .gd-stage:not(.map) { --top: 196px; }
+  .gd-stage:not(.map) .gd-logo { display: none; }
+  .gd-sign { min-width: 0; max-width: 100%; }
+  .gd-zbar { width: 100%; min-width: 0; flex-wrap: nowrap; gap: 4px; margin-top: 0; }
+  .gd-zbtn { padding: 3px 8px; font-size: 12.5px; min-height: 32px; border-width: 2px; flex: none; }
+  .gd-zname { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; padding: 4px 8px; font-size: 13px; border-width: 2px; text-align: center; }
+  .gd-zctl { left: 8px; right: 8px; max-width: none; top: calc(var(--top) - 40px); flex-wrap: nowrap; justify-content: flex-end; gap: 4px; }
+  .gd-zctl .gd-zbtn { min-height: 30px; padding: 2px 8px; }
+  .gd-zsz { font-size: 11px; padding: 2px 8px; margin-right: auto; }
+  .gd-dock { max-height: calc(100% - var(--top) - var(--tray) - 10px); overflow-y: auto; scrollbar-width: none; } .gd-dock::-webkit-scrollbar { display: none; }
+  .gd-play { padding-bottom: 8px; }
+  .gd-stage { height: clamp(620px, calc(100vh - 110px), 860px); height: clamp(620px, calc(100svh - 110px), 860px); }
+}
+@media (max-width: 380px) { .gd-zctl .gd-zbtn.tomod { font-size: 0; padding: 2px 8px; } .gd-zctl .gd-zbtn.tomod::before { content: '⛏️'; font-size: 15px; } }
 @media (prefers-reduced-motion: reduce) { .gd-fx { display: none; } .rays polygon { animation: none; } .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-spin, .gt .ready, .sway, .flow, .smoke, .wave, .snowf, .spk, .float1, .float2, .beam, .duck, .boat, .gd-bird, .gd-bfly, .gd-star, .gd-card { animation: none !important; } .gd-pet { transition-duration: 0s; } }
 </style>
 <script src="js/dialog.js?v=1"></script>
@@ -1212,7 +1228,8 @@ document.addEventListener('input', function (e) { if (e.target && e.target.id ==
 
 /* ───────── nhạc nền & âm thanh theo khu ───────── */
 /* trên điện thoại thanh trên cùng có thể xuống nhiều dòng → chừa chỗ đúng bằng chiều cao thật để không đè lên khu vườn */
-function fitTop() { var st = $('stage'), tp = st.querySelector('.gd-top'); if (!tp) return; if (innerWidth > 640) { st.style.removeProperty('--top'); return; } var h = Math.ceil(tp.getBoundingClientRect().height) + 6; st.style.setProperty('--top', Math.max(104, h) + 'px'); }
+function fitTop() { var st = $('stage'), tp = st.querySelector('.gd-top'); if (!tp) return; if (innerWidth > 640) { st.style.removeProperty('--top'); return; } var h = Math.ceil(tp.getBoundingClientRect().height) + 6 + (st.classList.contains('map') ? 0 : 40); st.style.setProperty('--top', Math.max(104, h) + 'px'); }
+try { new MutationObserver(function () { fitTop(); }).observe($('stage'), { attributes: true, attributeFilter: ['class'] }); window.addEventListener('resize', fitTop); window.addEventListener('orientationchange', function () { setTimeout(fitTop, 250); }); } catch (e) {}
 function sndScene() {
   if (!window.EWTSound || !S) return;
   var evs = ((S.events && S.events.active) || []).map(function (e) { return e.id; });
