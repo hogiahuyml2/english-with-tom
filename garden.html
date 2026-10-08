@@ -383,7 +383,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .fx-nomotion .gd-nb, .fx-nomotion .gd-nb .s { animation: none; } @media (prefers-reduced-motion: reduce) { .gd-nb, .gd-nb .s { animation: none; } }
 .gd-stk { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 6px; margin: 8px 0 12px; } .gd-stk button { font-size: 28px; line-height: 1; padding: 8px 0; border-radius: 14px; border: 2px solid var(--border); background: var(--surface); cursor: pointer; } .gd-stk button.on { border-color: #F59E0B; background: #FEF3C7; transform: scale(1.08); }
 .gd-qk { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; } .gd-qk button { border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: 999px; padding: 5px 12px; font: 800 13px inherit; font-family: inherit; cursor: pointer; } .gd-qk button.on { border-color: #F59E0B; background: #FEF3C7; }
-.gd-tri { position: relative; text-align: center; cursor: pointer; } .gd-tri .qty { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; } .gd-tri .qty i { font-style: normal; width: 24px; height: 24px; border-radius: 50%; background: #F59E0B; color: #fff; font-weight: 900; line-height: 24px; } .gd-tri .qty b { min-width: 22px; font-size: 14px; }
+.gd-tri { position: relative; text-align: center; cursor: pointer; } .gd-tri .qty { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; } .gd-tri .qty i { font-style: normal; width: 24px; height: 24px; border-radius: 50%; background: #F59E0B; color: #fff; font-weight: 900; line-height: 24px; } .gd-tri .qty input { width: 52px; text-align: center; font: 800 14px inherit; font-family: inherit; padding: 3px 2px; border: 2px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); -moz-appearance: textfield; } .gd-tri .qty input::-webkit-inner-spin-button { display: none; }
 #items.stk .gd-it { outline: 2px dashed #7C3AED; outline-offset: -3px; } .gd-tab.stk.on { background: #7C3AED; color: #fff; border-color: #7C3AED; }
 body.visit .gd-visit { gap: 8px; } .gd-visit .gd-btn { padding: 7px 11px; }
 </style>
@@ -576,7 +576,7 @@ body.visit .gd-visit { gap: 8px; } .gd-visit .gd-btn { padding: 7px 11px; }
 <div class="gd-modal" id="xum"><div class="gd-box" style="max-width:420px">
   <h3 id="xuh">💰 Tặng xu</h3><p class="gd-sub" id="xusub"></p>
   <div class="gd-qk" id="xuq"></div>
-  <input class="gd-field-in" id="xuamt" type="number" min="10" max="1000" inputmode="numeric" placeholder="Số xu muốn tặng (10 – 1000)">
+  <input class="gd-field-in" id="xuamt" type="number" min="10" max="5000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 5.000)">
   <input class="gd-field-in" id="xunote" maxlength="60" placeholder="Lời nhắn (không bắt buộc)" style="margin-top:8px">
   <div class="gd-act"><button class="gd-btn" id="xuclose">Đóng</button><button class="gd-btn pri" id="xusend">💰 Tặng xu</button></div>
 </div></div>
@@ -1434,7 +1434,7 @@ var TSTAT = { accepted: '✅ đã nhận', declined: '❌ bị từ chối', can
 function drawFriends() {
   var b = $('qstbody'); b.innerHTML = '<p class="gd-sub">Đang tải…</p>';
   Promise.all([api('/api/garden/trades'), api('/api/garden/friends'), api('/api/garden/parcels')]).then(function (r) {
-    var d = r[0], f = r[1].friends || [], pc = r[2], h = '<p class="gd-sub">🤝 Tặng <b>xu 💰</b>, tặng nhiều món <b>🎁</b> (chọn số lượng) hoặc đổi quà với bạn bè. Quà lấy từ <b>🧺 Kho</b> được giữ an toàn cho tới khi bạn ấy trả lời (quá ' + d.limits.expireDays + ' ngày sẽ tự về kho của bạn). Tặng xu tối đa ' + pc.xu.max + ' xu/lần, ' + pc.xu.maxDay + ' xu/ngày (hôm nay đã tặng ' + pc.xu.sentToday + ').</p>';
+    var d = r[0], f = r[1].friends || [], pc = r[2], h = '<p class="gd-sub">🤝 Tặng <b>xu 💰</b>, tặng nhiều món <b>🎁</b> (chọn số lượng) hoặc đổi quà với bạn bè. Quà lấy từ <b>🧺 Kho</b> được giữ an toàn cho tới khi bạn ấy trả lời (quá ' + d.limits.expireDays + ' ngày sẽ tự về kho của bạn). Tặng xu tối đa ' + pc.xu.max.toLocaleString('vi-VN') + ' xu/lần, ' + pc.xu.maxDay.toLocaleString('vi-VN') + ' xu/ngày (hôm nay đã tặng ' + pc.xu.sentToday.toLocaleString('vi-VN') + ').</p>';
     TRS.lim = d.limits;
     var row = function (t, mine) {
       var sw = !!t.want, who = '<b>' + esc(t.who) + '</b>', btn = '';
@@ -1468,7 +1468,7 @@ function trItems() { var bg = myBag(), out = []; Object.keys(bg.items).forEach(f
 function trTile(o, on, attr) { return '<button class="gd-tri' + (on ? ' on' : '') + '" ' + attr + '="' + o.kind + ':' + o.id + '">' + (o.kind === 'pet' ? A.petSvg(D.PBY[o.id], 46) : (D.BY[o.id].kind === 'big' ? W.bigSvg(o.id) : A.itemSvg(D.BY[o.id], 3, 46))) + esc(o.name) + '<small>' + (o.n ? '🧺 ×' + o.n + ' · ' : '') + H(o.cost + ' 🪙') + '</small></button>'; }
 function trTileSel(o) {
   var key = o.kind + ':' + o.id, q = TR.sel[key] | 0;
-  return '<div class="gd-tri' + (q ? ' on' : '') + '" data-trs="' + key + '" role="button" tabindex="0">' + (o.kind === 'pet' ? A.petSvg(D.PBY[o.id], 46) : (D.BY[o.id].kind === 'big' ? W.bigSvg(o.id) : A.itemSvg(D.BY[o.id], 3, 46))) + esc(o.name) + '<small>🧺 ×' + o.n + ' · ' + H(o.cost + ' 🪙') + '</small>' + (q ? '<span class="qty"><i data-trq="-' + key + '">−</i><b>' + q + '</b><i data-trq="+' + key + '">+</i></span>' : '') + '</div>';
+  return '<div class="gd-tri' + (q ? ' on' : '') + '" data-trs="' + key + '" role="button" tabindex="0">' + (o.kind === 'pet' ? A.petSvg(D.PBY[o.id], 46) : (D.BY[o.id].kind === 'big' ? W.bigSvg(o.id) : A.itemSvg(D.BY[o.id], 3, 46))) + esc(o.name) + '<small>🧺 ×' + o.n + ' · ' + H(o.cost + ' 🪙') + '</small>' + (q ? '<span class="qty"><i data-trq="-' + key + '">−</i><input type="number" min="0" max="' + o.n + '" inputmode="numeric" value="' + q + '" data-trin="' + key + '" aria-label="Số lượng"><i data-trq="+' + key + '">+</i></span>' : '') + '</div>';
 }
 function trSelN() { var n = 0; Object.keys(TR.sel).forEach(function (k) { n += TR.sel[k]; }); return n; }
 function drawTrade() {
@@ -1497,6 +1497,7 @@ document.addEventListener('click', function (e) {
   if (t.closest('#trclose') || t === $('trm')) { $('trm').classList.remove('on'); return; }
   if ((el = t.closest('[data-trf]'))) { openTrade(el.getAttribute('data-trf'), el.getAttribute('data-trn')); return; }
   if ((el = t.closest('[data-trm]'))) { TR.mode = el.getAttribute('data-trm'); drawTrade(); return; }
+  if (t.closest('.gd-tri .qty input')) return;
   if ((el = t.closest('[data-trq]'))) {
     var tq = el.getAttribute('data-trq'), sg = tq.charAt(0), tk = tq.slice(1), mx = (trItems().filter(function (o) { return o.kind + ':' + o.id === tk; })[0] || { n: 1 }).n, cq = (TR.sel[tk] | 0) + (sg === '+' ? 1 : -1);
     if (cq <= 0) delete TR.sel[tk]; else TR.sel[tk] = Math.min(cq, mx); drawTrade(); return;
@@ -1527,7 +1528,7 @@ document.addEventListener('click', function (e) {
   if (t.closest('#xuclose') || t === $('xum')) { $('xum').classList.remove('on'); return; }
   if ((el = t.closest('[data-xuq]'))) { $('xuamt').value = el.getAttribute('data-xuq'); return; }
   if (t.closest('#xusend') && XU) {
-    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 1000)) return toast('Nhập số xu từ 10 đến 1000 nhé.');
+    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 5000)) return toast('Nhập số xu từ 10 đến 5.000 nhé.');
     var xb = $('xusend'); xb.disabled = true;
     api('/api/garden/xu/send', { to: XU.to, xu: xv, note: $('xunote').value || '' }).then(function (d) { COINS = d.coins; render(); $('xum').classList.remove('on'); xb.disabled = false; toast('💰 Đã tặng ' + xv + ' xu cho ' + d.to + '! Hôm nay còn tặng được ' + d.left + ' xu.', 4200); celebrate(8); if (QTAB === 'f' && $('qstm').classList.contains('on')) drawQst(); }).catch(function (er) { xb.disabled = false; toast(er.message, 4200); });
     return;
@@ -1544,14 +1545,21 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-trd]'))) { api('/api/garden/trade/respond', { id: +el.getAttribute('data-trd'), action: 'decline' }).then(function (d) { setState(d); toast('Đã từ chối. Món quà về lại giỏ của bạn ấy.', 3200); drawQst(); }).catch(function (er) { toast(er.message, 3800); }); return; }
   if ((el = t.closest('[data-trx]'))) { api('/api/garden/trade/cancel', { id: +el.getAttribute('data-trx') }).then(function (d) { setState(d); toast('Đã huỷ — món đã về giỏ của bạn.', 3200); drawQst(); }).catch(function (er) { toast(er.message, 3800); }); return; }
 });
+document.addEventListener('change', function (e) {
+  var el = e.target; if (!el || !el.getAttribute || el.getAttribute('data-trin') == null || !TR) return;
+  var k = el.getAttribute('data-trin'), mx = (trItems().filter(function (o) { return o.kind + ':' + o.id === k; })[0] || { n: 1 }).n, v = Math.floor(Number(el.value) || 0);
+  if (v <= 0) delete TR.sel[k]; else { if (v > mx) toast('Trong kho chỉ có ' + mx + ' món này — đã chỉnh về ' + mx + '.', 2800); TR.sel[k] = Math.min(v, mx); }
+  drawTrade();
+});
+document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target && e.target.getAttribute && e.target.getAttribute('data-trin') != null) e.target.blur(); });
 document.addEventListener('input', function (e) { if (e.target && e.target.id === 'shopq') { SHOPQ = e.target.value; renderShop(); return; } if (!TR || !e.target) return; if (e.target.id === 'trq') { TR.q = e.target.value; drawTrRes(); } else if (e.target.id === 'trnote') TR.note = e.target.value; });
 
 /* ───────── tặng xu · sticker & lời nhắn nổi ───────── */
 var XU = null, NT = null, NOTES = [], NKEY = '', STICKERS = ['🌸', '🌻', '🌷', '💐', '🌈', '⭐', '✨', '💖', '😍', '👍', '👏', '🎉', '🦋', '🐰', '🐶', '🍀', '🌟', '😊', '🥰', '🏆'];
 function openXu(token, name) {
-  XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 1.000 xu mỗi lần · 3.000 xu mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
-  $('xuq').innerHTML = [20, 50, 100, 200, 500, 1000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
-  if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 1.000 xu mỗi lần · 3.000 xu mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
+  XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 5.000 xu mỗi lần · 100.000 xu mỗi ngày cho một bạn · 300.000 xu mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
+  $('xuq').innerHTML = [50, 100, 500, 1000, 2000, 5000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
+  if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 5.000 xu mỗi lần · 100.000 xu mỗi ngày cho một bạn · 300.000 xu mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
 }
 function drawNoteModal() { $('ntst').innerHTML = STICKERS.map(function (s) { return '<button data-nts="' + s + '" class="' + (NT.st === s ? 'on' : '') + '">' + s + '</button>'; }).join(''); $('ntsend').disabled = false; }
 function openNote(token, name) { NT = { to: token, name: name, st: '' }; $('nth').textContent = '🎈 Thả sticker trong vườn của ' + name; $('ntxt').value = ''; drawNoteModal(); $('ntm').classList.add('on'); }

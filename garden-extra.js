@@ -409,7 +409,7 @@ module.exports = function (app, C) {
 
   /* ───────────────────────── Mua trữ kho · tặng xu · tặng nhiều món · sticker & lời nhắn ───────────────────────── */
   const SOCIAL = {
-    xuMin: 10, xuMax: 1000, xuSendDay: 3000, xuPairDay: 1500, xuRecvDay: 6000, xuCountDay: 15,
+    xuMin: 10, xuMax: 5000, xuSendDay: 300000, xuPairDay: 100000, xuRecvDay: 500000, xuCountDay: 15,
     parcelMaxKinds: 20, parcelMaxQty: 60, parcelDay: 8, parcelOut: 6, parcelPair: 3, parcelIn: 25,
     noteDayPair: 8, noteDay: 30, noteMax: 60, stockQty: 99
   };
