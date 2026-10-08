@@ -268,7 +268,9 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
 
   app.get('/api/word-game/me', requireAuth, (req, res) => {
     try { res.json(statePayload(req.user.id, req.user.name)); }
-    catch (e) { console.error('[wordgame/me]', e.message); res.status(500).json({ error: 'Không tải được tiến độ học.', detail: String(e.message || e).slice(0, 160) }); }
+    catch (e0) {
+      let e = e0;
+      if (/too large/i.test(String(e0.message))) { try { require('./db').repairBigInts(); return res.json(statePayload(req.user.id, req.user.name)); } catch (e2) { e = e2; } } console.error('[wordgame/me]', e.message); res.status(500).json({ error: 'Không tải được tiến độ học.', detail: String(e.message || e).slice(0, 160) }); }
   });
 
   // Ghi phần thưởng của 1 phiên chơi vào bản ghi ngày/chuỗi/xu/huy hiệu (gọi TRONG transaction)

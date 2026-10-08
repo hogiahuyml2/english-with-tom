@@ -541,7 +541,8 @@ app.get('/api/health', (req, res) => {
     submitted: _submittedSet.size,
     t: Date.now(),
     disk: _diskInfo(),
-    dbWrite: _dbWriteProbe()
+    dbWrite: _dbWriteProbe(),
+    repaired: require('./db').repairLog || []
   });
 });
 // Chẩn đoán đĩa & khả năng ghi database (không lộ dữ liệu người dùng)

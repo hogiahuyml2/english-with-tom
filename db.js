@@ -822,4 +822,30 @@ CREATE TABLE IF NOT EXISTS reading_saved (
 
 function now() { return new Date().toISOString(); }
 
-module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now };
+/* Sửa các số nguyên "khổng lồ" (> 2^53) làm JavaScript không đọc được → mọi trang dùng bảng đó báo lỗi.
+   Quét toàn bộ cột INTEGER (trừ khoá chính), đưa giá trị bất thường về 0 và ghi lại nhật ký. */
+function repairBigInts() {
+  const fixed = [];
+  try {
+    const tabs = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all();
+    for (const t of tabs) {
+      let cols; try { cols = db.prepare('PRAGMA table_info("' + t.name + '")').all(); } catch (e) { continue; }
+      for (const c of cols) {
+        if (c.pk || !/INT/i.test(c.type || '')) continue;
+        try {
+          const n = db.prepare('SELECT COUNT(*) AS n FROM "' + t.name + '" WHERE typeof("' + c.name + '")=\'integer\' AND abs("' + c.name + '")>9007199254740991').get();
+          if (Number(n.n) > 0) {
+            db.prepare('UPDATE "' + t.name + '" SET "' + c.name + '"=0 WHERE typeof("' + c.name + '")=\'integer\' AND abs("' + c.name + '")>9007199254740991').run();
+            fixed.push(t.name + '.' + c.name + ' ×' + Number(n.n));
+          }
+        } catch (e) { /* bỏ qua cột không đọc được */ }
+      }
+    }
+  } catch (e) { console.error('[repairBigInts]', e.message); }
+  if (fixed.length) console.warn('[repairBigInts] đã đưa về 0 các giá trị quá lớn:', fixed.join(', '));
+  return fixed;
+}
+const repairLog = [];
+try { repairLog.push.apply(repairLog, repairBigInts()); } catch (e) { console.error('[repairBigInts]', e.message); }
+
+module.exports = { db, hashPassword, verifyPassword, hashPasswordAsync, verifyPasswordAsync, now, repairBigInts, repairLog };
