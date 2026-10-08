@@ -120,50 +120,184 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     const st = load(req.user); st.name = nm; save(st); reply(res, req.user, st);
   });
 
+  /* Đặt MỘT món vào ô i (dùng chung cho đặt lẻ, đặt hàng loạt và dựng theo mẫu). Trả { err, need } hoặc { used }. Đã thay đổi st trong bộ nhớ khi thành công (chưa save). */
+  function placeCore(st, uid, lvl, i, it) {
+    if (!it) return { err: 'Món này không tồn tại.' };
+    if (!Number.isInteger(i) || i < 0 || i >= st.tiles.length) return { err: 'Ô đất không hợp lệ.' };
+    const zn = G.zoneOfCell(i), ll = landLv(st, zn);
+    const fp = it.kind === 'big' ? G.footprint(i, it, ll) : (G.inLand(i, ll) ? [i] : null);
+    if (!fp) return { err: it.kind === 'big' ? 'Công trình này không vừa chỗ — hãy chọn ô khác (cần đủ ' + it.w + '×' + it.h + ' ô trống trong đất của khu).' : 'Ô này nằm ngoài đất đã mở của khu — hãy mở rộng đất trước nhé.' };
+    if (it.z && it.z !== zn.id) return { err: 'Món này là đặc sản của khu "' + ((G.ZBY[it.z] || {}).name || it.z) + '" — chỉ đặt được ở khu đó nhé.' };
+    if (fp.some((k) => G.isBlocked(k) || G.zoneOfCell(k).id !== G.zoneOfCell(i).id)) return { err: 'Đây là phong cảnh có sẵn của khu, hãy chọn ô đất trống khác nhé.' };
+    if (fp.some((k) => st.tiles[k])) return { err: 'Chỗ này đã có đồ — cần ' + fp.length + ' ô trống liền nhau.' };
+    if (st.zones.indexOf(G.zoneOfCell(i).id) < 0) return { err: 'Khu này chưa được mở.' };
+    if (st.tiles[i]) return { err: 'Ô này đã có đồ — hãy dọn trước nhé.' };
+    const cls = FREE_CLS[it.kind], inBag = (st.bag.items[it.id] | 0) > 0; let used = null;
+    if (!inBag && it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mở món này.' };
+    if (it.ev && !inBag && !X.evIsActive(it.ev)) return { err: 'Món này là đồ giới hạn của sự kiện "' + G.EV.EBY[it.ev].name + '" — đã hết mùa rồi, hẹn bạn mùa sau nhé! 🎉' };
+    if (inBag) { if (--st.bag.items[it.id] <= 0) delete st.bag.items[it.id]; used = 'bag'; }
+    else if (it.cost > 0 && st.bag.free[cls] > 0) { st.bag.free[cls]--; used = 'free'; }
+    else if (it.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(it.cost, uid, it.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!', need: it.cost }; }
+    st.tiles[i] = { k: it.id, at: Date.now(), w: 0 };
+    if (it.kind === 'big') fp.forEach((k) => { if (k !== i) st.tiles[k] = { ref: i }; });
+    X.track(st, it.kind === 'plant' || it.kind === 'tree' ? 'plant' : 'deco', 1);
+    X.evOwn(st, it.id);
+    return { used, paid: used ? 0 : (it.cost || 0) };
+  }
+  // Dọn MỘT ô (hoặc cả công trình lớn nếu là phần phụ): món đã mua vào giỏ. Trả tên món hoặc null.
+  function removeCore(st, i) {
+    if (!Number.isInteger(i) || !st.tiles[i]) return { err: 'Ô này đang trống.' };
+    if (st.tiles[i].ref != null) i = st.tiles[i].ref;
+    const t = st.tiles[i]; if (!t) return { err: 'Ô này đang trống.' };
+    const it = G.BY[t.k]; let stored = null;
+    if (it && it.cost > 0) { bagAdd(st, it.id); stored = it.name; }
+    (it && it.kind === 'big' ? G.footprint(i, it, G.LAND.length - 1) || [i] : [i]).forEach((k) => { st.tiles[k] = null; });
+    return { stored };
+  }
+  // Giao dịch "tất cả hoặc không": nếu fn trả { err } thì huỷ mọi thay đổi (kể cả xu đã trừ).
+  const txStrict = (fn) => { db.exec('BEGIN'); try { const r = fn(); if (r && r.err) db.exec('ROLLBACK'); else db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
+  const zoneCells = (z, st) => { const out = [], d = G.landOf(landLv(st, z)); for (let r = 0; r < d.r; r++) for (let c = 0; c < d.c; c++) out.push(z.i * G.PER + r * G.MAXC + c); return out; };
+
   app.post('/api/garden/place', requireAuth, (req, res) => {
     const i = Number((req.body || {}).i), it = G.BY[(req.body || {}).item];
     try {
       const out = tx(() => {
         const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
-        if (!it) return { err: 'Món này không tồn tại.' };
-        if (!Number.isInteger(i) || i < 0 || i >= st.tiles.length) return { err: 'Ô đất không hợp lệ.' };
-        const zn = G.zoneOfCell(i), ll = landLv(st, zn);
-        const fp = it.kind === 'big' ? G.footprint(i, it, ll) : (G.inLand(i, ll) ? [i] : null);
-        if (!fp) return { err: it.kind === 'big' ? 'Công trình này không vừa chỗ — hãy chọn ô khác (cần đủ ' + it.w + '×' + it.h + ' ô trống trong đất của khu).' : 'Ô này nằm ngoài đất đã mở của khu — hãy mở rộng đất trước nhé.' };
-        if (it.z && it.z !== zn.id) return { err: 'Món này là đặc sản của khu "' + ((G.ZBY[it.z] || {}).name || it.z) + '" — chỉ đặt được ở khu đó nhé.' };
-        if (fp.some((k) => G.isBlocked(k) || G.zoneOfCell(k).id !== G.zoneOfCell(i).id)) return { err: 'Đây là phong cảnh có sẵn của khu, hãy chọn ô đất trống khác nhé.' };
-        if (fp.some((k) => st.tiles[k])) return { err: 'Chỗ này đã có đồ — cần ' + fp.length + ' ô trống liền nhau.' };
-        if (st.zones.indexOf(G.zoneOfCell(i).id) < 0) return { err: 'Khu này chưa được mở.' };
-        if (st.tiles[i]) return { err: 'Ô này đã có đồ — hãy dọn trước nhé.' };
-        const cls = FREE_CLS[it.kind], inBag = (st.bag.items[it.id] | 0) > 0; let used = null;
-        if (!inBag && it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mở món này.' };
-        if (it.ev && !inBag && !X.evIsActive(it.ev)) return { err: 'Món này là đồ giới hạn của sự kiện "' + G.EV.EBY[it.ev].name + '" — đã hết mùa rồi, hẹn bạn mùa sau nhé! 🎉' };
-        if (inBag) { if (--st.bag.items[it.id] <= 0) delete st.bag.items[it.id]; used = 'bag'; }
-        else if (it.cost > 0 && st.bag.free[cls] > 0) { st.bag.free[cls]--; used = 'free'; }
-        else if (it.cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(it.cost, req.user.id, it.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!', need: it.cost }; }
-        st.tiles[i] = { k: it.id, at: Date.now(), w: 0 };
-        if (it.kind === 'big') fp.forEach((k) => { if (k !== i) st.tiles[k] = { ref: i }; });
-        X.track(st, it.kind === 'plant' || it.kind === 'tree' ? 'plant' : 'deco', 1);
-        X.evOwn(st, it.id);
-        save(st); return { st, used };
+        const r = placeCore(st, req.user.id, lvl, i, it); if (r.err) return r;
+        save(st); return { st, used: r.used };
       });
       if (out.err) return bad(res, out.err);
       reply(res, req.user, out.st, { used: out.used });
     } catch (e) { console.error('[garden/place]', e.message); bad(res, 'Có lỗi, thử lại nhé.', 500); }
   });
 
-  app.post('/api/garden/remove', requireAuth, (req, res) => {
-    let i = Number((req.body || {}).i);
+  /* ───── thao tác HÀNG LOẠT: chọn nhiều ô rồi đặt / dọn / tưới / thu hoạch một lượt ───── */
+  const cellsOf = (body, max) => Array.from(new Set((Array.isArray((body || {}).cells) ? body.cells : []).map(Number).filter((x) => Number.isInteger(x) && x >= 0 && x < G.TOTAL))).slice(0, max || 300);
+  app.post('/api/garden/place-many', requireAuth, (req, res) => {
+    const it = G.BY[(req.body || {}).item], cells = cellsOf(req.body);
     try {
-      const out = tx(() => {
-        const st = load(req.user); if (!Number.isInteger(i) || !st.tiles[i]) return { err: 'Ô này đang trống.' };
-        if (st.tiles[i].ref != null) i = st.tiles[i].ref;     // bấm vào phần phụ của công trình lớn → dọn cả công trình
-        const t = st.tiles[i]; if (!t) return { err: 'Ô này đang trống.' };
-        const it = G.BY[t.k]; let stored = null;
-        if (it && it.cost > 0) { bagAdd(st, it.id); stored = it.name; }   // món đã mua → tự cất vào giỏ để dùng lại
-        (it && it.kind === 'big' ? G.footprint(i, it, G.LAND.length - 1) || [i] : [i]).forEach((k) => { st.tiles[k] = null; });
-        save(st); return { st, stored };
+      const out = txStrict(() => {
+        const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+        if (!it) return { err: 'Món này không tồn tại.' }; if (!cells.length) return { err: 'Chưa chọn ô nào.' };
+        let placed = 0, paid = 0, skipped = 0, stop = null; const used = { bag: 0, free: 0 };
+        for (const i of cells) {
+          const r = placeCore(st, req.user.id, lvl, i, it);
+          if (r.err) { if (r.need) { stop = r.err; break; } skipped++; continue; }
+          placed++; paid += r.paid || 0; if (r.used) used[r.used]++;
+        }
+        if (!placed) return { err: stop || 'Không đặt được ô nào — các ô chọn đã có đồ, là phong cảnh hoặc nằm ngoài đất của khu.' };
+        save(st); return { st, placed, skipped, paid, used, stop };
       });
+      if (out.err) return bad(res, out.err);
+      reply(res, req.user, out.st, { placed: out.placed, skipped: out.skipped, paid: out.paid, used: out.used, stopped: out.stop });
+    } catch (e) { console.error('[garden/place-many]', e.message); bad(res, 'Có lỗi, thử lại nhé.', 500); }
+  });
+  app.post('/api/garden/remove-many', requireAuth, (req, res) => {
+    const cells = cellsOf(req.body);
+    const out = tx(() => {
+      const st = load(req.user); let n = 0, stored = 0;
+      cells.forEach((i) => { const r = removeCore(st, i); if (!r.err) { n++; if (r.stored) stored++; } });
+      if (!n) return { err: 'Các ô đã chọn đang trống.' };
+      save(st); return { st, n, stored };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { removed: out.n, stored: out.stored });
+  });
+  app.post('/api/garden/water-many', requireAuth, (req, res) => {
+    const cells = cellsOf(req.body);
+    const out = tx(() => {
+      const st = load(req.user); let n = 0, noWater = false; const now = Date.now();
+      for (const i of cells) {
+        const t = st.tiles[i], it = t && G.BY[t.k]; if (!it || (it.kind !== 'plant' && it.kind !== 'tree') || G.stageOf(it, t, now) >= 3 || t.w >= G.RULES.waterMax) continue;
+        if (st.water <= 0) { noWater = true; break; }
+        st.water--; t.w++; n++; X.track(st, 'water', 1);
+      }
+      if (!n) return { err: noWater ? 'Hết lượt tưới hôm nay. Trả lời đúng câu hỏi để có thêm 💧 nhé!' : 'Không có cây nào cần tưới trong các ô đã chọn.' };
+      save(st); return { st, n, noWater };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { watered: out.n, noWater: out.noWater });
+  });
+  app.post('/api/garden/harvest-many', requireAuth, (req, res) => {
+    const cells = cellsOf(req.body);
+    const out = tx(() => { const st = load(req.user); let n = 0, xu = 0; cells.forEach((i) => { const h = harvestOne(st, i, req.user.id); if (h) { n++; xu += h.gain; } }); if (!n) return { err: 'Chưa có cây nào nở trong các ô đã chọn.' }; save(st); return { st, n, xu }; });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { gained: out.xu, count: out.n });
+  });
+
+  // Dọn sạch / làm mới một khu: mọi món (và thú cưng, trang phục) của khu đó về lại giỏ
+  app.post('/api/garden/clear', requireAuth, (req, res) => {
+    const z = G.ZBY[String((req.body || {}).zone)];
+    const out = tx(() => {
+      const st = load(req.user);
+      if (!z) return { err: 'Khu này không tồn tại.' };
+      if (st.zones.indexOf(z.id) < 0) return { err: 'Khu này chưa được mở.' };
+      let items = 0, pets = 0; const seen = new Set();
+      zoneCells(z, st).forEach((i) => { if (!st.tiles[i] || G.isBlocked(i)) return; const r = removeCore(st, i); if (!r.err && !seen.has(i)) { items++; } });
+      if ((req.body || {}).pets !== false) {
+        st.pets = st.pets.filter((p) => {
+          if (p.z !== z.id) return true;
+          if (st.bag.pets.length >= 60) return true;
+          if (p.o) st.bag.outfits[p.o] = Math.min(99, (st.bag.outfits[p.o] | 0) + 1);
+          st.bag.pets.push({ k: p.k, name: p.name }); pets++; return false;
+        });
+      }
+      if (!items && !pets) return { err: 'Khu này đang trống rồi.' };
+      save(st); return { st, items, pets };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { cleared: out.items, pets: out.pets });
+  });
+
+  /* ───── GỢI Ý XÂY VƯỜN: xem giá và dựng khu vườn theo bản mẫu ───── */
+  const BP = require('./js/garden-blueprints.js');
+  // Dựng trên bản sao trạng thái để biết trước giá: trả { cells, total, fromBag, free, cost, missing }
+  function bpPlan(st, z, idx, doClear, lvl) {
+    const bp = BP.make(G, z.id, landLv(st, z), lvl, idx); if (!bp || !bp.cells.length) return null;
+    const sim = JSON.parse(JSON.stringify({ tiles: st.tiles, bag: st.bag }));
+    if (doClear) zoneCells(z, st).forEach((i) => { const t = sim.tiles[i]; if (t && !G.isBlocked(i)) { if (t.ref != null) { sim.tiles[i] = null; return; } const it = G.BY[t.k]; if (it && it.cost > 0) sim.bag.items[it.id] = Math.min(999, (sim.bag.items[it.id] | 0) + 1); (it && it.kind === 'big' ? G.footprint(i, it, G.LAND.length - 1) || [i] : [i]).forEach((k) => { sim.tiles[k] = null; }); } });
+    let cost = 0, fromBag = 0, free = 0, placeable = 0, blocked = 0;
+    bp.cells.forEach((x) => {
+      const it = G.BY[x.k], fp = it.kind === 'big' ? G.footprint(x.i, it, landLv(st, z)) : [x.i];
+      if (!fp || fp.some((k) => sim.tiles[k] || G.isBlocked(k))) { blocked++; return; }
+      fp.forEach((k) => { sim.tiles[k] = { sim: 1 }; });
+      placeable++;
+      if ((sim.bag.items[it.id] | 0) > 0) { sim.bag.items[it.id]--; fromBag++; } else if (it.cost > 0 && sim.bag.free[FREE_CLS[it.kind]] > 0) { sim.bag.free[FREE_CLS[it.kind]]--; free++; } else cost += it.cost || 0;
+    });
+    return { bp, cost, fromBag, free, placeable, blocked };
+  }
+  app.post('/api/garden/blueprint/quote', requireAuth, (req, res) => {
+    const z = G.ZBY[String((req.body || {}).zone)], idx = Number((req.body || {}).idx) | 0, st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+    if (!z || st.zones.indexOf(z.id) < 0) return bad(res, 'Khu này chưa được mở.');
+    const out = [0, 1, 2].map((j) => { const q = bpPlan(st, z, j, !!(req.body || {}).clear, lvl); return q ? { idx: j, cost: q.cost, fromBag: q.fromBag, free: q.free, placeable: q.placeable, blocked: q.blocked } : null; });
+    res.json({ plans: out, coins: coinsOf(req.user.id) });
+  });
+  app.post('/api/garden/blueprint/apply', requireAuth, (req, res) => {
+    const z = G.ZBY[String((req.body || {}).zone)], idx = Number((req.body || {}).idx) | 0, doClear = !!(req.body || {}).clear;
+    try {
+      const out = txStrict(() => {
+        const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+        if (!z || st.zones.indexOf(z.id) < 0) return { err: 'Khu này chưa được mở.' };
+        const bp = BP.make(G, z.id, landLv(st, z), lvl, idx); if (!bp || !bp.cells.length) return { err: 'Chưa có bản mẫu cho khu này ở cấp hiện tại.' };
+        if (doClear) { zoneCells(z, st).forEach((i) => { if (st.tiles[i] && !G.isBlocked(i)) removeCore(st, i); }); }
+        let placed = 0, paid = 0, skipped = 0;
+        for (const x of bp.cells) {
+          const r = placeCore(st, req.user.id, lvl, x.i, G.BY[x.k]);
+          if (r.err) { if (r.need) return { err: 'Chưa đủ xu để dựng bản mẫu này (còn thiếu ít nhất ' + r.need + ' 🪙 cho món kế tiếp). Hãy kiếm thêm xu hoặc chọn mẫu rẻ hơn nhé.', need: r.need }; skipped++; continue; }
+          placed++; paid += r.paid || 0;
+        }
+        if (!placed) return { err: 'Khu vườn chưa có chỗ trống cho bản mẫu này — hãy bật "Dọn khu vườn hiện tại trước".' };
+        save(st); return { st, placed, skipped, paid };
+      });
+      if (out.err) return bad(res, out.err);
+      reply(res, req.user, out.st, { placed: out.placed, skipped: out.skipped, paid: out.paid });
+    } catch (e) { console.error('[garden/blueprint]', e.message); bad(res, 'Có lỗi, thử lại nhé.', 500); }
+  });
+
+  app.post('/api/garden/remove', requireAuth, (req, res) => {
+    const i = Number((req.body || {}).i);
+    try {
+      const out = tx(() => { const st = load(req.user); const r = removeCore(st, i); if (r.err) return r; save(st); return { st, stored: r.stored }; });
       if (out.err) return bad(res, out.err);
       reply(res, req.user, out.st, { stored: out.stored });
     } catch (e) { bad(res, 'Có lỗi, thử lại nhé.', 500); }
@@ -331,6 +465,17 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     });
     if (out.err) return bad(res, out.err);
     reply(res, req.user, out.st, { gained: out.gain });
+  });
+  app.post('/api/garden/pet/feed-all', requireAuth, (req, res) => {
+    const zid = (req.body || {}).zone ? String(req.body.zone) : null;
+    const out = tx(() => {
+      const st = load(req.user); let n = 0, gain = 0;
+      st.pets.forEach((p) => { if (zid && p.z !== zid) return; if (p.fed === vnDay()) return; p.fed = vnDay(); n++; X.track(st, 'feed', 1); if (st.feed_xu < G.RULES.feedCapDay) { const g = Math.min(G.RULES.feedXu, G.RULES.feedCapDay - st.feed_xu); st.feed_xu += g; gain += g; } });
+      if (!n) return { err: zid ? 'Thú cưng ở khu này đều đã được ăn hôm nay rồi.' : 'Tất cả thú cưng đã được ăn hôm nay rồi.' };
+      if (gain) addCoins(req.user.id, gain); save(st); return { st, n, gain };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { fed: out.n, gained: out.gain });
   });
   app.post('/api/garden/pet/rename', requireAuth, (req, res) => {
     const nm = String((req.body || {}).name || '').replace(/[<>]/g, '').trim().slice(0, 16);
