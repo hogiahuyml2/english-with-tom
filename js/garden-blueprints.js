@@ -64,6 +64,7 @@
     var c, r;
 
     /* ── đặt công trình lớn gần điểm (tc,tr) trong vùng [c0..c1]×[r0..r1] ── */
+    var bigBoxes = [];
     var placeBig = function (b, tc, tr0, c0, c1, r0, r1) {
       if (!b) return false; var best = null, bd = 1e9, x, y, dx, dy, ok2;
       for (y = r0; y <= r1 - b.h + 1; y++) for (x = c0; x <= c1 - b.w + 1; x++) {
@@ -72,7 +73,7 @@
       }
       if (!best) return false;
       for (dy = 0; dy < b.h; dy++) for (dx = 0; dx < b.w; dx++) used[K(best[0] + dx, best[1] + dy)] = 1;
-      map[K(best[0], best[1])] = b.id; return true;
+      map[K(best[0], best[1])] = b.id; bigBoxes.push([best[0], best[1], b.w, b.h]); return true;
     };
     var bigIdx = 0, nextBig = function () { return B.length ? B[(bigIdx++) % B.length] : null; }, bigsLeft = B.length;
     var tryBig = function (tc, tr0, c0, c1, r0, r1) { if (bigsLeft <= 0) return false; var b = B[B.length - bigsLeft]; if (placeBig(b, tc, tr0, c0, c1, r0, r1)) { bigsLeft--; return true; } return false; };
@@ -90,11 +91,11 @@
     var drawPaths = function () { if (!PATH) return; for (r = 0; r < rows; r++) for (c = 0; c < cols; c++) if (isV(c) || isH(r)) put(c, r, PATH); };
 
     /* ── vai trò của một phòng ── */
-    var bed = function (rm, fi) { var w = rm.c1 - rm.c0 + 1, h = rm.r1 - rm.r0 + 1; eachCell(rm, function (x, y) { var ring = x === rm.c0 || x === rm.c1 || y === rm.r0 || y === rm.r1; put(x, y, (w >= 3 && h >= 3 && !ring) ? fl(fi + 1) : fl(fi)); }); };
+    var bed = function (rm, fi) { var w = rm.c1 - rm.c0 + 1, h = rm.r1 - rm.r0 + 1; eachCell(rm, function (x, y) { put(x, y, fl(fi)); }); if (w >= 5 && h >= 4 && nD) force(Math.floor((rm.c0 + rm.c1) / 2), Math.floor((rm.r0 + rm.r1) / 2), dc(fi)); };   // một luống = một loại hoa, giữa luống có một điểm nhấn
     var stripes = function (rm, fi) { eachCell(rm, function (x, y) { put(x, y, fl(fi + ((y - rm.r0) % 2))); }); };
-    var grove = function (rm, ti) { eachCell(rm, function (x, y) { if ((x + y) % 2 === 0) put(x, y, tr(ti + ((x - rm.c0) >> 1))); else put(x, y, fl(ti + 1)); }); };
-    var orchard = function (rm, ti) { eachCell(rm, function (x, y) { var rr = (y - rm.r0); if (rr % 2 === 0) put(x, y, (x - rm.c0) % 2 === 0 ? tr(ti + rr) : fl(ti)); else put(x, y, fl(ti + (x >> 1))); }); };
-    var meadowRoom = function (rm, sd) { eachCell(rm, function (x, y) { var cl = Math.floor((x + sd) / 3) + Math.floor((y + sd) / 3) * 2; if ((x - rm.c0) % 4 === 1 && (y - rm.r0) % 3 === 1 && nT) put(x, y, tr(cl)); else if ((x * 5 + y * 3 + sd) % 13 === 0) { /* khoảng thở */ } else put(x, y, fl(cl)); }); };
+    var grove = function (rm, ti) { eachCell(rm, function (x, y) { if ((x - rm.c0) % 2 === 0 && (y - rm.r0) % 2 === 0 && nT) put(x, y, tr(ti + ((x - rm.c0) >> 2))); else put(x, y, fl(ti)); }); };   // lùm cây thưa đều trên nền một loại hoa
+    var orchard = function (rm, ti) { eachCell(rm, function (x, y) { var rr = y - rm.r0, cc = x - rm.c0; if (rr % 2 === 0 && cc % 2 === (rr >> 1) % 2 && nT) put(x, y, tr(ti)); else put(x, y, fl(ti + 1)); }); };   // vườn cây so le
+    var meadowRoom = function (rm, sd) { eachCell(rm, function (x, y) { var px = Math.floor((x - rm.c0) / 3), py = Math.floor((y - rm.r0) / 3), cl = px + py * 2 + sd; if ((x - rm.c0) % 3 === 1 && (y - rm.r0) % 3 === 1 && nT) put(x, y, tr(cl)); else put(x, y, fl(cl)); }); };   // các mảng 3×3, mỗi mảng một loại hoa, giữa mảng một cây
     var plaza = function (rm, big) {
       var w = rm.c1 - rm.c0 + 1, h = rm.r1 - rm.r0 + 1, cc = (rm.c0 + rm.c1) / 2, cr = (rm.r0 + rm.r1) / 2, mx = Math.floor(cc), my = Math.floor(cr);
       var inner = (w >= 5 && h >= 4) ? { c0: rm.c0 + 1, c1: rm.c1 - 1, r0: rm.r0 + 1, r1: rm.r1 - 1 } : null;
@@ -112,26 +113,32 @@
     var cx0 = vl.length ? vl[Math.floor((vl.length - 1) / 2)] : Math.floor(cols / 2), cy0 = hl.length ? hl[Math.floor((hl.length - 1) / 2)] : Math.floor(rows / 2);
     var cplaza = function (rad, big, cxx, cyy) {
       cxx = cxx == null ? cx0 : cxx; cyy = cyy == null ? cy0 : cyy;
-      var done = big ? tryBig(cxx, cyy, cxx - rad, cxx + rad, cyy - rad, cyy + rad) : false, x, y;
+      var done = big ? (tryBig(cxx, cyy, cxx - rad, cxx + rad, cyy - rad, cyy + rad) || tryBig(cxx, cyy, cxx - rad - 2, cxx + rad + 2, cyy - rad - 2, cyy + rad + 2)) : false, x, y;
+      if (big && cols >= 11) { tryBig(cxx - rad - 4, cyy, Math.max(0, cxx - rad - 7), cxx - rad - 2, Math.max(0, cyy - 3), cyy + 3); tryBig(cxx + rad + 4, cyy, cxx + rad + 2, Math.min(cols - 1, cxx + rad + 7), Math.max(0, cyy - 3), cyy + 3); }   // hai công trình hai bên quảng trường
       if (PATH) for (y = cyy - rad; y <= cyy + rad; y++) for (x = cxx - rad; x <= cxx + rad; x++) put(x, y, PATH);
+      if (PATH && bigBoxes.length > 1) {   // sân lát đá chung cho cả dãy công trình ở giữa
+        var bx0 = 99, by0 = 99, bx1 = -1, by1 = -1; bigBoxes.forEach(function (q) { bx0 = Math.min(bx0, q[0]); by0 = Math.min(by0, q[1]); bx1 = Math.max(bx1, q[0] + q[2] - 1); by1 = Math.max(by1, q[1] + q[3] - 1); });
+        for (y = by0 - 1; y <= by1 + 1; y++) for (x = bx0 - 1; x <= bx1 + 1; x++) put(x, y, PATH);
+        [[bx0 - 1, by0 - 1], [bx1 + 1, by0 - 1], [bx0 - 1, by1 + 1], [bx1 + 1, by1 + 1]].forEach(function (q, j) { force(q[0], q[1], dc(off + j)); });
+      }
       if (!done) force(cxx, cyy, dc(off));
       [[-rad, -rad], [rad, -rad], [-rad, rad], [rad, rad]].forEach(function (q, j) { force(cxx + q[0], cyy + q[1], rad >= 2 ? dc(off + 1 + (j % 2)) : (j % 2 ? tr(j) : fl(off + j))); });
       if (rad >= 2) [[0, -rad - 1], [0, rad + 1], [-rad - 1, 0], [rad + 1, 0]].forEach(function (q, j) { put(cxx + q[0], cyy + q[1], j % 2 ? tr(off + j) : fl(off + 2 + j)); });
     };
-    var perimeter = function () { for (c = 0; c < cols; c++) for (r = 0; r < rows; r++) { if ((c === 0 || r === 0 || c === cols - 1 || r === rows - 1) && free(c, r)) { var k = (c + r + off) % 3; if (k === 0) put(c, r, tr(c + r)); else if (k === 1) put(c, r, fl(c + r)); } } };
+    var perimeter = function () { var hf = fl(off + 2); for (c = 0; c < cols; c++) for (r = 0; r < rows; r++) { if ((c === 0 || r === 0 || c === cols - 1 || r === rows - 1) && free(c, r)) { if (nT && (c + r + off) % 4 === 0) put(c, r, tr(c + r)); else put(c, r, hf); } } };   // hàng rào hoa một loại, xen cây
 
     var cw = cs.length, rh = rs.length, midC = (cw - 1) / 2, midR = (rh - 1) / 2;
     /* ── các kiểu bố cục ── */
     if (arch === 'formal') {
-      drawPaths(); cplaza(cols >= 11 && rows >= 8 ? 2 : 1, true);
+      cplaza(cols >= 11 && rows >= 8 ? 2 : 1, true); drawPaths();
       for (var ri = 0; ri < rh; ri++) for (var ci = 0; ci < cw; ci++) { var rm = room(ci, ri); if (!rm) continue; var dist = Math.abs(ci - midC);
         if (ri === 0 && rh > 1 && dist < 1) orchard(rm, ci + off); else if (ri === 0 && rh > 1) grove(rm, ci + off); else bed(rm, Math.round(dist) + ri + off); }
       if (rh === 1) { /* đất thấp: các phòng là luống hoa đối xứng hai bên trục */ }
     } else if (arch === 'plaza') {
-      drawPaths(); cplaza(cols >= 11 && rows >= 8 ? 2 : 1, true);
+      cplaza(cols >= 11 && rows >= 8 ? 2 : 1, true); drawPaths();
       for (var ri2 = 0; ri2 < rh; ri2++) for (var ci2 = 0; ci2 < cw; ci2++) { var rm2 = room(ci2, ri2); if (!rm2) continue; if ((ci2 + ri2) % 2 === 0) grove(rm2, ci2 + ri2 + off); else bed(rm2, ci2 + ri2 * 2 + off); }
     } else if (arch === 'courtyard') {
-      drawPaths(); cplaza(1, bigsLeft > 0 && styleIdx === 2);
+      cplaza(1, bigsLeft > 0); drawPaths();
       for (var ri3 = 0; ri3 < rh; ri3++) for (var ci3 = 0; ci3 < cw; ci3++) { var rm3 = room(ci3, ri3); if (!rm3) continue; var cor = (ci3 === 0 || ci3 === cw - 1) && (ri3 === 0 || ri3 === rh - 1);
         if (cor || cw === 2) grove(rm3, ci3 + ri3 + off); else meadowRoom(rm3, ci3 + ri3 + off); }
     } else if (arch === 'terraces') {
@@ -148,7 +155,13 @@
       // công trình hai bên phố
       var side = 0; for (var cx = 0; cx < cols && bigsLeft > 0; cx += 4) { var up = side % 2 === 0; tryBig(cx + 1, up ? pr - 2 : pr + 2, Math.max(0, cx), Math.min(cols - 1, cx + 3), up ? 0 : pr + 1, up ? pr - 1 : rows - 1); side++; }
       // hoa viền sân + đèn dọc phố
-      for (r = 0; r < rows; r++) for (c = 0; c < cols; c++) { if (!free(c, r)) continue; var near = Math.abs(r - pr); if (near === 1 && (c + off) % 3 === 0 && nD) put(c, r, dc(c >> 1)); else if (near === 1) put(c, r, fl(c + off)); else if ((c + r) % 2 === 0) put(c, r, near > 2 && nT ? tr(c + r) : fl(c + Math.floor(r / 2))); else if (r % 2 === 0) put(c, r, fl(c)); }
+      var hfs = fl(off);
+      for (c = 0; c < cols; c++) for (var dd2 = -1; dd2 <= 1; dd2 += 2) { var rr1 = pr + dd2; if (rr1 >= 0 && rr1 < rows && free(c, rr1)) { if (nD && (c + off) % 3 === 0) put(c, rr1, dc(c >> 1)); else put(c, rr1, hfs); } }
+      var qUp = pr - 2, qDn = pr + 2, qL = pcx - 1, qR = pcx + 1;
+      [[0, qL, 0, qUp, 0], [qR, cols - 1, 0, qUp, 1], [0, qL, qDn, rows - 1, 1], [qR, cols - 1, qDn, rows - 1, 0]].forEach(function (q, qi) {
+        if (q[1] < q[0] || q[3] < q[2]) return; var rmq = { c0: q[0], c1: q[1], r0: q[2], r1: q[3] };
+        if (q[4]) bed(rmq, qi + off); else grove(rmq, qi + off + 1);
+      });
     } else if (arch === 'waterfront') {
       var prom = rows - 2 >= 2 ? rows - 2 : rows - 1;
       for (var q1 = 0; q1 < Math.min(2, B.length) && bigsLeft > 0; q1++) tryBig(q1 ? cols - 2 : 2, rows / 2, 0, cols - 1, 0, Math.max(0, prom - 1));

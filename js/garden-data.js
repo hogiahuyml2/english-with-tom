@@ -478,24 +478,36 @@
     ,ethiopia: [['ptree', 1, 1, 2], ['pbush', 1, 1, 3], ['prock', 1, 1, 3], ['pflower', 1, 1, 2], ['jebena', 1, 1, 2], ['meskelcross', 1, 1, 1], ['tukul', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
     ,madagascar: [['ptree', 1, 1, 4], ['pbush', 1, 1, 3], ['prock', 1, 1, 2], ['pflower', 1, 1, 3], ['vanilla', 1, 1, 2], ['tsingy', 2, 2, 1], ['fenceh', 3, 1, 2], ['pathh', 4, 1, 1], ['pathv', 1, 3, 1], ['plamp', 1, 1, 1]]
   };
+  /* Cảnh phụ nằm SÁT RÌA ngoài của phần đất mới (phải & dưới), thưa và cách nhau → phần giữa vườn liền mạch, dễ trồng/xây theo cụm */
   function genDecor(z) {
-    var out = [], used = new Array(MAXC * MAXR).fill(0), kinds = DECOR_KINDS[z.id] || DEC_BASE, tw = 0, i, L, t, k, r;
+    var out = [], used = new Array(MAXC * MAXR).fill(0), kinds = DECOR_KINDS[z.id] || DEC_BASE, tw = 0, L;
     kinds.forEach(function (x) { tw += x[3]; });
     z.dmask = new Array(MAXC * MAXR).fill(0); z.decorUpTo = [0];
+    var okAt = function (x, y, w, h, pv, cu) {
+      var dx, dy, cx, cy;
+      if (x < 0 || y < 0 || x + w > cu.c || y + h > cu.r) return false;
+      for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) if (x + dx < pv.c && y + dy < pv.r) return false;          // không chiếm ô thuộc đất mức trước
+      for (dy = -1; dy <= h; dy++) for (dx = -1; dx <= w; dx++) { cx = x + dx; cy = y + dy; if (cx < 0 || cy < 0 || cx >= MAXC || cy >= MAXR) continue; if (used[cy * MAXC + cx]) return false; }
+      return true;
+    };
     for (L = 1; L < LAND.length; L++) {
       var pv = LAND[L - 1], cu = LAND[L], seed = z.i * 7919 + L * 131 + 17, rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-      var newCells = cu.cells - pv.cells, target = Math.round(newCells * 0.2), got = 0, tries = 0;
-      while (got < target && tries++ < 500) {
-        r = rnd() * tw; for (i = 0; i < kinds.length; i++) { r -= kinds[i][3]; if (r <= 0) break; } k = kinds[Math.min(i, kinds.length - 1)];
-        var w = k[1], h = k[2], x = Math.floor(rnd() * (cu.c - w + 1)), y = Math.floor(rnd() * (cu.r - h + 1)), ok = true, dx, dy;
-        if (!(x + w > pv.c || y + h > pv.r)) continue;                  // phải nằm hẳn trong phần đất mới ở mức này
-        for (dy = -1; dy <= h && ok; dy++) for (dx = -1; dx <= w && ok; dx++) { var cx = x + dx, cy = y + dy; if (cx < 0 || cy < 0 || cx >= MAXC || cy >= MAXR) continue; if (cx < BASEC && cy < BASER) { if (dx >= 0 && dx < w && dy >= 0 && dy < h) ok = false; continue; } if (used[cy * MAXC + cx]) ok = false; }
-        if (!ok) continue;
-        // không chiếm ô nào đã thuộc đất của mức trước (đã có thể có đồ của học sinh)
-        for (dy = 0; dy < h && ok; dy++) for (dx = 0; dx < w; dx++) if (x + dx < pv.c && y + dy < pv.r) ok = false;
-        if (!ok) continue;
-        for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) { used[(y + dy) * MAXC + x + dx] = 1; z.dmask[(y + dy) * MAXC + x + dx] = 1; }
-        var b = { k: k[0], x: x, y: y, w: w, h: h, L: L, th: z.id }; if (k[4]) b.snow = 1; out.push(b); got += w * h;
+      var newCells = cu.cells - pv.cells, target = Math.max(2, Math.round(newCells * 0.08)), got = 0, guard = 0, edge = 0, cur = cu.r - 1;
+      var pick = function () { var r = rnd() * tw, i; for (i = 0; i < kinds.length; i++) { r -= kinds[i][3]; if (r <= 0) break; } return kinds[Math.min(i, kinds.length - 1)]; };
+      while (got < target && guard++ < 120) {
+        var k = pick(), w = k[1], h = k[2], x, y, tries = 0, placed = false, gap = 2 + Math.floor(rnd() * 3);
+        while (!placed && tries++ < 6) {
+          if (tries > 3) { w = 1; h = 1; }
+          if (edge === 0) { x = cu.c - w; y = cur - h + 1; } else { y = cu.r - h; x = cur - w + 1; }
+          if (edge === 0 && y < 0) { edge = 1; cur = cu.c - 2; break; }
+          if (edge === 1 && x < 0) { guard = 999; break; }
+          if (okAt(x, y, w, h, pv, cu)) placed = true; else { k = pick(); w = k[1]; h = k[2]; }
+        }
+        if (!placed) { cur -= 1; continue; }
+        var dx, dy; for (dy = 0; dy < h; dy++) for (dx = 0; dx < w; dx++) { used[(y + dy) * MAXC + x + dx] = 1; z.dmask[(y + dy) * MAXC + x + dx] = 1; }
+        var bb = { k: k[0], x: x, y: y, w: w, h: h, L: L, th: z.id }; if (k[4]) bb.snow = 1; out.push(bb); got += w * h;
+        cur = (edge === 0 ? y : x) - 1 - gap;
+        if (cur < 0 && edge === 0) { edge = 1; cur = cu.c - 2; }
       }
       z.decorUpTo[L] = z.decorUpTo[L - 1] + got;
     }

@@ -70,7 +70,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     for (let i = 0; i < st.tiles.length; i++) {
       const t = st.tiles[i]; if (!t || !G.isBlocked(i)) continue;
       const a = t.ref != null ? t.ref : i, at = st.tiles[a], it = at && G.BY[at.k]; st.purgedAny = true;
-      if (it && (it.kind === 'deco' || it.kind === 'ground' || it.kind === 'big') && it.cost > 0) st.purged += it.cost;
+      if (it && it.cost > 0) st.purged += it.cost;   // đồ nằm trúng ô cảnh phụ (sau khi sắp xếp lại) được hoàn đủ xu
       (it && it.kind === 'big' ? G.footprint(a, it, G.LAND.length - 1) || [a] : [a]).forEach((k) => { st.tiles[k] = null; }); st.tiles[i] = null;
     }
     Object.keys(st.land).forEach((k) => { const n = Number(st.land[k]); if (!G.ZBY[k] || !Number.isInteger(n) || n < 1) delete st.land[k]; else st.land[k] = Math.min(n, G.LAND.length - 1); });
