@@ -4,6 +4,7 @@
 const crypto = require('crypto');
 const CUL = require('./js/garden-culture.js');
 const QUIZ = require('./garden-culture-quiz.js');
+const QUIZVI = require('./garden-culture-quiz-vi.js');   // bản dịch tiếng Việt song song (cùng thứ tự câu & đáp án)
 
 module.exports = function (app, C) {
   const { db, requireAuth, requireRole, now, G, vnDay, load, save, tx, reply, bad, coinsOf, addCoins, rollCard, applyCardSt, bagAdd, givenName, one, notifyUser } = C;
@@ -596,17 +597,18 @@ module.exports = function (app, C) {
     const zid = String(req.query.zone || ''), qs = QUIZ[zid], st = load(req.user);
     if (!qs || !CUL.CULTURE[zid]) return bad(res, 'Khu này chưa có Hộ chiếu văn hoá.');
     if (st.zones.indexOf(zid) < 0) return bad(res, 'Hãy mở khu này trước nhé.');
-    const items = qs.map((q) => { const order = shuf(q[1].map((_, i) => i)); return { q: q[0], opts: order.map((i) => q[1][i]), a: order.indexOf(0), expl: q[2] }; });
+    const vi = QUIZVI[zid] || [];
+    const items = qs.map((q, n) => { const order = shuf(q[1].map((_, i) => i)), v = vi[n] || []; return { q: q[0], qv: v[0] || '', opts: order.map((i) => q[1][i]), optsVi: order.map((i) => (v[1] || [])[i] || ''), a: order.indexOf(0), expl: q[2], explVi: v[2] || '' }; });
     pend.set(req.user.id + ':' + zid, { items, ts: Date.now() });
     for (const [k, v] of pend) if (Date.now() - v.ts > 30 * 60e3) pend.delete(k);
-    res.json({ zone: zid, stamped: !!(st.passport[zid] && st.passport[zid].stamp), questions: items.map((x) => ({ q: x.q, opts: x.opts })) });
+    res.json({ zone: zid, stamped: !!(st.passport[zid] && st.passport[zid].stamp), questions: items.map((x) => ({ q: x.q, qv: x.qv, opts: x.opts, optsVi: x.optsVi })) });
   });
   app.post('/api/garden/culture/answer', requireAuth, (req, res) => {
     const zid = String((req.body || {}).zone || ''), ans = (req.body || {}).answers, key = req.user.id + ':' + zid, p = pend.get(key);
     if (!p) return bad(res, 'Bài kiểm tra đã hết hạn, hãy mở lại nhé.');
     if (!Array.isArray(ans) || ans.length !== p.items.length) return bad(res, 'Hãy trả lời đủ các câu hỏi.');
     pend.delete(key);
-    const results = p.items.map((x, i) => ({ ok: Number(ans[i]) === x.a, answer: x.a, expl: x.expl })), correct = results.filter((r) => r.ok).length;
+    const results = p.items.map((x, i) => ({ ok: Number(ans[i]) === x.a, answer: x.a, expl: x.expl, explVi: x.explVi })), correct = results.filter((r) => r.ok).length;
     const out = tx(() => {
       const st = load(req.user); let got = [], first = false;
       if (correct >= 2) {

@@ -390,6 +390,15 @@ body.visit .gd-visit { gap: 8px; } .gd-visit .gd-btn { padding: 7px 11px; }
 .gd-zcard { content-visibility: auto; contain-intrinsic-size: auto 300px; }
 .gd-nb { left: 0; animation-name: nbfly2; } @keyframes nbfly2 { from { transform: translate3d(-110%, 0, 0); } to { transform: translate3d(calc(100vw + 20px), 0, 0); } }
 body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: none !important; } @media (prefers-reduced-motion: reduce) { .gd-nb { left: var(--x, 8%); animation: none !important; } }
+
+.gd-hot-l { position: absolute; inset: 0; pointer-events: none; z-index: 6; } .gd-hot { position: absolute; pointer-events: auto; background: transparent; border: 0; padding: 0; cursor: pointer; display: flex; align-items: flex-start; justify-content: center; -webkit-tap-highlight-color: transparent; }
+.gd-hot span { margin-top: -6px; min-width: 24px; padding: 0 6px; line-height: 1.5; text-align: center; font-size: clamp(14px, calc(var(--ts) * .5), 22px); background: #fff; border: 2px solid #F59E0B; border-radius: 999px; box-shadow: 0 3px 8px rgba(40,20,0,.35); animation: gdHot 1.5s ease-in-out infinite; }
+.gd-hot.ok span { border-color: #22C55E; animation: none; } .gd-hot:hover span, .gd-hot:focus-visible span { transform: scale(1.18); } @keyframes gdHot { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.12); } }
+.gd-stage.multi .gd-hot { pointer-events: none; }
+.gd-step { display: flex; gap: 6px; margin: 0 0 10px; font-size: 12px; font-weight: 800; } .gd-step span { flex: 1; text-align: center; padding: 5px 4px; border-radius: 999px; background: var(--bg-soft); color: var(--text-muted); } .gd-step span.on { background: #FEF3C7; color: #92400E; box-shadow: inset 0 0 0 2px #F59E0B; } .gd-step span.dn { background: #DCFCE7; color: #166534; }
+.gd-lnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0; } .gd-dots { display: flex; gap: 6px; } .gd-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--border); } .gd-dots i.on { background: #F59E0B; transform: scale(1.3); }
+.gd-cq .qq button.gd-sp { display: inline-block; width: 34px; min-height: 0; height: 34px; padding: 0; margin: 0 0 0 4px; text-align: center; border-radius: 99px; vertical-align: middle; }
+.gd-cq .qq small.qv { display: block; font-weight: 600; font-size: 13px; color: var(--text-muted); margin-top: 2px; } .gd-cq button small { display: block; font-weight: 600; font-size: 12.5px; color: var(--text-muted); margin-top: 1px; } .gd-cq button.ok small, .gd-cq button.bad small { color: inherit; opacity: .85; }
 </style>
 </head>
 <body data-page="garden" data-guard="auth">
@@ -801,7 +810,7 @@ function ensureLawn(z) {
   var lawn = $('lawn');
   var key = z.id + ':' + zlv(z);
   if (LAWNZ !== key) {
-    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + W.decorSvg(z, zlv(z)) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
+    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + W.decorSvg(z, zlv(z)) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-hot-l" id="hot"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
     var dm = zdim(z); lawn.style.setProperty('--cols', dm.c); lawn.style.setProperty('--rows', dm.r);
   }
 }
@@ -825,7 +834,7 @@ function render() {
   var ul = ZORDER.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(z); $('zprev').disabled = ix <= 0; $('znext').disabled = ix >= ul.length - 1;
   var dm = zdim(z), nxl = D.LAND[zlv(z) + 1]; $('zsize').textContent = dm.c + '×' + dm.r + ' · ' + dm.cells + ' ô';
   $('zexp').textContent = nxl ? '⛏️ Mở rộng · ' + nxl.cost + ' 🪙' : '✅ Đất đã rộng hết cỡ'; $('zexp').disabled = !nxl; $('zexp').title = nxl ? 'Mở rộng lên ' + nxl.c + '×' + nxl.r + ' ô (' + nxl.cells + ' ô), cần vườn cấp ' + nxl.lvl : '';
-  renderPets(ts); renderShop(); renderTools();
+  renderPets(ts); renderHot(z); renderShop(); renderTools();
 }
 function enterZone(id) {
   if (!D.ZBY[id]) return; var z = D.ZBY[id];
@@ -1363,35 +1372,59 @@ function contribute(pid) { var v = +($('cin' + pid) || {}).value; if (!(v >= 1))
 function stamped(zid) { return (S.passport || []).indexOf(zid) >= 0; }
 function openPassport() {
   var ids = Object.keys(CULT()).sort(function (a, b) { return D.ZBY[a].lvl - D.ZBY[b].lvl || D.ZBY[a].cost - D.ZBY[b].cost; }), n = ids.filter(stamped).length, nx = [5, 10, 15, 20, 23, 25, 30, 35].filter(function (m) { return n < m; })[0] || 0;
-  $('pspsub').innerHTML = 'Chạm vào công trình trong các khu quốc gia để học từ vựng và câu tiếng Anh, rồi làm mini-quiz để nhận <b>dấu hộ chiếu</b> + quà. Bạn đã có <b>' + n + '/' + ids.length + '</b> dấu.' + (nx ? ' Đủ ' + nx + ' dấu sẽ có quà lớn!' : ' 🏅 Bạn đã đủ tất cả!');
+  $('pspsub').innerHTML = 'Chạm vào công trình có biểu tượng 🛂 trong các khu quốc gia: <b>học</b> từ vựng và câu tiếng Anh (bỏ qua được nếu đã biết), rồi làm <b>3 câu hỏi song ngữ Anh – Việt</b> để nhận <b>dấu hộ chiếu</b> + quà. Bạn đã có <b>' + n + '/' + ids.length + '</b> dấu.' + (nx ? ' Đủ ' + nx + ' dấu sẽ có quà lớn!' : ' 🏅 Bạn đã đủ tất cả!');
   $('pspgrid').innerHTML = ids.map(function (id) {
     var z = D.ZBY[id], open = S.zones.indexOf(id) >= 0, fl = FLAGOF[id], r = fl ? EWTFlags.RATIO[fl] : 0;
     return '<button class="gd-pc' + (open ? '' : ' lock') + '" data-pz="' + id + '">' + (fl ? '<svg viewBox="0 0 100 ' + (100 * r).toFixed(1) + '">' + EWTFlags.draw(fl, 0, 0, 100) + '</svg>' : '<div class="gd-nof">' + z.icon + '</div>') + '<b>' + esc(CULT()[id].vi) + '</b><small>' + (open ? (stamped(id) ? 'Đã đóng dấu' : 'Chưa có dấu') : '🔒 Cấp ' + z.lvl + ' · ' + z.cost + ' xu') + '</small>' + (stamped(id) ? '<span class="stp">ĐÃ<br>ĐẾN</span>' : '') + '</button>';
   }).join('');
   $('pspm').classList.add('on');
 }
+/* Hộ chiếu văn hoá: chạm công trình → HỌC (có thể bỏ qua nếu đã biết) → làm 3 câu hỏi song ngữ để lấy dấu hộ chiếu */
+var CL = null, CQ = null;
+function cultPages(z) { var C = CULT()[z.id], out = []; z.blocks.forEach(function (b) { if (!b.nb && C.spots[b.k]) out.push({ k: b.k, sp: C.spots[b.k] }); }); return out; }
+function openCultureZone(zid, key) {
+  var z = D.ZBY[zid], C = z && CULT()[zid]; if (!C) return false; var pages = cultPages(z); if (!pages.length) return false;
+  var ix = 0; pages.forEach(function (p, n) { if (p.k === key) ix = n; });
+  CQ = null; CL = { zone: zid, pages: pages, idx: ix }; drawLearn(); $('culm').classList.add('on'); return true;
+}
 function openCulture(i) {
   var z = D.zoneOfCell(i), C = z && CULT()[z.id]; if (!C) return false;
   var c = i % D.PER, col = c % D.MAXC, row = Math.floor(c / D.MAXC), blk = null;
   z.blocks.forEach(function (b) { if (!b.nb && col >= b.x && col < b.x + b.w && row >= b.y && row < b.y + b.h) blk = b; });
-  var sp = blk && C.spots[blk.k]; if (!sp) return false;
-  var h = '<h3>🛂 ' + esc(sp[0]) + ' <button class="gd-sp" data-say="' + esc(sp[0]) + '" aria-label="Nghe phát âm">🔊</button></h3><div class="vi">' + esc(sp[1]) + ' · ' + esc(C.vi) + '</div>';
-  h += '<div class="fact">' + esc(sp[2]) + ' <button class="gd-sp" data-say="' + esc(sp[2]) + '" aria-label="Nghe cả câu">🔊</button><small>' + esc(sp[3]) + '</small></div><div class="gd-words">' + sp[4].map(function (w) { return '<div><b>' + esc(w[0]) + '</b><span>' + esc(w[1]) + '</span><button class="gd-sp" data-say="' + esc(w[0]) + '" aria-label="Nghe từ">🔊</button></div>'; }).join('') + '</div>';
-  h += '<div class="gd-act" style="justify-content:space-between;align-items:center"><small class="gd-sub" style="margin:0">' + (stamped(z.id) ? '✅ Bạn đã có dấu hộ chiếu của ' + esc(C.vi) + '.' : 'Làm mini-quiz 3 câu (đúng ≥ 2 câu) để nhận dấu + quà.') + '</small><button class="gd-btn pri" data-cqs="' + z.id + '">📝 Mini-quiz</button></div>';
-  $('culbody').innerHTML = h; $('culm').classList.add('on'); say(sp[0]); return true;
+  return !!(blk && C.spots[blk.k] && openCultureZone(z.id, blk.k));
 }
-var CQ = null;
+function drawLearn() {
+  var z = D.ZBY[CL.zone], C = CULT()[CL.zone], pg = CL.pages[CL.idx], sp = pg.sp, n = CL.pages.length, last = CL.idx >= n - 1, dots = '';
+  for (var d = 0; d < n; d++) dots += '<i class="' + (d === CL.idx ? 'on' : '') + '"></i>';
+  var h = '<div class="gd-step"><span class="on">1 📖 Học · Learn</span><span>2 📝 Câu hỏi · Quiz</span><span>3 🛂 Dấu · Stamp</span></div>';
+  h += '<h3>🛂 ' + esc(sp[0]) + ' <button class="gd-sp" data-say="' + esc(sp[0]) + '" aria-label="Nghe phát âm">🔊</button></h3><div class="vi">' + esc(sp[1]) + ' · ' + esc(C.vi) + '</div>';
+  h += '<div class="fact">' + esc(sp[2]) + ' <button class="gd-sp" data-say="' + esc(sp[2]) + '" aria-label="Nghe cả câu">🔊</button><small>' + esc(sp[3]) + '</small></div><div class="gd-words">' + sp[4].map(function (w) { return '<div><b>' + esc(w[0]) + '</b><span>' + esc(w[1]) + '</span><button class="gd-sp" data-say="' + esc(w[0]) + '" aria-label="Nghe từ">🔊</button></div>'; }).join('') + '</div>';
+  h += '<div class="gd-lnav"><button class="gd-btn" data-cl="-1"' + (CL.idx ? '' : ' disabled') + '>◀ Back · Trước</button><span class="gd-dots">' + dots + '</span><button class="gd-btn' + (last ? '' : ' pri') + '" data-cl="1"' + (last ? ' disabled' : '') + '>Next · Tiếp ▶</button></div>';
+  h += '<div class="gd-act" style="flex-direction:column;align-items:stretch;gap:8px"><button class="gd-btn pri" data-cqs="' + CL.zone + '">' + (last ? '📝 Làm câu hỏi lấy dấu hộ chiếu · Start the quiz' : '⏭️ Mình đã biết — làm câu hỏi ngay · Skip, I know this') + '</button>' + (last ? '' : '<small class="gd-sub" style="margin:0;text-align:center">Học hết ' + n + ' bài rồi làm câu hỏi cũng được · You can read all ' + n + ' lessons first.</small>') + '<small class="gd-sub" style="margin:0;text-align:center">' + (stamped(CL.zone) ? '✅ Bạn đã có dấu hộ chiếu của ' + esc(C.vi) + ' — làm lại để luyện thêm. · You already have this stamp.' : '3 câu · đúng ít nhất 2 câu để nhận dấu + quà · 3 questions · get 2 right to win the stamp + gifts.') + '</small></div>';
+  $('culbody').innerHTML = h; $('culm').scrollTop = 0; say(sp[0]);
+}
 function drawCulQuiz() {
-  var C = CULT()[CQ.zone], h = '<h3>📝 Mini-quiz: ' + esc(C.country) + '</h3><p class="gd-sub">Chọn đáp án đúng cho cả 3 câu rồi bấm Nộp bài.</p>';
+  var C = CULT()[CQ.zone], h = '<div class="gd-step"><span class="dn">1 📖 Học</span><span class="on">2 📝 Câu hỏi · Quiz</span><span' + (CQ.passed ? ' class="on"' : '') + '>3 🛂 Dấu · Stamp</span></div>';
+  h += '<h3>📝 ' + esc(C.country) + ' · ' + esc(C.vi) + '</h3><p class="gd-sub">Choose the best answer for each question. Need 2 right to pass.<br>Chọn đáp án đúng cho mỗi câu, đúng ít nhất 2 câu là đạt.</p>';
   CQ.qs.forEach(function (q, qi) {
-    h += '<div class="gd-cq"><div class="qq">' + (qi + 1) + '. ' + esc(q.q) + '</div>' + q.opts.map(function (o, oi) {
+    h += '<div class="gd-cq"><div class="qq">' + (qi + 1) + '. ' + esc(q.q) + ' <button class="gd-sp" data-say="' + esc(q.q.replace(/___/g, 'blank')) + '" aria-label="Nghe câu hỏi">🔊</button>' + (q.qv ? '<small class="qv">' + esc(q.qv) + '</small>' : '') + '</div>' + q.opts.map(function (o, oi) {
       var cls = CQ.res ? (CQ.res[qi].answer === oi ? ' ok' : CQ.ans[qi] === oi ? ' bad' : '') : (CQ.ans[qi] === oi ? ' sel' : '');
-      return '<button class="' + cls.trim() + '" data-cq="' + qi + ':' + oi + '"' + (CQ.res ? ' disabled' : '') + '>' + esc(o) + '</button>';
-    }).join('') + (CQ.res ? '<div class="ex">' + (CQ.res[qi].ok ? '✅ ' : '❌ ') + esc(CQ.res[qi].expl) + '</div>' : '') + '</div>';
+      return '<button class="' + cls.trim() + '" data-cq="' + qi + ':' + oi + '"' + (CQ.res ? ' disabled' : '') + '><span>' + esc(o) + '</span>' + ((q.optsVi || [])[oi] ? '<small>' + esc(q.optsVi[oi]) + '</small>' : '') + '</button>';
+    }).join('') + (CQ.res ? '<div class="ex">' + (CQ.res[qi].ok ? '✅ ' : '❌ ') + esc(CQ.res[qi].expl) + (CQ.res[qi].explVi ? '<br>' + esc(CQ.res[qi].explVi) : '') + '</div>' : '') + '</div>';
   });
-  if (CQ.res) h += '<div class="gd-fb ' + (CQ.passed ? 'ok' : 'bad') + '">' + (CQ.passed ? '🎉 Bạn đúng ' + CQ.correct + '/3!' + (CQ.reward && CQ.reward.length ? '<br>Nhận: ' + H(CQ.reward.join(' · ')) : '') : '😅 Bạn đúng ' + CQ.correct + '/3 — cần ít nhất 2 câu. Thử lại nhé!') + '</div><div class="gd-act"><button class="gd-btn pri" data-cqs="' + CQ.zone + '">🔄 Làm lại</button></div>';
-  else h += '<div class="gd-act"><button class="gd-btn pri" id="cqSubmit"' + (CQ.ans.filter(function (x) { return x != null; }).length < CQ.qs.length ? ' disabled' : '') + '>Nộp bài</button></div>';
-  $('culbody').innerHTML = h;
+  if (CQ.res) h += '<div class="gd-fb ' + (CQ.passed ? 'ok' : 'bad') + '">' + (CQ.passed ? '🎉 Well done! You got ' + CQ.correct + '/3.<br>Bạn đúng ' + CQ.correct + '/3!' + (CQ.reward && CQ.reward.length ? '<br>🛂 Nhận · You got: ' + H(CQ.reward.join(' · ')) : '') : '😅 You got ' + CQ.correct + '/3 — you need 2. Try again!<br>Bạn đúng ' + CQ.correct + '/3 — cần ít nhất 2 câu. Thử lại nhé!') + '</div><div class="gd-act"><button class="gd-btn" data-clb="1">📖 Xem lại bài · Lessons</button><button class="gd-btn pri" data-cqs="' + CQ.zone + '">🔄 Làm lại · Try again</button></div>';
+  else h += '<div class="gd-act"><button class="gd-btn" data-clb="1">◀ Bài học · Lessons</button><button class="gd-btn pri" id="cqSubmit"' + (CQ.ans.filter(function (x) { return x != null; }).length < CQ.qs.length ? ' disabled' : '') + '>Nộp bài · Submit</button></div>';
+  $('culbody').innerHTML = h; $('culm').scrollTop = 0;
+}
+function renderHot(z) {
+  var box = $('hot'); if (!box) return; var C = CULT()[z.id];
+  if (!C || VISIT) { box.innerHTML = ''; return; }
+  var dm = zdim(z), st = stamped(z.id), h = '';
+  z.blocks.forEach(function (b) {
+    if (b.nb || !C.spots[b.k] || b.x + b.w > dm.c || b.y + b.h > dm.r) return;
+    h += '<button class="gd-hot' + (st ? ' ok' : '') + '" data-hot="' + z.id + ':' + b.k + '" style="left:calc(var(--ts) * ' + b.x + ');top:calc(var(--ts) * ' + b.y + ');width:calc(var(--ts) * ' + b.w + ');height:calc(var(--ts) * ' + b.h + ')" aria-label="' + esc(C.spots[b.k][0]) + ' — học và làm quiz hộ chiếu" title="Chạm để học & làm quiz lấy dấu hộ chiếu"><span>' + (st ? '✅' : '🛂') + '</span></button>';
+  });
+  box.innerHTML = h;
 }
 document.addEventListener('click', function (e) {
   var t = e.target, el;
@@ -1407,9 +1440,12 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-cc]'))) { contribute(+el.getAttribute('data-cc')); return; }
   if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
   if ((el = t.closest('[data-pz]'))) { var zid = el.getAttribute('data-pz'); if (S.zones.indexOf(zid) < 0) return toast('Khu này cần vườn cấp ' + D.ZBY[zid].lvl + ' và ' + D.ZBY[zid].cost + ' xu để mở.', 3600); $('pspm').classList.remove('on'); enterZone(zid); return; }
+  if ((el = t.closest('[data-hot]'))) { var hp = el.getAttribute('data-hot'), hi = hp.indexOf(':'); openCultureZone(hp.slice(0, hi), hp.slice(hi + 1)); return; }
+  if ((el = t.closest('[data-cl]')) && CL) { CL.idx = Math.max(0, Math.min(CL.pages.length - 1, CL.idx + (+el.getAttribute('data-cl')))); drawLearn(); return; }
+  if (t.closest('[data-clb]') && CL) { CQ = null; drawLearn(); return; }
   if ((el = t.closest('[data-cqs]'))) { var z2 = el.getAttribute('data-cqs'); api('/api/garden/culture/quiz?zone=' + z2).then(function (d) { CQ = { zone: z2, qs: d.questions, ans: [], res: null }; drawCulQuiz(); }).catch(function (er) { toast(er.message, 3400); }); return; }
   if ((el = t.closest('[data-cq]')) && CQ && !CQ.res) { var a = el.getAttribute('data-cq').split(':'); CQ.ans[+a[0]] = +a[1]; drawCulQuiz(); return; }
-  if (t.closest('#cqSubmit') && CQ) { api('/api/garden/culture/answer', { zone: CQ.zone, answers: CQ.ans }).then(function (d) { CQ.res = d.results; CQ.passed = d.passed; CQ.correct = d.correct; CQ.reward = d.reward; setState(d); drawCulQuiz(); if (d.passed) celebrate(d.first ? 24 : 10); }).catch(function (er) { toast(er.message, 3400); }); return; }
+  if (t.closest('#cqSubmit') && CQ) { api('/api/garden/culture/answer', { zone: CQ.zone, answers: CQ.ans }).then(function (d) { CQ.res = d.results; CQ.passed = d.passed; CQ.correct = d.correct; CQ.reward = d.reward; setState(d); drawCulQuiz(); var fbx = document.querySelector('#culbody .gd-fb'); if (fbx) fbx.scrollIntoView({ block: 'center', behavior: 'smooth' }); if (d.passed) celebrate(d.first ? 24 : 10); }).catch(function (er) { toast(er.message, 3400); }); return; }
 });
 
 /* ───────── sự kiện theo mùa ───────── */
