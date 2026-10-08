@@ -589,7 +589,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <script src="js/garden-cat-f.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
 <script src="js/garden-bundles.js?v=2"></script>
-<script src="js/garden-data.js?v=20"></script>
+<script src="js/garden-data.js?v=21"></script>
 <script src="js/garden-blueprints.js?v=2"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
@@ -1193,7 +1193,7 @@ function nextQ() {
   $('qbody').innerHTML = '<p class="gd-sub">Đang tìm câu hỏi…</p>'; QLOCK = false;
   var url = '/api/garden/quiz?src=' + QS.src + (QS.src === 'grammar' ? '&grade=' + QS.grade + '&lesson=' + encodeURIComponent(QS.lesson) : '&level=' + QS.level + '&type=' + (QS.vtype || 'mix'));
   api(url).then(function (q) {
-    QCUR = q; $('qsub').innerHTML = q.left > 0 ? 'Trả lời đúng để <b>lật thẻ thưởng</b>: 20–100 ' + COIN + ', hay trúng thẻ <b>+500</b>, <b>+1000</b>, <b>×2</b>, <b>×3</b> số xu hiện có (tính tối đa 50.000 xu), hoặc thẻ quà: <b>mở khoá thú cưng / khu mới</b>, <b>mua hoa-cây miễn phí</b>, <b>⚡ cho cây lớn ngay</b>! Kèm <b>+' + D.RULES.quizWater + ' 💧</b>. Hôm nay còn <b>' + q.left + '</b> câu có thưởng.' : 'Hôm nay bạn đã nhận đủ thưởng — vẫn có thể luyện thêm cho vui nhé!';
+    QCUR = q; $('qsub').innerHTML = q.left > 0 ? 'Trả lời đúng để <b>lật thẻ thưởng</b>: 20–100 ' + COIN + ', hay trúng thẻ <b>+500</b>, <b>+1000</b>, <b>×2</b>, <b>×3</b> toàn bộ số xu hiện có (hiếm; mỗi ngày kiếm tối đa 300.000 xu từ thẻ), hoặc thẻ quà: <b>mở khoá thú cưng / khu mới</b>, <b>mua hoa-cây miễn phí</b>, <b>⚡ cho cây lớn ngay</b>! Kèm <b>+' + D.RULES.quizWater + ' 💧</b>. Hôm nay còn <b>' + q.left + '</b> câu có thưởng.' : 'Hôm nay bạn đã nhận đủ thưởng — vẫn có thể luyện thêm cho vui nhé!';
     $('qbody').innerHTML = '<div class="gd-q"><div class="tp">' + esc(q.topic) + '</div><div class="qt">' + esc(q.q) + '</div>' + (q.ctx ? '<div class="tp" style="text-transform:none;font-weight:600;margin-top:4px">💬 ' + esc(q.ctx) + '</div>' : '') + '</div><div class="gd-opts">' + q.opts.map(function (o, i) { return '<button class="gd-opt" data-oi="' + i + '">' + esc(o) + '</button>'; }).join('') + '</div><div id="qfb"></div>';
     $('qbody').onclick = function (e) { var b = e.target.closest('[data-oi]'); if (b && !QLOCK) answer(+b.getAttribute('data-oi')); };
   }).catch(function (e) { $('qbody').innerHTML = '<p class="gd-sub">' + esc(e.message) + '</p>'; });
@@ -1227,7 +1227,7 @@ function pickCard(fid, k, fb) {
     setState(d); var cards = fb.querySelectorAll('.gd-card');
     cards[k].querySelector('.front').innerHTML = cardFace(d.cards[k], d.gained, d.before); if (d.cards[k].t !== 'coin') cards[k].classList.add('big'); cards[k].classList.add('open');
     setTimeout(function () { [].forEach.call(cards, function (c, j) { if (j !== k) { c.querySelector('.front').innerHTML = cardFace(d.cards[j], null, d.before); if (d.cards[j].t !== 'coin') c.classList.add('big'); c.classList.add('open', 'dim'); } }); }, 800);
-    var jp = d.cards[k].t !== 'coin', pz = $('prize'); pz.className = 'gd-prize' + (jp ? ' jp' : ''); pz.innerHTML = H(jp ? '🎉 JACKPOT! ' + (d.gained ? '+' + d.gained + ' 🪙' : '') + (d.got ? (d.gained ? ' · ' : '') + d.got : '') : '+' + d.gained + ' 🪙');
+    var jp = d.cards[k].t !== 'coin', pz = $('prize'); pz.className = 'gd-prize' + (jp ? ' jp' : ''); pz.innerHTML = H(jp ? '🎉 JACKPOT! ' + (d.gained ? '+' + d.gained + ' 🪙' : '') + (d.got ? (d.gained ? ' · ' : '') + d.got : '') : '+' + d.gained + ' 🪙' + (d.got ? ' · ' + d.got : ''));
     if (window.ewtCelebrate) window.ewtCelebrate(jp ? ['party-popper', 'star', 'sparkles', 'glowing-star', 'coin'] : ['star', 'sparkles'], { count: jp ? 26 : 6, from: $('xu') });
     var act = document.createElement('div'); act.className = 'gd-act'; act.innerHTML = '<button class="gd-btn pri" id="qnext">Câu tiếp ▶</button>'; fb.appendChild(act); $('qnext').onclick = nextQ;
   }).catch(function (e) { fb._done = false; toast(e.message); });

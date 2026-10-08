@@ -581,7 +581,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   function applyCardSt(st, uid, c) {
     const F = G.FLIP; let gained = 0, got = '';
     if (c.t === 'coin' || F.big[c.t]) gained = c.v;
-    else if (F.mult[c.t]) gained = Math.max(F.multMin, Math.min(coinsOf(uid), F.multCap || 50000) * (F.mult[c.t] - 1));
+    else if (F.mult[c.t]) gained = Math.max(F.multMin, coinsOf(uid) * (F.mult[c.t] - 1));
     else if (F.free[c.t]) { const f = F.free[c.t]; st.bag.free[f.cls] += f.n; got = 'Mua miễn phí ' + f.n + ' ' + f.label; }
     else if (c.t === 'water') { st.water += c.v; got = '+' + c.v + ' lượt tưới 💧'; }
     else if (c.t === 'boost') { st.bag.free.boost += c.v; got = 'Phiếu cho cây lớn ngay'; }
@@ -589,6 +589,13 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     else if (c.t === 'zone' && G.ZBY[c.id]) {
       if (st.zones.indexOf(c.id) < 0) { st.zones.push(c.id); got = 'Mở khoá khu "' + G.ZBY[c.id].name + '"'; } else gained = 300;
     } else gained = 20;
+    // Giới hạn xu kiếm từ thẻ thưởng mỗi ngày: hết lượt thì báo quay lại ngày mai
+    if (gained > 0 || (c.t === 'coin' || F.big[c.t] || F.mult[c.t])) {
+      const today = vnDay(), cap = F.dayCap || 300000; if (!st.q || typeof st.q !== 'object') st.q = {};
+      const cx = st.q.cx && st.q.cx.d === today ? st.q.cx : { d: today, n: 0 }, room = Math.max(0, cap - cx.n);
+      if (gained > room) { gained = room; got = (got ? got + ' · ' : '') + 'Lượt kiếm xu hôm nay đã hết (tối đa ' + cap.toLocaleString('vi-VN') + ' xu/ngày) — mời bạn quay lại vào ngày mai nhé!'; }
+      cx.n += gained; st.q.cx = cx;
+    }
     if (gained > 0) addCoins(uid, gained);
     return { gained, got };
   }

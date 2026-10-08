@@ -552,13 +552,13 @@ function _diskInfo() {
     let up = 0, bk = 0;
     try { up = fs.readdirSync(uploadsDir).length; } catch (e) {}
     try { bk = fs.readdirSync(path.join(DATA_DIR, 'backups')).length; } catch (e) {}
-    return { freeMB: mb(f.bavail), totalMB: mb(f.blocks), uploadFiles: up, backupFiles: bk };
+    const dirMB = (d) => { let n = 0; try { for (const x of fs.readdirSync(d)) { try { n += fs.statSync(path.join(d, x)).size; } catch (e) {} } } catch (e) {} return Math.round(n / 1048576 * 10) / 10; };
+    return { freeMB: mb(f.bavail), totalMB: mb(f.blocks), uploadFiles: up, backupFiles: bk, uploadsMB: dirMB(uploadsDir), backupsMB: dirMB(path.join(DATA_DIR, 'backups')), rootFilesMB: dirMB(DATA_DIR) };
   } catch (e) { return { error: e.message }; }
 }
 function _dbWriteProbe() {
   try {
-    db.exec('CREATE TABLE IF NOT EXISTS _probe (id INTEGER PRIMARY KEY, t INTEGER)');
-    db.prepare('INSERT OR REPLACE INTO _probe (id,t) VALUES (1,?)').run(Date.now());
+    db.exec('BEGIN IMMEDIATE'); db.exec('ROLLBACK'); // thử xin quyền ghi nhưng không ghi gì (không làm đổi dữ liệu)
     return 'ok';
   } catch (e) { return 'ERROR: ' + e.message; }
 }
@@ -1008,11 +1008,22 @@ async function warmExerciseCacheFromFile() {
 // ngay cho admin/giáo viên qua chuông thông báo + email (nếu đã cấu hình).
 const BACKUP_DIR = path.join(DATA_DIR_PATH, 'backups');
 fs.mkdirSync(BACKUP_DIR, { recursive: true });
-const MAX_BACKUPS = 30; // ~30 lần sao lưu gần nhất (mỗi 6 tiếng ≈ 7.5 ngày)
+const MAX_BACKUPS = 5; // chỉ giữ 5 bản gần nhất (mỗi ngày tối đa 1 bản, và chỉ khi dữ liệu có thay đổi) để không nặng ổ đĩa
+const BACKUP_MARK = path.join(BACKUP_DIR, '.last.json');
+function pruneBackups() {
+  try {
+    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('data-') && f.endsWith('.db')).sort();
+    while (files.length > MAX_BACKUPS) { const old = files.shift(); try { fs.unlinkSync(path.join(BACKUP_DIR, old)); } catch (e) {} }
+    return files.length;
+  } catch (e) { return 0; }
+}
 
-function runBackup(reason) {
+function runBackup(reason, force) {
   try {
     db.exec('PRAGMA wal_checkpoint(FULL);'); // đẩy hết dữ liệu từ WAL vào file chính trước khi copy
+    // Chỉ sao lưu khi cần: dữ liệu đã thay đổi kể từ lần sao lưu trước (bấm tay thì luôn sao lưu)
+    let sig = ''; try { const stt = fs.statSync(DB_FILE_PATH); sig = stt.size + ':' + Math.round(stt.mtimeMs); } catch (e) {}
+    if (!force) { try { const mk = JSON.parse(fs.readFileSync(BACKUP_MARK, 'utf8')); if (mk && mk.sig === sig) { return { ok: true, skipped: true, reason: 'no_change' }; } } catch (e) {} }
     const check = db.prepare('PRAGMA integrity_check').get();
     const ok = check && check.integrity_check === 'ok';
     if (!ok) {
@@ -1027,15 +1038,11 @@ function runBackup(reason) {
     const destName = `data-${ts}.db`;
     const destPath = path.join(BACKUP_DIR, destName);
     fs.copyFileSync(DB_FILE_PATH, destPath);
+    try { fs.writeFileSync(BACKUP_MARK, JSON.stringify({ sig, t: Date.now() })); } catch (e) {}
 
     // Dọn bớt bản cũ, chỉ giữ MAX_BACKUPS bản gần nhất
-    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('data-') && f.endsWith('.db')).sort();
-    while (files.length > MAX_BACKUPS) {
-      const old = files.shift();
-      try { fs.unlinkSync(path.join(BACKUP_DIR, old)); } catch (e) {}
-    }
-
-    console.log(`[backup] ✅ Đã sao lưu (${reason || 'định kỳ'}): ${destName} (${files.length <= MAX_BACKUPS ? files.length : MAX_BACKUPS} bản đang giữ)`);
+    const kept = pruneBackups();
+    console.log(`[backup] ✅ Đã sao lưu (${reason || 'định kỳ'}): ${destName} (${kept} bản đang giữ)`);
     return { ok: true, name: destName };
   } catch (e) {
     console.error('[backup] Lỗi sao lưu:', e.message);
@@ -2122,7 +2129,7 @@ app.get('/api/admin/backups/:name', requireRole('admin'), (req, res) => {
 
 // Kích hoạt sao lưu ngay lập tức (trước khi làm việc rủi ro)
 app.post('/api/admin/backups/run', requireRole('admin'), (req, res) => {
-  const result = runBackup('admin yêu cầu thủ công');
+  const result = runBackup('admin yêu cầu thủ công', true);
   res.json(result);
 });
 
@@ -2886,11 +2893,12 @@ const httpServer = app.listen(port, () => {
   else
     console.log('✅ DATA_DIR =', DATA_DIR, '— dữ liệu an toàn qua các lần deploy');
 
-  // Sao lưu tự động: chạy 1 lần sau 2 phút (đợi warmup xong), sau đó mỗi 6 tiếng.
-  // Giữ 30 bản gần nhất trong Volume /data/backups — sống sót qua mọi lần redeploy.
+  // Sao lưu tự động: chạy 1 lần sau 2 phút (đợi warmup xong), sau đó mỗi ngày (chỉ khi dữ liệu đổi).
+  // Giữ 5 bản gần nhất trong Volume /data/backups — sống sót qua mọi lần redeploy.
   setTimeout(() => {
+    pruneBackups(); // dọn ngay các bản cũ thừa (trước đây giữ tới 30 bản)
     runBackup('khởi động server');
-    setInterval(() => runBackup('định kỳ 6h'), 6 * 60 * 60 * 1000);
+    setInterval(() => runBackup('hằng ngày'), 24 * 60 * 60 * 1000);
   }, 2 * 60 * 1000);
 
   // Self-ping mỗi 4 phút để Railway không cho app ngủ (cold start làm trang quay vòng 15-30s)

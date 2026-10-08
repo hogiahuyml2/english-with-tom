@@ -182,6 +182,13 @@ module.exports = function (app, C) {
   });
 
   /* ───────────────────────── Giáo viên: thưởng + dự án lớp ───────────────────────── */
+  // Quản trị: nạp xu thử nghiệm cho CHÍNH tài khoản admin đang đăng nhập (để thử game); học sinh không dùng được
+  app.post('/api/garden/admin/test-coins', requireRole('admin'), (req, res) => {
+    const TEST_COINS = 999999999;
+    db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(req.user.id);
+    db.prepare('UPDATE word_game SET coins=? WHERE user_id=?').run(TEST_COINS, req.user.id);
+    res.json({ ok: true, coins: TEST_COINS });
+  });
   app.post('/api/garden/teacher/gift', requireRole('teacher', 'admin'), (req, res) => {
     const b = req.body || {}, xu = Math.floor(Number(b.xu) || 0), chests = Math.floor(Number(b.chests) || 0), note = String(b.note || '').replace(/[<>]/g, '').trim().slice(0, 80);
     if (xu < 0 || xu > 500 || chests < 0 || chests > 3 || (!xu && !chests)) return bad(res, 'Mỗi lần tặng tối đa 500 xu và 3 rương quà (cần chọn ít nhất một thứ).');

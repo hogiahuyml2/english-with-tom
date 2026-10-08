@@ -160,13 +160,20 @@
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
           <div>
             <div style="font-weight:700;font-size:14px;">🕐 Sao lưu tự động</div>
-            <div style="font-size:12.5px;color:var(--text-muted);">Hệ thống tự động sao lưu mỗi 6 tiếng, giữ 30 bản gần nhất — không cần bạn phải nhớ bấm tải về.</div>
+            <div style="font-size:12.5px;color:var(--text-muted);">Hệ thống tự sao lưu mỗi ngày (chỉ khi dữ liệu có thay đổi), giữ 5 bản gần nhất để nhẹ ổ đĩa — không cần bạn phải nhớ bấm tải về.</div>
           </div>
           <button class="btn btn-sm" onclick="runBackupNow()" id="abRunBtn">🔄 Sao lưu ngay</button>
         </div>
         <div id="abMsg" style="display:none;margin-bottom:10px;font-size:13px;padding:8px 12px;border-radius:8px;"></div>
         <div id="abList" style="font-size:13px;color:var(--text-muted);">Đang tải danh sách...</div>
       </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-head"><h3>🧪 Xu thử nghiệm EWT Garden</h3></div>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">Nạp tài khoản quản trị của bạn lên <b>999.999.999 xu</b> (gần 1 tỷ) để thử game thoải mái. Chỉ áp dụng cho chính bạn, không ảnh hưởng học sinh.</p>
+      <button class="btn btn-primary" id="tcBtn" type="button">💰 Nạp 999.999.999 xu cho tài khoản của tôi</button>
+      <span id="tcMsg" style="margin-left:10px;font-size:13px;"></span>
     </div>
 
     </div>
@@ -424,6 +431,7 @@
     if (!LOADED[name] && LOADERS[name]) { LOADED[name] = 1; LOADERS[name](); }
     if (!noSave) { try { localStorage.setItem(TABKEY, name); } catch (e) {} history.replaceState(null, '', '#' + name); }
   }
+  document.getElementById('tcBtn').addEventListener('click', function(){ var b = this, m = document.getElementById('tcMsg'); b.disabled = true; fetch('/api/garden/admin/test-coins', { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:'{}' }).then(function(r){ return r.json().catch(function(){return{};}).then(function(j){ m.textContent = r.ok ? '✅ Đã nạp ' + Number(j.coins).toLocaleString('vi-VN') + ' xu.' : '❌ ' + (j.error || 'Không nạp được'); m.style.color = r.ok ? '#16a34a' : '#dc2626'; }); }).catch(function(){ m.textContent = '❌ Lỗi mạng'; }).then(function(){ b.disabled = false; }); });
   document.querySelector('.adm-tabs').addEventListener('click', function(e){ var b = e.target.closest('.adm-tab'); if (b) showAdmTab(b.getAttribute('data-tab')); });
   (async function(){
     var m = await api('/api/me'); me = m.data.user;
