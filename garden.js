@@ -581,7 +581,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   function applyCardSt(st, uid, c) {
     const F = G.FLIP; let gained = 0, got = '';
     if (c.t === 'coin' || F.big[c.t]) gained = c.v;
-    else if (F.mult[c.t]) gained = Math.max(F.multMin, coinsOf(uid) * (F.mult[c.t] - 1));
+    else if (F.mult[c.t]) gained = Math.max(F.multMin, Math.min(coinsOf(uid), F.multCap || 50000) * (F.mult[c.t] - 1));
     else if (F.free[c.t]) { const f = F.free[c.t]; st.bag.free[f.cls] += f.n; got = 'Mua miễn phí ' + f.n + ' ' + f.label; }
     else if (c.t === 'water') { st.water += c.v; got = '+' + c.v + ' lượt tưới 💧'; }
     else if (c.t === 'boost') { st.bag.free.boost += c.v; got = 'Phiếu cho cây lớn ngay'; }
