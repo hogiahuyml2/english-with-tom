@@ -49,7 +49,7 @@ const RULES = [
   ['POST', /^\/api\/word-game\/shop\/(buy|equip)$/, 'game', 'Mua / dùng đồ trong cửa hàng'],
   ['POST', /^\/api\/notebook\/(check|mark)$/, 'learn', 'Ôn Sổ lỗi sai'], ['POST', /^\/api\/duel(\/.*)?$/, 'game', 'Chơi đối kháng'],
   ['POST', /^\/api\/garden\/quiz\/answer$/, 'game', 'EWT Garden: trả lời câu hỏi'], ['POST', /^\/api\/garden\/quiz\/flip$/, 'game', 'EWT Garden: lật thẻ thưởng'],
-  ['POST', /^\/api\/garden\/(place|remove|water|harvest|harvest-all|zone\/unlock|bundle\/buy|outfit\/buy|place-many|remove-many|water-many|harvest-many|grow-many|clear|blueprint\/quote|blueprint\/apply)$/, 'game', 'EWT Garden: chăm vườn'], ['POST', /^\/api\/garden\/pet\/.+$/, 'game', 'EWT Garden: thú cưng'],
+  ['POST', /^\/api\/garden\/(place|remove|water|harvest|harvest-all|zone\/unlock|bundle\/buy|outfit\/buy|place-many|remove-many|water-many|harvest-many|grow-many|clear|blueprint\/quote|blueprint\/apply|stock\/buy|xu\/send|parcel\/(send|respond|cancel)|note|note\/delete)$/, 'game', 'EWT Garden: chăm vườn'], ['POST', /^\/api\/garden\/pet\/.+$/, 'game', 'EWT Garden: thú cưng'],
   ['POST', /^\/api\/garden\/(name|share)$/, 'game', 'EWT Garden: đặt tên / chia sẻ vườn'],
   ['POST', /^\/api\/garden\/(quests\/claim|inbox\/claim|class\/contribute|culture\/answer|event\/daily|event\/milestone|trade\/send|trade\/respond|trade\/cancel)$/, 'game', 'EWT Garden: nhiệm vụ / quà / sự kiện / tặng-đổi quà / hộ chiếu'],
   ['POST', /^\/api\/garden\/teacher\/event$/, 'teach', 'EWT Garden: mở / đóng sự kiện theo mùa'],

@@ -339,7 +339,7 @@ module.exports = function (app, C) {
       give: { kind: tr.give_kind, id: tr.give_id, name: tr.give_name || g.name || tr.give_id, cost: g.cost || 0 }, want: w ? { kind: tr.want_kind, id: tr.want_id, name: w.name || tr.want_id, cost: w.cost || 0 } : null,
       can: !out && tr.status === 'pending' ? (!w || (st && bagHas(st, tr.want_kind, tr.want_id))) : null };
   };
-  const tradeCount = (uid) => one("SELECT COUNT(*) c FROM garden_trades WHERE to_uid=? AND status='pending'", uid).c;
+  const tradeCount = (uid) => one("SELECT COUNT(*) c FROM garden_trades WHERE to_uid=? AND status='pending'", uid).c + (typeof parcelCount === 'function' ? parcelCount(uid) : 0);
   app.get('/api/garden/trades', requireAuth, (req, res) => {
     try { expireOld(); } catch (e) { console.error('[garden/trade expire]', e.message); }
     const me = req.user.id, st = load(req.user), cut = new Date(Date.now() - 14 * 86400e3).toISOString();
@@ -406,6 +406,188 @@ module.exports = function (app, C) {
     const rows = db.prepare('SELECT * FROM garden_trades ORDER BY id DESC LIMIT 100').all();
     res.json({ trades: rows.map((t) => ({ id: t.id, from: (userRow(t.from_uid) || {}).name, to: (userRow(t.to_uid) || {}).name, give: t.give_name || t.give_id, want: t.want_id ? (thing(t.want_kind, t.want_id) || {}).name : null, note: t.note, status: t.status, at: t.created_at })) });
   });
+
+  /* ───────────────────────── Mua trữ kho · tặng xu · tặng nhiều món · sticker & lời nhắn ───────────────────────── */
+  const SOCIAL = {
+    xuMin: 10, xuMax: 1000, xuSendDay: 3000, xuPairDay: 1500, xuRecvDay: 6000, xuCountDay: 15,
+    parcelMaxKinds: 20, parcelMaxQty: 60, parcelDay: 8, parcelOut: 6, parcelPair: 3, parcelIn: 25,
+    noteDayPair: 8, noteDay: 30, noteMax: 60, stockQty: 99
+  };
+  db.exec(`CREATE TABLE IF NOT EXISTS garden_xu_gifts (id INTEGER PRIMARY KEY AUTOINCREMENT, from_uid INTEGER NOT NULL, to_uid INTEGER NOT NULL, xu INTEGER NOT NULL, note TEXT, day TEXT NOT NULL, created_at TEXT NOT NULL);
+    CREATE INDEX IF NOT EXISTS idx_gxg_from ON garden_xu_gifts(from_uid, day); CREATE INDEX IF NOT EXISTS idx_gxg_to ON garden_xu_gifts(to_uid, day);
+    CREATE TABLE IF NOT EXISTS garden_parcels (id INTEGER PRIMARY KEY AUTOINCREMENT, from_uid INTEGER NOT NULL, to_uid INTEGER NOT NULL, items TEXT NOT NULL, note TEXT, status TEXT NOT NULL DEFAULT 'pending', day TEXT, created_at TEXT NOT NULL, done_at TEXT);
+    CREATE INDEX IF NOT EXISTS idx_gpc_to ON garden_parcels(to_uid, status); CREATE INDEX IF NOT EXISTS idx_gpc_from ON garden_parcels(from_uid, status);
+    CREATE TABLE IF NOT EXISTS garden_notes (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_uid INTEGER NOT NULL, from_uid INTEGER NOT NULL, sticker TEXT, text TEXT, zone TEXT, day TEXT NOT NULL, created_at TEXT NOT NULL, hidden INTEGER NOT NULL DEFAULT 0);
+    CREATE INDEX IF NOT EXISTS idx_gnt_owner ON garden_notes(owner_uid, hidden, id); CREATE INDEX IF NOT EXISTS idx_gnt_from ON garden_notes(from_uid, day);`);
+  const STICKERS = ['🌸', '🌻', '🌷', '💐', '🌈', '⭐', '✨', '💖', '😍', '👍', '👏', '🎉', '🦋', '🐰', '🐶', '🍀', '🌟', '😊', '🥰', '🏆'];
+  const cleanTxt = (s, n) => String(s || '').replace(/<[^>]*>/g, '').replace(/https?:\/\/\S+|www\.\S+/gi, '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
+  const friendByToken = (tok) => (tok ? one('SELECT g.user_id AS id, g.open, u.name FROM garden g JOIN users u ON u.id=g.user_id WHERE g.share=?', String(tok)) : null);
+  const bursts = new Map();
+  const slow = (uid, n, ms) => { const t = Date.now(), a = (bursts.get(uid) || []).filter((x) => t - x < ms); a.push(t); bursts.set(uid, a); return a.length > n; };
+
+  // 1) Mua đồ cất vào kho (giỏ) — dùng sau hoặc tặng lại
+  app.post('/api/garden/stock/buy', requireAuth, (req, res) => {
+    const b = req.body || {}, kind = b.kind === 'pet' ? 'pet' : 'item', id = String(b.id || ''), qty = Math.floor(Number(b.qty) || 1);
+    if (qty < 1 || qty > SOCIAL.stockQty) return bad(res, 'Chọn số lượng từ 1 đến ' + SOCIAL.stockQty + ' nhé.');
+    if (slow(req.user.id + ':stock', 25, 60e3)) return bad(res, 'Bạn thao tác nhanh quá, chờ một chút nhé.', 429);
+    const out = tx(() => {
+      const st = load(req.user), it = thing(kind, id); if (!it || !(it.cost > 0)) return { err: 'Món này không bán trong cửa hàng.' };
+      const lvl = G.levelOf(G.beautyOf(st)); if (it.lvl > lvl) return { err: 'Cần vườn cấp ' + it.lvl + ' để mua món này.' };
+      if (kind === 'item' && it.ev && !evIsActive(it.ev)) return { err: 'Món giới hạn sự kiện — đã hết mùa nên không mua được nữa.' };
+      if (kind === 'item' && (st.bag.items[id] | 0) + qty > 999) return { err: 'Kho chỉ chứa tối đa 999 món mỗi loại.' };
+      if (kind === 'pet' && st.bag.pets.length + qty > 60) return { err: 'Kho thú cưng chỉ chứa tối đa 60 bé.' };
+      const cost = it.cost * qty, r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(cost, req.user.id, cost);
+      if (!r.changes) return { err: 'Chưa đủ xu (cần ' + cost + ' 🪙).' };
+      for (let k = 0; k < qty; k++) bagPut(st, kind, id, it.name);
+      if (kind === 'item') evOwn(st, id);
+      save(st); return { st, cost, name: it.name };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { stocked: qty, name: out.name, cost: out.cost });
+  });
+
+  // 2) Tặng xu cho bạn (chuyển ngay, có hạn mức mỗi ngày)
+  app.post('/api/garden/xu/send', requireAuth, (req, res) => {
+    const b = req.body || {}, xu = Math.floor(Number(b.xu) || 0), note = cleanTxt(b.note, 60);
+    if (xu < SOCIAL.xuMin || xu > SOCIAL.xuMax) return bad(res, 'Mỗi lần tặng từ ' + SOCIAL.xuMin + ' đến ' + SOCIAL.xuMax + ' xu nhé.');
+    if (slow(req.user.id + ':xu', 10, 60e3)) return bad(res, 'Bạn thao tác nhanh quá, chờ một chút nhé.', 429);
+    const out = tx(() => {
+      const to = friendByToken(b.to); if (!to || !to.open) return { err: 'Không tìm thấy bạn này, hoặc bạn ấy chưa mở vườn cho bạn bè.' };
+      if (to.id === req.user.id) return { err: 'Bạn không thể tặng xu cho chính mình.' };
+      const day = vnDay(), sum = (q, ...a) => one(q, ...a).s | 0;
+      if (one('SELECT COUNT(*) c FROM garden_xu_gifts WHERE from_uid=? AND day=?', req.user.id, day).c >= SOCIAL.xuCountDay) return { err: 'Hôm nay bạn đã tặng xu nhiều lần rồi — mai tiếp tục nhé!' };
+      const sent = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND day=?', req.user.id, day);
+      if (sent + xu > SOCIAL.xuSendDay) return { err: 'Mỗi ngày bạn tặng tối đa ' + SOCIAL.xuSendDay + ' xu (hôm nay đã tặng ' + sent + ').' };
+      const pair = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND to_uid=? AND day=?', req.user.id, to.id, day);
+      if (pair + xu > SOCIAL.xuPairDay) return { err: 'Mỗi ngày tặng một bạn tối đa ' + SOCIAL.xuPairDay + ' xu (hôm nay đã tặng bạn này ' + pair + ').' };
+      const recv = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE to_uid=? AND day=?', to.id, day);
+      if (recv + xu > SOCIAL.xuRecvDay) return { err: 'Hôm nay bạn ấy đã nhận khá nhiều xu rồi, hãy tặng vào ngày mai nhé.' };
+      const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(xu, req.user.id, xu); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + xu + ' 🪙).' };
+      db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(to.id); addCoins(to.id, xu);
+      db.prepare('INSERT INTO garden_xu_gifts (from_uid,to_uid,xu,note,day,created_at) VALUES (?,?,?,?,?,?)').run(req.user.id, to.id, xu, note, day, now());
+      return { to, left: SOCIAL.xuSendDay - sent - xu };
+    });
+    if (out.err) return bad(res, out.err);
+    try { if (notifyUser) notifyUser(out.to.id, 'garden_xu', '💰 ' + givenName(req.user.name) + ' tặng bạn ' + xu + ' xu!', note ? '“' + note + '”' : 'Xu đã vào ví của bạn trong EWT Garden.', 'garden.html'); } catch (e) { /* bỏ qua */ }
+    res.json({ ok: true, to: givenName(out.to.name), coins: coinsOf(req.user.id), left: out.left });
+  });
+
+  // 3) Tặng NHIỀU món cùng lúc (chọn số lượng) — gửi thành "gói quà", bạn nhận đồng ý thì vào giỏ
+  const parcelView = (p, me) => {
+    const out = p.from_uid === me, other = userRow(out ? p.to_uid : p.from_uid) || {};
+    let items = []; try { items = JSON.parse(p.items) || []; } catch (e) { /* bỏ qua */ }
+    return { id: p.id, dir: out ? 'out' : 'in', who: givenName(other.name), status: p.status, note: p.note || '', at: p.created_at, items: items.map((x) => ({ kind: x.kind, id: x.id, qty: x.qty, name: x.name, cost: (thing(x.kind, x.id) || {}).cost || 0 })) };
+  };
+  const parcelItems = (p) => { try { return JSON.parse(p.items) || []; } catch (e) { return []; } };
+  function parcelRefund(p) {
+    const u = userRow(p.from_uid); if (!u) return; const st = load(u);
+    parcelItems(p).forEach((x) => { for (let k = 0; k < x.qty; k++) { if (!bagPut(st, x.kind, x.id, x.name)) { const it = thing(x.kind, x.id); if (it && it.cost > 0) addCoins(p.from_uid, it.cost); } } });
+    save(st);
+  }
+  const parcelCount = (uid) => one("SELECT COUNT(*) c FROM garden_parcels WHERE to_uid=? AND status='pending'", uid).c;
+  let lastPExp = 0;
+  function expireParcels() {
+    const t = Date.now(); if (t - lastPExp < 60e3) return; lastPExp = t;
+    const cut = new Date(t - TR.expireDays * 86400e3).toISOString();
+    db.prepare("SELECT * FROM garden_parcels WHERE status='pending' AND created_at<? LIMIT 50").all(cut).forEach((p) => { parcelRefund(p); db.prepare("UPDATE garden_parcels SET status='expired', done_at=? WHERE id=?").run(now(), p.id); });
+  }
+  app.get('/api/garden/parcels', requireAuth, (req, res) => {
+    try { expireParcels(); } catch (e) { console.error('[garden/parcel expire]', e.message); }
+    const me = req.user.id, cut = new Date(Date.now() - 14 * 86400e3).toISOString();
+    const q = (sql, ...a) => db.prepare(sql).all(...a).map((p) => parcelView(p, me));
+    res.json({ incoming: q("SELECT * FROM garden_parcels WHERE to_uid=? AND status='pending' ORDER BY id DESC LIMIT 40", me), outgoing: q("SELECT * FROM garden_parcels WHERE from_uid=? AND status='pending' ORDER BY id DESC LIMIT 40", me),
+      history: q("SELECT * FROM garden_parcels WHERE (from_uid=? OR to_uid=?) AND status<>'pending' AND created_at>? ORDER BY id DESC LIMIT 14", me, me, cut),
+      xu: { sentToday: one('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND day=?', me, vnDay()).s, maxDay: SOCIAL.xuSendDay, min: SOCIAL.xuMin, max: SOCIAL.xuMax } });
+  });
+  app.post('/api/garden/parcel/send', requireAuth, (req, res) => {
+    const b = req.body || {}, note = cleanTxt(b.note, 60), want = Array.isArray(b.items) ? b.items : [];
+    if (slow(req.user.id + ':parcel', 12, 60e3)) return bad(res, 'Bạn thao tác nhanh quá, chờ một chút nhé.', 429);
+    const out = tx(() => {
+      expireParcels();
+      const to = friendByToken(b.to); if (!to || !to.open) return { err: 'Không tìm thấy bạn này, hoặc bạn ấy chưa mở vườn cho bạn bè.' };
+      if (to.id === req.user.id) return { err: 'Bạn không thể tặng quà cho chính mình.' };
+      const merged = new Map(); let total = 0;
+      for (const x of want) {
+        const kind = kindOf(x && x.kind), id = String((x && x.id) || ''), qty = Math.floor(Number(x && x.qty) || 0), t = thing(kind, id);
+        if (!t || !(t.cost > 0) || qty < 1) return { err: 'Có món không hợp lệ trong gói quà.' };
+        const key = kind + ':' + id; merged.set(key, { kind, id, qty: (merged.get(key) ? merged.get(key).qty : 0) + qty, name: t.name }); total += qty;
+      }
+      if (!merged.size) return { err: 'Hãy chọn ít nhất một món để tặng.' };
+      if (merged.size > SOCIAL.parcelMaxKinds || total > SOCIAL.parcelMaxQty) return { err: 'Mỗi gói quà tối đa ' + SOCIAL.parcelMaxKinds + ' loại và ' + SOCIAL.parcelMaxQty + ' món.' };
+      const k = req.user.id, day = vnDay();
+      if (one('SELECT COUNT(*) c FROM garden_parcels WHERE from_uid=? AND day=?', k, day).c >= SOCIAL.parcelDay) return { err: 'Hôm nay bạn đã gửi ' + SOCIAL.parcelDay + ' gói quà rồi — mai tiếp tục nhé!' };
+      if (one("SELECT COUNT(*) c FROM garden_parcels WHERE from_uid=? AND status='pending'", k).c >= SOCIAL.parcelOut) return { err: 'Bạn đang có ' + SOCIAL.parcelOut + ' gói quà chưa được trả lời — hãy chờ hoặc huỷ bớt.' };
+      if (one("SELECT COUNT(*) c FROM garden_parcels WHERE from_uid=? AND to_uid=? AND status='pending'", k, to.id).c >= SOCIAL.parcelPair) return { err: 'Bạn đã gửi ' + SOCIAL.parcelPair + ' gói cho bạn này mà chưa được trả lời. Chờ bạn ấy phản hồi nhé.' };
+      if (parcelCount(to.id) >= SOCIAL.parcelIn) return { err: 'Hộp thư của bạn ấy đang đầy, thử lại sau nhé.' };
+      const st = load(req.user), list = [...merged.values()];
+      for (const x of list) { for (let n = 0; n < x.qty; n++) { const taken = bagTake(st, x.kind, x.id); if (!taken) return { err: 'Trong giỏ của bạn không đủ "' + x.name + '" (×' + x.qty + '). Hãy kiểm tra lại số lượng.', rollback: 1 }; if (x.kind === 'pet' && n === 0) x.pname = taken.name; } }
+      db.prepare('INSERT INTO garden_parcels (from_uid,to_uid,items,note,status,day,created_at) VALUES (?,?,?,?,?,?,?)').run(k, to.id, JSON.stringify(list.map((x) => ({ kind: x.kind, id: x.id, qty: x.qty, name: x.pname || x.name }))), note, 'pending', day, now());
+      save(st); return { to, n: total };
+    });
+    if (out.err) return bad(res, out.err);
+    try { if (notifyUser) notifyUser(out.to.id, 'garden_trade', '🎁 ' + givenName(req.user.name) + ' gửi bạn gói quà ' + out.n + ' món', 'Vào EWT Garden → Nhiệm vụ → Bạn bè để nhận nhé.', 'garden.html?tab=friends'); } catch (e) { /* bỏ qua */ }
+    reply(res, req.user, load(req.user), { sent: true, to: givenName(out.to.name), n: out.n });
+  });
+  app.post('/api/garden/parcel/respond', requireAuth, (req, res) => {
+    const id = Number((req.body || {}).id), accept = String((req.body || {}).action) === 'accept';
+    const out = tx(() => {
+      const p = one("SELECT * FROM garden_parcels WHERE id=? AND to_uid=? AND status='pending'", id, req.user.id); if (!p) return { err: 'Gói quà này không còn nữa.' };
+      if (!accept) { parcelRefund(p); db.prepare("UPDATE garden_parcels SET status='declined', done_at=? WHERE id=?").run(now(), id); return { p, declined: true }; }
+      const me = load(req.user), items = parcelItems(p);
+      const needPets = items.filter((x) => x.kind === 'pet').reduce((a, x) => a + x.qty, 0);
+      if (me.bag.pets.length + needPets > 60) return { err: 'Kho thú cưng của bạn không đủ chỗ (tối đa 60 bé).' };
+      for (const x of items) if (x.kind === 'item' && (me.bag.items[x.id] | 0) + x.qty > 999) return { err: 'Kho của bạn đã quá đầy món "' + x.name + '" (tối đa 999).' };
+      items.forEach((x) => { for (let k = 0; k < x.qty; k++) bagPut(me, x.kind, x.id, x.name); if (x.kind === 'item') evOwn(me, x.id); });
+      save(me); db.prepare("UPDATE garden_parcels SET status='accepted', done_at=? WHERE id=?").run(now(), id); return { p };
+    });
+    if (out.err) return bad(res, out.err);
+    try { if (notifyUser) notifyUser(out.p.from_uid, 'garden_trade', out.declined ? '😅 ' + givenName(req.user.name) + ' chưa nhận gói quà của bạn' : '🎉 ' + givenName(req.user.name) + ' đã nhận gói quà của bạn', out.declined ? 'Các món đã về lại giỏ của bạn.' : 'Cảm ơn bạn đã chia sẻ!', 'garden.html?tab=friends'); } catch (e) { /* bỏ qua */ }
+    reply(res, req.user, load(req.user), { done: true, accepted: !out.declined });
+  });
+  app.post('/api/garden/parcel/cancel', requireAuth, (req, res) => {
+    const id = Number((req.body || {}).id);
+    const out = tx(() => { const p = one("SELECT * FROM garden_parcels WHERE id=? AND from_uid=? AND status='pending'", id, req.user.id); if (!p) return { err: 'Gói quà này không còn nữa.' }; parcelRefund(p); db.prepare("UPDATE garden_parcels SET status='cancelled', done_at=? WHERE id=?").run(now(), id); return { ok: 1 }; });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, load(req.user), { cancelled: true });
+  });
+
+  // 4) Thả sticker + lời nhắn nổi trên khu vườn của bạn
+  const noteView = (n) => ({ id: n.id, who: givenName((userRow(n.from_uid) || {}).name || 'Bạn'), sticker: n.sticker || '', text: n.text || '', zone: n.zone || 'map', at: n.created_at, mine: 0 });
+  const notesOf = (uid, me) => db.prepare('SELECT * FROM garden_notes WHERE owner_uid=? AND hidden=0 ORDER BY id DESC LIMIT 40').all(uid).map((n) => Object.assign(noteView(n), { mine: n.from_uid === me ? 1 : 0 }));
+  app.get('/api/garden/notes', requireAuth, (req, res) => {
+    const tok = String(req.query.token || ''), to = tok ? friendByToken(tok) : { id: req.user.id, open: 1 };
+    if (!to || (!to.open && to.id !== req.user.id)) return bad(res, 'Không tìm thấy khu vườn.', 404);
+    res.json({ notes: notesOf(to.id, req.user.id), stickers: STICKERS, own: to.id === req.user.id });
+  });
+  app.post('/api/garden/note', requireAuth, (req, res) => {
+    const b = req.body || {}, sticker = STICKERS.indexOf(String(b.sticker || '')) >= 0 ? String(b.sticker) : '', text = cleanTxt(b.text, 80), zone = (G.ZBY[String(b.zone || '')] ? String(b.zone) : 'map');
+    if (!sticker && !text) return bad(res, 'Hãy chọn một sticker hoặc viết vài chữ nhé.');
+    const to = friendByToken(b.to); if (!to || !to.open) return bad(res, 'Không tìm thấy khu vườn này, hoặc bạn ấy chưa mở vườn.', 404);
+    if (to.id === req.user.id) return bad(res, 'Hãy ghé vườn bạn bè để thả sticker nhé.');
+    if (slow(req.user.id + ':note', 12, 60e3)) return bad(res, 'Bạn thao tác nhanh quá, chờ một chút nhé.', 429);
+    const day = vnDay();
+    if (one('SELECT COUNT(*) c FROM garden_notes WHERE from_uid=? AND day=?', req.user.id, day).c >= SOCIAL.noteDay) return bad(res, 'Hôm nay bạn đã thả nhiều sticker rồi — mai tiếp tục nhé!');
+    if (one('SELECT COUNT(*) c FROM garden_notes WHERE from_uid=? AND owner_uid=? AND day=?', req.user.id, to.id, day).c >= SOCIAL.noteDayPair) return bad(res, 'Hôm nay bạn đã để lại ' + SOCIAL.noteDayPair + ' lời nhắn trong vườn bạn này rồi.');
+    const recent = one('SELECT COUNT(*) c FROM garden_notes WHERE from_uid=? AND owner_uid=? AND created_at>?', req.user.id, to.id, new Date(Date.now() - 30 * 60e3).toISOString()).c;
+    db.prepare('INSERT INTO garden_notes (owner_uid,from_uid,sticker,text,zone,day,created_at) VALUES (?,?,?,?,?,?,?)').run(to.id, req.user.id, sticker, text, zone, day, now());
+    db.prepare('DELETE FROM garden_notes WHERE owner_uid=? AND id NOT IN (SELECT id FROM garden_notes WHERE owner_uid=? ORDER BY id DESC LIMIT ?)').run(to.id, to.id, SOCIAL.noteMax);
+    if (!recent) { try { if (notifyUser) notifyUser(to.id, 'garden_note', '💬 ' + givenName(req.user.name) + ' ghé vườn bạn' + (sticker ? ' ' + sticker : ''), text ? '“' + text + '”' : 'Bạn ấy vừa thả một sticker trong khu vườn của bạn.', 'garden.html'); } catch (e) { /* bỏ qua */ } }
+    res.json({ ok: true, notes: notesOf(to.id, req.user.id) });
+  });
+  app.post('/api/garden/note/delete', requireAuth, (req, res) => {   // chủ vườn hoặc người đã viết được xoá
+    const id = Number((req.body || {}).id), n = one('SELECT * FROM garden_notes WHERE id=?', id);
+    if (!n || (n.owner_uid !== req.user.id && n.from_uid !== req.user.id)) return bad(res, 'Không tìm thấy lời nhắn này.', 404);
+    db.prepare('UPDATE garden_notes SET hidden=1 WHERE id=?').run(id); res.json({ ok: true });
+  });
+  app.get('/api/garden/teacher/social', requireRole('teacher', 'admin'), (req, res) => {   // thầy cô theo dõi xu / lời nhắn / gói quà gần đây
+    const nm = (u) => (userRow(u) || {}).name || '?';
+    res.json({
+      xu: db.prepare('SELECT * FROM garden_xu_gifts ORDER BY id DESC LIMIT 60').all().map((g) => ({ from: nm(g.from_uid), to: nm(g.to_uid), xu: g.xu, note: g.note, at: g.created_at })),
+      notes: db.prepare('SELECT * FROM garden_notes ORDER BY id DESC LIMIT 80').all().map((n) => ({ id: n.id, from: nm(n.from_uid), to: nm(n.owner_uid), sticker: n.sticker, text: n.text, hidden: !!n.hidden, at: n.created_at })),
+      parcels: db.prepare('SELECT * FROM garden_parcels ORDER BY id DESC LIMIT 60').all().map((p) => ({ from: nm(p.from_uid), to: nm(p.to_uid), n: parcelItems(p).reduce((a, x) => a + x.qty, 0), status: p.status, at: p.created_at }))
+    });
+  });
+  app.post('/api/garden/teacher/note/hide', requireRole('teacher', 'admin'), (req, res) => { db.prepare('UPDATE garden_notes SET hidden=? WHERE id=?').run((req.body || {}).hide === false ? 0 : 1, Number((req.body || {}).id)); res.json({ ok: true }); });
 
   /* ───────────────────────── Hộ chiếu văn hoá ───────────────────────── */
   const pend = new Map();

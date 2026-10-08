@@ -62,9 +62,15 @@
   </div>
   <div class="pp-box" data-tab-title="🤝 Tặng / đổi quà">
     <h3 style="margin:0 0 6px">🤝 Tặng / đổi quà giữa học sinh</h3>
-    <div class="pp-how">Học sinh có thể tặng hoặc đổi các món <b>đã mua trong giỏ</b> cho nhau (không chuyển xu; mỗi em tối đa 10 lượt gửi/ngày). Dưới đây là 100 lượt gần nhất để bạn nắm tình hình.</div>
+    <div class="pp-how">Học sinh có thể tặng hoặc đổi các món <b>đã mua trong giỏ</b> cho nhau (mỗi em tối đa 10 lượt gửi/ngày). Dưới đây là 100 lượt gần nhất để bạn nắm tình hình.</div>
     <button class="pp-btn" id="trLoad" style="margin-top:8px">📋 Xem các lượt gần đây</button>
     <div id="trList" style="margin-top:8px;overflow-x:auto"></div>
+  </div>
+  <div class="pp-box" data-tab-title="💬 Xu & lời nhắn">
+    <h3 style="margin:0 0 6px">💬 Tặng xu, sticker và lời nhắn giữa học sinh</h3>
+    <div class="pp-how">Học sinh có thể tặng xu cho nhau (tối đa 1.000 xu/lần, 3.000 xu/ngày), tặng gói quà nhiều món và thả sticker / lời nhắn nổi trong vườn bạn bè. Dưới đây là các hoạt động gần đây — bạn có thể <b>ẩn</b> lời nhắn chưa phù hợp.</div>
+    <button class="pp-btn" id="soLoad" style="margin-top:8px">📋 Xem hoạt động gần đây</button>
+    <div id="soList" style="margin-top:8px;overflow-x:auto"></div>
   </div>
   <div class="pp-box" data-tab-title="🎁 Tặng thưởng">
     <h3 style="margin:0 0 6px">🎁 Tặng quà thưởng</h3>
@@ -157,6 +163,16 @@ $('trLoad').onclick = function () {
     }).join('') + '</table>' : '<div class="pp-how">Chưa có lượt tặng/đổi nào.</div>';
   }).catch(function (e) { toast(e.message); });
 };
+$('soLoad').onclick = function () {
+  api('/api/garden/teacher/social').then(function (d) {
+    var th = 'style="text-align:left;color:var(--text-muted)"', td = 'style="border-top:1px solid var(--border);padding:3px 6px"', when = function (x) { return esc(new Date(x).toLocaleString('vi-VN')); };
+    var h = '<h4 style="margin:6px 0">💬 Lời nhắn & sticker (' + d.notes.length + ')</h4>' + (d.notes.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr ' + th + '><th>Thời gian</th><th>Người viết</th><th>Vườn của</th><th>Nội dung</th><th></th></tr>' + d.notes.map(function (n) { return '<tr' + (n.hidden ? ' style="opacity:.5"' : '') + '><td ' + td + '>' + when(n.at) + '</td><td ' + td + '>' + esc(n.from) + '</td><td ' + td + '>' + esc(n.to) + '</td><td ' + td + '>' + esc((n.sticker || '') + ' ' + (n.text || '')) + '</td><td ' + td + '><button class="pp-btn" data-hide="' + n.id + '" data-h="' + (n.hidden ? 0 : 1) + '">' + (n.hidden ? 'Hiện lại' : 'Ẩn') + '</button></td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có lời nhắn nào.</div>');
+    h += '<h4 style="margin:12px 0 6px">💰 Tặng xu (' + d.xu.length + ')</h4>' + (d.xu.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr ' + th + '><th>Thời gian</th><th>Từ</th><th>Đến</th><th>Xu</th><th>Lời nhắn</th></tr>' + d.xu.map(function (g) { return '<tr><td ' + td + '>' + when(g.at) + '</td><td ' + td + '>' + esc(g.from) + '</td><td ' + td + '>' + esc(g.to) + '</td><td ' + td + '>' + g.xu + '</td><td ' + td + '>' + esc(g.note || '') + '</td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có lượt tặng xu nào.</div>');
+    h += '<h4 style="margin:12px 0 6px">🎁 Gói quà nhiều món (' + d.parcels.length + ')</h4>' + (d.parcels.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr ' + th + '><th>Thời gian</th><th>Từ</th><th>Đến</th><th>Số món</th><th>Trạng thái</th></tr>' + d.parcels.map(function (p) { return '<tr><td ' + td + '>' + when(p.at) + '</td><td ' + td + '>' + esc(p.from) + '</td><td ' + td + '>' + esc(p.to) + '</td><td ' + td + '>' + p.n + '</td><td ' + td + '>' + (TST[p.status] || p.status) + '</td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có gói quà nào.</div>');
+    $('soList').innerHTML = h;
+  }).catch(function (e) { toast(e.message); });
+};
+$('soList').addEventListener('click', function (e) { var b = e.target.closest('[data-hide]'); if (!b) return; fetch('/api/garden/teacher/note/hide', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: +b.getAttribute('data-hide'), hide: b.getAttribute('data-h') === '1' }) }).then(function () { $('soLoad').click(); }); });
 })();
 </script>
 </body>
