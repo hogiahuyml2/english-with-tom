@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="css/style.css?v=26">
 <script src="js/dialog.js?v=1"></script>
 <style>
-.adm-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 18px; padding: 6px; background: var(--surface, #fff); border: 1px solid var(--border); border-radius: 16px; position: sticky; top: 8px; z-index: 20; scrollbar-width: none; box-shadow: 0 6px 18px rgba(60,40,10,.08); }
+.adm-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 18px; padding: 6px; background: var(--surface, #fff); border: 1px solid var(--border); border-radius: 16px; position: sticky; top: var(--stick-top, 8px); z-index: 20; scrollbar-width: none; box-shadow: 0 6px 18px rgba(60,40,10,.08); }
 .adm-tabs::-webkit-scrollbar { display: none; }
 .adm-tab { flex: none; border: 0; background: transparent; color: var(--text-muted); font: 700 14px inherit; font-family: inherit; padding: 10px 16px; border-radius: 12px; cursor: pointer; white-space: nowrap; min-height: 42px; }
 .adm-tab:hover { background: var(--primary-soft); color: var(--primary); }
@@ -175,7 +175,7 @@
 
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=50"></script>
+<script src="js/main.js?v=51"></script>
 <script>
   var roleLabel = { student:'Học sinh', teacher:'Giáo viên', admin:'Quản trị' };
   var me = null;

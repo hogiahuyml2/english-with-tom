@@ -2,7 +2,7 @@
    Dùng: <div data-ewt-tabs="tên"> bao các khối con, mỗi khối có data-tab-title="📋 Tên tab". Tab đang chọn được nhớ theo từng trang. */
 (function () {
   'use strict';
-  var css = '.ewt-tabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 16px;padding:6px;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:16px;position:sticky;top:8px;z-index:20;scrollbar-width:none;box-shadow:0 6px 18px rgba(60,40,10,.08)}' +
+  var css = '.ewt-tabs{display:flex;gap:6px;overflow-x:auto;margin:0 0 16px;padding:6px;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:16px;position:sticky;top:var(--stick-top,8px);z-index:20;scrollbar-width:none;box-shadow:0 6px 18px rgba(60,40,10,.08)}' +
     '.ewt-tabs::-webkit-scrollbar{display:none}' +
     '.ewt-tab{flex:none;border:0;background:transparent;color:var(--text-muted,#64748b);font:700 14px inherit;font-family:inherit;padding:10px 16px;border-radius:12px;cursor:pointer;white-space:nowrap;min-height:42px}' +
     '.ewt-tab:hover{background:var(--primary-soft,#eef);color:var(--primary,#6F58EE)}' +

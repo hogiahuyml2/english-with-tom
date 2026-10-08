@@ -710,3 +710,10 @@ window.ewtImportKit = function (mount, o) {
   };
   return { refresh: refresh };
 };
+
+/* Các thanh dính (sticky) trong trang phải nằm DƯỚI thanh menu trên cùng, không bị che: đo chiều cao thật của header → biến --stick-top */
+(function () {
+  function fit() { var h = document.querySelector('.site-header'), v = 8; if (h) { var p = getComputedStyle(h).position; if (p === 'sticky' || p === 'fixed') v = Math.round(h.getBoundingClientRect().height) + 6; } document.documentElement.style.setProperty('--stick-top', v + 'px'); }
+  fit(); window.addEventListener('resize', fit); window.addEventListener('load', fit); [300, 900, 2200].forEach(function (t) { setTimeout(fit, t); });
+  if (window.ResizeObserver) { var t0 = setInterval(function () { var h = document.querySelector('.site-header'); if (h) { new ResizeObserver(fit).observe(h); clearInterval(t0); } }, 200); setTimeout(function () { clearInterval(t0); }, 5000); }
+})();

@@ -278,7 +278,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-lawn.z-madagascar { --bed: #C4EEA8; --bed2: #B2E496; --bedl: rgba(50,140,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px,#FC3D32 10px 20px,#007E3A 20px 30px); border-color: #007E3A; }
 .gd-nof { font-size: 40px; line-height: 1; height: 56px; display: grid; place-items: center; }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
-.gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+.gd-box { background: var(--surface); border-radius: 24px; width: 100%; max-width: 580px; max-height: 92vh; max-height: calc(100dvh - 28px); overflow-y: auto; padding: 20px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.4); }
 .gd-box h3 { margin: 0 0 4px; font-size: 20px; } .gd-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
 .gd-sel { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; } .gd-sel select, .gd-sel button { border: 2px solid var(--border); border-radius: 12px; padding: 8px 12px; font: 700 13.5px inherit; font-family: inherit; background: var(--surface); color: var(--text); min-height: 42px; } .gd-sel button.on { background: var(--primary); color: #fff; border-color: var(--primary); }
 .gd-q { background: var(--bg-soft); border-radius: 16px; padding: 14px; margin-bottom: 10px; } .gd-q .tp { font-size: 11.5px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: .3px; } .gd-q .qt { font-size: 17px; font-weight: 800; margin: 6px 0 2px; line-height: 1.45; }
@@ -336,6 +336,23 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .bp-big { position: absolute; z-index: 2; pointer-events: none; } .bp-big svg { width: 100%; height: 100%; }
 .bp-sum { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; margin: 8px 0; } .bp-sum div { background: #FFF3DC; border: 2px solid #E8C48C; border-radius: 12px; padding: 6px 10px; font-size: 13px; color: #5A3410; } .bp-sum b { display: block; font-size: 16px; }
 .bp-legend { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; } .bp-legend span { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; background: #fff; border: 1.5px solid #E8C48C; border-radius: 99px; padding: 2px 8px 2px 3px; color: #5A3410; } .bp-legend svg { width: 22px; height: 22px; }
+
+/* ── Bố cục KHÔNG CHỒNG NHAU ở mọi cỡ màn hình: thanh trên tự xuống dòng, thanh công cụ tự chia 2 cột / cuộn, nút phóng-thu có dải riêng ── */
+.gd-top { flex-wrap: wrap; row-gap: 8px; }
+.gd-me { max-width: min(100%, 440px); } .gd-me .lv, .gd-me .nx { overflow: hidden; text-overflow: ellipsis; max-width: 250px; white-space: nowrap; } .gd-bar { width: min(190px, 100%); }
+.gd-sign { flex: 1 1 230px; min-width: 230px; }
+.gd-res { flex: 0 1 auto; max-width: 100%; }
+.gd-pill #xu { max-width: 11ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: bottom; }
+.gd-dock { overflow-y: auto; overflow-x: hidden; scrollbar-width: none; overscroll-behavior: contain; } .gd-dock::-webkit-scrollbar { display: none; }
+.gd-dock.two { display: grid; grid-template-columns: repeat(2, auto); gap: 6px; }
+.gd-play { left: calc(var(--dockw, 86px) + 16px); }
+.gd-stage:not(.map) .gd-zctl { top: calc(var(--top) - 38px); left: calc(var(--dockw, 86px) + 16px); right: 16px; max-width: none; flex-wrap: nowrap; justify-content: flex-end; }
+.gd-hint { left: calc((var(--dockw, 86px) + 16px + 100% - 12px) / 2); }
+.gd-mbar { left: calc(var(--dockw, 86px) + 16px); right: 12px; transform: none; max-width: none; }
+@media (max-width: 640px) { .gd-hint { left: calc((var(--dockw, 62px) + 10px + 100% - 8px) / 2); } .gd-mbar { left: calc(var(--dockw, 62px) + 10px); right: 8px; } }
+.gd-stage.multi .gd-hint { display: none; } .gd-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: min(640px, calc(100% - var(--dockw, 86px) - 90px)); }
+.gd-stage:not(.map) .gd-logo { display: none; } .gd-play { padding-bottom: 48px; }
+@media (max-width: 640px) { .gd-play { left: calc(var(--dockw, 62px) + 10px); } .gd-stage:not(.map) .gd-zctl { left: 8px; right: 8px; } }
 @media (prefers-reduced-motion: reduce) { .gd-fx { display: none; } .rays polygon { animation: none; } .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-spin, .gt .ready, .sway, .flow, .smoke, .wave, .snowf, .spk, .float1, .float2, .beam, .duck, .boat, .gd-bird, .gd-bfly, .gd-star, .gd-card { animation: none !important; } .gd-pet { transition-duration: 0s; } }
 </style>
 <script src="js/dialog.js?v=1"></script>
@@ -544,7 +561,7 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 <div class="gd-toast" id="toast"></div>
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
-<script src="js/main.js?v=50"></script>
+<script src="js/main.js?v=51"></script>
 <script src="js/garden-catalog.js?v=1"></script>
 <script src="js/garden-cat-a.js?v=2"></script>
 <script src="js/garden-cat-b.js?v=2"></script>
@@ -713,7 +730,7 @@ function ensureLawn(z) {
 }
 function render() {
   if (!S) return;
-  $('gnameT').textContent = S.name; $('xu').textContent = COINS; $('wt').textContent = S.water;
+  $('gnameT').textContent = S.name; $('xu').textContent = fmtXu(COINS); $('xu').title = String(COINS); $('wt').textContent = S.water;
   $('lvb').textContent = 'Cấp ' + S.level + ' · ' + S.levelTitle;
   var cur = D.LEVELS[S.level - 1].at, nx = S.next ? S.next.need + S.beauty : null; $('lvbar').style.width = (nx ? Math.min(100, Math.round((S.beauty - cur) / (nx - cur) * 100)) : 100) + '%';
   $('lvnx').textContent = S.next ? 'Còn ' + S.next.need + ' điểm đẹp → cấp ' + S.next.level : '🏆 Cấp cao nhất!';
@@ -765,7 +782,7 @@ function renderTools() {
   else if (BRUSH && BRUSH.kind === 'big') hint = brushLabel() + ' — chạm vào ô góc trên-trái, cần đủ ' + D.BY[BRUSH.id].w + '×' + D.BY[BRUSH.id].h + ' ô trống liền nhau.';
   else if (BRUSH) hint = brushLabel() + ' — chạm vào ô đất trống để đặt. (Bấm lại món trong cửa hàng để bỏ chọn)';
   else hint = (CULT()[VIEW] ? '🛂 Chạm vào công trình để học từ vựng tiếng Anh về nơi này. ' : '') + (innerWidth < 640 ? 'Chọn món ở khay bên dưới rồi chạm ô đất 🌱' : 'Chọn một món ở khay cửa hàng bên dưới rồi chạm vào ô đất trống để trồng nhé 🌱');
-  $('hint').innerHTML = H(hint);
+  $('hint').innerHTML = H(hint); $('hint').title = hint;
 }
 
 
@@ -1408,8 +1425,24 @@ document.addEventListener('input', function (e) { if (e.target && e.target.id ==
 
 /* ───────── nhạc nền & âm thanh theo khu ───────── */
 /* trên điện thoại thanh trên cùng có thể xuống nhiều dòng → chừa chỗ đúng bằng chiều cao thật để không đè lên khu vườn */
-function fitTop() { var st = $('stage'), tp = st.querySelector('.gd-top'); if (!tp) return; if (innerWidth > 640) { st.style.removeProperty('--top'); return; } var h = Math.ceil(tp.getBoundingClientRect().height) + 6 + (st.classList.contains('map') ? 0 : 40); st.style.setProperty('--top', Math.max(104, h) + 'px'); }
-try { new MutationObserver(function () { fitTop(); }).observe($('stage'), { attributes: true, attributeFilter: ['class'] }); window.addEventListener('resize', fitTop); window.addEventListener('orientationchange', function () { setTimeout(fitTop, 250); }); } catch (e) {}
+function fitTop() {
+  var st = $('stage'), tp = st.querySelector('.gd-top'); if (!tp) return;
+  var h = Math.ceil(tp.getBoundingClientRect().height) + 6 + (st.classList.contains('map') ? 0 : 40);   // vùng chơi nằm DƯỚI thanh trên (+ dải nút phóng/thu trong khu)
+  st.style.setProperty('--top', Math.max(96, h) + 'px'); fitDock();
+}
+// Thanh công cụ trái: không để che khay cửa hàng — nếu cao hơn chỗ trống thì chia 2 cột (màn rộng) hoặc cuộn
+function fitDock() {
+  var st = $('stage'), d = $('tools'); if (!st || !d) return;
+  if (getComputedStyle(d).display === 'none') { st.style.setProperty('--dockw', '0px'); return; }
+  var cs = getComputedStyle(st), top = parseFloat(cs.getPropertyValue('--top')) || 100, tray = parseFloat(cs.getPropertyValue('--tray')) || 180;
+  var folded = st.classList.contains('fold'), avail = st.clientHeight - top - (folded ? 52 : tray) - 14;
+  d.classList.remove('two'); d.style.maxHeight = 'none';
+  if (d.scrollHeight > avail && innerWidth > 640) d.classList.add('two');
+  d.style.maxHeight = Math.max(110, avail) + 'px';
+  st.style.setProperty('--dockw', (d.offsetWidth + 0) + 'px');
+}
+function fmtXu(n) { n = +n || 0; if (n < 1e7) return n.toLocaleString('vi-VN'); var u = [[1e12, ' nghìn tỷ'], [1e9, ' tỷ'], [1e6, ' tr']], k; for (k = 0; k < u.length; k++) if (n >= u[k][0]) return (Math.round(n / u[k][0] * 10) / 10).toString().replace('.', ',') + u[k][1]; return String(n); }
+try { new MutationObserver(function () { fitTop(); }).observe($('stage'), { attributes: true, attributeFilter: ['class'] }); if (window.ResizeObserver) { new ResizeObserver(function () { fitTop(); }).observe(document.querySelector('.gd-top')); }  window.addEventListener('resize', fitTop); window.addEventListener('orientationchange', function () { setTimeout(fitTop, 250); }); } catch (e) {}
 function sndScene() {
   if (!window.EWTSound || !S) return;
   var evs = ((S.events && S.events.active) || []).map(function (e) { return e.id; });
@@ -1443,7 +1476,7 @@ function sndUi() {
 
 /* ───────── khởi động ───────── */
 buildScene(); paintIcons(); gfxInit(); timeOfDay(); setInterval(timeOfDay, 60000);
-try { if (localStorage.getItem('ewt-garden-fold')) { $('stage').classList.add('fold'); $('fold').textContent = '▴'; } } catch (e) {}
+try { var fz = localStorage.getItem('ewt-garden-fold'); if (fz || (fz === null && $('stage').clientHeight < 640)) { $('stage').classList.add('fold'); $('fold').textContent = '▴'; } } catch (e) {}
 var QP = new URLSearchParams(location.search), VQ = QP.get('visit') ? 'token=' + encodeURIComponent(QP.get('visit')) : QP.get('email') ? 'email=' + encodeURIComponent(QP.get('email')) : '';
 if (VQ) {
   VISIT = true; document.body.classList.add('visit'); document.title = 'Tham quan vườn — EWT Garden';
