@@ -353,6 +353,24 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-stage.multi .gd-hint { display: none; } .gd-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: min(640px, calc(100% - var(--dockw, 86px) - 90px)); }
 .gd-stage:not(.map) .gd-logo { display: none; } .gd-play { padding-bottom: 48px; }
 @media (max-width: 640px) { .gd-play { left: calc(var(--dockw, 62px) + 10px); } .gd-stage:not(.map) .gd-zctl { left: 8px; right: 8px; } }
+
+/* ── GỌN: nút chức năng nhỏ lại để dành chỗ cho khu vườn; gợi ý / ghi chú tự ẩn sau vài giây ── */
+.gd-stage { --tray: 160px; }
+.gd-top { padding: 6px 10px; gap: 6px; row-gap: 4px; }
+.gd-me { padding: 3px 10px 3px 4px; gap: 7px; border-width: 2px; border-radius: 16px; box-shadow: 0 3px 8px rgba(80,40,10,.25), inset 0 2px 0 #fff; }
+.gd-me .av { width: 38px; height: 38px; border-width: 2px; font-size: 22px; } .gd-me .lv { font-size: 12px; } .gd-me .nx { font-size: 10px; } .gd-bar { height: 8px; margin: 2px 0 1px; width: min(150px, 100%); }
+.gd-res { gap: 5px; }
+.gd-pill { min-height: 28px; font-size: 13px; padding: 1px 10px 1px 5px; gap: 5px; border-width: 2px; box-shadow: 0 3px 8px rgba(80,40,10,.25), inset 0 2px 0 #fff; } .gd-pill.btn { padding: 1px 10px; font-size: 12.5px; } .gd-pill.btn .ic { width: 20px; height: 20px; } .gd-pill .coin { width: 1em; height: 1em; }
+.gd-earn { min-height: 30px; padding: 3px 12px; font-size: 12.5px; border-width: 2px; box-shadow: 0 4px 10px rgba(255,107,107,.45); } .gd-earn .ic { width: 20px; height: 20px; vertical-align: middle; }
+.gd-zbtn { min-height: 26px; padding: 2px 9px; font-size: 12px; border-width: 2px; border-radius: 10px; box-shadow: 0 2px 6px rgba(60,30,5,.3); }
+.gd-zname { padding: 2px 10px; font-size: 12.5px; border-width: 2px; border-radius: 10px; } .gd-gname { padding: 2px 10px; font-size: 12px; border-width: 2px; margin-top: 2px; }
+.gd-logo h1 { font-size: 20px; } .gd-logo .mk { width: 28px; height: 28px; } .gd-zsz { font-size: 11px; padding: 2px 8px; } .gd-zctl { gap: 4px; }
+.gd-stage:not(.map) .gd-zctl { top: calc(var(--top) - 30px); } .gd-zctl .gd-zbtn { min-height: 24px; padding: 1px 8px; }
+.gd-dock { left: 8px; padding: 5px; gap: 5px; border-width: 2px; border-radius: 14px; box-shadow: 0 4px 12px rgba(60,30,5,.35), inset 0 2px 0 rgba(255,255,255,.3); } .gd-dock.two { gap: 4px; }
+.gd-tool { width: 46px; padding: 3px 1px; font-size: 9px; border-radius: 10px; } .gd-tool .ic { width: 24px; height: 24px; margin-bottom: 1px; } .gd-tool .ic.em { width: 24px; height: 24px; font-size: 17px; line-height: 24px; }
+.gd-hint { opacity: 0; visibility: hidden; transition: opacity .35s, visibility .35s; pointer-events: none; } .gd-hint.on { opacity: 1; visibility: visible; }
+.gd-note.flash { animation: noteFlash 4.2s ease forwards; } @keyframes noteFlash { 0%, 85% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } } .gd-note { opacity: 0; visibility: hidden; }
+@media (max-width: 640px) { .gd-pill.btn { font-size: 0; padding: 1px 9px; } .gd-stage { --tray: 146px; } .gd-tool { width: 42px; } .gd-zctl .gd-zbtn { min-height: 22px; } .gd-top { padding: 4px 6px; } }
 @media (prefers-reduced-motion: reduce) { .gd-fx { display: none; } .rays polygon { animation: none; } .gd-cloud, .gd-sun, .gd-earn, .gt.grow svg.sp, .gd-pet svg, .gd-spin, .gt .ready, .sway, .flow, .smoke, .wave, .snowf, .spk, .float1, .float2, .beam, .duck, .boat, .gd-bird, .gd-bfly, .gd-star, .gd-card { animation: none !important; } .gd-pet { transition-duration: 0s; } }
 </style>
 <script src="js/dialog.js?v=1"></script>
@@ -610,7 +628,7 @@ var VISIT = null, S = null, COINS = 0, SKEW = 0, TOOL = null, TAB = 'plant', SEL
 var COIN = '<i class="coin"></i>';
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function H(s) { return esc(s).replace(/🪙/g, COIN); }   // văn bản có biểu tượng xu → xu vàng vẽ bằng CSS (không phụ thuộc emoji của máy)
-var tt; function toast(t, ms) { var el = $('toast'); el.innerHTML = H(t); el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 2600); }
+var tt; function toast(t, ms) { var el = $('toast'); el.innerHTML = H(t); el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 3400); }
 function SND(n) { try { if (window.EWTSound) EWTSound.sfx(n); } catch (e) {} }
 function sfxApi(u, d) { var k = String(u).replace('/api/garden/', ''), m = { place: 'place', remove: 'click', water: 'water', harvest: d && d.gained ? 'harvest' : 'water', 'harvest-all': 'harvest', grow: 'reward', 'land/expand': 'levelup', 'zone/unlock': 'levelup', 'pet/adopt': 'reward', 'pet/feed': 'coin', 'quests/claim': 'reward', 'inbox/claim': 'reward', 'event/daily': 'reward', 'event/milestone': 'levelup', 'trade/send': 'send', 'trade/respond': 'reward', 'culture/answer': d && d.passed ? 'reward' : 'click', 'class/contribute': 'coin', 'quiz/flip': 'reward' }; if (m[k]) SND(m[k]); }
 function api(url, body) { return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi ' + r.status); e.data = d; SND('err'); throw e; } sfxApi(url, d); return d; }); }); }
@@ -769,10 +787,21 @@ async function askUnlock(z) {
 }
 function CULT() { return (window.EWTCulture || {}).CULTURE || {}; }
 function brushLabel() { var it = D.BY[BRUSH.id], p = priceOf(it, it.kind), b = bagN(it.id); return 'Đã chọn ' + it.name + (b ? ' (🧺 dùng từ giỏ, còn ' + b + ')' : p ? ' (' + p + ' 🪙)' : it.cost ? ' (🎟️ phiếu miễn phí)' : ' (miễn phí)'); }
+var HINT_T = null, HINT_LAST = null;
+function showHint(text) {   // gợi ý chỉ hiện ~3,8 giây mỗi khi nội dung đổi, rồi tự ẩn để dành chỗ cho khu vườn
+  var el = $('hint'); if (!el) return;
+  if (!text) { el.innerHTML = ''; el.classList.remove('on'); HINT_LAST = ''; return; }
+  if (text === HINT_LAST) return; HINT_LAST = text;
+  el.innerHTML = H(text); el.title = text; el.classList.add('on'); clearTimeout(HINT_T); HINT_T = setTimeout(function () { el.classList.remove('on'); }, 3800);
+}
+(function () {   // ghi chú ở khay cửa hàng cũng chỉ hiện vài giây mỗi khi đổi nội dung
+  var nt = document.getElementById('note'), last = ''; if (!nt || !window.MutationObserver) return;
+  new MutationObserver(function () { var t = nt.textContent; if (t === last) return; last = t; nt.classList.remove('flash'); void nt.offsetWidth; if (t) nt.classList.add('flash'); }).observe(nt, { childList: true, characterData: true, subtree: true });
+})();
 function renderTools() {
   renderMbar();
   [].forEach.call(document.querySelectorAll('[data-tool]'), function (b) { b.classList.toggle('on', TOOL === b.getAttribute('data-tool')); });
-  if (VISIT) { $('hint').innerHTML = ''; return; }
+  if (VISIT) { $('hint').innerHTML = ''; $('hint').classList.remove('on'); return; }
   var hint = '';
   if (VIEW === 'map') hint = innerWidth < 640 ? 'Chạm vào một khu để vào xây dựng 🗺️' : '🗺️ Chạm vào một khu để vào xem và xây dựng. Khu có ổ khoá cần đủ cấp vườn và xu để mở.';
   else if (TOOL === 'multi') hint = innerWidth < 640 ? '' : '☑️ Chạm hoặc KÉO qua nhiều ô để chọn; chọn món ở cửa hàng rồi bấm "Đặt", hoặc tưới / thu hoạch / dọn các ô đã chọn.';
@@ -782,7 +811,7 @@ function renderTools() {
   else if (BRUSH && BRUSH.kind === 'big') hint = brushLabel() + ' — chạm vào ô góc trên-trái, cần đủ ' + D.BY[BRUSH.id].w + '×' + D.BY[BRUSH.id].h + ' ô trống liền nhau.';
   else if (BRUSH) hint = brushLabel() + ' — chạm vào ô đất trống để đặt. (Bấm lại món trong cửa hàng để bỏ chọn)';
   else hint = (CULT()[VIEW] ? '🛂 Chạm vào công trình để học từ vựng tiếng Anh về nơi này. ' : '') + (innerWidth < 640 ? 'Chọn món ở khay bên dưới rồi chạm ô đất 🌱' : 'Chọn một món ở khay cửa hàng bên dưới rồi chạm vào ô đất trống để trồng nhé 🌱');
-  $('hint').innerHTML = H(hint); $('hint').title = hint;
+  showHint(hint);
 }
 
 
@@ -1427,7 +1456,7 @@ document.addEventListener('input', function (e) { if (e.target && e.target.id ==
 /* trên điện thoại thanh trên cùng có thể xuống nhiều dòng → chừa chỗ đúng bằng chiều cao thật để không đè lên khu vườn */
 function fitTop() {
   var st = $('stage'), tp = st.querySelector('.gd-top'); if (!tp) return;
-  var h = Math.ceil(tp.getBoundingClientRect().height) + 6 + (st.classList.contains('map') ? 0 : 40);   // vùng chơi nằm DƯỚI thanh trên (+ dải nút phóng/thu trong khu)
+  var h = Math.ceil(tp.getBoundingClientRect().height) + 4 + (st.classList.contains('map') ? 0 : 30);   // vùng chơi nằm DƯỚI thanh trên (+ dải nút phóng/thu trong khu)
   st.style.setProperty('--top', Math.max(96, h) + 'px'); fitDock();
 }
 // Thanh công cụ trái: không để che khay cửa hàng — nếu cao hơn chỗ trống thì chia 2 cột (màn rộng) hoặc cuộn
@@ -1442,7 +1471,7 @@ function fitDock() {
   st.style.setProperty('--dockw', (d.offsetWidth + 0) + 'px');
 }
 function fmtXu(n) { n = +n || 0; if (n < 1e7) return n.toLocaleString('vi-VN'); var u = [[1e12, ' nghìn tỷ'], [1e9, ' tỷ'], [1e6, ' tr']], k; for (k = 0; k < u.length; k++) if (n >= u[k][0]) return (Math.round(n / u[k][0] * 10) / 10).toString().replace('.', ',') + u[k][1]; return String(n); }
-try { new MutationObserver(function () { fitTop(); }).observe($('stage'), { attributes: true, attributeFilter: ['class'] }); if (window.ResizeObserver) { new ResizeObserver(function () { fitTop(); }).observe(document.querySelector('.gd-top')); }  window.addEventListener('resize', fitTop); window.addEventListener('orientationchange', function () { setTimeout(fitTop, 250); }); } catch (e) {}
+try { new MutationObserver(function () { fitTop(); }).observe($('stage'), { attributes: true, attributeFilter: ['class'] }); if (window.ResizeObserver) { new ResizeObserver(function () { fitTop(); }).observe(document.querySelector('.gd-top')); } if (window.ResizeObserver) { var lt = null; new ResizeObserver(function () { clearTimeout(lt); lt = setTimeout(function () { if (S && D.ZBY[VIEW]) layout(D.ZBY[VIEW]); }, 90); }).observe($('play')); }  window.addEventListener('resize', fitTop); window.addEventListener('orientationchange', function () { setTimeout(fitTop, 250); }); } catch (e) {}
 function sndScene() {
   if (!window.EWTSound || !S) return;
   var evs = ((S.events && S.events.active) || []).map(function (e) { return e.id; });
