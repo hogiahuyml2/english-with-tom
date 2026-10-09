@@ -78,6 +78,23 @@
     <button class="pp-btn" id="ctLoad" style="margin-top:8px">📋 Xem danh sách</button>
     <div id="ctList" style="margin-top:8px;overflow-x:auto"></div>
   </div>
+  <div class="pp-box" data-tab-title="🎯 Dự án EWT City">
+    <h3 style="margin:0 0 6px">🎯 Dự án cả lớp trong EWT City</h3>
+    <div class="pp-how">Chọn lớp ở phần trên, rồi tạo mục tiêu chung: cả lớp <b>cùng xây</b> một loại công trình, <b>cùng tăng dân số</b> hoặc <b>cùng học</b> các chương từ vựng. Tiến độ tự cộng từ thành phố của từng bạn. Khi đạt mục tiêu, mỗi bạn đã đóng góp nhận thưởng xu. Mỗi lớp có một dự án đang mở.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center">
+      <select id="cpKind" class="pp-btn"><option value="build">Cùng xây công trình</option><option value="pop">Cùng tăng dân số</option><option value="learn">Cùng học chương từ vựng</option></select>
+      <select id="cpItem" class="pp-btn"></select>
+      <input id="cpTarget" type="number" min="1" value="20" class="pp-btn" style="width:110px" title="Mục tiêu">
+      <input id="cpReward" type="number" min="0" max="2000" value="200" class="pp-btn" style="width:110px" title="Thưởng mỗi bạn (xu)">
+      <input id="cpTitle" class="pp-btn" maxlength="80" placeholder="Tên dự án (không bắt buộc)" style="min-width:200px">
+      <button class="pp-btn" id="cpMake">➕ Tạo dự án</button>
+    </div>
+    <div class="pp-how" id="cpHint" style="margin-top:6px"></div>
+    <div id="cpList" style="margin-top:8px"></div>
+    <h4 style="margin:14px 0 6px">💬 Lời nhắn & quà trong EWT City</h4>
+    <button class="pp-btn" id="csLoad">📋 Xem hoạt động gần đây</button>
+    <div id="csList" style="margin-top:8px;overflow-x:auto"></div>
+  </div>
   <div class="pp-box" data-tab-title="🎁 Tặng thưởng">
     <h3 style="margin:0 0 6px">🎁 Tặng quà thưởng</h3>
     <div class="pp-how">Chọn học sinh (hoặc cả lớp), nhập số xu (tối đa 500/lần) và/hoặc số rương quà (tối đa 3/lần). Học sinh sẽ thấy quà ở mục <b>🎯 Nhiệm vụ → Quà</b> trong EWT Garden.</div>
@@ -106,6 +123,7 @@
 <script src="js/main.js?v=53"></script>
 <script src="js/tabs.js?v=2"></script>
 <script src="js/garden-data.js?v=24"></script>
+<script src="js/city-data.js?v=6"></script>
 <script>
 (function () {
 var $ = function (id) { return document.getElementById(id); }, CUR = 0, MEM = [], D = window.EWTGardenData;
@@ -172,7 +190,7 @@ $('trLoad').onclick = function () {
 $('ctLoad').onclick = function () {
   api('/api/city/teacher/overview').then(function (d) {
     var td = 'style="border-top:1px solid var(--border);padding:3px 8px"';
-    $('ctList').innerHTML = d.cities.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:var(--text-muted)"><th>Học sinh</th><th>Cấp</th><th>Dân số</th><th>Hạnh phúc</th><th>Công trình</th><th>Quận</th><th>Chương từ vựng</th><th>Chơi lần cuối</th></tr>' + d.cities.map(function (c) { return '<tr><td ' + td + '>' + esc(c.name) + '</td><td ' + td + '>' + c.level + '</td><td ' + td + '>' + c.pop + '</td><td ' + td + '>' + c.happy + '%</td><td ' + td + '>' + c.buildings + '</td><td ' + td + '>' + c.districts + '/6</td><td ' + td + '>' + c.chapters + '/' + c.chaptersTotal + '</td><td ' + td + '>' + esc(new Date(c.at).toLocaleString('vi-VN')) + '</td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có học sinh nào chơi EWT City.</div>';
+    $('ctList').innerHTML = d.cities.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:var(--text-muted)"><th>Học sinh</th><th>Cấp</th><th>Dân số</th><th>Hạnh phúc</th><th>Công trình</th><th>Quận</th><th>Chương từ vựng</th><th>Chơi lần cuối</th></tr>' + d.cities.map(function (c) { return '<tr><td ' + td + '>' + esc(c.name) + ' <a href="city.html?vuid=' + c.uid + '" target="_blank" title="Xem thành phố">👁️</a></td><td ' + td + '>' + c.level + '</td><td ' + td + '>' + c.pop + '</td><td ' + td + '>' + c.happy + '%</td><td ' + td + '>' + c.buildings + '</td><td ' + td + '>' + c.districts + '/6</td><td ' + td + '>' + c.chapters + '/' + c.chaptersTotal + '</td><td ' + td + '>' + esc(new Date(c.at).toLocaleString('vi-VN')) + '</td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có học sinh nào chơi EWT City.</div>';
   }).catch(function (e) { toast(e.message); });
 };
 $('soLoad').onclick = function () {
@@ -185,6 +203,30 @@ $('soLoad').onclick = function () {
   }).catch(function (e) { toast(e.message); });
 };
 $('soList').addEventListener('click', function (e) { var b = e.target.closest('[data-hide]'); if (!b) return; fetch('/api/garden/teacher/note/hide', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: +b.getAttribute('data-hide'), hide: b.getAttribute('data-h') === '1' }) }).then(function () { $('soLoad').click(); }); });
+
+var CKH = { build: 'Mục tiêu = tổng số công trình đã xây xong của cả lớp.', pop: 'Mục tiêu = tổng dân số của cả lớp.', learn: 'Mục tiêu = tổng số chương từ vựng cả lớp đã đạt (mỗi bạn tối đa 12).' };
+function cpSync() { var k = $('cpKind').value; $('cpItem').style.display = k === 'build' ? '' : 'none'; $('cpHint').textContent = CKH[k]; }
+(function () { var C = window.EWTCityData; if (C) $('cpItem').innerHTML = C.ITEMS.filter(function (i) { return !i.ev; }).map(function (i) { return '<option value="' + i.k + '">' + esc(i.vi) + ' (' + esc(i.en) + ')</option>'; }).join(''); cpSync(); })();
+$('cpKind').onchange = cpSync;
+function cpLoad() {
+  if (!CUR) return; api('/api/city/teacher/projects?group_id=' + CUR).then(function (d) {
+    $('cpList').innerHTML = (d.projects || []).length ? d.projects.map(function (p) { var pc = Math.min(100, Math.round(p.total / p.target * 100));
+      return '<div class="pp-box" style="margin:8px 0"><b>' + esc(p.title) + '</b>' + (p.itemVi ? ' · ' + esc(p.itemVi) : '') + ' — ' + (p.status === 'open' ? '🟢 Đang mở' : p.status === 'done' ? '✅ Đã hoàn thành' : '⛔ Đã huỷ') + '<div class="gg-bar"><i style="width:' + pc + '%"></i></div>' + p.total + ' / ' + p.target + ' · thưởng ' + p.reward + ' xu/bạn' + (p.top.length ? '<div style="font-size:12px;margin-top:4px">Góp nhiều nhất: ' + p.top.map(function (t) { return esc(t.name) + ' (' + t.v + ')'; }).join(', ') + '</div>' : '') +
+        (p.status === 'open' ? '<div style="margin-top:8px"><button class="pp-btn" data-cpc="' + p.id + '">⛔ Huỷ dự án</button></div>' : '') + '</div>'; }).join('') : '<div class="pp-how">Lớp này chưa có dự án EWT City nào.</div>';
+  }).catch(function () {});
+}
+$('clsSel').addEventListener('change', cpLoad); setTimeout(cpLoad, 800);
+$('cpMake').onclick = function () { api('/api/city/teacher/project', { group_id: CUR, kind: $('cpKind').value, k: $('cpItem').value, target: +$('cpTarget').value, reward: +$('cpReward').value, title: $('cpTitle').value }).then(function () { toast('Đã tạo dự án cho lớp 🎯'); cpLoad(); }).catch(function (e) { toast(e.message); }); };
+$('cpList').addEventListener('click', function (e) { var b = e.target.closest('[data-cpc]'); if (!b) return; api('/api/city/teacher/project/cancel', { id: +b.getAttribute('data-cpc') }).then(cpLoad).catch(function (er) { toast(er.message); }); });
+$('csLoad').onclick = function () {
+  api('/api/city/teacher/social').then(function (d) {
+    var th = 'style="text-align:left;color:var(--text-muted)"', td = 'style="border-top:1px solid var(--border);padding:3px 6px"', when = function (x) { return esc(new Date(x).toLocaleString('vi-VN')); };
+    var h = '<h4 style="margin:6px 0">💬 Lời nhắn (' + d.notes.length + ')</h4>' + (d.notes.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr ' + th + '><th>Thời gian</th><th>Người viết</th><th>Thành phố của</th><th>Nội dung</th><th></th></tr>' + d.notes.map(function (n) { return '<tr' + (n.hidden ? ' style="opacity:.5"' : '') + '><td ' + td + '>' + when(n.at) + '</td><td ' + td + '>' + esc(n.from) + '</td><td ' + td + '>' + esc(n.to) + '</td><td ' + td + '>' + esc((n.sticker || '') + ' ' + (n.text || '')) + '</td><td ' + td + '><button class="pp-btn" data-chide="' + n.id + '" data-h="' + (n.hidden ? 0 : 1) + '">' + (n.hidden ? 'Hiện lại' : 'Ẩn') + '</button></td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có lời nhắn nào.</div>');
+    h += '<h4 style="margin:12px 0 6px">🎁 Quà là đồ trong kho (' + d.gifts.length + ')</h4>' + (d.gifts.length ? '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr ' + th + '><th>Thời gian</th><th>Từ</th><th>Đến</th><th>Món</th><th>SL</th></tr>' + d.gifts.map(function (g) { return '<tr><td ' + td + '>' + when(g.at) + '</td><td ' + td + '>' + esc(g.from) + '</td><td ' + td + '>' + esc(g.to) + '</td><td ' + td + '>' + esc(g.item) + '</td><td ' + td + '>' + g.n + '</td></tr>'; }).join('') + '</table>' : '<div class="pp-how">Chưa có lượt tặng đồ nào.</div>');
+    $('csList').innerHTML = h;
+  }).catch(function (e) { toast(e.message); });
+};
+$('csList').addEventListener('click', function (e) { var b = e.target.closest('[data-chide]'); if (!b) return; api('/api/city/teacher/note/hide', { id: +b.getAttribute('data-chide'), hide: b.getAttribute('data-h') === '1' }).then(function () { $('csLoad').click(); }); });
 })();
 </script>
 </body>
