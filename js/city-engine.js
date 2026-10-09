@@ -17,8 +17,12 @@
   function Engine(canvas, mini, opts) {
     var E = this; E.cv = canvas; E.ctx = canvas.getContext('2d'); E.mini = mini || null; E.o = opts || {};
     E.cam = { x: 0, y: 0, z: .7 }; E.rot = 0; E.t0 = performance.now(); E.t = 0; E.dpr = Math.min(2, window.devicePixelRatio || 1);
+    // điện thoại / iPad: giảm độ phân giải vẽ, bắt đầu ở chất lượng vừa, tự hạ thêm nếu máy yếu
+    E.mobile = (function () { try { return (window.matchMedia && matchMedia('(pointer: coarse)').matches) || (navigator.maxTouchPoints || 0) > 1; } catch (e) { return false; } })();
+    var lowMem = (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+    if (E.mobile) E.dpr = Math.min(E.dpr, 1.5); E.inputT = performance.now(); E.lastDraw = 0;
     E.bs = []; E.roadsX = new Uint8Array(W * H); E.open = {}; E.occ = new Int32Array(W * H); E.mode = 'view'; E.ghost = null; E.sel = -1; E.hover = null; E.roadPrev = null;
-    E.weather = 'clear'; E.hourOverride = null; E.quality = 2; E.fx = { cars: true, people: true, boats: true, sky: true, shimmer: true };
+    E.weather = 'clear'; E.hourOverride = null; E.quality = E.mobile ? (lowMem ? 0 : 1) : 2; E.fx = { cars: true, people: true, boats: true, sky: true, shimmer: true };
     E.gcache = {}; E.entities = { cars: [], people: [], boats: [], birds: [], balloons: [], planes: [], clouds: [] }; E.rain = []; E.skew = 0; E.dirtyRoads = true; E.fixedSorted = [];
     E.tri = []; E.last = performance.now(); E.frameMs = 16; E.slow = 0; E.cullBox = null; E.version = 0; E.allowed = null;
     E.applyQuality(); E.resize(); E.bind(); E.initSky(); E.fitAll(true);
@@ -36,6 +40,7 @@
 
   P.resize = function () {
     var E = this, r = E.cv.getBoundingClientRect(); E.cw = Math.max(200, Math.round(r.width)); E.ch = Math.max(200, Math.round(r.height));
+    var budget = E.mobile ? 2.4e6 : 6e6, d = Math.max(1, Math.min(E.dpr, Math.sqrt(budget / (E.cw * E.ch)))); if (d < E.dpr) E.dpr = d;   // không để canvas quá lớn (iPad)
     E.cv.width = Math.round(E.cw * E.dpr); E.cv.height = Math.round(E.ch * E.dpr);
   };
 
@@ -188,12 +193,14 @@
     var pos = function (e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.style.touchAction = 'none';
     cv.addEventListener('pointerdown', function (e) {
+      E.poke();
       try { cv.setPointerCapture(e.pointerId); } catch (er) { /* bỏ qua */ } var p = pos(e); ptrs[e.pointerId] = p; var ids = Object.keys(ptrs);
       if (ids.length === 2) { var a = ptrs[ids[0]], b = ptrs[ids[1]]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), z: E.cam.z }; drag = null; return; }
       drag = { x: p[0], y: p[1], cx: E.cam.x, cy: E.cam.y, moved: false, pid: e.pointerId, touch: e.pointerType !== 'mouse', t: performance.now(), mode: E.mode, startTile: E.screenToTile(p[0], p[1]) };
       if (E.mode === 'road') { E.roadDrag = { a: drag.startTile, b: drag.startTile }; E.roadPrev = E.roadCells(); }
     });
     cv.addEventListener('pointermove', function (e) {
+      E.poke();
       var p = pos(e); if (ptrs[e.pointerId]) ptrs[e.pointerId] = p;
       if (pinch && Object.keys(ptrs).length >= 2) { var ids = Object.keys(ptrs), a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]); E.zoomAt((pinch.z * d / pinch.d) / E.cam.z, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); E.clampCam(); return; }
       if (drag && drag.pid === e.pointerId) {
@@ -209,7 +216,7 @@
       if (!d.moved) { var now = performance.now(), dbl = now - lastTap < 320 && lastTapPos && Math.hypot(p[0] - lastTapPos[0], p[1] - lastTapPos[1]) < 24; lastTap = now; lastTapPos = p; E.tap(p[0], p[1], dbl); }
     };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', function (e) { delete ptrs[e.pointerId]; drag = null; pinch = null; E.roadDrag = null; E.roadPrev = null; });
-    cv.addEventListener('wheel', function (e) { e.preventDefault(); var p = pos(e); E.zoomAt(Math.exp(-e.deltaY * .0016), p[0], p[1]); E.clampCam(); }, { passive: false });
+    cv.addEventListener('wheel', function (e) { e.preventDefault(); E.poke(); var p = pos(e); E.zoomAt(Math.exp(-e.deltaY * .0016), p[0], p[1]); E.clampCam(); }, { passive: false });
     cv.addEventListener('pointerleave', function () { E.hover = null; });
     window.addEventListener('resize', function () { E.resize(); });
     // mini-map
@@ -256,7 +263,7 @@
       var lvShow = b.lv; if (b.tg > b.lv && b.t1 <= now) lvShow = b.tg;
       var kind = lvShow === 0 ? 's' : 'b', kk = lvShow === 0 ? 'scaf' : b.k, ll = lvShow === 0 ? 1 : lvShow;
       // dựng sprite dần dần (tối đa ~12 ms mỗi khung hình) để lần mở đầu không bị khựng
-      if (!A.has(kind, kk, ll, rw, rh) && performance.now() - t0 > 12) { late = true; sp = A.placeholder(); } else sp = A.getSprite(kind, kk, ll, rw, rh);
+      if (!A.has(kind, kk, ll, rw, rh) && performance.now() - t0 > (E.mobile ? 6 : 12)) { late = true; sp = A.placeholder(); } else sp = A.getSprite(kind, kk, ll, rw, rh);
       out.push({ b: b, it: it, sp: sp, rw: rw, rh: rh, sx: (r.rx - r.ry) * HW, sy: (r.rx + r.ry) * HH, d: (r.rx + r.rw) + (r.ry + r.rh), site: lvShow === 0 });
     }
     E.sb = out.sort(function (a, b) { return a.d - b.d; }); E.sbKey = late ? null : key; return E.sb;
@@ -264,11 +271,16 @@
 
   /* ───── VẼ ───── */
   P.frame = function (ts) {
-    var E = this; if (document.hidden) return; var dt = Math.min(.08, (ts - E.last) / 1000); E.last = ts; E.t = (ts - E.t0) / 1000; E.nf = (E.nf | 0) + 1;
-    E.frameMs = E.frameMs * .94 + dt * 1000 * .06; if (E.nf > 200 && E.frameMs > 26) { if (++E.slow > 90 && E.quality > 0) { E.quality--; E.slow = 0; E.applyQuality(); } } else E.slow = Math.max(0, E.slow - 1);
+    var E = this; if (document.hidden) return;
+    // máy cảm ứng khi không chạm quá 2,5 giây (hoặc chất lượng thấp nhất) → 30 khung/giây cho mát máy, đỡ giật
+    var gap = (E.mobile && ts - E.inputT > 2500) || E.quality === 0 ? 31 : 0; if (gap && ts - E.lastDraw < gap) return; E.lastDraw = ts;
+    var dt = Math.min(.08, (ts - E.last) / 1000); E.last = ts; E.t = (ts - E.t0) / 1000; E.nf = (E.nf | 0) + 1;
+    if (!gap) { E.frameMs = E.frameMs * .94 + dt * 1000 * .06; if (E.nf > 200 && E.frameMs > 26) { if (++E.slow > 90) { E.slow = 0; if (E.dpr > 1.05) { E.dpr = Math.max(1, E.dpr * .8); E.resize(); } else if (E.quality > 0) { E.quality--; E.applyQuality(); } } } else E.slow = Math.max(0, E.slow - 1); }
+    else E.frameMs = Math.min(E.frameMs, 24);
     if (E.anim) { var a = E.anim; a.t += dt; var k = clamp(a.t / a.d, 0, 1), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; E.cam.x = a.x0 + (a.x1 - a.x0) * e; E.cam.y = a.y0 + (a.y1 - a.y0) * e; E.cam.z = a.z0 + (a.z1 - a.z0) * e; if (k >= 1) E.anim = null; }
-    E.update(dt); E.draw(); if (E.mini && (ts - (E.miniT || 0) > 250)) { E.miniT = ts; E.drawMini(); }
+    E.update(dt); E.draw(); if (E.mini && (ts - (E.miniT || 0) > (E.mobile ? 600 : 250))) { E.miniT = ts; E.drawMini(); }
   };
+  P.poke = function () { this.inputT = performance.now(); };
   P.applyQuality = function () { var f = this.fx; f.shimmer = this.quality >= 2; f.people = this.quality >= 1; f.sky = this.quality >= 1; f.carsMax = this.quality >= 2 ? 60 : this.quality === 1 ? 30 : 12; };
   P.update = function (dt) {
     var E = this, en = E.entities, i, L = E.roadList(), nc = Math.min(E.fx.carsMax || 60, Math.round(L.length / 28)), np = E.fx.people ? Math.min(E.quality >= 2 ? 70 : 30, Math.round(L.length / 22)) : 0;
@@ -380,16 +392,30 @@
     }
   };
   // vẽ công trình + thực thể
+  // tập vật thể TĨNH (nhà, công trình cố định, cảnh quan) đã xếp sẵn theo chiều sâu — chỉ dựng lại khi dữ liệu / góc xoay đổi, không xếp lại mỗi khung hình
+  P.staticItems = function (list, F, sc) {
+    var E = this, c = E.stCache; if (c && c.a === list && c.b === F && c.c === sc) return c.items;
+    var items = [], i; for (i = 0; i < list.length; i++) items.push({ d: list[i].d, k: 0, e: list[i] }); for (i = 0; i < F.length; i++) items.push({ d: F[i].d, k: 2, e: F[i] }); for (i = 0; i < sc.length; i++) items.push({ d: sc[i].d, k: 3, e: sc[i] });
+    items.sort(function (a, b) { return a.d - b.d; }); E.stCache = { a: list, b: F, c: sc, items: items }; return items;
+  };
+  // cảnh quan nhỏ bị bỏ khi thu nhỏ bản đồ (không nhìn thấy gì mà vẫn tốn công vẽ)
+  var TINY = { lamp: 1, buoy: 1, umbrella: 1, lounger: 1, rock: 1 };
   P.drawObjects = function (ctx, now, night) {
-    var E = this, list = E.sortedBuildings(), vis = E.visBox(), items = [], i, e, en = E.entities, t = E.t;
-    for (i = 0; i < list.length; i++) { e = list[i]; if (e.sx + 200 < vis[0] || e.sx - 300 > vis[2] || e.sy - e.sp.oy - 300 > vis[3] || e.sy + 200 < vis[1]) continue; items.push({ d: e.d, k: 0, e: e }); }
-    var F = E.fixedList(); for (i = 0; i < F.length; i++) { e = F[i]; if (e.sx + 200 < vis[0] || e.sx - 300 > vis[2] || e.sy - e.sp.oy - 300 > vis[3] || e.sy + 200 < vis[1]) continue; items.push({ d: e.d, k: 2, e: e }); }
-    var sc = E.sceneryList(); for (i = 0; i < sc.length; i++) { e = sc[i]; if (e.sx + 100 < vis[0] || e.sx - 100 > vis[2] || e.sy - 40 > vis[3] || e.sy + 130 < vis[1]) continue; items.push({ d: e.d, k: 3, e: e }); }
-    if (E.fx.cars !== false) for (i = 0; i < en.cars.length; i++) { var c = en.cars[i]; items.push({ d: E.depthOf(c.x, c.y), k: 1, e: c, car: true }); }
-    for (i = 0; i < en.people.length; i++) { var pp = en.people[i]; items.push({ d: E.depthOf(pp.x, pp.y), k: 1, e: pp, car: false }); }
-    if (E.fx.boats !== false) E.boats().forEach(function (b) { items.push({ d: E.depthOf(b.x, b.y), k: 4, e: b }); });
-    if (E.mode === 'place' && E.ghost) { var it = C.BY[E.ghost.k], r = rotRect(E.rot, E.ghost.x, E.ghost.y, it.w, it.h); items.push({ d: (r.rx + r.rw) + (r.ry + r.rh) + .001, k: 5, e: { g: E.ghost, it: it, r: r } }); }
-    items.sort(function (a, b) { return a.d - b.d; });
+    var E = this, list = E.sortedBuildings(), vis = E.visBox(), items = [], i, e, en = E.entities, t = E.t, z = E.cam.z, st = E.staticItems(list, E.fixedList(), E.sceneryList()), dyn = [];
+    var skipTiny = z < .38, onlyBig = z < .2;
+    for (i = 0; i < st.length; i++) {
+      var o0 = st[i]; e = o0.e;
+      if (o0.k === 3) { if (onlyBig ? e.t !== 'peak' : (skipTiny && TINY[e.t])) continue; if (e.sx + 100 < vis[0] || e.sx - 100 > vis[2] || e.sy - 40 > vis[3] || e.sy + 130 < vis[1]) continue; }
+      else if (e.sx + 200 < vis[0] || e.sx - 300 > vis[2] || e.sy - e.sp.oy - 300 > vis[3] || e.sy + 200 < vis[1]) continue;
+      items.push(o0);
+    }
+    if (E.fx.cars !== false && z >= .16) for (i = 0; i < en.cars.length; i++) { var c = en.cars[i]; dyn.push({ d: E.depthOf(c.x, c.y), k: 1, e: c, car: true }); }
+    if (z >= .3) for (i = 0; i < en.people.length; i++) { var pp = en.people[i]; dyn.push({ d: E.depthOf(pp.x, pp.y), k: 1, e: pp, car: false }); }
+    if (E.fx.boats !== false) E.boats().forEach(function (b) { dyn.push({ d: E.depthOf(b.x, b.y), k: 4, e: b }); });
+    if (E.mode === 'place' && E.ghost) { var it = C.BY[E.ghost.k], r = rotRect(E.rot, E.ghost.x, E.ghost.y, it.w, it.h); dyn.push({ d: (r.rx + r.rw) + (r.ry + r.rh) + .001, k: 5, e: { g: E.ghost, it: it, r: r } }); }
+    if (dyn.length) {   // trộn hai danh sách đã xếp theo chiều sâu
+      dyn.sort(function (a, b) { return a.d - b.d; }); var m = [], a = 0, b2 = 0; while (a < items.length || b2 < dyn.length) m.push(b2 >= dyn.length || (a < items.length && items[a].d <= dyn[b2].d) ? items[a++] : dyn[b2++]); items = m;
+    }
     var gl = []; E.glowList = gl;
     for (i = 0; i < items.length; i++) {
       var o = items[i];
@@ -433,14 +459,23 @@
       case 'buoy': var bb = Math.sin(t * 1.8 + e.k) * 1.6; ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.beginPath(); ctx.ellipse(x, y + 3, 8, 3, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#E9573F'; ctx.beginPath(); ctx.ellipse(x, y - 3 + bb, 4.6, 6, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillRect(x - 4.6, y - 5 + bb, 9.2, 2.4); ctx.fillStyle = '#FFD84A'; ctx.beginPath(); ctx.arc(x, y - 10 + bb, 1.6, 0, TAU); ctx.fill(); break;
     }
   };
+  // ảnh thu nhỏ sẵn (mipmap) cho công trình khi bản đồ thu nhỏ: ít điểm ảnh phải đọc hơn → nhẹ GPU điện thoại
+  P.lodImg = function (sp) {
+    if (sp.ph || !sp.c || !sp.c.width) return sp.c;
+    var need = (A.SS || 2) / (this.cam.z * this.dpr);   // số điểm ảnh gốc trên mỗi điểm ảnh màn hình
+    if (need < 1.9) return sp.c;
+    var lvl = need >= 3.8 ? 2 : 1, key = lvl === 2 ? 'c4' : 'c2';
+    if (!sp[key]) { var f = lvl === 2 ? .25 : .5, cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sp.c.width * f)); cv.height = Math.max(1, Math.round(sp.c.height * f)); var cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(lvl === 2 && sp.c2 ? sp.c2 : sp.c, 0, 0, cv.width, cv.height); sp[key] = cv; }
+    return sp[key];
+  };
   P.drawSprite = function (ctx, e, now, t, isB, gl) {
     var E = this, sp = e.sp, x, y;
     if (e.t) { E.drawProp(ctx, e, t, gl); return; }
     x = e.sx - sp.ox; y = e.sy - sp.oy;
-    ctx.drawImage(sp.c, x, y, sp.w, sp.h);
+    ctx.drawImage(E.lodImg(sp), x, y, sp.w, sp.h);
     var b = isB ? e.b : null, m = sp.meta;
     if (isB && e.site) { E.drawSiteExtras(ctx, e, sp, now); }
-    else {
+    else if (E.cam.z >= .3) {   // khói, cờ, vòi nước, vòng quay… chỉ vẽ khi đủ gần
       var k;
       if (m.smoke) for (k = 0; k < m.smoke.length; k++) { var s = m.smoke[k], ph; for (ph = 0; ph < 3; ph++) { var u = (t * .42 + ph / 3 + s[0] * .01) % 1; ctx.fillStyle = 'rgba(235,235,240,' + (.55 * (1 - u)) + ')'; ctx.beginPath(); ctx.arc(x + s[0] + u * 6, y + s[1] - u * 20, 2 + u * 4.2, 0, TAU); ctx.fill(); } }
       if (m.flags) m.flags.forEach(function (f) { ctx.fillStyle = f[2]; ctx.beginPath(); var fx = x + f[0], fy = y + f[1]; ctx.moveTo(fx, fy); var j; for (j = 0; j <= 6; j++) ctx.lineTo(fx + j * 2.2, fy + Math.sin(t * 5 + j * .8) * 1.4 + j * .1); for (j = 6; j >= 0; j--) ctx.lineTo(fx + j * 2.2, fy + 6 + Math.sin(t * 5 + j * .8) * 1.4 + j * .1); ctx.closePath(); ctx.fill(); });
@@ -545,7 +580,8 @@
     if (night > .02 && E.glowList) {
       var z = E.cam.z; ctx.save(); ctx.globalCompositeOperation = 'multiply'; var k = night, fr = 255 - Math.round(150 * k), fg = 255 - Math.round(125 * k), fb = 255 - Math.round(60 * k); ctx.fillStyle = 'rgb(' + fr + ',' + fg + ',' + fb + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore();
       ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(.85, night * 1.1);
-      E.glowList.forEach(function (q) { if (q[2] && q[2].glow) ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); else { var g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], q[2]); g.addColorStop(0, 'rgba(255,225,140,.9)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); } });
+      var gmax = E.quality >= 2 ? 1e9 : E.quality === 1 ? 140 : 0, gcount = 0;
+      if (gmax) E.glowList.forEach(function (q) { if (++gcount > gmax) return; if (q[2] && q[2].glow) ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); else { var g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], q[2]); g.addColorStop(0, 'rgba(255,225,140,.9)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); } });
       ctx.restore();
     } else { var h = E.hour(); if (h >= 17 && h < 18.5) { ctx.save(); ctx.globalCompositeOperation = 'multiply'; var gv = (h - 17) / 1.5; ctx.fillStyle = 'rgb(255,' + (255 - Math.round(40 * gv)) + ',' + (255 - Math.round(90 * gv)) + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore(); } }
     if (w === 'rain' || w === 'snow') {
