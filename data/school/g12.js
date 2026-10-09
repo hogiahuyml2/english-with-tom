@@ -150,14 +150,14 @@
     ex: [['She doesn\'t like coffee very much.', 'Cô ấy không thích cà phê lắm.'], ['The number of students in my school is increasing.', 'Số lượng học sinh ở trường mình đang tăng.'], ['I have never been to Hue.', 'Mình chưa từng đến Huế.'], ['He drove carefully to avoid an accident.', 'Anh ấy lái xe cẩn thận để tránh tai nạn.'], ['We discussed the problem for an hour.', 'Chúng mình đã thảo luận vấn đề đó một tiếng.'], ['She gave me some useful advice.', 'Cô ấy cho mình vài lời khuyên hữu ích.'], ['My house is bigger than hers.', 'Nhà mình lớn hơn nhà cô ấy.'], ['Not only the students but also the teacher was surprised.', 'Không chỉ học sinh mà cả giáo viên cũng ngạc nhiên.']],
     mis: [['She don\'t like coffee.', "She doesn't like coffee.", 'Lỗi hòa hợp chủ vị / trợ động từ.'], ['I have seen him yesterday.', 'I saw him yesterday.', 'Lỗi thì.'], ['He gave me many advices.', 'He gave me a lot of advice.', 'advice không đếm được.'], ['She is more taller than me.', 'She is taller than me.', 'Lỗi so sánh.']],
     quiz: [
-      ['She likes (A) swimming, (B) to cook, (C) and (D) reading. — Tìm lỗi sai (nhãn đặt trước phần cần xét).', ['A', 'B', 'C', 'D'], 1, 'Cấu trúc song song: swimming, cooking, and reading (cùng dạng V-ing).', 1],
-      ['I (A) have seen (B) him (C) yesterday (D) at the market. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 0, 'yesterday là mốc quá khứ → phải dùng quá khứ đơn "saw", không dùng "have seen".', 1],
-      ['The number (A) of students (B) in my class (C) are (D) forty. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'The number of + N số nhiều → động từ số ít: "is".', 1],
-      ['She gave me (A) some (B) good (C) advices (D) yesterday. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'advice là danh từ không đếm được, không thêm s: "some good advice".', 1],
-      ['(A) Despite of (B) the heavy rain, (C) we (D) went out. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 0, 'Đúng là "Despite" hoặc "In spite of", không có "Despite of".', 1],
-      ['We (A) talked (B) about the plan (C) and discussed (D) about the schedule. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 3, 'discuss không đi với about: "discussed the schedule".', 1],
-      ['My brother (A) is (B) very good (C) in (D) mathematics. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'Tính từ good đi với giới từ at: "good at mathematics".', 1],
-      ["I'm (A) looking forward (B) to (C) meet (D) you soon. — Tìm lỗi sai.", ['A', 'B', 'C', 'D'], 2, 'look forward to + V-ing: "meeting" (phần (C) meet là phần sai).', 1]
+      ['She likes (A) swimming, (B) to cook, (C) and (D) reading. — Tìm lỗi sai (nhãn đặt trước phần cần xét).', ['A — swimming', 'B — to cook', 'C — and', 'D — reading'], 1, 'Cấu trúc song song: swimming, cooking, and reading (cùng dạng V-ing).', 1],
+      ['I (A) have seen (B) him (C) yesterday (D) at the market. — Tìm lỗi sai.', ['A — have seen', 'B — him', 'C — yesterday', 'D — at the market'], 0, 'yesterday là mốc quá khứ → phải dùng quá khứ đơn "saw", không dùng "have seen".', 1],
+      ['The number (A) of students (B) in my class (C) are (D) forty. — Tìm lỗi sai.', ['A — of students', 'B — in my class', 'C — are', 'D — forty'], 2, 'The number of + N số nhiều → động từ số ít: "is".', 1],
+      ['She gave me (A) some (B) good (C) advices (D) yesterday. — Tìm lỗi sai.', ['A — some', 'B — good', 'C — advices', 'D — yesterday'], 2, 'advice là danh từ không đếm được, không thêm s: "some good advice".', 1],
+      ['(A) Despite of (B) the heavy rain, (C) we (D) went out. — Tìm lỗi sai.', ['A — Despite of', 'B — the heavy rain', 'C — we', 'D — went out'], 0, 'Đúng là "Despite" hoặc "In spite of", không có "Despite of".', 1],
+      ['We (A) talked (B) about the plan (C) and discussed (D) about the schedule. — Tìm lỗi sai.', ['A — talked', 'B — about the plan', 'C — and discussed', 'D — about the schedule'], 3, 'discuss không đi với about: "discussed the schedule".', 1],
+      ['My brother (A) is (B) very good (C) in (D) mathematics. — Tìm lỗi sai.', ['A — is', 'B — very good', 'C — in', 'D — mathematics'], 2, 'Tính từ good đi với giới từ at: "good at mathematics".', 1],
+      ["I'm (A) looking forward (B) to (C) meet (D) you soon. — Tìm lỗi sai.", ['A — looking forward', 'B — to', 'C — meet', 'D — you soon'], 2, 'look forward to + V-ing: "meeting" (phần (C) meet là phần sai).', 1]
     ]
   });
 
@@ -502,10 +502,10 @@
     ],
     mis: [['The film was bored.', 'The film was boring.', 'Vật gây cảm giác → -ing.'], ['He is the most tallest boy.', 'He is the tallest boy.', 'Không dùng most cùng -est.'], ['I don\'t know where is he.', 'I don\'t know where he is.', 'Không đảo trong mệnh đề danh từ.']],
     quiz: [
-      ['She (A) enjoys (B) to read (C) novels (D) in her free time. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 1, 'enjoy + V-ing: "reading".', 1],
-      ['If (A) it (B) will rain (C) tomorrow, we (D) will stay home. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 1, 'Mệnh đề if dùng hiện tại đơn: "rains".', 1],
-      ['The film (A) was (B) so (C) bored (D) that we left. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 2, 'Vật gây cảm giác: "boring".', 1],
-      ['He (A) told (B) that (C) he (D) was tired. — Tìm lỗi sai.', ['A', 'B', 'C', 'D'], 0, 'told cần tân ngữ: "told me that…" hoặc dùng "said".', 1]
+      ['She (A) enjoys (B) to read (C) novels (D) in her free time. — Tìm lỗi sai.', ['A — enjoys', 'B — to read', 'C — novels', 'D — in her free time'], 1, 'enjoy + V-ing: "reading".', 1],
+      ['If (A) it (B) will rain (C) tomorrow, we (D) will stay home. — Tìm lỗi sai.', ['A — it', 'B — will rain', 'C — tomorrow, we', 'D — will stay home'], 1, 'Mệnh đề if dùng hiện tại đơn: "rains".', 1],
+      ['The film (A) was (B) so (C) bored (D) that we left. — Tìm lỗi sai.', ['A — was', 'B — so', 'C — bored', 'D — that we left'], 2, 'Vật gây cảm giác: "boring".', 1],
+      ['He (A) told (B) that (C) he (D) was tired. — Tìm lỗi sai.', ['A — told', 'B — that', 'C — he', 'D — was tired'], 0, 'told cần tân ngữ: "told me that…" hoặc dùng "said".', 1]
     ]
   });
 })();
