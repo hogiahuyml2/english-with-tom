@@ -2332,6 +2332,7 @@ require('./reading')(app, { db, requireAuth, now });
 require('./today')(app, { db, requireAuth, now });
 require('./garden')(app, { db, requireAuth, requireRole, now, notifyUser });
 require('./city')(app, { db, requireAuth, now, notifyUser });   // EWT City
+require('./city-social')(app, { db, requireAuth, requireRole, now, notifyUser });   // EWT City: bạn bè, xếp hạng, dự án lớp
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./speaking')(app, { db, requireAuth, requireRole, now, notifyUser, upload, checkUpload, uploadsDir });

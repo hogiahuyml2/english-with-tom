@@ -449,29 +449,36 @@ module.exports = function (app, C) {
   });
 
   // 2) Tặng xu cho bạn (chuyển ngay, có hạn mức mỗi ngày)
-  app.post('/api/garden/xu/send', requireAuth, (req, res) => {
-    const b = req.body || {}, xu = Math.floor(Number(b.xu) || 0), note = cleanTxt(b.note, 60);
-    if (xu < SOCIAL.xuMin || xu > SOCIAL.xuMax) return bad(res, 'Mỗi lần tặng từ ' + SOCIAL.xuMin + ' đến ' + SOCIAL.xuMax + ' xu nhé.');
-    if (slow(req.user.id + ':xu', 10, 60e3)) return bad(res, 'Bạn thao tác nhanh quá, chờ một chút nhé.', 429);
+  // Chuyển xu giữa hai bạn (dùng chung giới hạn ngày cho cả Garden lẫn EWT City). to = { id, name }; trả { err } hoặc { to, left, coins }
+  function xuTransfer(fromUser, to, xu, note) {
+    if (xu < SOCIAL.xuMin || xu > SOCIAL.xuMax) return { err: 'Mỗi lần tặng từ ' + SOCIAL.xuMin + ' đến ' + SOCIAL.xuMax + ' xu nhé.' };
+    if (slow(fromUser.id + ':xu', 10, 60e3)) return { err: 'Bạn thao tác nhanh quá, chờ một chút nhé.', code: 429 };
     const out = tx(() => {
-      const to = friendByToken(b.to); if (!to || !to.open) return { err: 'Không tìm thấy bạn này, hoặc bạn ấy chưa mở vườn cho bạn bè.' };
-      if (to.id === req.user.id) return { err: 'Bạn không thể tặng xu cho chính mình.' };
+      if (!to) return { err: 'Không tìm thấy bạn này, hoặc bạn ấy chưa mở cho bạn bè.' };
+      if (to.id === fromUser.id) return { err: 'Bạn không thể tặng xu cho chính mình.' };
       const day = vnDay(), sum = (q, ...a) => one(q, ...a).s | 0;
-      if (one('SELECT COUNT(*) c FROM garden_xu_gifts WHERE from_uid=? AND day=?', req.user.id, day).c >= SOCIAL.xuCountDay) return { err: 'Hôm nay bạn đã tặng xu nhiều lần rồi — mai tiếp tục nhé!' };
-      const sent = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND day=?', req.user.id, day);
+      if (one('SELECT COUNT(*) c FROM garden_xu_gifts WHERE from_uid=? AND day=?', fromUser.id, day).c >= SOCIAL.xuCountDay) return { err: 'Hôm nay bạn đã tặng xu nhiều lần rồi — mai tiếp tục nhé!' };
+      const sent = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND day=?', fromUser.id, day);
       if (sent + xu > SOCIAL.xuSendDay) return { err: 'Mỗi ngày bạn tặng tối đa ' + SOCIAL.xuSendDay + ' xu (hôm nay đã tặng ' + sent + ').' };
-      const pair = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND to_uid=? AND day=?', req.user.id, to.id, day);
+      const pair = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE from_uid=? AND to_uid=? AND day=?', fromUser.id, to.id, day);
       if (pair + xu > SOCIAL.xuPairDay) return { err: 'Mỗi ngày tặng một bạn tối đa ' + SOCIAL.xuPairDay + ' xu (hôm nay đã tặng bạn này ' + pair + ').' };
       const recv = sum('SELECT COALESCE(SUM(xu),0) s FROM garden_xu_gifts WHERE to_uid=? AND day=?', to.id, day);
       if (recv + xu > SOCIAL.xuRecvDay) return { err: 'Hôm nay bạn ấy đã nhận khá nhiều xu rồi, hãy tặng vào ngày mai nhé.' };
-      const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(xu, req.user.id, xu); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + xu + ' 🪙).' };
+      const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(xu, fromUser.id, xu); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + xu + ' 🪙).' };
       db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(to.id); addCoins(to.id, xu);
-      db.prepare('INSERT INTO garden_xu_gifts (from_uid,to_uid,xu,note,day,created_at) VALUES (?,?,?,?,?,?)').run(req.user.id, to.id, xu, note, day, now());
+      db.prepare('INSERT INTO garden_xu_gifts (from_uid,to_uid,xu,note,day,created_at) VALUES (?,?,?,?,?,?)').run(fromUser.id, to.id, xu, note, day, now());
       return { to, left: SOCIAL.xuSendDay - sent - xu };
     });
-    if (out.err) return bad(res, out.err);
+    if (out.err) return out;
+    out.coins = coinsOf(fromUser.id); return out;
+  }
+  app.locals.xuTransfer = xuTransfer; app.locals.cleanTxt = cleanTxt;
+  app.post('/api/garden/xu/send', requireAuth, (req, res) => {
+    const b = req.body || {}, xu = Math.floor(Number(b.xu) || 0), note = cleanTxt(b.note, 60), to = friendByToken(b.to);
+    const out = xuTransfer(req.user, to && to.open ? to : null, xu, note);
+    if (out.err) return bad(res, out.err, out.code);
     try { if (notifyUser) notifyUser(out.to.id, 'garden_xu', '💰 ' + givenName(req.user.name) + ' tặng bạn ' + xu + ' xu!', note ? '“' + note + '”' : 'Xu đã vào ví của bạn trong EWT Garden.', 'garden.html'); } catch (e) { /* bỏ qua */ }
-    res.json({ ok: true, to: givenName(out.to.name), coins: coinsOf(req.user.id), left: out.left });
+    res.json({ ok: true, to: givenName(out.to.name), coins: out.coins, left: out.left });
   });
 
   // 3) Tặng NHIỀU món cùng lúc (chọn số lượng) — gửi thành "gói quà", bạn nhận đồng ý thì vào giỏ

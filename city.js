@@ -27,13 +27,13 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const bad = (res, msg, code) => res.status(code || 400).json({ error: msg });
   const tx = (fn) => { db.exec('BEGIN'); try { const r = fn(); if (r && r.err) db.exec('ROLLBACK'); else db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
 
-  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, inv: {}, lm: { d: '', n: 0 }, created: Date.now() }; }
+  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, inv: {}, open: 1, lm: { d: '', n: 0 }, created: Date.now() }; }
   function load(uid) {
     const r = one('SELECT state FROM city WHERE user_id=?', uid); let st = r ? J(r.state, null) : null;
     if (!st || typeof st !== 'object') { st = fresh(); db.prepare('INSERT OR REPLACE INTO city (user_id,state,updated_at) VALUES (?,?,?)').run(uid, JSON.stringify(st), now()); }
     st.districts = (Array.isArray(st.districts) ? st.districts : [0]).filter((d) => C.DISTRICTS[d]); if (st.districts.indexOf(0) < 0) st.districts.unshift(0);
     st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; st.bs = (Array.isArray(st.bs) ? st.bs : []).filter((b) => b && C.BY[b.k]);
-    st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.chapters = st.chapters && typeof st.chapters === 'object' ? st.chapters : {}; st.lm = st.lm || { d: '', n: 0 }; st.inv = st.inv && typeof st.inv === 'object' ? st.inv : {}; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
+    st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.chapters = st.chapters && typeof st.chapters === 'object' ? st.chapters : {}; st.lm = st.lm || { d: '', n: 0 }; st.inv = st.inv && typeof st.inv === 'object' ? st.inv : {}; st.open = st.open === 0 ? 0 : 1; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
     settle(st, Date.now()); return st;
   }
   const save = (uid, st) => db.prepare('UPDATE city SET state=?, updated_at=? WHERE user_id=?').run(JSON.stringify(st), now(), uid);
@@ -52,7 +52,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   function view(st, uid) {
     const t = Date.now(), s = stats(st);
     return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: pending(b, s, t) })),
-      free: st.free, inv: st.inv, ev: evList(), tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), chapters: Object.keys(st.chapters), matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)), now: t, coins: coinsOf(uid) };
+      free: st.free, inv: st.inv, open: st.open, ev: evList(), tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), chapters: Object.keys(st.chapters), matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)), now: t, coins: coinsOf(uid) };
   }
   const reply = (res, st, uid, extra) => res.json(Object.assign({ city: view(st, uid) }, extra || {}));
   const getB = (st, id) => st.bs.find((b) => b.i === Number(id));
@@ -380,4 +380,18 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const rows = db.prepare('SELECT c.user_id, c.state, c.updated_at, u.name FROM city c JOIN users u ON u.id=c.user_id ORDER BY c.updated_at DESC LIMIT 200').all();
     res.json({ cities: rows.map((r) => { const st = J(r.state, {}); st.bs = st.bs || []; st.districts = st.districts || [0]; st.roads = st.roads || {}; const s = stats(Object.assign({}, st, { free: {}, q: {} })); return { uid: r.user_id, name: r.name, level: s.level, pop: s.pop, happy: s.happy, buildings: s.n, districts: st.districts.length, chapters: Object.keys(st.chapters || {}).length, chaptersTotal: L.CH.length, at: r.updated_at }; }) });
   });
+
+  // đọc trạng thái người khác để xem / xếp hạng (KHÔNG tạo dữ liệu mới); trả null nếu chưa chơi
+  function peek(uid) {
+    const r = one('SELECT state FROM city WHERE user_id=?', uid); if (!r) return null; const st = J(r.state, null); if (!st || typeof st !== 'object') return null;
+    st.districts = (Array.isArray(st.districts) ? st.districts : [0]).filter((d) => C.DISTRICTS[d]); if (st.districts.indexOf(0) < 0) st.districts.unshift(0);
+    st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; st.bs = (Array.isArray(st.bs) ? st.bs : []).filter((b) => b && C.BY[b.k]); st.chapters = st.chapters || {}; st.inv = st.inv || {}; st.open = st.open === 0 ? 0 : 1; st.free = {}; st.q = {};
+    settle(st, Date.now()); return st;
+  }
+  // dạng hiển thị cho người xem (không có xu, không thu thuế)
+  function viewOther(st) {
+    const s = stats(st); return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: 0 })),
+      free: {}, inv: {}, ev: [], tickets: 0, coupons: 0, stats: s, quizLeft: 0, chapters: Object.keys(st.chapters), matchLeft: 0, now: Date.now(), coins: 0, open: st.open };
+  }
+  app.locals.city = { load, save, peek, viewOther, stats, tx, addCoins, coinsOf, spend, bad, vnDay, J, one };
 };
