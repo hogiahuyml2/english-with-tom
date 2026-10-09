@@ -191,8 +191,12 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
     const t = taskOf(req.params.id); if (!canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài của bạn.', 404);
     const uids = targetUsers(t), subs = new Map(all('SELECT * FROM essay_subs WHERE task_id=?', t.id).map((s) => [s.user_id, expireIfNeeded(s)]));
     const students = uids.map((uid) => { const u = one('SELECT id,name,email FROM users WHERE id=?', uid) || { id: uid, name: '?', email: '' }, s = subs.get(uid); return { id: u.id, name: u.name, email: u.email, sub: s ? { id: s.id, status: s.status, words: words(s.text), score: s.score, max: s.max_score, started_at: s.started_at, submitted_at: s.submitted_at, due_at: s.due_at, auto: !!s.auto, late: !!s.late, leaves: s.leaves, pastes: s.pastes } : null }; });
-    students.sort((a, b) => String(a.name).localeCompare(String(b.name), 'vi'));
-    res.json({ task: taskView(t), students, ai_ready: aiReady() });
+    // lớp của từng học sinh (trong các lớp của giáo viên) để lọc / nhóm theo lớp
+    const gs = req.user.role === 'admin' ? all('SELECT id,name FROM groups ORDER BY name') : all('SELECT id,name FROM groups WHERE teacher_id=? ORDER BY name', req.user.id), gids = new Set(gs.map((g) => g.id));
+    students.forEach((st) => { st.class_ids = all('SELECT group_id FROM group_members WHERE user_id=?', st.id).map((r) => r.group_id).filter((id) => gids.has(id)); });
+    const vk = (n) => { const w = String(n || '').trim().toLowerCase().split(/\s+/); return (w[w.length - 1] || '') + ' ' + String(n || '').toLowerCase(); };
+    students.sort((a, b) => vk(a.name).localeCompare(vk(b.name), 'vi'));
+    res.json({ task: taskView(t), students, groups: gs, ai_ready: aiReady() });
   });
   app.post('/api/essay/teacher/task/:id/state', requireRole('teacher', 'admin'), (req, res) => {
     const t = taskOf(req.params.id); if (!canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài của bạn.', 404);

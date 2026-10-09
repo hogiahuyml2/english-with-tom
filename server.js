@@ -1725,7 +1725,20 @@ app.get('/api/teacher/assignments', requireRole('teacher','admin'), (req, res) =
     WHERE a.assigned_by = ?
     ORDER BY a.id DESC
   `).all(req.user.id);
-  res.json({ assignments: rows });
+  // Lớp thật của từng học sinh (theo danh sách lớp của giáo viên) → để lọc / nhóm theo lớp, không phụ thuộc cách giao bài
+  const admin = req.user.role === 'admin';
+  const groups = (admin ? db.prepare('SELECT id,name FROM groups ORDER BY name').all() : db.prepare('SELECT id,name FROM groups WHERE teacher_id=? ORDER BY name').all(req.user.id))
+    .map(g => ({ id: g.id, name: g.name, members: db.prepare('SELECT COUNT(*) c FROM group_members WHERE group_id=? AND user_id IS NOT NULL').get(g.id).c }));
+  const gset = new Set(groups.map(g => g.id)), byUser = new Map();
+  if (groups.length) {
+    const ph = groups.map(() => '?').join(',');
+    for (const m of db.prepare(`SELECT gm.user_id, gm.group_id FROM group_members gm WHERE gm.user_id IS NOT NULL AND gm.group_id IN (${ph})`).all(...groups.map(g => g.id))) {
+      if (!byUser.has(m.user_id)) byUser.set(m.user_id, []);
+      byUser.get(m.user_id).push(m.group_id);
+    }
+  }
+  for (const r of rows) r.class_ids = (byUser.get(r.student_id) || []).filter(id => gset.has(id));
+  res.json({ assignments: rows, groups });
 });
 
 // Giáo viên xem chi tiết bài nộp của học sinh (kèm nội dung bài viết)

@@ -344,6 +344,13 @@
 .todo-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:7px 10px; border-radius:10px; font-size:13.5px; }
 .todo-row:hover { background:var(--bg-soft); } .todo-row .tx { flex:1; min-width:200px; } .todo-row .tx small { display:block; color:var(--text-faint); font-size:12px; }
 .todo-ok { text-align:center; padding:18px 8px; color:var(--success); font-weight:700; }
+
+.cf-sel { padding:6px 10px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text); font:600 13px inherit; font-family:inherit; max-width:230px; }
+.cf-grp { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:linear-gradient(90deg,var(--primary-soft),var(--surface)); border:1.5px solid var(--border); border-left:5px solid var(--primary); border-radius:12px; padding:9px 14px; margin:18px 0 10px; font-weight:800; }
+.cf-grp small { font-weight:600; color:var(--text-muted); } .cf-grp .cf-n { margin-left:auto; display:flex; gap:6px; flex-wrap:wrap; }
+.cf-chip { font-size:11.5px; font-weight:700; border-radius:99px; padding:2px 9px; background:#fff3cd; color:#856404; } .cf-chip.ok { background:#dcfce7; color:#15803d; } .cf-chip.gr { background:#f1f5f9; color:#64748b; }
+.fpill .cnt { opacity:.75; font-weight:600; margin-left:4px; } .fpill .pd { background:#f59e0b; color:#fff; border-radius:99px; padding:0 6px; font-size:10.5px; margin-left:4px; }
+tr.cf-row td { background:var(--primary-soft); font-weight:800; padding:8px 12px !important; border-left:5px solid var(--primary); }
 </style>
 <script src="js/dialog.js?v=1"></script>
 </head>
@@ -802,6 +809,20 @@
 
       <div class="card" style="margin-top:20px;">
         <div class="card-head"><h3>📋 Danh sách bài đã giao</h3><button class="btn btn-sm" onclick="loadAssignments()">🔄 Làm mới</button></div>
+        <div class="fbar" id="asgnFilterBar" style="display:none;margin-bottom:14px;">
+          <div class="fbar-row">
+            <div class="fbar-search-wrap"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg><input class="fbar-search" id="asgnSearch" type="text" placeholder="Tìm học sinh hoặc tên đề..." oninput="aSetQ(this.value)"></div>
+            <span class="fbar-count" id="asgnCount"></span>
+          </div>
+          <div class="fbar-row"><span class="fbar-label">🏫 Lớp</span><div class="fbar-pills" id="asgnClassPills"></div></div>
+          <div class="fbar-row">
+            <span class="fbar-label">Trạng thái</span><div class="fbar-pills" id="asgnStatusPills"></div>
+            <span class="fbar-label" style="min-width:auto;">Sắp xếp</span>
+            <select id="asgnSort" class="cf-sel" onchange="aSetOpt('sort',this.value)"><option value="name">🔤 Tên học sinh A→Z</option><option value="new">🕒 Giao mới nhất</option><option value="due">⏰ Hạn nộp gần nhất</option><option value="state">⏳ Chưa nộp lên đầu</option></select>
+            <span class="fbar-label" style="min-width:auto;">Nhóm theo</span>
+            <select id="asgnGroup" class="cf-sel" onchange="aSetOpt('group',this.value)"><option value="class">🏫 Lớp</option><option value="exercise">📝 Đề bài</option><option value="">Không nhóm</option></select>
+          </div>
+        </div>
         <table class="table">
           <thead><tr><th>Học sinh</th><th>Đề bài</th><th>Hạn nộp / Ghi chú</th><th>Trạng thái</th><th></th></tr></thead>
           <tbody id="assignTable"><tr><td colspan="5" style="text-align:center;color:var(--text-faint);">Đang tải...</td></tr></tbody>
@@ -819,6 +840,23 @@
             <input class="fbar-search" id="gradeSearch" type="text" placeholder="Tìm học sinh hoặc tên đề...">
           </div>
           <span class="fbar-count" id="gradeCount"></span>
+        </div>
+        <div class="fbar-row">
+          <span class="fbar-label">🏫 Lớp</span>
+          <div class="fbar-pills" id="gradeClassPills"></div>
+        </div>
+        <div class="fbar-row">
+          <span class="fbar-label">Học sinh</span>
+          <select id="gradeStudentSel" class="cf-sel" onchange="gSetStudent(this.value)"></select>
+          <span class="fbar-label" style="min-width:auto;">Sắp xếp</span>
+          <select id="gradeSort" class="cf-sel" onchange="gSetOpt('sort',this.value)">
+            <option value="pend">⏳ Chờ chấm lên đầu</option><option value="new">🕒 Mới nộp nhất</option><option value="old">🕰️ Nộp lâu nhất</option>
+            <option value="name">🔤 Tên học sinh A→Z</option><option value="hi">📈 Điểm cao → thấp</option><option value="lo">📉 Điểm thấp → cao</option>
+          </select>
+          <span class="fbar-label" style="min-width:auto;">Nhóm theo</span>
+          <select id="gradeGroup" class="cf-sel" onchange="gSetOpt('group',this.value)">
+            <option value="class">🏫 Lớp → học sinh</option><option value="student">👩‍🎓 Học sinh</option><option value="exercise">📝 Đề bài</option><option value="">Không nhóm</option>
+          </select>
         </div>
         <div class="fbar-row">
           <span class="fbar-label">Kỳ thi</span>
@@ -2175,34 +2213,71 @@
   }
 
   var _asgnMap = {};
+  var _asgnRows = [], _asgnF = { q:'', cls:lsGet('cls',''), status:'', sort:lsGet('asort','name'), group:lsGet('agroup','class') };
+  function aSetQ(v){ clearTimeout(aSetQ.t); aSetQ.t = setTimeout(function(){ _asgnF.q = v.trim().toLowerCase(); asgnRender(); }, 200); }
+  function aSetClass(v){ _asgnF.cls = v; lsSet('cls', v); asgnRender(); }
+  function aSetStatus(v){ _asgnF.status = _asgnF.status===v ? '' : v; asgnRender(); }
+  function aSetOpt(k, v){ _asgnF[k] = v; lsSet(k==='sort'?'asort':'agroup', v); asgnRender(); }
+  function aState(a){ return !a.sub_id ? 'none' : (a.status==='graded' ? 'graded' : 'pend'); }
   function loadAssignments(){
     fetch('/api/teacher/assignments',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
-      var tbody = document.getElementById('assignTable');
-      _asgnMap = {};
-      if (!d.assignments || !d.assignments.length){
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa giao bài nào.</td></tr>';
-        return;
-      }
-      tbody.innerHTML = d.assignments.map(function(a){
-        var statusBadge = a.sub_id
-          ? (a.status==='graded'
-              ? '<span class="badge badge-done">Đã chấm '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'')+'</span>'
-              : '<span class="badge badge-grading">Đã nộp — chờ chấm</span>')
-          : '<span class="badge" style="background:#f5f5f5;color:#888;">Chưa nộp</span>';
-        var noteHtml = a.note ? '<br><span style="font-size:12px;color:var(--text-faint);">📌 '+escHtml(a.note)+'</span>' : '';
-        _asgnMap[a.id] = { title: a.title, student: a.student_name||a.student_email, deadline: a.deadline||'', note: a.note||'' };
-        return '<tr>'+
-          '<td>'+escHtml(a.student_name||a.student_email)+'<br><span style="font-size:12px;color:var(--text-faint);">'+escHtml(a.student_email)+'</span></td>'+
-          '<td>'+escHtml(a.title)+(a.group_name?'<br><span style="font-size:12px;color:#6F58EE;">🏫 '+escHtml(a.group_name)+'</span>':'')+'</td>'+
-          '<td>'+fmtDate(a.deadline)+noteHtml+'</td>'+
-          '<td>'+statusBadge+'</td>'+
-          '<td style="white-space:nowrap;">'+
-            '<button class="btn btn-sm" onclick="openAsgnEdit('+a.id+')">✏️</button> '+
-            '<button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteAssignment('+a.id+')">Xoá</button>'+
-          '</td>'+
-        '</tr>';
-      }).join('');
+      _tGroups = d.groups || []; _asgnRows = d.assignments || []; _asgnMap = {};
+      _asgnRows.forEach(function(a){ _asgnMap[a.id] = { title: a.title, student: a.student_name||a.student_email, deadline: a.deadline||'', note: a.note||'' }; });
+      if (_asgnF.cls && _asgnF.cls !== 'none' && !_tGroups.some(function(g){ return String(g.id)===String(_asgnF.cls); })) _asgnF.cls = '';
+      document.getElementById('asgnFilterBar').style.display = _asgnRows.length ? '' : 'none';
+      asgnRender();
     }).catch(function(){});
+  }
+  function asgnRender(){
+    var tbody = document.getElementById('assignTable');
+    if (!_asgnRows.length){ tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-faint);">Chưa giao bài nào.</td></tr>'; return; }
+    document.getElementById('asgnClassPills').innerHTML = classPillsHtml(_asgnRows, _asgnF.cls, 'aSetClass', function(a){ return !a.sub_id; });
+    document.getElementById('asgnStatusPills').innerHTML = [['none','⏳ Chưa nộp'],['pend','📥 Chờ chấm'],['graded','✅ Đã chấm']].map(function(p){ return '<button class="fpill'+(_asgnF.status===p[0]?' active':'')+'" onclick="aSetStatus(\''+p[0]+'\')">'+p[1]+'</button>'; }).join('');
+    document.getElementById('asgnSort').value = _asgnF.sort; document.getElementById('asgnGroup').value = _asgnF.group;
+    var q = _asgnF.q;
+    var rows = _asgnRows.filter(function(a){
+      if (q && ((a.student_name||'')+' '+(a.student_email||'')+' '+(a.title||'')).toLowerCase().indexOf(q) < 0) return false;
+      if (!inClass(a, _asgnF.cls)) return false;
+      if (_asgnF.status && aState(a) !== _asgnF.status) return false;
+      return true;
+    });
+    document.getElementById('asgnCount').innerHTML = '<strong>'+rows.length+'</strong> / '+_asgnRows.length+' lượt giao';
+    var tm = function(x){ return x ? (Date.parse(x) || 0) : 0; }, nm = function(a){ return a.student_name||a.student_email; };
+    var cmp = { name:function(a,b){ return viCmp(nm(a), nm(b)) || b.id-a.id; }, new:function(a,b){ return b.id-a.id; }, due:function(a,b){ return (tm(a.deadline)||9e15)-(tm(b.deadline)||9e15); },
+      state:function(a,b){ var o={none:0,pend:1,graded:2}; return o[aState(a)]-o[aState(b)] || viCmp(nm(a),nm(b)); } }[_asgnF.sort] || null;
+    if (cmp) rows.sort(cmp);
+    var rowHtml = function(a){
+      var statusBadge = a.sub_id
+        ? (a.status==='graded'
+            ? '<span class="badge badge-done">Đã chấm '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'')+'</span>'
+            : '<span class="badge badge-grading">Đã nộp — chờ chấm</span>')
+        : '<span class="badge" style="background:#f5f5f5;color:#888;">Chưa nộp</span>';
+      var noteHtml = a.note ? '<br><span style="font-size:12px;color:var(--text-faint);">📌 '+escHtml(a.note)+'</span>' : '';
+      var cn = classNames(a).map(function(n){ return '<span style="font-size:12px;color:#6F58EE;margin-right:6px;">🏫 '+escHtml(n)+'</span>'; }).join('');
+      return '<tr>'+
+        '<td>'+escHtml(nm(a))+'<br><span style="font-size:12px;color:var(--text-faint);">'+escHtml(a.student_email)+'</span></td>'+
+        '<td>'+escHtml(a.title)+(cn?'<br>'+cn:'')+'</td>'+
+        '<td>'+fmtDate(a.deadline)+noteHtml+'</td>'+
+        '<td>'+statusBadge+'</td>'+
+        '<td style="white-space:nowrap;">'+
+          '<button class="btn btn-sm" onclick="openAsgnEdit('+a.id+')">✏️</button> '+
+          '<button class="btn btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteAssignment('+a.id+')">Xoá</button>'+
+        '</td></tr>';
+    };
+    var head = function(icon, title, list){ var none = list.filter(function(a){ return !a.sub_id; }).length, pend = list.filter(function(a){ return aState(a)==='pend'; }).length, ok = list.length-none-pend;
+      return '<tr class="cf-row"><td colspan="5">'+icon+' '+escHtml(title)+' <small style="font-weight:600;color:var(--text-muted);margin-left:8px;">'+list.length+' lượt giao'+(none?' · ⏳ '+none+' chưa nộp':'')+(pend?' · 📥 '+pend+' chờ chấm':'')+(ok?' · ✅ '+ok+' đã chấm':'')+'</small></td></tr>'; };
+    if (!rows.length){ tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-faint);padding:20px;">Không có lượt giao phù hợp bộ lọc.</td></tr>'; return; }
+    var html = '', g = _asgnF.group;
+    if (g === 'class') {
+      var order = _tGroups.map(function(x){ return { id:String(x.id), name:x.name, items:[] }; }); order.push({ id:'none', name:'Chưa xếp lớp', items:[] });
+      var ix = {}; order.forEach(function(o,i){ ix[o.id] = i; });
+      rows.forEach(function(a){ var cl = a.class_ids||[]; if (!cl.length) order[ix.none].items.push(a); else cl.forEach(function(id){ if (ix[String(id)] != null && (!_asgnF.cls || String(id)===String(_asgnF.cls))) order[ix[String(id)]].items.push(a); }); });
+      order.filter(function(o){ return o.items.length; }).forEach(function(o){ html += head(o.id==='none'?'❔':'🏫', o.name, o.items) + o.items.map(rowHtml).join(''); });
+    } else if (g === 'exercise') {
+      var m = {}, ks = []; rows.forEach(function(a){ var k = String(a.exercise_id); if (!m[k]) { m[k] = { t:a.title, items:[] }; ks.push(k); } m[k].items.push(a); });
+      ks.forEach(function(k){ html += head('📝', m[k].t, m[k].items) + m[k].items.map(rowHtml).join(''); });
+    } else html = rows.map(rowHtml).join('');
+    tbody.innerHTML = html;
   }
 
   async function deleteAssignment(id){
@@ -2254,18 +2329,38 @@
 
   /* ===== BÀI NỘP & CHẤM ===== */
   var _subsAll = [];
-  var _subF = { q:'', program:'', skill:'', status:'' };
-  var _subSearchTimer;
-  var GRADE_PROGRAMS = ['KET','PET','FCE','IELTS','APTIS'];
-  var GRADE_SKILLS   = ['Writing','Reading','Listening','Speaking'];
+  /* ===== BỘ LỌC THEO LỚP (dùng chung cho "Bài nộp & chấm" và "Bài đã giao") ===== */
+  var _tGroups = [];
+  function lsGet(k, d){ try { var v = localStorage.getItem('ewt-t-' + k); return v == null ? d : v; } catch(e){ return d; } }
+  function lsSet(k, v){ try { localStorage.setItem('ewt-t-' + k, v); } catch(e){} }
+  function viKey(n){ n = String(n||'').trim().toLowerCase(); var w = n.split(/\s+/); return (w[w.length-1] || '') + ' ' + n; }
+  function viCmp(a, b){ return viKey(a).localeCompare(viKey(b), 'vi'); }
+  function classNames(a){ return (a.class_ids||[]).map(function(id){ var g = _tGroups.filter(function(x){ return x.id===id; })[0]; return g ? g.name : ''; }).filter(Boolean); }
+  function inClass(a, cls){ if (!cls) return true; if (cls==='none') return !(a.class_ids||[]).length; return (a.class_ids||[]).indexOf(+cls) >= 0; }
+  function classPillsHtml(rows, cur, fn, pendFn){
+    var pend = function(list){ if (!pendFn) return ''; var n = list.filter(pendFn).length; return n ? '<span class="pd" title="Cần xử lý">'+n+'</span>' : ''; };
+    var h = '<button class="fpill'+(cur===''?' active':'')+'" onclick="'+fn+'(\'\')">Tất cả lớp<span class="cnt">'+rows.length+'</span>'+pend(rows)+'</button>';
+    _tGroups.forEach(function(g){ var list = rows.filter(function(a){ return inClass(a, g.id); }); h += '<button class="fpill'+(String(cur)===String(g.id)?' active':'')+'" onclick="'+fn+'(\''+g.id+'\')">🏫 '+escHtml(g.name)+'<span class="cnt">'+list.length+'</span>'+pend(list)+'</button>'; });
+    var none = rows.filter(function(a){ return inClass(a,'none'); });
+    if (none.length) h += '<button class="fpill'+(cur==='none'?' active':'')+'" onclick="'+fn+'(\'none\')">Chưa xếp lớp<span class="cnt">'+none.length+'</span>'+pend(none)+'</button>';
+    return h;
+  }
 
+  var _subF = { q:'', program:'', skill:'', status:'', cls:lsGet('cls',''), student:'', sort:lsGet('gsort','pend'), group:lsGet('ggroup','class') };
   function gSetFilter(key, val){
     _subF[key] = (_subF[key]===val) ? '' : val;
     gRenderPills();
     gRenderList();
   }
+  function gSetClass(v){ _subF.cls = v; _subF.student = ''; lsSet('cls', v); gRenderPills(); gRenderList(); }
+  function gSetStudent(v){ _subF.student = v; gRenderList(); }
+  function gSetOpt(k, v){ _subF[k] = v; lsSet(k==='sort'?'gsort':'ggroup', v); gRenderList(); }
+  var GRADE_PROGRAMS = ['KET','PET','FCE','IELTS','APTIS','Tự luận'];
+  var GRADE_SKILLS = ['Writing','Reading','Listening','Speaking'];
+  var _subSearchTimer = null;
 
   function gRenderPills(){
+    document.getElementById('gradeClassPills').innerHTML = classPillsHtml(_subsAll, _subF.cls, 'gSetClass', function(a){ return a.status !== 'graded'; });
     document.getElementById('gradeProgPills').innerHTML =
       ['<button class="fpill'+(_subF.program===''?' active':'')+'" onclick="gSetFilter(\'program\',\'\')">Tất cả</button>']
       .concat(GRADE_PROGRAMS.map(function(p){
@@ -2281,18 +2376,61 @@
     ].map(function(p){
       return '<button class="fpill'+(_subF.status===p[0]?' active':'')+'" onclick="gSetFilter(\'status\',\''+p[0]+'\')">'+p[1]+'</button>';
     }).join('');
+    document.getElementById('gradeSort').value = _subF.sort; document.getElementById('gradeGroup').value = _subF.group;
+    // danh sách học sinh theo lớp đang chọn
+    var seen = {}, studs = [];
+    _subsAll.filter(function(a){ return inClass(a, _subF.cls); }).forEach(function(a){ var k = a.student_id || a.student_email; if (!seen[k]) { seen[k] = 1; studs.push({ k:String(k), n:a.student_name||a.student_email }); } });
+    studs.sort(function(x,y){ return viCmp(x.n, y.n); });
+    var sel = document.getElementById('gradeStudentSel');
+    sel.innerHTML = '<option value="">Tất cả học sinh ('+studs.length+')</option>' + studs.map(function(s){ return '<option value="'+escHtml(s.k)+'">'+escHtml(s.n)+'</option>'; }).join('');
+    if (_subF.student && !seen[_subF.student]) _subF.student = '';
+    sel.value = _subF.student;
+  }
+
+  function gCard(a){
+    var graded = a.status === 'graded';
+    var cn = classNames(a);
+    var groupBadge = cn.map(function(n){ return '<span style="background:var(--primary-soft);color:var(--primary);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:6px;">🏫 '+escHtml(n)+'</span>'; }).join('');
+    var progTag = a.program ? '<span style="background:var(--blue-soft);color:#0369a1;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:4px;">'+a.program+'</span>' : '';
+    var nameHtml = a.student_id
+      ? '<button class="sp-link-btn" onclick="openStudentProfile('+a.student_id+','+JSON.stringify(a.student_name||a.student_email)+')">'+escHtml(a.student_name||a.student_email)+'</button>'
+      : escHtml(a.student_name||a.student_email);
+    return '<div class="card" style="margin-bottom:14px;">'+
+      '<div class="card-head"><div><h4 style="margin:0;">'+nameHtml+groupBadge+progTag+'</h4><div style="font-size:13px;color:var(--text-muted);">'+escHtml(a.title)+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>'+
+      (graded ? '<span class="badge badge-done">Đã chấm: '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'–')+'</span>' : '<span class="badge badge-grading">Chờ chấm</span>')+
+      '</div>'+
+      '<button class="btn btn-sm" onclick="loadAndGrade('+a.sub_id+',this)">📖 Xem bài &amp; chấm</button>'+
+      '<div id="gradeBox'+a.sub_id+'" style="display:none;margin-top:12px;"></div>'+
+      '</div>';
+  }
+  function gSortFn(mode){
+    var t = function(a){ return a.submitted_at ? Date.parse(a.submitted_at) || 0 : 0; };
+    var sc = function(a){ return a.score != null && a.max_score ? a.score / a.max_score : (a.score != null ? a.score : -1); };
+    if (mode==='new')  return function(a,b){ return t(b)-t(a); };
+    if (mode==='old')  return function(a,b){ return t(a)-t(b); };
+    if (mode==='name') return function(a,b){ return viCmp(a.student_name||a.student_email, b.student_name||b.student_email) || t(b)-t(a); };
+    if (mode==='hi')   return function(a,b){ return sc(b)-sc(a); };
+    if (mode==='lo')   return function(a,b){ return sc(a)-sc(b); };
+    return function(a,b){ var pa = a.status==='graded'?1:0, pb = b.status==='graded'?1:0; return pa-pb || t(b)-t(a); };   // chờ chấm lên đầu
+  }
+  function gGroupHead(icon, title, sub, list){
+    var pend = list.filter(function(a){ return a.status!=='graded'; }).length, done = list.length - pend;
+    return '<div class="cf-grp"><span>'+icon+' '+escHtml(title)+'</span>'+(sub?'<small>'+sub+'</small>':'')+'<span class="cf-n">'+(pend?'<span class="cf-chip">⏳ '+pend+' chờ chấm</span>':'')+(done?'<span class="cf-chip ok">✅ '+done+' đã chấm</span>':'')+'<span class="cf-chip gr">'+list.length+' bài</span></span></div>';
   }
 
   function gRenderList(){
     var q = _subF.q.toLowerCase();
     var filtered = _subsAll.filter(function(a){
       if (q && !(a.student_name||a.student_email||'').toLowerCase().includes(q) && !(a.title||'').toLowerCase().includes(q)) return false;
+      if (!inClass(a, _subF.cls)) return false;
+      if (_subF.student && String(a.student_id || a.student_email) !== _subF.student) return false;
       if (_subF.program && a.program !== _subF.program) return false;
       if (_subF.skill   && a.skill   !== _subF.skill)   return false;
       if (_subF.status === 'graded'  && a.status !== 'graded')  return false;
       if (_subF.status === 'pending' && a.status === 'graded')  return false;
       return true;
     });
+    filtered.sort(gSortFn(_subF.sort));
 
     document.getElementById('gradeCount').innerHTML = '<strong>'+filtered.length+'</strong> / '+_subsAll.length+' bài nộp';
 
@@ -2305,32 +2443,36 @@
         '</div>';
       return;
     }
-    list.innerHTML = filtered.map(function(a){
-      var graded = a.status === 'graded';
-      var groupBadge = a.group_name ? '<span style="background:var(--primary-soft);color:var(--primary);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:6px;">🏫 '+escHtml(a.group_name)+'</span>' : '';
-      var progTag = a.program ? '<span style="background:var(--blue-soft);color:#0369a1;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:4px;">'+a.program+'</span>' : '';
-      var nameHtml = a.student_id
-        ? '<button class="sp-link-btn" onclick="openStudentProfile('+a.student_id+','+JSON.stringify(a.student_name||a.student_email)+')">'+escHtml(a.student_name||a.student_email)+'</button>'
-        : escHtml(a.student_name||a.student_email);
-      return '<div class="card" style="margin-bottom:14px;">'+
-        '<div class="card-head"><div><h4 style="margin:0;">'+nameHtml+groupBadge+progTag+'</h4><div style="font-size:13px;color:var(--text-muted);">'+escHtml(a.title)+' · Nộp '+fmtDate(a.submitted_at)+'</div></div>'+
-        (graded ? '<span class="badge badge-done">Đã chấm: '+(a.score!=null?a.score+(a.max_score?'/'+a.max_score:''):'–')+'</span>' : '<span class="badge badge-grading">Chờ chấm</span>')+
-        '</div>'+
-        '<button class="btn btn-sm" onclick="loadAndGrade('+a.sub_id+',this)">📖 Xem bài &amp; chấm</button>'+
-        '<div id="gradeBox'+a.sub_id+'" style="display:none;margin-top:12px;"></div>'+
-        '</div>';
-    }).join('');
+    var g = _subF.group, html = '';
+    if (g === 'class') {
+      // lớp → học sinh (tên A→Z trong mỗi lớp), bài mới/cũ theo cách sắp xếp đã chọn
+      var order = _tGroups.map(function(x){ return { key:String(x.id), name:x.name, icon:'🏫', items:[] }; }); order.push({ key:'none', name:'Chưa xếp lớp', icon:'❔', items:[] });
+      var idx = {}; order.forEach(function(o,i){ idx[o.key] = i; });
+      filtered.forEach(function(a){ var cl = (a.class_ids||[]); if (!cl.length) order[idx.none].items.push(a); else cl.forEach(function(id){ if (idx[String(id)] != null && (!_subF.cls || String(id)===String(_subF.cls) || _subF.cls==='')) order[idx[String(id)]].items.push(a); }); });
+      order.filter(function(o){ return o.items.length; }).forEach(function(o){
+        // trong lớp: gom theo học sinh A→Z khi sắp xếp theo tên hoặc mặc định
+        var items = o.items.slice(); if (_subF.sort==='name' || _subF.sort==='pend') items.sort(function(a,b){ var pa = _subF.sort==='pend' ? (a.status==='graded'?1:0) : 0, pb = _subF.sort==='pend' ? (b.status==='graded'?1:0) : 0; return pa-pb || viCmp(a.student_name||a.student_email, b.student_name||b.student_email); });
+        html += gGroupHead(o.icon, o.name, items.reduce(function(m,a){ m[a.student_id||a.student_email]=1; return m; }, {}) && (Object.keys(items.reduce(function(m,a){ m[a.student_id||a.student_email]=1; return m; }, {})).length+' học sinh'), items) + items.map(gCard).join('');
+      });
+    } else if (g === 'student' || g === 'exercise') {
+      var map = {}, keys = [];
+      filtered.forEach(function(a){ var k = g==='student' ? String(a.student_id||a.student_email) : String(a.exercise_id||a.title); if (!map[k]) { map[k] = { name: g==='student' ? (a.student_name||a.student_email) : a.title, sub: g==='student' ? classNames(a).join(', ') : (a.program||''), items:[] }; keys.push(k); } map[k].items.push(a); });
+      if (g==='student') keys.sort(function(x,y){ return viCmp(map[x].name, map[y].name); });
+      keys.forEach(function(k){ var o = map[k]; html += gGroupHead(g==='student'?'👩‍🎓':'📝', o.name, escHtml(o.sub), o.items) + o.items.map(gCard).join(''); });
+    } else html = filtered.map(gCard).join('');
+    list.innerHTML = html;
   }
 
   function gClearFilters(){
-    _subF.q=''; _subF.program=''; _subF.skill=''; _subF.status='';
+    _subF.q=''; _subF.program=''; _subF.skill=''; _subF.status=''; _subF.cls=''; _subF.student=''; lsSet('cls','');
     document.getElementById('gradeSearch').value='';
     gRenderPills(); gRenderList();
   }
 
   function loadSubmissions(){
     fetch('/api/teacher/assignments',{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
-      _subsAll = (d.assignments||[]).filter(function(a){ return a.sub_id; });
+      _tGroups = d.groups || []; _subsAll = (d.assignments||[]).filter(function(a){ return a.sub_id; });
+      if (_subF.cls && _subF.cls !== 'none' && !_tGroups.some(function(g){ return String(g.id)===String(_subF.cls); })) _subF.cls = '';
       var filterBar = document.getElementById('gradeFilterBar');
       if (_subsAll.length) {
         filterBar.style.display = '';
