@@ -89,6 +89,15 @@ button { font-family: inherit; cursor: pointer; }
 .mg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; } .mg button { border: 2px solid var(--line); background: #fff; border-radius: 12px; padding: 11px 6px; font-weight: 700; font-size: 14px; color: var(--ink); } .mg button.sel { border-color: #3A5BE0; background: #EEF1FF; } .mg button.ok { border-color: #5BCB8B; background: #DDF7E8; opacity: .55; } .mg button.no { animation: shk .35s; border-color: #E9573F; } @keyframes shk { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 .modal.peek { place-items: end center; background: rgba(20,30,60,.08); pointer-events: none; } .modal.peek .box { pointer-events: auto; margin-bottom: calc(var(--bot) + 66px); }
 .lk2 { position: absolute; top: 6px; left: 6px; background: #FFF1C9; color: #8A5A00; border-radius: 8px; padding: 2px 6px; font-size: 11px; font-weight: 800; }
+
+.visiting #bar, .visiting #coinB, .visiting #tkChip, .visiting #cpChip, .visiting #pbar, .visiting #rbar { display: none !important; }
+#visBar { position: fixed; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0px) + 58px); z-index: 30; display: none; gap: 8px; align-items: center; background: rgba(255,255,255,.96); border-radius: 18px; padding: 8px 10px; box-shadow: 0 6px 22px rgba(10,30,80,.3); max-width: calc(100vw - 20px); flex-wrap: wrap; justify-content: center; } .visiting #visBar { display: flex; } #visBar b { font-size: 14px; } #visBar .btn { padding: 7px 10px; font-size: 13px; }
+.frow { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 2px solid var(--line); border-radius: 14px; background: #fff; margin-bottom: 7px; } .frow.me { border-color: #7B6BFF; background: #F3F1FF; } .frow .nm { flex: 1; min-width: 0; font-weight: 800; font-size: 14px; } .frow .nm small { display: block; font-weight: 600; color: var(--mut); font-size: 12px; } .frow .btn { padding: 6px 10px; font-size: 12.5px; } .frow .rk { width: 30px; text-align: center; font-weight: 800; font-size: 16px; }
+.pj { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .pj.done { border-color: #5BCB8B; background: #F2FCF6; } .pj .pb { height: 12px; border-radius: 8px; background: #E6EBF5; overflow: hidden; margin: 6px 0; } .pj .pb i { display: block; height: 100%; background: linear-gradient(90deg, #4CD08A, #2BB673); }
+.stk { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .stk button { font-size: 24px; width: 46px; height: 46px; border-radius: 14px; border: 2px solid var(--line); background: #fff; } .stk button.on { border-color: #3A5BE0; background: #EEF1FF; }
+.fin { width: 100%; font: 600 14px var(--font); border: 2px solid var(--line); border-radius: 12px; padding: 9px 10px; margin-top: 6px; }
+#floatNotes { position: fixed; inset: 0; pointer-events: none; z-index: 12; overflow: hidden; } .fn { position: absolute; background: #fff; border-radius: 16px; padding: 6px 11px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 14px rgba(10,30,80,.3); max-width: 220px; animation: fnf 12s ease-in-out forwards; } .fn b { color: #3A5BE0; } @keyframes fnf { 0% { opacity: 0; transform: translateY(20px); } 8% { opacity: 1; } 50% { transform: translateY(-40px) translateX(10px); } 92% { opacity: 1; } 100% { opacity: 0; transform: translateY(-90px) translateX(-6px); } }
+@media (prefers-reduced-motion: reduce) { .fn { animation: none; opacity: 1; } }
 </style>
 </head>
 <body>
@@ -123,6 +132,7 @@ button { font-family: inherit; cursor: pointer; }
   <button class="tb" id="bRoad" type="button"><span class="ic">🛣️</span>Đường</button>
   <button class="tb" id="bCol" type="button"><span class="ic">💰</span>Thu thuế<span class="dot" id="colDot"></span></button>
   <button class="tb" id="bQuiz" type="button"><span class="ic">🧠</span>Kiếm xu</button>
+  <button class="tb" id="bFriend" type="button"><span class="ic">👥</span>Bạn bè<span class="dot" id="frDot" style="display:none"></span></button>
   <button class="tb" id="bLearn" type="button"><span class="ic">📚</span>Học từ</button>
   <button class="tb" id="bDist" type="button"><span class="ic">🗺️</span>Các quận</button>
 </div>
@@ -136,6 +146,9 @@ button { font-family: inherit; cursor: pointer; }
 <div class="sheet" id="infoS"><div class="hd"><h3 id="infoT">Công trình</h3><button class="x" data-close="infoS" type="button">✕</button></div><div class="bd info" id="infoB"></div></div>
 <div class="sheet" id="distS"><div class="hd"><h3>🗺️ Các quận của thành phố</h3><button class="x" data-close="distS" type="button">✕</button></div><div class="bd" id="distB"></div></div>
 
+<div id="visBar"><b id="visT"></b><button class="btn" id="visNote" type="button">💬 Để lại lời nhắn</button><button class="btn" id="visGift" type="button">🎁 Tặng quà</button><button class="btn pri" id="visBack" type="button">⬅️ Về thành phố mình</button></div>
+<div id="floatNotes"></div>
+<div class="sheet" id="friendS"><div class="hd"><h3>👥 Bạn bè & lớp</h3><button class="x" data-close="friendS" type="button">✕</button></div><div class="tabs" id="frTabs"><button class="tab on" data-ft="list" type="button">Bạn bè</button><button class="tab" data-ft="rank" type="button">🏆 Xếp hạng</button><button class="tab" data-ft="class" type="button">🎯 Dự án lớp</button><button class="tab" data-ft="notes" type="button">💬 Lời nhắn</button></div><div class="bd" id="friendB"></div></div>
 <div class="sheet" id="learnS"><div class="hd"><h3>📚 Học từ & mở khoá công trình</h3><button class="x" data-close="learnS" type="button">✕</button></div><div class="bd" id="learnB"></div></div>
 <div class="modal" id="learnM"><div class="box"><div id="learnMB"></div></div></div>
 <div class="modal" id="quizM"><div class="box"><div id="quizB"></div></div></div>
@@ -145,7 +158,7 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=7"></script>
-<script src="js/city-data.js?v=5"></script>
+<script src="js/city-data.js?v=6"></script>
 <script src="js/city-art.js?v=3"></script>
 <script src="js/city-engine.js?v=2"></script>
 <script>
@@ -169,14 +182,14 @@ function saveSet() { try { localStorage.setItem('ewt-city-set', JSON.stringify(s
 
 /* ───── khởi động động cơ ───── */
 ENG = new EWTCityEngine($('cv'), $('mm'), {
-  onSelect: function (b) { if (b) openInfo(b.i); else { INFO = null; $('infoS').classList.remove('on'); } },
+  onSelect: function (b) { if (VIS) { if (b) toast('🏠 ' + esc(C.BY[b.k].en) + ' — ' + esc(C.BY[b.k].vi) + ' (cấp ' + b.lv + ')', 2200); ENG.sel = -1; return; } if (b) openInfo(b.i); else { INFO = null; $('infoS').classList.remove('on'); } },
   onBubble: function (b) { collect(b.i); },
   onPlace: function (g) { placeNow(); },
   onGhost: function (g) { updatePbar(); },
   onRoad: function (cells, tapOnly) { roadDone(cells, tapOnly); },
   onRoadTap: function (i) { if (ENG.mode === 'road' && ROADDEL) removeRoad([i]); },
   onFixed: function (f) { var d = C.FIXED_DEF[f.k]; if (d) { toast('🏛️ <b>' + d.en + '</b> — ' + d.vi + ' <button class="x" style="width:28px;height:28px;margin-left:6px" id="fxSay">🔊</button>', 3500); setTimeout(function () { var b = $('fxSay'); if (b) b.onclick = function () { say(d.en); }; }, 30); } },
-  onLocked: function (d) { openDist(d); },
+  onLocked: function (d) { if (!VIS) openDist(d); },
   onMode: function (m) { $('bRoad').classList.toggle('on', m === 'road'); }
 });
 function applySettings() {
@@ -198,7 +211,7 @@ function hud() {
 }
 function clampN(v, a, b) { return Math.max(a, Math.min(b, v)); }
 var firstLoad = true;
-function load() { return api('/api/city').then(function (d) { setState(d); if (firstLoad) { firstLoad = false; setTimeout(function () { ENG.focusDistrict(0); }, 80); if (!S.bs.length) toast('👋 Chào mừng đến EWT City! Bấm 🏗️ Xây dựng để đặt ngôi nhà đầu tiên (miễn phí).', 6000); } }).catch(function (e) { toast(e.message, 4000); }); }
+function load() { if (VIS) return Promise.resolve(); return api('/api/city').then(function (d) { setState(d); if (firstLoad) { firstLoad = false; var qp = new URLSearchParams(location.search); if (qp.get('visit')) setTimeout(function () { enterVisit(qp.get('visit')); }, 300); else if (qp.get('vuid')) setTimeout(function () { enterVisit('uid:' + qp.get('vuid')); }, 300); else setTimeout(showFloatNotes, 1200); setTimeout(function () { ENG.focusDistrict(0); }, 80); if (!S.bs.length) toast('👋 Chào mừng đến EWT City! Bấm 🏗️ Xây dựng để đặt ngôi nhà đầu tiên (miễn phí).', 6000); } }).catch(function (e) { toast(e.message, 4000); }); }
 
 /* ───── cửa hàng ───── */
 var CATTAB = C.CATS.map(function (c) { return c; }).concat([['bundle', '📦 Gói combo'], ['plan', '📐 Quy hoạch']]);
@@ -252,7 +265,7 @@ function buildRoad() {
 function removeRoad(idxs) { api('/api/city/road/remove', { cells: idxs }).then(function (d) { setState(d); ROADCELLS = []; roadBar(); toast('Đã dỡ ' + d.removed + ' ô đường.', 1800); }).catch(function (e) { toast(e.message, 3600); }); }
 
 /* ───── thông tin công trình ───── */
-function openInfo(id) { INFO = id; closeSheets(true); setMode('view'); renderInfo(); $('infoS').classList.add('on'); var b = S.bs.filter(function (x) { return x.i === id; })[0]; if (b) say(C.BY[b.k].en); }
+function openInfo(id) { if (VIS) return; INFO = id; closeSheets(true); setMode('view'); renderInfo(); $('infoS').classList.add('on'); var b = S.bs.filter(function (x) { return x.i === id; })[0]; if (b) say(C.BY[b.k].en); }
 function renderInfo() {
   var b = S.bs.filter(function (x) { return x.i === INFO; })[0]; if (!b) { $('infoS').classList.remove('on'); INFO = null; return; }
   var it = C.BY[b.k], now = ENG.nowMs(), building = b.tg > b.lv, lv = b.lv || b.tg, rem = Math.max(0, (b.t1 - now) / 1000), st = S.stats;
@@ -282,7 +295,7 @@ setInterval(function () { // đồng hồ đếm ngược + tự cập nhật kh
 }, 1000);
 setInterval(function () { if (S && !document.hidden) load(); }, 60000);   // cập nhật thuế tích luỹ
 
-function collect(id) { api('/api/city/collect', id == null ? { all: true } : { i: id }).then(function (d) { setState(d); SND('coin'); toast('💰 Thu được <b>' + fmt(d.collected) + '</b> xu từ ' + d.count + ' công trình!', 2400); }).catch(function (e) { toast(e.message, 2600); }); }
+function collect(id) { if (VIS) return; api('/api/city/collect', id == null ? { all: true } : { i: id }).then(function (d) { setState(d); SND('coin'); toast('💰 Thu được <b>' + fmt(d.collected) + '</b> xu từ ' + d.count + ' công trình!', 2400); }).catch(function (e) { toast(e.message, 2600); }); }
 function speed(mode) { api('/api/city/speed', { i: INFO, mode: mode }).then(function (d) { setState(d); toast(mode === 'x2' ? '⚡ Tăng tốc gấp đôi!' : '⚡ Xây xong rồi!', 1800); }).catch(function (e) { toast(e.message, 3200); }); }
 function upgrade() { api('/api/city/upgrade', { i: INFO }).then(function (d) { setState(d); toast('⬆️ Bắt đầu nâng cấp!', 1800); }).catch(function (e) { toast(e.message, 3600); }); }
 async function demolish() {
@@ -292,7 +305,7 @@ async function demolish() {
 }
 
 /* ───── quận ───── */
-function openDist(focus) { closeSheets(); setMode('view'); renderDist(); $('distS').classList.add('on'); if (typeof focus === 'number') { setTimeout(function () { var el = document.querySelector('[data-dc="' + focus + '"]'); if (el) el.scrollIntoView({ block: 'center' }); }, 40); } }
+function openDist(focus) { if (VIS) return; closeSheets(); setMode('view'); renderDist(); $('distS').classList.add('on'); if (typeof focus === 'number') { setTimeout(function () { var el = document.querySelector('[data-dc="' + focus + '"]'); if (el) el.scrollIntoView({ block: 'center' }); }, 40); } }
 function renderDist() {
   $('distB').innerHTML = C.DISTRICTS.map(function (d) {
     var open = S.districts.indexOf(d.id) >= 0, lv = S.stats.level, can = lv >= d.lvl, h = '<div class="dcard" data-dc="' + d.id + '"><div class="ico">' + d.icon + '</div><div class="tx"><b>' + esc(d.en) + '</b> <button class="x" style="width:26px;height:26px;font-size:12px" data-say="' + esc(d.en) + '" type="button">🔊</button><div class="vi">' + esc(d.vi) + '</div><p>' + esc(d.blurb) + '</p>';
@@ -467,6 +480,76 @@ function sndScene() {
 function sndBtn() { var st = EWTSound.state(); $('sndB').textContent = st.on ? '🔊' : '🔇'; }
 if (window.EWTSound) { EWTSound.init(); $('sndB').onclick = function () { EWTSound.toggle(!EWTSound.state().on); lastScene = ''; sndScene(); sndBtn(); }; setInterval(sndScene, 1500); if (!EWTSound.state().ok) $('sndB').style.display = 'none'; sndBtn(); }
 function SND(n) { try { if (window.EWTSound) EWTSound.sfx(n); } catch (e) {} }
+
+/* ───── bạn bè: thăm thành phố, lời nhắn, tặng quà, xếp hạng, dự án lớp ───── */
+var FT = 'list', VIS = null, MYS = null, FR = null, FRANK = { scope: 'class', metric: 'score' }, STK = '';
+function openFriends(tab) { closeSheets(); setMode('view'); FT = tab || FT; $('friendS').classList.add('on'); renderFriends(); }
+function setFt() { [].forEach.call(document.querySelectorAll('#frTabs .tab'), function (b) { b.classList.toggle('on', b.getAttribute('data-ft') === FT); }); }
+function renderFriends() {
+  setFt(); $('friendB').innerHTML = '<p class="empty">Đang tải…</p>';
+  var fail = function (e) { $('friendB').innerHTML = '<p class="empty">' + esc(e.message) + '</p>'; };
+  if (FT === 'list') api('/api/city/friends').then(function (d) {
+    FR = d; var h = '<p class="sub">Bạn bè là các bạn <b>cùng lớp</b> đã mở thành phố cho bạn bè xem. Ghé thăm và để lại lời nhắn: lần đầu mỗi bạn trong ngày được <b>+' + d.reward + ' 🪙</b> (còn ' + d.rewardLeft + ' lượt hôm nay).</p><div class="field">Cho bạn bè thăm thành phố của mình<label class="sw"><input type="checkbox" id="frOpen"' + (d.open ? ' checked' : '') + '><i></i></label></div>';
+    h += d.friends.length ? d.friends.map(function (f, i) { return '<div class="frow"><div class="nm">' + esc(f.short) + (f.visited ? ' ✅' : '') + '<small>Cấp ' + f.level + ' · 👥 ' + f.pop + ' · 😊 ' + f.happy + '% · ' + f.n + ' công trình</small></div><button class="btn pri" data-fv="' + i + '" type="button">🏙️ Thăm</button><button class="btn" data-fg="' + i + '" type="button">🎁</button></div>'; }).join('') : '<p class="empty">Chưa có bạn nào. Hãy xin thầy/cô thêm bạn vào lớp, và nhắc các bạn bật “Cho bạn bè thăm” nhé.</p>';
+    $('friendB').innerHTML = h; $('frOpen').onchange = function () { api('/api/city/privacy', { open: this.checked ? 1 : 0 }).then(function (r) { toast(r.open ? '👥 Bạn bè đã có thể thăm thành phố của bạn' : '🔒 Đã tắt — bạn bè không xem được nữa', 2400); }).catch(function (e) { toast(e.message); }); };
+  }).catch(fail);
+  else if (FT === 'rank') api('/api/city/rank?scope=' + FRANK.scope + '&metric=' + FRANK.metric).then(function (d) {
+    var sel = function (id, cur, o) { return '<select id="' + id + '">' + o.map(function (x) { return '<option value="' + x[0] + '"' + (cur === x[0] ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>'; };
+    var h = '<div class="field">Phạm vi' + sel('rkS', FRANK.scope, [['class', 'Trong lớp'], ['school', 'Toàn trường']]) + '</div><div class="field">Xếp theo' + sel('rkM', FRANK.metric, [['score', '🏆 Điểm thành phố'], ['pop', '👥 Dân số'], ['happy', '😊 Hạnh phúc'], ['learn', '📚 Chương đã học']]) + '</div>';
+    var med = ['🥇', '🥈', '🥉'], val = function (r) { return FRANK.metric === 'pop' ? r.pop : FRANK.metric === 'happy' ? r.happy + '%' : FRANK.metric === 'learn' ? r.learn + '/' + LEARNTOTAL : fmt(r.score); };
+    h += d.top.map(function (r, i) { return '<div class="frow' + (r.me ? ' me' : '') + '"><div class="rk">' + (r.rank <= 3 ? med[r.rank - 1] : r.rank) + '</div><div class="nm">' + esc(r.short) + (r.me ? ' (bạn)' : '') + '<small>Cấp ' + r.level + ' · ' + r.n + ' công trình</small></div><b>' + val(r) + '</b>' + (r.token ? '<button class="btn" data-fvt="' + esc(r.token) + '" type="button">🏙️</button>' : '') + '</div>'; }).join('') || '<p class="empty">Chưa có ai trong bảng.</p>';
+    if (d.me && d.me.rank > 30) h += '<div class="frow me"><div class="rk">' + d.me.rank + '</div><div class="nm">' + esc(d.me.short) + ' (bạn)</div><b>' + val(d.me) + '</b></div>';
+    $('friendB').innerHTML = h; $('rkS').onchange = function () { FRANK.scope = this.value; renderFriends(); }; $('rkM').onchange = function () { FRANK.metric = this.value; renderFriends(); };
+  }).catch(fail);
+  else if (FT === 'class') api('/api/city/class').then(function (d) {
+    var h = d.joined ? '' : '<p class="empty">Bạn chưa thuộc lớp nào. Hãy vào lớp trong Hồ sơ để cùng cả lớp xây dự án nhé.</p>';
+    var desc = function (p) { return p.kind === 'build' ? 'Cả lớp cùng xây tổng cộng <b>' + p.target + '</b> × ' + esc(p.itemVi) + ' (' + esc(p.itemEn) + ')' : p.kind === 'pop' ? 'Tổng dân số cả lớp đạt <b>' + fmt(p.target) + '</b> người' : 'Cả lớp học đủ <b>' + p.target + '</b> chương từ vựng'; };
+    (d.projects || []).forEach(function (p) { var pc = Math.min(100, Math.round(p.total / p.target * 100)); h += '<div class="pj' + (p.status === 'done' ? ' done' : '') + '"><div style="font-weight:800">' + (p.status === 'done' ? '🏆 ' : '🎯 ') + esc(p.title) + ' <span style="font-weight:600;color:var(--mut)">· ' + esc(p.group) + '</span></div><div class="sub" style="margin:2px 0">' + desc(p) + '</div><div class="pb"><i style="width:' + pc + '%"></i></div><div class="sub" style="margin:0">' + fmt(p.total) + ' / ' + fmt(p.target) + ' · Bạn góp: <b>' + fmt(p.mine) + '</b>' + (p.reward ? ' · Thưởng mỗi bạn đã góp: <b>' + p.reward + ' 🪙</b>' : '') + (p.status === 'done' ? ' · ✅ Hoàn thành!' : '') + '</div>' + (p.top.length ? '<div class="sub" style="margin:2px 0 0">Góp nhiều nhất: ' + p.top.map(function (t) { return esc(t.name) + ' (' + fmt(t.v) + ')'; }).join(', ') + '</div>' : '') + '</div>'; });
+    if (d.joined && !(d.projects || []).length) h += '<p class="empty">Lớp chưa có dự án nào. Thầy/cô sẽ tạo dự án để cả lớp cùng xây nhé!</p>';
+    $('friendB').innerHTML = h;
+  }).catch(fail);
+  else api('/api/city/notes').then(function (d) {
+    $('friendB').innerHTML = d.notes.length ? d.notes.map(function (n) { return '<div class="frow"><div style="font-size:26px">' + esc(n.sticker || '💬') + '</div><div class="nm">' + esc(n.who) + '<small>' + esc(n.text || 'đã thả một sticker') + ' · ' + esc(new Date(n.at).toLocaleDateString('vi-VN')) + '</small></div><button class="btn" data-fnd="' + n.id + '" type="button" aria-label="Ẩn">🗑️</button></div>'; }).join('') : '<p class="empty">Chưa có lời nhắn nào. Khi bạn bè ghé thăm, lời nhắn sẽ hiện ở đây và bay trên thành phố của bạn.</p>';
+  }).catch(fail);
+}
+var LEARNTOTAL = 12;
+function visitUrl(tok) { return tok.indexOf('uid:') === 0 ? '/api/city/visit?uid=' + tok.slice(4) : '/api/city/visit?token=' + encodeURIComponent(tok); }
+function enterVisit(tok) {
+  api(visitUrl(tok)).then(function (d) {
+    if (!VIS) MYS = S; VIS = d; VIS.tok = tok; $('friendS').classList.remove('on'); $('learnM').classList.remove('on'); closeSheets(); setMode('view'); document.body.classList.add('visiting'); $('visT').innerHTML = '👀 Thành phố của <b>' + esc(d.owner.short) + '</b> · cấp ' + d.city.stats.level + ' · 👥 ' + d.city.stats.pop;
+    $('visNote').style.display = d.staff ? 'none' : ''; $('visGift').style.display = d.staff ? 'none' : ''; S = d.city; ENG.setState(S); hud(); ENG.fitAll(); toast('👀 Bạn đang thăm thành phố của ' + esc(d.owner.short) + ' — chạm công trình để xem tên nhé', 3200);
+  }).catch(function (e) { toast(e.message, 3200); });
+}
+function leaveVisit() { if (!VIS) return; VIS = null; document.body.classList.remove('visiting'); if (MYS) { S = MYS; ENG.setState(S); hud(); } load().then(function () { ENG.focusDistrict(0); }); }
+function stickerBox(tok, name, notes, left) {
+  STK = ''; var draw = function () { lmodal('<h3>💬 Lời nhắn cho ' + esc(name) + '</h3><p class="sub">Còn ' + left + ' lượt hôm nay. Chọn sticker và/hoặc viết vài chữ (tối đa 80 ký tự).</p><div class="stk">' + VIS.stickers.map(function (x) { return '<button type="button" data-sk="' + x + '" class="' + (STK === x ? 'on' : '') + '">' + x + '</button>'; }).join('') + '</div><input class="fin" id="nTxt" maxlength="80" placeholder="Ví dụ: Thành phố của bạn đẹp quá!" autocomplete="off">' + (notes && notes.length ? '<div class="sub" style="margin-top:8px">Gần đây: ' + notes.slice(0, 4).map(function (n) { return esc(n.sticker) + ' <b>' + esc(n.who) + '</b>' + (n.text ? ': ' + esc(n.text) : ''); }).join(' · ') + '</div>' : '') + '<div class="row"><button class="btn" data-close="learnM" type="button">Để sau</button><button class="btn pri" id="nGo" type="button">Gửi</button></div>'); $('learnMB').onclick = function (e) { var b = e.target.closest('[data-sk]'); if (b) { var t = $('nTxt').value; STK = STK === b.getAttribute('data-sk') ? '' : b.getAttribute('data-sk'); draw(); $('nTxt').value = t; } }; $('nGo').onclick = function () { api('/api/city/visit/note', { token: tok, sticker: STK, text: $('nTxt').value }).then(function (r) { $('learnM').classList.remove('on'); VIS.notes = r.notes; VIS.noteLeft = r.noteLeft; toast('💬 Đã gửi!' + (r.reward ? ' Bạn nhận +' + r.reward + ' 🪙' : ''), 2800); if (r.reward) { MYS.coins += r.reward; } SND('coin'); }).catch(function (e) { toast(e.message, 3200); }); }; };
+  draw();
+}
+function giftBox(tok, name) {
+  var me = MYS || S, items = Object.keys(me.inv || {}).filter(function (k) { return me.inv[k] > 0 && C.BY[k]; }), cur = items[0] || '', mode = 'xu';
+  var draw = function () {
+    var h = '<h3>🎁 Tặng quà cho ' + esc(name) + '</h3><div class="tabs" style="padding:0 0 6px"><button class="tab' + (mode === 'xu' ? ' on' : '') + '" data-gm="xu" type="button">💰 Tặng xu</button><button class="tab' + (mode === 'item' ? ' on' : '') + '" data-gm="item" type="button">📦 Tặng đồ trong kho</button></div>';
+    if (mode === 'xu') h += '<p class="sub">Tối đa 50.000 xu mỗi lần, 300.000 xu/ngày cho một bạn, 20 lượt/ngày (dùng chung với EWT Garden).</p>' + numBox('gXu', 100, 50000) + '<input class="fin" id="gNote" maxlength="60" placeholder="Lời nhắn (không bắt buộc)" autocomplete="off"><div class="row"><button class="btn" data-close="learnM" type="button">Để sau</button><button class="btn pri" id="gGo" type="button">Tặng xu</button></div>';
+    else if (!items.length) h += '<p class="empty">Kho của bạn đang trống. Hãy 🛒 mua trữ đồ ở cửa hàng rồi quay lại tặng bạn nhé.</p><div class="row"><button class="btn" data-close="learnM" type="button">Đóng</button></div>';
+    else h += '<div class="field">Món quà<select id="gK">' + items.map(function (k) { return '<option value="' + k + '"' + (cur === k ? ' selected' : '') + '>' + esc(C.BY[k].vi) + ' (kho: ' + me.inv[k] + ')</option>'; }).join('') + '</select></div>' + numBox('gN', 1, 10) + '<p class="sub">Mỗi ngày tặng tối đa 20 món (10 món cho một bạn).</p><div class="row"><button class="btn" data-close="learnM" type="button">Để sau</button><button class="btn pri" id="gGo" type="button">Tặng đồ</button></div>';
+    lmodal(h);
+    $('learnMB').onclick = function (e) { var b = e.target.closest('[data-gm]'); if (b) { mode = b.getAttribute('data-gm'); draw(); return; } var nb = e.target.closest('[data-nm]'); if (nb) { var inp = $(nb.getAttribute('data-nm')); inp.value = Math.max(1, Math.min(+inp.max, (Math.floor(+inp.value) || 1) + (+nb.getAttribute('data-d')))); } };
+    if ($('gK')) $('gK').onchange = function () { cur = this.value; };
+    if ($('gGo')) $('gGo').onclick = function () {
+      var go = mode === 'xu' ? api('/api/city/gift/xu', { token: tok, xu: +$('gXu').value, note: $('gNote').value }) : api('/api/city/gift/item', { token: tok, k: $('gK').value, n: +$('gN').value });
+      go.then(function (r) { $('learnM').classList.remove('on'); if (mode === 'xu') { if (MYS) MYS.coins = r.coins; S.coins = r.coins; hud(); toast('💰 Đã tặng xu cho ' + esc(name) + '!', 2600); } else { (MYS || S).inv = r.inv; toast('🎁 Đã gửi quà cho ' + esc(name) + '!', 2600); } SND('reward'); }).catch(function (e) { toast(e.message, 3600); });
+    };
+  };
+  draw();
+}
+function showFloatNotes() {
+  api('/api/city/notes').then(function (d) {
+    var last = 0; try { last = +localStorage.getItem('ewt-city-notes') || 0; } catch (e) {} var fresh = d.notes.filter(function (n) { return n.id > last && !n.mine; }).slice(0, 4);
+    if (!fresh.length) { $('frDot').style.display = 'none'; return; } $('frDot').style.display = 'grid'; $('frDot').textContent = fresh.length;
+    fresh.forEach(function (n, i) { setTimeout(function () { var el = document.createElement('div'); el.className = 'fn'; el.style.left = (12 + Math.random() * 55) + '%'; el.style.top = (35 + Math.random() * 35) + '%'; el.innerHTML = esc(n.sticker || '💬') + ' <b>' + esc(n.who) + '</b>' + (n.text ? ': ' + esc(n.text) : ''); $('floatNotes').appendChild(el); setTimeout(function () { el.remove(); }, 12500); }, 1500 + i * 2200); });
+    try { localStorage.setItem('ewt-city-notes', String(d.notes[0].id)); } catch (e) {}
+  }).catch(function () {});
+}
 function openSet() {
   var sel = function (id, opts, cur) { return '<select id="' + id + '">' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (String(cur) === String(o[0]) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };
   var sw = function (id, on) { return '<label class="sw"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '><i></i></label>'; };
@@ -482,7 +565,7 @@ function openSet() {
 }
 
 /* ───── sự kiện giao diện ───── */
-function closeSheets(keepInfo) { ['shopS', 'distS', 'learnS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
+function closeSheets(keepInfo) { ['shopS', 'distS', 'learnS', 'friendS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
 document.addEventListener('click', function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-close]'))) { $(el.getAttribute('data-close')).classList.remove('on'); if (el.getAttribute('data-close') === 'infoS') { INFO = null; ENG.sel = -1; } return; }
@@ -493,13 +576,18 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
   if ((el = t.closest('[data-sp]'))) { speed(el.getAttribute('data-sp')); return; }
   if ((el = t.closest('[data-act]'))) { var a = el.getAttribute('data-act'); if (a === 'collect') collect(INFO); else if (a === 'up') upgrade(); else if (a === 'dem') demolish(); return; }
+  if ((el = t.closest('[data-ft]'))) { FT = el.getAttribute('data-ft'); renderFriends(); return; }
+  if ((el = t.closest('[data-fv]'))) { enterVisit(FR.friends[+el.getAttribute('data-fv')].token); return; }
+  if ((el = t.closest('[data-fvt]'))) { enterVisit(el.getAttribute('data-fvt')); return; }
+  if ((el = t.closest('[data-fg]'))) { var ff = FR.friends[+el.getAttribute('data-fg')]; giftBox(ff.token, ff.short); return; }
+  if ((el = t.closest('[data-fnd]'))) { api('/api/city/notes/delete', { id: +el.getAttribute('data-fnd') }).then(renderFriends); return; }
   if ((el = t.closest('[data-ln]'))) { var ac = el.getAttribute('data-ln'), cid = el.getAttribute('data-ch'); if (ac === 'study') { LS = { ch: cid, i: 0 }; studyCard(); } else if (ac === 'test') startTest(cid); else startMatch(cid); return; }
   if ((el = t.closest('[data-lt]'))) { testPick(+el.getAttribute('data-lt')); return; }
   if ((el = t.closest('[data-ml],[data-mr]')) && el.closest('#mg')) { matchTap(el); return; }
   if ((el = t.closest('[data-qa]'))) { answerQ(+el.getAttribute('data-qa')); return; }
   if ((el = t.closest('[data-fp]'))) { flipCard(+el.getAttribute('data-fp'), el.getAttribute('data-fid')); return; }
 });
-$('bLearn').onclick = function () { openLearn(); }; $('bShop').onclick = openShop; $('bQuiz').onclick = openQuiz; $('coinB').onclick = openQuiz; $('bDist').onclick = function () { openDist(); };
+$('bFriend').onclick = function () { openFriends('list'); }; $('visBack').onclick = leaveVisit; $('visNote').onclick = function () { stickerBox(VIS.tok, VIS.owner.short, VIS.notes, VIS.noteLeft); }; $('visGift').onclick = function () { giftBox(VIS.tok, VIS.owner.short); }; $('bLearn').onclick = function () { openLearn(); }; $('bShop').onclick = openShop; $('bQuiz').onclick = openQuiz; $('coinB').onclick = openQuiz; $('bDist').onclick = function () { openDist(); };
 $('bCol').onclick = function () { collect(null); };
 $('bRoad').onclick = function () { if (ENG.mode === 'road') setMode('view'); else { closeSheets(); setMode('road'); } };
 $('setB').onclick = openSet; $('zIn').onclick = function () { ENG.zoomAt(1.35, ENG.cw / 2, ENG.ch / 2); }; $('zOut').onclick = function () { ENG.zoomAt(1 / 1.35, ENG.cw / 2, ENG.ch / 2); };
