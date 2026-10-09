@@ -102,6 +102,7 @@ button { font-family: inherit; cursor: pointer; }
   <div class="chip" id="tkChip" title="Phiếu xây nhanh" style="display:none"><span>🎫</span><b id="tkN">0</b></div>
   <div class="chip" id="cpChip" title="Phiếu giảm giá mở quận" style="display:none"><span>🏷️</span><b id="cpN">0</b></div>
   <div class="sp"></div>
+  <button class="chip btn" id="sndB" type="button" aria-label="Nhạc nền" title="Bật / tắt nhạc nền theo từng quận">🔇</button>
   <button class="chip btn" id="setB" type="button" aria-label="Cài đặt">⚙️</button>
   <a class="chip btn" href="garden.html" style="text-decoration:none;color:inherit" title="Sang EWT Garden">🌷</a>
   <a class="chip btn" href="word-hub.html" style="text-decoration:none;color:inherit" title="Về Luyện từ">🏠</a>
@@ -142,7 +143,9 @@ button { font-family: inherit; cursor: pointer; }
 <div class="modal" id="cfmM"><div class="box"><h3 id="cfmT"></h3><p class="sub" id="cfmP"></p><div class="row"><button class="btn" id="cfmNo" type="button">Không</button><button class="btn pri" id="cfmYes" type="button">Đồng ý</button></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="js/city-data.js?v=4"></script>
+<script src="js/garden-groove.js?v=1"></script>
+<script src="js/garden-sound.js?v=7"></script>
+<script src="js/city-data.js?v=5"></script>
 <script src="js/city-art.js?v=3"></script>
 <script src="js/city-engine.js?v=2"></script>
 <script>
@@ -232,7 +235,7 @@ function placeNow() {
   var g = ENG.ghost; if (!g || !g.ok) { if (g && g.err) toast(g.err, 3000); return; }
   var it = C.BY[g.k]; if (!(S.free[it.k] > 0) && S.coins < it.cost) return toast('Chưa đủ xu (cần ' + fmt(it.cost) + ') — bấm 🧠 Kiếm xu nhé!', 3200);
   $('pOk').disabled = true;
-  api('/api/city/place', { k: g.k, x: g.x, y: g.y }).then(function (d) { setState(d); say(it.en); if (!CONT && !$('pCont').checked) setMode('view'); else { ENG.refreshGhost(); updatePbar(); } toast('🏗️ Bắt đầu xây ' + esc(it.vi) + '!', 1800); }).catch(function (e) { toast(e.message, 3600); ENG.refreshGhost(); updatePbar(); });
+  api('/api/city/place', { k: g.k, x: g.x, y: g.y }).then(function (d) { setState(d); SND('place'); say(it.en); if (!CONT && !$('pCont').checked) setMode('view'); else { ENG.refreshGhost(); updatePbar(); } toast('🏗️ Bắt đầu xây ' + esc(it.vi) + '!', 1800); }).catch(function (e) { toast(e.message, 3600); ENG.refreshGhost(); updatePbar(); });
 }
 
 /* ───── đường ───── */
@@ -279,7 +282,7 @@ setInterval(function () { // đồng hồ đếm ngược + tự cập nhật kh
 }, 1000);
 setInterval(function () { if (S && !document.hidden) load(); }, 60000);   // cập nhật thuế tích luỹ
 
-function collect(id) { api('/api/city/collect', id == null ? { all: true } : { i: id }).then(function (d) { setState(d); toast('💰 Thu được <b>' + fmt(d.collected) + '</b> xu từ ' + d.count + ' công trình!', 2400); }).catch(function (e) { toast(e.message, 2600); }); }
+function collect(id) { api('/api/city/collect', id == null ? { all: true } : { i: id }).then(function (d) { setState(d); SND('coin'); toast('💰 Thu được <b>' + fmt(d.collected) + '</b> xu từ ' + d.count + ' công trình!', 2400); }).catch(function (e) { toast(e.message, 2600); }); }
 function speed(mode) { api('/api/city/speed', { i: INFO, mode: mode }).then(function (d) { setState(d); toast(mode === 'x2' ? '⚡ Tăng tốc gấp đôi!' : '⚡ Xây xong rồi!', 1800); }).catch(function (e) { toast(e.message, 3200); }); }
 function upgrade() { api('/api/city/upgrade', { i: INFO }).then(function (d) { setState(d); toast('⬆️ Bắt đầu nâng cấp!', 1800); }).catch(function (e) { toast(e.message, 3600); }); }
 async function demolish() {
@@ -379,7 +382,7 @@ function testPick(i) {
   LT.picks.push(i); if (LT.i < LT.qs.length - 1) { LT.i++; return testQ(); }
   lmodal('<p class="empty">Đang chấm bài…</p>');
   api('/api/city/learn/submit', { sid: LT.sid, picks: LT.picks }).then(function (d) {
-    setState(d); var c = chOf(LT.ch), h = '<h3>' + (d.pass ? '🎉 Đạt rồi!' : '💪 Chưa đạt') + ' — ' + d.score + '/' + LT.qs.length + '</h3>';
+    setState(d); SND(d.pass ? 'reward' : 'err'); var c = chOf(LT.ch), h = '<h3>' + (d.pass ? '🎉 Đạt rồi!' : '💪 Chưa đạt') + ' — ' + d.score + '/' + LT.qs.length + '</h3>';
     h += d.pass ? '<p class="sub">' + (d.first ? 'Bạn đã mở khoá công trình của chương này' + (d.reward ? ' và nhận <b>+' + d.reward + ' 🪙</b>' : '') + '!' : 'Giỏi lắm, bạn đã làm lại bài rất tốt.') + '</p>' : '<p class="sub">Cần đúng ' + d.need + ' câu. Xem lại các từ rồi thử lại nhé!</p>';
     LT.qs.forEach(function (q, i) { var r = d.results[i], a = q.opts[r.ans]; h += '<div class="lcard' + (r.ok ? ' ok' : '') + '" style="margin-top:6px"><div class="s" style="margin:0"><b>' + (r.ok ? '✅' : '❌') + ' ' + esc(q.q.en) + '</b></div><div class="s" style="margin:2px 0">' + esc(q.q.vi) + '</div><div style="font-size:13.5px"><b>' + optHtml(a).replace(/<small>/, ' · <small style="display:inline">') + '</b></div><div class="s" style="margin:2px 0 0">' + esc(r.ex.en) + '<br>' + esc(r.ex.vi) + '</div></div>'; });
     h += '<div class="row"><button class="btn" id="tStudy" type="button">📖 Xem lại từ</button><button class="btn pri" id="tAgain" type="button">' + (d.pass ? 'Làm lại' : 'Thử lại') + '</button></div><div class="row"><button class="btn" data-close="learnM" type="button">Xong</button></div>';
@@ -453,6 +456,17 @@ function planQuote() {
     $('pqGo').onclick = function () { api('/api/city/plan/apply', { plan: PQ.plan.id, bx: q.bx, by: q.by }).then(function (r) { setState(r); $('learnM').classList.remove('on'); toast('📐 Đã xây ' + r.built + ' món theo mẫu “' + esc(PQ.plan.vi) + '”!', 3000); }).catch(function (e) { toast(e.message, 3200); }); };
   }).catch(function (e) { toast(e.message, 4200); });
 }
+
+/* ───── nhạc nền theo quận (dùng bộ phát nhạc của Garden) ───── */
+var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura'], lastScene = '';
+function sndScene() {
+  if (!window.EWTSound || !ENG || !S) return; var c = ENG.cam, t = ENG.screenToTile(ENG.cw / 2, ENG.ch / 2), x = Math.max(0, Math.min(C.W - 1, t[0])), y = Math.max(0, Math.min(C.H - 1, t[1])), d = C.DIST[y * C.W + x], dd = DSCENE[d] ? d : 0;
+  var night = ENG.nightK() > .5, evs = S.ev || [], key = dd + '|' + night + '|' + evs.join(','); if (key === lastScene) return; lastScene = key;
+  EWTSound.scene(DSCENE[dd], { night: night, events: evs }); var st = EWTSound.state(); $('sndB').title = st.on ? '🎶 ' + C.DISTRICTS[dd].vi + ': ' + EWTSound.describe(DSCENE[dd]) : 'Bật nhạc nền';
+}
+function sndBtn() { var st = EWTSound.state(); $('sndB').textContent = st.on ? '🔊' : '🔇'; }
+if (window.EWTSound) { EWTSound.init(); $('sndB').onclick = function () { EWTSound.toggle(!EWTSound.state().on); lastScene = ''; sndScene(); sndBtn(); }; setInterval(sndScene, 1500); if (!EWTSound.state().ok) $('sndB').style.display = 'none'; sndBtn(); }
+function SND(n) { try { if (window.EWTSound) EWTSound.sfx(n); } catch (e) {} }
 function openSet() {
   var sel = function (id, opts, cur) { return '<select id="' + id + '">' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (String(cur) === String(o[0]) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };
   var sw = function (id, on) { return '<label class="sw"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '><i></i></label>'; };

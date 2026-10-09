@@ -378,6 +378,6 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   app.get('/api/city/teacher/overview', requireAuth, (req, res) => {
     if (!req.user || ['teacher', 'admin'].indexOf(req.user.role) < 0) return bad(res, 'Bạn không có quyền xem mục này.', 403);
     const rows = db.prepare('SELECT c.user_id, c.state, c.updated_at, u.name FROM city c JOIN users u ON u.id=c.user_id ORDER BY c.updated_at DESC LIMIT 200').all();
-    res.json({ cities: rows.map((r) => { const st = J(r.state, {}); st.bs = st.bs || []; st.districts = st.districts || [0]; st.roads = st.roads || {}; const s = stats(Object.assign({}, st, { free: {}, q: {} })); return { uid: r.user_id, name: r.name, level: s.level, pop: s.pop, happy: s.happy, buildings: s.n, districts: st.districts.length, at: r.updated_at }; }) });
+    res.json({ cities: rows.map((r) => { const st = J(r.state, {}); st.bs = st.bs || []; st.districts = st.districts || [0]; st.roads = st.roads || {}; const s = stats(Object.assign({}, st, { free: {}, q: {} })); return { uid: r.user_id, name: r.name, level: s.level, pop: s.pop, happy: s.happy, buildings: s.n, districts: st.districts.length, chapters: Object.keys(st.chapters || {}).length, chaptersTotal: L.CH.length, at: r.updated_at }; }) });
   });
 };
