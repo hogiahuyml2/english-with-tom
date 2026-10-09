@@ -492,7 +492,8 @@
     };
     for (L = 1; L < LAND.length; L++) {
       var pv = LAND[L - 1], cu = LAND[L], seed = z.i * 7919 + L * 131 + 17, rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-      var newCells = cu.cells - pv.cells, target = Math.max(2, Math.round(newCells * 0.08)), got = 0, guard = 0, edge = 0, cur = cu.r - 1;
+      // Chỉ đặt cảnh phụ ở VIỀN NGOÀI CÙNG của đất rộng nhất (cột 17–19, hàng 11–13): các cỡ đất nhỏ hơn hoàn toàn thông thoáng để trồng/xây
+      var newCells = cu.cells - pv.cells, target = L >= 6 ? Math.max(3, Math.round(newCells * 0.12)) : 0, got = 0, guard = 0, edge = 0, cur = cu.r - 1;
       var pick = function () { var r = rnd() * tw, i; for (i = 0; i < kinds.length; i++) { r -= kinds[i][3]; if (r <= 0) break; } return kinds[Math.min(i, kinds.length - 1)]; };
       while (got < target && guard++ < 120) {
         var k = pick(), w = k[1], h = k[2], x, y, tries = 0, placed = false, gap = 2 + Math.floor(rnd() * 3);
