@@ -3,12 +3,13 @@
 // Dùng chung ví xu 🪙 với EWT Garden / Luyện từ (bảng word_game.coins). Luật và danh mục nằm ở js/city-data.js (dùng chung với trình duyệt).
 const crypto = require('crypto');
 const C = require('./js/city-data.js');
+const L = require('./js/city-learn.js');
 
 module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
   const one = (sql, ...a) => db.prepare(sql).get(...a);
   const vnDay = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
-  const R = C.RULES;
+  const R = C.RULES, MATCH_DAY = 5;
 
   db.exec(`CREATE TABLE IF NOT EXISTS city (user_id INTEGER PRIMARY KEY, state TEXT NOT NULL, updated_at TEXT)`);
   const coinsOf = (uid) => { db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(uid); return one('SELECT coins FROM word_game WHERE user_id=?', uid).coins; };
@@ -17,13 +18,13 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const bad = (res, msg, code) => res.status(code || 400).json({ error: msg });
   const tx = (fn) => { db.exec('BEGIN'); try { const r = fn(); if (r && r.err) db.exec('ROLLBACK'); else db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
 
-  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, created: Date.now() }; }
+  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, lm: { d: '', n: 0 }, created: Date.now() }; }
   function load(uid) {
     const r = one('SELECT state FROM city WHERE user_id=?', uid); let st = r ? J(r.state, null) : null;
     if (!st || typeof st !== 'object') { st = fresh(); db.prepare('INSERT OR REPLACE INTO city (user_id,state,updated_at) VALUES (?,?,?)').run(uid, JSON.stringify(st), now()); }
     st.districts = (Array.isArray(st.districts) ? st.districts : [0]).filter((d) => C.DISTRICTS[d]); if (st.districts.indexOf(0) < 0) st.districts.unshift(0);
     st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; st.bs = (Array.isArray(st.bs) ? st.bs : []).filter((b) => b && C.BY[b.k]);
-    st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
+    st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.chapters = st.chapters && typeof st.chapters === 'object' ? st.chapters : {}; st.lm = st.lm || { d: '', n: 0 }; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
     settle(st, Date.now()); return st;
   }
   const save = (uid, st) => db.prepare('UPDATE city SET state=?, updated_at=? WHERE user_id=?').run(JSON.stringify(st), now(), uid);
@@ -42,7 +43,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   function view(st, uid) {
     const t = Date.now(), s = stats(st);
     return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: pending(b, s, t) })),
-      free: st.free, tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), now: t, coins: coinsOf(uid) };
+      free: st.free, tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), chapters: Object.keys(st.chapters), matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)), now: t, coins: coinsOf(uid) };
   }
   const reply = (res, st, uid, extra) => res.json(Object.assign({ city: view(st, uid) }, extra || {}));
   const getB = (st, id) => st.bs.find((b) => b.i === Number(id));
@@ -61,6 +62,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const out = tx(() => {
       const st = load(uid), s = stats(st);
       if (s.level < it.lvl) return { err: 'Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.' };
+      if (it.ch && !st.chapters[it.ch] && req.user.role !== 'admin') return { err: 'Hãy học xong chương “' + L.BY[it.ch].en + '” (' + L.BY[it.ch].vi + ') để mở ' + it.vi + '.' };
       const occ = C.buildOcc(st.bs), ok = C.canPlace(st, it, x, y, occ); if (!ok.ok) return { err: ok.err };
       if (st.free[it.k] > 0) { st.free[it.k]--; if (!st.free[it.k]) delete st.free[it.k]; }
       else if (!spend(uid, it.cost)) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!' };
@@ -183,6 +185,54 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     reply(res, out.st, uid, { unlocked: d });
   });
 
+
+  /* ───── học từ theo chương (song ngữ) ───── */
+  const shuf = (a) => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  // 3 dạng câu cho mỗi từ: nghĩa tiếng Việt / chọn từ tiếng Anh / điền chỗ trống theo ngữ cảnh. Luôn đúng 1 đáp án (đáp án nhiễu lấy từ các từ KHÁC trong cùng chương).
+  function makeQ(chp, wi, type) {
+    const w = chp.w[wi], others = shuf(chp.w.filter((_, i) => i !== wi)).slice(0, 3), all = shuf([w].concat(others)), ans = all.indexOf(w);
+    const ex = { en: '“' + w[0] + '” ' + w[2] + ' means “' + w[1] + '”.', vi: '“' + w[0] + '” ' + w[2] + ' nghĩa là “' + w[1] + '”.' };
+    if (type === 0) return { q: { en: 'What does “' + w[0] + '” mean?', vi: '“' + w[0] + '” nghĩa là gì?' }, opts: all.map((x) => ({ en: '', vi: x[1] })), ans, ex };
+    if (type === 1) return { q: { en: 'Which English word means “' + w[1] + '”?', vi: 'Từ tiếng Anh nào có nghĩa là “' + w[1] + '”?' }, opts: all.map((x) => ({ en: x[0], vi: '' })), ans, ex };
+    return { q: { en: 'Fill in the blank: ' + w[3], vi: 'Điền vào chỗ trống: ' + w[4] }, ctx: true, opts: all.map((x) => ({ en: x[0], vi: x[1] })), ans, ex };
+  }
+  const lsess = new Map(), msess = new Map(), lcl = () => { for (const [k, v] of lsess) if (Date.now() - v.ts > 30 * 60e3) lsess.delete(k); for (const [k, v] of msess) if (Date.now() - v.ts > 30 * 60e3) msess.delete(k); };
+  const chInfo = (st) => L.CH.map((c) => ({ id: c.id, d: c.d, en: c.en, vi: c.vi, icon: c.icon, passed: !!st.chapters[c.id], best: (st.chapters[c.id] || {}).best || 0, items: C.ITEMS.filter((i) => i.ch === c.id).map((i) => i.k), words: c.w.map((w) => ({ en: w[0], vi: w[1], ipa: w[2], s: w[3].replace('___', w[0]), sv: w[4].replace('___', w[1]) })) }));
+  app.get('/api/city/learn', requireAuth, (req, res) => { const st = load(req.user.id); res.json({ chapters: chInfo(st), pass: L.PASS, ask: L.ASK, reward: L.REWARD, matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)) }); });
+  // bài kiểm tra chương: 5 câu, đúng từ 4 câu trở lên thì mở khoá công trình của chương
+  app.post('/api/city/learn/start', requireAuth, (req, res) => {
+    const chp = L.BY[String((req.body || {}).ch)]; if (!chp) return bad(res, 'Không tìm thấy chương này.');
+    const st = load(req.user.id); if (st.districts.indexOf(chp.d) < 0) return bad(res, 'Hãy mở quận này trước nhé.');
+    const idx = shuf(chp.w.map((_, i) => i)).slice(0, L.ASK), types = shuf([0, 1, 2, 2, 2]), qs = idx.map((wi, n) => makeQ(chp, wi, types[n]));
+    lcl(); const sid = crypto.randomBytes(6).toString('hex'); lsess.set(sid, { uid: req.user.id, ch: chp.id, qs, ts: Date.now() });
+    res.json({ sid, ch: chp.id, need: L.PASS, qs: qs.map((q) => ({ q: q.q, ctx: q.ctx, opts: q.opts })) });
+  });
+  app.post('/api/city/learn/submit', requireAuth, (req, res) => {
+    const b = req.body || {}, ss = lsess.get(String(b.sid)), uid = req.user.id, picks = Array.isArray(b.picks) ? b.picks.map(Number) : [];
+    if (!ss || ss.uid !== uid) return bad(res, 'Bài kiểm tra đã hết hạn, hãy bắt đầu lại nhé.'); lsess.delete(String(b.sid));
+    const res2 = ss.qs.map((q, i) => ({ ok: picks[i] === q.ans, ans: q.ans, ex: q.ex })), score = res2.filter((r) => r.ok).length, pass = score >= L.PASS;
+    const out = tx(() => {
+      const st = load(uid); const rec = st.chapters[ss.ch] || null; let reward = 0, first = false;
+      if (pass) { if (!rec) { st.chapters[ss.ch] = { best: score, at: Date.now() }; first = true; reward = L.REWARD; addCoins(uid, reward); } else if (score > rec.best) rec.best = score; }
+      save(uid, st); return { st, reward, first };
+    });
+    reply(res, out.st, uid, { score, pass, need: L.PASS, results: res2, reward: out.reward, first: out.first });
+  });
+  // trò chơi ghép từ: nối 6 cặp EN–VI. Thưởng nhỏ, tối đa 5 lượt có thưởng mỗi ngày
+  app.post('/api/city/learn/match/start', requireAuth, (req, res) => {
+    const chp = L.BY[String((req.body || {}).ch)]; if (!chp) return bad(res, 'Không tìm thấy chương này.');
+    const st = load(req.user.id); if (st.districts.indexOf(chp.d) < 0) return bad(res, 'Hãy mở quận này trước nhé.');
+    const ws = shuf(chp.w).slice(0, 6); lcl(); const sid = crypto.randomBytes(6).toString('hex'); msess.set(sid, { uid: req.user.id, ts: Date.now() });
+    res.json({ sid, pairs: ws.map((w) => ({ en: w[0], vi: w[1] })), left: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)) });
+  });
+  app.post('/api/city/learn/match/done', requireAuth, (req, res) => {
+    const b = req.body || {}, ss = msess.get(String(b.sid)), uid = req.user.id, miss = Math.max(0, Math.min(30, Number(b.miss) | 0));
+    if (!ss || ss.uid !== uid) return bad(res, 'Lượt chơi đã hết hạn.'); msess.delete(String(b.sid));
+    const secs = (Date.now() - ss.ts) / 1000; if (secs < 8) return bad(res, 'Chơi chậm lại một chút để nhớ từ nhé!');
+    const out = tx(() => { const st = load(uid), day = vnDay(); if (st.lm.d !== day) st.lm = { d: day, n: 0 }; let reward = 0; if (st.lm.n < MATCH_DAY) { st.lm.n++; reward = Math.max(10, 40 - miss * 6); addCoins(uid, reward); } save(uid, st); return { st, reward }; });
+    reply(res, out.st, uid, { reward: out.reward, capped: !out.reward });
+  });
+
   /* ───── kiếm xu bằng câu hỏi (dùng kho câu hỏi của Garden) ───── */
   const pend = new Map(), flips = new Map();
   const wpick = (list) => { const tot = list.reduce((a, x) => a + x[1], 0); let r = Math.random() * tot; for (const [k, w] of list) { if ((r -= w) <= 0) return k; } return list[0][0]; };
@@ -194,7 +244,12 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   };
   app.get('/api/city/quiz', requireAuth, (req, res) => {
     const Q = app.locals.gardenQuiz; if (!Q) return bad(res, 'Chưa sẵn sàng, thử lại sau nhé.', 503);
-    const st = load(req.user.id), src = req.query.src === 'vocab' ? 'vocab' : 'grammar';
+    const st = load(req.user.id); let src = req.query.src === 'vocab' ? 'vocab' : req.query.src === 'city' ? 'city' : req.query.src === 'mix' ? (Math.random() < 0.5 ? 'city' : (Math.random() < 0.5 ? 'vocab' : 'grammar')) : 'grammar';
+    if (src === 'city') {   // câu hỏi riêng của EWT City (song ngữ), chỉ từ các quận đã mở
+      const chs = L.CH.filter((c) => st.districts.indexOf(c.d) >= 0), chp = chs[Math.floor(Math.random() * chs.length)], cq = makeQ(chp, Math.floor(Math.random() * chp.w.length), Math.floor(Math.random() * 3));
+      const qid = crypto.randomBytes(6).toString('hex'); pend.set(qid, { uid: req.user.id, idx: cq.ans, expl: cq.ex.en + ' — ' + cq.ex.vi, ts: Date.now() });
+      return res.json({ qid, src: 'city', topic: chp.icon + ' ' + chp.en + ' · ' + chp.vi, q: cq.q.en, qvi: cq.q.vi, ctx: '', opts: cq.opts.map((o) => (o.en && o.vi ? o.en + ' · ' + o.vi : o.en || o.vi)), left: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)) });
+    }
     const q = src === 'vocab' ? Q.pickVocab(req.user.id, String(req.query.level || ''), String(req.query.type || '')) : Q.pickGrammar(req.user.id, Number(req.query.grade) || 0, String(req.query.lesson || ''));
     if (!q) return bad(res, 'Chưa có câu hỏi phù hợp, hãy chọn mục khác nhé.');
     const qid = crypto.randomBytes(6).toString('hex'); pend.set(qid, { uid: req.user.id, idx: q.idx, expl: q.expl, ts: Date.now() });

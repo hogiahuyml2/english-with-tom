@@ -1,0 +1,117 @@
+/* EWT City — chương học từ vựng song ngữ (dùng chung máy chủ + trình duyệt).
+   Mỗi từ: [tiếng Anh, nghĩa tiếng Việt, phiên âm, câu gợi ý có chỗ trống ___ , dịch câu gợi ý]
+   Câu gợi ý đã được viết để trong cùng một chương CHỈ MỘT từ điền vừa. */
+(function (root, f) { if (typeof module === 'object' && module.exports) module.exports = f(); else root.EWTCityLearn = f(); })(typeof window !== 'undefined' ? window : this, function () {
+  var CH = [
+    { id: 'home1', d: 0, en: 'My Home', vi: 'Ngôi nhà của em', icon: '🏠', w: [
+      ['bedroom', 'phòng ngủ', '/ˈbedruːm/', 'I sleep in my ___ at night.', 'Tôi ngủ trong ___ của mình vào ban đêm.'],
+      ['kitchen', 'nhà bếp', '/ˈkɪtʃɪn/', 'Mom cooks dinner in the ___.', 'Mẹ nấu bữa tối trong ___.'],
+      ['bathroom', 'phòng tắm', '/ˈbɑːθruːm/', 'I take a shower in the ___.', 'Tôi tắm vòi sen trong ___.'],
+      ['living room', 'phòng khách', '/ˈlɪvɪŋ ruːm/', 'Guests sit on the sofa in the ___ and talk with us.', 'Khách ngồi trên ghế sofa trong ___ và trò chuyện với chúng tôi.'],
+      ['garden', 'khu vườn', '/ˈɡɑːrdn/', 'Flowers and trees grow in the ___ outside the house.', 'Hoa và cây mọc trong ___ bên ngoài ngôi nhà.'],
+      ['garage', 'nhà để xe', '/ɡəˈrɑːʒ/', 'Dad parks his car in the ___.', 'Bố đậu xe ô tô trong ___.'],
+      ['roof', 'mái nhà', '/ruːf/', 'Rain falls on the ___ at the top of the house.', 'Mưa rơi xuống ___ ở trên cùng của ngôi nhà.'],
+      ['stairs', 'cầu thang', '/sterz/', 'We walk up the ___ to go to the second floor.', 'Chúng tôi đi lên ___ để lên tầng hai.']] },
+    { id: 'home2', d: 0, en: 'Furniture', vi: 'Đồ nội thất', icon: '🛋️', w: [
+      ['sofa', 'ghế sofa', '/ˈsoʊfə/', 'A long, soft seat for two or three people is a ___.', 'Chiếc ghế dài, êm cho hai hoặc ba người ngồi là ___.'],
+      ['table', 'cái bàn', '/ˈteɪbl/', 'We put plates and food on the ___ for dinner.', 'Chúng tôi đặt đĩa và thức ăn lên ___ cho bữa tối.'],
+      ['chair', 'cái ghế', '/tʃer/', 'A small seat for one person, with four legs and a back, is a ___.', 'Chỗ ngồi nhỏ cho một người, có bốn chân và tựa lưng, là ___.'],
+      ['bed', 'cái giường', '/bed/', 'I lie on my ___ and close my eyes to sleep.', 'Tôi nằm trên ___ và nhắm mắt để ngủ.'],
+      ['lamp', 'cái đèn bàn', '/læmp/', 'Turn on the ___ on your desk to get some light.', 'Hãy bật ___ trên bàn học để có ánh sáng.'],
+      ['fridge', 'tủ lạnh', '/frɪdʒ/', 'Milk and cheese stay cold in the ___.', 'Sữa và phô mai được giữ lạnh trong ___.'],
+      ['wardrobe', 'tủ quần áo', '/ˈwɔːrdroʊb/', 'I hang my shirts and pants in the ___.', 'Tôi treo áo sơ mi và quần trong ___.'],
+      ['curtain', 'rèm cửa', '/ˈkɜːrtn/', 'Close the ___ to cover the window at night.', 'Hãy kéo ___ để che cửa sổ vào ban đêm.']] },
+    { id: 'town1', d: 1, en: 'Bank & Hotel', vi: 'Ngân hàng & Khách sạn', icon: '🏨', w: [
+      ['bank', 'ngân hàng', '/bæŋk/', 'I save my money in the ___.', 'Tôi gửi tiền tiết kiệm trong ___.'],
+      ['hotel', 'khách sạn', '/hoʊˈtel/', 'Tourists sleep in a ___ when they travel.', 'Khách du lịch ngủ trong ___ khi đi du lịch.'],
+      ['guest', 'khách (ở khách sạn)', '/ɡest/', 'A person who stays in a hotel is a ___.', 'Người ở trong khách sạn là ___.'],
+      ['key', 'chìa khoá', '/kiː/', 'Use the ___ to open the door of your room.', 'Dùng ___ để mở cửa phòng của bạn.'],
+      ['receptionist', 'lễ tân', '/rɪˈsepʃənɪst/', 'The ___ at the front desk checks you in.', '___ ở quầy đón tiếp làm thủ tục nhận phòng cho bạn.'],
+      ['luggage', 'hành lý', '/ˈlʌɡɪdʒ/', 'Your bags and suitcases are your ___.', 'Túi và vali của bạn là ___ của bạn.'],
+      ['price', 'giá tiền', '/praɪs/', 'A shirt costs ten dollars. Ten dollars is the ___.', 'Một cái áo giá mười đô. Mười đô là ___.'],
+      ['receipt', 'hoá đơn', '/rɪˈsiːt/', 'After you pay, the shop gives you a paper ___.', 'Sau khi bạn trả tiền, cửa hàng đưa bạn một tờ ___.']] },
+    { id: 'town2', d: 1, en: 'Work & Shopping', vi: 'Công việc & Mua sắm', icon: '🏢', w: [
+      ['office', 'văn phòng', '/ˈɔːfɪs/', 'Many people work at desks in an ___ building.', 'Nhiều người làm việc ở bàn trong toà nhà ___.'],
+      ['manager', 'quản lý', '/ˈmænɪdʒər/', 'The ___ is the boss of the team.', '___ là sếp của cả nhóm.'],
+      ['meeting', 'cuộc họp', '/ˈmiːtɪŋ/', 'At nine o\'clock the team has a ___ to talk about the work.', 'Lúc chín giờ cả nhóm có một ___ để bàn về công việc.'],
+      ['computer', 'máy tính', '/kəmˈpjuːtər/', 'I write emails on my ___.', 'Tôi viết thư điện tử trên ___ của mình.'],
+      ['customer', 'khách hàng', '/ˈkʌstəmər/', 'A person who buys things in a shop is a ___.', 'Người mua đồ trong cửa hàng là ___.'],
+      ['sale', 'đợt giảm giá', '/seɪl/', 'The shop has a big ___, so everything is cheaper!', 'Cửa hàng có một ___ lớn, nên mọi thứ rẻ hơn!'],
+      ['escalator', 'thang cuốn', '/ˈeskəleɪtər/', 'Moving stairs in a shopping mall are an ___.', 'Cầu thang tự chuyển động trong trung tâm mua sắm là ___.'],
+      ['elevator', 'thang máy', '/ˈelɪveɪtər/', 'A small room that goes up and down in a tall building is an ___.', 'Căn phòng nhỏ đi lên xuống trong toà nhà cao là ___.']] },
+    { id: 'civic1', d: 1, en: 'City Helpers', vi: 'Những người giúp ích', icon: '🚒', w: [
+      ['firefighter', 'lính cứu hoả', '/ˈfaɪərfaɪtər/', 'A ___ puts out fires.', '___ dập tắt đám cháy.'],
+      ['police officer', 'cảnh sát', '/pəˈliːs ˈɔːfɪsər/', 'A ___ catches bad people and keeps the city safe.', '___ bắt người xấu và giữ an toàn cho thành phố.'],
+      ['teacher', 'giáo viên', '/ˈtiːtʃər/', 'A ___ teaches students at school.', '___ dạy học sinh ở trường.'],
+      ['student', 'học sinh', '/ˈstuːdnt/', 'A ___ goes to school to learn.', '___ đến trường để học.'],
+      ['librarian', 'thủ thư', '/laɪˈbreriən/', 'A ___ works in a library and helps you find books.', '___ làm việc ở thư viện và giúp bạn tìm sách.'],
+      ['book', 'quyển sách', '/bʊk/', 'You borrow a ___ from the library and read it.', 'Bạn mượn một ___ ở thư viện rồi đọc.'],
+      ['fire truck', 'xe cứu hoả', '/ˈfaɪər trʌk/', 'The big red ___ carries water and a ladder.', '___ lớn màu đỏ chở nước và một cái thang.'],
+      ['thief', 'kẻ trộm', '/θiːf/', 'A ___ steals things from other people.', '___ lấy trộm đồ của người khác.']] },
+    { id: 'port1', d: 2, en: 'At the Port', vi: 'Ở bến cảng', icon: '⚓', w: [
+      ['ship', 'con tàu', '/ʃɪp/', 'A big ___ carries goods across the sea.', 'Một ___ lớn chở hàng hoá qua biển.'],
+      ['sailor', 'thuỷ thủ', '/ˈseɪlər/', 'A ___ works on a ship.', '___ làm việc trên tàu.'],
+      ['anchor', 'cái neo', '/ˈæŋkər/', 'The ship drops its ___ to stay in one place.', 'Con tàu thả ___ xuống để đứng yên một chỗ.'],
+      ['cargo', 'hàng hoá trên tàu', '/ˈkɑːrɡoʊ/', 'The goods carried by a ship are called ___.', 'Hàng hoá do tàu chở được gọi là ___.'],
+      ['container', 'thùng container', '/kənˈteɪnər/', 'Goods are packed in a big metal ___ and put on the ship.', 'Hàng được đóng trong một ___ kim loại lớn rồi đưa lên tàu.'],
+      ['crane', 'cần cẩu', '/kreɪn/', 'A tall ___ lifts heavy boxes up from the ship.', 'Một ___ cao nhấc những cái thùng nặng lên khỏi tàu.'],
+      ['dock', 'bến tàu', '/dɑːk/', 'The ship stops next to the ___ so people can get off.', 'Con tàu dừng cạnh ___ để mọi người xuống tàu.'],
+      ['wave', 'con sóng', '/weɪv/', 'The sea water rises and falls in a ___.', 'Nước biển dâng lên rồi hạ xuống thành một ___.']] },
+    { id: 'port2', d: 2, en: 'Factory & Energy', vi: 'Nhà máy & Năng lượng', icon: '🏭', w: [
+      ['factory', 'nhà máy', '/ˈfæktri/', 'Cars and toys are made in a ___.', 'Xe hơi và đồ chơi được làm trong ___.'],
+      ['machine', 'cái máy', '/məˈʃiːn/', 'A ___ helps workers make things fast.', 'Một ___ giúp công nhân làm ra đồ nhanh hơn.'],
+      ['worker', 'công nhân', '/ˈwɜːrkər/', 'A ___ makes things in a factory.', '___ làm ra sản phẩm trong nhà máy.'],
+      ['electricity', 'điện', '/ɪˌlekˈtrɪsəti/', 'Power lines carry ___ from the power plant to our houses.', 'Đường dây tải ___ từ nhà máy điện đến nhà của chúng ta.'],
+      ['recycle', 'tái chế', '/ˌriːˈsaɪkl/', 'We ___ old paper and bottles to make new things.', 'Chúng ta ___ giấy và chai cũ để làm ra đồ mới.'],
+      ['plastic', 'nhựa', '/ˈplæstɪk/', 'Many bottles and toys are made of ___.', 'Nhiều chai và đồ chơi được làm từ ___.'],
+      ['smoke', 'khói', '/smoʊk/', 'Grey ___ comes out of the tall chimney.', '___ màu xám bay ra từ ống khói cao.'],
+      ['battery', 'pin', '/ˈbætəri/', 'Put a new ___ in the remote control.', 'Hãy lắp một viên ___ mới vào điều khiển từ xa.']] },
+    { id: 'fun1', d: 3, en: 'Fun Time', vi: 'Giờ vui chơi', icon: '🎡', w: [
+      ['movie', 'bộ phim', '/ˈmuːvi/', 'We watch a ___ on a big screen at the cinema.', 'Chúng tôi xem một ___ trên màn hình lớn ở rạp.'],
+      ['ticket', 'vé', '/ˈtɪkɪt/', 'You must buy a ___ to go in.', 'Bạn phải mua ___ để vào cửa.'],
+      ['popcorn', 'bắp rang', '/ˈpɑːpkɔːrn/', 'People eat ___, a snack made from corn, at the cinema.', 'Mọi người ăn ___, món ăn vặt làm từ ngô, ở rạp phim.'],
+      ['clown', 'chú hề', '/klaʊn/', 'A ___ with a red nose makes children laugh at the circus.', '___ có cái mũi đỏ làm trẻ em cười ở rạp xiếc.'],
+      ['ride', 'trò chơi cảm giác', '/raɪd/', 'A roller coaster is a scary ___ that goes up and down very fast.', 'Tàu lượn siêu tốc là một ___ đáng sợ, đi lên xuống rất nhanh.'],
+      ['seat', 'chỗ ngồi', '/siːt/', 'Find your ___: row B, number 5.', 'Hãy tìm ___ của bạn: hàng B, số 5.'],
+      ['game', 'trò chơi', '/ɡeɪm/', 'We play a video ___ in the arcade.', 'Chúng tôi chơi một ___ điện tử trong khu trò chơi.'],
+      ['prize', 'giải thưởng', '/praɪz/', 'If you win the contest, you get a ___.', 'Nếu bạn thắng cuộc thi, bạn nhận được một ___.']] },
+    { id: 'fun2', d: 3, en: 'Water & Adventure', vi: 'Nước & Phiêu lưu', icon: '🏴‍☠️', w: [
+      ['swim', 'bơi', '/swɪm/', 'I can ___ in the pool without help.', 'Tôi có thể ___ trong hồ mà không cần giúp đỡ.'],
+      ['fish', 'con cá', '/fɪʃ/', 'A salmon is a kind of ___ that lives in water and has fins.', 'Cá hồi là một loại ___ sống dưới nước và có vây.'],
+      ['shark', 'cá mập', '/ʃɑːrk/', 'A ___ is a big fish with very sharp teeth.', '___ là loài cá lớn có hàm răng rất sắc.'],
+      ['slide', 'cầu trượt', '/slaɪd/', 'Children go down the water ___ and splash into the pool.', 'Trẻ em trượt xuống ___ nước rồi tung toé vào hồ.'],
+      ['wheel', 'bánh xe / vòng quay', '/wiːl/', 'On the Ferris ___, you go round and see the whole city.', 'Trên vòng quay (Ferris ___), bạn quay vòng và nhìn thấy cả thành phố.'],
+      ['pirate', 'cướp biển', '/ˈpaɪrət/', 'A ___ sails a ship and looks for gold.', '___ lái tàu và đi tìm vàng.'],
+      ['treasure', 'kho báu', '/ˈtreʒər/', 'A box of gold coins hidden on an island is a ___.', 'Chiếc hộp đầy tiền vàng giấu trên đảo là một ___.'],
+      ['swimsuit', 'đồ bơi', '/ˈswɪmsuːt/', 'I wear a ___ at the water park.', 'Tôi mặc ___ ở công viên nước.']] },
+    { id: 'edu1', d: 4, en: 'School & Lab', vi: 'Trường lớp & Phòng thí nghiệm', icon: '🔬', w: [
+      ['classroom', 'lớp học', '/ˈklæsruːm/', 'Students sit and learn in the ___.', 'Học sinh ngồi và học trong ___.'],
+      ['homework', 'bài tập về nhà', '/ˈhoʊmwɜːrk/', 'The teacher gives us ___ to do at home.', 'Cô giáo giao cho chúng tôi ___ để làm ở nhà.'],
+      ['experiment', 'thí nghiệm', '/ɪkˈsperɪmənt/', 'In the lab, we do an ___ to test an idea.', 'Trong phòng thí nghiệm, chúng tôi làm một ___ để kiểm tra ý tưởng.'],
+      ['microscope', 'kính hiển vi', '/ˈmaɪkrəskoʊp/', 'A ___ makes very tiny things look big.', '___ làm những thứ rất nhỏ trông lớn hơn.'],
+      ['painting', 'bức tranh', '/ˈpeɪntɪŋ/', 'A ___ of a river hangs on the wall in the art gallery.', 'Một ___ về dòng sông treo trên tường trong phòng tranh.'],
+      ['pencil', 'bút chì', '/ˈpensl/', 'You can write with a ___ and then use an eraser.', 'Bạn có thể viết bằng ___ rồi dùng cục tẩy.'],
+      ['roommate', 'bạn cùng phòng', '/ˈruːmmeɪt/', 'In the dormitory, I share my room with my ___.', 'Ở ký túc xá, tôi ở chung phòng với ___ của mình.'],
+      ['notebook', 'vở ghi chép', '/ˈnoʊtbʊk/', 'I write my notes in my ___.', 'Tôi viết ghi chú vào ___ của mình.']] },
+    { id: 'edu2', d: 4, en: 'Sky, Sports & Museum', vi: 'Bầu trời, Thể thao & Bảo tàng', icon: '🔭', w: [
+      ['telescope', 'kính thiên văn', '/ˈtelɪskoʊp/', 'Use a ___ to look at things far away in the sky.', 'Dùng ___ để nhìn những thứ ở xa trên bầu trời.'],
+      ['planet', 'hành tinh', '/ˈplænɪt/', 'Earth is a ___ that goes around the sun.', 'Trái Đất là một ___ quay quanh mặt trời.'],
+      ['star', 'ngôi sao', '/stɑːr/', 'The sun is a ___: a huge ball of fire that gives light.', 'Mặt trời là một ___: quả cầu lửa khổng lồ phát ra ánh sáng.'],
+      ['medal', 'huy chương', '/ˈmedl/', 'The winner of the race gets a gold ___.', 'Người thắng cuộc đua nhận được ___ vàng.'],
+      ['team', 'đội', '/tiːm/', 'Eleven players make a football ___.', 'Mười một cầu thủ tạo thành một ___ bóng đá.'],
+      ['history', 'lịch sử', '/ˈhɪstri/', 'In the museum, we learn about the ___ of our country.', 'Trong bảo tàng, chúng ta học về ___ của đất nước.'],
+      ['degree', 'bằng đại học', '/dɪˈɡriː/', 'After four years at university, you get a ___.', 'Sau bốn năm học đại học, bạn nhận được ___.'],
+      ['professor', 'giáo sư', '/prəˈfesər/', 'A ___ teaches and does research at a university.', '___ giảng dạy và nghiên cứu ở trường đại học.']] },
+    { id: 'world1', d: 5, en: 'Around the World', vi: 'Vòng quanh thế giới', icon: '🌍', w: [
+      ['country', 'đất nước', '/ˈkʌntri/', 'Vietnam is a ___ in Asia.', 'Việt Nam là một ___ ở châu Á.'],
+      ['capital', 'thủ đô', '/ˈkæpɪtl/', 'Hanoi is the ___ city of Vietnam.', 'Hà Nội là ___ của Việt Nam.'],
+      ['flag', 'lá cờ', '/flæɡ/', 'Each country has its own ___ with colors and symbols.', 'Mỗi nước có ___ riêng với màu sắc và biểu tượng.'],
+      ['tourist', 'khách du lịch', '/ˈtʊrɪst/', 'A ___ travels to see new places for fun.', '___ đi đến những nơi mới để vui chơi.'],
+      ['passport', 'hộ chiếu', '/ˈpæspɔːrt/', 'At the airport, show your ___ to travel to another country.', 'Ở sân bay, hãy đưa ___ để đi sang nước khác.'],
+      ['language', 'ngôn ngữ', '/ˈlæŋɡwɪdʒ/', 'Vietnamese is the ___ that people speak in Vietnam.', 'Tiếng Việt là ___ mà người dân nói ở Việt Nam.'],
+      ['culture', 'văn hoá', '/ˈkʌltʃər/', 'Food, music, and festivals are part of a country\'s ___.', 'Món ăn, âm nhạc và lễ hội là một phần của ___ của một đất nước.'],
+      ['souvenir', 'quà lưu niệm', '/ˌsuːvəˈnɪr/', 'I bought a small ___ to remember my trip.', 'Tôi mua một món ___ nhỏ để nhớ chuyến đi.']] }
+  ];
+  var BY = {}; CH.forEach(function (c) { BY[c.id] = c; });
+  return { CH: CH, BY: BY, PASS: 4, ASK: 5, REWARD: 200 };
+});
