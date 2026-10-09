@@ -53,6 +53,25 @@
     { id: 'crates', name: 'Thùng & bao tải', kind: 'deco', cost: 26, lvl: 2, b: 3, img: 'farm', file: 'sacksCrate_N', k: 1.5 },
     { id: 'rustfence', name: 'Hàng rào gỗ nâu', kind: 'deco', cost: 12, lvl: 1, b: 2, img: 'farm', file: 'fenceLow_N', k: 1.2 },
     { id: 'deck', name: 'Sàn gỗ', kind: 'ground', cost: 15, lvl: 1, b: 2, img: 'farm', file: 'planks_N', k: 1 },
+    // Lối đi theo chủ đề (rộng 1 ô, gạch/đá/đất/cát/tre/kính…): mỗi khu có một loại hợp với bản sắc (xem PATHOF)
+    { id: 'p_brick', name: 'Lối gạch đỏ', kind: 'ground', cost: 8, lvl: 1, b: 1 },
+    { id: 'p_cobble', name: 'Lối đá cuội', kind: 'ground', cost: 8, lvl: 1, b: 1 },
+    { id: 'p_dirt', name: 'Lối đất', kind: 'ground', cost: 5, lvl: 1, b: 1 },
+    { id: 'p_sand', name: 'Lối cát', kind: 'ground', cost: 5, lvl: 1, b: 1 },
+    { id: 'p_gravel', name: 'Lối sỏi thiền', kind: 'ground', cost: 6, lvl: 1, b: 1 },
+    { id: 'p_moss', name: 'Lối đá rêu', kind: 'ground', cost: 8, lvl: 1, b: 1 },
+    { id: 'p_bamboo', name: 'Lối tre', kind: 'ground', cost: 10, lvl: 1, b: 1 },
+    { id: 'p_tile', name: 'Lối gạch hoa', kind: 'ground', cost: 12, lvl: 1, b: 2 },
+    { id: 'p_shell', name: 'Lối vỏ sò', kind: 'ground', cost: 10, lvl: 1, b: 1 },
+    { id: 'p_marble', name: 'Lối đá cẩm thạch', kind: 'ground', cost: 15, lvl: 1, b: 2 },
+    { id: 'p_ice', name: 'Lối băng', kind: 'ground', cost: 10, lvl: 1, b: 1 },
+    { id: 'p_candy', name: 'Lối kẹo', kind: 'ground', cost: 12, lvl: 1, b: 2 },
+    { id: 'p_glass', name: 'Lối thuỷ tinh', kind: 'ground', cost: 18, lvl: 1, b: 2 },
+    { id: 'p_gold', name: 'Lối gạch vàng', kind: 'ground', cost: 20, lvl: 1, b: 2 },
+    { id: 'p_neon', name: 'Lối đèn neon', kind: 'ground', cost: 18, lvl: 1, b: 2 },
+    { id: 'p_lava', name: 'Lối đá nham thạch', kind: 'ground', cost: 15, lvl: 1, b: 2 },
+    { id: 'p_cloud', name: 'Lối mây', kind: 'ground', cost: 15, lvl: 1, b: 2 },
+    { id: 'p_crystal', name: 'Lối pha lê', kind: 'ground', cost: 20, lvl: 1, b: 2 },
     // Công trình lớn: chiếm w×h ô (đặt ô góc trên-trái), giá cao và rất đẹp
     { id: 'hutbig', name: 'Chòi lá', kind: 'big', w: 2, h: 2, cost: 300, lvl: 3, b: 16 },
     { id: 'pondbig', name: 'Hồ nhỏ', kind: 'big', w: 2, h: 2, cost: 450, lvl: 4, b: 18 },
@@ -579,6 +598,12 @@
     Object.keys(state.land || {}).forEach(function (k) { b += (state.land[k] | 0) * 2; }); return b;
   }
 
-  var API = { BD: BD, EV: EV, ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
+  // lối đi đặc trưng của từng khu (dùng cho mẫu vườn gợi ý + gợi ý ở cửa hàng)
+  var PATHOF = { cottage: 'p_cobble', hill: 'p_dirt', river: 'p_cobble', pond: 'p_moss', forest: 'p_moss', palace: 'p_marble', winter: 'p_ice', beach: 'p_shell', magic: 'p_crystal', farm: 'p_dirt', sakura: 'p_gravel', autumn: 'p_dirt', mountain: 'p_cobble',
+    desert: 'p_sand', candy: 'p_candy', ocean: 'p_shell', sky: 'p_cloud', space: 'p_glass', bamboo: 'p_bamboo', savanna: 'p_dirt', jungle: 'p_dirt', village: 'p_brick', funfair: 'p_brick', arctic: 'p_ice', pirate: 'deck', dino: 'p_dirt', volcano: 'p_lava', cyber: 'p_neon',
+    vietnam: 'p_bamboo', thailand: 'p_gold', japan: 'p_gravel', china: 'p_gold', india: 'p_tile', indonesia: 'p_cobble', france: 'p_cobble', italy: 'p_marble', netherlands: 'p_brick', uk: 'p_brick', germany: 'p_cobble', usa: 'p_brick', greece: 'p_marble', sweden: 'p_cobble', switzerland: 'p_cobble',
+    korea: 'p_moss', turkey: 'p_tile', australia: 'p_dirt', canada: 'deck', mexico: 'p_tile', brazil: 'p_sand', egypt: 'p_sand', morocco: 'p_tile', spain: 'p_tile', russia: 'p_cobble', ireland: 'p_moss', norway: 'deck', peru: 'p_cobble', argentina: 'p_cobble', cuba: 'p_tile', chile: 'p_cobble',
+    kenya: 'p_dirt', southafrica: 'p_dirt', ethiopia: 'p_dirt', madagascar: 'p_dirt' };
+  var API = { PATHOF: PATHOF, BD: BD, EV: EV, ITEMS: ITEMS, PETS: PETS, LEVELS: LEVELS, SIZES: SIZES, RULES: RULES, FLIP: FLIP, ZONES: ZONES, ZBY: ZBY, TOTAL: TOTAL, PER: PER, COLS: COLS, ROWS: ROWS, BASEC: BASEC, BASER: BASER, MAXC: MAXC, MAXR: MAXR, LAND: LAND, landOf: landOf, plotsOf: plotsOf, inLand: inLand, remapOld: remapOld, zoneOfCell: zoneOfCell, footprint: footprint, isBlocked: isBlocked, BY: BY, PBY: PBY, levelOf: levelOf, nextLevel: nextLevel, petSlots: petSlots, growMs: growMs, stageOf: stageOf, remainMs: remainMs, boostCost: boostCost, beautyOf: beautyOf, MIN: MIN };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenData = API;
 })(typeof window !== 'undefined' ? window : this);

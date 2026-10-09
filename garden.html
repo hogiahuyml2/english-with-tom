@@ -399,6 +399,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 .gd-lnav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0; } .gd-dots { display: flex; gap: 6px; } .gd-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--border); } .gd-dots i.on { background: #F59E0B; transform: scale(1.3); }
 .gd-cq .qq button.gd-sp { display: inline-block; width: 34px; min-height: 0; height: 34px; padding: 0; margin: 0 0 0 4px; text-align: center; border-radius: 99px; vertical-align: middle; }
 .gd-cq .qq small.qv { display: block; font-weight: 600; font-size: 13px; color: var(--text-muted); margin-top: 2px; } .gd-cq button small { display: block; font-weight: 600; font-size: 12.5px; color: var(--text-muted); margin-top: 1px; } .gd-cq button.ok small, .gd-cq button.bad small { color: inherit; opacity: .85; }
+.gt.blk.has { pointer-events: auto; cursor: pointer; }
 </style>
 </head>
 <body data-page="garden" data-guard="auth">
@@ -628,8 +629,8 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-cat-f.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
 <script src="js/garden-bundles.js?v=2"></script>
-<script src="js/garden-data.js?v=23"></script>
-<script src="js/garden-blueprints.js?v=4"></script>
+<script src="js/garden-data.js?v=24"></script>
+<script src="js/garden-blueprints.js?v=5"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
 <script src="js/garden-art3.js?v=2"></script>
@@ -650,6 +651,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-art6.js?v=2"></script>
 <script src="js/garden-art7.js?v=1"></script>
 <script src="js/garden-art8.js?v=1"></script>
+<script src="js/garden-art9.js?v=1"></script>
 <script src="js/garden-culture.js?v=2"></script>
 <script src="js/garden-gen1.js?v=3"></script>
 <script src="js/garden-gen2.js?v=3"></script>
@@ -888,7 +890,7 @@ function renderTools() {
 function rootCell(i) { var t = S.tiles[i]; return t && t.ref != null ? t.ref : i; }
 function msList() { return Object.keys(MSEL).map(Number); }
 function msetCell(i, on) {
-  if (VISIT || D.isBlocked(i)) return; i = rootCell(i);
+  if (VISIT || (D.isBlocked(i) && !S.tiles[i])) return; i = rootCell(i);
   if (on) MSEL[i] = 1; else delete MSEL[i];
   var e = tileEl(i); if (e) e.classList.toggle('msel', !!on);
   var t = S.tiles[i], it = t && D.BY[t.k];
@@ -982,7 +984,7 @@ function bpZoneEmpty(z) { var d0 = zdim(z), r, c, gi; for (r = 0; r < d0.r; r++)
 async function openBp() {
   var z = D.ZBY[VIEW]; if (!z) return toast('Hãy vào một khu rồi bấm 🎨 Mẫu vườn nhé.');
   if (VISIT) return;
-  BPS = EWTGardenBlueprints.all(D, VIEW, zlv(z), S.level); BPI = 0; BPCLR = !bpZoneEmpty(z);
+  BPS = EWTGardenBlueprints.all(D, VIEW, zlv(z), S.level); BPI = 0; BPCLR = false;   // mặc định KHÔNG dọn vườn đang có — chỉ dựng lên ô trống, đồ đã xây giữ nguyên
   if (!BPS.length) return toast('Chưa có bản mẫu nào cho khu này ở cấp hiện tại.');
   $('bpm').classList.add('on'); $('bpbody').innerHTML = '<p class="gd-sub">Đang chuẩn bị bản mẫu…</p>'; await bpQuote();
 }
@@ -1003,7 +1005,7 @@ function renderBp() {
   var bigHtml = bigs.map(function (b) { return '<div class="bp-big" style="left:calc(8px + ' + b.c + ' * (var(--bs) + 2px));top:calc(8px + ' + b.r + ' * (var(--bs) + 2px));width:calc(' + b.it.w + ' * var(--bs) + ' + (b.it.w - 1) * 2 + 'px);height:calc(' + b.it.h + ' * var(--bs) + ' + (b.it.h - 1) * 2 + 'px)">' + W.bigSvg(b.it.id) + '</div>'; }).join('');
   var pr = EWTGardenBlueprints.listPrice(D, bp), legend = Object.keys(pr.counts).sort(function (a, b) { return D.BY[b].cost - D.BY[a].cost; }).map(function (id) { var it = D.BY[id]; return '<span>' + (it.kind === 'big' ? W.bigSvg(id) : A.itemSvg(it, 3, 22)) + esc(it.name) + ' ×' + pr.counts[id] + '</span>'; }).join('');
   var pay = q ? q.cost : pr.cost, short = q && pay > COINS;
-  h += '<h3>🎨 Gợi ý xây vườn · ' + esc(z.name.replace(' Culture Park', '')) + '</h3><p class="gd-sub">3 bản thiết kế đẹp và tối ưu cho khu này, dùng các món bạn đã mở khoá (cấp ' + S.level + '). Bấm nút để dựng ngay hoặc xem rồi tự xây theo.</p><div class="bp-tabs">' + tabs + '</div><p class="gd-sub" style="margin:2px 0">' + esc(bp.desc) + '</p>';
+  h += '<h3>🎨 Gợi ý xây vườn · ' + esc(z.name.replace(' Culture Park', '')) + '</h3><p class="gd-sub">5 bản thiết kế đẹp và tối ưu cho khu này, dùng các món bạn đã mở khoá (cấp ' + S.level + '). Bấm nút để dựng ngay hoặc xem rồi tự xây theo.</p><div class="bp-tabs">' + tabs + '</div><p class="gd-sub" style="margin:2px 0">' + esc(bp.desc) + '</p>';
   h += '<div class="bp-prev" style="--bs:' + bs + 'px;grid-template-columns:repeat(' + bp.cols + ',var(--bs))">' + grid + bigHtml + '</div>';
   h += '<div class="bp-sum"><div>Số món<b>' + bp.cells.length + ' món</b></div><div>Giá lẻ (mua mới hết)<b>' + pr.cost + ' 🪙</b></div><div>' + (q ? 'Dùng đồ có sẵn trong giỏ<b>' + (q.fromBag + q.free) + ' món</b>' : 'Đồ trong giỏ<b>…</b>') + '</div><div>Bạn phải trả<b style="color:' + (short ? '#C0392B' : '#2E8A2E') + '">' + (q ? q.cost : '…') + ' 🪙</b>(bạn có ' + COINS + ' 🪙)</div></div>';
   h += '<div class="bp-legend">' + legend + '</div>';
@@ -1059,7 +1061,7 @@ function renderShop() {
   if (evId && !evs.some(function (e) { return e.id === evId; })) { SMODE = 'zone'; evId = ''; }
   var byPrice = function (x, y) { return x.lvl - y.lvl || x.cost - y.cost; };
   var mode = SMODE === 'bd' && !VISIT && D.BD ? 'bd' : evId ? 'ev' : zin && SMODE === 'zone' ? 'zone' : 'all', zn = zin ? D.ZBY[VIEW].name : '', evo = evId ? evs.filter(function (e) { return e.id === evId; })[0] : null;
-  var inShop = function (o) { return mode === 'ev' ? o.ev === evId : mode === 'zone' ? o.z === VIEW : !o.ev; };
+  var inShop = function (o) { return mode === 'ev' ? o.ev === evId : mode === 'zone' ? (o.z === VIEW || (!o.z && o.id === (D.PATHOF || {})[VIEW])) : !o.ev; };
   var q = mode === 'all' ? noAcc(SHOPQ).trim() : '', skey = mode + '|' + TAB + '|' + q + '|' + VIEW; if (skey !== SHOPKEY) { SHOPKEY = skey; SHOPN = 60; }
   var sq = $('shopq'); if (sq) sq.style.display = mode === 'all' && TAB !== 'bag' ? '' : 'none';
   var ord = function (o) { return o.z === VIEW ? 0 : !o.z ? 1 : 2 + (ZI[o.z] || 0); };

@@ -65,14 +65,8 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     st.zones = st.zones.filter((id) => G.ZBY[id]); if (st.zones.indexOf('cottage') < 0) st.zones.unshift('cottage');
     // Thú cưng thuộc về MỘT khu: thú cũ chưa có khu → ở Vườn nhà Tom
     st.pets = (Array.isArray(st.pets) ? st.pets : []).filter((p) => p && G.PBY[p.k]).map((p) => { if (!p.z || !G.ZBY[p.z]) p.z = 'cottage'; return p; });
-    // Cảnh phụ mới chiếm một số ô: đồ đã đặt trúng ô đó (nếu có) được dọn đi và hoàn xu
+    // Vườn cũ được GIỮ NGUYÊN: nếu bố cục cảnh phụ đổi và có đồ của học sinh nằm trúng ô cảnh phụ mới thì vẫn giữ đồ đó tại chỗ (không dọn, không mất).
     st.purged = 0; st.purgedAny = false;
-    for (let i = 0; i < st.tiles.length; i++) {
-      const t = st.tiles[i]; if (!t || !G.isBlocked(i)) continue;
-      const a = t.ref != null ? t.ref : i, at = st.tiles[a], it = at && G.BY[at.k]; st.purgedAny = true;
-      if (it && it.cost > 0) st.purged += it.cost;   // đồ nằm trúng ô cảnh phụ (sau khi sắp xếp lại) được hoàn đủ xu
-      (it && it.kind === 'big' ? G.footprint(a, it, G.LAND.length - 1) || [a] : [a]).forEach((k) => { st.tiles[k] = null; }); st.tiles[i] = null;
-    }
     Object.keys(st.land).forEach((k) => { const n = Number(st.land[k]); if (!G.ZBY[k] || !Number.isInteger(n) || n < 1) delete st.land[k]; else st.land[k] = Math.min(n, G.LAND.length - 1); });
     return st;
   }
@@ -290,7 +284,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   app.post('/api/garden/blueprint/quote', requireAuth, (req, res) => {
     const z = G.ZBY[String((req.body || {}).zone)], idx = Number((req.body || {}).idx) | 0, st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
     if (!z || st.zones.indexOf(z.id) < 0) return bad(res, 'Khu này chưa được mở.');
-    const out = [0, 1, 2].map((j) => { const q = bpPlan(st, z, j, !!(req.body || {}).clear, lvl); return q ? { idx: j, cost: q.cost, fromBag: q.fromBag, free: q.free, placeable: q.placeable, blocked: q.blocked } : null; });
+    const out = [0, 1, 2, 3, 4].map((j) => { const q = bpPlan(st, z, j, !!(req.body || {}).clear, lvl); return q ? { idx: j, cost: q.cost, fromBag: q.fromBag, free: q.free, placeable: q.placeable, blocked: q.blocked } : null; });
     res.json({ plans: out, coins: coinsOf(req.user.id) });
   });
   app.post('/api/garden/blueprint/apply', requireAuth, (req, res) => {
