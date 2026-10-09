@@ -357,10 +357,36 @@
       if (m.duck) m.duck.forEach(function (d, j) { var ox = Math.sin(t * .8 + j * 2) * 5, oy = Math.cos(t * .8 + j * 2) * 2.4; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(x + d[0] + ox, y + d[1] + oy, 3.4, 2.1, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#F29A2E'; ctx.fillRect(x + d[0] + ox + 3, y + d[1] + oy - 1, 2, 1.2); });
       if (m.swing) m.swing.forEach(function (s) { var a = Math.sin(t * 2.2) * .5; ctx.strokeStyle = '#7A4B2A'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x + s[0], y + s[1]); ctx.lineTo(x + s[0] + Math.sin(a) * 14, y + s[1] + Math.cos(a) * 14); ctx.stroke(); ctx.fillStyle = '#E9573F'; ctx.fillRect(x + s[0] + Math.sin(a) * 14 - 3, y + s[1] + Math.cos(a) * 14, 6, 2); });
       if (m.beacon) { var on = Math.sin(t * 6) > 0; ctx.fillStyle = on ? '#FF4F4F' : '#5A1F1F'; ctx.beginPath(); ctx.arc(x + m.beacon[0], y + m.beacon[1], 2.6, 0, TAU); ctx.fill(); if (on) gl.push([x + m.beacon[0], y + m.beacon[1], 8]); }
+      if (m.rot) m.rot.forEach(function (r) { E.drawRot(ctx, x + r[0], y + r[1], r[2], r[3], r[4], t, gl); });
       if (isB && e.b.tg > e.b.lv && e.b.lv > 0) E.drawSiteExtras(ctx, e, sp, now, true);
     }
     if (sp.glow) gl.push([x, y, sp]);
     if (isB) E.drawBar(ctx, e, sp, now, x, y);
+  };
+  P.drawRot = function (ctx, cx, cy, type, a, b, t, gl) {
+    var k, n, an;
+    if (type === 'spin') {   // ngựa xoay vòng
+      var cols = ['#FF7AA8', '#7CDFD0', '#F2C21B', '#B48CFF', '#FF9A4F', '#6FD0FF'];
+      var arr = []; for (k = 0; k < 6; k++) { an = t * 1.1 + k * TAU / 6; arr.push([an, k]); }
+      arr.sort(function (u, v) { return Math.sin(u[0]) - Math.sin(v[0]); });
+      arr.forEach(function (q) { var px = cx + Math.cos(q[0]) * a, py = cy + Math.sin(q[0]) * b, bob = Math.sin(t * 4 + q[1]) * 2.4; ctx.strokeStyle = '#E8D8A8'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(px, py - 38); ctx.lineTo(px, py - 10 + bob); ctx.stroke(); ctx.fillStyle = cols[q[1]]; ctx.strokeStyle = 'rgba(40,30,40,.7)'; ctx.beginPath(); ctx.ellipse(px, py - 8 + bob, 5, 3.4, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(px + 4, py - 12 + bob, 2.2, 0, TAU); ctx.fill(); ctx.stroke(); });
+    } else if (type === 'swingship') {   // tàu cướp biển lắc
+      an = Math.sin(t * 1.3) * .7; var bx = cx + Math.sin(an) * 40, by = cy + Math.cos(an) * 40 - 8;
+      ctx.strokeStyle = '#6B7686'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(cx - 3, cy); ctx.lineTo(bx - 14, by); ctx.moveTo(cx + 3, cy); ctx.lineTo(bx + 14, by); ctx.stroke();
+      ctx.save(); ctx.translate(bx, by); ctx.rotate(-an * .9); ctx.fillStyle = '#8C4A3A'; ctx.strokeStyle = 'rgba(40,30,30,.8)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-22, -4); ctx.lineTo(22, -4); ctx.lineTo(15, 8); ctx.lineTo(-15, 8); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#F4EEDD'; ctx.beginPath(); ctx.moveTo(-1, -5); ctx.lineTo(-1, -22); ctx.lineTo(12, -8); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+    } else if (type === 'wheel') {   // vòng quay khổng lồ
+      var R = a, cols2 = ['#E9573F', '#4F80BA', '#F2C21B', '#2E9E7F', '#B48CFF', '#FF7AA8', '#FF9A4F', '#6FD0FF'];
+      ctx.strokeStyle = '#8A94A4'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke(); ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R * .55, 0, TAU); ctx.stroke();
+      n = 8; for (k = 0; k < n; k++) { an = t * .35 + k * TAU / n; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(an) * R, cy + Math.sin(an) * R); ctx.stroke(); }
+      for (k = 0; k < n; k++) { an = t * .35 + k * TAU / n; var gx = cx + Math.cos(an) * R, gy = cy + Math.sin(an) * R; ctx.fillStyle = cols2[k]; ctx.strokeStyle = 'rgba(40,30,40,.8)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.rect(gx - 4.5, gy, 9, 8); ctx.fill(); ctx.stroke(); gl && gl.push([gx, gy + 4, 6]); }
+      ctx.fillStyle = '#F2C21B'; ctx.beginPath(); ctx.arc(cx, cy, 3.4, 0, TAU); ctx.fill();
+    } else if (type === 'blades') {   // cối xay gió
+      ctx.strokeStyle = '#7A4B2A'; ctx.lineWidth = 2.4; for (k = 0; k < 4; k++) { an = t * .9 + k * TAU / 4; var ex = cx + Math.cos(an) * a, ey = cy + Math.sin(an) * a * .9; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.fillStyle = 'rgba(250,245,230,.95)'; ctx.beginPath(); ctx.moveTo(cx + Math.cos(an) * 8, cy + Math.sin(an) * 8 * .9); ctx.lineTo(ex, ey); ctx.lineTo(ex + Math.cos(an + 1.57) * 6, ey + Math.sin(an + 1.57) * 6 * .9); ctx.lineTo(cx + Math.cos(an) * 8 + Math.cos(an + 1.57) * 6, cy + Math.sin(an) * 8 * .9 + Math.sin(an + 1.57) * 5); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+      ctx.fillStyle = '#7A4B2A'; ctx.beginPath(); ctx.arc(cx, cy, 3, 0, TAU); ctx.fill();
+    } else if (type === 'beam') {   // chùm sáng hải đăng
+      an = t * 1.4; var L = 70, w2 = .18; ctx.save(); ctx.globalAlpha = .28 + .1 * Math.sin(t * 3); ctx.fillStyle = '#FFF2A8'; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(an - w2) * L, cy + Math.sin(an - w2) * L * .5); ctx.lineTo(cx + Math.cos(an + w2) * L, cy + Math.sin(an + w2) * L * .5); ctx.closePath(); ctx.fill(); ctx.restore();
+      var bright = Math.max(0, Math.cos(an)); ctx.fillStyle = 'rgba(255,240,150,' + (.5 + bright * .5) + ')'; ctx.beginPath(); ctx.arc(cx, cy, 3.2, 0, TAU); ctx.fill(); gl && gl.push([cx, cy, 14]);
+    }
   };
   P.drawSiteExtras = function (ctx, e, sp, now, upgrade) {
     var t = this.t, c = sp.meta.crane && sp.meta.crane[0], x = e.sx - sp.ox, y = e.sy - sp.oy; if (!c) { c = [sp.ox, 10]; }

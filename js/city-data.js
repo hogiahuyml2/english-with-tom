@@ -8,10 +8,10 @@
   var DISTRICTS = [
     { id: 0, key: 'home', en: 'Sunny Homes', vi: 'Khu dân cư Nắng Mai', icon: '🏡', free: true, lvl: 1, cost: 0, zones: ['rprr', 'rrcs', 'prrr', 'rscr'], blurb: 'Khu nhà ở xanh mát bên dòng sông, có công viên và trường học.' },
     { id: 1, key: 'downtown', en: 'Downtown', vi: 'Trung tâm thành phố', icon: '🏙️', lvl: 3, cost: 1500, zones: ['cccp', 'cccc', 'pccc', 'cscc'], blurb: 'Cửa hàng, văn phòng và các toà nhà cao tầng sầm uất.' },
-    { id: 2, key: 'harbor', en: 'Harbor & Industry', vi: 'Cảng & Công nghiệp', icon: '⚓', soon: 1, lvl: 6, cost: 4000, zones: ['iiii', 'iiis', 'hhii', 'hhhh'], blurb: 'Cảng biển, nhà máy và kho hàng (sắp ra mắt).' },
-    { id: 3, key: 'fun', en: 'Fun Bay', vi: 'Du lịch & Giải trí', icon: '🎡', soon: 1, lvl: 8, cost: 6000, zones: ['ffpf', 'fffp', 'pffs', 'ffff'], blurb: 'Bánh xe khổng lồ, công viên nước và bãi biển (sắp ra mắt).' },
-    { id: 4, key: 'campus', en: 'Campus', vi: 'Học đường & Thư viện', icon: '🎓', soon: 1, lvl: 10, cost: 8000, zones: ['eepe', 'eees', 'peee', 'eese'], blurb: 'Trường học, thư viện, bảo tàng (sắp ra mắt).' },
-    { id: 5, key: 'world', en: 'World Street', vi: 'Phố quốc tế & Di sản', icon: '🌍', soon: 1, lvl: 12, cost: 10000, zones: ['wwpw', 'wwww', 'pwww', 'wwsw'], blurb: 'Phố cổ và các khu phố theo từng nước (sắp ra mắt).' }
+    { id: 2, key: 'harbor', en: 'Harbor & Industry', vi: 'Cảng & Công nghiệp', icon: '⚓', lvl: 6, cost: 4000, zones: ['iihx', 'iihx', 'ishx', 'ihhx'], blurb: 'Cảng biển, cần cẩu, nhà máy và kho hàng bên bờ biển.' },
+    { id: 3, key: 'fun', en: 'Fun Bay', vi: 'Du lịch & Giải trí', icon: '🎡', lvl: 8, cost: 6000, zones: ['ffpf', 'fffp', 'pffs', 'ffff'], blurb: 'Vòng quay khổng lồ, công viên nước, rạp xiếc và bãi biển.' },
+    { id: 4, key: 'campus', en: 'Campus', vi: 'Học đường & Thư viện', icon: '🎓', lvl: 10, cost: 8000, zones: ['eepe', 'eees', 'peee', 'eeee'], blurb: 'Trường học, đại học, bảo tàng, đài thiên văn và phòng tranh.' },
+    { id: 5, key: 'world', en: 'World Street', vi: 'Phố quốc tế & Di sản', icon: '🌍', lvl: 12, cost: 10000, zones: ['wwpx', 'wwwx', 'pwsx', 'wwwx'], blurb: 'Phố cổ và các công trình nổi tiếng từ khắp nơi trên thế giới.' }
   ];
   var ZONE_NAME = { r: 'Nhà ở', c: 'Thương mại', s: 'Dịch vụ công', p: 'Công viên', f: 'Vui chơi', e: 'Học đường', i: 'Công nghiệp', h: 'Cảng', w: 'Phố quốc tế' };
   var ZONE_COLOR = { r: '#9BD36B', c: '#8CC8E8', s: '#F2C86B', p: '#6FC98B', f: '#F29BC0', e: '#B7A0E8', i: '#B8B2A6', h: '#7FB4C9', w: '#F0A56B' };
@@ -52,31 +52,32 @@
       }
     });
     FIXED.push({ k: 'townhall', x: 20, y: 8, w: 3, h: 3 });                // Khu dân cư: khối dịch vụ (3,1)
-    FIXED.push({ k: 'clocktower', x: 33, y: 21, w: 1, h: 1 });            // Trung tâm
+    FIXED.push({ k: 'clocktower', x: 33, y: 21, w: 1, h: 1 });
+    FIXED.push({ k: 'bigplaza', x: 63, y: 21, w: 1, h: 1 });            // Trung tâm
   })();
   var FOCC = new Int16Array(W * H).fill(-1); FIXED.forEach(function (f, n) { var a, b; for (b = 0; b < f.h; b++) for (a = 0; a < f.w; a++) FOCC[idx(f.x + a, f.y + b)] = n; });
 
   /* ───── danh mục công trình ─────
      k mã · en/vi tên · cat loại cửa hàng · w×h ô · z chữ khối đất được phép ('*' = mọi khối) · lvl cấp thành phố cần · cost xu · secs giây xây cấp 1 · inc xu/giờ cấp 1 · pop dân cấp 1 · hp điểm hạnh phúc · ds quận bán */
-  var CATS = [['home', '🏠 Nhà ở'], ['shop', '🛍️ Thương mại'], ['park', '🌳 Công viên'], ['civic', '🏥 Dịch vụ']];
-  function B(k, en, vi, cat, w, h, z, lvl, cost, secs, inc, pop, hp, ds, desc) { return { k: k, en: en, vi: vi, cat: cat, w: w, h: h, z: z, lvl: lvl, cost: cost, secs: secs, inc: inc, pop: pop, hp: hp, ds: ds, desc: desc || '' }; }
+  var CATS = [['home', '🏠 Nhà ở'], ['shop', '🛍️ Thương mại'], ['park', '🌳 Công viên'], ['civic', '🏥 Dịch vụ'], ['port', '⚓ Cảng & CN'], ['fun', '🎡 Vui chơi'], ['edu', '🎓 Học đường'], ['world', '🌍 Quốc tế'], ['event', '🎉 Sự kiện']];
+  function B(k, en, vi, cat, w, h, z, lvl, cost, secs, inc, pop, hp, ds, desc, ex) { var o = { k: k, en: en, vi: vi, cat: cat, w: w, h: h, z: z, lvl: lvl, cost: cost, secs: secs, inc: inc, pop: pop, hp: hp, ds: ds, desc: desc || '' }; if (ex) Object.keys(ex).forEach(function (q) { o[q] = ex[q]; }); return o; }
   var ITEMS = [
     B('cottage', 'Small House', 'Nhà nhỏ', 'home', 1, 1, 'r', 1, 150, 10, 10, 4, 0, [0, 1], 'A small house for a family.'),
     B('townhouse', 'Townhouse', 'Nhà phố', 'home', 1, 1, 'r', 2, 400, 30, 24, 8, 0, [0, 1], 'A tall, narrow house in a row.'),
     B('duplex', 'Twin Houses', 'Nhà song lập', 'home', 2, 1, 'r', 3, 900, 60, 52, 14, 0, [0, 1], 'Two houses that share a wall.'),
-    B('villa', 'Villa', 'Biệt thự', 'home', 2, 2, 'r', 5, 2600, 180, 125, 24, 1, [0], 'A big house with a garden.'),
-    B('apartment', 'Apartment Block', 'Chung cư', 'home', 2, 2, 'rc', 7, 5200, 360, 250, 60, 0, [0, 1], 'Many families live in one building.'),
-    B('condo', 'Condo Tower', 'Cao ốc căn hộ', 'home', 3, 3, 'rc', 10, 12000, 720, 540, 140, 0, [1], 'A tall tower with many flats.'),
+    B('villa', 'Villa', 'Biệt thự', 'home', 2, 2, 'r', 5, 2600, 180, 125, 24, 1, [0], 'A big house with a garden.', { ch: 'home1' }),
+    B('apartment', 'Apartment Block', 'Chung cư', 'home', 2, 2, 'rc', 7, 5200, 360, 250, 60, 0, [0, 1], 'Many families live in one building.', { ch: 'home1' }),
+    B('condo', 'Condo Tower', 'Cao ốc căn hộ', 'home', 3, 3, 'rc', 10, 12000, 720, 540, 140, 0, [1], 'A tall tower with many flats.', { ch: 'home2' }),
     B('kiosk', 'Kiosk', 'Quầy bán báo', 'shop', 1, 1, 'rc', 1, 120, 10, 12, 0, 0, [0, 1], 'A tiny stand that sells newspapers.'),
     B('bakery', 'Bakery', 'Tiệm bánh', 'shop', 1, 1, 'rc', 2, 350, 30, 30, 0, 0, [0, 1], 'Fresh bread every morning.'),
     B('cafe', 'Coffee Shop', 'Quán cà phê', 'shop', 1, 1, 'rc', 3, 600, 45, 50, 0, 1, [0, 1], 'People drink coffee and talk here.'),
     B('shop', 'Clothes Shop', 'Cửa hàng quần áo', 'shop', 2, 1, 'c', 4, 1400, 90, 105, 0, 0, [0, 1], 'You can buy shirts and shoes.'),
     B('market', 'Supermarket', 'Siêu thị', 'shop', 2, 2, 'c', 6, 3600, 240, 240, 0, 0, [0, 1], 'A big shop with food and drinks.'),
-    B('bank', 'Bank', 'Ngân hàng', 'shop', 2, 2, 'c', 8, 6200, 420, 410, 0, 0, [1], 'People keep their money here.'),
-    B('office', 'Office Building', 'Toà văn phòng', 'shop', 2, 2, 'c', 9, 8000, 540, 540, 0, 0, [1], 'People work at desks in this building.'),
-    B('hotel', 'Hotel', 'Khách sạn', 'shop', 2, 2, 'c', 10, 11000, 720, 820, 0, 2, [1], 'Visitors sleep here.'),
-    B('mall', 'Shopping Mall', 'Trung tâm mua sắm', 'shop', 3, 3, 'c', 11, 18000, 900, 1120, 0, 2, [1], 'Many shops under one roof.'),
-    B('skyscraper', 'Skyscraper', 'Nhà chọc trời', 'shop', 3, 3, 'c', 13, 30000, 1500, 1900, 0, 0, [1], 'A very tall building in the city centre.'),
+    B('bank', 'Bank', 'Ngân hàng', 'shop', 2, 2, 'c', 8, 6200, 420, 410, 0, 0, [1], 'People keep their money here.', { ch: 'town1' }),
+    B('office', 'Office Building', 'Toà văn phòng', 'shop', 2, 2, 'c', 9, 8000, 540, 540, 0, 0, [1], 'People work at desks in this building.', { ch: 'town2' }),
+    B('hotel', 'Hotel', 'Khách sạn', 'shop', 2, 2, 'c', 10, 11000, 720, 820, 0, 2, [1], 'Visitors sleep here.', { ch: 'town1' }),
+    B('mall', 'Shopping Mall', 'Trung tâm mua sắm', 'shop', 3, 3, 'c', 11, 18000, 900, 1120, 0, 2, [1], 'Many shops under one roof.', { ch: 'town2' }),
+    B('skyscraper', 'Skyscraper', 'Nhà chọc trời', 'shop', 3, 3, 'c', 13, 30000, 1500, 1900, 0, 0, [1], 'A very tall building in the city centre.', { ch: 'town2' }),
     B('tree', 'Garden Tree', 'Cây xanh', 'park', 1, 1, '*', 1, 60, 5, 0, 0, 1, [0, 1], 'A green tree gives shade.'),
     B('flowerbed', 'Flower Bed', 'Bồn hoa', 'park', 1, 1, '*', 1, 90, 5, 0, 0, 2, [0, 1], 'Colourful flowers make people smile.'),
     B('fountain', 'Fountain', 'Đài phun nước', 'park', 1, 1, '*', 3, 500, 20, 0, 0, 6, [0, 1], 'Water jumps up and falls down.'),
@@ -86,14 +87,72 @@
     B('statue', 'Statue Plaza', 'Quảng trường tượng đài', 'park', 2, 2, '*', 8, 4200, 240, 0, 0, 34, [0, 1], 'A famous statue stands in the middle.'),
     B('busstop', 'Bus Stop', 'Trạm xe buýt', 'civic', 1, 1, '*', 2, 300, 15, 0, 0, 3, [0, 1], 'You wait here for the bus.'),
     B('clinic', 'Clinic', 'Phòng khám', 'civic', 2, 2, 's', 5, 3000, 150, 0, 0, 20, [0, 1], 'A doctor helps sick people here.'),
-    B('firestation', 'Fire Station', 'Trạm cứu hoả', 'civic', 2, 2, 's', 7, 5000, 300, 0, 0, 25, [0, 1], 'Firefighters wait here for a call.'),
-    B('police', 'Police Station', 'Đồn cảnh sát', 'civic', 2, 2, 's', 7, 5000, 300, 0, 0, 25, [0, 1], 'Police officers keep the city safe.'),
-    B('school', 'School', 'Trường học', 'civic', 3, 2, 's', 8, 8000, 480, 0, 0, 40, [0, 1], 'Students learn English and maths here.'),
-    B('library', 'Library', 'Thư viện', 'civic', 2, 2, 's', 9, 7000, 420, 0, 0, 30, [0, 1], 'You can read many books here.')
+    B('firestation', 'Fire Station', 'Trạm cứu hoả', 'civic', 2, 2, 's', 7, 5000, 300, 0, 0, 25, [0, 1], 'Firefighters wait here for a call.', { ch: 'civic1' }),
+    B('police', 'Police Station', 'Đồn cảnh sát', 'civic', 2, 2, 's', 7, 5000, 300, 0, 0, 25, [0, 1], 'Police officers keep the city safe.', { ch: 'civic1' }),
+    B('school', 'School', 'Trường học', 'civic', 3, 2, 's', 8, 8000, 480, 0, 0, 40, [0, 1], 'Students learn English and maths here.', { ch: 'civic1' }),
+    B('library', 'Library', 'Thư viện', 'civic', 2, 2, 's', 9, 7000, 420, 0, 0, 30, [0, 1], 'You can read many books here.', { ch: 'civic1' }),
+    // ── Quận Cảng & Công nghiệp ──
+    B('workshop', 'Workshop', 'Xưởng cơ khí', 'port', 2, 1, 'i', 6, 2200, 150, 200, 0, 0, [2], 'People fix machines in a workshop.'),
+    B('watertower', 'Water Tower', 'Tháp nước', 'port', 1, 1, 'is', 7, 1800, 120, 120, 0, 3, [2], 'A tall tank keeps water for the city.'),
+    B('warehouse', 'Warehouse', 'Nhà kho', 'port', 2, 2, 'ih', 7, 3800, 240, 320, 0, 0, [2], 'Boxes and goods wait here.'),
+    B('fishmarket', 'Fish Market', 'Chợ cá', 'port', 2, 1, 'h', 7, 2600, 180, 260, 0, 2, [2], 'Fishermen sell fresh fish here.'),
+    B('crane', 'Port Crane', 'Cần cẩu cảng', 'port', 2, 2, 'h', 8, 6800, 420, 650, 0, 0, [2], 'A big crane lifts containers from ships.', { ch: 'port1' }),
+    B('lighthouse', 'Lighthouse', 'Hải đăng', 'port', 1, 1, 'h', 8, 3000, 180, 0, 0, 10, [2], 'Its light helps ships find the way at night.'),
+    B('factory', 'Factory', 'Nhà máy', 'port', 3, 2, 'i', 8, 7500, 420, 700, 0, 0, [2], 'Machines and workers make things here.', { ch: 'port2' }),
+    B('containers', 'Container Yard', 'Bãi container', 'port', 2, 2, 'h', 9, 5200, 300, 480, 0, 0, [2], 'Colourful boxes are stored here.', { ch: 'port1' }),
+    B('recycling', 'Recycling Plant', 'Nhà máy tái chế', 'port', 2, 2, 'i', 9, 6000, 360, 420, 0, 8, [2], 'Old paper and plastic become new things.', { ch: 'port2' }),
+    B('coastguard', 'Coast Guard', 'Cảnh sát biển', 'port', 2, 2, 's', 9, 5200, 300, 0, 0, 22, [2], 'They help people at sea.'),
+    B('shipyard', 'Shipyard', 'Xưởng đóng tàu', 'port', 3, 2, 'h', 10, 12000, 600, 950, 0, 0, [2], 'Workers build big ships here.', { ch: 'port1' }),
+    B('powerplant', 'Power Plant', 'Nhà máy điện', 'port', 3, 3, 'i', 11, 16000, 720, 1200, 0, 0, [2], 'It makes electricity for the whole city.', { ch: 'port2' }),
+    // ── Quận Du lịch & Giải trí ──
+    B('beachhut', 'Beach Hut', 'Chòi bãi biển', 'fun', 1, 1, 'f', 8, 1200, 60, 120, 0, 3, [3], 'A small hut on the sand.'),
+    B('icecream', 'Ice Cream Shop', 'Tiệm kem', 'fun', 1, 1, 'f', 8, 1500, 60, 160, 0, 3, [3], 'Cold and sweet — everyone loves it.'),
+    B('arcade', 'Arcade', 'Khu trò chơi điện tử', 'fun', 2, 1, 'f', 8, 3200, 150, 300, 0, 4, [3], 'Children play video games here.'),
+    B('cinema', 'Cinema', 'Rạp chiếu phim', 'fun', 2, 2, 'f', 9, 6500, 360, 560, 0, 6, [3], 'You watch films on a big screen.', { ch: 'fun1' }),
+    B('carousel', 'Carousel', 'Vòng quay ngựa gỗ', 'fun', 2, 2, 'fp', 9, 4800, 240, 0, 0, 16, [3], 'Wooden horses go round and round.', { ch: 'fun1' }),
+    B('bumpercars', 'Bumper Cars', 'Xe điện đụng', 'fun', 2, 2, 'f', 10, 5500, 300, 400, 0, 8, [3], 'Small electric cars bump into each other.', { ch: 'fun1' }),
+    B('minigolf', 'Mini Golf', 'Sân golf mini', 'fun', 2, 2, 'fp', 10, 4200, 240, 0, 0, 18, [3], 'Hit the ball into the small hole.'),
+    B('circus', 'Circus Tent', 'Rạp xiếc', 'fun', 2, 2, 'f', 10, 7200, 360, 620, 0, 8, [3], 'Clowns and acrobats perform here.', { ch: 'fun1' }),
+    B('pirateship', 'Pirate Ship Ride', 'Tàu cướp biển', 'fun', 2, 2, 'f', 11, 8500, 420, 700, 0, 10, [3], 'A big ship swings high and low.', { ch: 'fun2' }),
+    B('waterpark', 'Water Park', 'Công viên nước', 'fun', 3, 3, 'f', 12, 15000, 720, 1100, 0, 12, [3], 'Slide down into the cool water.', { ch: 'fun2' }),
+    B('aquarium', 'Aquarium', 'Thuỷ cung', 'fun', 3, 2, 'f', 12, 13000, 660, 980, 0, 10, [3], 'Look at fish, sharks and turtles.', { ch: 'fun2' }),
+    B('ferris', 'Ferris Wheel', 'Vòng quay khổng lồ', 'fun', 3, 3, 'f', 13, 22000, 900, 1500, 0, 15, [3], 'See the whole city from the top.', { ch: 'fun2' }),
+    // ── Quận Học đường ──
+    B('bookstore', 'Bookstore', 'Hiệu sách', 'edu', 1, 1, 'e', 10, 2400, 90, 220, 0, 3, [4], 'Buy storybooks and notebooks here.'),
+    B('kindergarten', 'Kindergarten', 'Trường mẫu giáo', 'edu', 2, 2, 'e', 10, 5400, 300, 0, 0, 24, [4], 'Little children sing and draw here.', { ch: 'edu1' }),
+    B('lab', 'Science Lab', 'Phòng thí nghiệm', 'edu', 2, 2, 'e', 11, 7200, 360, 450, 0, 6, [4], 'Scientists do experiments here.', { ch: 'edu1' }),
+    B('dorm', 'Dormitory', 'Ký túc xá', 'edu', 2, 2, 'e', 11, 6800, 330, 380, 40, 0, [4], 'Students live and sleep here.', { ch: 'edu1' }),
+    B('artgallery', 'Art Gallery', 'Phòng tranh', 'edu', 2, 2, 'e', 12, 8800, 420, 0, 0, 30, [4], 'You can see paintings on the walls.', { ch: 'edu1' }),
+    B('observatory', 'Observatory', 'Đài thiên văn', 'edu', 2, 2, 'e', 12, 9500, 480, 0, 0, 28, [4], 'A telescope looks at the stars.', { ch: 'edu2' }),
+    B('planetarium', 'Planetarium', 'Cung thiên văn', 'edu', 2, 2, 'e', 13, 11000, 540, 0, 0, 34, [4], 'A dome shows the sky inside.', { ch: 'edu2' }),
+    B('sportshall', 'Sports Hall', 'Nhà thi đấu', 'edu', 3, 2, 'e', 13, 12500, 600, 0, 0, 36, [4], 'Teams play volleyball and basketball.', { ch: 'edu2' }),
+    B('museum', 'Museum', 'Bảo tàng', 'edu', 3, 2, 'e', 14, 16000, 720, 600, 0, 48, [4], 'Old and special things are shown here.', { ch: 'edu2' }),
+    B('university', 'University', 'Đại học', 'edu', 3, 3, 'e', 15, 26000, 1000, 1200, 0, 60, [4], 'Young adults study many subjects here.', { ch: 'edu2' }),
+    // ── Phố quốc tế ──
+    B('sushi', 'Sushi Bar', 'Quán sushi', 'world', 1, 1, 'w', 12, 2800, 90, 280, 0, 2, [5], 'A Japanese restaurant with fresh fish.'),
+    B('pizzeria', 'Pizzeria', 'Tiệm pizza', 'world', 1, 1, 'w', 12, 2800, 90, 280, 0, 2, [5], 'An Italian restaurant with hot pizza.'),
+    B('teahouse', 'Tea House', 'Trà quán', 'world', 1, 1, 'w', 12, 2600, 90, 250, 0, 4, [5], 'People drink tea in a quiet place.'),
+    B('torii', 'Torii Gate', 'Cổng torii', 'world', 1, 1, 'w', 12, 2000, 90, 0, 0, 8, [5], 'A red gate in front of a Japanese temple.'),
+    B('bigclock', 'Big Clock Tower', 'Tháp đồng hồ lớn', 'world', 1, 1, 'w', 13, 6000, 300, 0, 0, 22, [5], 'A famous clock tower from London.', { ch: 'world1' }),
+    B('pagoda', 'Pagoda', 'Chùa tháp', 'world', 2, 2, 'w', 13, 8000, 420, 0, 0, 30, [5], 'A tall temple with many roofs.', { ch: 'world1' }),
+    B('windmill', 'Windmill', 'Cối xay gió', 'world', 2, 2, 'w', 13, 7600, 400, 600, 0, 8, [5], 'A Dutch windmill turns in the wind.', { ch: 'world1' }),
+    B('greektemple', 'Greek Temple', 'Đền Hy Lạp', 'world', 2, 2, 'w', 14, 9500, 480, 0, 0, 34, [5], 'White columns hold up the roof.', { ch: 'world1' }),
+    B('irontower', 'Iron Tower', 'Tháp sắt', 'world', 2, 2, 'w', 14, 12000, 600, 500, 0, 40, [5], 'A famous tower in Paris.', { ch: 'world1' }),
+    B('opera', 'Opera House', 'Nhà hát opera', 'world', 3, 2, 'w', 15, 16000, 720, 800, 0, 46, [5], 'Its roof looks like white sails.', { ch: 'world1' }),
+    B('pyramid', 'Pyramid', 'Kim tự tháp', 'world', 3, 3, 'w', 16, 24000, 900, 1000, 0, 50, [5], 'A giant stone tomb from Egypt.', { ch: 'world1' }),
+    B('liberty', 'Liberty Statue', 'Tượng nữ thần', 'world', 1, 1, 'w', 16, 14000, 600, 0, 0, 40, [5], 'A lady holds a torch high.', { ch: 'world1' }),
+    // ── Sự kiện theo mùa (chỉ mua được khi sự kiện đang diễn ra, giống EWT Garden) ──
+    B('lanternarch', 'Lantern Arch', 'Cổng đèn lồng', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5], 'Red lanterns welcome the New Year.', { ev: 'tet' }),
+    B('peachtree', 'Peach Blossom Tree', 'Cây đào Tết', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5], 'Pink flowers bring good luck at Tet.', { ev: 'tet' }),
+    B('moonlantern', 'Star Lantern', 'Đèn ông sao', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5], 'Children carry star lanterns at Mid-Autumn.', { ev: 'trungthu' }),
+    B('rabbitlantern', 'Rabbit Lantern', 'Đèn thỏ', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5], 'A cute rabbit lantern for the moon festival.', { ev: 'trungthu' }),
+    B('xmastree', 'Christmas Tree', 'Cây thông Noel', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5], 'A tree with lights and gifts.', { ev: 'noel' }),
+    B('bigsnowman', 'Big Snowman', 'Người tuyết lớn', 'event', 2, 2, '*', 1, 900, 40, 0, 0, 24, [0, 1, 2, 3, 4, 5], 'A friendly snowman with a red scarf.', { ev: 'noel' })
+
   ];
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   // công trình cố định (chỉ để vẽ)
-  var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 } };
+  var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 }, bigplaza: { en: 'Harbor Plaza', vi: 'Quảng trường cảng', w: 1, h: 1 } };
 
   /* ───── luật chơi ───── */
   var MAXLV = 3, LVMUL = [0, 1, 1.8, 3.0], POPMUL = [0, 1, 1.8, 3.0];
