@@ -122,7 +122,7 @@
     if (o.door !== false) g.doorL(o.base ? .05 : x, o.base ? .05 : y, o.base ? rw - .1 : w, o.base ? rh - .1 : h, .5, 0, .22, 10, o.door || '#1F3A5F');
     if (o.after) o.after(g, rw, rh, o._last);
   }
-  var H = function (lv, a, b) { return a + (b - a) * (lv - 1) / 2; };   // cao theo cấp công trình 1..3
+  var H = function (lv, a, b) { return (a + (b - a) * (lv - 1) / 2) * 1.5; };   // cao theo cấp công trình 1..3 (nhân 1,5: nhà cao tầng phải thật cao)
 
   /* ── nhà ở cao tầng ── */
   def('lowrise', function (g, rw, rh, lv) { var z = H(lv, 56, 74); tower(g, rw, rh, { wall: '#F0E2C8', tiers: [[0, z]], style: 'win', floor: 15, crown: 'flat', g1: '#A7DDF5', band: '#E9573F', door: '#4C6FA8', after: function (g, rw, rh, L) { g.tree(.2, rh - .1, .55); } }); });
@@ -300,5 +300,65 @@
   });
   def('moai', function (g, rw, rh, lv) {
     lot(g, rw, rh, '#A8D88E'); [[.3, .5, 1], [.7, .45, .85]].forEach(function (q) { var p = g.P(rw * q[0], rh * q[1], 0), s = q[2]; g.ell(p[0], p[1] + 2, 8 * s, 3.4 * s, 'rgba(30,60,30,.22)'); g.poly([[p[0] - 6 * s, p[1]], [p[0] + 6 * s, p[1]], [p[0] + 7 * s, p[1] - 22 * s], [p[0] + 9 * s, p[1] - 34 * s], [p[0] - 9 * s, p[1] - 34 * s], [p[0] - 7 * s, p[1] - 22 * s]], '#8F8C84', INK); g.poly([[p[0] - 6 * s, p[1] - 24 * s], [p[0] + 6 * s, p[1] - 24 * s], [p[0] + 3 * s, p[1] - 22 * s], [p[0] - 3 * s, p[1] - 22 * s]], '#6F6C66', false); g.ell(p[0], p[1] - 32 * s, 9 * s, 3 * s, '#9D9A92', INK); });
+  });
+  /* ═════════ ĐỢT CAO TẦNG: tháp ở, trụ sở công ty, nhà máy ống khói, tháp công nghiệp… (cao 400–900 px) ═════════ */
+  var stripes = function (g, cx, cy, z0, z1, r, c1, c2) { var n = Math.max(2, Math.round((z1 - z0) / 24)), i; for (i = 0; i < n; i++) g.cyl(cx, cy, r, z0 + i * (z1 - z0) / n, z0 + (i + 1) * (z1 - z0) / n, i % 2 ? c1 : c2, shade(i % 2 ? c1 : c2, 1.12)); };
+  def('towerblock', function (g, rw, rh, lv) { var z = H(lv, 250, 300); tower(g, rw, rh, { wall: '#E8D9C0', tiers: [[0, z]], style: 'win', floor: 15, crown: 'antenna', ant: 70, band: '#B8485E', base: 20, bcol: '#F3F0E8', g1: '#B8E0F2' }); });
+  def('slimtower', function (g, rw, rh, lv) { var z = H(lv, 330, 400); tower(g, rw, rh, { m: .22, wall: '#F3C7D0', tiers: [[0, z]], g1: '#FFDDE6', g2: '#E9A8BA', floor: 12, crown: 'spire', ch: 24, ant: 80, cc: '#D98BA3', lot: '#B9B3A6', band: '#FFFFFF' }); });
+  def('luxtower', function (g, rw, rh, lv) { var z = H(lv, 330, 400); tower(g, rw, rh, { wall: '#EFE6D2', tiers: [[0, z * .45], [.25, z * .75], [.55, z]], style: 'win', g1: '#F7E6B0', g2: '#E5CF86', floor: 14, crown: 'crown', cc: '#C9A44A', base: 16, bcol: '#D9C99A', band: '#C9A44A' }); });
+  def('skygarden', function (g, rw, rh, lv) {
+    var z = H(lv, 380, 440); tower(g, rw, rh, { wall: '#EEF1E6', tiers: [[0, z * .3], [.15, z * .5], [.3, z * .7], [.45, z * .86], [.62, z]], style: 'win', floor: 14, crown: 'flat', base: 12, bcol: '#DDE8D2', g1: '#C8EBD5',
+      after: function (g, rw, rh, L) { [[.15, .3], [.3, .5], [.45, .7], [.6, .86]].forEach(function (q) { var zz = z * q[1] + 12, k; for (k = 0; k < 3; k++) { g.tree(rw * (.3 + k * .2), rh - .1 - q[0] * 1.3, .36, k % 2 ? 'cherry' : null, zz); } }); g.tree(rw * .5, rh * .5, .5, null, z + 12); }
+    });
+  });
+  def('cloudtower', function (g, rw, rh, lv) { var z = H(lv, 480, 560); tower(g, rw, rh, { wall: '#C9D7E8', tiers: [[0, z * .35], [.18, z * .62], [.4, z * .85], [.7, z]], g1: '#9AD8F8', g2: '#62AEE0', floor: 12, crown: 'spire', ch: 30, ant: 110, cc: '#9FB2CC', base: 18, bcol: '#EDEFF2', band: '#FFFFFF' }); });
+  def('hqtower', function (g, rw, rh, lv) { var z = H(lv, 280, 340); tower(g, rw, rh, { wall: '#3E4C63', tiers: [[0, z * .55], [.3, z]], g1: '#5C7FA8', g2: '#3E5F88', floor: 11, crown: 'helipad', base: 16, bcol: '#CFD6DE', band: '#9FB2CC' }); });
+  def('techhq', function (g, rw, rh, lv) { var z = H(lv, 230, 280); tower(g, rw, rh, { wall: '#CFEFE6', tiers: [[0, z]], g1: '#8FE8D0', g2: '#5CC8B0', floor: 10, crown: 'ring', base: 14, bcol: '#EDEFF2', band: '#2F80ED' }); });
+  def('bankskyscraper', function (g, rw, rh, lv) { var z = H(lv, 260, 320); tower(g, rw, rh, { wall: '#E4DCC8', tiers: [[0, z * .62], [.2, z]], style: 'win', g1: '#D9EAF5', floor: 16, crown: 'crown', cc: '#B8860B', base: 18, bcol: '#CFC4AE', band: '#B8860B' }); });
+  def('mediatower', function (g, rw, rh, lv) {
+    var z = H(lv, 300, 360); tower(g, rw, rh, { m: .2, wall: '#B9C6D8', tiers: [[0, z]], g1: '#8FD0F5', g2: '#5AA8DC', floor: 12, crown: 'antenna', ant: 150, base: 14, bcol: '#EDEFF2', after: function (g, rw, rh, L) { var p = g.P(rw / 2, rh / 2, z + 60); g.ell(p[0], p[1], 14, 5, '#E8EDF2', INK); g.ell(p[0], p[1] - 5, 14, 5, '#FFFFFF', INK); g.ell(p[0], p[1] - 9, 8, 3, '#E9573F'); } });
+  });
+  def('hotelskyline', function (g, rw, rh, lv) { var z = H(lv, 280, 340); tower(g, rw, rh, { wall: '#F3E3C3', tiers: [[0, z * .7], [.3, z]], style: 'win', g1: '#A7DDF5', floor: 14, crown: 'pyr', ch: 50, cc: '#B8485E', base: 22, bcol: '#B8485E', band: '#B8485E', after: function (g, rw, rh) { sign(g, rw / 2, rh - .1, 28, 22, '#B8485E', 'HOTEL'); } }); });
+  def('shoptower', function (g, rw, rh, lv) { var z = H(lv, 200, 250); tower(g, rw, rh, { wall: '#F2E6F6', tiers: [[0, z]], g1: '#C9A8F2', g2: '#A88AD8', floor: 12, crown: 'flat', base: 30, bcol: '#F8F2FB', band: '#7A4BC7', after: function (g, rw, rh) { sign(g, rw / 2, rh - .1, 34, 22, '#7A4BC7', 'SHOP'); } }); });
+  def('financecentre', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#B9B3A6'); g.box(.05, .05, rw - .1, rh - .1, 0, 22, '#EDEFF2'); var z = H(lv, 460, 520), a = (rw - 1.2) / 3;
+    [[.4, z], [.4 + a + .15, z * .82], [.4 + (a + .15) * 2, z * .64]].forEach(function (q, n) { var x = q[0], zt = q[1]; g.box(x, .45, a, rh - .9, 22, zt, ['#9DB7D5', '#A9C1DC', '#B9CFE6'][n]); g.glassL(x, .45, a, rh - .9, 24, zt - 3, Math.round((zt - 24) / 13), '#74BDEA'); g.glassR(x, .45, a, rh - .9, 24, zt - 3, Math.round((zt - 24) / 13), '#4592CC'); g.hip(x, .45, a, rh - .9, zt, zt + 24, '#8FA3BD', .42); g.line(g.P(x + a / 2, rh / 2, zt + 24), g.P(x + a / 2, rh / 2, zt + 24 + 48), '#9AA4B2', 1.6); beacon(g, x + a / 2, rh / 2, zt + 72); });
+    g.doorL(.05, .05, rw - .1, rh - .1, .5, 0, .2, 12, '#1F3A5F'); g.tree(.2, rh - .1, .7); g.tree(rw - .2, rh - .1, .7, 'cherry');
+  });
+  def('infinitytower', function (g, rw, rh, lv) { var z = H(lv, 560, 620); tower(g, rw, rh, { m: .2, wall: '#B3C6DC', tiers: [[0, z * .25], [.25, z * .45], [.5, z * .64], [.75, z * .82], [1.0, z]], g1: '#7AC4F0', g2: '#4896D0', floor: 11, crown: 'spire', ch: 30, ant: 140, cc: '#E2B33C', base: 20, bcol: '#E4E8EE', band: '#E2B33C' }); });
+  def('hospitaltower', function (g, rw, rh, lv) { var z = H(lv, 150, 190); tower(g, rw, rh, { wall: '#F4F7FA', tiers: [[0, z]], style: 'win', g1: '#BFE6F5', floor: 15, crown: 'helipad', base: 22, bcol: '#EAF0F6', band: '#E9573F', after: function (g, rw, rh, L) { var p = g.P(rw / 2, rh - .1, z * .5); g.c.fillStyle = '#E9573F'; g.c.fillRect(p[0] - 3, p[1] - 11, 6, 22); g.c.fillRect(p[0] - 11, p[1] - 3, 22, 6); } }); });
+  def('cityhalltower', function (g, rw, rh, lv) { var z = H(lv, 170, 210); tower(g, rw, rh, { wall: '#F2EBDC', tiers: [[0, z * .7], [.3, z]], style: 'win', floor: 16, crown: 'dome', cc: '#4F80BA', base: 20, bcol: '#E8DFCB', band: '#C9A96A', after: function (g, rw, rh, L) { var c = g.P(rw / 2, rh - .08, z * .8); g.ell(c[0], c[1], 7, 7, '#fff', INK); g.line([c[0], c[1]], [c[0], c[1] - 4], '#333', 1.2); g.line([c[0], c[1]], [c[0] + 3, c[1]], '#333', 1.2); } }); });
+  def('uniskytower', function (g, rw, rh, lv) { var z = H(lv, 200, 250); tower(g, rw, rh, { wall: '#C9785B', tiers: [[0, z * .5], [.3, z]], style: 'win', g1: '#F2E6D0', floor: 15, crown: 'spire', ch: 30, cc: '#8A5A33', ant: 40, base: 20, bcol: '#B8664A', band: '#F2E6D0' }); });
+  def('researchtower', function (g, rw, rh, lv) { var z = H(lv, 220, 270); tower(g, rw, rh, { wall: '#E4ECF4', tiers: [[0, z]], g1: '#8FE0D0', g2: '#5FC4B2', floor: 12, crown: 'dome', cc: '#9FDBF5', base: 16, bcol: '#EDEFF2', band: '#2FB36D' }); });
+  def('smokestackfactory', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#9AA2AE'); g.box(.1, .3, rw - .2, rh - .45, 0, 28, '#C9785B'); [0, 1, 2].forEach(function (k) { g.gable(.1 + k * (rw - .2) / 3, .3, (rw - .2) / 3, rh - .45, 28, 42, false, '#6B7686', { wall: '#C9785B' }); }); g.winsL(.1, .3, rw - .2, rh - .45, 5, 24, 5, 1, { m: .2 }); g.doorL(.1, .3, rw - .2, rh - .45, .3, 0, .3, 12, '#4A2E18');
+    [[.45, .2, 360], [.75, .15, 320]].forEach(function (q) { stripes(g, rw * q[0] + .1, rh * q[1] + .1, 0, q[2], .17, '#E9573F', '#F4F4F4'); smoke(g, rw * q[0] + .1, rh * q[1] + .1, q[2]); });
+  });
+  def('silotower', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#B8B08A'); [[.3, .3, 300], [.7, .3, 340], [.3, .7, 380], [.7, .7, 320]].forEach(function (q) { g.cyl(rw * q[0], rh * q[1], .26, 0, q[2], '#D4D8DE', '#EEF1F4'); [60, 130, 200, 270].forEach(function (zz) { if (zz < q[2] - 10) { var p = g.P(rw * q[0], rh * q[1], zz); g.line([p[0] - 8, p[1]], [p[0] + 8, p[1]], '#9AA4B2', 1.1); } }); g.hip(rw * q[0] - .25, rh * q[1] - .25, .5, .5, q[2], q[2] + 14, '#9AA4B2', .5); });
+    g.line(g.P(rw * .3, rh * .3, 290), g.P(rw * .7, rh * .7, 300), '#6B7686', 2.4);
+  });
+  def('coolingtowers', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#9AA2AE'); [[.28, .32, 1], [.7, .6, .85]].forEach(function (q, n) { var p = g.P(rw * q[0], rh * q[1], 0), s = q[2]; g.ell(p[0], p[1] + 2, 36 * s, 14 * s, 'rgba(30,40,50,.22)'); var c = g.c; c.beginPath(); c.moveTo(p[0] - 34 * s, p[1]); c.bezierCurveTo(p[0] - 22 * s, p[1] - 90 * s, p[0] - 20 * s, p[1] - 150 * s, p[0] - 30 * s, p[1] - 240 * s); c.lineTo(p[0] + 30 * s, p[1] - 240 * s); c.bezierCurveTo(p[0] + 20 * s, p[1] - 150 * s, p[0] + 22 * s, p[1] - 90 * s, p[0] + 34 * s, p[1]); c.closePath(); var gr = c.createLinearGradient(p[0] - 34 * s, 0, p[0] + 34 * s, 0); gr.addColorStop(0, '#C9CED6'); gr.addColorStop(.5, '#EEF1F4'); gr.addColorStop(1, '#AEB6C2'); c.fillStyle = gr; c.fill(); c.strokeStyle = INK; c.lineWidth = 1.1; c.stroke(); g.ext(p[0] - 36 * s, p[1] - 244 * s, 4); g.ext(p[0] + 36 * s, p[1] + 4, 4); g.ell(p[0], p[1] - 240 * s, 30 * s, 9 * s, '#8A94A4', INK); smoke(g, rw * q[0], rh * q[1], 240 * s); });
+    stripes(g, rw * .5, rh * .15, 0, 400, .12, '#E9573F', '#F4F4F4'); smoke(g, rw * .5, rh * .15, 400); g.box(.2, rh * .7, .8, .5, 0, 18, '#8E96A3');
+  });
+  def('chemtower', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#A8A397'); var z = 420; g.cyl(rw * .4, rh * .5, .3, 0, z, '#CFD6DE', '#E4E8EE'); var i; for (i = 1; i < 6; i++) { var p = g.P(rw * .4, rh * .5, i * z / 6); g.ell(p[0], p[1], 15, 6, '#9AA4B2', INK); } g.cyl(rw * .75, rh * .35, .16, 0, 260, '#B8C3D2', '#D4DBE4'); g.cyl(rw * .75, rh * .7, .2, 0, 120, '#C9D1D9', '#E4E8EE'); g.line(g.P(rw * .4, rh * .5, 300), g.P(rw * .75, rh * .35, 240), '#6B7686', 2.2); g.line(g.P(rw * .4, rh * .5, 120), g.P(rw * .75, rh * .7, 100), '#6B7686', 2.2);
+    var f = g.P(rw * .4, rh * .5, z); g.line([f[0], f[1]], [f[0], f[1] - 40], '#6B7686', 2); g.ell(f[0], f[1] - 46, 4, 8, '#FF8A1F'); g.ell(f[0], f[1] - 44, 2, 5, '#FFD54A'); g.glow.push({ c: [f[0], f[1] - 46], r: 14 }); smoke(g, rw * .4, rh * .5, z + 10);
+  });
+  def('skyfactory', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#9AA2AE'); var z = H(lv, 150, 190); g.box(.1, .1, rw - .2, rh - .2, 0, z, '#B8664A'); g.winsL(.1, .1, rw - .2, rh - .2, 10, z - 4, 6, Math.round(z / 16), { m: .2, col: '#FFE9A8' }); g.winsR(.1, .1, rw - .2, rh - .2, 10, z - 4, 5, Math.round(z / 16), { m: .2, col: '#FFE9A8' }); g.flat(.1, .1, rw - .2, rh - .2, z, '#8E96A3', '#E2E8F0'); g.doorL(.1, .1, rw - .2, rh - .2, .5, 0, .3, 12, '#2F3640');
+    [[.3, .3], [.65, .55]].forEach(function (q) { g.cyl(rw * q[0], rh * q[1], .3, z, z + 30, '#C9D1D9', '#E4E8EE'); }); [[.8, .2, 230], [.15, .75, 200]].forEach(function (q) { stripes(g, rw * q[0], rh * q[1], z, z + q[2], .15, '#E9573F', '#F4F4F4'); smoke(g, rw * q[0], rh * q[1], z + q[2]); });
+  });
+  def('rocketlab', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#B9B3A6'); var z = 560, cx = rw * .62, cy = rh * .5; g.box(.2, .3, .9, rh - .6, 0, 30, '#E4E8EE'); g.glassL(.2, .3, .9, rh - .6, 4, 27, 1, '#8FD0F0'); var p = g.P(cx, cy, 0), q = g.P(cx, cy, z); [-9, 9].forEach(function (d) { g.line([p[0] + d * 1.6, p[1] + 3], [q[0] + d * .4, q[1]], '#8A94A4', 2.4); }); var j; for (j = 1; j < 14; j++) { var a = g.P(cx, cy, j * z / 14); g.line([a[0] - 8, a[1]], [a[0] + 8, a[1]], '#8A94A4', 1.2); g.line([a[0] - 8, a[1]], [a[0] + 8, a[1] - z / 14], '#8A94A4', 1); }
+    var rx = rw * .38; g.cyl(rx + .7, cy, .22, 0, 420, '#F4F6FA', '#FFFFFF'); var t = g.P(rx + .7, cy, 420); g.poly([[t[0] - 11, t[1]], [t[0] + 11, t[1]], [t[0], t[1] - 54]], '#E9573F', INK); [-1, 1].forEach(function (d) { var b = g.P(rx + .7, cy, 0); g.poly([[b[0] + d * 10, b[1] - 40], [b[0] + d * 26, b[1] + 2], [b[0] + d * 10, b[1] - 8]], '#E9573F', INK); }); g.ell(g.P(rx + .7, cy, 280)[0], g.P(rx + .7, cy, 280)[1], 4, 4, '#4FA8E8'); beacon(g, cx, cy, z + 6);
+  });
+  def('droptower', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#B9B3A6'); var z = 440, p = g.P(.5, .5, 0), q = g.P(.5, .5, z); g.poly([[p[0] - 6, p[1]], [p[0] + 6, p[1]], [q[0] + 3, q[1]], [q[0] - 3, q[1]]], '#E9573F', INK); [100, 200, 300].forEach(function (zz) { var a = g.P(.5, .5, zz); g.line([a[0] - 6, a[1]], [a[0] + 6, a[1]], '#F4F4F4', 2); }); var r = g.P(.5, .5, 300); g.ell(r[0], r[1], 15, 6, '#F2C21B', INK); g.ell(r[0], r[1] - 3, 15, 6, '#FFE066', INK); [-10, -3, 4, 11].forEach(function (d) { dot(g, r[0] + d, r[1] - 8, 2.2, '#4F80BA'); }); g.ell(q[0], q[1], 8, 3, '#F2C21B', INK); beacon(g, .5, .5, z + 8);
+  });
+  def('skypod', function (g, rw, rh, lv) {
+    lot(g, rw, rh, '#B9B3A6'); var z = H(lv, 380, 440); g.box(.15, .15, rw - .3, rh - .3, 0, 18, '#E8EDF2'); var p = g.P(rw / 2, rh / 2, 18), q = g.P(rw / 2, rh / 2, z); g.poly([[p[0] - 14, p[1]], [p[0] + 14, p[1]], [q[0] + 4, q[1]], [q[0] - 4, q[1]]], '#DDE6F0', INK);
+    var pod = g.P(rw / 2, rh / 2, z * .7); g.ell(pod[0], pod[1], 20, 7, '#B9C6D8', INK); g.ell(pod[0], pod[1] - 5, 20, 7, '#DDE6F0', INK); g.ell(pod[0], pod[1] - 11, 13, 4.5, '#6FB5E3'); var p2 = g.P(rw / 2, rh / 2, z * .9); g.ell(p2[0], p2[1], 9, 3.4, '#B9C6D8', INK); g.line(q, g.P(rw / 2, rh / 2, z + 130), '#E9573F', 1.8); beacon(g, rw / 2, rh / 2, z + 130); g.doorL(.15, .15, rw - .3, rh - .3, .5, 0, .22, 10, '#1F3A5F');
   });
 })(typeof window !== 'undefined' ? window : this);

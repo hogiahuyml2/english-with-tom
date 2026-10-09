@@ -60,8 +60,8 @@ button { font-family: inherit; cursor: pointer; }
 .tools { display: flex; gap: 8px; padding: 0 14px 8px; align-items: center; flex-wrap: wrap; }
 .tools input, .tools select { font: 600 13px var(--font); border: 2px solid var(--line); border-radius: 12px; padding: 7px 10px; background: #fff; color: var(--ink); min-width: 0; } .tools input { flex: 1; min-width: 120px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-.card { border: 2px solid var(--line); border-radius: 18px; background: #fff; padding: 8px; position: relative; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.card:active { transform: scale(.97); } .card.lock { opacity: .55; filter: grayscale(.6); } .card canvas { width: 112px; height: 84px; }
+.card { border: 2px solid var(--line); border-radius: 18px; background: #fff; padding: 8px 8px 42px; position: relative; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.card:active { transform: scale(.97); } .card.lock { opacity: .55; filter: grayscale(.6); } .card canvas { width: 112px; height: 112px; }
 .card .en { font-weight: 800; font-size: 13.5px; line-height: 1.15; } .card .vi { font-size: 12px; color: var(--muted); font-weight: 600; }
 .card .pr { margin-top: 3px; font-weight: 800; font-size: 13px; display: flex; gap: 6px; align-items: center; }
 .card .meta { font-size: 11px; color: var(--muted); font-weight: 600; } .card .lk { position: absolute; top: 6px; left: 6px; background: #46506A; color: #fff; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 10px; }
@@ -86,7 +86,7 @@ button { font-family: inherit; cursor: pointer; }
 .field { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 14px; } .field select { font: 700 13px var(--font); border: 2px solid var(--line); border-radius: 10px; padding: 6px 8px; }
 .sw { position: relative; width: 46px; height: 26px; flex: none; } .sw input { opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 2; } .sw i { position: absolute; inset: 0; background: #C9D3E6; border-radius: 14px; transition: .2s; } .sw i::after { content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); } .sw input:checked + i { background: var(--good); } .sw input:checked + i::after { left: 23px; }
 .empty { text-align: center; color: var(--muted); font-weight: 700; padding: 20px 10px; }
-@media (max-width: 640px) { .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 8px; font-size: 13px; gap: 4px; } #festChip b { display: none; } .chip .plus { width: 20px; height: 20px; } .dbar { bottom: calc(82px + var(--bot)); } }
+@media (max-width: 640px) { .tools { gap: 6px; padding: 0 12px 6px; } .tools input { flex: 1 1 100%; } .tools select { flex: 1 1 0; padding: 6px 8px; font-size: 12.5px; } .sheet { max-height: min(86dvh, 700px); } .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 8px; font-size: 13px; gap: 4px; } #festChip b { display: none; } .chip .plus { width: 20px; height: 20px; } .dbar { bottom: calc(82px + var(--bot)); } }
 @media (prefers-reduced-motion: reduce) { .sheet.on { animation: none; } }
 
 .lh { font-weight: 800; font-size: 13px; color: var(--mut); margin: 14px 0 6px; } .lcard { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .lcard.ok { border-color: #5BCB8B; background: #F2FCF6; } .lcard .t { font-weight: 800; font-size: 15px; } .lcard .s { font-size: 12.5px; color: var(--mut); margin: 2px 0 6px; } .lcard .row2 { display: flex; gap: 6px; flex-wrap: wrap; } .lcard .row2 .btn { padding: 7px 11px; font-size: 13px; }
@@ -170,9 +170,9 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
 <script src="js/city-data.js?v=10"></script>
-<script src="js/city-art.js?v=4"></script>
+<script src="js/city-art.js?v=6"></script>
 <script src="js/city-art2.js?v=3"></script>
-<script src="js/city-art3.js?v=1"></script>
+<script src="js/city-art3.js?v=2"></script>
 <script src="js/city-engine.js?v=6"></script>
 <script>
 (function () {
