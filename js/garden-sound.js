@@ -389,12 +389,22 @@
     harvest: [[784, 784, .22, 'sine', .22], [988, 988, .22, 'sine', .2, .09], [1319, 1319, .35, 'sine', .2, .18]], coin: [[1319, 1319, .12, 'square', .08], [1760, 1760, .3, 'square', .08, .08]],
     reward: [[880, 880, .25, 'sine', .2], [1109, 1109, .25, 'sine', .2, .08], [1319, 1319, .25, 'sine', .2, .16], [1760, 1760, .5, 'sine', .22, .24]],
     levelup: [[523, 523, .3, 'triangle', .25], [659, 659, .3, 'triangle', .25, .12], [784, 784, .3, 'triangle', .25, .24], [1047, 1047, .6, 'triangle', .28, .36]],
-    err: [[190, 130, .22, 'triangle', .22]], event: [], click: [[1000, 900, .04, 'sine', .12]], send: [[660, 880, .12, 'sine', .2], [990, 1320, .2, 'sine', .2, .1]] };
+    err: [[190, 130, .22, 'triangle', .22]], event: [], click: [[1000, 900, .04, 'sine', .12]], send: [[660, 880, .12, 'sine', .2], [990, 1320, .2, 'sine', .2, .1]],
+    // EWT City — bạn bè: ghé thăm (chuông cửa), thả sticker (bong bóng), quà (lấp lánh), tin nhắn đến, bảng xếp hạng, dự án lớp hoàn thành
+    visit: [[784, 784, .18, 'sine', .22], [1047, 1047, .3, 'sine', .22, .14], [1319, 1319, .4, 'triangle', .16, .3]],
+    leave: [[1047, 784, .2, 'sine', .18], [784, 523, .3, 'sine', .16, .15]],
+    note: [[500, 900, .09, 'sine', .22], [900, 1400, .12, 'sine', .2, .07], [1760, 1760, .18, 'triangle', .1, .16]],
+    gift: [[1319, 1319, .1, 'triangle', .16], [1568, 1568, .1, 'triangle', .16, .07], [1976, 1976, .1, 'triangle', .16, .14], [2349, 2349, .1, 'triangle', .14, .21], [2637, 2637, .35, 'sine', .14, .28]],
+    ping: [[1175, 1175, .12, 'sine', .16], [1568, 1568, .25, 'sine', .16, .1]],
+    rank: [[523, 523, .14, 'triangle', .22], [659, 659, .14, 'triangle', .22, .12], [784, 784, .14, 'triangle', .22, .24], [1047, 1047, .5, 'triangle', .26, .36]],
+    project: [[523, 523, .2, 'triangle', .26], [659, 659, .2, 'triangle', .26, .15], [784, 784, .2, 'triangle', .26, .3], [1047, 1047, .25, 'triangle', .28, .45], [784, 784, .15, 'triangle', .24, .7], [1047, 1047, .15, 'triangle', .26, .85], [1319, 1319, .7, 'triangle', .3, 1.0]] };
   P.sfx = function (name) {
     var E = this, c = E.ctx, t = c.currentTime + .005, a = FXN[name]; if (!a || !E.opt.fx) return;
     a.forEach(function (x) { var o = c.createOscillator(), g = g0(c, E.fxBus, t + (x[5] || 0), x[4], x[2], .004); o.type = x[3]; o.frequency.setValueAtTime(x[0], t + (x[5] || 0)); if (x[1] !== x[0]) o.frequency.exponentialRampToValueAtTime(x[1], t + (x[5] || 0) + x[2]); o.connect(g); o.start(t + (x[5] || 0)); o.stop(t + (x[5] || 0) + x[2] + .05); });
     if (name === 'place') noiseV(E, E.fxBus, t, .08, .05, 'lowpass', 1800);
     if (name === 'event') VO.bell(E, E.fxBus, 1047, t, 1.4, .14);
+    if (name === 'visit') VO.bell(E, E.fxBus, 1568, t + .3, 1.2, .08);
+    if (name === 'gift' || name === 'project') VO.bell(E, E.fxBus, 2093, t + (name === 'gift' ? .3 : 1.0), 1.4, .09);
   };
 
   /* ───── điều khiển trong trang (có AudioContext thật) ───── */
