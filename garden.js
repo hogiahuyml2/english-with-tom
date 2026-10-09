@@ -690,5 +690,6 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     reply(res, req.user, out.st, { cards: f.cards, pick, gained: out.gained, got: out.got, before });
   });
 
+  app.locals.gardenQuiz = { pickGrammar, pickVocab };   // EWT City dùng chung kho câu hỏi
   X = require('./garden-extra')(app, { db, requireAuth, requireRole, now, G, vnDay, load, save, tx, reply, bad, coinsOf, addCoins, rollCard, applyCardSt, bagAdd, givenName, one, notifyUser });
 };

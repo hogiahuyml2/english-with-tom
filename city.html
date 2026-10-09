@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>EWT City — Thành phố của bạn</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3E9ED8">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --ink: #1F2A44; --muted: #6A7690; --card: #FFFFFF; --line: #DCE4F0; --pri: #3A7BEA; --pri2: #5B9BFF; --gold: #FFC93C; --good: #2FB36D; --bad: #E2503F; --glass: rgba(255,255,255,.92); --font: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; --top: env(safe-area-inset-top, 0px); --bot: env(safe-area-inset-bottom, 0px); }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #3E9ED8; font-family: var(--font); color: var(--ink); overscroll-behavior: none; }
+#cv { position: fixed; inset: 0; width: 100%; height: 100dvh; display: block; touch-action: none; }
+button { font-family: inherit; cursor: pointer; }
+.hud { position: fixed; left: 0; right: 0; top: 0; padding: calc(8px + var(--top)) 10px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; pointer-events: none; z-index: 20; }
+.hud > * { pointer-events: auto; }
+.badge { display: flex; align-items: center; gap: 8px; background: var(--glass); border-radius: 18px; padding: 5px 12px 5px 6px; box-shadow: 0 4px 14px rgba(20,40,90,.22); min-width: 0; }
+.lvl { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(145deg, #5B9BFF, #3A5BE0); color: #fff; font-weight: 800; font-size: 18px; display: grid; place-items: center; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); flex: none; }
+.lvl small { display: block; font-size: 8px; font-weight: 700; margin-top: -3px; opacity: .85; }
+.cname { font-weight: 800; font-size: 14px; line-height: 1.1; white-space: nowrap; }
+.xpbar { height: 6px; width: 110px; border-radius: 9px; background: #D9E2F2; overflow: hidden; margin-top: 4px; } .xpbar i { display: block; height: 100%; background: linear-gradient(90deg, #3FC986, #2FB36D); border-radius: 9px; width: 0; transition: width .4s; }
+.chip { display: flex; align-items: center; gap: 6px; background: var(--glass); border-radius: 16px; padding: 7px 12px; font-weight: 800; font-size: 14px; box-shadow: 0 4px 14px rgba(20,40,90,.2); border: 0; color: var(--ink); white-space: nowrap; }
+.chip b { font-variant-numeric: tabular-nums; } .chip.btn:active { transform: scale(.96); }
+.chip .plus { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--good); color: #fff; font-size: 15px; line-height: 1; margin-left: 2px; }
+.coin { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFE680, #F2B21B 60%, #C98A00); box-shadow: inset 0 0 0 2px #E6A100; vertical-align: -3px; }
+.sp { flex: 1; }
+.side { position: fixed; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 20; }
+.rbtn { width: 46px; height: 46px; border-radius: 15px; border: 0; background: var(--glass); font-size: 20px; box-shadow: 0 4px 14px rgba(20,40,90,.25); color: var(--ink); display: grid; place-items: center; font-weight: 800; }
+.rbtn:active { transform: scale(.94); }
+.mini { position: fixed; left: 10px; top: calc(66px + var(--top)); z-index: 20; background: var(--glass); border-radius: 14px; padding: 5px; box-shadow: 0 4px 14px rgba(20,40,90,.25); }
+.mini canvas { display: block; width: 150px; height: 100px; border-radius: 10px; cursor: pointer; touch-action: none; }
+.mini .mt { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; margin-top: 3px; }
+.dbar { position: fixed; left: 10px; bottom: calc(86px + var(--bot)); display: flex; flex-direction: column; gap: 6px; z-index: 20; }
+.dbtn { border: 0; background: var(--glass); border-radius: 13px; padding: 6px 10px; font-weight: 700; font-size: 12.5px; box-shadow: 0 3px 10px rgba(20,40,90,.22); text-align: left; color: var(--ink); display: flex; gap: 6px; align-items: center; }
+.dbtn.lock { opacity: .75; } .dbtn.on { outline: 2px solid var(--pri); }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 8px 10px calc(10px + var(--bot)); display: flex; justify-content: center; gap: 10px; z-index: 25; pointer-events: none; }
+.bar > * { pointer-events: auto; }
+.tb { min-width: 74px; border: 0; border-radius: 20px; background: var(--glass); padding: 8px 12px 7px; font-weight: 800; font-size: 12px; color: var(--ink); box-shadow: 0 6px 18px rgba(20,40,90,.3); display: flex; flex-direction: column; align-items: center; gap: 1px; position: relative; }
+.tb .ic { font-size: 24px; line-height: 1.1; } .tb:active { transform: scale(.95); } .tb.pri { background: linear-gradient(180deg, #5B9BFF, #3A6BE6); color: #fff; } .tb.on { outline: 3px solid var(--gold); }
+.dot { position: absolute; right: 6px; top: 4px; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; place-items: center; padding: 0 4px; font-weight: 800; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; max-height: min(74dvh, 640px); background: var(--card); border-radius: 26px 26px 0 0; box-shadow: 0 -10px 40px rgba(10,30,80,.35); z-index: 40; display: none; flex-direction: column; padding-bottom: var(--bot); }
+.sheet.on { display: flex; animation: up .22s ease-out; } @keyframes up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet .hd { display: flex; align-items: center; gap: 8px; padding: 12px 14px 6px; } .sheet .hd h3 { margin: 0; font-size: 17px; flex: 1; }
+.x { border: 0; background: #EEF2FA; width: 34px; height: 34px; border-radius: 50%; font-size: 17px; font-weight: 800; color: var(--ink); }
+.sheet .bd { overflow: auto; padding: 4px 14px 16px; -webkit-overflow-scrolling: touch; flex: 1; }
+.tabs { display: flex; gap: 6px; padding: 2px 14px 6px; overflow-x: auto; scrollbar-width: none; } .tabs::-webkit-scrollbar { display: none; }
+.tab { border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 6px 12px; font-weight: 800; font-size: 13px; white-space: nowrap; color: var(--ink); } .tab.on { background: var(--pri); border-color: var(--pri); color: #fff; }
+.tools { display: flex; gap: 8px; padding: 0 14px 8px; align-items: center; flex-wrap: wrap; }
+.tools input, .tools select { font: 600 13px var(--font); border: 2px solid var(--line); border-radius: 12px; padding: 7px 10px; background: #fff; color: var(--ink); min-width: 0; } .tools input { flex: 1; min-width: 120px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.card { border: 2px solid var(--line); border-radius: 18px; background: #fff; padding: 8px; position: relative; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.card:active { transform: scale(.97); } .card.lock { opacity: .55; filter: grayscale(.6); } .card canvas { width: 112px; height: 84px; }
+.card .en { font-weight: 800; font-size: 13.5px; line-height: 1.15; } .card .vi { font-size: 12px; color: var(--muted); font-weight: 600; }
+.card .pr { margin-top: 3px; font-weight: 800; font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.card .meta { font-size: 11px; color: var(--muted); font-weight: 600; } .card .lk { position: absolute; top: 6px; left: 6px; background: #46506A; color: #fff; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 10px; }
+.card .sz { position: absolute; top: 6px; right: 6px; background: #EEF2FA; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 10px; color: var(--muted); }
+.card .say { position: absolute; bottom: 6px; right: 6px; border: 0; background: #EEF2FA; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; }
+.btn { border: 0; border-radius: 14px; padding: 10px 14px; font-weight: 800; font-size: 14px; background: #EEF2FA; color: var(--ink); } .btn:active { transform: scale(.97); } .btn:disabled { opacity: .5; }
+.btn.pri { background: linear-gradient(180deg, #5B9BFF, #3A6BE6); color: #fff; } .btn.good { background: linear-gradient(180deg, #43D08A, #2FB36D); color: #fff; } .btn.warn { background: linear-gradient(180deg, #FFD65C, #F5B320); color: #5A3A00; } .btn.bad { background: #FDE8E5; color: var(--bad); }
+.btn small { display: block; font-weight: 700; font-size: 11px; opacity: .85; margin-top: 1px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; margin-top: 8px; } .row > .btn { flex: 1; min-width: 120px; }
+.info h4 { margin: 0; font-size: 19px; } .info .vi { color: var(--muted); font-weight: 700; font-size: 14px; } .info p { margin: 6px 0; font-size: 14px; line-height: 1.45; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 8px 0; } .st { background: #F3F6FC; border-radius: 14px; padding: 8px 10px; } .st small { display: block; color: var(--muted); font-weight: 700; font-size: 11px; } .st b { font-size: 15px; font-variant-numeric: tabular-nums; }
+.prog { height: 14px; border-radius: 9px; background: #DDE5F3; overflow: hidden; margin: 6px 0; } .prog i { display: block; height: 100%; background: linear-gradient(90deg, #4CD08A, #2FB36D); border-radius: 9px; transition: width .3s; }
+.pbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(88px + var(--bot)); background: var(--glass); border-radius: 22px; padding: 8px 10px; box-shadow: 0 8px 26px rgba(20,40,90,.35); z-index: 45; display: none; align-items: center; gap: 8px; max-width: calc(100vw - 20px); flex-wrap: wrap; justify-content: center; }
+.pbar.on { display: flex; } .pbar .t { font-weight: 800; font-size: 13.5px; } .pbar .err { color: var(--bad); font-size: 12.5px; font-weight: 700; max-width: 300px; }
+.toast { position: fixed; left: 50%; top: calc(70px + var(--top)); transform: translate(-50%, -10px); background: rgba(31,42,68,.94); color: #fff; padding: 10px 16px; border-radius: 16px; font-weight: 700; font-size: 14px; z-index: 90; opacity: 0; pointer-events: none; transition: all .22s; max-width: calc(100vw - 30px); text-align: center; line-height: 1.35; } .toast.on { opacity: 1; transform: translate(-50%, 0); }
+.modal { position: fixed; inset: 0; background: rgba(20,30,60,.5); z-index: 60; display: none; place-items: center; padding: 14px; } .modal.on { display: grid; }
+.box { background: #fff; border-radius: 24px; padding: 16px; width: min(480px, 100%); max-height: 88dvh; overflow: auto; box-shadow: 0 20px 60px rgba(10,20,60,.5); }
+.box h3 { margin: 0 0 6px; } .sub { color: var(--muted); font-size: 13px; margin: 0 0 8px; line-height: 1.45; }
+.opt { display: block; width: 100%; text-align: left; border: 2px solid var(--line); border-radius: 14px; background: #fff; padding: 10px 12px; font-weight: 700; font-size: 14.5px; margin-top: 8px; color: var(--ink); } .opt.ok { background: #DDF7E8; border-color: var(--good); } .opt.no { background: #FDE8E5; border-color: var(--bad); }
+.flip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; } .fc { aspect-ratio: 3/4; border: 0; border-radius: 16px; background: linear-gradient(145deg, #7B6BFF, #3A5BE0); color: #fff; font-size: 34px; font-weight: 800; display: grid; place-items: center; text-align: center; box-shadow: 0 6px 16px rgba(30,40,120,.35); line-height: 1.2; } .fc.open { background: linear-gradient(145deg, #FFE17A, #FFB020); color: #5A3A00; font-size: 15px; } .fc.dim { opacity: .55; }
+.dcard { border: 2px solid var(--line); border-radius: 18px; padding: 10px 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; } .dcard .ico { font-size: 34px; } .dcard .tx { flex: 1; min-width: 0; } .dcard b { font-size: 15px; } .dcard .vi { font-size: 12.5px; color: var(--muted); font-weight: 600; } .dcard p { margin: 3px 0 0; font-size: 12.5px; color: var(--muted); }
+.field { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 14px; } .field select { font: 700 13px var(--font); border: 2px solid var(--line); border-radius: 10px; padding: 6px 8px; }
+.sw { position: relative; width: 46px; height: 26px; flex: none; } .sw input { opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 2; } .sw i { position: absolute; inset: 0; background: #C9D3E6; border-radius: 14px; transition: .2s; } .sw i::after { content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); } .sw input:checked + i { background: var(--good); } .sw input:checked + i::after { left: 23px; }
+.empty { text-align: center; color: var(--muted); font-weight: 700; padding: 20px 10px; }
+@media (max-width: 640px) { .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 10px; font-size: 13px; } .dbar { bottom: calc(82px + var(--bot)); } }
+@media (prefers-reduced-motion: reduce) { .sheet.on { animation: none; } }
+</style>
+</head>
+<body>
+<canvas id="cv" aria-label="Bản đồ thành phố"></canvas>
+
+<div class="hud">
+  <div class="badge"><div class="lvl"><span id="lvN">1</span><small>CẤP</small></div><div><div class="cname" id="cName">EWT City</div><div class="xpbar" title="Điểm lên cấp"><i id="xpB"></i></div></div></div>
+  <button class="chip btn" id="coinB" type="button" title="Xu — bấm để kiếm thêm"><span class="coin"></span><b id="coinN">0</b><span class="plus">+</span></button>
+  <div class="chip" title="Dân số"><span>👥</span><b id="popN">0</b></div>
+  <div class="chip" title="Hạnh phúc — công viên, trường học, bệnh viện làm dân vui hơn và nộp nhiều thuế hơn"><span id="hapE">😊</span><b id="hapN">0%</b></div>
+  <div class="chip" id="tkChip" title="Phiếu xây nhanh" style="display:none"><span>🎫</span><b id="tkN">0</b></div>
+  <div class="chip" id="cpChip" title="Phiếu giảm giá mở quận" style="display:none"><span>🏷️</span><b id="cpN">0</b></div>
+  <div class="sp"></div>
+  <button class="chip btn" id="setB" type="button" aria-label="Cài đặt">⚙️</button>
+  <a class="chip btn" href="garden.html" style="text-decoration:none;color:inherit" title="Sang EWT Garden">🌷</a>
+  <a class="chip btn" href="word-hub.html" style="text-decoration:none;color:inherit" title="Về Luyện từ">🏠</a>
+</div>
+
+<div class="mini"><canvas id="mm" width="300" height="200" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
+<div class="dbar" id="dbar"></div>
+<div class="side">
+  <button class="rbtn" id="zIn" type="button" aria-label="Phóng to">＋</button>
+  <button class="rbtn" id="zOut" type="button" aria-label="Thu nhỏ">－</button>
+  <button class="rbtn" id="rL" type="button" aria-label="Xoay trái">⟲</button>
+  <button class="rbtn" id="rR" type="button" aria-label="Xoay phải">⟳</button>
+  <button class="rbtn" id="zAll" type="button" aria-label="Xem toàn thành phố" title="Xem toàn thành phố">🗺️</button>
+</div>
+
+<div class="bar" id="bar">
+  <button class="tb pri" id="bShop" type="button"><span class="ic">🏗️</span>Xây dựng</button>
+  <button class="tb" id="bRoad" type="button"><span class="ic">🛣️</span>Đường</button>
+  <button class="tb" id="bCol" type="button"><span class="ic">💰</span>Thu thuế<span class="dot" id="colDot"></span></button>
+  <button class="tb" id="bQuiz" type="button"><span class="ic">🧠</span>Kiếm xu</button>
+  <button class="tb" id="bDist" type="button"><span class="ic">🗺️</span>Các quận</button>
+</div>
+
+<div class="pbar" id="pbar"><div><div class="t" id="pName"></div><div class="err" id="pErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="pCont"> Đặt liên tục</label><button class="btn bad" id="pNo" type="button">✗ Hủy</button><button class="btn good" id="pOk" type="button">✓ Đặt</button></div>
+<div class="pbar" id="rbar"><div><div class="t" id="rTxt">Kéo ngón tay trên bản đồ để vẽ đường</div><div class="err" id="rErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="rDel"> Dỡ đường</label><button class="btn bad" id="rNo" type="button">✗ Xong</button><button class="btn good" id="rOk" type="button" disabled>✓ Xây</button></div>
+
+<div class="sheet" id="shopS"><div class="hd"><h3>🏗️ Cửa hàng xây dựng</h3><button class="x" data-close="shopS" type="button">✕</button></div><div class="tabs" id="shopTabs"></div>
+  <div class="tools"><input id="shopQ" placeholder="🔍 Tìm công trình (tiếng Anh hoặc Việt)…" autocomplete="off"><select id="shopD" aria-label="Lọc theo quận"></select><select id="shopO" aria-label="Sắp xếp"><option value="lvl">Theo cấp</option><option value="cost">Giá tăng dần</option><option value="inc">Thu nhập</option><option value="hp">Hạnh phúc</option></select></div>
+  <div class="bd"><div class="grid" id="shopG"></div></div></div>
+<div class="sheet" id="infoS"><div class="hd"><h3 id="infoT">Công trình</h3><button class="x" data-close="infoS" type="button">✕</button></div><div class="bd info" id="infoB"></div></div>
+<div class="sheet" id="distS"><div class="hd"><h3>🗺️ Các quận của thành phố</h3><button class="x" data-close="distS" type="button">✕</button></div><div class="bd" id="distB"></div></div>
+
+<div class="modal" id="quizM"><div class="box"><div id="quizB"></div></div></div>
+<div class="modal" id="setM"><div class="box"><h3>⚙️ Cài đặt</h3><div id="setB2"></div><div class="row"><button class="btn pri" data-close="setM" type="button">Xong</button></div></div></div>
+<div class="modal" id="cfmM"><div class="box"><h3 id="cfmT"></h3><p class="sub" id="cfmP"></p><div class="row"><button class="btn" id="cfmNo" type="button">Không</button><button class="btn pri" id="cfmYes" type="button">Đồng ý</button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="js/city-data.js?v=1"></script>
+<script src="js/city-art.js?v=1"></script>
+<script src="js/city-engine.js?v=1"></script>
+<script>
+(function () {
+'use strict';
+var C = EWTCityData, A = EWTCityArt, $ = function (id) { return document.getElementById(id); }, S = null, ENG = null, ROLE = '', INFO = null, SORT = 'lvl', TABK = 'home', DF = -1, CONT = false, SEL = null, ROADDEL = false, ROADCELLS = [];
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var fmt = function (n) { n = Math.round(n); return n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace('.0', '') + 'M' : n >= 1e4 ? (n / 1e3).toFixed(n >= 1e5 ? 0 : 1).replace('.0', '') + 'K' : n.toLocaleString('vi-VN'); };
+var COIN = '<span class="coin"></span>';
+function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+var tt; function toast(m, ms) { var el = $('toast'); el.innerHTML = m.replace(/🪙/g, COIN); el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, ms || 2800); }
+function api(url, body) {
+  return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) {
+    return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 401) { location.href = 'login.html?next=' + encodeURIComponent('city.html'); throw new Error('Bạn cần đăng nhập.'); } if (!r.ok) throw new Error(j.error || 'Có lỗi, thử lại nhé.'); return j; });
+  });
+}
+function confirmBox(title, text, yes) { return new Promise(function (res) { $('cfmT').textContent = title; $('cfmP').innerHTML = text; $('cfmYes').textContent = yes || 'Đồng ý'; $('cfmM').classList.add('on'); $('cfmYes').onclick = function () { $('cfmM').classList.remove('on'); res(true); }; $('cfmNo').onclick = function () { $('cfmM').classList.remove('on'); res(false); }; }); }
+var setting = { weather: 'auto', time: 'auto', cars: 1, people: 1, boats: 1, sky: 1 };
+try { var sv = JSON.parse(localStorage.getItem('ewt-city-set') || 'null'); if (sv) Object.keys(sv).forEach(function (k) { setting[k] = sv[k]; }); } catch (e) {}
+function saveSet() { try { localStorage.setItem('ewt-city-set', JSON.stringify(setting)); } catch (e) {} }
+
+/* ───── khởi động động cơ ───── */
+ENG = new EWTCityEngine($('cv'), $('mm'), {
+  onSelect: function (b) { if (b) openInfo(b.i); else { INFO = null; $('infoS').classList.remove('on'); } },
+  onBubble: function (b) { collect(b.i); },
+  onPlace: function (g) { placeNow(); },
+  onGhost: function (g) { updatePbar(); },
+  onRoad: function (cells, tapOnly) { roadDone(cells, tapOnly); },
+  onRoadTap: function (i) { if (ENG.mode === 'road' && ROADDEL) removeRoad([i]); },
+  onFixed: function (f) { var d = C.FIXED_DEF[f.k]; if (d) { toast('🏛️ <b>' + d.en + '</b> — ' + d.vi + ' <button class="x" style="width:28px;height:28px;margin-left:6px" id="fxSay">🔊</button>', 3500); setTimeout(function () { var b = $('fxSay'); if (b) b.onclick = function () { say(d.en); }; }, 30); } },
+  onLocked: function (d) { openDist(d); },
+  onMode: function (m) { $('bRoad').classList.toggle('on', m === 'road'); }
+});
+function applySettings() {
+  var f = ENG.fx; f.cars = !!setting.cars; f.people = !!setting.people; f.boats = !!setting.boats; f.sky = !!setting.sky;
+  ENG.weather = setting.weather === 'auto' ? autoWeather() : setting.weather; ENG.hourOverride = setting.time === 'day' ? 12 : setting.time === 'night' ? 23 : null;
+}
+function autoWeather() { var d = new Date(), k = (d.getDate() * 7 + Math.floor(d.getHours() / 4)) % 9; return k === 0 || k === 5 ? 'cloud' : k === 3 ? 'rain' : 'clear'; }
+applySettings();
+
+/* ───── tải trạng thái ───── */
+function setState(d) { S = d.city; if (d.role) ROLE = d.role; ENG.setState(S); hud(); if (INFO != null) renderInfo(); if ($('shopS').classList.contains('on')) renderShop(); if ($('distS').classList.contains('on')) renderDist(); roadBar(); }
+function hud() {
+  var s = S.stats; $('lvN').textContent = s.level; $('coinN').textContent = fmt(S.coins); $('coinN').title = String(S.coins); $('popN').textContent = fmt(s.pop);
+  $('hapN').textContent = s.happy + '%'; $('hapE').textContent = s.happy >= 85 ? '😄' : s.happy >= 65 ? '😊' : s.happy >= 50 ? '😐' : '☹️';
+  var lo = C.LEVEL_AT[s.level - 1] || 0, hi = C.LEVEL_AT[s.level]; $('xpB').style.width = (hi ? clampN((s.score - lo) / (hi - lo) * 100, 3, 100) : 100) + '%';
+  $('tkChip').style.display = S.tickets ? '' : 'none'; $('tkN').textContent = S.tickets; $('cpChip').style.display = S.coupons ? '' : 'none'; $('cpN').textContent = S.coupons;
+  var sum = 0, n = 0; S.bs.forEach(function (b) { if (b.pend >= 1) { sum += b.pend; n++; } }); $('colDot').style.display = n ? 'grid' : 'none'; $('colDot').textContent = n; $('bCol').title = n ? 'Có ' + fmt(sum) + ' xu thuế đang chờ' : 'Chưa có thuế';
+  $('dbar').innerHTML = C.DISTRICTS.map(function (d) { var open = S.districts.indexOf(d.id) >= 0; return '<button class="dbtn' + (open ? '' : ' lock') + '" data-d="' + d.id + '" type="button" title="' + esc(d.vi) + '"><span>' + d.icon + (open ? '' : '🔒') + '</span><span class="dn">' + esc(d.en.split(' ')[0]) + '</span></button>'; }).join('');
+}
+function clampN(v, a, b) { return Math.max(a, Math.min(b, v)); }
+var firstLoad = true;
+function load() { return api('/api/city').then(function (d) { setState(d); if (firstLoad) { firstLoad = false; setTimeout(function () { ENG.focusDistrict(0); }, 80); if (!S.bs.length) toast('👋 Chào mừng đến EWT City! Bấm 🏗️ Xây dựng để đặt ngôi nhà đầu tiên (miễn phí).', 6000); } }).catch(function (e) { toast(e.message, 4000); }); }
+
+/* ───── cửa hàng ───── */
+var CATTAB = C.CATS.map(function (c) { return c; });
+function renderShop() {
+  $('shopTabs').innerHTML = CATTAB.map(function (c) { return '<button class="tab' + (TABK === c[0] ? ' on' : '') + '" data-tab="' + c[0] + '" type="button">' + c[1] + '</button>'; }).join('');
+  var q = $('shopQ').value.trim().toLowerCase(), list = C.ITEMS.filter(function (it) { if (TABK !== 'all' && it.cat !== TABK && !q) return false; if (DF >= 0 && it.ds.indexOf(DF) < 0) return false; if (q && (it.en + ' ' + it.vi + ' ' + it.k).toLowerCase().indexOf(q) < 0) return false; return true; });
+  list.sort(function (a, b) { return SORT === 'cost' ? a.cost - b.cost : SORT === 'inc' ? b.inc - a.inc : SORT === 'hp' ? b.hp - a.hp : a.lvl - b.lvl || a.cost - b.cost; });
+  $('shopG').innerHTML = list.length ? '' : '<div class="empty" style="grid-column:1/-1">Không tìm thấy công trình nào.</div>';
+  list.forEach(function (it) {
+    var lock = S.stats.level < it.lvl, free = (S.free[it.k] | 0) > 0, d = document.createElement('div'); d.className = 'card' + (lock ? ' lock' : ''); d.setAttribute('data-k', it.k);
+    d.innerHTML = (lock ? '<span class="lk">🔒 Cấp ' + it.lvl + '</span>' : '') + '<span class="sz">' + it.w + '×' + it.h + '</span>';
+    d.appendChild(A.thumb(it.k, 112, 1));
+    d.insertAdjacentHTML('beforeend', '<div class="en">' + esc(it.en) + '</div><div class="vi">' + esc(it.vi) + '</div><div class="pr">' + (free ? '<span style="color:var(--good)">MIỄN PHÍ ×' + S.free[it.k] + '</span>' : COIN + ' ' + fmt(it.cost)) + '</div><div class="meta">' + (it.inc ? '+' + fmt(it.inc) + ' xu/giờ · ' : '') + (it.pop ? '👥 ' + it.pop + ' · ' : '') + (it.hp ? '😊 +' + it.hp : '') + ' ⏱ ' + dur(it.secs) + '</div>');
+    var sb = document.createElement('button'); sb.className = 'say'; sb.type = 'button'; sb.textContent = '🔊'; sb.setAttribute('aria-label', 'Nghe phát âm'); sb.onclick = function (e) { e.stopPropagation(); say(it.en); }; d.appendChild(sb);
+    d.onclick = function () { pick(it); }; $('shopG').appendChild(d);
+  });
+}
+function dur(s) { return s >= 3600 ? Math.floor(s / 3600) + 'h' + (Math.floor(s % 3600 / 60) ? Math.floor(s % 3600 / 60) + 'm' : '') : s >= 60 ? Math.floor(s / 60) + 'm' + (s % 60 ? s % 60 + 's' : '') : s + 's'; }
+function openShop() { closeSheets(); setMode('view'); var sel = $('shopD'); if (!sel.options.length) { sel.innerHTML = '<option value="-1">Tất cả quận</option>' + C.DISTRICTS.filter(function (d) { return !d.soon; }).map(function (d) { return '<option value="' + d.id + '">' + d.icon + ' ' + esc(d.vi) + '</option>'; }).join(''); } renderShop(); $('shopS').classList.add('on'); }
+function pick(it) {
+  if (S.stats.level < it.lvl) return toast('🔒 Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.');
+  if (!(S.free[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
+  $('shopS').classList.remove('on'); SEL = it; setMode('place', it.k); say(it.en);
+}
+function setMode(m, k) { ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
+function updatePbar() {
+  var g = ENG.ghost; if (!g) return; var it = C.BY[g.k], free = (S.free[it.k] | 0) > 0; $('pName').innerHTML = esc(it.en) + ' · <span style="font-weight:600;color:var(--muted)">' + esc(it.vi) + '</span> — ' + (free ? '<b style="color:var(--good)">MIỄN PHÍ</b>' : COIN + ' <b>' + fmt(it.cost) + '</b>'); $('pErr').textContent = g.ok ? '' : g.err; $('pOk').disabled = !g.ok;
+}
+function placeNow() {
+  var g = ENG.ghost; if (!g || !g.ok) { if (g && g.err) toast(g.err, 3000); return; }
+  var it = C.BY[g.k]; if (!(S.free[it.k] > 0) && S.coins < it.cost) return toast('Chưa đủ xu (cần ' + fmt(it.cost) + ') — bấm 🧠 Kiếm xu nhé!', 3200);
+  $('pOk').disabled = true;
+  api('/api/city/place', { k: g.k, x: g.x, y: g.y }).then(function (d) { setState(d); say(it.en); if (!CONT && !$('pCont').checked) setMode('view'); else { ENG.refreshGhost(); updatePbar(); } toast('🏗️ Bắt đầu xây ' + esc(it.vi) + '!', 1800); }).catch(function (e) { toast(e.message, 3600); ENG.refreshGhost(); updatePbar(); });
+}
+
+/* ───── đường ───── */
+function roadBar() {
+  if (ENG.mode !== 'road') return; var n = ROADCELLS.length, st = ENG.stateObj(), cnt = 0; ROADCELLS.forEach(function (c) { if (ROADDEL ? ENG.roadsX[c[1] * C.W + c[0]] : C.canRoad(st, c[0], c[1], ENG.occ).ok) cnt++; });
+  $('rTxt').innerHTML = n ? (ROADDEL ? 'Dỡ ' + cnt + ' ô đường (hoàn ' + cnt * C.RULES.roadCost / 2 + ' ' + COIN + ')' : 'Xây ' + cnt + ' ô đường · ' + COIN + ' <b>' + cnt * C.RULES.roadCost + '</b>') : (ROADDEL ? 'Chạm vào đường bạn tự xây để dỡ' : 'Kéo ngón tay trên bản đồ để vẽ đường (' + C.RULES.roadCost + ' xu / ô)'); $('rOk').disabled = !cnt;
+}
+function roadDone(cells, tap) { ROADCELLS = cells; if (ROADDEL) { var idxs = cells.filter(function (c) { return ENG.roadsX[c[1] * C.W + c[0]]; }).map(function (c) { return c[1] * C.W + c[0]; }); if (idxs.length) removeRoad(idxs); return; } roadBar(); $('rErr').textContent = ''; if (cells.length) { var st = ENG.stateObj(), bad = null; cells.forEach(function (c) { var r = C.canRoad(st, c[0], c[1], ENG.occ); if (!r.ok && !bad && !/Đã có đường/.test(r.err)) bad = r.err; }); $('rErr').textContent = bad || ''; } }
+function buildRoad() {
+  var st = ENG.stateObj(), idxs = ROADCELLS.filter(function (c) { return C.canRoad(st, c[0], c[1], ENG.occ).ok; }).map(function (c) { return c[1] * C.W + c[0]; }); if (!idxs.length) return;
+  if (S.coins < idxs.length * C.RULES.roadCost) return toast('Chưa đủ xu cho ' + idxs.length + ' ô đường.');
+  api('/api/city/road', { cells: idxs }).then(function (d) { setState(d); ROADCELLS = []; ENG.roadPrev = null; roadBar(); toast('🛣️ Đã xây ' + d.roads + ' ô đường!', 1800); }).catch(function (e) { toast(e.message, 3600); });
+}
+function removeRoad(idxs) { api('/api/city/road/remove', { cells: idxs }).then(function (d) { setState(d); ROADCELLS = []; roadBar(); toast('Đã dỡ ' + d.removed + ' ô đường.', 1800); }).catch(function (e) { toast(e.message, 3600); }); }
+
+/* ───── thông tin công trình ───── */
+function openInfo(id) { INFO = id; closeSheets(true); setMode('view'); renderInfo(); $('infoS').classList.add('on'); var b = S.bs.filter(function (x) { return x.i === id; })[0]; if (b) say(C.BY[b.k].en); }
+function renderInfo() {
+  var b = S.bs.filter(function (x) { return x.i === INFO; })[0]; if (!b) { $('infoS').classList.remove('on'); INFO = null; return; }
+  var it = C.BY[b.k], now = ENG.nowMs(), building = b.tg > b.lv, lv = b.lv || b.tg, rem = Math.max(0, (b.t1 - now) / 1000), st = S.stats;
+  $('infoT').innerHTML = esc(it.en) + ' <span style="font-weight:700;color:var(--muted);font-size:14px">· ' + esc(it.vi) + '</span>';
+  var h = '<p><button class="btn" id="iSay" type="button">🔊 ' + esc(it.en) + '</button></p><p style="margin-top:0">' + esc(it.desc) + '<br><span style="color:var(--muted)">Cấp ' + lv + '/' + C.MAXLV + ' · ' + it.w + '×' + it.h + ' ô</span></p>';
+  if (building) {
+    var pct = clampN((now - b.t0) / (b.t1 - b.t0) * 100, 0, 100); h += '<div class="prog"><i id="iProg" style="width:' + pct + '%"></i></div><div style="font-weight:800;font-size:15px">⏳ ' + (b.lv === 0 ? 'Đang xây' : 'Đang nâng lên cấp ' + b.tg) + ': còn <span id="iRem">' + timeTxt(rem) + '</span></div>';
+    var cx2 = C.speedCost('x2', rem), cn = C.speedCost('now', rem);
+    h += '<div class="row"><button class="btn warn" data-sp="x2" type="button">⚡ Nhanh gấp đôi<small>' + COIN + ' ' + cx2 + '</small></button><button class="btn warn" data-sp="now" type="button">⚡⚡ Xong ngay<small>' + COIN + ' ' + cn + '</small></button>' + (S.tickets ? '<button class="btn good" data-sp="ticket" type="button">🎫 Dùng phiếu xây nhanh<small>còn ' + S.tickets + ' phiếu · miễn phí</small></button>' : '') + '</div>';
+  } else {
+    var inc = C.incomeH(it, lv), pop = C.popOf(it, lv), hp = C.hpOf(it, lv);
+    h += '<div class="stats">' + (inc ? '<div class="st"><small>Thuế mỗi giờ</small><b>' + COIN + ' ' + fmt(Math.round(inc * st.mult)) + '</b></div>' : '') + (pop ? '<div class="st"><small>Dân cư</small><b>👥 ' + pop + '</b></div>' : '') + (hp ? '<div class="st"><small>Hạnh phúc</small><b>😊 +' + hp + '</b></div>' : '') + '<div class="st"><small>Thuế đang chờ</small><b>' + COIN + ' ' + fmt(b.pend) + '</b></div></div>';
+    h += '<div class="row">' + (b.pend >= 1 ? '<button class="btn good" data-act="collect" type="button">💰 Thu thuế<small>+' + fmt(b.pend) + ' xu</small></button>' : '');
+    if (lv < C.MAXLV) { var nl = lv + 1, need = it.lvl + (nl - 1) * 2, can = st.level >= need; h += '<button class="btn pri" data-act="up" type="button"' + (can ? '' : ' style="opacity:.6"') + '>⬆️ Nâng lên cấp ' + nl + '<small>' + (can ? COIN + ' ' + fmt(C.itemCost(it, nl)) + ' · ⏱ ' + dur(C.buildSecs(it, nl)) : '🔒 cần thành phố cấp ' + need) + '</small></button>'; }
+    h += '</div>';
+  }
+  var paid = 0, l2; for (l2 = 1; l2 <= Math.max(1, b.lv); l2++) paid += C.itemCost(it, l2);
+  h += '<div class="row"><button class="btn bad" data-act="dem" type="button">🗑️ Dỡ bỏ<small>hoàn ' + fmt(Math.floor(paid * C.RULES.sellBack)) + ' xu</small></button></div>';
+  $('infoB').innerHTML = h.replace(/🪙/g, COIN);
+  $('iSay') && ($('iSay').onclick = function () { say(it.en); });
+}
+function timeTxt(s) { s = Math.ceil(s); return s >= 3600 ? Math.floor(s / 3600) + ' giờ ' + Math.floor(s % 3600 / 60) + ' phút' : s >= 60 ? Math.floor(s / 60) + ' phút ' + (s % 60) + ' giây' : s + ' giây'; }
+setInterval(function () { // đồng hồ đếm ngược + tự cập nhật khi xây xong
+  if (!S) return; var now = ENG.nowMs(), done = false; S.bs.forEach(function (b) { if (b.tg > b.lv && b.t1 <= now) done = true; });
+  if (done && !load.busy) { load.busy = 1; load().then(function () { load.busy = 0; }); }
+  if (INFO != null) { var b = S.bs.filter(function (x) { return x.i === INFO; })[0]; if (b && b.tg > b.lv) { var r = $('iRem'), pr = $('iProg'); if (r) r.textContent = timeTxt(Math.max(0, (b.t1 - now) / 1000)); if (pr) pr.style.width = clampN((now - b.t0) / (b.t1 - b.t0) * 100, 0, 100) + '%'; } }
+}, 1000);
+setInterval(function () { if (S && !document.hidden) load(); }, 60000);   // cập nhật thuế tích luỹ
+
+function collect(id) { api('/api/city/collect', id == null ? { all: true } : { i: id }).then(function (d) { setState(d); toast('💰 Thu được <b>' + fmt(d.collected) + '</b> xu từ ' + d.count + ' công trình!', 2400); }).catch(function (e) { toast(e.message, 2600); }); }
+function speed(mode) { api('/api/city/speed', { i: INFO, mode: mode }).then(function (d) { setState(d); toast(mode === 'x2' ? '⚡ Tăng tốc gấp đôi!' : '⚡ Xây xong rồi!', 1800); }).catch(function (e) { toast(e.message, 3200); }); }
+function upgrade() { api('/api/city/upgrade', { i: INFO }).then(function (d) { setState(d); toast('⬆️ Bắt đầu nâng cấp!', 1800); }).catch(function (e) { toast(e.message, 3600); }); }
+async function demolish() {
+  var b = S.bs.filter(function (x) { return x.i === INFO; })[0]; if (!b) return; var it = C.BY[b.k];
+  if (!(await confirmBox('Dỡ ' + it.vi + '?', 'Công trình sẽ bị dỡ bỏ và bạn nhận lại một nửa số xu đã đầu tư' + (b.pend ? ' (cùng ' + fmt(b.pend) + ' xu thuế đang chờ)' : '') + '.', 'Dỡ bỏ'))) return;
+  api('/api/city/demolish', { i: INFO }).then(function (d) { INFO = null; $('infoS').classList.remove('on'); setState(d); toast('🗑️ Đã dỡ. Nhận lại ' + fmt(d.refund) + ' xu.', 2200); }).catch(function (e) { toast(e.message, 3200); });
+}
+
+/* ───── quận ───── */
+function openDist(focus) { closeSheets(); setMode('view'); renderDist(); $('distS').classList.add('on'); if (typeof focus === 'number') { setTimeout(function () { var el = document.querySelector('[data-dc="' + focus + '"]'); if (el) el.scrollIntoView({ block: 'center' }); }, 40); } }
+function renderDist() {
+  $('distB').innerHTML = C.DISTRICTS.map(function (d) {
+    var open = S.districts.indexOf(d.id) >= 0, lv = S.stats.level, can = lv >= d.lvl, h = '<div class="dcard" data-dc="' + d.id + '"><div class="ico">' + d.icon + '</div><div class="tx"><b>' + esc(d.en) + '</b> <button class="x" style="width:26px;height:26px;font-size:12px" data-say="' + esc(d.en) + '" type="button">🔊</button><div class="vi">' + esc(d.vi) + '</div><p>' + esc(d.blurb) + '</p>';
+    if (open) h += '</div><button class="btn good" data-go="' + d.id + '" type="button">Đến quận</button></div>';
+    else if (d.soon) h += '</div><button class="btn" disabled type="button">Sắp ra mắt</button></div>';
+    else h += '<p style="margin-top:4px"><b>' + (can ? '✅' : '🔒') + ' Cần thành phố cấp ' + d.lvl + '</b> · ' + COIN + ' ' + fmt(d.cost) + '</p></div><div style="display:flex;flex-direction:column;gap:6px"><button class="btn pri" data-un="' + d.id + '" type="button"' + (can ? '' : ' disabled') + '>Mở quận</button>' + (S.coupons ? '<button class="btn warn" data-un="' + d.id + '" data-cp="1" type="button"' + (can ? '' : ' disabled') + '>🏷️ −40%</button>' : '') + '</div></div>';
+    return h;
+  }).join('').replace(/🪙/g, COIN);
+}
+function unlock(d, coupon) {
+  var dd = C.DISTRICTS[d], cost = coupon ? Math.round(dd.cost * .6) : dd.cost;
+  confirmBox('Mở ' + dd.vi + '?', 'Giá <b>' + fmt(cost) + ' xu</b>' + (coupon ? ' (đã dùng phiếu giảm giá −40%)' : '') + '. Bạn đang có ' + fmt(S.coins) + ' xu.', 'Mở quận').then(function (ok) { if (!ok) return; api('/api/city/district/unlock', { d: d, coupon: !!coupon }).then(function (r) { setState(r); toast('🎉 Đã mở ' + dd.vi + '!', 2600); ENG.focusDistrict(d); $('distS').classList.remove('on'); }).catch(function (e) { toast(e.message, 3600); }); });
+}
+
+/* ───── kiếm xu bằng câu hỏi ───── */
+var QZ = null, QSRC = { src: 'grammar', grade: 0, level: 'KET' };
+function openQuiz() { closeSheets(); setMode('view'); $('quizM').classList.add('on'); quizMenu(); }
+function quizMenu() {
+  var h = '<h3>🧠 Kiếm xu bằng câu hỏi</h3><p class="sub">Trả lời đúng để lật 3 thẻ thưởng: xu, <b>🎫 phiếu xây nhanh</b> hoặc <b>🏷️ phiếu giảm giá mở quận</b>. Hôm nay còn <b>' + S.quizLeft + '</b> câu có thưởng.</p>';
+  h += '<div class="field">Loại câu hỏi<select id="qSrc"><option value="grammar"' + (QSRC.src === 'grammar' ? ' selected' : '') + '>Ngữ pháp</option><option value="vocab"' + (QSRC.src === 'vocab' ? ' selected' : '') + '>Từ vựng</option></select></div>';
+  h += '<div class="field" id="qGradeF">' + (QSRC.src === 'grammar' ? 'Lớp<select id="qGrade"><option value="0">Tất cả</option>' + [6, 7, 8, 9, 10, 11, 12].map(function (g) { return '<option value="' + g + '"' + (QSRC.grade === g ? ' selected' : '') + '>Lớp ' + g + '</option>'; }).join('') + '</select>' : 'Cấp độ<select id="qLevel">' + ['KET', 'PET', 'FCE', 'IELTS'].map(function (l) { return '<option' + (QSRC.level === l ? ' selected' : '') + '>' + l + '</option>'; }).join('') + '</select>') + '</div>';
+  h += '<div class="row"><button class="btn" data-close="quizM" type="button">Để sau</button><button class="btn pri" id="qGo" type="button">Bắt đầu</button></div>'; $('quizB').innerHTML = h;
+  $('qSrc').onchange = function () { QSRC.src = this.value; quizMenu(); }; if ($('qGrade')) $('qGrade').onchange = function () { QSRC.grade = +this.value; }; if ($('qLevel')) $('qLevel').onchange = function () { QSRC.level = this.value; }; $('qGo').onclick = nextQ;
+}
+function nextQ() {
+  var url = '/api/city/quiz?src=' + QSRC.src + (QSRC.src === 'grammar' ? '&grade=' + QSRC.grade : '&level=' + QSRC.level); $('quizB').innerHTML = '<p class="empty">Đang lấy câu hỏi…</p>';
+  api(url).then(function (q) { QZ = q; var h = '<p class="sub">' + esc(q.topic) + ' · còn ' + q.left + ' câu có thưởng</p><h3 style="font-size:17px;line-height:1.35">' + esc(q.q) + '</h3>' + (q.ctx ? '<p class="sub">💬 ' + esc(q.ctx) + '</p>' : '') + q.opts.map(function (o, i) { return '<button class="opt" data-qa="' + i + '" type="button">' + esc(o) + '</button>'; }).join(''); $('quizB').innerHTML = h; }).catch(function (e) { $('quizB').innerHTML = '<p class="empty">' + esc(e.message) + '</p><div class="row"><button class="btn" data-close="quizM" type="button">Đóng</button><button class="btn pri" id="qBack" type="button">Chọn lại</button></div>'; $('qBack').onclick = quizMenu; });
+}
+function answerQ(i) {
+  var btns = [].slice.call(document.querySelectorAll('[data-qa]')); btns.forEach(function (b) { b.disabled = true; });
+  api('/api/city/quiz/answer', { qid: QZ.qid, idx: i }).then(function (d) {
+    setState(d); btns.forEach(function (b, k) { if (k === d.answer) b.classList.add('ok'); else if (k === i) b.classList.add('no'); });
+    var h = '<p class="sub" style="margin-top:10px">' + (d.correct ? '✅ Chính xác!' : '❌ Chưa đúng.') + ' ' + esc(d.expl || '') + '</p>';
+    if (d.flip) { h += '<p class="sub"><b>Chọn một thẻ thưởng:</b></p><div class="flip">' + [0, 1, 2].map(function (k) { return '<button class="fc" data-fp="' + k + '" data-fid="' + d.flip + '" type="button">?</button>'; }).join('') + '</div>'; }
+    else { h += (d.correct ? '<p class="sub">Hôm nay bạn đã nhận đủ thưởng — vẫn có thể luyện thêm cho vui nhé!</p>' : '') + '<div class="row"><button class="btn" data-close="quizM" type="button">Xong</button><button class="btn pri" id="qNext" type="button">Câu tiếp</button></div>'; }
+    $('quizB').insertAdjacentHTML('beforeend', h); if ($('qNext')) $('qNext').onclick = nextQ;
+  }).catch(function (e) { toast(e.message, 3000); quizMenu(); });
+}
+function flipCard(k, fid) {
+  api('/api/city/quiz/flip', { id: fid, pick: k }).then(function (d) {
+    setState(d); var fcs = [].slice.call(document.querySelectorAll('.fc')); var txt = function (c) { return c.t === 'xu' ? '+' + c.v + '<br>🪙' : c.t === 'ticket' ? '🎫<br>×' + c.v + '<br>xây nhanh' : '🏷️<br>giảm<br>−40%'; };
+    fcs.forEach(function (b, i) { b.classList.add('open'); if (i !== d.pick) b.classList.add('dim'); b.innerHTML = txt(d.cards[i]).replace(/🪙/g, COIN); b.disabled = true; });
+    var g = d.got; toast(g.t === 'xu' ? '🎁 +' + g.v + ' xu!' : g.t === 'ticket' ? '🎁 Nhận ' + g.v + ' phiếu xây nhanh!' : '🎁 Nhận phiếu giảm giá mở quận!', 3000);
+    $('quizB').insertAdjacentHTML('beforeend', '<div class="row"><button class="btn" data-close="quizM" type="button">Xong</button><button class="btn pri" id="qNext2" type="button">Câu tiếp</button></div>'); $('qNext2').onclick = nextQ;
+  }).catch(function (e) { toast(e.message, 3000); });
+}
+
+/* ───── cài đặt ───── */
+function openSet() {
+  var sel = function (id, opts, cur) { return '<select id="' + id + '">' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (String(cur) === String(o[0]) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };
+  var sw = function (id, on) { return '<label class="sw"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '><i></i></label>'; };
+  var h = '<div class="field">Thời tiết' + sel('sWea', [['auto', 'Tự động'], ['clear', '☀️ Nắng'], ['cloud', '☁️ Nhiều mây'], ['rain', '🌧️ Mưa'], ['snow', '❄️ Tuyết']], setting.weather) + '</div>';
+  h += '<div class="field">Thời gian' + sel('sTime', [['auto', 'Theo giờ thật'], ['day', '🌞 Luôn ban ngày'], ['night', '🌙 Luôn ban đêm']], setting.time) + '</div>';
+  h += '<div class="field">Xe cộ chạy trên đường' + sw('sCars', setting.cars) + '</div><div class="field">Người đi bộ' + sw('sPpl', setting.people) + '</div><div class="field">Thuyền trên sông, biển' + sw('sBoat', setting.boats) + '</div><div class="field">Mây, chim, khinh khí cầu, máy bay' + sw('sSky', setting.sky) + '</div>';
+  h += '<div class="field">Hiện khu quy hoạch<label class="sw"><input type="checkbox" id="sZone"' + (ENG.showZones ? ' checked' : '') + '><i></i></label></div>';
+  if (ROLE === 'admin') h += '<div class="row"><button class="btn warn" id="sCoins" type="button">💰 Nạp 999.999.999 xu để thử game (chỉ quản trị)</button></div>';
+  $('setB2').innerHTML = h; $('setM').classList.add('on');
+  var ch = function () { setting.weather = $('sWea').value; setting.time = $('sTime').value; setting.cars = $('sCars').checked ? 1 : 0; setting.people = $('sPpl').checked ? 1 : 0; setting.boats = $('sBoat').checked ? 1 : 0; setting.sky = $('sSky').checked ? 1 : 0; ENG.showZones = $('sZone').checked; saveSet(); applySettings(); };
+  ['sWea', 'sTime', 'sCars', 'sPpl', 'sBoat', 'sSky', 'sZone'].forEach(function (id) { $(id).onchange = ch; });
+  if ($('sCoins')) $('sCoins').onclick = function () { api('/api/garden/admin/test-coins', {}).then(function () { toast('💰 Đã nạp xu thử nghiệm!'); load(); }).catch(function (e) { toast(e.message); }); };
+}
+
+/* ───── sự kiện giao diện ───── */
+function closeSheets(keepInfo) { ['shopS', 'distS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
+document.addEventListener('click', function (e) {
+  var t = e.target, el;
+  if ((el = t.closest('[data-close]'))) { $(el.getAttribute('data-close')).classList.remove('on'); if (el.getAttribute('data-close') === 'infoS') { INFO = null; ENG.sel = -1; } return; }
+  if ((el = t.closest('[data-tab]'))) { TABK = el.getAttribute('data-tab'); renderShop(); return; }
+  if ((el = t.closest('[data-d]')) && el.classList.contains('dbtn')) { var d = +el.getAttribute('data-d'); if (S.districts.indexOf(d) >= 0) ENG.focusDistrict(d); else openDist(d); return; }
+  if ((el = t.closest('[data-go]'))) { $('distS').classList.remove('on'); ENG.focusDistrict(+el.getAttribute('data-go')); return; }
+  if ((el = t.closest('[data-un]'))) { unlock(+el.getAttribute('data-un'), !!el.getAttribute('data-cp')); return; }
+  if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
+  if ((el = t.closest('[data-sp]'))) { speed(el.getAttribute('data-sp')); return; }
+  if ((el = t.closest('[data-act]'))) { var a = el.getAttribute('data-act'); if (a === 'collect') collect(INFO); else if (a === 'up') upgrade(); else if (a === 'dem') demolish(); return; }
+  if ((el = t.closest('[data-qa]'))) { answerQ(+el.getAttribute('data-qa')); return; }
+  if ((el = t.closest('[data-fp]'))) { flipCard(+el.getAttribute('data-fp'), el.getAttribute('data-fid')); return; }
+});
+$('bShop').onclick = openShop; $('bQuiz').onclick = openQuiz; $('coinB').onclick = openQuiz; $('bDist').onclick = function () { openDist(); };
+$('bCol').onclick = function () { collect(null); };
+$('bRoad').onclick = function () { if (ENG.mode === 'road') setMode('view'); else { closeSheets(); setMode('road'); } };
+$('setB').onclick = openSet; $('zIn').onclick = function () { ENG.zoomAt(1.35, ENG.cw / 2, ENG.ch / 2); }; $('zOut').onclick = function () { ENG.zoomAt(1 / 1.35, ENG.cw / 2, ENG.ch / 2); };
+$('rL').onclick = function () { ENG.rotate(-1); }; $('rR').onclick = function () { ENG.rotate(1); }; $('zAll').onclick = function () { ENG.fitAll(); };
+$('pOk').onclick = placeNow; $('pNo').onclick = function () { setMode('view'); }; $('pCont').onchange = function () { CONT = this.checked; };
+$('rNo').onclick = function () { setMode('view'); }; $('rOk').onclick = buildRoad; $('rDel').onchange = function () { ROADDEL = this.checked; ROADCELLS = []; ENG.roadPrev = null; roadBar(); };
+$('shopQ').oninput = renderShop; $('shopD').onchange = function () { DF = +this.value; renderShop(); }; $('shopO').onchange = function () { SORT = this.value; renderShop(); };
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { setMode('view'); closeSheets(); } if (e.key === 'q' || e.key === 'Q') ENG.rotate(-1); if (e.key === 'e' || e.key === 'E') ENG.rotate(1); });
+window.addEventListener('resize', function () { ENG.resize(); });
+load();
+window.EWTCityApp = { ENG: ENG, state: function () { return S; } };
+})();
+</script>
+</body>
+</html>
