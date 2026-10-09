@@ -220,7 +220,39 @@
     return { ok: true };
   }
 
-  var API = { W: W, H: H, DS: DS, DW: DW, DH: DH, PER: PER, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
+
+  /* ───── gói combo (giảm 15%) và bản quy hoạch mẫu (khối 5×5 giữa hai đường, có đường dọc ở giữa) ───── */
+  var BUNDLE_OFF = 0.85;
+  var BUNDLES = [
+    { id: 'b-start', d: 0, icon: '🏡', en: 'Starter Pack', vi: 'Gói Khởi nghiệp', items: { cottage: 4, kiosk: 1, tree: 4, flowerbed: 3 } },
+    { id: 'b-family', d: 0, icon: '👨‍👩‍👧', en: 'Family Pack', vi: 'Gói Gia đình', items: { townhouse: 3, bakery: 1, cafe: 1, fountain: 1, tree: 4 } },
+    { id: 'b-town', d: 1, icon: '🛍️', en: 'Downtown Pack', vi: 'Gói Phố mua sắm', items: { shop: 2, cafe: 2, bakery: 1, busstop: 2, flowerbed: 4 } },
+    { id: 'b-port', d: 2, icon: '⚓', en: 'Harbor Pack', vi: 'Gói Bến cảng', items: { warehouse: 2, workshop: 2, fishmarket: 1, watertower: 1 } },
+    { id: 'b-fun', d: 3, icon: '🎠', en: 'Fun Pack', vi: 'Gói Vui chơi', items: { beachhut: 2, icecream: 2, arcade: 1, minigolf: 1, tree: 4 } },
+    { id: 'b-campus', d: 4, icon: '📚', en: 'Campus Pack', vi: 'Gói Học đường', items: { bookstore: 3, tree: 3, flowerbed: 3 } },
+    { id: 'b-world', d: 5, icon: '🌏', en: 'World Pack', vi: 'Gói Phố quốc tế', items: { sushi: 1, pizzeria: 1, teahouse: 1, torii: 2, tree: 3 } },
+    { id: 'b-tet', d: -1, ev: 'tet', icon: '🧧', en: 'Lunar New Year Pack', vi: 'Gói Tết', items: { lanternarch: 2, peachtree: 3 } },
+    { id: 'b-moon', d: -1, ev: 'trungthu', icon: '🥮', en: 'Mid-Autumn Pack', vi: 'Gói Trung thu', items: { moonlantern: 3, rabbitlantern: 2 } },
+    { id: 'b-noel', d: -1, ev: 'noel', icon: '🎄', en: 'Christmas Pack', vi: 'Gói Giáng sinh', items: { xmastree: 2, bigsnowman: 1 } }
+  ];
+  var BUNDLE_BY = {}; BUNDLES.forEach(function (b) { BUNDLE_BY[b.id] = b; });
+  function bundleFull(b) { var t = 0, k; for (k in b.items) t += BY[k].cost * b.items[k]; return t; }
+  function bundlePrice(b) { return Math.round(bundleFull(b) * BUNDLE_OFF); }
+  function bundleLvl(b) { var m = 1, k; for (k in b.items) m = Math.max(m, BY[k].lvl); return m; }
+  var col = function (k, dx, ys) { return ys.map(function (y) { return [k, dx, y]; }); }, Y5 = [0, 1, 2, 3, 4];
+  var PLANS = [
+    { id: 'p-row', icon: '🏘️', z: 'r', en: 'Row Houses', vi: 'Phố nhà liền kề', desc: 'Hai dãy nhà hai bên con đường nhỏ ở giữa: nhà phố, nhà cấp 4 và nhà song lập.', items: [].concat(col('townhouse', 0, Y5), col('cottage', 1, Y5), col('duplex', 3, Y5)) },
+    { id: 'p-shop', icon: '🛍️', z: 'c', en: 'Shopping Street', vi: 'Phố mua sắm', desc: 'Một dãy cửa hàng lớn đối diện hai dãy quán cà phê và tiệm bánh.', items: [].concat(col('shop', 0, Y5), col('cafe', 3, Y5), col('bakery', 4, Y5)) },
+    { id: 'p-green', icon: '🌳', z: '*', en: 'Green Block', vi: 'Khối công viên xanh', desc: 'Hàng cây và hoa, sân chơi, đài phun nước — hợp với mọi khu.', items: [].concat(col('tree', 0, Y5), col('flowerbed', 1, Y5), [['playground', 3, 0], ['fountain', 3, 2], ['fountain', 4, 2], ['tree', 3, 3], ['tree', 4, 3], ['tree', 3, 4], ['tree', 4, 4]]) },
+    { id: 'p-dock', icon: '⚓', z: 'h', en: 'Dock Block', vi: 'Khối bến kho vận', desc: 'Kho hàng, hải đăng và dãy chợ cá sát bến cảng.', items: [['warehouse', 0, 0], ['warehouse', 0, 2], ['lighthouse', 0, 4], ['lighthouse', 1, 4]].concat(col('fishmarket', 3, Y5)) },
+    { id: 'p-work', icon: '🏭', z: 'i', en: 'Workshop Block', vi: 'Cụm công xưởng', desc: 'Xưởng cơ khí, nhà kho và tháp nước.', items: [].concat(col('workshop', 0, Y5), [['warehouse', 3, 0], ['warehouse', 3, 2], ['watertower', 3, 4], ['watertower', 4, 4]]) },
+    { id: 'p-fun', icon: '🎡', z: 'f', en: 'Fun Street', vi: 'Phố vui chơi', desc: 'Trò chơi điện tử, kem, nhà bãi biển và sân gôn mini.', items: [['arcade', 0, 0], ['arcade', 0, 1], ['arcade', 0, 2], ['icecream', 0, 3], ['icecream', 1, 3], ['beachhut', 0, 4], ['beachhut', 1, 4], ['minigolf', 3, 0], ['minigolf', 3, 2], ['icecream', 3, 4], ['icecream', 4, 4]] },
+    { id: 'p-edu', icon: '📚', z: 'e', en: 'Campus Street', vi: 'Phố học đường', desc: 'Hiệu sách, cây xanh và hai trường mẫu giáo (cần đã học chương “School & Lab”).', items: [].concat(col('bookstore', 0, Y5), col('tree', 1, Y5), [['kindergarten', 3, 0], ['kindergarten', 3, 2], ['tree', 3, 4], ['tree', 4, 4]]) },
+    { id: 'p-world', icon: '🍜', z: 'w', en: 'World Food Street', vi: 'Phố ẩm thực quốc tế', desc: 'Sushi, pizza, quán trà và cổng torii thành một con phố đẹp.', items: [].concat(col('sushi', 0, Y5), col('pizzeria', 1, Y5), col('teahouse', 3, Y5), col('torii', 4, Y5)) }
+  ];
+  PLANS.forEach(function (pl) { pl.roads = Y5.map(function (y) { return [2, y]; }); });
+  var PLAN_BY = {}; PLANS.forEach(function (pl) { PLAN_BY[pl.id] = pl; });
+  var API = { BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, DS: DS, DW: DW, DH: DH, PER: PER, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
     CATS: CATS, ITEMS: ITEMS, BY: BY, MAXLV: MAXLV, RULES: RULES, LEVEL_AT: LEVEL_AT, idx: idx, inW: inW, itemCost: itemCost, buildSecs: buildSecs, incomeH: incomeH, popOf: popOf, hpOf: hpOf, speedCost: speedCost,
     levelOfScore: levelOfScore, scoreOf: scoreOf, buildOcc: buildOcc, canPlace: canPlace, canRoad: canRoad, adjacentRoad: adjacentRoad, zoneList: zoneList, isRoadAt: isRoadAt };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTCityData = API;

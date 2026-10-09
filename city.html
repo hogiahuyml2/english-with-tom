@@ -87,6 +87,7 @@ button { font-family: inherit; cursor: pointer; }
 .wcard { text-align: center; padding: 14px 8px 6px; } .wcard .en { font-size: 30px; font-weight: 800; } .wcard .ipa { color: var(--mut); font-size: 15px; margin: 2px 0; } .wcard .vi { font-size: 22px; font-weight: 800; color: #3A5BE0; margin: 8px 0; } .wcard .ex { background: #F4F6FF; border-radius: 12px; padding: 8px 10px; font-size: 14px; text-align: left; margin-top: 8px; } .wcard .ex i { display: block; color: var(--mut); font-style: normal; font-size: 12.5px; margin-top: 2px; }
 .opt small { display: block; font-weight: 600; color: var(--mut); font-size: 12.5px; margin-top: 1px; } .qvi { color: var(--mut); font-size: 13.5px; margin: -4px 0 6px; }
 .mg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; } .mg button { border: 2px solid var(--line); background: #fff; border-radius: 12px; padding: 11px 6px; font-weight: 700; font-size: 14px; color: var(--ink); } .mg button.sel { border-color: #3A5BE0; background: #EEF1FF; } .mg button.ok { border-color: #5BCB8B; background: #DDF7E8; opacity: .55; } .mg button.no { animation: shk .35s; border-color: #E9573F; } @keyframes shk { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.modal.peek { place-items: end center; background: rgba(20,30,60,.08); pointer-events: none; } .modal.peek .box { pointer-events: auto; margin-bottom: calc(var(--bot) + 66px); }
 .lk2 { position: absolute; top: 6px; left: 6px; background: #FFF1C9; color: #8A5A00; border-radius: 8px; padding: 2px 6px; font-size: 11px; font-weight: 800; }
 </style>
 </head>
@@ -141,7 +142,7 @@ button { font-family: inherit; cursor: pointer; }
 <div class="modal" id="cfmM"><div class="box"><h3 id="cfmT"></h3><p class="sub" id="cfmP"></p><div class="row"><button class="btn" id="cfmNo" type="button">Không</button><button class="btn pri" id="cfmYes" type="button">Đồng ý</button></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="js/city-data.js?v=3"></script>
+<script src="js/city-data.js?v=4"></script>
 <script src="js/city-art.js?v=3"></script>
 <script src="js/city-engine.js?v=2"></script>
 <script>
@@ -197,18 +198,20 @@ var firstLoad = true;
 function load() { return api('/api/city').then(function (d) { setState(d); if (firstLoad) { firstLoad = false; setTimeout(function () { ENG.focusDistrict(0); }, 80); if (!S.bs.length) toast('👋 Chào mừng đến EWT City! Bấm 🏗️ Xây dựng để đặt ngôi nhà đầu tiên (miễn phí).', 6000); } }).catch(function (e) { toast(e.message, 4000); }); }
 
 /* ───── cửa hàng ───── */
-var CATTAB = C.CATS.map(function (c) { return c; });
+var CATTAB = C.CATS.map(function (c) { return c; }).concat([['bundle', '📦 Gói combo'], ['plan', '📐 Quy hoạch']]);
 function renderShop() {
   $('shopTabs').innerHTML = CATTAB.map(function (c) { return '<button class="tab' + (TABK === c[0] ? ' on' : '') + '" data-tab="' + c[0] + '" type="button">' + c[1] + '</button>'; }).join('');
+  if (TABK === 'bundle') return renderBundles(); if (TABK === 'plan') return renderPlans();
   var q = $('shopQ').value.trim().toLowerCase(), list = C.ITEMS.filter(function (it) { if (TABK !== 'all' && it.cat !== TABK && !q) return false; if (DF >= 0 && it.ds.indexOf(DF) < 0) return false; if (q && (it.en + ' ' + it.vi + ' ' + it.k).toLowerCase().indexOf(q) < 0) return false; return true; });
   list.sort(function (a, b) { return SORT === 'cost' ? a.cost - b.cost : SORT === 'inc' ? b.inc - a.inc : SORT === 'hp' ? b.hp - a.hp : a.lvl - b.lvl || a.cost - b.cost; });
   $('shopG').innerHTML = list.length ? '' : '<div class="empty" style="grid-column:1/-1">Không tìm thấy công trình nào.</div>';
   list.forEach(function (it) {
     var lock = S.stats.level < it.lvl, free = (S.free[it.k] | 0) > 0, d = document.createElement('div'); d.className = 'card' + (lock ? ' lock' : ''); d.setAttribute('data-k', it.k);
-    var nl = it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0; d.innerHTML = (lock ? '<span class="lk">🔒 Cấp ' + it.lvl + '</span>' : nl ? '<span class="lk2">📖 Cần học từ</span>' : '') + '<span class="sz">' + it.w + '×' + it.h + '</span>';
+    var nl = it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0, noev = it.ev && S.ev.indexOf(it.ev) < 0, inv = S.inv[it.k] | 0; d.innerHTML = (lock ? '<span class="lk">🔒 Cấp ' + it.lvl + '</span>' : noev ? '<span class="lk2">🎉 Chờ sự kiện</span>' : nl ? '<span class="lk2">📖 Cần học từ</span>' : '') + '<span class="sz">' + it.w + '×' + it.h + '</span>';
     d.appendChild(A.thumb(it.k, 112, 1));
-    d.insertAdjacentHTML('beforeend', '<div class="en">' + esc(it.en) + '</div><div class="vi">' + esc(it.vi) + '</div><div class="pr">' + (free ? '<span style="color:var(--good)">MIỄN PHÍ ×' + S.free[it.k] + '</span>' : COIN + ' ' + fmt(it.cost)) + '</div><div class="meta">' + (it.inc ? '+' + fmt(it.inc) + ' xu/giờ · ' : '') + (it.pop ? '👥 ' + it.pop + ' · ' : '') + (it.hp ? '😊 +' + it.hp : '') + ' ⏱ ' + dur(it.secs) + '</div>');
+    d.insertAdjacentHTML('beforeend', '<div class="en">' + esc(it.en) + '</div><div class="vi">' + esc(it.vi) + '</div><div class="pr">' + (free ? '<span style="color:var(--good)">MIỄN PHÍ ×' + S.free[it.k] + '</span>' : COIN + ' ' + fmt(it.cost)) + (inv ? ' <span style="color:var(--good)">· 📦 kho ×' + inv + '</span>' : '') + '</div><div class="meta">' + (it.inc ? '+' + fmt(it.inc) + ' xu/giờ · ' : '') + (it.pop ? '👥 ' + it.pop + ' · ' : '') + (it.hp ? '😊 +' + it.hp : '') + ' ⏱ ' + dur(it.secs) + '</div>');
     var sb = document.createElement('button'); sb.className = 'say'; sb.type = 'button'; sb.textContent = '🔊'; sb.setAttribute('aria-label', 'Nghe phát âm'); sb.onclick = function (e) { e.stopPropagation(); say(it.en); }; d.appendChild(sb);
+    if (!lock && !noev && !nl) { var kb = document.createElement('button'); kb.className = 'say'; kb.style.right = '44px'; kb.type = 'button'; kb.textContent = '🛒'; kb.title = 'Mua trữ vào kho'; kb.setAttribute('aria-label', 'Mua trữ vào kho'); kb.onclick = function (e) { e.stopPropagation(); stockBox(it); }; d.appendChild(kb); }
     d.onclick = function () { pick(it); }; $('shopG').appendChild(d);
   });
 }
@@ -217,7 +220,8 @@ function openShop() { closeSheets(); setMode('view'); var sel = $('shopD'); if (
 function pick(it) {
   if (S.stats.level < it.lvl) return toast('🔒 Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.');
   if (it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0) { toast('📖 Học xong chương này để mở <b>' + esc(it.vi) + '</b> nhé!', 3200); return openLearn(it.ch); }
-  if (!(S.free[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
+  if (it.ev && S.ev.indexOf(it.ev) < 0) return toast('🎉 ' + esc(it.vi) + ' chỉ có khi sự kiện đang diễn ra nhé!', 3000);
+  if (!(S.free[it.k] > 0) && !(S.inv[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
   $('shopS').classList.remove('on'); SEL = it; setMode('place', it.k); say(it.en);
 }
 function setMode(m, k) { ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
@@ -337,7 +341,7 @@ function flipCard(k, fid) {
 
 /* ───── học từ theo chương ───── */
 var LN = null, LS = null, LT = null, LM = null;
-function lmodal(h) { $('learnMB').innerHTML = h; $('learnM').classList.add('on'); }
+function lmodal(h) { $('learnMB').onclick = null; $('learnMB').innerHTML = h; $('learnM').classList.remove('peek'); $('learnM').classList.add('on'); }
 function openLearn(focusCh) {
   closeSheets(); setMode('view'); $('learnS').classList.add('on'); $('learnB').innerHTML = '<p class="empty">Đang tải…</p>';
   api('/api/city/learn').then(function (d) { LN = d; renderLearn(focusCh); }).catch(function (e) { $('learnB').innerHTML = '<p class="empty">' + esc(e.message) + '</p>'; });
@@ -404,6 +408,50 @@ function matchDone() {
   var miss = LM.miss, sid = LM.sid; setTimeout(function () {
     api('/api/city/learn/match/done', { sid: sid, miss: miss }).then(function (d) { setState(d); lmodal('<h3>🎉 Hoàn thành!</h3><p class="sub">Sai ' + miss + ' lần. ' + (d.reward ? 'Thưởng <b>+' + d.reward + ' 🪙</b>' : 'Hôm nay đã hết lượt thưởng — mai quay lại nhé!') + '</p><div class="row"><button class="btn" data-close="learnM" type="button">Xong</button><button class="btn pri" id="mAgain" type="button">Chơi tiếp</button></div>'); $('mAgain').onclick = function () { startMatch(LM.ch); }; }).catch(function (e) { lmodal('<h3>🎉 Hoàn thành!</h3><p class="sub">' + esc(e.message) + '</p><div class="row"><button class="btn" data-close="learnM" type="button">Xong</button><button class="btn pri" id="mAgain" type="button">Chơi tiếp</button></div>'); $('mAgain').onclick = function () { startMatch(LM.ch); }; });
   }, 500);
+}
+
+/* ───── kho trữ, gói combo, quy hoạch ───── */
+function numBox(id, v, max) { return '<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0"><button class="btn" data-nm="' + id + '" data-d="-1" type="button">−</button><input id="' + id + '" type="number" inputmode="numeric" min="1" max="' + max + '" value="' + v + '" style="width:90px;text-align:center;font:800 18px var(--font);border:2px solid var(--line);border-radius:12px;padding:8px"><button class="btn" data-nm="' + id + '" data-d="1" type="button">＋</button></div>'; }
+function stockBox(it) {
+  var n = 1, cap = 60 - (S.inv[it.k] | 0); if (cap < 1) return toast('Kho đã đầy món này rồi (60).');
+  var draw = function () { lmodal('<h3>🛒 Mua trữ vào kho</h3><p class="sub"><b>' + esc(it.en) + '</b> — ' + esc(it.vi) + ' · ' + COIN + ' ' + fmt(it.cost) + '/món. Trong kho: <b>' + (S.inv[it.k] | 0) + '</b>. Món trong kho được dùng để xây sau, không mất thêm xu.</p>' + numBox('nmQ', n, Math.min(50, cap)) + '<p class="sub" style="text-align:center">Tổng: <b id="nmT"></b></p><div class="row"><button class="btn" data-close="learnM" type="button">Để sau</button><button class="btn pri" id="nmGo" type="button">Mua</button></div>'); upd(); };
+  var upd = function () { var inp = $('nmQ'); n = Math.max(1, Math.min(Math.min(50, cap), Math.floor(+inp.value) || 1)); $('nmT').innerHTML = n + ' × ' + fmt(it.cost) + ' = ' + COIN + ' <b>' + fmt(n * it.cost) + '</b>' + (n * it.cost > S.coins ? ' <span style="color:#E9573F">(chưa đủ xu)</span>' : ''); };
+  draw(); $('nmQ').oninput = upd; $('learnMB').onclick = function (e) { var b = e.target.closest('[data-nm]'); if (b) { $('nmQ').value = (Math.floor(+$('nmQ').value) || 1) + (+b.getAttribute('data-d')); upd(); $('nmQ').value = n; } };
+  $('nmGo').onclick = function () { upd(); api('/api/city/buy', { k: it.k, n: n }).then(function (d) { setState(d); $('learnM').classList.remove('on'); toast('📦 Đã thêm ' + n + ' × ' + esc(it.vi) + ' vào kho', 2400); }).catch(function (e) { toast(e.message, 3200); }); };
+}
+function renderBundles() {
+  var g = $('shopG'); g.innerHTML = '';
+  C.BUNDLES.forEach(function (b) {
+    var evOk = !b.ev || S.ev.indexOf(b.ev) >= 0, dOk = b.d < 0 || S.districts.indexOf(b.d) >= 0, lvOk = S.stats.level >= C.bundleLvl(b), full = C.bundleFull(b), price = C.bundlePrice(b), ok = evOk && dOk && lvOk;
+    var d = document.createElement('div'); d.className = 'card' + (ok ? '' : ' lock'); d.style.gridColumn = '1/-1';
+    d.innerHTML = '<div style="display:flex;gap:10px;align-items:center"><div style="font-size:34px">' + b.icon + '</div><div style="flex:1;min-width:0"><div class="en">' + esc(b.en) + '</div><div class="vi">' + esc(b.vi) + '</div><div class="meta" style="white-space:normal">' + Object.keys(b.items).map(function (k) { return b.items[k] + '× ' + esc(C.BY[k].vi); }).join(' · ') + '</div></div><div style="text-align:right"><div class="meta" style="text-decoration:line-through">' + fmt(full) + '</div><div class="pr">' + COIN + ' ' + fmt(price) + '</div><div class="meta" style="color:var(--good)">−15%</div></div></div>' +
+      '<div class="row" style="margin-top:8px"><button class="btn pri" type="button"' + (ok ? '' : ' disabled') + '>' + (!evOk ? '🎉 Chờ sự kiện' : !dOk ? '🔒 Mở quận trước' : !lvOk ? '🔒 Cấp ' + C.bundleLvl(b) : '📦 Mua gói') + '</button></div>';
+    d.querySelector('button').onclick = function () { confirmBox('Mua ' + b.vi + '?', 'Giá <b>' + fmt(price) + ' xu</b> (đã giảm 15%). Các món sẽ vào <b>kho</b> để bạn xây dần.', 'Mua').then(function (y) { if (!y) return; api('/api/city/bundle', { id: b.id }).then(function (r) { setState(r); toast('📦 Đã mua ' + esc(b.vi) + '!', 2400); }).catch(function (e) { toast(e.message, 3200); }); }); };
+    g.appendChild(d);
+  });
+}
+var PQ = { plan: null, alt: 0, d: -1 };
+function renderPlans() {
+  var g = $('shopG'); g.innerHTML = '<div class="empty" style="grid-column:1/-1;padding:4px 0">Chọn một mẫu quy hoạch — hệ thống tìm khối đất phù hợp, bạn xem trước rồi đồng ý trả xu để xây cả khối cùng lúc. Món có trong kho sẽ được dùng trước.</div>';
+  C.PLANS.forEach(function (pl) {
+    var full = 0; pl.items.forEach(function (e) { full += C.BY[e[0]].cost; });
+    var d = document.createElement('div'); d.className = 'card'; d.style.gridColumn = '1/-1';
+    d.innerHTML = '<div style="display:flex;gap:10px;align-items:center"><div style="font-size:34px">' + pl.icon + '</div><div style="flex:1;min-width:0"><div class="en">' + esc(pl.en) + '</div><div class="vi">' + esc(pl.vi) + ' · khu ' + (pl.z === '*' ? 'bất kỳ' : esc(C.ZONE_NAME[pl.z])) + '</div><div class="meta" style="white-space:normal">' + esc(pl.desc) + '</div></div><div style="text-align:right"><div class="meta">' + pl.items.length + ' món</div><div class="pr">≈ ' + COIN + ' ' + fmt(full) + '</div></div></div><div class="row" style="margin-top:8px"><button class="btn pri" type="button">👁️ Xem trước & áp dụng</button></div>';
+    d.querySelector('button').onclick = function () { PQ = { plan: pl, alt: 0, d: -1 }; planQuote(); };
+    g.appendChild(d);
+  });
+}
+function planQuote() {
+  api('/api/city/plan/quote', { plan: PQ.plan.id, alt: PQ.alt, d: PQ.d }).then(function (q) {
+    PQ.q = q; ENG.focusTile(q.bx + 2, q.by + 2, 1.1); $('shopS').classList.remove('on');
+    var ok = q.items.filter(function (i) { return i.ok; }), bad = q.items.filter(function (i) { return !i.ok; }), sum = {};
+    ok.forEach(function (i) { sum[i.k] = (sum[i.k] || 0) + 1; });
+    var h = '<h3>' + PQ.plan.icon + ' ' + esc(PQ.plan.vi) + '</h3><p class="sub">Khối đất tại quận <b>' + esc(C.DISTRICTS[q.d].vi) + '</b> (tìm thấy ' + q.blocks + ' chỗ). Xây được <b>' + q.ok + '/' + q.total + '</b> món' + (q.roads ? ' + ' + q.roads + ' ô đường' : '') + '.</p><p class="sub" style="margin:2px 0">' + Object.keys(sum).map(function (k) { return sum[k] + '× ' + esc(C.BY[k].vi); }).join(' · ') + '</p>';
+    if (bad.length) { var why = {}; bad.forEach(function (i) { why[i.why] = (why[i.why] || 0) + 1; }); h += '<p class="sub" style="color:#B3541E">⚠️ Bỏ qua ' + bad.length + ' món: ' + Object.keys(why).slice(0, 2).map(function (w) { return esc(w); }).join(' / ') + '</p>'; }
+    h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="pqAlt" type="button">🔄 Chỗ khác</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="pqGo" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
+    lmodal(h); $('learnM').classList.add('peek'); $('pqAlt').onclick = function () { PQ.alt++; planQuote(); };
+    $('pqGo').onclick = function () { api('/api/city/plan/apply', { plan: PQ.plan.id, bx: q.bx, by: q.by }).then(function (r) { setState(r); $('learnM').classList.remove('on'); toast('📐 Đã xây ' + r.built + ' món theo mẫu “' + esc(PQ.plan.vi) + '”!', 3000); }).catch(function (e) { toast(e.message, 3200); }); };
+  }).catch(function (e) { toast(e.message, 4200); });
 }
 function openSet() {
   var sel = function (id, opts, cur) { return '<select id="' + id + '">' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (String(cur) === String(o[0]) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };

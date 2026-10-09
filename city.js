@@ -10,6 +10,15 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const one = (sql, ...a) => db.prepare(sql).get(...a);
   const vnDay = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
   const R = C.RULES, MATCH_DAY = 5;
+  const evOn = (id) => { try { return !!(app.locals.gardenEvActive && app.locals.gardenEvActive(id)); } catch (_) { return false; } };
+  const evList = () => { try { return app.locals.gardenEvList ? app.locals.gardenEvList() : []; } catch (_) { return []; } };
+  // kiểm tra chung: cấp thành phố, chương đã học, sự kiện đang diễn ra
+  const itemGate = (st, s, it, role) => {
+    if (s.level < it.lvl) return 'Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.';
+    if (it.ch && !st.chapters[it.ch] && role !== 'admin') return 'Hãy học xong chương “' + L.BY[it.ch].en + '” (' + L.BY[it.ch].vi + ') để mở ' + it.vi + '.';
+    if (it.ev && !evOn(it.ev)) return it.vi + ' là vật phẩm sự kiện — chỉ có khi sự kiện đang diễn ra.';
+    return '';
+  };
 
   db.exec(`CREATE TABLE IF NOT EXISTS city (user_id INTEGER PRIMARY KEY, state TEXT NOT NULL, updated_at TEXT)`);
   const coinsOf = (uid) => { db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(uid); return one('SELECT coins FROM word_game WHERE user_id=?', uid).coins; };
@@ -18,13 +27,13 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const bad = (res, msg, code) => res.status(code || 400).json({ error: msg });
   const tx = (fn) => { db.exec('BEGIN'); try { const r = fn(); if (r && r.err) db.exec('ROLLBACK'); else db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
 
-  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, lm: { d: '', n: 0 }, created: Date.now() }; }
+  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, inv: {}, lm: { d: '', n: 0 }, created: Date.now() }; }
   function load(uid) {
     const r = one('SELECT state FROM city WHERE user_id=?', uid); let st = r ? J(r.state, null) : null;
     if (!st || typeof st !== 'object') { st = fresh(); db.prepare('INSERT OR REPLACE INTO city (user_id,state,updated_at) VALUES (?,?,?)').run(uid, JSON.stringify(st), now()); }
     st.districts = (Array.isArray(st.districts) ? st.districts : [0]).filter((d) => C.DISTRICTS[d]); if (st.districts.indexOf(0) < 0) st.districts.unshift(0);
     st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; st.bs = (Array.isArray(st.bs) ? st.bs : []).filter((b) => b && C.BY[b.k]);
-    st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.chapters = st.chapters && typeof st.chapters === 'object' ? st.chapters : {}; st.lm = st.lm || { d: '', n: 0 }; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
+    st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.chapters = st.chapters && typeof st.chapters === 'object' ? st.chapters : {}; st.lm = st.lm || { d: '', n: 0 }; st.inv = st.inv && typeof st.inv === 'object' ? st.inv : {}; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
     settle(st, Date.now()); return st;
   }
   const save = (uid, st) => db.prepare('UPDATE city SET state=?, updated_at=? WHERE user_id=?').run(JSON.stringify(st), now(), uid);
@@ -43,7 +52,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   function view(st, uid) {
     const t = Date.now(), s = stats(st);
     return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: pending(b, s, t) })),
-      free: st.free, tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), chapters: Object.keys(st.chapters), matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)), now: t, coins: coinsOf(uid) };
+      free: st.free, inv: st.inv, ev: evList(), tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), chapters: Object.keys(st.chapters), matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)), now: t, coins: coinsOf(uid) };
   }
   const reply = (res, st, uid, extra) => res.json(Object.assign({ city: view(st, uid) }, extra || {}));
   const getB = (st, id) => st.bs.find((b) => b.i === Number(id));
@@ -61,10 +70,10 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     if (!it || !Number.isInteger(x) || !Number.isInteger(y)) return bad(res, 'Yêu cầu không hợp lệ.');
     const out = tx(() => {
       const st = load(uid), s = stats(st);
-      if (s.level < it.lvl) return { err: 'Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.' };
-      if (it.ch && !st.chapters[it.ch] && req.user.role !== 'admin') return { err: 'Hãy học xong chương “' + L.BY[it.ch].en + '” (' + L.BY[it.ch].vi + ') để mở ' + it.vi + '.' };
+      const gate = itemGate(st, s, it, req.user.role); if (gate) return { err: gate };
       const occ = C.buildOcc(st.bs), ok = C.canPlace(st, it, x, y, occ); if (!ok.ok) return { err: ok.err };
       if (st.free[it.k] > 0) { st.free[it.k]--; if (!st.free[it.k]) delete st.free[it.k]; }
+      else if (st.inv[it.k] > 0) { st.inv[it.k]--; if (!st.inv[it.k]) delete st.inv[it.k]; }
       else if (!spend(uid, it.cost)) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!' };
       const t = Date.now(), nb = { i: st.nid++, k: it.k, x, y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t };
       st.bs.push(nb); save(uid, st); return { st, id: nb.i };
@@ -185,6 +194,86 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     reply(res, out.st, uid, { unlocked: d });
   });
 
+
+
+  /* ───── mua trữ vào kho, gói combo, bản quy hoạch ───── */
+  const INV_MAX = 60;
+  app.post('/api/city/buy', requireAuth, (req, res) => {
+    const b = req.body || {}, it = C.BY[String(b.k)], n = Math.floor(Number(b.n)), uid = req.user.id;
+    if (!it || !(n >= 1 && n <= 50)) return bad(res, 'Yêu cầu không hợp lệ.');
+    const out = tx(() => {
+      const st = load(uid), s = stats(st), gate = itemGate(st, s, it, req.user.role); if (gate) return { err: gate };
+      if ((st.inv[it.k] | 0) + n > INV_MAX) return { err: 'Kho chỉ chứa tối đa ' + INV_MAX + ' món mỗi loại.' };
+      const cost = it.cost * n; if (!spend(uid, cost)) return { err: 'Chưa đủ xu (cần ' + cost + ' 🪙).' };
+      st.inv[it.k] = (st.inv[it.k] | 0) + n; save(uid, st); return { st, cost };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { bought: n, cost: out.cost });
+  });
+  app.post('/api/city/bundle', requireAuth, (req, res) => {
+    const bd = C.BUNDLE_BY[String((req.body || {}).id)], uid = req.user.id; if (!bd) return bad(res, 'Không tìm thấy gói này.');
+    const out = tx(() => {
+      const st = load(uid), s = stats(st);
+      if (bd.ev && !evOn(bd.ev)) return { err: 'Gói này chỉ bán khi sự kiện đang diễn ra.' };
+      if (bd.d >= 0 && st.districts.indexOf(bd.d) < 0) return { err: 'Hãy mở quận này trước nhé.' };
+      for (const k of Object.keys(bd.items)) { const g = itemGate(st, s, C.BY[k], req.user.role); if (g && !/sự kiện/.test(g)) return { err: g }; if ((st.inv[k] | 0) + bd.items[k] > INV_MAX) return { err: 'Kho đầy ' + C.BY[k].vi + ' rồi.' }; }
+      const cost = C.bundlePrice(bd); if (!spend(uid, cost)) return { err: 'Chưa đủ xu (cần ' + cost + ' 🪙).' };
+      for (const k of Object.keys(bd.items)) st.inv[k] = (st.inv[k] | 0) + bd.items[k];
+      save(uid, st); return { st, cost };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { cost: out.cost });
+  });
+  // Tính một bản quy hoạch đặt vào khối (bx,by): trả danh sách món hợp lệ + chi phí (dùng kho/phiếu miễn phí trước)
+  function planEval(st, s, pl, bx, by, role) {
+    const tmpRoads = Object.assign({}, st.roads), occ = C.buildOcc(st.bs), stub = { districts: st.districts, roads: tmpRoads }, roads = [], items = [];
+    for (const r of pl.roads) { const x = bx + r[0], y = by + r[1], i = y * C.W + x; if (C.ROAD[i] || tmpRoads[i]) continue; const ck = C.canRoad(stub, x, y, occ); if (!ck.ok) return null; tmpRoads[i] = 1; roads.push(i); }
+    const inv = Object.assign({}, st.inv), fr = Object.assign({}, st.free); let cost = roads.length * R.roadCost, ok = 0;
+    for (const e of pl.items) {
+      const it = C.BY[e[0]], x = bx + e[1], y = by + e[2], gate = itemGate(st, s, it, role); let why = gate;
+      if (!why) { const ck = C.canPlace(stub, it, x, y, occ); if (!ck.ok) why = ck.err; }
+      if (why) { items.push({ k: it.k, x, y, ok: false, why }); continue; }
+      for (let a = 0; a < it.h; a++) for (let b2 = 0; b2 < it.w; b2++) occ[(y + a) * C.W + x + b2] = 9999;
+      let src = 'xu'; if (fr[it.k] > 0) { fr[it.k]--; src = 'free'; } else if (inv[it.k] > 0) { inv[it.k]--; src = 'kho'; } else cost += it.cost;
+      items.push({ k: it.k, x, y, ok: true, src }); ok++;
+    }
+    return { bx, by, roads, items, cost, ok, total: pl.items.length };
+  }
+  function planFind(st, s, pl, role, dFilter, alt) {
+    const res = [];
+    for (let by = 1; by + 5 <= C.H; by += 6) for (let bx = 1; bx + 5 <= C.W; bx += 6) {
+      const d = C.DIST[by * C.W + bx]; if (st.districts.indexOf(d) < 0 || (dFilter >= 0 && d !== dFilter)) continue;
+      const ev = planEval(st, s, pl, bx, by, role); if (ev && ev.ok > 0) { ev.d = d; res.push(ev); }
+    }
+    res.sort((a, b) => b.ok - a.ok || a.cost - b.cost || a.by - b.by || a.bx - b.bx);
+    return { list: res, pick: res.length ? res[((alt % res.length) + res.length) % res.length] : null };
+  }
+  const planBody = (req) => { const b = req.body || {}; return { pl: C.PLAN_BY[String(b.plan)], d: b.d == null || b.d === '' ? -1 : Number(b.d), alt: Math.floor(Number(b.alt) || 0) }; };
+  app.post('/api/city/plan/quote', requireAuth, (req, res) => {
+    const { pl, d, alt } = planBody(req); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
+    const st = load(req.user.id), s = stats(st), f = planFind(st, s, pl, req.user.role, d, alt);
+    if (!f.pick) return bad(res, 'Chưa có khối đất trống phù hợp (khu ' + C.zoneList(pl.z === '*' ? 'prfcseihw' : pl.z) + ') trong các quận đã mở, hoặc bạn chưa đủ cấp / chưa học chương cần thiết.');
+    const p = f.pick; res.json({ plan: pl.id, d: p.d, bx: p.bx, by: p.by, cost: p.cost, roads: p.roads.length, ok: p.ok, total: p.total, items: p.items, blocks: f.list.length, coins: coinsOf(req.user.id) });
+  });
+  app.post('/api/city/plan/apply', requireAuth, (req, res) => {
+    const { pl, d, alt } = planBody(req), uid = req.user.id, bx = Number((req.body || {}).bx), by = Number((req.body || {}).by); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
+    const out = tx(() => {
+      const st = load(uid), s = stats(st); let ev;
+      if (Number.isInteger(bx) && Number.isInteger(by) && (bx - 1) % 6 === 0 && (by - 1) % 6 === 0 && bx >= 1 && by >= 1 && bx + 5 <= C.W && by + 5 <= C.H) ev = planEval(st, s, pl, bx, by, req.user.role); else { const f = planFind(st, s, pl, req.user.role, d, alt); ev = f.pick; }
+      if (!ev || !ev.ok) return { err: 'Không còn chỗ phù hợp cho bản quy hoạch này.' };
+      if (ev.cost > 0 && !spend(uid, ev.cost)) return { err: 'Chưa đủ xu (cần ' + ev.cost + ' 🪙).' };
+      ev.roads.forEach((i) => { st.roads[i] = 1; });
+      const t = Date.now(); let n = 0;
+      for (const e of ev.items) {
+        if (!e.ok) continue; const it = C.BY[e.k];
+        if (st.free[e.k] > 0) { st.free[e.k]--; if (!st.free[e.k]) delete st.free[e.k]; } else if (st.inv[e.k] > 0) { st.inv[e.k]--; if (!st.inv[e.k]) delete st.inv[e.k]; }
+        st.bs.push({ i: st.nid++, k: it.k, x: e.x, y: e.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }); n++;
+      }
+      save(uid, st); return { st, n, cost: ev.cost, bx: ev.bx, by: ev.by };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { built: out.n, cost: out.cost, bx: out.bx, by: out.by });
+  });
 
   /* ───── học từ theo chương (song ngữ) ───── */
   const shuf = (a) => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };

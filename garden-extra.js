@@ -232,6 +232,7 @@ module.exports = function (app, C) {
   const evForce = () => { try { return JSON.parse((one("SELECT v FROM garden_meta WHERE k='ev_force'") || {}).v || '{}') || {}; } catch (_) { return {}; } };
   const evActive = () => EV.activeOn(vnDay(), evForce());
   const evIsActive = (id) => evActive().some((e) => e.id === id);
+  app.locals.gardenEvActive = evIsActive; app.locals.gardenEvList = () => evActive().map((e) => e.id);   // EWT City dùng chung lịch sự kiện
   const evRec = (st, key) => { if (!st.q.ev || typeof st.q.ev !== 'object') st.q.ev = {}; const r = st.q.ev[key] || (st.q.ev[key] = { d: '', n: 0, own: [], m: [] }); if (!Array.isArray(r.own)) r.own = []; if (!Array.isArray(r.m)) r.m = []; return r; };
   // Ghi nhận món sự kiện học sinh vừa có (đặt / nhận nuôi / nhận từ bạn): tính vào bộ sưu tập của đợt sự kiện đang diễn ra
   function evOwn(st, itemId) {
