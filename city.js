@@ -27,14 +27,19 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const bad = (res, msg, code) => res.status(code || 400).json({ error: msg });
   const tx = (fn) => { db.exec('BEGIN'); try { const r = fn(); if (r && r.err) db.exec('ROLLBACK'); else db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
 
-  function fresh() { return { v: 1, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, inv: {}, open: 1, lm: { d: '', n: 0 }, created: Date.now() }; }
+  function fresh() { return { v: 2, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, inv: {}, open: 1, lm: { d: '', n: 0 }, created: Date.now() }; }
   function load(uid) {
     const r = one('SELECT state FROM city WHERE user_id=?', uid); let st = r ? J(r.state, null) : null;
     if (!st || typeof st !== 'object') { st = fresh(); db.prepare('INSERT OR REPLACE INTO city (user_id,state,updated_at) VALUES (?,?,?)').run(uid, JSON.stringify(st), now()); }
+    const mig = (st.v | 0) < 2; if (mig) { st.bs = Array.isArray(st.bs) ? st.bs : []; st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; C.migrateState(st); }   // bản đồ cũ 72×48 → bản đồ mới (dịch nguyên vẹn)
     st.districts = (Array.isArray(st.districts) ? st.districts : [0]).filter((d) => C.DISTRICTS[d]); if (st.districts.indexOf(0) < 0) st.districts.unshift(0);
     st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; st.bs = (Array.isArray(st.bs) ? st.bs : []).filter((b) => b && C.BY[b.k]);
     st.free = st.free || {}; st.tickets = st.tickets | 0; st.coupons = st.coupons | 0; st.q = st.q || { d: '', n: 0 }; st.chapters = st.chapters && typeof st.chapters === 'object' ? st.chapters : {}; st.lm = st.lm || { d: '', n: 0 }; st.inv = st.inv && typeof st.inv === 'object' ? st.inv : {}; st.open = st.open === 0 ? 0 : 1; st.nid = st.nid || (st.bs.reduce((m, b) => Math.max(m, b.i), 0) + 1);
-    settle(st, Date.now()); return st;
+    settle(st, Date.now());
+    // đạt cấp thành phố đủ cao → quận tự mở MIỄN PHÍ (client thấy quận mới xuất hiện sẽ tung hoa chúc mừng)
+    const lv = stats(st).level; let auto = false; C.DISTRICTS.forEach((d) => { if (st.districts.indexOf(d.id) < 0 && d.auto && lv >= d.auto) { st.districts.push(d.id); auto = true; try { notifyUser(uid, 'city_district', '🌸 Mở khoá miễn phí: ' + d.vi, 'Thành phố đạt cấp ' + lv + ' — khu đất mới đã mở cho bạn!', 'city.html'); } catch (_) { /* bỏ qua */ } } });
+    if (mig || auto) db.prepare('UPDATE city SET state=?, updated_at=? WHERE user_id=?').run(JSON.stringify(st), now(), uid);
+    return st;
   }
   const save = (uid, st) => db.prepare('UPDATE city SET state=?, updated_at=? WHERE user_id=?').run(JSON.stringify(st), now(), uid);
   // hoàn tất các công trình đã xây/nâng cấp xong
@@ -240,11 +245,16 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     return { bx, by, roads, items, cost, ok, total: pl.items.length };
   }
   function planFind(st, s, pl, role, dFilter, alt) {
-    const res = [];
-    for (let by = 1; by + 5 <= C.H; by += 6) for (let bx = 1; bx + 5 <= C.W; bx += 6) {
-      const d = C.DIST[by * C.W + bx]; if (st.districts.indexOf(d) < 0 || (dFilter >= 0 && d !== dFilter)) continue;
-      const ev = planEval(st, s, pl, bx, by, role); if (ev && ev.ok > 0) { ev.d = d; res.push(ev); }
-    }
+    const res = [], seen = new Set();
+    C.BLOCKS.forEach((b) => {
+      if (st.districts.indexOf(b.d) < 0 || (dFilter >= 0 && b.d !== dFilter) || b.w < 5 || b.h < 5) return;
+      if (pl.z !== '*' && b.z !== pl.z) return;
+      // khối lớn: đặt được nhiều mẫu, cách nhau 6 ô (5 ô mẫu + 1 ô đường)
+      for (let ay = b.y; ay + 4 <= b.y + b.h - 1; ay += 6) for (let ax = b.x; ax + 4 <= b.x + b.w - 1; ax += 6) {
+        const k = ay * C.W + ax; if (seen.has(k)) continue; seen.add(k);
+        const ev = planEval(st, s, pl, ax, ay, role); if (ev && ev.ok > 0) { ev.d = b.d; res.push(ev); }
+      }
+    });
     res.sort((a, b) => b.ok - a.ok || a.cost - b.cost || a.by - b.by || a.bx - b.bx);
     return { list: res, pick: res.length ? res[((alt % res.length) + res.length) % res.length] : null };
   }
@@ -252,14 +262,14 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   app.post('/api/city/plan/quote', requireAuth, (req, res) => {
     const { pl, d, alt } = planBody(req); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
     const st = load(req.user.id), s = stats(st), f = planFind(st, s, pl, req.user.role, d, alt);
-    if (!f.pick) return bad(res, 'Chưa có khối đất trống phù hợp (khu ' + C.zoneList(pl.z === '*' ? 'prfcseihw' : pl.z) + ') trong các quận đã mở, hoặc bạn chưa đủ cấp / chưa học chương cần thiết.');
+    if (!f.pick) return bad(res, 'Chưa có khối đất trống phù hợp (khu ' + C.zoneList(pl.z === '*' ? 'prcsfeihwbmatg' : pl.z) + ') trong các quận đã mở, hoặc bạn chưa đủ cấp / chưa học chương cần thiết.');
     const p = f.pick; res.json({ plan: pl.id, d: p.d, bx: p.bx, by: p.by, cost: p.cost, roads: p.roads.length, ok: p.ok, total: p.total, items: p.items, blocks: f.list.length, coins: coinsOf(req.user.id) });
   });
   app.post('/api/city/plan/apply', requireAuth, (req, res) => {
     const { pl, d, alt } = planBody(req), uid = req.user.id, bx = Number((req.body || {}).bx), by = Number((req.body || {}).by); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
     const out = tx(() => {
       const st = load(uid), s = stats(st); let ev;
-      if (Number.isInteger(bx) && Number.isInteger(by) && (bx - 1) % 6 === 0 && (by - 1) % 6 === 0 && bx >= 1 && by >= 1 && bx + 5 <= C.W && by + 5 <= C.H) ev = planEval(st, s, pl, bx, by, req.user.role); else { const f = planFind(st, s, pl, req.user.role, d, alt); ev = f.pick; }
+      if (Number.isInteger(bx) && Number.isInteger(by) && bx >= 1 && by >= 1 && bx + 5 <= C.W && by + 5 <= C.H) { ev = planEval(st, s, pl, bx, by, req.user.role); if (ev) ev.d = C.DIST[by * C.W + bx]; } else { const f = planFind(st, s, pl, req.user.role, d, alt); ev = f.pick; }
       if (!ev || !ev.ok) return { err: 'Không còn chỗ phù hợp cho bản quy hoạch này.' };
       if (ev.cost > 0 && !spend(uid, ev.cost)) return { err: 'Chưa đủ xu (cần ' + ev.cost + ' 🪙).' };
       ev.roads.forEach((i) => { st.roads[i] = 1; });
@@ -385,6 +395,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   function peek(uid) {
     const r = one('SELECT state FROM city WHERE user_id=?', uid); if (!r) return null; const st = J(r.state, null); if (!st || typeof st !== 'object') return null;
     st.districts = (Array.isArray(st.districts) ? st.districts : [0]).filter((d) => C.DISTRICTS[d]); if (st.districts.indexOf(0) < 0) st.districts.unshift(0);
+    if ((st.v | 0) < 2) { st.bs = Array.isArray(st.bs) ? st.bs : []; st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; C.migrateState(st); }
     st.roads = st.roads && typeof st.roads === 'object' ? st.roads : {}; st.bs = (Array.isArray(st.bs) ? st.bs : []).filter((b) => b && C.BY[b.k]); st.chapters = st.chapters || {}; st.inv = st.inv || {}; st.open = st.open === 0 ? 0 : 1; st.free = {}; st.q = {};
     settle(st, Date.now()); return st;
   }

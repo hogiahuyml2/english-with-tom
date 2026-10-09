@@ -34,9 +34,10 @@ button { font-family: inherit; cursor: pointer; }
 .rbtn { width: 46px; height: 46px; border-radius: 15px; border: 0; background: var(--glass); font-size: 20px; box-shadow: 0 4px 14px rgba(20,40,90,.25); color: var(--ink); display: grid; place-items: center; font-weight: 800; }
 .rbtn:active { transform: scale(.94); }
 .mini { position: fixed; left: 10px; top: calc(66px + var(--top)); z-index: 20; background: var(--glass); border-radius: 14px; padding: 5px; box-shadow: 0 4px 14px rgba(20,40,90,.25); }
-.mini canvas { display: block; width: 150px; height: 100px; border-radius: 10px; cursor: pointer; touch-action: none; }
+.mini canvas { display: block; width: 150px; height: 107px; border-radius: 10px; cursor: pointer; touch-action: none; }
 .mini .mt { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; margin-top: 3px; }
-.dbar { position: fixed; left: 10px; bottom: calc(86px + var(--bot)); display: flex; flex-direction: column; gap: 6px; z-index: 20; }
+.dbar { position: fixed; left: 10px; bottom: calc(86px + var(--bot)); display: flex; flex-direction: column; gap: 6px; z-index: 20; max-height: calc(100dvh - 330px); overflow-y: auto; scrollbar-width: none; padding-right: 2px; } .dbar::-webkit-scrollbar { display: none; }
+.fl { position: absolute; top: -40px; font-size: 26px; will-change: transform; animation: flfall linear forwards; } @keyframes flfall { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: 1; } 100% { transform: translate(var(--sx), calc(100vh + 80px)) rotate(var(--sr)); opacity: .9; } } @media (prefers-reduced-motion: reduce) { .fl { animation-duration: .01s; } }
 .dbtn { border: 0; background: var(--glass); border-radius: 13px; padding: 6px 10px; font-weight: 700; font-size: 12.5px; box-shadow: 0 3px 10px rgba(20,40,90,.22); text-align: left; color: var(--ink); display: flex; gap: 6px; align-items: center; }
 .dbtn.lock { opacity: .75; } .dbtn.on { outline: 2px solid var(--pri); }
 .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 8px 10px calc(10px + var(--bot)); display: flex; justify-content: center; gap: 10px; z-index: 25; pointer-events: none; }
@@ -119,7 +120,7 @@ button { font-family: inherit; cursor: pointer; }
   <a class="chip btn" href="word-hub.html" style="text-decoration:none;color:inherit" title="Về Luyện từ">🏠</a>
 </div>
 
-<div class="mini"><canvas id="mm" width="300" height="200" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
+<div class="mini"><canvas id="mm" width="336" height="240" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
 <div class="dbar" id="dbar"></div>
 <div class="side">
   <button class="rbtn" id="zIn" type="button" aria-label="Phóng to">＋</button>
@@ -160,9 +161,10 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=7"></script>
-<script src="js/city-art.js?v=3"></script>
-<script src="js/city-engine.js?v=2"></script>
+<script src="js/city-data.js?v=8"></script>
+<script src="js/city-art.js?v=4"></script>
+<script src="js/city-art2.js?v=1"></script>
+<script src="js/city-engine.js?v=4"></script>
 <script>
 (function () {
 'use strict';
@@ -202,7 +204,7 @@ function autoWeather() { var d = new Date(), k = (d.getDate() * 7 + Math.floor(d
 applySettings();
 
 /* ───── tải trạng thái ───── */
-function setState(d) { S = d.city; if (d.role) ROLE = d.role; ENG.setState(S); hud(); if (INFO != null) renderInfo(); if ($('shopS').classList.contains('on')) renderShop(); if ($('distS').classList.contains('on')) renderDist(); roadBar(); }
+function setState(d) { var prevS = S; S = d.city; if (d.role) ROLE = d.role; ENG.setState(S); if (prevS && !VIS && !prevS.visit) { var fresh = S.districts.filter(function (id) { return prevS.districts.indexOf(id) < 0; }); if (fresh.length) celebrate(fresh[0], fresh.length > 1 ? fresh.length - 1 : 0); } hud(); if (INFO != null) renderInfo(); if ($('shopS').classList.contains('on')) renderShop(); if ($('distS').classList.contains('on')) renderDist(); roadBar(); }
 function hud() {
   var s = S.stats; $('lvN').textContent = s.level; $('coinN').textContent = fmt(S.coins); $('coinN').title = String(S.coins); $('popN').textContent = fmt(s.pop);
   $('hapN').textContent = s.happy + '%'; $('hapE').textContent = s.happy >= 85 ? '😄' : s.happy >= 65 ? '😊' : s.happy >= 50 ? '😐' : '☹️';
@@ -225,7 +227,7 @@ function renderShop() {
   $('shopG').innerHTML = list.length ? '' : '<div class="empty" style="grid-column:1/-1">Không tìm thấy công trình nào.</div>';
   list.forEach(function (it) {
     var lock = S.stats.level < it.lvl, free = (S.free[it.k] | 0) > 0, d = document.createElement('div'); d.className = 'card' + (lock ? ' lock' : ''); d.setAttribute('data-k', it.k);
-    var nl = it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0, noev = it.ev && S.ev.indexOf(it.ev) < 0, inv = S.inv[it.k] | 0; d.innerHTML = (lock ? '<span class="lk">🔒 Cấp ' + it.lvl + '</span>' : noev ? '<span class="lk2">🎉 Chờ sự kiện</span>' : nl ? '<span class="lk2">📖 Cần học từ</span>' : '') + '<span class="sz">' + it.w + '×' + it.h + '</span>';
+    var noland = !it.ds.some(function (dd) { return S.districts.indexOf(dd) >= 0; }), nl = it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0, noev = it.ev && S.ev.indexOf(it.ev) < 0, inv = S.inv[it.k] | 0; d.innerHTML = (lock ? '<span class="lk">🔒 Cấp ' + it.lvl + '</span>' : noland ? '<span class="lk2">🔒 Cần mở khu đất</span>' : noev ? '<span class="lk2">🎉 Chờ sự kiện</span>' : nl ? '<span class="lk2">📖 Cần học từ</span>' : '') + '<span class="sz">' + it.w + '×' + it.h + '</span>';
     d.appendChild(A.thumb(it.k, 112, 1));
     d.insertAdjacentHTML('beforeend', '<div class="en">' + esc(it.en) + '</div><div class="vi">' + esc(it.vi) + '</div><div class="pr">' + (free ? '<span style="color:var(--good)">MIỄN PHÍ ×' + S.free[it.k] + '</span>' : COIN + ' ' + fmt(it.cost)) + (inv ? ' <span style="color:var(--good)">· 📦 kho ×' + inv + '</span>' : '') + '</div><div class="meta">' + (it.inc ? '+' + fmt(it.inc) + ' xu/giờ · ' : '') + (it.pop ? '👥 ' + it.pop + ' · ' : '') + (it.hp ? '😊 +' + it.hp : '') + ' ⏱ ' + dur(it.secs) + '</div>');
     var sb = document.createElement('button'); sb.className = 'say'; sb.type = 'button'; sb.textContent = '🔊'; sb.setAttribute('aria-label', 'Nghe phát âm'); sb.onclick = function (e) { e.stopPropagation(); say(it.en); }; d.appendChild(sb);
@@ -237,6 +239,7 @@ function dur(s) { return s >= 3600 ? Math.floor(s / 3600) + 'h' + (Math.floor(s 
 function openShop() { closeSheets(); setMode('view'); var sel = $('shopD'); if (!sel.options.length) { sel.innerHTML = '<option value="-1">Tất cả quận</option>' + C.DISTRICTS.map(function (d) { return '<option value="' + d.id + '">' + d.icon + ' ' + esc(d.vi) + '</option>'; }).join(''); } renderShop(); $('shopS').classList.add('on'); }
 function pick(it) {
   if (S.stats.level < it.lvl) return toast('🔒 Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.');
+  if (!it.ds.some(function (d) { return S.districts.indexOf(d) >= 0; })) { var dn = it.ds.map(function (d) { return C.DISTRICTS[d].vi; }); return toast('🔒 Công trình này xây ở <b>' + esc(dn.length > 3 ? dn[0] + ' …' : dn.join(' / ')) + '</b> — hãy mở khu đất đó trước nhé!', 3600); }
   if (it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0) { toast('📖 Học xong chương này để mở <b>' + esc(it.vi) + '</b> nhé!', 3200); return openLearn(it.ch); }
   if (it.ev && S.ev.indexOf(it.ev) < 0) return toast('🎉 ' + esc(it.vi) + ' chỉ có khi sự kiện đang diễn ra nhé!', 3000);
   if (!(S.free[it.k] > 0) && !(S.inv[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
@@ -308,18 +311,18 @@ async function demolish() {
 
 /* ───── quận ───── */
 function openDist(focus) { if (VIS) return; closeSheets(); setMode('view'); renderDist(); $('distS').classList.add('on'); if (typeof focus === 'number') { setTimeout(function () { var el = document.querySelector('[data-dc="' + focus + '"]'); if (el) el.scrollIntoView({ block: 'center' }); }, 40); } }
+function distArea(d) { var n = 0, i; for (i = 0; i < C.W * C.H; i++) if (C.DIST[i] === d.id && C.TERR[i] === 0 && !C.ROAD[i]) n++; return n; }
 function renderDist() {
-  $('distB').innerHTML = C.DISTRICTS.map(function (d) {
-    var open = S.districts.indexOf(d.id) >= 0, lv = S.stats.level, can = lv >= d.lvl, h = '<div class="dcard" data-dc="' + d.id + '"><div class="ico">' + d.icon + '</div><div class="tx"><b>' + esc(d.en) + '</b> <button class="x" style="width:26px;height:26px;font-size:12px" data-say="' + esc(d.en) + '" type="button">🔊</button><div class="vi">' + esc(d.vi) + '</div><p>' + esc(d.blurb) + '</p>';
-    if (open) h += '</div><button class="btn good" data-go="' + d.id + '" type="button">Đến quận</button></div>';
-    else if (d.soon) h += '</div><button class="btn" disabled type="button">Sắp ra mắt</button></div>';
-    else h += '<p style="margin-top:4px"><b>' + (can ? '✅' : '🔒') + ' Cần thành phố cấp ' + d.lvl + '</b> · ' + COIN + ' ' + fmt(d.cost) + '</p></div><div style="display:flex;flex-direction:column;gap:6px"><button class="btn pri" data-un="' + d.id + '" type="button"' + (can ? '' : ' disabled') + '>Mở quận</button>' + (S.coupons ? '<button class="btn warn" data-un="' + d.id + '" data-cp="1" type="button"' + (can ? '' : ' disabled') + '>🏷️ −40%</button>' : '') + '</div></div>';
+  $('distB').innerHTML = '<p class="sub">Khu đất bị khoá hiện <b>🔒 mờ</b> trên bản đồ. Có hai cách mở: <b>trả xu</b> (khi đủ cấp thành phố tối thiểu) hoặc <b>lên đủ cấp</b> để được mở <b>miễn phí</b>.</p>' + C.DISTRICTS.map(function (d) {
+    var open = S.districts.indexOf(d.id) >= 0, lv = S.stats.level, can = lv >= d.lvl, area = distArea(d), h = '<div class="dcard" data-dc="' + d.id + '"><div class="ico">' + d.icon + '</div><div class="tx"><b>' + esc(d.en) + '</b> <button class="x" style="width:26px;height:26px;font-size:12px" data-say="' + esc(d.en) + '" type="button">🔊</button><div class="vi">' + esc(d.vi) + ' · ' + fmt(area) + ' ô đất</div><p>' + esc(d.blurb) + '</p>';
+    if (open) h += '</div><button class="btn good" data-go="' + d.id + '" type="button">Đến khu</button></div>';
+    else h += '<p style="margin-top:4px"><b>' + (can ? '✅' : '🔒') + ' Mua từ cấp ' + d.lvl + '</b> · ' + COIN + ' ' + fmt(d.cost) + '<br><span style="color:var(--good);font-weight:800">🎁 Miễn phí khi thành phố đạt cấp ' + d.auto + '</span> <span class="sub">(bạn đang cấp ' + lv + ')</span></p></div><div style="display:flex;flex-direction:column;gap:6px"><button class="btn pri" data-un="' + d.id + '" type="button"' + (can ? '' : ' disabled') + '>Mở bằng xu</button>' + (S.coupons ? '<button class="btn warn" data-un="' + d.id + '" data-cp="1" type="button"' + (can ? '' : ' disabled') + '>🏷️ Dùng phiếu −40%</button>' : '') + '<button class="btn" data-go="' + d.id + '" type="button">👁️ Xem</button></div></div>';
     return h;
   }).join('').replace(/🪙/g, COIN);
 }
 function unlock(d, coupon) {
   var dd = C.DISTRICTS[d], cost = coupon ? Math.round(dd.cost * .6) : dd.cost;
-  confirmBox('Mở ' + dd.vi + '?', 'Giá <b>' + fmt(cost) + ' xu</b>' + (coupon ? ' (đã dùng phiếu giảm giá −40%)' : '') + '. Bạn đang có ' + fmt(S.coins) + ' xu.', 'Mở quận').then(function (ok) { if (!ok) return; api('/api/city/district/unlock', { d: d, coupon: !!coupon }).then(function (r) { setState(r); toast('🎉 Đã mở ' + dd.vi + '!', 2600); ENG.focusDistrict(d); $('distS').classList.remove('on'); }).catch(function (e) { toast(e.message, 3600); }); });
+  confirmBox('Mở ' + dd.vi + '?', 'Giá <b>' + fmt(cost) + ' xu</b>' + (coupon ? ' (đã dùng phiếu giảm giá −40%)' : '') + '. Bạn đang có ' + fmt(S.coins) + ' xu.', 'Mở quận').then(function (ok) { if (!ok) return; api('/api/city/district/unlock', { d: d, coupon: !!coupon }).then(function (r) { setState(r);  $('distS').classList.remove('on'); }).catch(function (e) { toast(e.message, 3600); }); });
 }
 
 /* ───── kiếm xu bằng câu hỏi ───── */
@@ -473,9 +476,9 @@ function planQuote() {
 }
 
 /* ───── nhạc nền theo quận (dùng bộ phát nhạc của Garden) ───── */
-var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura'], lastScene = '';
+var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna'], lastScene = '';
 function sndScene() {
-  if (!window.EWTSound || !ENG || !S) return; var c = ENG.cam, t = ENG.screenToTile(ENG.cw / 2, ENG.ch / 2), x = Math.max(0, Math.min(C.W - 1, t[0])), y = Math.max(0, Math.min(C.H - 1, t[1])), d = C.DIST[y * C.W + x], dd = DSCENE[d] ? d : 0;
+  if (!window.EWTSound || !ENG || !S) return; var c = ENG.cam, t = ENG.screenToTile(ENG.cw / 2, ENG.ch / 2), x = Math.max(0, Math.min(C.W - 1, t[0])), y = Math.max(0, Math.min(C.H - 1, t[1])), d = C.DIST[y * C.W + x], dd = DSCENE[d] ? d : (sndScene.last || 0); sndScene.last = dd;
   var night = ENG.nightK() > .5, evs = S.ev || [], key = dd + '|' + night + '|' + evs.join(','); if (key === lastScene) return; lastScene = key;
   EWTSound.scene(DSCENE[dd], { night: night, events: evs }); var st = EWTSound.state(); $('sndB').title = st.on ? '🎶 ' + C.DISTRICTS[dd].vi + ': ' + EWTSound.describe(DSCENE[dd]) : 'Bật nhạc nền';
 }
@@ -484,6 +487,14 @@ if (window.EWTSound) { EWTSound.init(); $('sndB').onclick = function () { EWTSou
 function burst(list, n, cx, cy) {
   var L = $('fxLayer'); if (!L) return; cx = cx == null ? innerWidth / 2 : cx; cy = cy == null ? innerHeight * .55 : cy; n = n || 14;
   for (var i = 0; i < n; i++) { var el = document.createElement('div'), a = Math.random() * Math.PI * 2, r = 70 + Math.random() * 130; el.className = 'pt'; el.textContent = list[i % list.length]; el.style.left = cx + 'px'; el.style.top = cy + 'px'; el.style.setProperty('--dx', Math.cos(a) * r + 'px'); el.style.setProperty('--dy', (Math.sin(a) * r - 40) + 'px'); el.style.setProperty('--rot', (Math.random() * 90 - 45) + 'deg'); el.style.animationDelay = Math.random() * .15 + 's'; L.appendChild(el); (function (e) { setTimeout(function () { e.remove(); }, 1800); })(el); }
+}
+// 🌸 chúc mừng mở khoá khu đất: mưa hoa + cánh hoa bay trên bản đồ + âm thanh
+function celebrate(d, more) {
+  var dd = C.DISTRICTS[d]; if (!dd) return; try { ENG.celebrate(d); } catch (e) {}
+  var L = $('fxLayer'), em = ['🌸', '🌺', '🌼', '🌷', '💐', '🌻', '🎉', '✨'], i;
+  for (i = 0; i < 46; i++) { (function (i) { setTimeout(function () { var el = document.createElement('div'); el.className = 'fl'; el.textContent = em[i % em.length]; el.style.left = (Math.random() * 100) + '%'; el.style.setProperty('--sx', (Math.random() * 160 - 80) + 'px'); el.style.setProperty('--sr', (Math.random() * 720 - 360) + 'deg'); el.style.animationDuration = (2.6 + Math.random() * 2.4) + 's'; el.style.fontSize = (20 + Math.random() * 18) + 'px'; L.appendChild(el); setTimeout(function () { el.remove(); }, 5500); }, i * 55); })(i); }
+  SND('levelup'); setTimeout(function () { SND('reward'); }, 500);
+  toast('🌸 <b>Mở khoá khu đất mới: ' + esc(dd.vi) + '!</b>' + (more ? ' (và ' + more + ' khu khác)' : ''), 5200);
 }
 function SND(n) { try { if (window.EWTSound) EWTSound.sfx(n); } catch (e) {} }
 
