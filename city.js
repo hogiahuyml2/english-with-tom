@@ -317,21 +317,23 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     reply(res, out.st, uid, { cost: out.cost });
   });
   // Tính một bản quy hoạch đặt vào khối (bx,by): trả danh sách món hợp lệ + chi phí (dùng kho/phiếu miễn phí trước)
-  function planEval(st, s, pl, bx, by, role) {
+  function planEval(st, s, pl, bx, by, role, unlock) {
     const tmpRoads = Object.assign({}, st.roads), occ = C.buildOcc(st.bs), stub = { districts: st.districts, roads: tmpRoads }, roads = [], items = [];
     for (const r of pl.roads) { const x = bx + r[0], y = by + r[1], i = y * C.W + x; if (C.ROAD[i] || tmpRoads[i]) continue; const ck = C.canRoad(stub, x, y, occ); if (!ck.ok) return null; tmpRoads[i] = 1; roads.push(i); }
     const inv = Object.assign({}, st.inv), fr = Object.assign({}, st.free); let cost = roads.length * R.roadCost, ok = 0;
     for (const e of pl.items) {
-      const it = C.BY[e[0]], x = bx + e[1], y = by + e[2], gate = itemGate(st, s, it, role); let why = gate;
+      const it = C.BY[e[0]], x = bx + e[1], y = by + e[2]; let why = itemGate(st, s, it, role), mult = 1;
+      // món chưa mở khoá (thiếu cấp / chưa học chương) vẫn mua được trong quy hoạch nếu trả GẤP ĐÔI; món sự kiện thì không
+      if (why && unlock) { const evBlock = it.ev && !evOn(it.ev), lock = s.level < it.lvl || (it.ch && !st.chapters[it.ch] && role !== 'admin'); if (!evBlock && lock) { why = ''; mult = 2; } }
       if (!why) { const ck = C.canPlace(stub, it, x, y, occ); if (!ck.ok) why = ck.err; }
       if (why) { items.push({ k: it.k, x, y, ok: false, why }); continue; }
       for (let a = 0; a < it.h; a++) for (let b2 = 0; b2 < it.w; b2++) occ[(y + a) * C.W + x + b2] = 9999;
-      let src = 'xu'; if (fr[it.k] > 0) { fr[it.k]--; src = 'free'; } else if (inv[it.k] > 0) { inv[it.k]--; src = 'kho'; } else cost += it.cost;
-      items.push({ k: it.k, x, y, ok: true, src }); ok++;
+      let src = 'xu'; if (fr[it.k] > 0) { fr[it.k]--; src = 'free'; } else if (inv[it.k] > 0) { inv[it.k]--; src = 'kho'; } else cost += it.cost * mult;
+      items.push({ k: it.k, x, y, ok: true, src, x2: mult === 2 && src === 'xu' }); ok++;
     }
     return { bx, by, roads, items, cost, ok, total: pl.items.length };
   }
-  function planFind(st, s, pl, role, dFilter, alt) {
+  function planFind(st, s, pl, role, dFilter, alt, unlock) {
     const res = [], seen = new Set();
     C.BLOCKS.forEach((b) => {
       const pw = pl.w || 5, ph = pl.h || 5;
@@ -340,24 +342,24 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
       // khối lớn: đặt được nhiều mẫu, cách nhau 1 ô đường
       for (let ay = b.y; ay + ph - 1 <= b.y + b.h - 1; ay += ph + 1) for (let ax = b.x; ax + pw - 1 <= b.x + b.w - 1; ax += pw + 1) {
         const k = ay * C.W + ax; if (seen.has(k)) continue; seen.add(k);
-        const ev = planEval(st, s, pl, ax, ay, role); if (ev && ev.ok > 0) { ev.d = b.d; res.push(ev); }
+        const ev = planEval(st, s, pl, ax, ay, role, unlock); if (ev && ev.ok > 0) { ev.d = b.d; res.push(ev); }
       }
     });
     res.sort((a, b) => b.ok - a.ok || a.cost - b.cost || a.by - b.by || a.bx - b.bx);
     return { list: res, pick: res.length ? res[((alt % res.length) + res.length) % res.length] : null };
   }
-  const planBody = (req) => { const b = req.body || {}; return { pl: C.PLAN_BY[String(b.plan)], d: b.d == null || b.d === '' ? -1 : Number(b.d), alt: Math.floor(Number(b.alt) || 0) }; };
+  const planBody = (req) => { const b = req.body || {}; return { pl: C.PLAN_BY[String(b.plan)], d: b.d == null || b.d === '' ? -1 : Number(b.d), alt: Math.floor(Number(b.alt) || 0), unlock: !!b.unlock }; };
   app.post('/api/city/plan/quote', requireAuth, (req, res) => {
-    const { pl, d, alt } = planBody(req); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
-    const st = load(req.user.id), s = stats(st), f = planFind(st, s, pl, req.user.role, d, alt);
+    const { pl, d, alt, unlock } = planBody(req); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
+    const st = load(req.user.id), s = stats(st), f = planFind(st, s, pl, req.user.role, d, alt, unlock);
     if (!f.pick) return bad(res, 'Chưa có khối đất trống phù hợp (khu ' + C.zoneList(pl.z === '*' ? 'prcsfeihwbmatg' : pl.z) + ') trong các quận đã mở, hoặc bạn chưa đủ cấp / chưa học chương cần thiết.');
-    const p = f.pick; res.json({ plan: pl.id, d: p.d, bx: p.bx, by: p.by, cost: p.cost, roads: p.roads.length, ok: p.ok, total: p.total, items: p.items, blocks: f.list.length, coins: coinsOf(req.user.id) });
+    const p = f.pick; res.json({ plan: pl.id, d: p.d, bx: p.bx, by: p.by, cost: p.cost, roads: p.roads.length, ok: p.ok, total: p.total, items: p.items, x2: p.items.filter((i) => i.x2).length, blocks: f.list.length, coins: coinsOf(req.user.id) });
   });
   app.post('/api/city/plan/apply', requireAuth, (req, res) => {
-    const { pl, d, alt } = planBody(req), uid = req.user.id, bx = Number((req.body || {}).bx), by = Number((req.body || {}).by); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
+    const { pl, d, alt, unlock } = planBody(req), uid = req.user.id, bx = Number((req.body || {}).bx), by = Number((req.body || {}).by); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
     const out = tx(() => {
       const st = load(uid), s = stats(st); let ev;
-      if (Number.isInteger(bx) && Number.isInteger(by) && bx >= 1 && by >= 1 && bx + (pl.w || 5) <= C.W && by + (pl.h || 5) <= C.H) { ev = planEval(st, s, pl, bx, by, req.user.role); if (ev) ev.d = C.DIST[by * C.W + bx]; } else { const f = planFind(st, s, pl, req.user.role, d, alt); ev = f.pick; }
+      if (Number.isInteger(bx) && Number.isInteger(by) && bx >= 1 && by >= 1 && bx + (pl.w || 5) <= C.W && by + (pl.h || 5) <= C.H) { ev = planEval(st, s, pl, bx, by, req.user.role, unlock); if (ev) ev.d = C.DIST[by * C.W + bx]; } else { const f = planFind(st, s, pl, req.user.role, d, alt, unlock); ev = f.pick; }
       if (!ev || !ev.ok) return { err: 'Không còn chỗ phù hợp cho bản quy hoạch này.' };
       if (ev.cost > 0 && !spend(uid, ev.cost)) return { err: 'Chưa đủ xu (cần ' + ev.cost + ' 🪙).' };
       ev.roads.forEach((i) => { st.roads[i] = 1; });

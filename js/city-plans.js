@@ -13,6 +13,8 @@
     quad: { vi: 'Bốn góc quanh quảng trường', desc: 'Bốn công trình ở bốn góc, hai con đường cắt nhau thành chữ thập, giữa là điểm nhấn.' },
     big: { vi: 'Một công trình lớn', desc: 'Một công trình lớn làm điểm nhấn ở góc, phía bên là hàng cây, đèn; phía dưới là các cửa hàng nhỏ.' },
     row: { vi: 'Dãy cửa hàng nhỏ', desc: 'Đường ngang chạy ở giữa, hai bên là dãy công trình nhỏ xen cây xanh và hoa — phố nhỏ nhộn nhịp.' },
+    mstreet: { vi: 'Phố nhỏ (5×3)', desc: 'Một con đường ngắn, hai dãy công trình nhỏ đối diện nhau — gọn, rẻ, hợp khi mới bắt đầu.' },
+    mduo: { vi: 'Cặp công trình (5×3)', desc: 'Hai công trình 2×2 đứng cạnh nhau bên một con đường ngắn, ở giữa có cây hoặc hoa.' },
     ring: { vi: 'Vòng quanh điểm nhấn', desc: 'Vòng đường nhỏ ôm lấy điểm nhấn ở giữa; công trình, hoa và cây xếp quanh ngoài như một quảng trường.' }
   };
 
@@ -161,6 +163,129 @@
     ]
   };
 
+
+  /* ───── thêm nhiều mẫu: nhỏ (5×3), vừa (5×5), lớn (công trình lớn 3×3 trở lên / 11×11) ───── */
+  var EXTRA = {
+    r: [
+      ['mstreet', '🏠', 'Phố nhà nhỏ (mini)', 'Mini Street', 'Hai dãy nhà nhỏ đối diện nhau qua con đường ngắn — rẻ, hợp khi mới bắt đầu.', { s: ['cottage', 'onefloor', 'townhouse'] }],
+      ['mstreet', '🛖', 'Dãy nhà gỗ mini', 'Mini Wooden Row', 'Nhà gỗ, nhà sàn và nhà Alps nhỏ xinh.', { s: ['logcabin', 'stilthouse', 'chalet'] }],
+      ['mduo', '🏡', 'Cặp biệt thự nhỏ', 'Villa Pair', 'Hai biệt thự đứng cạnh nhau, cây xanh ở giữa.', { a: ['modernvilla', 'frenchvilla'] }],
+      ['mduo', '🌊', 'Cặp nhà ven hồ', 'Lakeside Pair', 'Hai ngôi nhà ven hồ yên tĩnh.', { a: ['lakehouse', 'medvilla'], t: ['willow'] }],
+      ['twin', '🌻', 'Phố nhà vườn', 'Garden Homes', 'Nhà trang trại, biệt thự và vườn hoa hướng dương.', { a: ['redfarmhouse', 'medvilla', 'redfarmhouse', 'frenchvilla'], t: ['fruit', 'oak'], f: ['sunflower', 'rose'] }],
+      ['quad', '🏙️', 'Quảng trường chung cư cao tầng', 'Tall Apartments Square', 'Bốn toà chung cư cao quanh quảng trường.', { a: ['towerblock', 'midrise', 'towerblock', 'midrise'] }],
+      ['big', '🌆', 'Tháp kính hiện đại', 'Glass Condo Tower', 'Cao ốc căn hộ kính có bãi đáp trực thăng, quán nhỏ dưới chân.', { l: ['glasscondo'], s: ['minimart', 'flowershop', 'pharmacy', 'noodleshop'] }],
+      ['big', '🌿', 'Tháp bậc thang xanh', 'Green Terrace Tower', 'Tháp bậc thang phủ đầy cây xanh.', { l: ['terracetower'], s: ['flowershop', 'minimart', 'cafe'] }],
+      ['big', '☁️', 'Toà nhà ở chọc trời', 'Sky Residence', 'Căn hộ cao cấp ở trên mây.', { l: ['skyresi'], s: ['cafe', 'bakery', 'minimart'] }],
+      ['big', '🌱', 'Tháp sinh thái', 'Eco Tower', 'Mỗi ban công là một khu vườn nhỏ.', { l: ['ecotower'], s: ['flowershop', 'cafe'] }],
+      ['big', '👑', 'Tháp căn hộ hạng sang', 'Luxury Tower', 'Ban công vàng và vương miện trên đỉnh.', { l: ['luxtower'], s: ['cafe', 'bakery'] }],
+      ['big', '🌉', 'Chung cư song tháp', 'Twin Apartments', 'Hai tháp nối nhau bằng cầu trên cao.', { l: ['twinapt'], s: ['minimart', 'cafe'] }],
+      ['big', '🏘️', 'Dãy nhà liên kế', 'Terraced Row', 'Ba căn liên kế nhiều màu, nhà nhỏ bên dưới.', { l: ['rowhouses'], s: ['cottage', 'townhouse', 'onefloor'] }],
+      ['ring', '🌸', 'Làng hoa quanh đài phun', 'Flower Village', 'Những ngôi nhà nhỏ giữa vườn hoa quanh đài phun nước.', { s: ['cottage', 'townhouse', 'japhouse', 'onefloor'], c: 'fountain', f: ['tulip', 'rose', 'hydrangea'] }],
+      ['big', '🏰', 'Dinh thự cổ điển', 'Classic Mansion', 'Dinh thự lớn cùng hàng nhà nhỏ phía trước.', { l: ['mansion'], s: ['japhouse', 'chalet', 'logcabin'] }]
+    ],
+    c: [
+      ['mstreet', '☕', 'Phố cà phê nhỏ', 'Mini Cafe Street', 'Cà phê, tiệm bánh và quầy báo hai bên.', { s: ['cafe', 'bakery', 'kiosk'] }],
+      ['mstreet', '💊', 'Phố tiện lợi mini', 'Mini Mart Street', 'Cửa hàng tiện lợi, hiệu thuốc, tiệm hoa, quán phở.', { s: ['minimart', 'pharmacy', 'flowershop', 'noodleshop'] }],
+      ['mduo', '🏢', 'Cặp văn phòng', 'Office Pair', 'Hai toà văn phòng kính đứng cạnh nhau.', { a: ['office', 'glassoffice'] }],
+      ['mduo', '🛒', 'Cặp siêu thị', 'Market Pair', 'Siêu thị và chợ lớn đối diện.', { a: ['supermarket', 'market'] }],
+      ['mduo', '🎬', 'Cặp giải trí', 'Fun Pair', 'Rạp phim và sân bowling.', { a: ['cinema2', 'bowling'] }],
+      ['big', '🌀', 'Tháp xoắn ốc', 'Spiral Tower', 'Tháp xoắn ốc nổi bật giữa quảng trường.', { l: ['spiraltower'], s: ['cafe', 'bakery', 'kiosk'] }],
+      ['big', '🏙️', 'Trụ sở tập đoàn', 'Company HQ', 'Toà trụ sở kính tối có bãi đáp trực thăng.', { l: ['hqtower'], s: ['cafe', 'minimart'] }],
+      ['big', '💻', 'Trụ sở công nghệ', 'Tech HQ', 'Toà nhà xanh ngọc có vòng sáng trên đỉnh.', { l: ['techhq'], s: ['cafe', 'bakery'] }],
+      ['big', '🏨', 'Khách sạn chọc trời', 'Skyline Hotel', 'Khách sạn cao với hàng trăm phòng.', { l: ['hotelskyline'], s: ['cafe', 'bakery', 'minimart'] }],
+      ['big', '🛍️', 'Cửa hàng bách hoá', 'Department Store', 'Bách hoá nhiều tầng, quán nhỏ bên dưới.', { l: ['department'], s: ['boutique', 'cafe', 'bakery'] }],
+      ['big', '🎪', 'Trung tâm hội nghị', 'Convention Centre', 'Mái vòm kính cho các buổi triển lãm.', { l: ['conventioncenter'], s: ['cafe', 'minimart'] }],
+      ['big', '🌉', 'Văn phòng song tháp', 'Twin Offices', 'Hai tháp văn phòng nối nhau bằng cầu.', { l: ['twinoffice'], s: ['cafe', 'bakery'] }],
+      ['big', '🌃', 'Trung tâm tài chính', 'Finance Centre', 'Ba toà tháp cao thấp khác nhau.', { l: ['financecentre'] }],
+      ['big', '🌐', 'Trung tâm thương mại thế giới', 'World Trade Centre', 'Hai siêu tháp nối nhau bằng cầu trời.', { l: ['worldtrade'] }],
+      ['big', '🗼', 'Tháp kim quan sát', 'Needle Tower', 'Tháp kim có sàn ngắm cảnh hình đĩa.', { l: ['needletower'], s: ['cafe', 'kiosk'] }],
+      ['big', '🔺', 'Khách sạn kim tự tháp', 'Pyramid Hotel', 'Ngủ trong kim tự tháp kính.', { l: ['pyramidhotel'], s: ['cafe', 'bakery'] }]
+    ],
+    s: [
+      ['mduo', '🏥', 'Cặp y tế mini', 'Mini Health', 'Phòng khám và nhà văn hoá.', { a: ['clinic', 'commcenter'] }],
+      ['mduo', '🚒', 'Cặp cứu hộ', 'Rescue Pair', 'Trạm cứu hoả và đồn cảnh sát.', { a: ['firestation', 'police'] }],
+      ['big', '🏥', 'Bệnh viện cao tầng', 'Hospital Tower', 'Bệnh viện cao có bãi đáp trực thăng.', { l: ['hospitaltower'] }],
+      ['big', '🏙️', 'Toà thị chính cao tầng', 'City Hall Tower', 'Toà nhà cao có đồng hồ và mái vòm.', { l: ['cityhalltower'] }],
+      ['big', '📡', 'Tháp truyền hình', 'TV Tower', 'Tháp truyền hình cao vút.', { l: ['tvtower'] }],
+      ['big', '💧', 'Nhà máy nước', 'Water Plant', 'Bể lọc và tháp nước cho cả thành phố.', { l: ['waterplant'] }]
+    ],
+    p: [
+      ['mduo', '🎠', 'Cặp công viên nhỏ', 'Park Pair', 'Sân chơi và khu dã ngoại.', { a: ['playground', 'picnicarea'] }],
+      ['mduo', '🐕', 'Cặp thú cưng', 'Pets Pair', 'Công viên chó và vườn thú nhỏ.', { a: ['dogpark', 'petting'] }],
+      ['mstreet', '🌷', 'Lối dạo hoa mini', 'Mini Flower Walk', 'Hai hàng hoa và cây quanh lối đi ngắn.', { f: ['tulip', 'rose', 'daisy', 'lavender'], t: ['cherry', 'oak'] }],
+      ['big', '🏐', 'Sân bóng đá công viên', 'Park Football', 'Sân bóng cỏ xanh giữa công viên.', { l: ['football'] }]
+    ],
+    f: [
+      ['mduo', '🎳', 'Cặp bowling & karaoke', 'Bowling Pair', 'Hai điểm vui chơi nhộn nhịp.', { a: ['bowling', 'karaoke'] }],
+      ['mduo', '🎪', 'Cặp xiếc & xe điện', 'Circus Pair', 'Rạp xiếc và xe điện đụng.', { a: ['circus', 'bumpercars'] }],
+      ['mstreet', '🍦', 'Phố kem mini', 'Mini Ice Cream Street', 'Quầy kem và nhà bãi biển sặc sỡ.', { s: ['icecream', 'beachhut'] }],
+      ['big', '👻', 'Nhà ma', 'Haunted House Block', 'Ngôi nhà ma rùng rợn.', { l: ['hauntedhouse'] }]
+    ],
+    e: [
+      ['mduo', '🧒', 'Cặp trường nhỏ', 'School Pair', 'Mầm non và trung tâm ngoại ngữ.', { a: ['kindergarten', 'languagecenter'] }],
+      ['mduo', '🔬', 'Cặp thí nghiệm', 'Lab Pair', 'Phòng thí nghiệm và phòng công nghệ.', { a: ['lab', 'techlab'] }],
+      ['mstreet', '📖', 'Phố sách mini', 'Mini Book Street', 'Hai dãy hiệu sách nhỏ.', { s: ['bookstore'] }],
+      ['big', '🏙️', 'Đại học cao tầng', 'University Tower', 'Giảng đường xếp tầng trong toà tháp gạch đỏ.', { l: ['uniskytower'] }],
+      ['big', '🔭', 'Tháp nghiên cứu', 'Research Tower', 'Các nhà khoa học làm việc trong tháp kính.', { l: ['researchtower'] }]
+    ],
+    i: [
+      ['mduo', '🏭', 'Cặp kho hàng', 'Warehouse Pair', 'Kho hàng và trạm tái chế.', { a: ['warehouse', 'recyclecenter'] }],
+      ['mduo', '⚙️', 'Cặp xưởng tái chế', 'Recycling Pair', 'Tái chế và trung tâm dữ liệu.', { a: ['recycling', 'datacenter'] }],
+      ['mstreet', '🔧', 'Xưởng nhỏ mini', 'Mini Workshops', 'Tháp nước và xưởng nhỏ.', { s: ['watertower'] }],
+      ['big', '🧵', 'Nhà máy dệt', 'Textile Mill', 'Máy dệt chạy suốt ngày.', { l: ['textilemill'] }],
+      ['big', '🍹', 'Nhà máy nước giải khát', 'Brewery', 'Các bồn lớn làm đồ uống có ga.', { l: ['brewery'] }],
+      ['big', '🧱', 'Nhà máy xi măng', 'Cement Plant', 'Xi măng cho đường và nhà cao tầng.', { l: ['cementplant'] }],
+      ['big', '🛢️', 'Nhà máy lọc dầu', 'Oil Refinery', 'Tháp cao và ngọn lửa trên đỉnh.', { l: ['refinery'] }],
+      ['big', '♨️', 'Tháp làm mát', 'Cooling Towers', 'Hai tháp làm mát khổng lồ nhả hơi trắng.', { l: ['coolingtowers'] }],
+      ['big', '🏗️', 'Nhà máy nhiều tầng', 'Multi-storey Factory', 'Nhà máy cao với bồn và ống khói.', { l: ['skyfactory'] }],
+      ['big', '☀️', 'Trang trại điện mặt trời', 'Solar Farm', 'Hàng tấm pin đón nắng.', { l: ['solarfarm'] }],
+      ['big', '🌬️', 'Cánh đồng điện gió', 'Wind Farm', 'Các cánh quạt khổng lồ quay trong gió.', { l: ['windturbines'] }],
+      ['quad', '🏙️', 'Khu công nghiệp cao', 'Tall Industry Square', 'Silo, tháp hoá chất và trung tâm dữ liệu.', { a: ['silotower', 'chemtower', 'datacenter', 'silotower'] }]
+    ],
+    h: [
+      ['mduo', '⚓', 'Cặp kho cảng', 'Dock Pair', 'Kho hàng và bãi container.', { a: ['warehouse', 'containers'] }],
+      ['mduo', '🏗️', 'Cặp cần cẩu', 'Crane Pair', 'Cần cẩu và container.', { a: ['crane', 'containers'] }],
+      ['mstreet', '🐟', 'Hải đăng mini', 'Mini Lighthouses', 'Các ngọn hải đăng nhỏ bên bến.', { s: ['lighthouse'] }]
+    ],
+    w: [
+      ['mduo', '🏯', 'Cặp chùa & cối xay', 'Pagoda & Windmill', 'Hai công trình nổi tiếng đứng cạnh nhau.', { a: ['pagoda', 'windmill'] }],
+      ['mstreet', '🍣', 'Phố sushi mini', 'Mini Sushi Street', 'Sushi, pizza, quán trà hai bên.', { s: ['sushi', 'pizzeria', 'teahouse'] }],
+      ['big', '🗿', 'Vòng đá cổ', 'Stone Circle', 'Những phiến đá lớn xếp thành vòng.', { l: ['stonehenge'] }],
+      ['big', '🦁', 'Tượng nhân sư', 'Sphinx Block', 'Sư tử mặt người nhìn xa xăm.', { l: ['sphinx'] }],
+      ['big', '🗿', 'Tượng Moai', 'Moai Block', 'Hai tượng đầu đá khổng lồ.', { l: ['moai'] }],
+      ['big', '🗼', 'Tháp Sky Pod', 'Sky Pod Block', 'Tháp cao có nhà hàng trên trời.', { l: ['skypod'] }]
+    ],
+    b: [
+      ['mstreet', '🏖️', 'Quầy biển mini', 'Mini Beach Stalls', 'Quầy bar, lướt sóng và lưu niệm.', { s: ['beachbar', 'surfshop', 'souvenir'] }],
+      ['mduo', '🦞', 'Cặp nhà hàng biển', 'Seafood Pair', 'Nhà hàng hải sản và spa.', { a: ['seafood', 'spa'] }],
+      ['mduo', '🏝️', 'Cặp biệt thự biển', 'Beach Villa Pair', 'Hai biệt thự sát bờ biển.', { a: ['beachvilla', 'beachhouse'] }],
+      ['big', '🏨', 'Khách sạn nghỉ dưỡng lớn', 'Grand Resort Hotel', 'Khu nghỉ dưỡng lớn có hồ bơi.', { l: ['grandresort'] }]
+    ],
+    m: [
+      ['mstreet', '🛖', 'Dãy nhà gỗ mini', 'Mini Cabins', 'Nhà gỗ, nhà Alps và quán cà phê núi.', { s: ['cabin', 'chalet', 'alpinecafe'] }],
+      ['mduo', '♨️', 'Cặp trại & suối nước nóng', 'Camp & Spa', 'Khu cắm trại và suối nước nóng.', { a: ['campsite', 'hotspring'] }],
+      ['mduo', '🚡', 'Cáp treo đôi', 'Cable Duo', 'Hai trạm cáp treo.', { a: ['cablecar', 'cablecar'] }]
+    ],
+    a: [
+      ['mstreet', '🐔', 'Chuồng gà mini', 'Mini Henhouses', 'Chuồng gà, cuộn rơm và kho thóc.', { s: ['henhouse', 'hayroll', 'silo'] }],
+      ['mduo', '🏠', 'Cặp nhà nông', 'Farm Pair', 'Hai ngôi nhà trang trại.', { a: ['farmhouse', 'redfarmhouse'] }],
+      ['mduo', '🌱', 'Cặp nhà kính & ao cá', 'Greenhouse Pair', 'Nhà kính trồng rau và ao cá.', { a: ['greenhouse', 'fishpond'] }],
+      ['big', '☀️', 'Điện mặt trời nông trại', 'Farm Solar', 'Tấm pin trên đồng.', { l: ['solarfarm'] }],
+      ['big', '🌬️', 'Điện gió nông trại', 'Farm Wind', 'Tua-bin gió trên cánh đồng.', { l: ['windturbines'] }]
+    ],
+    t: [
+      ['mstreet', '🚕', 'Điểm taxi mini', 'Mini Taxi Rank', 'Hai hàng điểm đón taxi.', { s: ['taxistand'] }],
+      ['mduo', '🚀', 'Bệ phóng tên lửa', 'Rocket Pad', 'Tháp phóng tên lửa và bãi trực thăng.', { a: ['rocketlab', 'helipad'] }]
+    ],
+    g: [
+      ['mduo', '🎾', 'Cặp sân tennis', 'Tennis Pair', 'Hai sân tennis.', { a: ['tenniscourt', 'tenniscourt'] }],
+      ['mduo', '🏋️', 'Cặp phòng tập', 'Gym Pair', 'Phòng tập và sân trượt ván.', { a: ['gym', 'skatepark'] }],
+      ['mduo', '🚁', 'Bãi trực thăng thể thao', 'Sports Helipad', 'Phòng tập và bãi đáp trực thăng.', { a: ['helipad', 'gym'] }],
+      ['mstreet', '👟', 'Phố thể thao mini', 'Mini Sports Street', 'Hai dãy cửa hàng đồ thể thao.', { s: ['sportsshop'] }]
+    ]
+  };
+  Object.keys(EXTRA).forEach(function (z) { STY[z] = (STY[z] || []).concat(EXTRA[z]); });
+
   /* ───── bộ dựng bố cục ───── */
   function builder(z, roles) {
     var D = DECO[z] || DECO.r, st = {}, key;
@@ -192,12 +317,19 @@
       if (lh < 4) for (i = 0; i < lw; i++) road(i, lh);
       put(k1, 0, 0);
       if (lw < 4) for (j = 0; j < H; j++) { deco(lw + 1, j, j % 2 ? 'tf' : 'pb'); }
-      for (j = lh + 1; j < H; j++) for (i = 0; i < lw; i++) small(i, j);
+      for (j = lh + 1; j < H; j++) { if (j !== lh + 1 && j !== H - 1) continue; for (i = 0; i < lw; i++) small(i, j); }   // chỉ hàng sát đường ngang hoặc sát rìa khối mới giáp đường
       if (lh >= 4 && lw < 4) { /* khối cao: phần dưới đã đầy */ }
       if (lh + 1 >= H) { /* không còn chỗ phía dưới */ }
     } else if (arch === 'row') {
       for (i = 0; i < 5; i++) road(i, 2);
       for (i = 0; i < 5; i++) { small(i, 1); deco(i, 0, i % 2 ? 'ft' : 'tp'); small(i, 3); deco(i, 4, i % 2 ? 'pt' : 'bf'); }
+    } else if (arch === 'mstreet') {
+      for (i = 0; i < 5; i++) road(i, 1);
+      for (i = 0; i < 5; i++) { small(i, 0); small(i, 2); }
+    } else if (arch === 'mduo') {
+      for (i = 0; i < 5; i++) road(i, 2);
+      [0, 3].forEach(function (sx) { var k = pick('a'); if (k) put(k, sx, 0); else { small(sx, 0); small(sx + 1, 0); small(sx, 1); small(sx + 1, 1); } });
+      put(pick('f') || pick('t'), 2, 1);
     } else if (arch === 'ring') {
       for (i = 1; i <= 3; i++) for (j = 1; j <= 3; j++) if (!(i === 2 && j === 2)) road(i, j);
       if (st.c) put(st.c, 2, 2);
@@ -210,15 +342,15 @@
   var NEWPLANS = [];
   Object.keys(STY).forEach(function (z) {
     STY[z].forEach(function (s, n) {
-      var arch = s[0], lay = layout(arch, z, s[5], 5, 5);
-      NEWPLANS.push({ id: 'm-' + z + (n + 1), z: z, w: 5, h: 5, size: 'S', arch: arch, icon: s[1], vi: s[2], en: s[3], desc: s[4], items: lay.items, roads: lay.roads, src: [z, n] });
+      var arch = s[0], ph = (arch === 'mstreet' || arch === 'mduo') ? 3 : 5, lay = layout(arch, z, s[5], 5, ph);
+      NEWPLANS.push({ id: 'm-' + z + (n + 1), z: z, w: 5, h: ph, size: ph === 3 ? 'S' : 'M', arch: arch, icon: s[1], vi: s[2], en: s[3], desc: s[4], items: lay.items, roads: lay.roads, src: [z, n] });
     });
   });
   // mẫu cỡ L (11×11): ghép 4 mẫu S khác nhau + đường chữ thập — cho khu đất rộng
   var LZ = { a: 1, b: 1, r: 1, g: 1, p: 1 };   // chỉ những khu có khối đất ≥ 11×11
   var LNAMES = { r: ['Khu dân cư hoàn chỉnh', 'Complete Residential Quarter', '🏘️'], a: ['Trang trại hoàn chỉnh', 'Complete Farm', '🚜'], b: ['Khu du lịch biển hoàn chỉnh', 'Complete Beach Resort', '🏖️'], g: ['Khu thể thao hoàn chỉnh', 'Complete Sports Park', '🏟️'], p: ['Công viên hoàn chỉnh', 'Complete Park', '🌳'], f: ['Công viên giải trí hoàn chỉnh', 'Complete Funfair', '🎢'], c: ['Khu thương mại hoàn chỉnh', 'Complete Business Quarter', '🏙️'], s: ['Khu dịch vụ công hoàn chỉnh', 'Complete Civic Quarter', '🏛️'], e: ['Khuôn viên học đường hoàn chỉnh', 'Complete Campus', '🎓'], i: ['Khu công nghiệp hoàn chỉnh', 'Complete Industrial Zone', '🏭'] };
   Object.keys(LZ).forEach(function (z) {
-    var S = NEWPLANS.filter(function (p) { return p.z === z; }); if (S.length < 4) return;
+    var S = NEWPLANS.filter(function (p) { return p.z === z && p.h === 5 && p.arch !== 'big'; }); if (S.length < 4) return;
     var combos = [[0, 1, 2, 3], [3, 2, 1, 0], [1, 4 % S.length, 0, 2 % S.length]];
     combos.forEach(function (cb, n) {
       var items = [], roads = [], seen = {}, used = {}, origins = [[0, 0], [6, 0], [0, 6], [6, 6]], names = [];
@@ -240,8 +372,11 @@
     pl.items.forEach(function (e) { var it = BY[e[0]]; if (!it) return; o.price += it.cost; o.lvl = Math.max(o.lvl, it.lvl); o.counts[it.k] = (o.counts[it.k] || 0) + 1; o.inc += C.incomeH(it, 1); o.pop += C.popOf(it, 1); o.hp += C.hpOf(it, 1); if (it.ch && !seenCh[it.ch]) { seenCh[it.ch] = 1; o.chs.push(it.ch); } });
     o.cost = o.price + o.roads * C.RULES.roadCost; return o;
   }
+  // phân cấp: S nhỏ (5×3) · M vừa (5×5) · L lớn (cả khu 11×11, hoặc có công trình lớn từ 3×3)
+  function tierOf(pl) { if (pl.h <= 3) return 'S'; if (pl.w >= 11) return 'L'; var big = 0; pl.items.forEach(function (e) { var it = BY[e[0]]; if (it && it.w * it.h >= 9) big = 1; }); return big ? 'L' : 'M'; }
   // mẫu cũ (14 mẫu đầu tiên) cũng có cỡ + loại khu
   C.PLANS.forEach(function (pl) { pl.w = pl.w || 5; pl.h = pl.h || 5; pl.size = pl.size || 'S'; pl.legacy = true; });
   NEWPLANS.forEach(function (pl) { C.PLANS.push(pl); C.PLAN_BY[pl.id] = pl; });
+  C.PLANS.forEach(function (pl) { pl.tier = tierOf(pl); pl.dim = pl.w + '×' + pl.h; });
   C.PLAN_ARCH = ARCH; C.PLAN_ZICON = ZICON; C.planInfo = planInfo;
 })(typeof window !== 'undefined' ? window : this);
