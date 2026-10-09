@@ -289,6 +289,7 @@ const onlyPost = (mw) => (req, res, next) => (req.method === 'POST' ? mw(req, re
 app.use('/api', (req, res, next) => (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) ? rlWrite(req, res, next) : next()));
 app.use(['/api/grade-writing', '/api/grade-aptis-writing', '/api/writing-hints', '/api/writing-vocab'], onlyPost(rlAiStudent));
 app.use(['/api/teacher/ai-grade', '/api/teacher/model-answer', '/api/lesson-vocab/ai-cards', '/api/lesson-vocab/ai-questions', '/api/lesson-vocab/extract'], onlyPost(rlAiTeacher));
+app.use([/^\/api\/essay\/teacher\/sub\/\d+\/ai$/, '/api/essay/teacher/ocr'], onlyPost(rlAiTeacher));
 app.use(['/api/upload', '/api/upload-recording'], onlyPost(rlUpload));
 try { require('./access')(app, { db, requireRole }); } catch (e) { console.error('[access] Không khởi động được:', e.message); } // nhật ký truy cập (phải đặt trước các route /api để ghi được thao tác)
 
@@ -2337,6 +2338,7 @@ require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./speaking')(app, { db, requireAuth, requireRole, now, notifyUser, upload, checkUpload, uploadsDir });
 require('./parent-report')(app, { db, requireRole, notifyUser, now, sendBrevoEmail, emailEnabled, htmlEsc });
+require('./essay')(app, { db, requireAuth, requireRole, now, notifyUser, ai: require('./ai') });   // bài tự luận viết do giáo viên ra đề
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });
 
 // ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────

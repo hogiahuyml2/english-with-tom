@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bài tự luận — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=26">
+<style>
+  .es-card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:12px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; box-shadow:var(--shadow); }
+  .es-card h3 { margin:0 0 4px; font-size:16.5px; } .es-meta { font-size:12.5px; color:var(--text-muted); }
+  .es-chip { display:inline-block; font-size:12px; font-weight:700; border-radius:99px; padding:3px 11px; background:var(--primary-soft); color:var(--primary); }
+  .es-chip.ok { background:#dcfce7; color:#15803d; } .es-chip.warn { background:#fef3c7; color:#b45309; } .es-chip.bad { background:#fee2e2; color:#b91c1c; }
+  .es-prompt { white-space:pre-wrap; font-size:14.5px; line-height:1.85; }
+  .es-img { border:1.5px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:12px; cursor:zoom-in; position:relative; } .es-img img { width:100%; display:block; }
+  .es-img span { position:absolute; right:8px; bottom:8px; background:rgba(0,0,0,.6); color:#fff; font-size:11.5px; padding:3px 9px; border-radius:99px; }
+  #essayBox { width:100%; min-height:340px; line-height:1.75; font-size:15.5px; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); font-family:inherit; resize:vertical; }
+  #essayBox:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(123,110,246,.12); }
+  .es-bar { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin:8px 0 12px; font-size:12.5px; color:var(--text-faint); }
+  .es-timer { font-variant-numeric:tabular-nums; } .es-timer.low { color:#dc2626; animation:esb 1s infinite; } @keyframes esb { 50% { opacity:.55; } }
+  .es-intro { text-align:center; padding:28px 20px; } .es-intro ul { text-align:left; display:inline-block; margin:12px 0 18px; line-height:1.9; font-size:14.5px; }
+  .es-score { text-align:center; padding:16px; border-radius:16px; background:linear-gradient(135deg,var(--primary-soft),var(--bg-soft)); }
+  .es-score .big { font-size:48px; font-weight:800; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1.1; }
+  .es-crit { border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:9px; background:var(--surface); }
+  .es-crit .h { display:flex; justify-content:space-between; font-weight:700; font-size:14px; } .es-crit p { margin:6px 0 0; font-size:13.5px; color:var(--text-muted); line-height:1.65; }
+  .es-bar2 { height:7px; background:#f0effe; border-radius:4px; margin-top:7px; overflow:hidden; } .es-bar2 i { display:block; height:100%; background:var(--gradient); border-radius:4px; }
+  .es-essay { white-space:pre-wrap; line-height:1.9; font-size:14.5px; background:var(--bg-soft,#f8f7ff); border-radius:12px; padding:14px 16px; }
+  .es-essay mark { background:#fde68a; border-bottom:2px solid #f59e0b; border-radius:3px; padding:0 1px; cursor:help; }
+  .es-err { border-left:4px solid #f59e0b; background:#fffbeb; border-radius:8px; padding:8px 12px; margin-bottom:8px; font-size:13.5px; line-height:1.6; } .es-err s { color:#b91c1c; } .es-err b { color:#15803d; }
+  .es-ul { margin:6px 0 0 18px; line-height:1.8; font-size:14px; }
+  #esLb { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:none; align-items:center; justify-content:center; padding:16px; cursor:zoom-out; } #esLb.on { display:flex; } #esLb img { max-width:100%; max-height:100%; border-radius:8px; }
+  @media (max-width:760px) { .two-col { grid-template-columns:1fr !important; } }
+</style>
+<script src="js/dialog.js?v=1"></script>
+</head>
+<body data-page="" data-guard="auth">
+<div id="site-header"></div>
+<div id="esLb" onclick="this.classList.remove('on')"><img id="esLbImg" alt=""></div>
+
+<section class="section" style="padding-top:14px; padding-bottom:30px;">
+  <div class="container" id="root"><p style="color:var(--text-muted)">Đang tải…</p></div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/track.js?v=1" defer></script>
+<script src="js/main.js?v=53"></script>
+<script>
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function api(url, body) {
+  return fetch(url, { method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }).then(function (r) {
+    return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 401) { location.href = 'login.html?next=' + encodeURIComponent(location.pathname + location.search); throw new Error('Cần đăng nhập'); } if (!r.ok) throw new Error(j.error || 'Có lỗi xảy ra'); return j; });
+  });
+}
+var $ = function (id) { return document.getElementById(id); }, ID = parseInt(new URLSearchParams(location.search).get('id'), 10) || 0, T = null, TICK = null, SAVE = null, dirty = false, leaves = 0, pastes = 0, skew = 0, submitting = false;
+var fmtDt = function (iso) { if (!iso) return ''; var d = new Date(iso); return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) + ' lúc ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); };
+var wc = function (t) { return (String(t || '').trim().match(/\S+/g) || []).length; };
+
+/* ───── danh sách ───── */
+function showList() {
+  api('/api/essay/my').then(function (d) {
+    var label = { new: ['Chưa làm', 'warn'], draft: ['Đang viết', 'warn'], submitted: ['Đã nộp — chờ chấm', ''], ai_draft: ['Đã nộp — chờ chấm', ''], released: ['Đã có kết quả', 'ok'] };
+    $('root').innerHTML = '<div class="crumb" style="font-size:13px;color:var(--text-muted);margin-bottom:10px"><a href="assigned.html" style="color:var(--primary)">‹ Bài tập được giao</a> › Bài tự luận</div><h2 style="margin:0 0 4px">✍️ Bài tự luận viết</h2><p style="color:var(--text-muted);margin:0 0 16px">Bài viết thầy/cô giao riêng. Viết trực tiếp trong khung, nộp trước hạn để thầy/cô chấm.</p>' +
+      (d.tasks.length ? d.tasks.map(function (t) {
+        var l = label[t.status] || label.new, cl = t.closed && t.status === 'new';
+        return '<div class="es-card"><div style="flex:1;min-width:220px"><h3>' + esc(t.title) + '</h3><div class="es-meta">' + (t.minutes ? '⏱ ' + t.minutes + ' phút · ' : '') + (t.deadline ? '📅 Hạn nộp: ' + fmtDt(t.deadline) : 'Không giới hạn ngày') + '</div></div><span class="es-chip ' + (cl ? 'bad' : l[1]) + '">' + (cl ? 'Đã đóng' : l[0]) + '</span>' + (t.score != null ? '<b style="font-size:18px">' + t.score + '/' + t.max + '</b>' : '') +
+          '<a class="btn btn-primary" href="essay.html?id=' + t.id + '">' + (t.status === 'released' ? 'Xem kết quả' : t.status === 'draft' ? 'Viết tiếp' : t.status === 'new' ? (cl ? 'Xem đề' : 'Làm bài') : 'Xem bài') + '</a></div>';
+      }).join('') : '<div class="es-card" style="justify-content:center;color:var(--text-muted)">Chưa có bài tự luận nào được giao cho bạn.</div>');
+  }).catch(function (e) { $('root').innerHTML = '<p>' + esc(e.message) + '</p>'; });
+}
+
+/* ───── trang một bài ───── */
+function promptHtml(t) {
+  return (t.prompt_image ? '<div class="es-img" id="esImg"><img src="' + esc(t.prompt_image) + '" alt="Đề bài"><span>🔍 Bấm để phóng to</span></div>' : '') + '<h3 style="margin-bottom:8px">📋 Đề bài</h3>' + (t.prompt_text ? '<div class="es-prompt">' + esc(t.prompt_text) + '</div>' : '') +
+    '<div class="es-meta" style="margin-top:12px">' + (t.min_words || t.max_words ? '✏️ Độ dài: ' + (t.min_words ? 'từ ' + t.min_words : '') + (t.max_words ? ' đến ' + t.max_words : '') + ' từ<br>' : '') + (t.minutes ? '⏱ Thời gian: ' + t.minutes + ' phút<br>' : '') + (t.deadline ? '📅 Hạn nộp: ' + fmtDt(t.deadline) : '') + '</div>';
+}
+function bindImg() { var e = $('esImg'); if (e) e.onclick = function () { $('esLbImg').src = T.prompt_image; $('esLb').classList.add('on'); }; }
+function showTask() {
+  api('/api/essay/task/' + ID).then(function (t) { T = t; skew = t.now - Date.now(); render(); }).catch(function (e) { $('root').innerHTML = '<p>' + esc(e.message) + '</p><p><a class="btn" href="essay.html">‹ Danh sách</a></p>'; });
+}
+function render() {
+  clearInterval(TICK); clearInterval(SAVE); var s = T.sub, head = '<div class="crumb" style="font-size:13px;color:var(--text-muted);margin-bottom:10px"><a href="essay.html" style="color:var(--primary)">‹ Bài tự luận</a> › ' + esc(T.title) + '</div>';
+  if (!s) { // chưa bắt đầu
+    var closed = T.closed || (T.deadline && Date.now() + skew > Date.parse(T.deadline));
+    $('root').innerHTML = head + '<div class="two-col"><div class="passage">' + promptHtml(T) + '</div><div class="q-block es-intro"><h2 style="margin:0">' + esc(T.title) + '</h2>' + (closed ? '<p style="color:#b91c1c;font-weight:700">Bài này đã đóng hoặc quá hạn nộp.</p>' : '<ul><li>' + (T.minutes ? 'Đồng hồ <b>' + T.minutes + ' phút</b> bắt đầu chạy ngay khi bạn bấm “Bắt đầu”.' : 'Bài này không giới hạn thời gian làm.') + '</li><li>Bài của bạn được <b>tự lưu</b> mỗi vài giây.</li><li>Hết giờ, hệ thống <b>tự nộp</b> phần bạn đã viết.</li><li>Đừng rời trang hoặc dán bài có sẵn — thầy/cô sẽ thấy.</li></ul><br><button class="btn btn-primary" id="goBtn" style="font-size:16px;padding:12px 28px">▶ Bắt đầu làm bài</button>') + '</div></div>';
+    bindImg(); if ($('goBtn')) $('goBtn').onclick = function () { this.disabled = true; api('/api/essay/start/' + ID, {}).then(function (t) { T = t; skew = t.now - Date.now(); render(); }).catch(function (e) { alert(e.message); showTask(); }); }; return;
+  }
+  if (s.status === 'draft') return renderWrite(head);
+  if (s.status === 'released' && T.result) return renderResult(head);
+  $('root').innerHTML = head + '<div class="two-col"><div class="passage">' + promptHtml(T) + '</div><div class="q-block"><div class="es-chip ok">✅ Đã nộp' + (s.auto ? ' (tự động khi hết giờ)' : '') + (s.late ? ' · trễ hạn' : '') + '</div><p style="margin:10px 0;color:var(--text-muted)">Nộp lúc ' + fmtDt(s.submitted_at) + '. Thầy/cô sẽ chấm và gửi nhận xét cho bạn — bạn sẽ nhận thông báo khi có kết quả.</p><h4 style="margin:12px 0 6px">Bài của bạn (' + wc(s.text) + ' từ)</h4><div class="es-essay">' + esc(s.text) + '</div></div></div>'; bindImg();
+}
+function renderWrite(head) {
+  var s = T.sub; leaves = leaves || 0;
+  $('root').innerHTML = head + '<div class="practice-bar" style="margin-bottom:14px"><div><div style="font-weight:700;font-size:16px">' + esc(T.title) + '</div><div style="font-size:12.5px;color:var(--text-faint)">Bài tự luận · thầy/cô chấm</div></div><div class="timer">⏱ <span class="es-timer" id="tm">--:--</span></div></div>' +
+    '<div class="two-col"><div class="passage">' + promptHtml(T) + '</div><div class="q-block"><p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Bài viết của bạn:</p><textarea id="essayBox" placeholder="Viết bài của bạn ở đây..." spellcheck="false" autocomplete="off" autocapitalize="sentences"></textarea>' +
+    '<div class="es-bar"><span>Số từ: <b id="wcN" style="color:var(--text)">0</b>' + (T.min_words || T.max_words ? ' / ' + (T.min_words ? T.min_words : '') + (T.max_words ? '–' + T.max_words : '+') : '') + '</span><span id="saveSt">Chưa lưu</span></div><button class="btn btn-primary" id="subBtn" style="width:100%;justify-content:center;font-size:16px;padding:12px">📤 Nộp bài</button></div></div>';
+  bindImg(); var box = $('essayBox'); box.value = s.text || '';
+  var upd = function () { var n = wc(box.value), el = $('wcN'); el.textContent = n; el.style.color = T.max_words && n > T.max_words ? '#dc2626' : T.min_words && n >= T.min_words ? '#15803d' : ''; };
+  upd(); box.oninput = function () { dirty = true; upd(); $('saveSt').textContent = 'Đang soạn…'; };
+  box.onpaste = function () { pastes++; }; box.oncopy = function () { pastes++; };
+  document.addEventListener('visibilitychange', function () { if (document.hidden && T && T.sub && T.sub.status === 'draft') { leaves++; saveNow(); } });
+  window.onbeforeunload = function () { return dirty ? 'Bài viết chưa lưu xong!' : undefined; };
+  SAVE = setInterval(function () { if (dirty) saveNow(); }, 8000); box.onblur = function () { if (dirty) saveNow(); };
+  $('subBtn').onclick = function () { var n = wc(box.value); if (T.min_words && n < T.min_words && !confirm('Bạn mới viết ' + n + ' từ (yêu cầu khoảng ' + T.min_words + '). Vẫn nộp bài?')) return; if (!confirm('Nộp bài ngay bây giờ? Sau khi nộp bạn không sửa được nữa.')) return; submit(false); };
+  var due = s.due_at ? Date.parse(s.due_at) : 0, tm = $('tm');
+  var tick = function () {
+    if (!due) { tm.textContent = 'Không giới hạn'; return; } var left = Math.max(0, Math.round((due - (Date.now() + skew)) / 1000)), m = Math.floor(left / 60), sec = left % 60;
+    tm.textContent = (m >= 60 ? Math.floor(m / 60) + ':' + ('0' + (m % 60)).slice(-2) : ('0' + m).slice(-2)) + ':' + ('0' + sec).slice(-2); tm.classList.toggle('low', left <= 300);
+    if (left <= 0 && !submitting) submit(true);
+  };
+  tick(); TICK = setInterval(tick, 1000);
+}
+function saveNow() { if (!T || !T.sub || T.sub.status !== 'draft') return Promise.resolve(); var box = $('essayBox'); if (!box) return Promise.resolve(); dirty = false; return api('/api/essay/save/' + ID, { text: box.value, leaves: leaves, pastes: pastes }).then(function (r) { if (r.expired) { submit(true); return; } var el = $('saveSt'); if (el) el.textContent = '✓ Đã lưu ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }).catch(function () { dirty = true; var el = $('saveSt'); if (el) el.textContent = '⚠️ Chưa lưu được — kiểm tra mạng'; }); }
+function submit(auto) {
+  if (submitting) return; submitting = true; clearInterval(TICK); clearInterval(SAVE); var box = $('essayBox'), txt = box ? box.value : '';
+  api('/api/essay/submit/' + ID, { text: txt, leaves: leaves, pastes: pastes }).then(function () { window.onbeforeunload = null; dirty = false; submitting = false; if (auto) alert('⏰ Hết giờ! Bài viết của bạn đã được nộp tự động.'); showTask(); }).catch(function (e) { submitting = false; alert(e.message); if (!auto) { TICK = setInterval(function () {}, 1000); } });
+}
+function renderResult(head) {
+  var r = T.result, s = T.sub, pc = T.max ? Math.round(T.score / T.max * 100) : 0;
+  // đánh dấu lỗi trong bài (khớp đúng câu trích)
+  var text = s.text, ranges = [];
+  (r.errors || []).forEach(function (e, i) { if (!e.quote) return; var at = text.indexOf(e.quote); if (at < 0) at = text.toLowerCase().indexOf(e.quote.toLowerCase()); if (at >= 0 && !ranges.some(function (x) { return at < x.b && at + e.quote.length > x.a; })) ranges.push({ a: at, b: at + e.quote.length, i: i }); });
+  ranges.sort(function (x, y) { return x.a - y.a; }); var out = '', pos = 0; ranges.forEach(function (x) { var e = r.errors[x.i]; out += esc(text.slice(pos, x.a)) + '<mark title="' + esc('→ ' + e.correction + ' — ' + e.explanation) + '">' + esc(text.slice(x.a, x.b)) + '</mark>'; pos = x.b; }); out += esc(text.slice(pos));
+  $('root').innerHTML = head + '<div class="two-col"><div><div class="es-score"><div class="big">' + T.score + '<span style="font-size:22px">/' + T.max + '</span></div><div style="color:var(--text-muted);font-size:13px">' + pc + '% · Thầy/cô đã chấm</div></div>' +
+    (r.requirement_check ? '<div class="q-block" style="margin-top:12px"><h4 style="margin:0 0 6px">🎯 Mức đáp ứng yêu cầu đề</h4><p style="margin:0;line-height:1.7;font-size:14px">' + esc(r.requirement_check) + '</p></div>' : '') +
+    '<div style="margin-top:12px">' + (r.criteria || []).map(function (c) { var p = c.max ? Math.round(c.score / c.max * 100) : 0; return '<div class="es-crit"><div class="h"><span>' + esc(c.name) + '</span><span>' + c.score + '/' + c.max + '</span></div><div class="es-bar2"><i style="width:' + p + '%"></i></div>' + (c.comment ? '<p>' + esc(c.comment) + '</p>' : '') + '</div>'; }).join('') + '</div></div>' +
+    '<div><div class="q-block"><h4 style="margin:0 0 6px">📝 Nhận xét chung</h4><p style="margin:0;line-height:1.75;font-size:14.5px;white-space:pre-wrap">' + esc(r.summary || '') + '</p>' + (r.teacher_comment ? '<div class="es-err" style="border-left-color:#6F58EE;background:#f5f3ff;margin-top:12px"><b style="color:#6F58EE">💬 Lời nhắn của thầy/cô:</b><br>' + esc(r.teacher_comment).replace(/\n/g, '<br>') + '</div>' : '') +
+    ((r.strengths || []).length ? '<h4 style="margin:14px 0 2px">👍 Điểm tốt</h4><ul class="es-ul">' + r.strengths.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') + ((r.improvements || []).length ? '<h4 style="margin:14px 0 2px">🚀 Cần cải thiện</h4><ul class="es-ul">' + r.improvements.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') + '</div></div></div>' +
+    '<div class="q-block" style="margin-top:16px"><h4 style="margin:0 0 8px">📄 Bài của bạn <span class="es-meta">(' + wc(text) + ' từ · rê chuột / chạm vào phần tô vàng để xem lỗi)</span></h4><div class="es-essay">' + out + '</div>' +
+    ((r.errors || []).length ? '<h4 style="margin:16px 0 8px">🔎 Các lỗi cần chú ý</h4>' + r.errors.map(function (e) { return '<div class="es-err"><s>' + esc(e.quote) + '</s> → <b>' + esc(e.correction) + '</b>' + (e.category ? ' <span class="es-chip warn" style="font-size:11px">' + esc(e.category) + '</span>' : '') + '<br>' + esc(e.explanation) + '</div>'; }).join('') : '') + '</div>' +
+    '<div class="two-col" style="margin-top:16px;grid-template-columns:1fr"><details class="q-block"><summary style="cursor:pointer;font-weight:700">📋 Xem lại đề bài</summary><div style="margin-top:10px">' + promptHtml(T) + '</div></details></div>'; bindImg();
+}
+if (ID) showTask(); else showList();
+</script>
+</body>
+</html>

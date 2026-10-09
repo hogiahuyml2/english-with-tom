@@ -42,6 +42,7 @@
     </div>
 
     <div id="mcqCard"></div>
+    <div id="essayCard"></div>
 
     <!-- Filter Bar -->
     <div class="fbar" id="assignedFilter" style="display:none;">
@@ -843,6 +844,12 @@
 </div>
 <script>
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeResultDetail(); });
+</script>
+<script>
+(function () { fetch('/api/essay/my', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  if (!d || !d.tasks || !d.tasks.length) return; var todo = d.tasks.filter(function (t) { return (t.status === 'new' || t.status === 'draft') && !t.closed; }).length, res = d.tasks.filter(function (t) { return t.status === 'released'; }).length;
+  document.getElementById('essayCard').innerHTML = '<a href="essay.html" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;text-decoration:none;color:inherit;background:var(--surface);border:1.5px solid var(--primary);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;box-shadow:var(--shadow)"><span style="font-size:30px">✍️</span><div style="flex:1;min-width:200px"><b style="font-size:16px">Bài tự luận viết</b><div style="font-size:13px;color:var(--text-muted)">' + (todo ? '<b style="color:var(--warning)">' + todo + ' bài cần làm</b>' : 'Không có bài nào cần làm') + (res ? ' · ' + res + ' bài đã có kết quả' : '') + '</div></div><span class="btn btn-primary">Mở →</span></a>';
+}).catch(function () {}); })();
 </script>
 </body>
 </html>
