@@ -509,6 +509,9 @@
     } else if (type === 'blades') {   // cối xay gió
       ctx.strokeStyle = '#7A4B2A'; ctx.lineWidth = 2.4; for (k = 0; k < 4; k++) { an = t * .9 + k * TAU / 4; var ex = cx + Math.cos(an) * a, ey = cy + Math.sin(an) * a * .9; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.fillStyle = 'rgba(250,245,230,.95)'; ctx.beginPath(); ctx.moveTo(cx + Math.cos(an) * 8, cy + Math.sin(an) * 8 * .9); ctx.lineTo(ex, ey); ctx.lineTo(ex + Math.cos(an + 1.57) * 6, ey + Math.sin(an + 1.57) * 6 * .9); ctx.lineTo(cx + Math.cos(an) * 8 + Math.cos(an + 1.57) * 6, cy + Math.sin(an) * 8 * .9 + Math.sin(an + 1.57) * 5); ctx.closePath(); ctx.fill(); ctx.stroke(); }
       ctx.fillStyle = '#7A4B2A'; ctx.beginPath(); ctx.arc(cx, cy, 3, 0, TAU); ctx.fill();
+    } else if (type === 'turbine') {   // tua-bin gió: 3 cánh trắng
+      ctx.strokeStyle = '#F4F6FA'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; for (k = 0; k < 3; k++) { an = t * 1.3 + b * 2 + k * TAU / 3; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(an) * a, cy + Math.sin(an) * a * .9); ctx.stroke(); }
+      ctx.fillStyle = '#C9D1D9'; ctx.beginPath(); ctx.arc(cx, cy, 2.6, 0, TAU); ctx.fill();
     } else if (type === 'gondola') {   // cabin cáp treo chạy dọc dây
       var u = (1 + Math.sin(t * .5)) / 2, gx2 = cx - a + u * a * 2, gy2 = cy - 24 + u * 28; ctx.strokeStyle = '#3A3A3A'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(gx2, gy2); ctx.lineTo(gx2, gy2 + 4); ctx.stroke(); ctx.fillStyle = '#E9573F'; ctx.strokeStyle = 'rgba(40,28,60,.6)'; ctx.beginPath(); ctx.rect(gx2 - 4.5, gy2 + 4, 9, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#BFE8F8'; ctx.fillRect(gx2 - 3, gy2 + 5.5, 6, 3);
     } else if (type === 'beam') {   // chùm sáng hải đăng
