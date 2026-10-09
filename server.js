@@ -2366,6 +2366,7 @@ require('./garden')(app, { db, requireAuth, requireRole, now, notifyUser });
 require('./city-daily')(app, { db, requireAuth, now });   // EWT City: nhiệm vụ hằng ngày (phải nạp trước city.js)
 require('./city')(app, { db, requireAuth, now, notifyUser });   // EWT City
 require('./city-social')(app, { db, requireAuth, requireRole, now, notifyUser });   // EWT City: bạn bè, xếp hạng, dự án lớp
+require('./game-stats')(app, { db, requireRole });   // Thống kê Garden & City cho giáo viên
 require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./speaking')(app, { db, requireAuth, requireRole, now, notifyUser, upload, checkUpload, uploadsDir });

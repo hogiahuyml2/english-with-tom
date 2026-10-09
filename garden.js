@@ -691,5 +691,11 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   });
 
   app.locals.gardenQuiz = { pickGrammar, pickVocab };   // EWT City dùng chung kho câu hỏi
+  // số liệu tóm tắt một khu vườn (chỉ đọc, không tạo dữ liệu) — dùng cho thống kê của giáo viên
+  app.locals.gardenStat = (uid) => {
+    const r = one('SELECT * FROM garden WHERE user_id=?', uid); if (!r) return null;
+    try { const st = fromRow(r), beauty = G.beautyOf(st); return { level: G.levelOf(beauty), beauty, tiles: st.tiles.filter(Boolean).length, pets: st.pets.length, zones: (st.zones || []).length, quizTotal: r.quiz_total | 0, created: r.created_at, updated: r.updated_at }; }
+    catch (e) { return { level: 1, beauty: 0, tiles: 0, pets: 0, zones: 0, quizTotal: r.quiz_total | 0, created: r.created_at, updated: r.updated_at }; }
+  };
   X = require('./garden-extra')(app, { db, requireAuth, requireRole, now, G, vnDay, load, save, tx, reply, bad, coinsOf, addCoins, rollCard, applyCardSt, bagAdd, givenName, one, notifyUser });
 };

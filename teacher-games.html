@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Thống kê Garden &amp; City — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=27">
+<style>
+.tg-wrap { max-width: 1180px; margin: 0 auto; padding: 14px 16px 70px; }
+.tg-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .tg-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.tg-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; min-height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; }
+.tg-sel, .tg-in { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; min-width: 0; box-sizing: border-box; }
+.tg-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.tg-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); } .tg-card b { display: block; font-size: 26px; line-height: 1.1; } .tg-card span { font-size: 12.5px; color: var(--text-muted); } .tg-card.g b { color: #059669; } .tg-card.c b { color: #2563EB; } .tg-card.w b { color: #D97706; }
+.tg-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.tg-box h3 { margin: 0 0 8px; font-size: 16px; }
+.tg-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; } .tg-tools .tg-in { flex: 1 1 200px; }
+.tg-chips { display: flex; gap: 6px; flex-wrap: wrap; } .tg-chip { border: 1.5px solid var(--border); background: var(--surface); border-radius: 99px; padding: 5px 12px; font: 700 12.5px inherit; font-family: inherit; cursor: pointer; color: var(--text); } .tg-chip.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+.tg-tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; } .tg-tbl th { text-align: left; color: var(--text-muted); font-size: 12px; padding: 6px 8px; border-bottom: 2px solid var(--border); cursor: pointer; white-space: nowrap; user-select: none; } .tg-tbl th.s::after { content: ' ▾'; } .tg-tbl th.s.asc::after { content: ' ▴'; }
+.tg-tbl td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: middle; } .tg-tbl tr:last-child td { border-bottom: 0; } .tg-tbl td small { color: var(--text-faint); display: block; font-size: 11.5px; }
+.tg-pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap; } .tg-pill.active { background: #DCFCE7; color: #166534; } .tg-pill.slow { background: #FEF3C7; color: #92400E; } .tg-pill.idle { background: #FEE2E2; color: #991B1B; } .tg-pill.never { background: #E5E7EB; color: #374151; }
+.tg-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; } .tg-rk { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--border); font-size: 14px; } .tg-rk:last-child { border: 0; }
+.tg-scroll { overflow-x: auto; } .tg-empty { color: var(--text-muted); font-size: 14px; padding: 12px 0; }
+@media (max-width: 760px) { .tg-two { grid-template-columns: 1fr; } }
+</style>
+<script src="js/dialog.js?v=1"></script>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="tg-wrap">
+  <div class="tg-top">
+    <h1>📊 Thống kê EWT Garden &amp; EWT City</h1>
+    <select class="tg-sel" id="grp" aria-label="Chọn lớp"></select>
+    <button class="tg-btn" id="csv" type="button">⬇️ Xuất Excel (CSV)</button>
+    <a class="tg-btn" href="teacher-garden.html">🌷 Thưởng &amp; dự án</a>
+    <a class="tg-btn" href="teacher.html">← Khu vực giáo viên</a>
+  </div>
+  <div id="fest"></div>
+  <div class="tg-cards" id="cards"></div>
+  <div class="tg-two">
+    <div class="tg-box"><h3>🌷 Top EWT Garden (độ đẹp khu vườn)</h3><div id="topG"></div></div>
+    <div class="tg-box"><h3>🏙️ Top EWT City (cấp thành phố)</h3><div id="topC"></div></div>
+  </div>
+  <div class="tg-box">
+    <h3>👩‍🎓 Từng học sinh</h3>
+    <div class="tg-tools">
+      <input class="tg-in" id="q" placeholder="🔍 Tìm tên học sinh hoặc lớp…" autocomplete="off">
+      <div class="tg-chips" id="chips"></div>
+    </div>
+    <div class="tg-scroll"><table class="tg-tbl" id="tbl"></table></div>
+    <p class="tg-empty" id="none" style="display:none">Chưa có học sinh phù hợp.</p>
+  </div>
+</main>
+<script src="js/track.js?v=1" defer></script>
+<script src="js/main.js?v=53"></script>
+<script>
+(function () {
+var $ = function (id) { return document.getElementById(id); }, D = null, SORT = { k: 'ago', asc: false }, FILT = 'all';
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function api(u) { return fetch(u, { credentials: 'same-origin' }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Có lỗi xảy ra'); return j; }); }); }
+var STATE = { active: 'Đang chơi', slow: 'Ít chơi', idle: 'Lâu không chơi', never: 'Chưa vào' };
+function ago(n) { return n == null ? '—' : n === 0 ? 'hôm nay' : n + ' ngày trước'; }
+var COLS = {
+  name: function (r) { return (r.name || '').toLowerCase(); }, ago: function (r) { return r.ago == null ? 9999 : r.ago; },
+  gl: function (r) { return r.g ? r.g.level : -1; }, gb: function (r) { return r.g ? r.g.beauty : -1; }, cl: function (r) { return r.c ? r.c.level : -1; }, cp: function (r) { return r.c ? r.c.pop : -1; },
+  cd: function (r) { return r.c ? r.c.days7 : -1; }, coins: function (r) { return r.coins; }
+};
+function cards() {
+  var s = D.summary;
+  $('cards').innerHTML = [
+    ['', s.students, 'Học sinh trong lớp'], ['w', s.active, 'Đang chơi (≤ 3 ngày)'], ['w', s.idle + s.slow, 'Ít hoặc lâu không chơi'], ['', s.never, 'Chưa vào Garden / City'],
+    ['g', s.gardenPlayers, 'Đã có khu vườn · cấp TB ' + s.gardenAvgLevel], ['g', s.gardenActive7, 'Vào Garden 7 ngày qua'],
+    ['c', s.cityPlayers, 'Đã có thành phố · cấp TB ' + s.cityAvgLevel], ['c', s.cityActive7, 'Vào City 7 ngày qua'], ['c', s.cityDays7, 'Lượt “ngày chơi City” 7 ngày'], ['c', s.chests7, 'Rương nhiệm vụ đã mở (30 ngày)']
+  ].map(function (c) { return '<div class="tg-card ' + c[0] + '"><b>' + c[1] + '</b><span>' + c[2] + '</span></div>'; }).join('');
+  var top = function (a, el, u) { $(el).innerHTML = a.length ? a.map(function (x, i) { return '<div class="tg-rk"><span>' + (['🥇', '🥈', '🥉'][i] || (i + 1) + '.') + ' ' + esc(x.name) + '</span><b>' + u + ' ' + x.v + '</b></div>'; }).join('') : '<div class="tg-empty">Chưa có dữ liệu.</div>'; };
+  top(s.topGarden, 'topG', 'Cấp'); top(s.topCity, 'topC', 'Cấp');
+  $('fest').innerHTML = D.festivals && D.festivals.length ? '<div class="tg-box" style="background:#FFF7E0">🎉 Đang có lễ hội trong EWT City — học sinh được thưởng thuế +15% và có món lễ hội giới hạn.</div>' : '';
+  $('chips').innerHTML = [['all', 'Tất cả'], ['active', 'Đang chơi'], ['slow', 'Ít chơi'], ['idle', 'Lâu không chơi'], ['never', 'Chưa vào']].map(function (c) { return '<button class="tg-chip' + (FILT === c[0] ? ' on' : '') + '" data-f="' + c[0] + '" type="button">' + c[1] + ' (' + (c[0] === 'all' ? D.rows.length : D.rows.filter(function (r) { return r.state === c[0]; }).length) + ')</button>'; }).join('');
+}
+function list() {
+  var q = $('q').value.trim().toLowerCase(), f = COLS[SORT.k];
+  var rows = D.rows.filter(function (r) { return (FILT === 'all' || r.state === FILT) && (!q || (r.name + ' ' + r.classes).toLowerCase().indexOf(q) >= 0); });
+  rows.sort(function (a, b) { var x = f(a), y = f(b), c = x < y ? -1 : x > y ? 1 : 0; return SORT.asc ? c : -c; });
+  var th = function (k, t) { return '<th data-s="' + k + '" class="' + (SORT.k === k ? 's' + (SORT.asc ? ' asc' : '') : '') + '">' + t + '</th>'; };
+  $('tbl').innerHTML = '<tr>' + th('name', 'Học sinh') + '<th>Lớp</th>' + th('ago', 'Lần chơi gần nhất') + th('gl', '🌷 Garden') + th('cl', '🏙️ City') + th('cp', 'Dân số') + th('cd', 'Ngày chơi City (7 ngày)') + th('coins', '🪙 Xu') + '<th>Trạng thái</th></tr>' +
+    rows.map(function (r) {
+      return '<tr><td><b>' + esc(r.name) + '</b><small>' + esc(r.email) + '</small></td><td>' + esc(r.classes) + '</td><td>' + ago(r.ago) + '</td>' +
+        '<td>' + (r.g ? 'Cấp <b>' + r.g.level + '</b><small>' + r.g.tiles + ' ô · ' + r.g.pets + ' thú · ' + r.g.quiz + ' câu quiz</small>' : '—') + '</td>' +
+        '<td>' + (r.c ? 'Cấp <b>' + r.c.level + '</b><small>' + r.c.bs + ' công trình · ' + r.c.districts + ' quận</small>' : '—') + '</td>' +
+        '<td>' + (r.c ? r.c.pop.toLocaleString('vi-VN') : '—') + '</td><td>' + (r.c ? r.c.days7 + '/7<small>' + r.c.done + ' nhiệm vụ · ' + r.c.chests + ' rương</small>' : '—') + '</td>' +
+        '<td>' + r.coins.toLocaleString('vi-VN') + '</td><td><span class="tg-pill ' + r.state + '">' + STATE[r.state] + '</span></td></tr>';
+    }).join('');
+  $('none').style.display = rows.length ? 'none' : '';
+}
+function load() { api('/api/teacher/game-stats?group=' + encodeURIComponent($('grp').value || 'all')).then(function (d) {
+  var first = !D; D = d;
+  if (first) $('grp').innerHTML = '<option value="all">Tất cả các lớp của tôi</option>' + d.groups.map(function (g) { return '<option value="' + g.id + '">' + esc(g.name) + '</option>'; }).join('');
+  cards(); list();
+}).catch(function (e) { $('tbl').innerHTML = '<tr><td>' + esc(e.message) + '</td></tr>'; }); }
+$('grp').onchange = load; $('q').oninput = list;
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('[data-f]'); if (t) { FILT = t.getAttribute('data-f'); cards(); list(); return; }
+  t = e.target.closest('[data-s]'); if (t) { var k = t.getAttribute('data-s'); SORT = { k: k, asc: SORT.k === k ? !SORT.asc : k === 'name' || k === 'ago' }; list(); }
+});
+$('csv').onclick = function () {
+  if (!D) return; var h = ['Học sinh', 'Email', 'Lớp', 'Lần chơi gần nhất (ngày trước)', 'Garden cấp', 'Garden độ đẹp', 'Garden số ô', 'Garden thú', 'Garden câu quiz', 'City cấp', 'City dân số', 'City công trình', 'City quận', 'City ngày chơi 7 ngày', 'City nhiệm vụ đã nhận', 'City rương', 'Xu', 'Trạng thái'];
+  var cell = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  var lines = [h.map(cell).join(',')].concat(D.rows.map(function (r) { return [r.name, r.email, r.classes, r.ago == null ? '' : r.ago, r.g ? r.g.level : '', r.g ? r.g.beauty : '', r.g ? r.g.tiles : '', r.g ? r.g.pets : '', r.g ? r.g.quiz : '', r.c ? r.c.level : '', r.c ? r.c.pop : '', r.c ? r.c.bs : '', r.c ? r.c.districts : '', r.c ? r.c.days7 : '', r.c ? r.c.done : '', r.c ? r.c.chests : '', r.coins, STATE[r.state]].map(cell).join(','); }));
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' })); a.download = 'thong-ke-garden-city-' + D.day + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+};
+load();
+})();
+</script>
+</body>
+</html>
