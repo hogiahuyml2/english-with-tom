@@ -4,6 +4,7 @@
 const crypto = require('crypto');
 const C = require('./js/city-data.js');
 const L = require('./js/city-learn.js');
+require('./js/city-plans.js');   // nạp thêm các mẫu xây dựng vào C.PLANS
 
 module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
@@ -333,10 +334,11 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   function planFind(st, s, pl, role, dFilter, alt) {
     const res = [], seen = new Set();
     C.BLOCKS.forEach((b) => {
-      if (st.districts.indexOf(b.d) < 0 || (dFilter >= 0 && b.d !== dFilter) || b.w < 5 || b.h < 5) return;
+      const pw = pl.w || 5, ph = pl.h || 5;
+      if (st.districts.indexOf(b.d) < 0 || (dFilter >= 0 && b.d !== dFilter) || b.w < pw || b.h < ph) return;
       if (pl.z !== '*' && b.z !== pl.z) return;
-      // khối lớn: đặt được nhiều mẫu, cách nhau 6 ô (5 ô mẫu + 1 ô đường)
-      for (let ay = b.y; ay + 4 <= b.y + b.h - 1; ay += 6) for (let ax = b.x; ax + 4 <= b.x + b.w - 1; ax += 6) {
+      // khối lớn: đặt được nhiều mẫu, cách nhau 1 ô đường
+      for (let ay = b.y; ay + ph - 1 <= b.y + b.h - 1; ay += ph + 1) for (let ax = b.x; ax + pw - 1 <= b.x + b.w - 1; ax += pw + 1) {
         const k = ay * C.W + ax; if (seen.has(k)) continue; seen.add(k);
         const ev = planEval(st, s, pl, ax, ay, role); if (ev && ev.ok > 0) { ev.d = b.d; res.push(ev); }
       }
@@ -355,15 +357,16 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const { pl, d, alt } = planBody(req), uid = req.user.id, bx = Number((req.body || {}).bx), by = Number((req.body || {}).by); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
     const out = tx(() => {
       const st = load(uid), s = stats(st); let ev;
-      if (Number.isInteger(bx) && Number.isInteger(by) && bx >= 1 && by >= 1 && bx + 5 <= C.W && by + 5 <= C.H) { ev = planEval(st, s, pl, bx, by, req.user.role); if (ev) ev.d = C.DIST[by * C.W + bx]; } else { const f = planFind(st, s, pl, req.user.role, d, alt); ev = f.pick; }
+      if (Number.isInteger(bx) && Number.isInteger(by) && bx >= 1 && by >= 1 && bx + (pl.w || 5) <= C.W && by + (pl.h || 5) <= C.H) { ev = planEval(st, s, pl, bx, by, req.user.role); if (ev) ev.d = C.DIST[by * C.W + bx]; } else { const f = planFind(st, s, pl, req.user.role, d, alt); ev = f.pick; }
       if (!ev || !ev.ok) return { err: 'Không còn chỗ phù hợp cho bản quy hoạch này.' };
       if (ev.cost > 0 && !spend(uid, ev.cost)) return { err: 'Chưa đủ xu (cần ' + ev.cost + ' 🪙).' };
       ev.roads.forEach((i) => { st.roads[i] = 1; });
-      const t = Date.now(); let n = 0;
+      const t = Date.now(); let n = 0, pal = palOk((req.body || {}).c);
       for (const e of ev.items) {
         if (!e.ok) continue; const it = C.BY[e.k];
         if (st.free[e.k] > 0) { st.free[e.k]--; if (!st.free[e.k]) delete st.free[e.k]; } else if (st.inv[e.k] > 0) { st.inv[e.k]--; if (!st.inv[e.k]) delete st.inv[e.k]; }
-        st.bs.push({ i: st.nid++, k: it.k, x: e.x, y: e.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }); n++;
+        const nb = { i: st.nid++, k: it.k, x: e.x, y: e.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }, fd = C.facingToRoad(st, it, e.x, e.y); if (fd >= 0) nb.f = fd; if (pal) nb.c = pal;   // mặt trước quay ra đường; màu theo mẫu chọn
+        st.bs.push(nb); n++;
       }
       save(uid, st); return { st, n, cost: ev.cost, bx: ev.bx, by: ev.by };
     });

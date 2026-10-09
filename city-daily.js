@@ -89,6 +89,7 @@ module.exports = function (app, { db, requireAuth, now }) {
           if (sub === '/collect' && body.count > 0) track(uid, 'collect', body.count);
           else if (sub === '/place' && body.placed) { track(uid, 'build', 1); const it = C.BY[String(b.k)]; if (it && DECOR.indexOf(it.cat) >= 0) track(uid, 'decor', 1); if (it && it.ev) track(uid, 'fest', 1); }
           else if (sub === '/upgrade' && body.upgraded) track(uid, 'upgrade', 1);
+          else if (sub === '/plan/apply' && body.built) track(uid, 'build', body.built);
           else if (sub === '/bulk' && body.bulk) { if (body.bulk.action === 'collect') track(uid, 'collect', body.bulk.ok); else if (body.bulk.action === 'upgrade') track(uid, 'upgrade', body.bulk.ok); }
           else if (sub === '/place-many' && body.placedMany) { track(uid, 'build', body.placedMany); const it2 = C.BY[String(b.k)]; if (it2 && DECOR.indexOf(it2.cat) >= 0) track(uid, 'decor', body.placedMany); if (it2 && it2.ev) track(uid, 'fest', body.placedMany); }
           else if (sub === '/road' && body.roads > 0) track(uid, 'road', body.roads);

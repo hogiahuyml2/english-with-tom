@@ -53,6 +53,13 @@ button { font-family: inherit; cursor: pointer; }
 .swrow { display: inline-flex; gap: 5px; align-items: center; flex-wrap: wrap; } .sw { flex: none; min-width: 0; width: 26px; height: 26px; max-width: 26px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px rgba(40,50,80,.35); padding: 0; cursor: pointer; display: grid; place-items: center; font-size: 12px; color: #667; background: #EEF2FA; position: relative; } .sw.on { box-shadow: 0 0 0 3px var(--good); transform: scale(1.12); } .sw.sw0 { background: repeating-linear-gradient(45deg, #fff, #fff 4px, #E3E8F4 4px, #E3E8F4 8px); }
 .sws { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; } .sws .sw { width: 34px; height: 34px; max-width: 34px; } .pal-h { font-weight: 800; font-size: 13px; margin-top: 8px; color: var(--ink); } .pal-top { display: flex; gap: 12px; align-items: center; margin: 8px 0; } .pal-top canvas { width: 120px; height: 120px; background: linear-gradient(180deg, #DDF0FF, #EAF6E2); border-radius: 18px; flex: none; }
 #palM .box { max-width: 460px; width: 100%; max-height: 88dvh; overflow: auto; } .mchk { font-size: 12px; font-weight: 700; display: flex; gap: 5px; align-items: center; }
+.pf { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; } .pf .chipf { border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 11px; font-weight: 800; font-size: 12.5px; color: var(--ink); cursor: pointer; } .pf .chipf.on { background: var(--pri, #3A6BE6); border-color: var(--pri, #3A6BE6); color: #fff; } .pf small { font-weight: 700; color: var(--muted); }
+.pcard { border: 2px solid var(--line); border-radius: 18px; background: #fff; padding: 8px; position: relative; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; } .pcard:active { transform: scale(.98); } .pcard canvas { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: 12px; background: linear-gradient(180deg, #DDF0FF, #EAF6E2); }
+.pcard .nm { font-weight: 800; font-size: 13.5px; line-height: 1.2; } .pcard .en2 { font-size: 11.5px; color: var(--muted); font-weight: 600; } .pcard .tg { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; } .pcard .tg span { background: #EEF2FA; border-radius: 8px; padding: 2px 6px; font-size: 10.5px; font-weight: 800; color: var(--muted); } .pcard .tg span.warn { background: #FFF1C9; color: #8A5A00; } .pcard .tg span.ok { background: #DDF7E6; color: #17703E; }
+.pcard .pc { font-weight: 800; font-size: 13px; }
+#planM .box { max-width: 560px; width: 100%; max-height: 90dvh; overflow: auto; } #plBig { width: 100%; height: auto; aspect-ratio: 3 / 2; border-radius: 16px; background: linear-gradient(180deg, #DDF0FF, #EAF6E2); display: block; }
+.pst { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; } .pst div { background: #F3F6FF; border-radius: 12px; padding: 6px 8px; text-align: center; font-size: 11.5px; color: var(--muted); font-weight: 700; } .pst b { display: block; font-size: 15px; color: var(--ink); }
+.pleg { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; } .pleg span { display: flex; align-items: center; gap: 5px; background: #F3F6FF; border-radius: 12px; padding: 3px 9px 3px 4px; font-size: 12px; font-weight: 700; } .pleg span.lk { opacity: .55; } .pleg canvas { width: 34px; height: 34px; }
 .dot { position: absolute; right: 6px; top: 4px; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; place-items: center; padding: 0 4px; font-weight: 800; }
 .sheet { position: fixed; left: 0; right: 0; bottom: 0; max-height: min(74dvh, 640px); background: var(--card); border-radius: 26px 26px 0 0; box-shadow: 0 -10px 40px rgba(10,30,80,.35); z-index: 40; display: none; flex-direction: column; padding-bottom: var(--bot); }
 .sheet.on { display: flex; animation: up .22s ease-out; } @keyframes up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -90,7 +97,7 @@ button { font-family: inherit; cursor: pointer; }
 .field { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 14px; } .field select { font: 700 13px var(--font); border: 2px solid var(--line); border-radius: 10px; padding: 6px 8px; }
 .sw { position: relative; width: 46px; height: 26px; flex: none; } .sw input { opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 2; } .sw i { position: absolute; inset: 0; background: #C9D3E6; border-radius: 14px; transition: .2s; } .sw i::after { content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); } .sw input:checked + i { background: var(--good); } .sw input:checked + i::after { left: 23px; }
 .empty { text-align: center; color: var(--muted); font-weight: 700; padding: 20px 10px; }
-@media (max-width: 640px) { #mbar .pbreak { display: none; } .pbar { padding: 7px 8px; gap: 6px; } .pbar .btn.sm { padding: 5px 8px; font-size: 12px; } .tools { gap: 6px; padding: 0 12px 6px; } .tools input { flex: 1 1 100%; } .tools select { flex: 1 1 0; padding: 6px 8px; font-size: 12.5px; } .sheet { max-height: min(86dvh, 700px); } .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 8px; font-size: 13px; gap: 4px; } #festChip b { display: none; } .chip .plus { width: 20px; height: 20px; } .dbar { bottom: calc(82px + var(--bot)); } }
+@media (max-width: 640px) { .pf { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; } .pf .chipf { white-space: nowrap; flex: none; } #mbar .pbreak { display: none; } .pbar { padding: 7px 8px; gap: 6px; } .pbar .btn.sm { padding: 5px 8px; font-size: 12px; } .tools { gap: 6px; padding: 0 12px 6px; } .tools input { flex: 1 1 100%; } .tools select { flex: 1 1 0; padding: 6px 8px; font-size: 12.5px; } .sheet { max-height: min(86dvh, 700px); } .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 8px; font-size: 13px; gap: 4px; } #festChip b { display: none; } .chip .plus { width: 20px; height: 20px; } .dbar { bottom: calc(82px + var(--bot)); } }
 @media (prefers-reduced-motion: reduce) { .sheet.on { animation: none; } }
 
 .lh { font-weight: 800; font-size: 13px; color: var(--mut); margin: 14px 0 6px; } .lcard { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .lcard.ok { border-color: #5BCB8B; background: #F2FCF6; } .lcard .t { font-weight: 800; font-size: 15px; } .lcard .s { font-size: 12.5px; color: var(--mut); margin: 2px 0 6px; } .lcard .row2 { display: flex; gap: 6px; flex-wrap: wrap; } .lcard .row2 .btn { padding: 7px 11px; font-size: 13px; }
@@ -173,6 +180,7 @@ button { font-family: inherit; cursor: pointer; }
 <div class="sheet" id="friendS"><div class="hd"><h3>👥 Bạn bè & lớp</h3><button class="x" data-close="friendS" type="button">✕</button></div><div class="tabs" id="frTabs"><button class="tab on" data-ft="list" type="button">Bạn bè</button><button class="tab" data-ft="rank" type="button">🏆 Xếp hạng</button><button class="tab" data-ft="class" type="button">🎯 Dự án lớp</button><button class="tab" data-ft="notes" type="button">💬 Lời nhắn</button></div><div class="bd" id="friendB"></div></div>
 <div class="sheet" id="dailyS"><div class="hd"><h3>📅 Nhiệm vụ hôm nay</h3><button class="x" data-close="dailyS" type="button">✕</button></div><div class="bd" id="dailyB"></div></div>
 <div class="sheet" id="learnS"><div class="hd"><h3>📚 Học từ & mở khoá công trình</h3><button class="x" data-close="learnS" type="button">✕</button></div><div class="bd" id="learnB"></div></div>
+<div class="modal" id="planM"><div class="box"><div id="planB"></div></div></div>
 <div class="modal" id="palM"><div class="box"><div id="palB"></div></div></div>
 <div class="modal" id="learnM"><div class="box"><div id="learnMB"></div></div></div>
 <div class="modal" id="quizM"><div class="box"><div id="quizB"></div></div></div>
@@ -183,6 +191,8 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
 <script src="js/city-data.js?v=11"></script>
+<script src="js/city-learn.js?v=1"></script>
+<script src="js/city-plans.js?v=1"></script>
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
@@ -245,6 +255,7 @@ function load() { if (VIS) return Promise.resolve(); return api('/api/city').the
 var CATTAB = C.CATS.map(function (c) { return c; }).concat([['bundle', '📦 Gói combo'], ['plan', '📐 Quy hoạch']]);
 function renderShop() {
   $('shopTabs').innerHTML = CATTAB.map(function (c) { return '<button class="tab' + (TABK === c[0] ? ' on' : '') + '" data-tab="' + c[0] + '" type="button">' + c[1] + '</button>'; }).join('');
+  var tl = document.querySelector('#shopS .tools'); if (tl) tl.style.display = (TABK === 'plan' || TABK === 'bundle') ? 'none' : '';   // ô tìm kiếm / lọc chỉ dùng cho tab món lẻ
   if (TABK === 'bundle') return renderBundles(); if (TABK === 'plan') return renderPlans();
   var q = $('shopQ').value.trim().toLowerCase(), list = C.ITEMS.filter(function (it) { if (TABK !== 'all' && it.cat !== TABK && !q) return false; if (DF >= 0 && it.ds.indexOf(DF) < 0) return false; if (q && (it.en + ' ' + it.vi + ' ' + it.k).toLowerCase().indexOf(q) < 0) return false; return true; });
   list.sort(function (a, b) { return SORT === 'cost' ? a.cost - b.cost : SORT === 'inc' ? b.inc - a.inc : SORT === 'hp' ? b.hp - a.hp : a.lvl - b.lvl || a.cost - b.cost; });
@@ -295,7 +306,7 @@ function removeRoad(idxs) { api('/api/city/road/remove', { cells: idxs }).then(f
 
 /* ───── xoay mặt · đổi màu · chọn nhiều · vẽ nhiều ô ───── */
 var PCOL = '', PFACE = 'auto', PALCB = null, PALSEL = '', PALIT = null, PSWKEY = '';
-function swHtml(id, tag) { var P = C.PAL_BY[id], st = P ? 'background:hsl(' + P.h + ',' + Math.round(P.s * 100) + '%,' + clampN(Math.round(58 + P.l * 100), 28, 88) + '%)' : ''; return '<button class="sw' + (id === (tag === 'pm' ? PALSEL : PCOL) ? ' on' : '') + (id ? '' : ' sw0') + '" data-' + tag + '="' + id + '" title="' + esc(P ? P.name : 'Màu gốc') + '" aria-label="' + esc(P ? P.name : 'Màu gốc') + '" type="button" style="' + st + '">' + (id ? '' : '⌀') + '</button>'; }
+function swHtml(id, tag) { var P = C.PAL_BY[id], st = P ? 'background:hsl(' + P.h + ',' + Math.round(P.s * 100) + '%,' + clampN(Math.round(58 + P.l * 100), 28, 88) + '%)' : ''; return '<button class="sw' + (id === (tag === 'pm' ? PALSEL : tag === 'pp' ? PQ.c : PCOL) ? ' on' : '') + (id ? '' : ' sw0') + '" data-' + tag + '="' + id + '" title="' + esc(P ? P.name : 'Màu gốc') + '" aria-label="' + esc(P ? P.name : 'Màu gốc') + '" type="button" style="' + st + '">' + (id ? '' : '⌀') + '</button>'; }
 function ghostApply(g) {   // gắn hướng mặt trước + màu đang chọn vào bóng ma
   var it = C.BY[g.k]; g.c = PCOL;
   if (PFACE === 'auto') { var d = C.facingToRoad(ENG.stateObj(), it, g.x, g.y); g.f = d >= 0 ? d : undefined; } else g.f = PFACE;
@@ -564,27 +575,85 @@ function renderBundles() {
     g.appendChild(d);
   });
 }
-var PQ = { plan: null, alt: 0, d: -1 };
-function renderPlans() {
-  var g = $('shopG'); g.innerHTML = '<div class="empty" style="grid-column:1/-1;padding:4px 0">Chọn một mẫu quy hoạch — hệ thống tìm khối đất phù hợp, bạn xem trước rồi đồng ý trả xu để xây cả khối cùng lúc. Món có trong kho sẽ được dùng trước.</div>';
-  C.PLANS.forEach(function (pl) {
-    var full = 0; pl.items.forEach(function (e) { full += C.BY[e[0]].cost; });
-    var d = document.createElement('div'); d.className = 'card'; d.style.gridColumn = '1/-1';
-    d.innerHTML = '<div style="display:flex;gap:10px;align-items:center"><div style="font-size:34px">' + pl.icon + '</div><div style="flex:1;min-width:0"><div class="en">' + esc(pl.en) + '</div><div class="vi">' + esc(pl.vi) + ' · khu ' + (pl.z === '*' ? 'bất kỳ' : esc(C.ZONE_NAME[pl.z])) + '</div><div class="meta" style="white-space:normal">' + esc(pl.desc) + '</div></div><div style="text-align:right"><div class="meta">' + pl.items.length + ' món</div><div class="pr">≈ ' + COIN + ' ' + fmt(full) + '</div></div></div><div class="row" style="margin-top:8px"><button class="btn pri" type="button">👁️ Xem trước & áp dụng</button></div>';
-    d.querySelector('button').onclick = function () { PQ = { plan: pl, alt: 0, d: -1 }; planQuote(); };
-    g.appendChild(d);
-  });
+var PZ = 'all', PSZ = 'all', PQ = { plan: null, alt: 0, d: -1, c: '' }, PZD = null;
+function planZoneDists(z) {   // quận nào có khối đất thuộc loại khu này
+  if (!PZD) { PZD = {}; C.BLOCKS.forEach(function (b) { (PZD[b.z] = PZD[b.z] || {})[b.d] = 1; }); }
+  return z === '*' ? Object.keys(C.DISTRICTS).map(Number) : Object.keys(PZD[z] || {}).map(Number);
 }
+function planGate(pl) {   // trạng thái mở khoá của mẫu với người chơi hiện tại
+  var lock = 0, chs = {}, ev = 0, maxL = 1, tot = pl.items.length; pl.items.forEach(function (e) { var it = C.BY[e[0]]; if (it.lvl > maxL) maxL = it.lvl; var bad = false; if (it.lvl > S.stats.level) bad = true; if (it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0) { bad = true; chs[it.ch] = 1; } if (it.ev && S.ev.indexOf(it.ev) < 0) { bad = true; ev = 1; } if (bad) lock++; });
+  var hasLand = planZoneDists(pl.z).some(function (d) { return S.districts.indexOf(d) >= 0; });
+  return { lock: lock, tot: tot, chs: Object.keys(chs), ev: ev, maxL: maxL, hasLand: hasLand };
+}
+function planFace(it, x, y, W, H, isRoad) {   // hướng mặt trước (0 +y · 1 +x · 2 −y · 3 −x) quay ra đường — giống hàm ở máy chủ
+  var best = -1, bc = 0, d, k, cnt, tx, ty;
+  for (d = 0; d < 4; d++) { cnt = 0; for (k = 0; k < (d % 2 ? it.h : it.w); k++) { tx = d === 1 ? x + it.w : d === 3 ? x - 1 : x + k; ty = d === 0 ? y + it.h : d === 2 ? y - 1 : y + k; if (isRoad(tx, ty)) cnt++; } if (cnt > bc) { bc = cnt; best = d; } }
+  return best < 0 ? 0 : best;
+}
+// vẽ tranh minh hoạ khối quy hoạch bằng chính hình các công trình
+function planPreview(pl, cv, pal) {
+  var W = pl.w || 5, H = pl.h || 5, HW = 32, HH = 16, ctx = cv.getContext('2d'), cw = cv.width, ch = cv.height, roads = {};
+  pl.roads.forEach(function (r) { roads[r[1] * 99 + r[0]] = 1; });
+  var isRoad = function (x, y) { return x < 0 || y < 0 || x >= W || y >= H || !!roads[y * 99 + x]; }, P = function (x, y) { return [(x - y) * HW, (x + y) * HH]; };
+  var list = pl.items.map(function (e) { var it = C.BY[e[0]], d = planFace(it, e[1], e[2], W, H, isRoad), face = d === 0 ? 0 : d === 1 ? 1 : d === 2 ? 3 : 2, sp = A.getSprite('b', it.k, 1, it.w, it.h, pal || '', face), s0 = P(e[1], e[2]); return { sp: sp, x: s0[0] - sp.ox, y: s0[1] - sp.oy, d: (e[1] + it.w) + (e[2] + it.h) }; });
+  var c4 = [P(-1, -1), P(W + 1, -1), P(W + 1, H + 1), P(-1, H + 1)], x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  c4.forEach(function (p) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+  list.forEach(function (o) { x0 = Math.min(x0, o.x); y0 = Math.min(y0, o.y); x1 = Math.max(x1, o.x + o.sp.w); y1 = Math.max(y1, o.y + o.sp.h); });
+  var sc = Math.min((cw - 10) / (x1 - x0), (ch - 10) / (y1 - y0)), ox = (cw - (x1 - x0) * sc) / 2 - x0 * sc, oy = (ch - (y1 - y0) * sc) / 2 - y0 * sc;
+  ctx.clearRect(0, 0, cw, ch); ctx.save(); ctx.setTransform(sc, 0, 0, sc, ox, oy); ctx.imageSmoothingQuality = 'high';
+  var quad = function (xa, ya, xb, yb, col) { var a = P(xa, ya), b = P(xb, ya), c = P(xb, yb), d = P(xa, yb); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(d[0], d[1]); ctx.closePath(); ctx.fillStyle = col; ctx.fill(); };
+  quad(-1, -1, W + 1, H + 1, '#5C6472'); quad(0, 0, W, H, '#92D56A');
+  var xx, yy; for (yy = 0; yy < H; yy++) for (xx = 0; xx < W; xx++) { if ((xx + yy) % 2) quad(xx, yy, xx + 1, yy + 1, 'rgba(70,140,50,.14)'); if (roads[yy * 99 + xx]) quad(xx, yy, xx + 1, yy + 1, '#5C6472'); }
+  list.sort(function (a, b) { return a.d - b.d; }).forEach(function (o) { ctx.drawImage(o.sp.c, o.x, o.y, o.sp.w, o.sp.h); });
+  ctx.restore();
+}
+var PLQ = [], PLT = 0;
+function planQueueDraw() { if (PLT) return; PLT = 1; (function step() { var n = 0; while (PLQ.length && n < 2) { var q = PLQ.shift(); if (q.cv.isConnected) { try { planPreview(q.pl, q.cv, ''); } catch (e) { /* bỏ qua */ } } n++; } if (PLQ.length) requestAnimationFrame(step); else PLT = 0; })(); }
+function renderPlans() {
+  var g = $('shopG'); g.innerHTML = '';
+  var zs = ['all', '*', 'r', 'c', 's', 'p', 'f', 'e', 'i', 'h', 'w', 'b', 'm', 'a', 't', 'g'], cnt = {};
+  C.PLANS.forEach(function (pl) { cnt[pl.z] = (cnt[pl.z] || 0) + 1; });
+  var h = '<div class="pf"><small>Chọn loại khu:</small>' + zs.map(function (z) { var n = z === 'all' ? C.PLANS.length : cnt[z] || 0; if (!n) return ''; return '<button class="chipf' + (PZ === z ? ' on' : '') + '" data-pz="' + z + '" type="button">' + (z === 'all' ? '📐 Tất cả' : z === '*' ? '🌐 Mọi khu' : C.PLAN_ZICON[z] + ' ' + C.ZONE_NAME[z]) + ' (' + n + ')</button>'; }).join('') + '</div>';
+  h += '<div class="pf"><small>Cỡ mẫu:</small>' + [['all', 'Mọi cỡ'], ['S', '5×5 — khối phố'], ['L', '11×11 — cả khu']].map(function (z) { return '<button class="chipf' + (PSZ === z[0] ? ' on' : '') + '" data-psz="' + z[0] + '" type="button">' + z[1] + '</button>'; }).join('') + '</div>';
+  h += '<div class="empty" style="grid-column:1/-1;padding:2px 0">Bấm vào một mẫu để xem hình minh hoạ lớn, danh sách công trình và chọn màu. Sau đó hệ thống tìm khối đất trống phù hợp để bạn xem trước và xây cả khối cùng lúc.</div>';
+  g.innerHTML = h;
+  var list = C.PLANS.filter(function (pl) { return (PZ === 'all' || pl.z === PZ) && (PSZ === 'all' || pl.size === PSZ); }), info = {};
+  list.forEach(function (pl) { info[pl.id] = C.planInfo(pl); }); list.sort(function (a, b) { return info[a.id].lvl - info[b.id].lvl || info[a.id].cost - info[b.id].cost; });
+  if (!list.length) g.insertAdjacentHTML('beforeend', '<div class="empty" style="grid-column:1/-1">Chưa có mẫu phù hợp bộ lọc này.</div>');
+  PLQ = [];
+  list.forEach(function (pl) {
+    var inf = info[pl.id], gt = planGate(pl), d = document.createElement('div'); d.className = 'pcard'; d.setAttribute('data-pl', pl.id);
+    var tags = '<span>' + (pl.size === 'L' ? '11×11' : '5×5') + '</span><span>' + (pl.z === '*' ? '🌐 Mọi khu' : C.PLAN_ZICON[pl.z] + ' ' + esc(C.ZONE_NAME[pl.z])) + '</span>' + (!gt.hasLand ? '<span class="warn">🔒 Cần mở khu đất</span>' : gt.lock ? '<span class="warn">🔒 Cấp ' + gt.maxL + '</span>' : '<span class="ok">✅ Xây được ngay</span>');
+    d.innerHTML = '<canvas width="320" height="240"></canvas><div class="nm">' + esc(pl.vi) + '</div><div class="en2">' + esc(pl.en) + '</div><div class="tg">' + tags + '</div><div class="pc">' + inf.count + ' món · ' + COIN + ' ' + fmt(inf.cost) + '</div>';
+    g.appendChild(d); PLQ.push({ pl: pl, cv: d.querySelector('canvas') });
+  });
+  planQueueDraw();
+}
+function openPlan(id) {
+  var pl = C.PLAN_BY[id]; if (!pl) return; var inf = C.planInfo(pl), gt = planGate(pl), first = null; pl.items.forEach(function (e) { var it = C.BY[e[0]]; if (!first || it.w * it.h > first.w * first.h) first = it; });
+  PQ = { plan: pl, alt: 0, d: -1, c: '' }; var sug = C.suggestFor(first || C.BY.cottage);
+  var h = '<h3>' + pl.icon + ' ' + esc(pl.vi) + ' <span style="font-weight:700;color:var(--muted);font-size:14px">· ' + esc(pl.en) + '</span></h3><canvas id="plBig" width="720" height="480"></canvas>';
+  h += '<p class="sub" style="margin:8px 0 2px">' + esc(pl.desc) + '</p><p class="sub" style="margin:0 0 4px"><b>' + (pl.size === 'L' ? '11×11 ô' : '5×5 ô') + '</b> · ' + (pl.z === '*' ? 'hợp với mọi khu' : 'dành cho khu <b>' + esc(C.ZONE_NAME[pl.z]) + '</b>') + (pl.arch && C.PLAN_ARCH[pl.arch] ? ' · bố cục: <b>' + esc(C.PLAN_ARCH[pl.arch].vi) + '</b>' : '') + '</p>';
+  h += '<div class="pst"><div>Số món<b>' + inf.count + '</b></div><div>Giá lẻ<b>' + COIN + ' ' + fmt(inf.cost) + '</b></div><div>Cấp cần<b>' + inf.lvl + '</b></div><div>Thuế / giờ<b>' + (inf.inc ? '+' + fmt(inf.inc) : '—') + '</b></div><div>Dân cư<b>' + (inf.pop ? '👥 ' + fmt(inf.pop) : '—') + '</b></div><div>Hạnh phúc<b>' + (inf.hp ? '😊 +' + inf.hp : '—') + '</b></div></div>';
+  var keys = Object.keys(inf.counts).sort(function (a, b) { return C.BY[b].cost - C.BY[a].cost; });
+  h += '<div class="pal-h">Các công trình trong mẫu</div><div class="pleg">' + keys.map(function (k) { var it = C.BY[k], lk = it.lvl > S.stats.level || (it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0); return '<span class="' + (lk ? 'lk' : '') + '" title="' + (lk ? 'Chưa mở khoá' : '') + '"><canvas data-th="' + k + '" width="68" height="68"></canvas>' + esc(it.vi) + ' ×' + inf.counts[k] + (lk ? ' 🔒' : '') + '</span>'; }).join('') + '</div>';
+  if (gt.lock) h += '<p class="sub" style="color:#B3541E">⚠️ Có ' + gt.lock + '/' + gt.tot + ' món chưa mở khoá (cấp thành phố' + (gt.chs.length ? ' hoặc chương “' + gt.chs.map(function (c) { return esc(L2[c] || c); }).join('”, “') + '”' : '') + '). Món chưa mở sẽ được bỏ qua khi xây.</p>';
+  h += '<div class="pal-h">🎨 Màu cho cả khu (miễn phí)</div><div class="swrow" id="plSw" style="margin:6px 0 10px">' + swHtml('', 'pp') + sug.slice(0, 7).map(function (id) { return swHtml(id, 'pp'); }).join('') + '</div>';
+  h += '<div class="row"><button class="btn" data-close="planM" type="button">Đóng</button><button class="btn pri" id="plGo" type="button"' + (gt.hasLand ? '' : ' disabled') + '>📍 Tìm chỗ & xem trước</button></div>';
+  $('planB').innerHTML = h; $('planM').classList.add('on');
+  planPreview(pl, $('plBig'), ''); [].forEach.call(document.querySelectorAll('#planB canvas[data-th]'), function (c) { c.getContext('2d').drawImage(A.thumb(c.getAttribute('data-th'), 68, 1, ''), 0, 0); });
+}
+var L2 = {}; (window.EWTCityLearn ? EWTCityLearn.CH : []).forEach(function (c) { L2[c.id] = c.en; });
 function planQuote() {
   api('/api/city/plan/quote', { plan: PQ.plan.id, alt: PQ.alt, d: PQ.d }).then(function (q) {
-    PQ.q = q; ENG.focusTile(q.bx + 2, q.by + 2, 1.1); $('shopS').classList.remove('on');
+    PQ.q = q; ENG.focusTile(q.bx + (PQ.plan.w || 5) / 2, q.by + (PQ.plan.h || 5) / 2, PQ.plan.size === "L" ? .8 : 1.1); $('shopS').classList.remove('on');
     var ok = q.items.filter(function (i) { return i.ok; }), bad = q.items.filter(function (i) { return !i.ok; }), sum = {};
     ok.forEach(function (i) { sum[i.k] = (sum[i.k] || 0) + 1; });
     var h = '<h3>' + PQ.plan.icon + ' ' + esc(PQ.plan.vi) + '</h3><p class="sub">Khối đất tại quận <b>' + esc(C.DISTRICTS[q.d].vi) + '</b> (tìm thấy ' + q.blocks + ' chỗ). Xây được <b>' + q.ok + '/' + q.total + '</b> món' + (q.roads ? ' + ' + q.roads + ' ô đường' : '') + '.</p><p class="sub" style="margin:2px 0">' + Object.keys(sum).map(function (k) { return sum[k] + '× ' + esc(C.BY[k].vi); }).join(' · ') + '</p>';
     if (bad.length) { var why = {}; bad.forEach(function (i) { why[i.why] = (why[i.why] || 0) + 1; }); h += '<p class="sub" style="color:#B3541E">⚠️ Bỏ qua ' + bad.length + ' món: ' + Object.keys(why).slice(0, 2).map(function (w) { return esc(w); }).join(' / ') + '</p>'; }
     h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="pqAlt" type="button">🔄 Chỗ khác</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="pqGo" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
     lmodal(h); $('learnM').classList.add('peek'); $('pqAlt').onclick = function () { PQ.alt++; planQuote(); };
-    $('pqGo').onclick = function () { api('/api/city/plan/apply', { plan: PQ.plan.id, bx: q.bx, by: q.by }).then(function (r) { setState(r); $('learnM').classList.remove('on'); toast('📐 Đã xây ' + r.built + ' món theo mẫu “' + esc(PQ.plan.vi) + '”!', 3000); }).catch(function (e) { toast(e.message, 3200); }); };
+    $('pqGo').onclick = function () { api('/api/city/plan/apply', { plan: PQ.plan.id, bx: q.bx, by: q.by, c: PQ.c }).then(function (r) { setState(r); $('learnM').classList.remove('on'); toast('📐 Đã xây ' + r.built + ' món theo mẫu “' + esc(PQ.plan.vi) + '”!', 3000); }).catch(function (e) { toast(e.message, 3200); }); };
   }).catch(function (e) { toast(e.message, 4200); });
 }
 
@@ -706,6 +775,11 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
   if ((el = t.closest('[data-sp]'))) { speed(el.getAttribute('data-sp')); return; }
   if ((el = t.closest('[data-act]'))) { var a = el.getAttribute('data-act'); if (a === 'collect') collect(INFO); else if (a === 'up') upgrade(); else if (a === 'dem') demolish(); else if (a === 'rot') rotateBuilding('cw'); else if (a === 'road') rotateBuilding('road'); else if (a === 'pal') recolorBuilding(); return; }
+  if ((el = t.closest('[data-pz]'))) { PZ = el.getAttribute('data-pz'); renderPlans(); return; }
+  if ((el = t.closest('[data-psz]'))) { PSZ = el.getAttribute('data-psz'); renderPlans(); return; }
+  if ((el = t.closest('[data-pl]'))) { openPlan(el.getAttribute('data-pl')); return; }
+  if ((el = t.closest('[data-pp]'))) { PQ.c = el.getAttribute('data-pp'); [].forEach.call(document.querySelectorAll('#plSw .sw'), function (b) { b.classList.toggle('on', b.getAttribute('data-pp') === PQ.c); }); planPreview(PQ.plan, $('plBig'), PQ.c); return; }
+  if (t.closest('#plGo')) { $('planM').classList.remove('on'); planQuote(); return; }
   if ((el = t.closest('[data-pc]'))) { PCOL = el.getAttribute('data-pc'); PSWKEY = ''; if (ENG.ghost) { ENG.refreshGhost(); updatePbar(); } return; }
   if ((el = t.closest('[data-pm]'))) { PALSEL = el.getAttribute('data-pm'); palPreview(); return; }
   if (t.closest('#palOk')) { $('palM').classList.remove('on'); var cbk = PALCB; if (cbk) cbk(PALSEL); return; }
