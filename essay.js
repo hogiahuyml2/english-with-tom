@@ -220,6 +220,21 @@ Return JSON only.`;
     s = expireIfNeeded(s); const u = one('SELECT id,name,email FROM users WHERE id=?', s.user_id) || {};
     res.json({ sub: { id: s.id, status: s.status, text: s.text, words: words(s.text), score: s.score, max: s.max_score, result: s.result ? J(s.result, null) : null, started_at: s.started_at, submitted_at: s.submitted_at, auto: !!s.auto, late: !!s.late, leaves: s.leaves, pastes: s.pastes, released_at: s.released_at }, student: u, task: taskView(t) });
   });
+
+  // Cho học sinh làm lại (mạng yếu, mất bài...) hoặc xoá hẳn bài đã nộp
+  app.post('/api/essay/teacher/sub/:id/reset', requireRole('teacher', 'admin'), (req, res) => {
+    const s = one('SELECT * FROM essay_subs WHERE id=?', Number(req.params.id)), t = s && taskOf(s.task_id);
+    if (!s || !canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài làm.', 404);
+    const b = req.body || {}, mode = String(b.mode), min = Math.max(5, Math.min(600, parseInt(b.minutes, 10) || Math.max(t.minutes, 30)));
+    if (mode === 'remove') db.prepare('DELETE FROM essay_subs WHERE id=?').run(s.id);
+    else if (mode === 'reopen' || mode === 'fresh') {
+      const nowIso = new Date().toISOString();
+      db.prepare("UPDATE essay_subs SET status='draft', text=?, started_at=?, due_at=?, submitted_at=NULL, auto=0, late=0, leaves=0, pastes=0, result=NULL, score=NULL, max_score=NULL, graded_at=NULL, released_at=NULL WHERE id=?")
+        .run(mode === 'fresh' ? '' : s.text, nowIso, new Date(Date.now() + min * 60e3).toISOString(), s.id);
+      try { notifyUser(s.user_id, 'essay_reopen', '🔄 Thầy/cô cho bạn làm lại: ' + t.title, 'Bạn có ' + min + ' phút. ' + (mode === 'reopen' ? 'Bài đã viết được giữ lại.' : 'Bạn viết lại từ đầu nhé.'), 'essay.html?id=' + t.id); } catch (_) { /* bỏ qua */ }
+    } else return bad(res, 'Thao tác không hợp lệ.');
+    res.json({ ok: true });
+  });
   // giáo viên chỉnh điểm / nhận xét (lưu nháp)
   app.post('/api/essay/teacher/sub/:id/save', requireRole('teacher', 'admin'), (req, res) => {
     const s = one('SELECT * FROM essay_subs WHERE id=?', Number(req.params.id)), t = s && taskOf(s.task_id);
