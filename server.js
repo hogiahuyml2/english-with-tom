@@ -637,6 +637,7 @@ QUY TẮC QUAN TRỌNG:
 // AI chấm bài Writing (Claude)
 app.post('/api/grade-writing', requireAuth, async (req, res) => {
   const { exercise_id, essay, student_image } = req.body || {};
+  if (essayTaskOfExercise(exercise_id)) return res.status(409).json({ error: 'Bài tự luận được làm tại trang Bài tự luận.', link: 'essay.html?id=' + essayTaskOfExercise(exercise_id) });
   const isImageMode = !!student_image;
 
   // Kiểm tra đầu vào: nếu nộp ảnh thì bỏ qua word-count; nếu gõ text thì kiểm tra độ dài
@@ -920,15 +921,22 @@ function exCacheKey(q, role) {
   return `${role}|${q.program||''}|${q.skill||''}|${q.private_only||''}|${q.type||''}`;
 }
 function exCacheInvalidate() { _exCache.clear(); }
+app.locals.exCacheInvalidate = exCacheInvalidate;
 
 // Cache từng bài tập theo ID — lazy: populate khi học sinh vào lần đầu, serve từ RAM sau đó
 const _exById = new Map(); // id → exercise row
+app.locals.exRamSync = (id) => { try { const r = db.prepare('SELECT id,program,skill,title,content,questions,answer_key,image_url,audio_url,task_type,metadata,auto_grade,is_private,created_at FROM exercises WHERE id=?').get(Number(id)); if (r) _exById.set(Number(id), r); else _exById.delete(Number(id)); } catch (_) {} };
 
 // Cache quyền truy cập đề riêng — key "exerciseId|email(lowercase)" và "exerciseId|userId".
 // Đọc từ RAM để check private KHÔNG BAO GIỜ đụng NFS → không thể treo.
 const _assignedSet  = new Set(); // "exId|email"  — học sinh được giao đề
+// ── Bài tự luận (essay.js) phản chiếu vào hệ thống đề/giao bài/bài nộp chung: các thao tác cũ KHÔNG được sửa/chấm trực tiếp bài loại này ──
+const essayTaskOfExercise = (exId) => { try { const r = db.prepare("SELECT metadata FROM exercises WHERE id=? AND task_type='essay'").get(Number(exId)); return r ? (JSON.parse(r.metadata || '{}').essay_task || 0) : 0; } catch (_) { return 0; } };
+const essayTaskOfSub = (subId) => { try { const r = db.prepare('SELECT exercise_id FROM submissions WHERE id=?').get(Number(subId)); return r ? essayTaskOfExercise(r.exercise_id) : 0; } catch (_) { return 0; } };
+const essayLock = (res, taskId) => res.status(409).json({ error: 'Đây là bài tự luận — hãy chấm / sửa / xoá trong “Giao bài tự luận viết”.', essay_task: taskId, link: 'teacher-essay.html?task=' + taskId });
 const _submittedSet = new Set(); // "exId|userId" — học sinh đã từng nộp đề
 const _assignmentDeadlines = new Map(); // "exId|email" → deadline (string) — để khoá bài quá hạn
+app.locals.addAssigned = (exId, email, deadline) => { _assignedSet.add(Number(exId) + '|' + email); if (deadline) _assignmentDeadlines.set(Number(exId) + '|' + email, deadline); };
 
 // ── Load DB vào RAM qua sql.js (WASM, không cần native addon) ────────────────
 // fs.readFile đọc DB file bất đồng bộ (không block event loop dù NFS chậm).
@@ -1231,6 +1239,7 @@ app.post('/api/exercises', requireRole('teacher', 'admin'), (req, res) => {
 
 // Giáo viên/Admin cập nhật đề
 app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
+  { const et = essayTaskOfExercise(req.params.id); if (et) return essayLock(res, et); }
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
@@ -1272,6 +1281,7 @@ app.put('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
 
 // Giáo viên/Admin xoá đề
 app.delete('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => {
+  { const et = essayTaskOfExercise(req.params.id); if (et) return essayLock(res, et); }
   const ex = db.prepare('SELECT id,created_by FROM exercises WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (req.user.role !== 'admin' && ex.created_by !== req.user.id)
@@ -1284,7 +1294,7 @@ app.delete('/api/exercises/:id', requireRole('teacher', 'admin'), (req, res) => 
 
 // Bulk delete exercises (teacher xóa đề của mình; admin xóa bất kỳ)
 app.post('/api/exercises/bulk-delete', requireRole('teacher', 'admin'), (req, res) => {
-  const { ids } = req.body || {};
+  const { ids: rawIds } = req.body || {}; const ids = Array.isArray(rawIds) ? rawIds.filter(i => !essayTaskOfExercise(i)) : rawIds;
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
   const isAdmin = req.user.role === 'admin';
   const del = db.prepare('DELETE FROM exercises WHERE id=?' + (isAdmin ? '' : ' AND created_by=?'));
@@ -1302,6 +1312,7 @@ app.post('/api/exercises/bulk-delete', requireRole('teacher', 'admin'), (req, re
 
 app.post('/api/submissions', requireAuth, (req, res) => {
   const { exercise_id, answers } = req.body || {};
+  if (essayTaskOfExercise(exercise_id)) return res.status(409).json({ error: 'Bài tự luận được làm tại trang Bài tự luận.', link: 'essay.html?id=' + essayTaskOfExercise(exercise_id) });
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   if (ex.is_private && req.user.role === 'student') {
@@ -1580,7 +1591,7 @@ app.post('/api/admin/users/bulk-role', requireRole('admin'), (req, res) => {
 
 // Bulk delete exercises (admin)
 app.post('/api/admin/exercises/bulk-delete', requireRole('admin'), (req, res) => {
-  const { ids } = req.body || {};
+  const { ids: rawIds } = req.body || {}; const ids = Array.isArray(rawIds) ? rawIds.filter(i => !essayTaskOfExercise(i)) : rawIds;
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'Thiếu danh sách ids.' });
   let count = 0;
   ids.map(Number).forEach(id => { count += db.prepare('DELETE FROM exercises WHERE id=?').run(id).changes; });
@@ -1675,7 +1686,7 @@ app.get('/api/my-assignments', requireAuth, (req, res) => {
   try {
     const rows = db.prepare(`
       SELECT a.id, a.deadline, a.note, a.created_at AS assigned_at,
-             e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade,
+             e.id AS exercise_id, e.title, e.program, e.skill, e.is_private, e.auto_grade, e.task_type, e.metadata,
              e.content AS exercise_content, e.image_url AS exercise_image_url, e.audio_url AS exercise_audio_url,
              u.id AS teacher_id, u.name AS teacher_name,
              g.name AS group_name,
@@ -1729,6 +1740,7 @@ app.get('/api/teacher/submission/:id', requireRole('teacher','admin'), (req, res
     WHERE s.id = ?
   `).get(Number(req.params.id));
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
+  sub.essay_task = essayTaskOfExercise(sub.exercise_id) || 0;
   try {
     const st = db.prepare('SELECT strict, max_leaves FROM assignments WHERE exercise_id=? AND student_email=? ORDER BY id DESC LIMIT 1').get(sub.exercise_id, sub.student_email);
     if (st && st.strict) {
@@ -1741,6 +1753,7 @@ app.get('/api/teacher/submission/:id', requireRole('teacher','admin'), (req, res
 
 // Giáo viên chấm thủ công bài nộp
 app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, res) => {
+  { const et = essayTaskOfSub(req.params.id); if (et) return essayLock(res, et); }
   const { score, max_score, feedback } = req.body || {};
   const subId = Number(req.params.id);
   const sub = db.prepare(`
@@ -1776,6 +1789,7 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
 const _aiGradeHits = new Map();
 // Giáo viên chấm bài bằng AI (dùng lại gradeWriting đã có)
 app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req, res) => {
+  { const et = essayTaskOfSub(req.params.id); if (et) return essayLock(res, et); }
   const subId = Number(req.params.id);
   const { task_type_override, teacher_note } = req.body || {};
   const sub = db.prepare(`
@@ -1888,6 +1902,7 @@ function mergeTeacherEdits(existingFeedback, { teacher_comment, visibility, erro
 }
 
 app.post('/api/teacher/save-draft/:id', requireRole('teacher','admin'), (req, res) => {
+  { const et = essayTaskOfSub(req.params.id); if (et) return essayLock(res, et); }
   const subId = Number(req.params.id);
   const { score, max_score, teacher_comment, visibility, error_list, suggested_writing, criteria } = req.body || {};
   const sub = db.prepare('SELECT id, feedback FROM submissions WHERE id=?').get(subId);
@@ -1933,6 +1948,7 @@ function finalizeGrade(subId, edits, req) {
   return { ok: true };
 }
 app.post('/api/teacher/send-grade/:id', requireRole('teacher','admin'), async (req, res) => {
+  { const et = essayTaskOfSub(req.params.id); if (et) return essayLock(res, et); }
   const r = finalizeGrade(Number(req.params.id), req.body || {}, req);
   if (r.error) return res.status(r.status || 400).json({ error: r.error });
   res.json({ ok: true });
@@ -1945,7 +1961,7 @@ app.get('/api/teacher/writing-queue', requireRole('teacher','admin'), (req, res)
   const scope = admin ? '' : 'AND (e.created_by = ? OR EXISTS (SELECT 1 FROM assignments a WHERE a.exercise_id = s.exercise_id AND a.assigned_by = ?))';
   const sa = admin ? [] : [req.user.id, req.user.id];
   const base = `FROM submissions s JOIN exercises e ON e.id = s.exercise_id JOIN users u ON u.id = s.user_id
-    WHERE LOWER(e.skill) = 'writing' AND UPPER(e.program) <> 'APTIS' AND s.answers LIKE '%essay%' ${scope}`;
+    WHERE LOWER(e.skill) = 'writing' AND UPPER(e.program) <> 'APTIS' AND COALESCE(e.task_type,'') <> 'essay' AND s.answers LIKE '%essay%' ${scope}`;
   const cnt = {};
   for (const r of db.prepare(`SELECT s.status AS st, COUNT(*) AS c ${base} AND (s.status IN ('pending','pending_review') OR (s.status='graded' AND s.submitted_at >= datetime('now','-14 days'))) GROUP BY s.status`).all(...sa)) cnt[r.st] = r.c;
   const want = String(req.query.status || 'todo');
@@ -1991,6 +2007,7 @@ app.post('/api/teacher/send-grade-batch', requireRole('teacher','admin'), (req, 
   let sent = 0; const skipped = [];
   for (const id of ids) {
     const s = db.prepare("SELECT s.id, s.status, s.score, e.created_by FROM submissions s JOIN exercises e ON e.id=s.exercise_id WHERE s.id=?").get(id);
+    if (essayTaskOfSub(id)) { skipped.push(id); continue; }
     if (!s || s.status !== 'pending_review' || s.score == null) { skipped.push(id); continue; }
     if (req.user.role !== 'admin' && s.created_by !== req.user.id && !db.prepare('SELECT 1 FROM assignments a JOIN submissions x ON x.exercise_id=a.exercise_id WHERE x.id=? AND a.assigned_by=? LIMIT 1').get(id, req.user.id)) { skipped.push(id); continue; }
     const r = finalizeGrade(id, {}, req); if (r.ok) sent++; else skipped.push(id);
@@ -2000,6 +2017,7 @@ app.post('/api/teacher/send-grade-batch', requireRole('teacher','admin'), (req, 
 
 // Giáo viên lấy bài mẫu AI cho một đề (từ submission_id)
 app.post('/api/teacher/model-answer/:id', requireRole('teacher','admin'), async (req, res) => {
+  { const et = essayTaskOfSub(req.params.id); if (et) return essayLock(res, et); }
   const subId = Number(req.params.id);
   const sub = db.prepare(`
     SELECT e.* FROM submissions s JOIN exercises e ON e.id=s.exercise_id WHERE s.id=?

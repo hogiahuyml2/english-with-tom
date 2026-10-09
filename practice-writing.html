@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 <style>
   /* ── Kết quả chấm ── */
   .band-big { font-size:42px; font-weight:800; background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
@@ -964,6 +964,7 @@ function showLoadError(msg) {
     if (!d) return;
     var e = d.exercise;
     if (!e) { showLoadError('Không tìm thấy đề'); return; }
+    if (e.task_type === 'essay') { try { var _et = (JSON.parse(e.metadata || '{}')).essay_task; if (_et) { location.replace('essay.html?id=' + _et); return; } } catch (_) {} }
   G_currentExercise = e;
   document.getElementById('exTitle').textContent = e.title;
   document.getElementById('crumbTitle').textContent = e.program + ' Writing';

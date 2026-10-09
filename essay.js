@@ -16,6 +16,35 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
   const words = (t) => (String(t || '').trim().match(/\S+/g) || []).length;
   const isStaff = (u) => u.role === 'teacher' || u.role === 'admin';
 
+
+  /* ───── HTML đề bài (cỡ chữ, màu, in đậm...) — chỉ giữ thẻ & kiểu an toàn ───── */
+  const OK_TAGS = new Set(['b', 'strong', 'i', 'em', 'u', 's', 'strike', 'br', 'p', 'div', 'span', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'font', 'sub', 'sup', 'blockquote', 'mark', 'hr']);
+  const OK_CSS = { color: /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|[a-z]{3,20})$/i, 'background-color': /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|[a-z]{3,20})$/i, 'font-size': /^\d{1,3}(\.\d+)?(px|pt|em|rem|%)$/i, 'font-weight': /^(bold|normal|[1-9]00)$/i, 'font-style': /^(italic|normal)$/i, 'text-align': /^(left|right|center|justify)$/i, 'text-decoration': /^(underline|line-through|none)(\s+(underline|line-through))?$/i };
+  function sanitizeHtml(html) {
+    let h = String(html || '').slice(0, 60000).replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|iframe|object|embed|svg|math|form|textarea|select|template)[\s\S]*?<\/\1\s*>/gi, '');
+    const re = /<\/?([a-zA-Z][a-zA-Z0-9]*)((?:\s+[^<>]*?)?)\s*\/?>/g, esc2 = (x) => x.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    let out = '', last = 0, m;
+    while ((m = re.exec(h))) {
+      out += esc2(h.slice(last, m.index)); last = re.lastIndex;
+      const tag = m[1].toLowerCase(), attrs = m[2]; if (!OK_TAGS.has(tag)) continue;
+      if (m[0][1] === '/') { out += '</' + tag + '>'; continue; }
+      let t = '<' + tag;
+      if (tag === 'font') {
+        const c = /\scolor\s*=\s*["']?(#[0-9a-f]{3,8}|[a-z]{3,20})["']?/i.exec(' ' + attrs), z = /\ssize\s*=\s*["']?([1-7])["']?/i.exec(' ' + attrs);
+        if (c) t += ' color="' + c[1] + '"'; if (z) t += ' size="' + z[1] + '"';
+      }
+      const st = /\sstyle\s*=\s*("([^"]*)"|'([^']*)')/i.exec(' ' + attrs);
+      if (st) {
+        const keep = []; String(st[2] || st[3] || '').split(';').forEach((d) => { const i = d.indexOf(':'); if (i < 0) return; const k = d.slice(0, i).trim().toLowerCase(), v = d.slice(i + 1).trim(); if (OK_CSS[k] && OK_CSS[k].test(v)) keep.push(k + ':' + v); });
+        if (keep.length) t += ' style="' + keep.join(';') + '"';
+      }
+      out += t + (tag === 'br' || tag === 'hr' ? '/>' : '>');
+    }
+    return out + esc2(h.slice(last));
+  }
+  const htmlText = (h) => String(h || '').replace(/<\s*br\s*\/?>/gi, '\n').replace(/<\/(p|div|li|h[1-4]|blockquote)>/gi, '\n').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\n{3,}/g, '\n\n').trim();
+  const escHtml = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   db.exec(`
     CREATE TABLE IF NOT EXISTS essay_tasks (
       id INTEGER PRIMARY KEY AUTOINCREMENT, teacher_id INTEGER NOT NULL, title TEXT NOT NULL, prompt_text TEXT, prompt_image TEXT,
@@ -28,6 +57,8 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
       started_at TEXT NOT NULL, due_at TEXT, submitted_at TEXT, auto INTEGER NOT NULL DEFAULT 0, late INTEGER NOT NULL DEFAULT 0, leaves INTEGER NOT NULL DEFAULT 0, pastes INTEGER NOT NULL DEFAULT 0,
       result TEXT, score REAL, max_score REAL, graded_at TEXT, released_at TEXT, saved_at TEXT, UNIQUE(task_id, user_id));
     CREATE INDEX IF NOT EXISTS idx_es_task ON essay_subs(task_id, status);`);
+
+  [['prompt_html', 'TEXT'], ['exercise_id', 'INTEGER']].forEach(([c, ty]) => { try { db.exec('ALTER TABLE essay_tasks ADD COLUMN ' + c + ' ' + ty); } catch (_) { /* đã có */ } });
 
   /* ───── tiện ích ───── */
   const taskOf = (id) => one('SELECT * FROM essay_tasks WHERE id=?', Number(id));
@@ -56,6 +87,7 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
   function submitSub(s, auto) {
     const t = taskOf(s.task_id), late = t && t.deadline && Date.now() > msOf(t.deadline) + 1000 ? 1 : 0;
     db.prepare("UPDATE essay_subs SET status='submitted', submitted_at=?, auto=?, late=? WHERE id=? AND status='draft'").run(now(), auto ? 1 : 0, late, s.id);
+    try { mirror(s.id); } catch (e) { console.error('[essay mirror]', e.message); }
   }
   // học sinh quá giờ → tự nộp bản nháp đã lưu gần nhất
   function expireIfNeeded(s) {
@@ -64,6 +96,43 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
   }
   const sweep = () => { try { all("SELECT * FROM essay_subs WHERE status='draft' AND due_at IS NOT NULL AND due_at < ?", new Date(Date.now() - 3000).toISOString()).forEach((s) => submitSub(s, true)); } catch (e) { console.error('[essay sweep]', e.message); } };
   setInterval(sweep, 30e3).unref();
+
+
+  /* ───── ĐỒNG BỘ với hệ thống đề / giao bài / bài nộp chung ───── */
+  const invalidateEx = (id) => { try { if (id && app.locals.exRamSync) app.locals.exRamSync(id); if (app.locals.exCacheInvalidate) app.locals.exCacheInvalidate(); } catch (_) { /* bỏ qua */ } };
+  function ensureExercise(t) {
+    const meta = JSON.stringify({ essay_task: t.id }), content = t.prompt_text || '';
+    const ex = t.exercise_id && one('SELECT id FROM exercises WHERE id=?', t.exercise_id);
+    if (ex) db.prepare('UPDATE exercises SET title=?, content=?, image_url=?, metadata=? WHERE id=?').run(t.title, content, t.prompt_image, meta, ex.id);
+    else {
+      const r = db.prepare("INSERT INTO exercises (program,skill,title,content,image_url,auto_grade,created_by,created_at,task_type,metadata,is_private) VALUES ('Tự luận','Writing',?,?,?,0,?,?,'essay',?,1)").run(t.title, content, t.prompt_image, t.teacher_id, now(), meta);
+      db.prepare('UPDATE essay_tasks SET exercise_id=? WHERE id=?').run(Number(r.lastInsertRowid), t.id); t.exercise_id = Number(r.lastInsertRowid);
+    }
+    invalidateEx(t.exercise_id); return t.exercise_id;
+  }
+  function syncAssignments(t) {
+    const exId = ensureExercise(t); if (!exId) return;
+    targetUsers(t).forEach((uid) => {
+      const u = one('SELECT email FROM users WHERE id=?', uid); if (!u) return;
+      const em = String(u.email).toLowerCase();
+      if (!one('SELECT id FROM assignments WHERE exercise_id=? AND LOWER(student_email)=?', exId, em)) {
+        db.prepare('INSERT INTO assignments (exercise_id,student_email,assigned_by,deadline,note,created_at,strict,max_leaves) VALUES (?,?,?,?,?,?,0,3)').run(exId, em, t.teacher_id, t.deadline, 'Bài tự luận viết — làm tại trang Bài tự luận', now());
+        try { if (app.locals.addAssigned) app.locals.addAssigned(exId, em, t.deadline); } catch (_) { /* bỏ qua */ }
+      }
+    });
+    db.prepare('UPDATE assignments SET deadline=? WHERE exercise_id=?').run(t.deadline, exId);
+  }
+  // phản chiếu bài nộp sang bảng submissions chung (để hiện ở danh sách bài nộp, sổ điểm, hồ sơ học sinh...)
+  function mirror(subId) {
+    const s = one('SELECT * FROM essay_subs WHERE id=?', subId), t = s && taskOf(s.task_id); if (!s || !t || !t.exercise_id) return;
+    const ex = one('SELECT id FROM submissions WHERE user_id=? AND exercise_id=?', s.user_id, t.exercise_id);
+    if (s.status === 'draft') { if (ex) db.prepare('DELETE FROM submissions WHERE id=?').run(ex.id); return; }
+    const r = s.result ? J(s.result, {}) : null, status = s.status === 'released' ? 'graded' : s.status === 'ai_draft' ? 'pending_review' : 'pending';
+    const fb = r ? JSON.stringify({ overall_score: s.score, scale_label: '0–' + t.max_score, criteria: r.criteria || [], summary: r.summary || '', requirement_check: r.requirement_check || '', strengths: r.strengths || [], suggestions: r.improvements || [], teacher_comment: r.teacher_comment || '', error_list: (r.errors || []).map((e) => ({ severity: 'error', category: e.category || 'language', error: e.quote, correction: e.correction, explanation: e.explanation, rule: '' })), essay_task: t.id }) : null;
+    const ans = JSON.stringify({ essay: s.text, essay_task: t.id });
+    if (ex) db.prepare('UPDATE submissions SET answers=?, score=?, max_score=?, status=?, feedback=?, submitted_at=? WHERE id=?').run(ans, s.score, s.max_score || t.max_score, status, fb, s.submitted_at || now(), ex.id);
+    else db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,score,max_score,status,feedback,submitted_at) VALUES (?,?,?,?,?,?,?,?)').run(s.user_id, t.exercise_id, ans, s.score, s.max_score || t.max_score, status, fb, s.submitted_at || now());
+  }
 
   /* ───── GIÁO VIÊN: tạo / sửa / giao đề ───── */
   function applyTargets(t, groupIds, emails) {
@@ -88,7 +157,7 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
   app.post('/api/essay/teacher/task', requireRole('teacher', 'admin'), (req, res) => {
     const b = req.body || {}, title = clip(b.title, 140).trim();
     if (!title) return bad(res, 'Hãy nhập tên bài.');
-    const text = clip(b.prompt_text, 8000).trim(), img = String(b.prompt_image || '');
+    const html = b.prompt_html != null ? sanitizeHtml(b.prompt_html) : '', text = (html ? htmlText(html) : clip(b.prompt_text, 8000)).trim().slice(0, 8000), img = String(b.prompt_image || '');
     if (!text && !img) return bad(res, 'Hãy nhập đề bài (văn bản) hoặc tải ảnh đề.');
     if (img && !/^\/uploads\/[\w.\-]+$/.test(img)) return bad(res, 'Ảnh đề không hợp lệ.');
     const f = { minw: Math.max(0, Math.min(5000, parseInt(b.min_words, 10) || 0)), maxw: Math.max(0, Math.min(10000, parseInt(b.max_words, 10) || 0)), min: Math.max(0, Math.min(600, parseInt(b.minutes, 10) || 0)) };
@@ -99,13 +168,14 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
     let t;
     if (b.id) {
       t = taskOf(b.id); if (!canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài của bạn.', 404);
-      db.prepare('UPDATE essay_tasks SET title=?, prompt_text=?, prompt_image=?, min_words=?, max_words=?, minutes=?, deadline=?, allow_late=?, requirement=?, criteria=?, max_score=?, lang=? WHERE id=?').run(...vals, t.id);
+      db.prepare('UPDATE essay_tasks SET title=?, prompt_text=?, prompt_image=?, min_words=?, max_words=?, minutes=?, deadline=?, allow_late=?, requirement=?, criteria=?, max_score=?, lang=?, prompt_html=? WHERE id=?').run(...vals, html || null, t.id); t = taskOf(t.id);
     } else {
-      const r = db.prepare('INSERT INTO essay_tasks (teacher_id,title,prompt_text,prompt_image,min_words,max_words,minutes,deadline,allow_late,requirement,criteria,max_score,lang,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)').run(req.user.id, ...vals, now());
+      const r = db.prepare('INSERT INTO essay_tasks (teacher_id,title,prompt_text,prompt_image,min_words,max_words,minutes,deadline,allow_late,requirement,criteria,max_score,lang,prompt_html,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').run(req.user.id, ...vals, html || null, now());
       t = taskOf(Number(r.lastInsertRowid));
     }
     const added = applyTargets(t, b.group_ids, b.emails);
     if (!targetUsers(t).length) { if (!b.id) { db.prepare('DELETE FROM essay_targets WHERE task_id=?').run(t.id); db.prepare('DELETE FROM essay_tasks WHERE id=?').run(t.id); } return bad(res, 'Không tìm thấy học sinh nào để giao (lớp trống hoặc email chưa đăng ký).'); }
+    syncAssignments(taskOf(t.id));
     if (added || !b.id) notifyNew(t);
     res.json({ ok: true, id: t.id, added });
   });
@@ -116,7 +186,7 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
       return { id: t.id, title: t.title, minutes: t.minutes, deadline: t.deadline, status: t.status, created_at: t.created_at, total, writing: c.draft || 0, submitted: c.submitted || 0, review: c.ai_draft || 0, released: c.released || 0 };
     }), groups: all('SELECT g.id, g.name, (SELECT COUNT(*) FROM group_members m WHERE m.group_id=g.id AND m.user_id IS NOT NULL) n FROM groups g' + (req.user.role === 'admin' ? '' : ' WHERE g.teacher_id=?') + ' ORDER BY g.name', ...(req.user.role === 'admin' ? [] : [req.user.id])), ai_ready: aiReady() });
   });
-  function taskView(t) { return { id: t.id, title: t.title, prompt_text: t.prompt_text || '', prompt_image: t.prompt_image || '', min_words: t.min_words, max_words: t.max_words, minutes: t.minutes, deadline: t.deadline, allow_late: !!t.allow_late, requirement: t.requirement || '', criteria: t.criteria || '', max_score: t.max_score, lang: t.lang, status: t.status }; }
+  function taskView(t) { return { id: t.id, title: t.title, prompt_text: t.prompt_text || '', prompt_html: t.prompt_html || '', prompt_image: t.prompt_image || '', min_words: t.min_words, max_words: t.max_words, minutes: t.minutes, deadline: t.deadline, exercise_id: t.exercise_id || 0, allow_late: !!t.allow_late, requirement: t.requirement || '', criteria: t.criteria || '', max_score: t.max_score, lang: t.lang, status: t.status }; }
   app.get('/api/essay/teacher/task/:id', requireRole('teacher', 'admin'), (req, res) => {
     const t = taskOf(req.params.id); if (!canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài của bạn.', 404);
     const uids = targetUsers(t), subs = new Map(all('SELECT * FROM essay_subs WHERE task_id=?', t.id).map((s) => [s.user_id, expireIfNeeded(s)]));
@@ -128,7 +198,7 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
     const t = taskOf(req.params.id); if (!canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài của bạn.', 404);
     const a = String((req.body || {}).action);
     if (a === 'close' || a === 'open') db.prepare('UPDATE essay_tasks SET status=? WHERE id=?').run(a === 'close' ? 'closed' : 'open', t.id);
-    else if (a === 'delete') { all('SELECT id FROM essay_subs WHERE task_id=?', t.id); db.prepare('DELETE FROM essay_subs WHERE task_id=?').run(t.id); db.prepare('DELETE FROM essay_targets WHERE task_id=?').run(t.id); db.prepare('DELETE FROM essay_tasks WHERE id=?').run(t.id); }
+    else if (a === 'delete') { if (t.exercise_id) { db.prepare('DELETE FROM submissions WHERE exercise_id=?').run(t.exercise_id); db.prepare('DELETE FROM assignments WHERE exercise_id=?').run(t.exercise_id); db.prepare('DELETE FROM exercises WHERE id=?').run(t.exercise_id); invalidateEx(t.exercise_id); } db.prepare('DELETE FROM essay_subs WHERE task_id=?').run(t.id); db.prepare('DELETE FROM essay_targets WHERE task_id=?').run(t.id); db.prepare('DELETE FROM essay_tasks WHERE id=?').run(t.id); }
     else return bad(res, 'Thao tác không hợp lệ.');
     res.json({ ok: true });
   });
@@ -210,7 +280,7 @@ Return JSON only.`;
       if (prev) rounds.push({ at: now(), score: prev.overall_score, note: note || '' });
       result.rounds = rounds; result.round = (prev && prev.round ? prev.round : 0) + 1; result.teacher_comment = prev ? prev.teacher_comment || '' : '';
       db.prepare("UPDATE essay_subs SET result=?, score=?, max_score=?, status=CASE WHEN status='released' THEN 'released' ELSE 'ai_draft' END, graded_at=? WHERE id=?").run(JSON.stringify(result), result.overall_score, t.max_score, now(), s.id);
-      res.json({ ok: true, result, score: result.overall_score });
+      mirror(s.id); res.json({ ok: true, result, score: result.overall_score });
     } catch (e) { console.error('[essay ai]', e.message); bad(res, 'Chấm AI thất bại, vui lòng thử lại sau.', 500); } finally { aiBusy.delete(s.id); }
   });
   // lấy 1 bài làm đầy đủ
@@ -226,11 +296,12 @@ Return JSON only.`;
     const s = one('SELECT * FROM essay_subs WHERE id=?', Number(req.params.id)), t = s && taskOf(s.task_id);
     if (!s || !canTeach(req.user, t)) return bad(res, 'Không tìm thấy bài làm.', 404);
     const b = req.body || {}, mode = String(b.mode), min = Math.max(5, Math.min(600, parseInt(b.minutes, 10) || Math.max(t.minutes, 30)));
-    if (mode === 'remove') db.prepare('DELETE FROM essay_subs WHERE id=?').run(s.id);
+    if (mode === 'remove') { db.prepare('DELETE FROM essay_subs WHERE id=?').run(s.id); if (t.exercise_id) db.prepare('DELETE FROM submissions WHERE user_id=? AND exercise_id=?').run(s.user_id, t.exercise_id); }
     else if (mode === 'reopen' || mode === 'fresh') {
       const nowIso = new Date().toISOString();
       db.prepare("UPDATE essay_subs SET status='draft', text=?, started_at=?, due_at=?, submitted_at=NULL, auto=0, late=0, leaves=0, pastes=0, result=NULL, score=NULL, max_score=NULL, graded_at=NULL, released_at=NULL WHERE id=?")
         .run(mode === 'fresh' ? '' : s.text, nowIso, new Date(Date.now() + min * 60e3).toISOString(), s.id);
+      mirror(s.id);
       try { notifyUser(s.user_id, 'essay_reopen', '🔄 Thầy/cô cho bạn làm lại: ' + t.title, 'Bạn có ' + min + ' phút. ' + (mode === 'reopen' ? 'Bài đã viết được giữ lại.' : 'Bạn viết lại từ đầu nhé.'), 'essay.html?id=' + t.id); } catch (_) { /* bỏ qua */ }
     } else return bad(res, 'Thao tác không hợp lệ.');
     res.json({ ok: true });
@@ -250,11 +321,11 @@ Return JSON only.`;
     if (Array.isArray(b.errors)) prev.errors = b.errors.slice(0, 20).map((e) => ({ quote: clip(e.quote, 200), correction: clip(e.correction, 200), explanation: clip(e.explanation, 400), category: clip(e.category, 30) })).filter((e) => e.quote);
     let score = Number(b.score); if (isNaN(score)) score = s.score == null ? 0 : s.score; score = Math.max(0, Math.min(t.max_score, Math.round(score * 10) / 10)); prev.overall_score = score; prev.edited = true;
     db.prepare("UPDATE essay_subs SET result=?, score=?, max_score=?, status=CASE WHEN status='released' THEN 'released' ELSE 'ai_draft' END, graded_at=COALESCE(graded_at,?) WHERE id=?").run(JSON.stringify(prev), score, t.max_score, now(), s.id);
-    res.json({ ok: true, score });
+    mirror(s.id); res.json({ ok: true, score });
   });
   function release(s, t) {
     if (s.score == null || !s.result) return false;
-    db.prepare("UPDATE essay_subs SET status='released', released_at=? WHERE id=?").run(now(), s.id);
+    db.prepare("UPDATE essay_subs SET status='released', released_at=? WHERE id=?").run(now(), s.id); mirror(s.id);
     try { notifyUser(s.user_id, 'essay_graded', '✅ Thầy/cô đã chấm bài: ' + t.title, 'Điểm: ' + s.score + '/' + t.max_score + '. Bấm để xem nhận xét chi tiết.', 'essay.html?id=' + t.id); } catch (_) { /* bỏ qua */ }
     return true;
   }
@@ -265,7 +336,7 @@ Return JSON only.`;
   });
 
   /* ───── HỌC SINH ───── */
-  const stView = (t, s) => ({ id: t.id, title: t.title, prompt_text: t.prompt_text || '', prompt_image: t.prompt_image || '', min_words: t.min_words, max_words: t.max_words, minutes: t.minutes, deadline: t.deadline, closed: t.status !== 'open',
+  const stView = (t, s) => ({ id: t.id, title: t.title, prompt_text: t.prompt_text || '', prompt_html: t.prompt_html || '', prompt_image: t.prompt_image || '', min_words: t.min_words, max_words: t.max_words, minutes: t.minutes, deadline: t.deadline, closed: t.status !== 'open',
     sub: s ? { status: s.status, text: s.status === 'draft' || true ? s.text : '', started_at: s.started_at, due_at: s.due_at, submitted_at: s.submitted_at, auto: !!s.auto, late: !!s.late } : null, now: Date.now() });
   app.get('/api/essay/my', requireAuth, (req, res) => {
     const gs = myGroupIds(req.user.id);
@@ -305,4 +376,7 @@ Return JSON only.`;
     submitSub(one('SELECT * FROM essay_subs WHERE id=?', s.id), !!over);
     res.json({ ok: true, status: 'submitted' });
   });
+
+  // bài tự luận tạo từ trước khi có đồng bộ: bổ sung đề + giao bài + bài nộp vào hệ thống chung
+  try { all('SELECT * FROM essay_tasks WHERE exercise_id IS NULL').forEach((t) => { syncAssignments(t); all('SELECT id FROM essay_subs WHERE task_id=?', t.id).forEach((x) => mirror(x.id)); }); } catch (e) { console.error('[essay migrate]', e.message); }
 };

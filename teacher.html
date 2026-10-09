@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 <style>
   .img-preview { max-width:100%; max-height:180px; border-radius:8px; margin-top:8px; display:none; border:1px solid var(--border); }
   .upload-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
@@ -2673,6 +2673,7 @@
   function openEditDrawer(id){
     fetch('/api/exercises/'+id,{credentials:'same-origin'}).then(r=>r.json()).then(function(d){
       var e = d.exercise || d;
+      if (e.task_type === 'essay') { try { var _et = JSON.parse(e.metadata || '{}').essay_task; if (_et) { location.href = 'teacher-essay.html?task=' + _et; return; } } catch (_) {} }
       _editEx = e;
       _editImgAction = 'keep';
       _editImgNewUrl = '';
@@ -3354,6 +3355,7 @@ function openGradingPanel(subId) {
     .then(function(d) {
       var sub = d.submission;
       if (!sub) { document.getElementById('gpStudentName').textContent = 'Lỗi tải bài nộp.'; return; }
+      if (sub.essay_task) { location.href = 'teacher-essay.html?task=' + sub.essay_task + '&sub=' + subId; return; }
       _gpExId    = sub.exercise_id;
       _gpProgram = sub.program || null;
 

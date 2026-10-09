@@ -39,6 +39,7 @@
       { cmd:'underline',      icon:'<u>U</u>',          tip:'Gạch dưới (Ctrl+U)' },
       { cmd:'strikeThrough',  icon:'<s>S</s>',          tip:'Gạch ngang' },
       { sep:true },
+      { type:'fontSize', tip:'Cỡ chữ' },
       { type:'foreColor', icon:'<span class="re-ci-text">A</span>', tip:'Màu chữ', default:'#e53e3e' },
       { type:'hiliteColor', icon:'<span class="re-ci-hl">A</span>', tip:'Màu nền/highlight', default:'#ffd43b' },
       { sep:true },
@@ -164,6 +165,25 @@
         return;
       }
 
+      if (b.type === 'fontSize') {
+        /* Chọn cỡ chữ cho đoạn đang bôi đen */
+        var fs = document.createElement('select');
+        fs.className = 're-sel'; fs.title = b.tip || 'Cỡ chữ';
+        [['', 'Cỡ chữ'], ['2', 'Nhỏ'], ['3', 'Thường'], ['4', 'Vừa'], ['5', 'Lớn'], ['6', 'Rất lớn'], ['7', 'Tiêu đề']].forEach(function (o) {
+          var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; fs.appendChild(op);
+        });
+        fs.addEventListener('mousedown', function () { try { self._saveSel(); } catch (e) { /* bỏ qua */ } });
+        fs.addEventListener('change', function () {
+          if (!fs.value) return;
+          self._body.focus(); try { self._restoreSel(); } catch (e) { /* bỏ qua */ }
+          document.execCommand('fontSize', false, fs.value);
+          fs.value = '';
+          self._body.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        bar.appendChild(fs);
+        return;
+      }
+
       if (b.type === 'foreColor' || b.type === 'hiliteColor') {
         /* Color-picker button */
         var lbl = document.createElement('label');
@@ -206,6 +226,14 @@
     });
 
     return bar;
+  };
+
+  /* ── Lưu / khôi phục vùng bôi đen (khi bấm vào ô chọn cỡ chữ) ── */
+  RichEditor.prototype._saveSel = function () {
+    var sel = window.getSelection(); if (sel && sel.rangeCount && this._body.contains(sel.anchorNode)) this._range = sel.getRangeAt(0).cloneRange();
+  };
+  RichEditor.prototype._restoreSel = function () {
+    if (!this._range) return; var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(this._range);
   };
 
   /* ── Update active states on toolbar buttons ── */

@@ -11,13 +11,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 <style>
   .es-card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:12px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; box-shadow:var(--shadow); }
   .es-card h3 { margin:0 0 4px; font-size:16.5px; } .es-meta { font-size:12.5px; color:var(--text-muted); }
   .es-chip { display:inline-block; font-size:12px; font-weight:700; border-radius:99px; padding:3px 11px; background:var(--primary-soft); color:var(--primary); }
   .es-chip.ok { background:#dcfce7; color:#15803d; } .es-chip.warn { background:#fef3c7; color:#b45309; } .es-chip.bad { background:#fee2e2; color:#b91c1c; }
   .es-prompt { white-space:pre-wrap; font-size:14.5px; line-height:1.85; }
+  .es-rich { font-size:14.5px; line-height:1.85; } .es-rich ul, .es-rich ol { margin:6px 0 6px 22px; } .es-rich p { margin:0 0 8px; }
   .es-img { border:1.5px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:12px; cursor:zoom-in; position:relative; } .es-img img { width:100%; display:block; }
   .es-img span { position:absolute; right:8px; bottom:8px; background:rgba(0,0,0,.6); color:#fff; font-size:11.5px; padding:3px 9px; border-radius:99px; }
   #essayBox { width:100%; min-height:340px; line-height:1.75; font-size:15.5px; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); font-family:inherit; resize:vertical; }
@@ -76,7 +77,7 @@ function showList() {
 
 /* ───── trang một bài ───── */
 function promptHtml(t) {
-  return (t.prompt_image ? '<div class="es-img" id="esImg"><img src="' + esc(t.prompt_image) + '" alt="Đề bài"><span>🔍 Bấm để phóng to</span></div>' : '') + '<h3 style="margin-bottom:8px">📋 Đề bài</h3>' + (t.prompt_text ? '<div class="es-prompt">' + esc(t.prompt_text) + '</div>' : '') +
+  return (t.prompt_image ? '<div class="es-img" id="esImg"><img src="' + esc(t.prompt_image) + '" alt="Đề bài"><span>🔍 Bấm để phóng to</span></div>' : '') + '<h3 style="margin-bottom:8px">📋 Đề bài</h3>' + (t.prompt_html ? '<div class="es-rich">' + t.prompt_html + '</div>' : t.prompt_text ? '<div class="es-prompt">' + esc(t.prompt_text) + '</div>' : '') +
     '<div class="es-meta" style="margin-top:12px">' + (t.min_words || t.max_words ? '✏️ Độ dài: ' + (t.min_words ? 'từ ' + t.min_words : '') + (t.max_words ? ' đến ' + t.max_words : '') + ' từ<br>' : '') + (t.minutes ? '⏱ Thời gian: ' + t.minutes + ' phút<br>' : '') + (t.deadline ? '📅 Hạn nộp: ' + fmtDt(t.deadline) : '') + '</div>';
 }
 function bindImg() { var e = $('esImg'); if (e) e.onclick = function () { $('esLbImg').src = T.prompt_image; $('esLb').classList.add('on'); }; }

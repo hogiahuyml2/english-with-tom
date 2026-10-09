@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 <style>
 .te-wrap { max-width: 1180px; margin: 0 auto; padding: 14px 18px 90px; }
 .te-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .te-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 240px; }
@@ -32,6 +32,7 @@
 .te-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 18px; border-radius: 12px; font-size: 14px; z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; max-width: 90vw; } .te-toast.on { opacity: 1; }
 .te-imgp { max-width: 260px; max-height: 180px; border-radius: 10px; border: 1.5px solid var(--border); display: block; margin-top: 8px; }
 .te-spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: tesp .8s linear infinite; vertical-align: -2px; } @keyframes tesp { to { transform: rotate(360deg); } }
+.te-rich ul, .te-rich ol { margin: 4px 0 4px 20px; }
 .te-sc { font-size: 34px; font-weight: 800; }
 </style>
 <script src="js/dialog.js?v=1"></script>
@@ -45,6 +46,7 @@
 </main>
 <div class="te-toast" id="toast"></div>
 <div id="site-footer"></div>
+<script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=53"></script>
 <script>
@@ -58,7 +60,7 @@ function api(url, body, method) {
 var tt; function toast(m, ms) { var e = $('toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { e.classList.remove('on'); }, ms || 2600); }
 var fmt = function (iso) { if (!iso) return '—'; var d = new Date(iso); return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); };
 var toLocalInput = function (iso) { if (!iso) return ''; var d = new Date(iso), p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes()); };
-var GROUPS = [], AIOK = true, TASK = null, SUBID = 0, ST = null, BUSY = false;
+var PED = null, GROUPS = [], AIOK = true, TASK = null, SUBID = 0, ST = null, BUSY = false;
 var QP = new URLSearchParams(location.search);
 
 function tab(t) { [].forEach.call(document.querySelectorAll('.te-tab'), function (b) { b.classList.toggle('on', b.getAttribute('data-t') === t); }); $('vList').style.display = t === 'list' ? '' : 'none'; $('vNew').style.display = t === 'new' ? '' : 'none'; $('vTask').style.display = t === 'task' ? '' : 'none'; }
@@ -75,7 +77,7 @@ function loadList() {
         '<span class="te-chip gr" title="Chưa nộp / đang viết">✏️ ' + (t.total - t.submitted - t.review - t.released) + '</span><span class="te-chip warn" title="Đã nộp, chờ chấm">📥 ' + t.submitted + '</span><span class="te-chip" title="AI đã chấm — chờ duyệt">🤖 ' + t.review + '</span><span class="te-chip ok" title="Đã gửi kết quả">✅ ' + t.released + '</span>' +
         (t.status !== 'open' ? '<span class="te-chip bad">Đã đóng</span>' : over ? '<span class="te-chip bad">Quá hạn</span>' : '') + '<button class="te-btn pri" data-open="' + t.id + '" type="button">Mở & chấm</button></div>';
     }).join('') : '<div class="te-box" style="text-align:center;color:var(--text-muted)">Chưa có bài tự luận nào. Bấm “➕ Tạo & giao bài mới” nhé.</div>';
-    if (QP.get('task')) { var id = +QP.get('task'); QP.delete('task'); openTask(id); }
+    if (QP.get('task')) { var id = +QP.get('task'), sb = +QP.get('sub') || 0; QP.delete('task'); QP.delete('sub'); openTask(id, sb); }
   }).catch(function (e) { $('vList').innerHTML = '<p class="te-help">' + esc(e.message) + '</p>'; });
 }
 document.addEventListener('click', function (e) { var b = e.target.closest('[data-open]'); if (b) openTask(+b.getAttribute('data-open')); });
@@ -86,7 +88,7 @@ function newForm(t) {
   var gs = GROUPS.length ? GROUPS.map(function (g) { return '<label style="display:flex;gap:8px;align-items:center;padding:4px 0"><input type="checkbox" class="gck" value="' + g.id + '"> ' + esc(g.name) + ' <span class="te-help" style="margin:0">(' + g.n + ' học sinh)</span></label>'; }).join('') : '<div class="te-help">Bạn chưa có lớp nào — hãy nhập email học sinh ở ô bên dưới.</div>';
   $('vNew').innerHTML = '<div class="te-box"><h3>' + (edit ? '✏️ Sửa bài: ' + esc(t.title) : '➕ Tạo bài tự luận mới') + '</h3><div class="te-grid">' +
     '<div class="te-f te-full"><label>Tên bài *</label><input class="te-in" id="fTitle" maxlength="140" value="' + esc(t.title) + '" placeholder="Ví dụ: Viết đoạn văn về kỳ nghỉ hè (Lớp 8A)"></div>' +
-    '<div class="te-f te-full"><label>Đề bài (nhập văn bản) — hoặc tải ảnh đề bên dưới, hoặc cả hai</label><textarea class="te-ta" id="fPrompt" style="min-height:130px" placeholder="Nhập hoặc dán đề bài vào đây...">' + esc(t.prompt_text) + '</textarea></div>' +
+    '<div class="te-f te-full"><label>Đề bài — gõ hoặc dán văn bản (chọn cỡ chữ, màu, in đậm, gạch chân... bằng thanh công cụ), hoặc tải ảnh đề bên dưới, hoặc cả hai</label><textarea id="fPrompt"></textarea></div>' +
     '<div class="te-f te-full"><label>Ảnh đề bài (không bắt buộc)</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input type="file" id="fFile" accept="image/*" style="max-width:260px"><button class="te-btn" id="fOcr" type="button" style="display:none">🔍 Đọc chữ từ ảnh vào ô đề</button><button class="te-btn red" id="fRm" type="button" style="display:none">✕ Bỏ ảnh</button><span id="fUp" class="te-help" style="margin:0"></span></div><img id="fImg" class="te-imgp" style="display:none" alt=""></div>' +
     '<div class="te-f"><label>Số từ tối thiểu</label><input class="te-in" id="fMin" type="number" min="0" value="' + (t.min_words || '') + '" placeholder="0 = không yêu cầu"></div><div class="te-f"><label>Số từ tối đa</label><input class="te-in" id="fMax" type="number" min="0" value="' + (t.max_words || '') + '" placeholder="0 = không giới hạn"></div>' +
     '<div class="te-f"><label>⏱ Thời gian làm bài (phút)</label><input class="te-in" id="fMins" type="number" min="0" max="600" value="' + (t.minutes || '') + '" placeholder="0 = không giới hạn"><div class="te-help">Đồng hồ bắt đầu khi học sinh bấm “Bắt đầu”. Hết giờ, bài tự được nộp.</div></div>' +
@@ -101,23 +103,25 @@ function newForm(t) {
     '<div class="te-f"><label>Ngôn ngữ nhận xét</label><select class="te-sel" id="fLang"><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="both">Song ngữ Anh – Việt</option></select></div></div></div>' +
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="te-btn pri" id="fSave" type="button" style="font-size:15px;padding:11px 22px">' + (edit ? '💾 Lưu thay đổi' : '📤 Giao bài cho học sinh') + '</button><button class="te-btn" id="fCancel" type="button">Huỷ</button></div>';
   $('fLang').value = t.lang || 'vi'; var img = t.prompt_image || '';
+  PED = new RichEditor('fPrompt', { toolbar: 'full', placeholder: 'Nhập hoặc dán đề bài vào đây...', minHeight: '170px' });
+  PED.setHTML(t.prompt_html || esc(t.prompt_text || '').replace(/\n/g, '<br>'));
   var showImg = function () { $('fImg').style.display = img ? 'block' : 'none'; if (img) $('fImg').src = img; $('fRm').style.display = img ? '' : 'none'; $('fOcr').style.display = img ? '' : 'none'; }; showImg();
   $('fFile').onchange = function () { var f = this.files[0]; if (!f) return; var fd = new FormData(); fd.append('file', f); $('fUp').innerHTML = '<span class="te-spin"></span> Đang tải ảnh…';
     fetch('/api/upload', { method: 'POST', body: fd, credentials: 'same-origin' }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Tải ảnh thất bại'); return j; }); }).then(function (j) { img = j.url; $('fUp').textContent = '✓ Đã tải'; showImg(); }).catch(function (e) { $('fUp').textContent = ''; toast(e.message, 4000); }); };
   $('fRm').onclick = function () { img = ''; $('fFile').value = ''; showImg(); };
-  $('fOcr').onclick = function () { var b = this; b.disabled = true; b.innerHTML = '<span class="te-spin"></span> Đang đọc…'; api('/api/essay/teacher/ocr', { url: img }).then(function (r) { if (r.text) { var p = $('fPrompt'); p.value = (p.value ? p.value + '\n\n' : '') + r.text; toast('Đã điền chữ đọc được vào ô đề — hãy kiểm tra lại nhé'); } }).catch(function (e) { toast(e.message, 4000); }).then(function () { b.disabled = false; b.textContent = '🔍 Đọc chữ từ ảnh vào ô đề'; }); };
+  $('fOcr').onclick = function () { var b = this; b.disabled = true; b.innerHTML = '<span class="te-spin"></span> Đang đọc…'; api('/api/essay/teacher/ocr', { url: img }).then(function (r) { if (r.text) { PED.setHTML((PED.getText().trim() ? PED.getHTML() + '<br>' : '') + esc(r.text).replace(/\n/g, '<br>')); toast('Đã điền chữ đọc được vào ô đề — hãy kiểm tra lại nhé'); } }).catch(function (e) { toast(e.message, 4000); }).then(function () { b.disabled = false; b.textContent = '🔍 Đọc chữ từ ảnh vào ô đề'; }); };
   $('fCancel').onclick = function () { tab('list'); };
   $('fSave').onclick = function () {
     var emails = $('fEmails').value.split(/[\s,;]+/).filter(function (x) { return x.indexOf('@') > 0; }), gids = [].map.call(document.querySelectorAll('.gck:checked'), function (c) { return +c.value; });
-    var body = { id: edit ? t.id : undefined, title: $('fTitle').value, prompt_text: $('fPrompt').value, prompt_image: img, min_words: +$('fMin').value || 0, max_words: +$('fMax').value || 0, minutes: +$('fMins').value || 0, deadline: $('fDl').value ? new Date($('fDl').value).toISOString() : '', allow_late: $('fLate').checked, requirement: $('fReq').value, criteria: $('fCri').value, max_score: +$('fMs').value || 10, lang: $('fLang').value, group_ids: gids, emails: emails };
+    var body = { id: edit ? t.id : undefined, title: $('fTitle').value, prompt_html: PED.getHTML(), prompt_text: PED.getText(), prompt_image: img, min_words: +$('fMin').value || 0, max_words: +$('fMax').value || 0, minutes: +$('fMins').value || 0, deadline: $('fDl').value ? new Date($('fDl').value).toISOString() : '', allow_late: $('fLate').checked, requirement: $('fReq').value, criteria: $('fCri').value, max_score: +$('fMs').value || 10, lang: $('fLang').value, group_ids: gids, emails: emails };
     var b = this; b.disabled = true; api('/api/essay/teacher/task', body).then(function (r) { toast(edit ? '✅ Đã lưu' : '✅ Đã giao bài' + (r.added ? '' : '')); openTask(r.id); }).catch(function (e) { toast(e.message, 4200); b.disabled = false; });
   };
 }
 
 /* ───── một bài: danh sách học sinh + khung chấm ───── */
 var STAT = { draft: ['✏️ Đang viết', 'gr'], submitted: ['📥 Đã nộp', 'warn'], ai_draft: ['🤖 Chờ duyệt', ''], released: ['✅ Đã gửi', 'ok'] };
-function openTask(id) {
-  tab('task'); $('vTask').innerHTML = '<p class="te-help">Đang tải…</p>'; SUBID = 0;
+function openTask(id, sub) {
+  tab('task'); $('vTask').innerHTML = '<p class="te-help">Đang tải…</p>'; SUBID = sub || 0;
   api('/api/essay/teacher/task/' + id).then(function (d) { TASK = d.task; ST = d.students; AIOK = d.ai_ready; renderTask(); }).catch(function (e) { $('vTask').innerHTML = '<p class="te-help">' + esc(e.message) + '</p>'; });
 }
 function renderTask() {
@@ -169,7 +173,7 @@ function errRow(e, i) { return '<div class="te-err" data-ei="' + i + '"><input c
 function renderGrade() {
   var d = CUR, s = d.sub, r = s.result, t = d.task, stu = d.student; if (r) { r.criteria = r.criteria || []; r.errors = r.errors || []; }
   var left = '<div class="te-box"><h3>📄 Bài làm — ' + esc(stu.name) + '</h3><div class="te-help">' + s.words + ' từ · nộp ' + fmt(s.submitted_at) + (s.auto ? ' (hết giờ tự nộp)' : '') + (s.late ? ' · TRỄ HẠN' : '') + (s.leaves || s.pastes ? ' · ⚠️ rời tab ' + s.leaves + ' lần, dán/copy ' + s.pastes + ' lần' : '') + '</div><div class="te-essay" id="essayView">' + highlighted(s.text, r ? r.errors : []) + '</div>' +
-    '<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;font-size:13.5px">📋 Đề bài học sinh nhận</summary>' + (t.prompt_image ? '<img class="te-imgp" style="max-width:100%;max-height:340px" src="' + esc(t.prompt_image) + '" alt="">' : '') + '<div style="white-space:pre-wrap;font-size:13.5px;line-height:1.7;margin-top:8px">' + esc(t.prompt_text) + '</div></details></div>';
+    '<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;font-size:13.5px">📋 Đề bài học sinh nhận</summary>' + (t.prompt_image ? '<img class="te-imgp" style="max-width:100%;max-height:340px" src="' + esc(t.prompt_image) + '" alt="">' : '') + '<div class="te-rich" style="font-size:13.5px;line-height:1.7;margin-top:8px">' + (t.prompt_html || esc(t.prompt_text).replace(/\n/g, '<br>')) + '</div></details></div>';
   left += '<div class="te-box" style="border-style:dashed"><h3>🔄 Cho làm lại / xoá bài</h3><div class="te-help">Dùng khi học sinh mất mạng, mất bài hoặc cần nộp lại. Học sinh nhận thông báo và có thêm thời gian, kể cả khi đã quá hạn.</div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><div class="te-f"><label>Cách làm lại</label><select class="te-sel" id="rMode" style="width:auto"><option value="reopen">Mở lại — giữ phần đã viết</option><option value="fresh">Viết lại từ đầu</option></select></div><div class="te-f"><label>Thời gian (phút)</label><input class="te-in te-num" id="rMin" type="number" min="5" max="600" value="' + Math.max(t.minutes || 0, 30) + '" style="width:90px"></div><button class="te-btn" id="rGo" type="button">🔓 Cho làm lại</button><button class="te-btn red" id="rDel" type="button">🗑️ Xoá bài đã nộp</button></div></div>';
   var right = '';
   if (!r) right = '<div class="te-box"><h3>🤖 Chưa chấm</h3><div class="te-help">Kiểm tra khung chấm ở trên (yêu cầu đề, tiêu chí) rồi bấm nút để AI chấm bài này.</div><button class="te-btn pri" id="gAi" type="button"' + (AIOK ? '' : ' disabled') + '>🤖 Chấm bài này bằng AI</button></div>';
