@@ -111,7 +111,8 @@
 .gt:hover, .gt.sel { z-index: 3; }
 .gt svg.sp { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 50% 90%; z-index: 1; } .gt.grow svg.sp { animation: gdSway2 4.5s ease-in-out infinite; } .gt.tree svg.sp { animation-duration: 6s; }
 @keyframes gdSway2 { 0%, 100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
-.gt .ready { position: absolute; right: 2px; top: 0; z-index: 2; font-size: calc(var(--ts) * .3); animation: gdPop 1.2s ease-in-out infinite; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); } @keyframes gdPop { 50% { transform: translateY(-5px) scale(1.15); } }
+.gt .ready { position: absolute; right: 2px; top: 0; z-index: 2; font-size: calc(var(--ts) * .3); animation: gdPop 1.2s ease-in-out infinite; text-shadow: 0 2px 2px rgba(0,0,0,.25); }
+.gd-stage:not(.gd-hq) .gt .ready, .gd-stage:not(.gd-hq) .gt.grow svg.sp { animation: none; } .gd-stage:not(.gd-hq) .sway { animation: none; } .gd-zcard .gd-zwrap * { animation: none !important; }   /* thẻ trên bản đồ chỉ là ảnh thu nhỏ: không cần chuyển động */ .gd-stage:not(.gd-hq) .gd-star:nth-child(2n) { display: none; } @keyframes gdPop { 50% { transform: translateY(-5px) scale(1.15); } }
 .gt .tm { position: absolute; left: 4px; right: 4px; top: 2px; z-index: 2; font-size: 10px; font-weight: 800; color: #fff; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,.6); pointer-events: none; } .gt .tm i { display: block; height: 4px; border-radius: 4px; background: rgba(0,0,0,.3); margin-bottom: 1px; overflow: hidden; } .gt .tm i b { display: block; height: 100%; background: #FFE14D; }
 .gt .wd { position: absolute; left: 3px; bottom: 1px; z-index: 2; font-size: calc(var(--ts) * .2); letter-spacing: -2px; }
 .gd-pets { position: absolute; left: 0; top: 0; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); pointer-events: none; z-index: 4; }
@@ -700,7 +701,8 @@ function fxHtml(zid) {
 /* chế độ đồ hoạ cao (ánh sáng nổi khối): tự bật trên máy khoẻ, học sinh có thể tắt để máy chạy mượt hơn */
 function gfxInit() {
   var saved = ''; try { saved = localStorage.getItem('ewt-garden-hq') || ''; } catch (e) {}
-  var auto = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) && (innerWidth > 900 || (navigator.hardwareConcurrency || 4) >= 6);
+  var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches, lowMem = navigator.deviceMemory && navigator.deviceMemory <= 4;
+  var auto = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) && !coarse && !lowMem && innerWidth > 900 && (navigator.hardwareConcurrency || 4) >= 6;   // điện thoại / iPad mặc định ở chế độ tiết kiệm (vẫn bật tay được)
   setHq(saved === '' ? auto : saved === '1');
 }
 function setHq(on) { $('stage').classList.toggle('gd-hq', on); var b = $('hq'); if (b) { b.textContent = on ? '✨ Đồ hoạ cao' : '🍃 Tiết kiệm'; b.title = on ? 'Đang bật hiệu ứng ánh sáng đẹp. Bấm để tắt nếu máy bị chậm.' : 'Đang ở chế độ tiết kiệm. Bấm để bật hiệu ứng ánh sáng đẹp.'; } }
@@ -790,6 +792,22 @@ function observeCards(m) {
   if (!('IntersectionObserver' in window)) { for (var i = 0; i < cards.length; i++) fillCard(cards[i]); return; }
   if (!MAPIO) MAPIO = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { MAPIO.unobserve(e.target); fillCard(e.target); } }); }, { rootMargin: '500px 0px' });
   for (var j = 0; j < cards.length; j++) if (cards[j].querySelector('[data-lazy]')) MAPIO.observe(cards[j]);
+  mapSweepSoon();
+}
+// thẻ đã dựng nhưng cuộn rất xa khỏi màn hình thì gỡ phần tranh đi (trả bộ nhớ cho điện thoại); thẻ sắp lọt vào màn hình thì dựng sớm cho mượt
+var SWT = 0;
+function mapSweepSoon() { clearTimeout(SWT); SWT = setTimeout(mapSweep, 180); }
+function mapSweep() {
+  var m = $('map'); if (!m || !m.firstChild || VIEW !== 'map') return; var vh = innerHeight, cards = m.querySelectorAll('.gd-zcard'), i, r, lz;
+  for (i = 0; i < cards.length; i++) {
+    r = cards[i].getBoundingClientRect(); lz = cards[i].querySelector('[data-lazy]');
+    if (r.bottom < -1000 || r.top > vh + 1000) { if (!lz) unfillCard(cards[i]); }
+    else if (lz && r.bottom > -300 && r.top < vh + 300) fillCard(cards[i]);
+  }
+}
+function unfillCard(card) {
+  var lawn = card.querySelector('.gd-lawn'); if (!lawn || lawn.hasAttribute('data-lazy')) return;
+  lawn.innerHTML = ''; lawn.setAttribute('data-lazy', '1'); if (MAPIO) MAPIO.observe(card);
 }
 function renderMap() {
   var m = $('map'), narrow = innerWidth <= 900, mc = narrow ? 2 : (innerWidth > 1400 ? 4 : 3), cw = m.clientWidth - 8;
@@ -1698,6 +1716,7 @@ function sndUi() {
 })();
 
 /* ───────── khởi động ───────── */
+$('map').addEventListener('scroll', mapSweepSoon, { passive: true }); window.addEventListener('scroll', mapSweepSoon, { passive: true }); window.addEventListener('resize', mapSweepSoon);
 buildScene(); paintIcons(); gfxInit(); timeOfDay(); setInterval(timeOfDay, 60000);
 try { var fz = localStorage.getItem('ewt-garden-fold'); if (fz || (fz === null && $('stage').clientHeight < 640)) { $('stage').classList.add('fold'); $('fold').textContent = '▴'; } } catch (e) {}
 var QP = new URLSearchParams(location.search), VQ = QP.get('visit') ? 'token=' + encodeURIComponent(QP.get('visit')) : QP.get('email') ? 'email=' + encodeURIComponent(QP.get('email')) : '';
