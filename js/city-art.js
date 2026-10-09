@@ -8,9 +8,9 @@
   function shade(c, f) { var k = c + f; if (cache[k]) return cache[k]; var a = hex(c), r = Math.max(0, Math.min(255, Math.round(a[0] * f))), g = Math.max(0, Math.min(255, Math.round(a[1] * f))), b = Math.max(0, Math.min(255, Math.round(a[2] * f))); return (cache[k] = 'rgb(' + r + ',' + g + ',' + b + ')'); }
   var INK = 'rgba(40,28,60,.38)';
 
-  function Gfx(ctx, ox, oy) { this.c = ctx; this.ox = ox; this.oy = oy; this.b = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }; this.glow = []; this.meta = { smoke: [], flags: [], water: [], duck: [], crane: [], swing: [], rot: [] }; }
+  function Gfx(ctx, ox, oy) { this.c = ctx; this.ox = ox; this.oy = oy; this.sw = false; this.nf = false; this.keep = false; this.b = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }; this.glow = []; this.meta = { smoke: [], flags: [], water: [], duck: [], crane: [], swing: [], rot: [] }; }
   var G = Gfx.prototype;
-  G.P = function (cx, cy, z) { return [this.ox + (cx - cy) * HW, this.oy + (cx + cy) * HH - (z || 0)]; };
+  G.P = function (cx, cy, z) { if (this.sw) { var t = cx; cx = cy; cy = t; } return [this.ox + (cx - cy) * HW, this.oy + (cx + cy) * HH - (z || 0)]; };   // sw: lật tựa theo đường chéo → mặt trước nhìn sang bên kia
   G.ext = function (x, y, r) { var b = this.b; r = r || 0; if (x - r < b.x0) b.x0 = x - r; if (y - r < b.y0) b.y0 = y - r; if (x + r > b.x1) b.x1 = x + r; if (y + r > b.y1) b.y1 = y + r; };
   G.poly = function (pts, fill, stroke, lw) { var c = this.c, i; c.beginPath(); for (i = 0; i < pts.length; i++) { if (i) c.lineTo(pts[i][0], pts[i][1]); else c.moveTo(pts[i][0], pts[i][1]); this.ext(pts[i][0], pts[i][1], 2); } c.closePath(); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke !== false) { c.strokeStyle = stroke || INK; c.lineWidth = lw || 1.1; c.lineJoin = 'round'; c.stroke(); } };
   G.ell = function (x, y, rx, ry, fill, stroke) { var c = this.c; c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); this.ext(x, y, Math.max(rx, ry) + 2); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.lineWidth = 1; c.stroke(); } };
@@ -20,9 +20,9 @@
   G.faceR = function (x0, y0, w, h, z0, z1) { return [this.P(x0 + w, y0 + h, z0), this.P(x0 + w, y0, z0), this.P(x0 + w, y0, z1), this.P(x0 + w, y0 + h, z1)]; };
   G.faceT = function (x0, y0, w, h, z1) { return [this.P(x0, y0, z1), this.P(x0 + w, y0, z1), this.P(x0 + w, y0 + h, z1), this.P(x0, y0 + h, z1)]; };
   G.box = function (x0, y0, w, h, z0, z1, col, o) {
-    o = o || {}; var top = o.top || shade(col, 1.14);
-    if (!o.noL) this.poly(this.faceL(x0, y0, w, h, z0, z1), o.left || shade(col, .8));
-    if (!o.noR) this.poly(this.faceR(x0, y0, w, h, z0, z1), o.right || col);
+    o = o || {}; var top = o.top || shade(col, 1.14), cl = o.left || shade(col, .8), cr = o.right || col; if (this.sw) { var tc = cl; cl = cr; cr = tc; }
+    if (!o.noL) this.poly(this.faceL(x0, y0, w, h, z0, z1), cl);
+    if (!o.noR) this.poly(this.faceR(x0, y0, w, h, z0, z1), cr);
     if (!o.noT) this.poly(this.faceT(x0, y0, w, h, z1), top);
   };
   // điểm trên mặt trái / phải theo tham số t∈[0,1] dọc cạnh và độ cao z
@@ -42,11 +42,11 @@
   // kính liền dải (toà nhà văn phòng)
   G.glassL = function (x0, y0, w, h, z0, z1, rows, col) { var j, i, dz = (z1 - z0) / rows; for (j = 0; j < rows; j++) { this.quadL(x0, y0, w, h, .06, .94, z0 + j * dz + dz * .12, z0 + (j + 1) * dz - dz * .12, col || '#7FC0E8'); this.quadL(x0, y0, w, h, .06, .94, z0 + (j + 1) * dz - dz * .4, z0 + (j + 1) * dz - dz * .12, 'rgba(255,255,255,.35)'); for (i = 0; i < 5; i++) { if (((i * 7 + j * 5) % 10) < 6) { var ta = .08 + i * .17, tb = ta + .12; this.glow.push([this.pl(x0, y0, w, h, ta, z0 + j * dz + dz * .2), this.pl(x0, y0, w, h, tb, z0 + j * dz + dz * .2), this.pl(x0, y0, w, h, tb, z0 + (j + 1) * dz - dz * .2), this.pl(x0, y0, w, h, ta, z0 + (j + 1) * dz - dz * .2)]); } } } };
   G.glassR = function (x0, y0, w, h, z0, z1, rows, col) { var j, i, dz = (z1 - z0) / rows; for (j = 0; j < rows; j++) { this.quadR(x0, y0, w, h, .06, .94, z0 + j * dz + dz * .12, z0 + (j + 1) * dz - dz * .12, col || '#5FA8D8'); this.quadR(x0, y0, w, h, .06, .94, z0 + (j + 1) * dz - dz * .4, z0 + (j + 1) * dz - dz * .12, 'rgba(255,255,255,.3)'); for (i = 0; i < 5; i++) { if (((i * 3 + j * 7) % 10) < 5) { var ta = .08 + i * .17, tb = ta + .12; this.glow.push([this.pr(x0, y0, w, h, ta, z0 + j * dz + dz * .2), this.pr(x0, y0, w, h, tb, z0 + j * dz + dz * .2), this.pr(x0, y0, w, h, tb, z0 + (j + 1) * dz - dz * .2), this.pr(x0, y0, w, h, ta, z0 + (j + 1) * dz - dz * .2)]); } } } };
-  G.doorL = function (x0, y0, w, h, t, z0, dw, dh, col) { this.quadL(x0, y0, w, h, t - dw / 2, t + dw / 2, z0, z0 + dh, col || '#7A4B2A', INK); };
-  G.awnL = function (x0, y0, w, h, ta, tb, z, dz, depth, c1, c2) {      // mái che sọc bên mặt trái
+  G.doorL = function (x0, y0, w, h, t, z0, dw, dh, col) { if (this.nf) return; this.quadL(x0, y0, w, h, t - dw / 2, t + dw / 2, z0, z0 + dh, col || '#7A4B2A', INK); };
+  G.awnL = function (x0, y0, w, h, ta, tb, z, dz, depth, c1, c2) { if (this.nf) return;      // mái che sọc bên mặt trái
     var n = 6, i, p0, p1; for (i = 0; i < n; i++) { var a = ta + (tb - ta) * i / n, b = ta + (tb - ta) * (i + 1) / n; this.poly([this.pl(x0, y0, w, h, a, z), this.pl(x0, y0, w, h, b, z), this.P(x0 + w * b, y0 + h + depth, z - dz), this.P(x0 + w * a, y0 + h + depth, z - dz)], i % 2 ? c2 : c1, INK, .8); }
   };
-  G.awnR = function (x0, y0, w, h, ta, tb, z, dz, depth, c1, c2) {
+  G.awnR = function (x0, y0, w, h, ta, tb, z, dz, depth, c1, c2) { if (this.nf) return;
     var n = 6, i; for (i = 0; i < n; i++) { var a = ta + (tb - ta) * i / n, b = ta + (tb - ta) * (i + 1) / n; this.poly([this.pr(x0, y0, w, h, a, z), this.pr(x0, y0, w, h, b, z), this.P(x0 + w + depth, y0 + h - h * b, z - dz), this.P(x0 + w + depth, y0 + h - h * a, z - dz)], i % 2 ? c2 : c1, INK, .8); }
   };
   // mái đầu hồi (ridge dọc theo x hoặc y)
@@ -446,14 +446,40 @@
   }
   ART.__scaffold = scaffold;
 
+  /* ───── đổi màu: ánh xạ màu vẽ → màu theo bảng màu (giữ độ sáng; lá cây và kính chỉ đổi nếu bảng màu cho phép) ───── */
+  var fillD = null, strokeD = null, curG = null, colMemo = {};
+  function hex2rgb(h) { var m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(h); if (!m) return null; var v = m[1]; if (v.length === 3) v = v[0] + v[0] + v[1] + v[1] + v[2] + v[2]; return [parseInt(v.substr(0, 2), 16), parseInt(v.substr(2, 2), 16), parseInt(v.substr(4, 2), 16)]; }
+  function rgb2hsl(r, g, b) { r /= 255; g /= 255; b /= 255; var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, h = 0, s = 0, d = mx - mn; if (d) { s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn); h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; } return [h, s, l]; }
+  function hsl2hex(h, s, l) { h = ((h % 360) + 360) % 360 / 360; var a = s * Math.min(l, 1 - l), f = function (n) { var k = (n + h * 12) % 12, c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); return Math.round(c * 255); }; var x = function (v) { return (v < 16 ? '0' : '') + v.toString(16); }; return '#' + x(f(0)) + x(f(8)) + x(f(4)); }
+  var cl01 = function (v) { return Math.max(0, Math.min(1, v)); };
+  function mapColor(P, str) {
+    var key = P.id + str, hit = colMemo[key]; if (hit) return hit; var rgb = hex2rgb(str); if (!rgb) return str;
+    var hsl = rgb2hsl(rgb[0], rgb[1], rgb[2]), h = hsl[0], s = hsl[1], l = hsl[2], out = str;
+    if (l > .975 || l < .1) out = str;
+    else if (h >= 70 && h <= 170 && s > .18) { if (P.f) out = hsl2hex(P.h, cl01(P.s * (.75 + .5 * s)), cl01(l + P.l * .6)); }                                       // lá cây, cỏ
+    else if (h >= 185 && h <= 240 && s > .28) { if (P.gh != null) out = hsl2hex(P.gh, cl01(s * (P.gs == null ? 1 : P.gs)), cl01(l + P.l * .5)); }                 // kính
+    else out = hsl2hex(l < .5 && P.h2 != null ? P.h2 : P.h, cl01(P.s * (s < .1 ? .7 : .7 + .6 * s)), cl01(l + P.l));                                                 // thân nhà, mái, cánh hoa…
+    return (colMemo[key] = out);
+  }
+  function hookCtx(ctx, P) {
+    if (!fillD) { fillD = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'fillStyle'); strokeD = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'strokeStyle'); }
+    var mp = function (v) { return typeof v === 'string' && !(curG && curG.keep) ? mapColor(P, v) : v; };
+    Object.defineProperty(ctx, 'fillStyle', { configurable: true, get: function () { return fillD.get.call(ctx); }, set: function (v) { fillD.set.call(ctx, mp(v)); } });
+    Object.defineProperty(ctx, 'strokeStyle', { configurable: true, get: function () { return strokeD.get.call(ctx); }, set: function (v) { strokeD.set.call(ctx, mp(v)); } });
+    ['createLinearGradient', 'createRadialGradient'].forEach(function (n) { var o = CanvasRenderingContext2D.prototype[n]; ctx[n] = function () { var gr = o.apply(ctx, arguments), ac = gr.addColorStop.bind(gr); gr.addColorStop = function (off, c) { ac(off, mp(c)); }; return gr; }; });
+  }
+  function unhookCtx(ctx) { delete ctx.fillStyle; delete ctx.strokeStyle; delete ctx.createLinearGradient; delete ctx.createRadialGradient; }
+
   /* ───── tạo sprite ───── */
+  // pal: mã bảng màu ('' = màu gốc) · face: 0 mặt trước bên trái · 1 mặt trước bên phải (lật) · 2 / 3 quay lưng (không vẽ cửa)
   var spriteCache = {}, tmp = null;
-  function makeSprite(fn, rw, rh, lv) {
+  function makeSprite(fn, rw, rh, lv, pal, face) {
     var padX = 40, W0 = ((rw + rh) * HW + 140) * SS, H0 = ((rw + rh) * HH + 1140) * SS;
     if (!tmp) tmp = document.createElement('canvas'); if (tmp.width < W0 || tmp.height < H0) { tmp.width = Math.max(tmp.width, W0); tmp.height = Math.max(tmp.height, H0); }
     var ctx = tmp.getContext('2d'); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, tmp.width, tmp.height); ctx.scale(SS, SS);
-    var ox = rh * HW + 70, oy = 1100, g = new Gfx(ctx, ox, oy);
-    fn(g, rw, rh, lv);
+    var ox = rh * HW + 70, oy = 1100, g = new Gfx(ctx, ox, oy), P = pal && root.EWTCityData && root.EWTCityData.PAL_BY[pal]; face = face | 0; g.sw = !!(face & 1); g.nf = face >= 2;
+    if (P) { curG = g; hookCtx(ctx, P); }
+    try { if (g.sw) fn(g, rh, rw, lv); else fn(g, rw, rh, lv); } finally { if (P) { unhookCtx(ctx); curG = null; } }
     var b = g.b, x0 = Math.max(0, Math.floor(b.x0 - 3)), y0 = Math.max(0, Math.floor(b.y0 - 3)), x1 = Math.ceil(b.x1 + 3), y1 = Math.ceil(b.y1 + 3), w = x1 - x0, h = y1 - y0;
     var cv = document.createElement('canvas'); cv.width = w * SS; cv.height = h * SS; cv.getContext('2d').drawImage(tmp, x0 * SS, y0 * SS, w * SS, h * SS, 0, 0, w * SS, h * SS);
     // lớp ánh sáng ban đêm (cửa sổ + đèn)
@@ -465,15 +491,16 @@
     var shift = function (p) { return [p[0] - x0, p[1] - y0]; }, m = g.meta, mm = {}; Object.keys(m).forEach(function (k) { mm[k] = Array.isArray(m[k][0]) || !m[k].length ? m[k].map(function (q) { return [q[0] - x0, q[1] - y0].concat(q.slice(2)); }) : [m[k][0] - x0, m[k][1] - y0]; });
     return { c: cv, glow: gl, w: w, h: h, ox: ox - x0, oy: oy - y0, meta: mm, hpx: oy - b.y0 };
   }
-  function getSprite(kind, k, lv, rw, rh) {
-    var key = kind + k + '|' + lv + '|' + rw + 'x' + rh; if (spriteCache[key]) return spriteCache[key];
+  function getSprite(kind, k, lv, rw, rh, pal, face) {
+    if (kind !== 'b') { pal = ''; face = 0; }   // công trình đang xây / cố định: không đổi màu, không xoay
+    var key = kind + k + '|' + lv + '|' + rw + 'x' + rh + '|' + (pal || '') + '|' + (face | 0); if (spriteCache[key]) return spriteCache[key];
     var fn = kind === 'f' ? FX[k] : kind === 's' ? ART.__scaffold : ART[k]; if (!fn) fn = ART.tree;
-    return (spriteCache[key] = makeSprite(fn, rw, rh, lv));
+    return (spriteCache[key] = makeSprite(fn, rw, rh, lv, pal, face));
   }
   var blank = null;
-  function has(kind, k, lv, rw, rh) { return !!spriteCache[kind + k + '|' + lv + '|' + rw + 'x' + rh]; }
+  function has(kind, k, lv, rw, rh, pal, face) { if (kind !== 'b') { pal = ''; face = 0; } return !!spriteCache[kind + k + '|' + lv + '|' + rw + 'x' + rh + '|' + (pal || '') + '|' + (face | 0)]; }
   function placeholder() { if (!blank) { var cv = document.createElement('canvas'); cv.width = 2; cv.height = 2; blank = { c: cv, glow: null, w: 1, h: 1, ox: 0, oy: 0, meta: {}, hpx: 0, ph: true }; } return blank; }
   var API = { HW: HW, HH: HH, SS: SS, shade: shade, getSprite: getSprite, has: has, placeholder: placeholder, ART: ART, FX: FX, Gfx: Gfx,
-    thumb: function (k, size, lv) { var C = root.EWTCityData, it = C.BY[k], sp = getSprite('b', k, lv || 1, it.w, it.h), cv = document.createElement('canvas'), s = Math.min(size / sp.w, size / sp.h) * 1; cv.width = size; cv.height = size; var c = cv.getContext('2d'); c.imageSmoothingQuality = 'high'; c.drawImage(sp.c, (size - sp.w * s) / 2, (size - sp.h * s) / 2, sp.w * s, sp.h * s); return cv; } };
+    thumb: function (k, size, lv, pal, face) { var C = root.EWTCityData, it = C.BY[k], sp = getSprite('b', k, lv || 1, it.w, it.h, pal || '', face | 0), cv = document.createElement('canvas'), s = Math.min(size / sp.w, size / sp.h) * 1; cv.width = size; cv.height = size; var c = cv.getContext('2d'); c.imageSmoothingQuality = 'high'; c.drawImage(sp.c, (size - sp.w * s) / 2, (size - sp.h * s) / 2, sp.w * s, sp.h * s); return cv; } };
   root.EWTCityArt = API;
 })(typeof window !== 'undefined' ? window : this);

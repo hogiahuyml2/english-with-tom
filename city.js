@@ -26,6 +26,8 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const addCoins = (uid, n) => { db.prepare('INSERT OR IGNORE INTO word_game (user_id) VALUES (?)').run(uid); db.prepare('UPDATE word_game SET coins=coins+? WHERE user_id=?').run(n, uid); };
   const spend = (uid, n) => n <= 0 || db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(n, uid, n).changes > 0;
   const bad = (res, msg, code) => res.status(code || 400).json({ error: msg });
+  const faceOk = (f) => (Number.isInteger(f) && f >= 0 && f <= 3 ? f : undefined);          // hướng mặt trước (0 +y · 1 +x · 2 −y · 3 −x)
+  const palOk = (c) => (typeof c === 'string' && C.PAL_BY[c] ? c : '');
   const tx = (fn) => { db.exec('BEGIN'); try { const r = fn(); if (r && r.err) db.exec('ROLLBACK'); else db.exec('COMMIT'); return r; } catch (e) { try { db.exec('ROLLBACK'); } catch (_) {} throw e; } };
 
   function fresh() { return { v: 2, districts: [0], roads: {}, bs: [], nid: 1, free: Object.assign({}, R.freeStart), tickets: 0, coupons: 0, q: { d: '', n: 0 }, chapters: {}, inv: {}, open: 1, lm: { d: '', n: 0 }, created: Date.now() }; }
@@ -57,7 +59,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const pending = (b, s, t) => { if (b.lv <= 0) return 0; const it = C.BY[b.k], inc = C.incomeH(it, b.lv); if (!inc) return 0; const h = Math.min(R.incomeCapH, Math.max(0, (t - (b.last || t)) / 3600e3)); return Math.floor(inc * s.mult * (1 + festBonus()) * h); };
   function view(st, uid) {
     const t = Date.now(), s = stats(st);
-    return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: pending(b, s, t) })),
+    return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: pending(b, s, t), f: faceOk(b.f), c: C.PAL_BY[b.c] ? b.c : undefined })),
       free: st.free, inv: st.inv, open: st.open, ev: evList(), tickets: st.tickets, coupons: st.coupons, stats: s, quizLeft: Math.max(0, R.quizDayCap - (st.q.d === vnDay() ? st.q.n : 0)), chapters: Object.keys(st.chapters), matchLeft: Math.max(0, MATCH_DAY - (st.lm.d === vnDay() ? st.lm.n : 0)), now: t, coins: coinsOf(uid) };
   }
   const reply = (res, st, uid, extra) => res.json(Object.assign({ city: view(st, uid) }, extra || {}));
@@ -82,6 +84,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
       else if (st.inv[it.k] > 0) { st.inv[it.k]--; if (!st.inv[it.k]) delete st.inv[it.k]; }
       else if (!spend(uid, it.cost)) return { err: 'Chưa đủ xu (cần ' + it.cost + ' 🪙). Trả lời câu hỏi để kiếm thêm nhé!' };
       const t = Date.now(), nb = { i: st.nid++, k: it.k, x, y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t };
+      if (faceOk(Number(b.f)) !== undefined && b.f !== null && b.f !== '') nb.f = faceOk(Number(b.f)); if (palOk(b.c)) nb.c = palOk(b.c);
       st.bs.push(nb); save(uid, st); return { st, id: nb.i };
     });
     if (out.err) return bad(res, out.err);
@@ -130,13 +133,26 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   });
 
   /* ───── dỡ / nâng cấp / đẩy nhanh / thu thuế ───── */
+  // các thao tác lên MỘT công trình (dùng cho cả thao tác đơn lẻ và thao tác hàng loạt)
+  function demolishOne(st, uid, b) {
+    const it = C.BY[b.k]; let paid = 0, lv; for (lv = 1; lv <= Math.max(1, b.lv); lv++) paid += C.itemCost(it, lv);
+    const back = Math.floor(paid * R.sellBack) + pending(b, stats(st), Date.now());
+    st.bs = st.bs.filter((x) => x.i !== b.i); addCoins(uid, back); return back;
+  }
+  function upgradeOne(st, uid, b) {   // trả về chuỗi lỗi hoặc '' nếu thành công
+    const it = C.BY[b.k]; if (b.tg > b.lv) return 'Công trình đang xây, hãy chờ xong rồi nâng cấp nhé.';
+    if (b.lv >= C.MAXLV) return 'Công trình đã ở cấp cao nhất.';
+    const nl = b.lv + 1, cost = C.itemCost(it, nl), s = stats(st);
+    if (s.level < it.lvl + (nl - 1) * 2) return 'Cần thành phố cấp ' + (it.lvl + (nl - 1) * 2) + ' để nâng ' + it.vi + ' lên cấp ' + nl + '.';
+    if (!spend(uid, cost)) return 'Chưa đủ xu (cần ' + cost + ' 🪙).';
+    const t = Date.now(); addCoins(uid, pending(b, s, t));             // thu nốt thuế trước khi nâng cấp
+    b.tg = nl; b.t0 = t; b.t1 = t + C.buildSecs(it, nl) * 1000; b.last = b.t1; return '';
+  }
   app.post('/api/city/demolish', requireAuth, (req, res) => {
     const uid = req.user.id;
     const out = tx(() => {
       const st = load(uid), b = getB(st, (req.body || {}).i); if (!b) return { err: 'Không thấy công trình này.' };
-      const it = C.BY[b.k]; let paid = 0, lv; for (lv = 1; lv <= Math.max(1, b.lv); lv++) paid += C.itemCost(it, lv);
-      const back = Math.floor(paid * R.sellBack) + pending(b, stats(st), Date.now());
-      st.bs = st.bs.filter((x) => x.i !== b.i); addCoins(uid, back); save(uid, st); return { st, back };
+      const back = demolishOne(st, uid, b); save(uid, st); return { st, back };
     });
     if (out.err) return bad(res, out.err);
     reply(res, out.st, uid, { refund: out.back });
@@ -145,16 +161,85 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const uid = req.user.id;
     const out = tx(() => {
       const st = load(uid), b = getB(st, (req.body || {}).i); if (!b) return { err: 'Không thấy công trình này.' };
-      const it = C.BY[b.k]; if (b.tg > b.lv) return { err: 'Công trình đang xây, hãy chờ xong rồi nâng cấp nhé.' };
-      if (b.lv >= C.MAXLV) return { err: 'Công trình đã ở cấp cao nhất.' };
-      const nl = b.lv + 1, cost = C.itemCost(it, nl), s = stats(st);
-      if (s.level < it.lvl + (nl - 1) * 2) return { err: 'Cần thành phố cấp ' + (it.lvl + (nl - 1) * 2) + ' để nâng ' + it.vi + ' lên cấp ' + nl + '.' };
-      if (!spend(uid, cost)) return { err: 'Chưa đủ xu (cần ' + cost + ' 🪙).' };
-      const t = Date.now(); addCoins(uid, pending(b, s, t));             // thu nốt thuế trước khi nâng cấp
-      b.tg = nl; b.t0 = t; b.t1 = t + C.buildSecs(it, nl) * 1000; b.last = b.t1; save(uid, st); return { st };
+      const e = upgradeOne(st, uid, b); if (e) return { err: e };
+      save(uid, st); return { st };
     });
     if (out.err) return bad(res, out.err);
     reply(res, out.st, uid, { upgraded: true });
+  });
+  // xoay mặt trước: mode 'cw' (xoay thêm 90°) · 'road' (quay ra phía đường) · hoặc f = 0..3
+  function rotateOne(st, b, mode, f) {
+    const it = C.BY[b.k];
+    if (mode === 'road') { const d = C.facingToRoad(st, it, b.x, b.y); if (d < 0) return false; b.f = d; return true; }
+    if (mode === 'cw') { b.f = (((b.f === undefined ? 0 : b.f) + 1) & 3); return true; }
+    const v = faceOk(Number(f)); if (v === undefined) return false; b.f = v; return true;
+  }
+  app.post('/api/city/rotate', requireAuth, (req, res) => {
+    const uid = req.user.id, bd = req.body || {};
+    const out = tx(() => {
+      const st = load(uid), b = getB(st, bd.i); if (!b) return { err: 'Không thấy công trình này.' };
+      if (!rotateOne(st, b, String(bd.mode || ''), bd.f)) return { err: bd.mode === 'road' ? 'Công trình này chưa giáp con đường nào.' : 'Hướng không hợp lệ.' };
+      save(uid, st); return { st };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { rotated: true });
+  });
+  app.post('/api/city/recolor', requireAuth, (req, res) => {
+    const uid = req.user.id, bd = req.body || {}, c = palOk(bd.c);
+    if (bd.c && !c) return bad(res, 'Màu này không có trong bảng màu.');
+    const out = tx(() => {
+      const st = load(uid), b = getB(st, bd.i); if (!b) return { err: 'Không thấy công trình này.' };
+      if ((b.c || '') === c) return { err: 'Công trình đã có màu này rồi.' };
+      const cost = C.recolorCost(C.BY[b.k]); if (!spend(uid, cost)) return { err: 'Chưa đủ xu để đổi màu (cần ' + cost + ' 🪙).' };
+      if (c) b.c = c; else delete b.c; save(uid, st); return { st, cost };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { recolored: true, cost: out.cost });
+  });
+  // thao tác hàng loạt trên nhiều công trình đã chọn
+  app.post('/api/city/bulk', requireAuth, (req, res) => {
+    const uid = req.user.id, bd = req.body || {}, action = String(bd.action || ''), ids = Array.from(new Set((Array.isArray(bd.ids) ? bd.ids : []).map(Number).filter((n) => Number.isInteger(n)))).slice(0, 300);
+    if (['collect', 'upgrade', 'rotate', 'color', 'demolish'].indexOf(action) < 0 || !ids.length) return bad(res, 'Yêu cầu không hợp lệ.');
+    const c = palOk(bd.c); if (action === 'color' && bd.c && !c) return bad(res, 'Màu này không có trong bảng màu.');
+    const out = tx(() => {
+      const st = load(uid), s = stats(st), t = Date.now(), r = { ok: 0, fail: 0, sum: 0, err: '' };
+      ids.forEach((id) => {
+        const b = getB(st, id); if (!b) { r.fail++; return; }
+        if (action === 'collect') { const p = pending(b, s, t); if (p > 0) { r.sum += p; r.ok++; b.last = t; } else r.fail++; }
+        else if (action === 'upgrade') { const e = upgradeOne(st, uid, b); if (e) { r.fail++; r.err = e; } else r.ok++; }
+        else if (action === 'rotate') { if (rotateOne(st, b, String(bd.mode || ''), bd.f)) r.ok++; else r.fail++; }
+        else if (action === 'color') { if ((b.c || '') === c) { r.fail++; return; } const cost = C.recolorCost(C.BY[b.k]); if (!spend(uid, cost)) { r.fail++; r.err = 'Chưa đủ xu để đổi màu tiếp.'; return; } if (c) b.c = c; else delete b.c; r.ok++; r.sum += cost; }
+        else if (action === 'demolish') { r.sum += demolishOne(st, uid, b); r.ok++; }
+      });
+      if (action === 'collect' && r.sum) addCoins(uid, r.sum);
+      if (!r.ok) return { err: r.err || (action === 'collect' ? 'Chưa có thuế để thu — hãy chờ thêm một lúc nhé.' : action === 'rotate' && bd.mode === 'road' ? 'Các công trình này chưa giáp đường.' : 'Không có công trình nào được thay đổi.') };
+      save(uid, st); return { st, r };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { bulk: Object.assign({ action }, out.r) });
+  });
+  // vẽ nhiều ô: đặt cùng một món 1×1 lên nhiều ô (cây, hoa, ghế, đèn…) trong một lần
+  app.post('/api/city/place-many', requireAuth, (req, res) => {
+    const uid = req.user.id, bd = req.body || {}, it = C.BY[String(bd.k)];
+    const cells = (Array.isArray(bd.cells) ? bd.cells : []).slice(0, 150).map((c) => [Number(c && c[0]), Number(c && c[1]), c && c[2]]).filter((c) => Number.isInteger(c[0]) && Number.isInteger(c[1]));
+    if (!it || it.w !== 1 || it.h !== 1 || !cells.length) return bad(res, 'Chỉ vẽ nhiều ô được với món 1×1.');
+    const out = tx(() => {
+      const st = load(uid), s = stats(st), gate = itemGate(st, s, it, req.user.role); if (gate) return { err: gate };
+      const occ = C.buildOcc(st.bs); let placed = 0, stop = '', last = '';
+      for (const [x, y, cf] of cells) {
+        const ok = C.canPlace(st, it, x, y, occ); if (!ok.ok) { last = ok.err; continue; }
+        if (st.free[it.k] > 0) { st.free[it.k]--; if (!st.free[it.k]) delete st.free[it.k]; }
+        else if (st.inv[it.k] > 0) { st.inv[it.k]--; if (!st.inv[it.k]) delete st.inv[it.k]; }
+        else if (!spend(uid, it.cost)) { stop = 'Hết xu nên dừng lại sau ' + placed + ' ô.'; break; }
+        const t = Date.now(), nb = { i: st.nid++, k: it.k, x, y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t };
+        const ff = cf != null && cf !== '' ? faceOk(Number(cf)) : (bd.f != null && bd.f !== '' ? faceOk(Number(bd.f)) : undefined); if (ff !== undefined) nb.f = ff; if (palOk(bd.c)) nb.c = palOk(bd.c);
+        st.bs.push(nb); occ[y * C.W + x] = st.bs.length; placed++;
+      }
+      if (!placed) return { err: stop || last || 'Không đặt được ô nào.' };
+      save(uid, st); return { st, placed, stop };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { placedMany: out.placed, stop: out.stop });
   });
   app.post('/api/city/speed', requireAuth, (req, res) => {
     const uid = req.user.id, mode = ['x2', 'now', 'ticket'].indexOf(String((req.body || {}).mode)) >= 0 ? String(req.body.mode) : '';
@@ -402,7 +487,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   }
   // dạng hiển thị cho người xem (không có xu, không thu thuế)
   function viewOther(st) {
-    const s = stats(st); return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: 0 })),
+    const s = stats(st); return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: 0, f: faceOk(b.f), c: C.PAL_BY[b.c] ? b.c : undefined })),
       free: {}, inv: {}, ev: [], tickets: 0, coupons: 0, stats: s, quizLeft: 0, chapters: Object.keys(st.chapters), matchLeft: 0, now: Date.now(), coins: 0, open: st.open };
   }
   app.locals.city = { load, save, peek, viewOther, stats, tx, addCoins, coinsOf, spend, bad, vnDay, J, one, festBonus };

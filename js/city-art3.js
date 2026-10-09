@@ -7,7 +7,7 @@
   var def = function (name, fn) { ART[name] = fn; };
   var dot = function (g, x, y, r, c) { g.ell(x, y, r, r, c); };
   var smoke = function (g, cx, cy, z) { var p = g.P(cx, cy, z); g.meta.smoke.push([p[0], p[1]]); };
-  var lot = function (g, rw, rh, col) { g.poly(g.faceT(0, 0, rw, rh, 0), col || '#8ED067', false); };
+  var lot = function (g, rw, rh, col) { g.keep = true; g.poly(g.faceT(0, 0, rw, rh, 0), col || '#8ED067', false); g.keep = false; };
   var beacon = function (g, cx, cy, z) { var p = g.P(cx, cy, z); g.ell(p[0], p[1], 2.4, 2.4, '#FF5A5A'); g.meta.beacon = p; };
   var sign = function (g, cx, cy, z, w, col, txt) { var s = g.P(cx, cy, z); g.poly([[s[0] - w, s[1] - 7], [s[0] + w, s[1] - 7], [s[0] + w, s[1] + 5], [s[0] - w, s[1] + 5]], col, INK); if (txt) { g.c.fillStyle = '#fff'; g.c.font = 'bold 8px sans-serif'; g.c.textAlign = 'center'; g.c.fillText(txt, s[0], s[1] + 2.5); } };
   var shadowAt = function (g, cx, cy, r) { var p = g.P(cx, cy, 0); g.ell(p[0], p[1] + 2, r, r * .42, 'rgba(30,60,30,.22)'); };

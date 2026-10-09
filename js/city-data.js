@@ -590,6 +590,59 @@
   var FEST_BY = {}; FESTIVALS.forEach(function (f) { FEST_BY[f.id] = f; });
   // các lễ hội đang diễn ra vào ngày `day` (YYYY-MM-DD)
   function festivalsOn(day) { var md = String(day).slice(5, 10); return FESTIVALS.filter(function (f) { return md >= f.from && md <= f.to; }).map(function (f) { return f.id; }); }
+
+  /* ───── bảng màu (đổi màu công trình / cây / hoa) ─────
+     h: sắc độ thân nhà · s: độ đậm · l: tăng/giảm sáng · h2: sắc cho phần tối (mái, cửa) · gh: sắc cho kính (null = giữ kính xanh) · f: có đổi cả màu lá cây không */
+  var PALETTES = [
+    { id: 'gold', g: 'lux', name: 'Vàng champagne', h: 42, s: .55, l: .08, h2: 36, gh: 44 },
+    { id: 'rosegold', g: 'lux', name: 'Vàng hồng', h: 14, s: .45, l: .06, h2: 8, gh: 16 },
+    { id: 'platinum', g: 'lux', name: 'Bạch kim', h: 212, s: .06, l: .05, h2: 212, gh: 208, gs: .35 },
+    { id: 'graphite', g: 'lux', name: 'Đen than', h: 215, s: .1, l: -.2, h2: 215, gh: 212, gs: .3 },
+    { id: 'navy', g: 'lux', name: 'Xanh hoàng gia', h: 222, s: .5, l: -.14, h2: 230, gh: 222 },
+    { id: 'emerald', g: 'lux', name: 'Ngọc lục bảo', h: 155, s: .45, l: -.08, h2: 162, gh: 165 },
+    { id: 'purple', g: 'lux', name: 'Tím hoàng gia', h: 268, s: .45, l: -.04, h2: 280, gh: 270 },
+    { id: 'wine', g: 'lux', name: 'Đỏ rượu vang', h: 350, s: .5, l: -.12, h2: 345, gh: 352 },
+    { id: 'p-pink', g: 'pastel', name: 'Hồng pastel', h: 345, s: .6, l: .14, h2: 332, gh: 340 },
+    { id: 'p-peach', g: 'pastel', name: 'Cam đào', h: 20, s: .7, l: .12, h2: 12, gh: 22 },
+    { id: 'p-cream', g: 'pastel', name: 'Vàng kem', h: 48, s: .7, l: .12, h2: 40, gh: 50 },
+    { id: 'p-mint', g: 'pastel', name: 'Xanh bạc hà', h: 150, s: .45, l: .14, h2: 160, gh: 165 },
+    { id: 'p-aqua', g: 'pastel', name: 'Xanh ngọc', h: 178, s: .5, l: .12, h2: 186, gh: 180 },
+    { id: 'p-sky', g: 'pastel', name: 'Xanh da trời', h: 205, s: .65, l: .12, h2: 215, gh: 202 },
+    { id: 'p-lilac', g: 'pastel', name: 'Tím oải hương', h: 265, s: .5, l: .14, h2: 275, gh: 268 },
+    { id: 'terracotta', g: 'theme', name: 'Đất nung', h: 18, s: .55, l: 0, h2: 12 },
+    { id: 'brick', g: 'theme', name: 'Gạch đỏ', h: 8, s: .5, l: -.06, h2: 5 },
+    { id: 'timber', g: 'theme', name: 'Gỗ nâu', h: 28, s: .45, l: -.05, h2: 24 },
+    { id: 'steel', g: 'theme', name: 'Thép công nghiệp', h: 210, s: .15, l: -.04, h2: 215, gh: 205, gs: .5 },
+    { id: 'sea', g: 'theme', name: 'Màu biển', h: 185, s: .55, l: 0, h2: 195, gh: 185 },
+    { id: 'eco', g: 'theme', name: 'Xanh sinh thái', h: 112, s: .4, l: .02, h2: 125, gh: 150 },
+    { id: 'sunset', g: 'theme', name: 'Hoàng hôn', h: 24, s: .75, l: .02, h2: 350, gh: 30 },
+    { id: 'snow', g: 'theme', name: 'Tuyết trắng', h: 210, s: .08, l: .18, h2: 215, gh: 205, gs: .4 },
+    { id: 'sakura', g: 'season', name: 'Anh đào', h: 340, s: .55, l: .14, h2: 330, f: 1 },
+    { id: 'autumn', g: 'season', name: 'Thu vàng', h: 28, s: .8, l: 0, h2: 15, f: 1 },
+    { id: 'spring', g: 'season', name: 'Xuân tươi', h: 95, s: .6, l: .06, h2: 110, f: 1 },
+    { id: 'f-red', g: 'vivid', name: 'Đỏ tươi', h: 355, s: .85, l: 0, h2: 350, f: 1 },
+    { id: 'f-orange', g: 'vivid', name: 'Cam', h: 28, s: .9, l: 0, h2: 22, f: 1 },
+    { id: 'f-yellow', g: 'vivid', name: 'Vàng tươi', h: 50, s: .9, l: .02, h2: 44, f: 1 },
+    { id: 'f-blue', g: 'vivid', name: 'Xanh dương', h: 215, s: .8, l: 0, h2: 222, gh: 215, f: 1 },
+    { id: 'f-violet', g: 'vivid', name: 'Tím', h: 280, s: .7, l: 0, h2: 285, f: 1 },
+    { id: 'f-white', g: 'vivid', name: 'Trắng tinh', h: 60, s: .04, l: .3, h2: 60, f: 1 }
+  ];
+  var PAL_BY = {}; PALETTES.forEach(function (p) { PAL_BY[p.id] = p; });
+  var PAL_GROUPS = [['lux', '👑 Sang trọng'], ['pastel', '🍬 Pastel'], ['theme', '🎯 Theo chủ đề'], ['season', '🌸 Theo mùa'], ['vivid', '🌈 Tươi sáng']];
+  var SUGGEST = { home: ['p-peach', 'p-cream', 'p-mint', 'terracotta', 'timber', 'p-sky', 'p-pink'], shop: ['sunset', 'p-pink', 'gold', 'p-aqua', 'brick', 'navy'], civic: ['p-sky', 'platinum', 'brick', 'p-mint', 'navy'],
+    park: ['p-pink', 'p-aqua', 'sunset', 'f-yellow', 'p-lilac'], fun: ['p-pink', 'p-aqua', 'sunset', 'f-yellow', 'p-lilac'], tree: ['sakura', 'autumn', 'spring', 'eco', 'f-yellow'], flower: ['f-red', 'f-yellow', 'f-blue', 'p-pink', 'f-violet', 'f-white', 'sunset'],
+    bench: ['gold', 'graphite', 'timber', 'platinum', 'p-mint'], lamp: ['gold', 'graphite', 'platinum', 'timber', 'f-yellow'], orna: ['gold', 'platinum', 'terracotta', 'p-lilac', 'emerald'], port: ['steel', 'brick', 'navy', 'sunset', 'graphite'],
+    edu: ['brick', 'navy', 'p-sky', 'p-cream', 'emerald'], world: ['gold', 'terracotta', 'platinum', 'emerald', 'sunset'], beach: ['sea', 'p-aqua', 'p-cream', 'sunset', 'p-pink'], mount: ['timber', 'snow', 'eco', 'brick', 'autumn'],
+    farm: ['brick', 'timber', 'p-cream', 'eco', 'terracotta'], trans: ['steel', 'platinum', 'navy', 'sunset', 'graphite'], sport: ['p-aqua', 'sunset', 'navy', 'emerald', 'f-blue'], event: ['sakura', 'autumn', 'gold', 'wine', 'p-pink'] };
+  // gợi ý màu theo loại công trình (cao ốc kính thì gợi ý màu kính sang trọng)
+  function recolorCost(it) { return Math.max(RULES.recolorMin, Math.round(it.cost * RULES.recolorPct)); }
+  function suggestFor(it) { if ((it.cat === 'home' || it.cat === 'shop') && (it.lvl >= 12 || it.w * it.h >= 9)) return ['navy', 'graphite', 'platinum', 'emerald', 'gold', 'wine', 'p-sky']; return SUGGEST[it.cat] || ['p-peach', 'p-sky', 'p-mint', 'gold']; }
+  // hướng (0 +y, 1 +x, 2 −y, 3 −x) mà mặt trước nhìn ra đường; −1 nếu không giáp đường
+  function facingToRoad(st, it, x, y) {
+    var best = -1, d, k, cnt, bc = 0, W2 = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+    for (d = 0; d < 4; d++) { cnt = 0; for (k = 0; k < (d % 2 ? it.h : it.w); k++) { var tx = d === 0 ? x + k : d === 2 ? x + k : d === 1 ? x + it.w : x - 1, ty = d === 1 || d === 3 ? y + k : d === 0 ? y + it.h : y - 1; if (isRoadAt(tx, ty, st.roads)) cnt++; } if (cnt > bc) { bc = cnt; best = d; } }
+    return best;
+  }
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   // công trình cố định (chỉ để vẽ)
   var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 }, bigplaza: { en: 'Harbor Plaza', vi: 'Quảng trường cảng', w: 1, h: 1 }, pier: { en: 'Fishing Pier', vi: 'Cầu tàu bãi biển', w: 7, h: 2 }, airport: { en: 'Airport Gate', vi: 'Cổng sân bay', w: 4, h: 2 } };
@@ -600,6 +653,7 @@
     incomeCapH: 8,               // tích luỹ xu tối đa 8 giờ rồi dừng (phải bấm thu)
     roadCost: 8, roadRefund: 4, // xu mỗi ô đường tự xây
     sellBack: 0.5,              // dỡ công trình hoàn 50% giá
+    recolorPct: 0.03, recolorMin: 30,   // đổi màu sau khi đã xây: 3% giá món (tối thiểu 30 xu); chọn màu lúc mua thì miễn phí
     upgradeMul: [0, 0, 0.9, 2.2], timeMul: [0, 1, 2.5, 6],
     speedX2: { base: 6, perMin: 3 },     // đẩy nhanh x2: còn lại giảm một nửa
     speedNow: { base: 15, perMin: 10 },  // xong ngay: đắt hơn
@@ -723,7 +777,7 @@
   );
   PLANS.forEach(function (pl) { pl.roads = Y5.map(function (y) { return [2, y]; }); });
   var PLAN_BY = {}; PLANS.forEach(function (pl) { PLAN_BY[pl.id] = pl; });
-  var API = { FESTIVALS: FESTIVALS, FEST_BY: FEST_BY, festivalsOn: festivalsOn, BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
+  var API = { recolorCost: recolorCost, PALETTES: PALETTES, PAL_BY: PAL_BY, PAL_GROUPS: PAL_GROUPS, suggestFor: suggestFor, facingToRoad: facingToRoad, FESTIVALS: FESTIVALS, FEST_BY: FEST_BY, festivalsOn: festivalsOn, BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
     CATS: CATS, ITEMS: ITEMS, BY: BY, MAXLV: MAXLV, RULES: RULES, LEVEL_AT: LEVEL_AT, idx: idx, inW: inW, itemCost: itemCost, buildSecs: buildSecs, incomeH: incomeH, popOf: popOf, hpOf: hpOf, speedCost: speedCost,
     levelOfScore: levelOfScore, scoreOf: scoreOf, buildOcc: buildOcc, canPlace: canPlace, canRoad: canRoad, adjacentRoad: adjacentRoad, zoneList: zoneList, isRoadAt: isRoadAt };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTCityData = API;

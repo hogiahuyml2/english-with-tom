@@ -49,6 +49,10 @@ button { font-family: inherit; cursor: pointer; }
 .dy-m { display: flex; gap: 10px; align-items: center; background: var(--bg2, #F3F6FF); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .dy-m.done { background: #E3F7E8; } .dy-m.opt { border: 2px dashed #F2A33A; }
 .dy-m .ic { font-size: 26px; } .dy-m .tx { flex: 1; min-width: 0; font-weight: 700; font-size: 14px; line-height: 1.3; } .dy-m .bar2 { height: 8px; border-radius: 4px; background: rgba(0,0,0,.1); margin-top: 6px; overflow: hidden; } .dy-m .bar2 i { display: block; height: 100%; background: linear-gradient(90deg, #5BC47A, #2FA85A); }
 .dy-m .sm { font-size: 12px; font-weight: 600; opacity: .7; } .dy-chest { text-align: center; margin: 12px 0 4px; padding: 14px; border-radius: 18px; background: linear-gradient(180deg, #FFF3D6, #FFE2A8); } .dy-chest .big { font-size: 44px; line-height: 1; }
+.pbar { flex-wrap: wrap; justify-content: center; } .pbreak { flex-basis: 100%; height: 0; } .pbar .btn.sm { padding: 6px 10px; font-size: 12.5px; border-radius: 12px; } .pbar .btn.sm small { display: inline; margin-left: 4px; }
+.swrow { display: inline-flex; gap: 5px; align-items: center; flex-wrap: wrap; } .sw { flex: none; min-width: 0; width: 26px; height: 26px; max-width: 26px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px rgba(40,50,80,.35); padding: 0; cursor: pointer; display: grid; place-items: center; font-size: 12px; color: #667; background: #EEF2FA; position: relative; } .sw.on { box-shadow: 0 0 0 3px var(--good); transform: scale(1.12); } .sw.sw0 { background: repeating-linear-gradient(45deg, #fff, #fff 4px, #E3E8F4 4px, #E3E8F4 8px); }
+.sws { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; } .sws .sw { width: 34px; height: 34px; max-width: 34px; } .pal-h { font-weight: 800; font-size: 13px; margin-top: 8px; color: var(--ink); } .pal-top { display: flex; gap: 12px; align-items: center; margin: 8px 0; } .pal-top canvas { width: 120px; height: 120px; background: linear-gradient(180deg, #DDF0FF, #EAF6E2); border-radius: 18px; flex: none; }
+#palM .box { max-width: 460px; width: 100%; max-height: 88dvh; overflow: auto; } .mchk { font-size: 12px; font-weight: 700; display: flex; gap: 5px; align-items: center; }
 .dot { position: absolute; right: 6px; top: 4px; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; place-items: center; padding: 0 4px; font-weight: 800; }
 .sheet { position: fixed; left: 0; right: 0; bottom: 0; max-height: min(74dvh, 640px); background: var(--card); border-radius: 26px 26px 0 0; box-shadow: 0 -10px 40px rgba(10,30,80,.35); z-index: 40; display: none; flex-direction: column; padding-bottom: var(--bot); }
 .sheet.on { display: flex; animation: up .22s ease-out; } @keyframes up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -74,7 +78,7 @@ button { font-family: inherit; cursor: pointer; }
 .info h4 { margin: 0; font-size: 19px; } .info .vi { color: var(--muted); font-weight: 700; font-size: 14px; } .info p { margin: 6px 0; font-size: 14px; line-height: 1.45; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 8px 0; } .st { background: #F3F6FC; border-radius: 14px; padding: 8px 10px; } .st small { display: block; color: var(--muted); font-weight: 700; font-size: 11px; } .st b { font-size: 15px; font-variant-numeric: tabular-nums; }
 .prog { height: 14px; border-radius: 9px; background: #DDE5F3; overflow: hidden; margin: 6px 0; } .prog i { display: block; height: 100%; background: linear-gradient(90deg, #4CD08A, #2FB36D); border-radius: 9px; transition: width .3s; }
-.pbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(88px + var(--bot)); background: var(--glass); border-radius: 22px; padding: 8px 10px; box-shadow: 0 8px 26px rgba(20,40,90,.35); z-index: 45; display: none; align-items: center; gap: 8px; max-width: calc(100vw - 20px); flex-wrap: wrap; justify-content: center; }
+.pbar { position: fixed; left: 10px; right: 10px; margin: 0 auto; width: fit-content; transform: none; bottom: calc(88px + var(--bot)); background: var(--glass); border-radius: 22px; padding: 8px 10px; box-shadow: 0 8px 26px rgba(20,40,90,.35); z-index: 45; display: none; align-items: center; gap: 8px; max-width: calc(100vw - 20px); flex-wrap: wrap; justify-content: center; }
 .pbar.on { display: flex; } .pbar .t { font-weight: 800; font-size: 13.5px; } .pbar .err { color: var(--bad); font-size: 12.5px; font-weight: 700; max-width: 300px; }
 .toast { position: fixed; left: 50%; top: calc(70px + var(--top)); transform: translate(-50%, -10px); background: rgba(31,42,68,.94); color: #fff; padding: 10px 16px; border-radius: 16px; font-weight: 700; font-size: 14px; z-index: 90; opacity: 0; pointer-events: none; transition: all .22s; max-width: calc(100vw - 30px); text-align: center; line-height: 1.35; } .toast.on { opacity: 1; transform: translate(-50%, 0); }
 .modal { position: fixed; inset: 0; background: rgba(20,30,60,.5); z-index: 60; display: none; place-items: center; padding: 14px; } .modal.on { display: grid; }
@@ -86,7 +90,7 @@ button { font-family: inherit; cursor: pointer; }
 .field { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 14px; } .field select { font: 700 13px var(--font); border: 2px solid var(--line); border-radius: 10px; padding: 6px 8px; }
 .sw { position: relative; width: 46px; height: 26px; flex: none; } .sw input { opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 2; } .sw i { position: absolute; inset: 0; background: #C9D3E6; border-radius: 14px; transition: .2s; } .sw i::after { content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); } .sw input:checked + i { background: var(--good); } .sw input:checked + i::after { left: 23px; }
 .empty { text-align: center; color: var(--muted); font-weight: 700; padding: 20px 10px; }
-@media (max-width: 640px) { .tools { gap: 6px; padding: 0 12px 6px; } .tools input { flex: 1 1 100%; } .tools select { flex: 1 1 0; padding: 6px 8px; font-size: 12.5px; } .sheet { max-height: min(86dvh, 700px); } .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 8px; font-size: 13px; gap: 4px; } #festChip b { display: none; } .chip .plus { width: 20px; height: 20px; } .dbar { bottom: calc(82px + var(--bot)); } }
+@media (max-width: 640px) { #mbar .pbreak { display: none; } .pbar { padding: 7px 8px; gap: 6px; } .pbar .btn.sm { padding: 5px 8px; font-size: 12px; } .tools { gap: 6px; padding: 0 12px 6px; } .tools input { flex: 1 1 100%; } .tools select { flex: 1 1 0; padding: 6px 8px; font-size: 12.5px; } .sheet { max-height: min(86dvh, 700px); } .mini { top: calc(112px + var(--top)); } .dbtn { padding: 7px 9px; font-size: 18px; } .dbtn .dn { display: none; } .hud { gap: 6px; } .lvl { width: 36px; height: 36px; font-size: 16px; } .cname {display: none; } .xpbar { width: 70px; } .mini canvas { width: 112px; height: 76px; } .tb { min-width: 62px; padding: 7px 8px 6px; font-size: 11px; } .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); } .chip { padding: 6px 8px; font-size: 13px; gap: 4px; } #festChip b { display: none; } .chip .plus { width: 20px; height: 20px; } .dbar { bottom: calc(82px + var(--bot)); } }
 @media (prefers-reduced-motion: reduce) { .sheet.on { animation: none; } }
 
 .lh { font-weight: 800; font-size: 13px; color: var(--mut); margin: 14px 0 6px; } .lcard { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .lcard.ok { border-color: #5BCB8B; background: #F2FCF6; } .lcard .t { font-weight: 800; font-size: 15px; } .lcard .s { font-size: 12.5px; color: var(--mut); margin: 2px 0 6px; } .lcard .row2 { display: flex; gap: 6px; flex-wrap: wrap; } .lcard .row2 .btn { padding: 7px 11px; font-size: 13px; }
@@ -144,10 +148,18 @@ button { font-family: inherit; cursor: pointer; }
   <button class="tb" id="bFriend" type="button"><span class="ic">👥</span>Bạn bè<span class="dot" id="frDot" style="display:none"></span></button>
   <button class="tb" id="bLearn" type="button"><span class="ic">📚</span>Học từ</button>
   <button class="tb" id="bDaily" type="button"><span class="ic">📅</span>Nhiệm vụ<span class="dot" id="dyDot"></span></button>
+  <button class="tb" id="bMulti" type="button"><span class="ic">☑️</span>Chọn nhiều</button>
   <button class="tb" id="bDist" type="button"><span class="ic">🗺️</span>Các quận</button>
 </div>
 
-<div class="pbar" id="pbar"><div><div class="t" id="pName"></div><div class="err" id="pErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="pCont"> Đặt liên tục</label><button class="btn bad" id="pNo" type="button">✗ Hủy</button><button class="btn good" id="pOk" type="button">✓ Đặt</button></div>
+<div class="pbar" id="pbar"><div><div class="t" id="pName"></div><div class="err" id="pErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="pCont"> Đặt liên tục</label><button class="btn bad" id="pNo" type="button">✗ Hủy</button><button class="btn good" id="pOk" type="button">✓ Đặt</button>
+  <div class="pbreak"></div>
+  <button class="btn sm" id="pRot" type="button" title="Xoay mặt trước của công trình">🔄 Xoay mặt</button><button class="btn sm" id="pRoad" type="button" title="Tự quay mặt trước ra phía đường">🛣️ Ra đường</button><span class="swrow" id="pSw"></span><button class="btn sm" id="pPal" type="button">🎨 Màu</button><label class="mchk" id="pPaintL" style="display:none"><input type="checkbox" id="pPaint"> 🖌️ Vẽ nhiều ô</label></div>
+<div class="pbar" id="mbar"><div><div class="t" id="mTxt"></div></div><label class="mchk"><input type="checkbox" id="mBox"> ▭ Kéo chọn vùng</label><button class="btn bad sm" id="mNo" type="button">✓ Xong</button>
+  <div class="pbreak"></div>
+  <button class="btn sm" id="mSame" type="button">Cùng loại</button><button class="btn sm" id="mAll" type="button">Tất cả</button><button class="btn sm" id="mClr" type="button">Bỏ chọn</button>
+  <div class="pbreak"></div>
+  <button class="btn good sm" id="mCol" type="button">💰 Thu thuế</button><button class="btn pri sm" id="mUp" type="button">⬆️ Nâng cấp</button><button class="btn sm" id="mRot" type="button">🔄 Xoay</button><button class="btn sm" id="mRoad" type="button">🛣️ Ra đường</button><button class="btn sm" id="mPal" type="button">🎨 Màu</button><button class="btn bad sm" id="mDem" type="button">🗑️ Dỡ</button></div>
 <div class="pbar" id="rbar"><div><div class="t" id="rTxt">Kéo ngón tay trên bản đồ để vẽ đường</div><div class="err" id="rErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="rDel"> Dỡ đường</label><button class="btn bad" id="rNo" type="button">✗ Xong</button><button class="btn good" id="rOk" type="button" disabled>✓ Xây</button></div>
 
 <div class="sheet" id="shopS"><div class="hd"><h3>🏗️ Cửa hàng xây dựng</h3><button class="x" data-close="shopS" type="button">✕</button></div><div class="tabs" id="shopTabs"></div>
@@ -161,6 +173,7 @@ button { font-family: inherit; cursor: pointer; }
 <div class="sheet" id="friendS"><div class="hd"><h3>👥 Bạn bè & lớp</h3><button class="x" data-close="friendS" type="button">✕</button></div><div class="tabs" id="frTabs"><button class="tab on" data-ft="list" type="button">Bạn bè</button><button class="tab" data-ft="rank" type="button">🏆 Xếp hạng</button><button class="tab" data-ft="class" type="button">🎯 Dự án lớp</button><button class="tab" data-ft="notes" type="button">💬 Lời nhắn</button></div><div class="bd" id="friendB"></div></div>
 <div class="sheet" id="dailyS"><div class="hd"><h3>📅 Nhiệm vụ hôm nay</h3><button class="x" data-close="dailyS" type="button">✕</button></div><div class="bd" id="dailyB"></div></div>
 <div class="sheet" id="learnS"><div class="hd"><h3>📚 Học từ & mở khoá công trình</h3><button class="x" data-close="learnS" type="button">✕</button></div><div class="bd" id="learnB"></div></div>
+<div class="modal" id="palM"><div class="box"><div id="palB"></div></div></div>
 <div class="modal" id="learnM"><div class="box"><div id="learnMB"></div></div></div>
 <div class="modal" id="quizM"><div class="box"><div id="quizB"></div></div></div>
 <div class="modal" id="setM"><div class="box"><h3>⚙️ Cài đặt</h3><div id="setB2"></div><div class="row"><button class="btn pri" data-close="setM" type="button">Xong</button></div></div></div>
@@ -169,11 +182,11 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=10"></script>
-<script src="js/city-art.js?v=6"></script>
+<script src="js/city-data.js?v=11"></script>
+<script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
-<script src="js/city-engine.js?v=6"></script>
+<script src="js/city-engine.js?v=7"></script>
 <script>
 (function () {
 'use strict';
@@ -203,7 +216,9 @@ ENG = new EWTCityEngine($('cv'), $('mm'), {
   onRoadTap: function (i) { if (ENG.mode === 'road' && ROADDEL) removeRoad([i]); },
   onFixed: function (f) { var d = C.FIXED_DEF[f.k]; if (d) { toast('🏛️ <b>' + d.en + '</b> — ' + d.vi + ' <button class="x" style="width:28px;height:28px;margin-left:6px" id="fxSay">🔊</button>', 3500); setTimeout(function () { var b = $('fxSay'); if (b) b.onclick = function () { say(d.en); }; }, 30); } },
   onLocked: function (d) { if (!VIS) openDist(d); },
-  onMode: function (m) { $('bRoad').classList.toggle('on', m === 'road'); }
+  onMode: function (m) { $('bRoad').classList.toggle('on', m === 'road'); },
+  onMulti: function () { updateMbar(); },
+  onPaint: function (cells) { paintDone(cells); }
 });
 function applySettings() {
   var f = ENG.fx; f.cars = !!setting.cars; f.people = !!setting.people; f.boats = !!setting.boats; f.sky = !!setting.sky;
@@ -252,17 +267,17 @@ function pick(it) {
   if (it.ch && ROLE !== 'admin' && S.chapters.indexOf(it.ch) < 0) { toast('📖 Học xong chương này để mở <b>' + esc(it.vi) + '</b> nhé!', 3200); return openLearn(it.ch); }
   if (it.ev && S.ev.indexOf(it.ev) < 0) return toast('🎉 ' + esc(it.vi) + ' chỉ có khi sự kiện đang diễn ra nhé!', 3000);
   if (!(S.free[it.k] > 0) && !(S.inv[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
-  $('shopS').classList.remove('on'); SEL = it; setMode('place', it.k); say(it.en);
+  $('shopS').classList.remove('on'); SEL = it; PCOL = ''; PFACE = 'auto'; PSWKEY = ''; $('pPaint').checked = false; setMode('place', it.k); say(it.en);
 }
-function setMode(m, k) { ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
+function setMode(m, k) { ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); $('mbar').classList.toggle('on', m === 'multi'); $('bMulti').classList.toggle('on', m === 'multi'); if (m === 'multi') { $('mBox').checked = false; updateMbar(); } if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
 function updatePbar() {
-  var g = ENG.ghost; if (!g) return; var it = C.BY[g.k], free = (S.free[it.k] | 0) > 0; $('pName').innerHTML = esc(it.en) + ' · <span style="font-weight:600;color:var(--muted)">' + esc(it.vi) + '</span> — ' + (free ? '<b style="color:var(--good)">MIỄN PHÍ</b>' : COIN + ' <b>' + fmt(it.cost) + '</b>'); $('pErr').textContent = g.ok ? '' : g.err; $('pOk').disabled = !g.ok;
+  var g = ENG.ghost; if (!g) return; var it = C.BY[g.k]; ghostApply(g); pbarSwatches(it); $('pPaintL').style.display = it.w === 1 && it.h === 1 ? '' : 'none'; if (!(it.w === 1 && it.h === 1)) { $('pPaint').checked = false; ENG.paint = false; } var free = (S.free[it.k] | 0) > 0; $('pName').innerHTML = esc(it.en) + ' · <span style="font-weight:600;color:var(--muted)">' + esc(it.vi) + '</span> — ' + (free ? '<b style="color:var(--good)">MIỄN PHÍ</b>' : COIN + ' <b>' + fmt(it.cost) + '</b>'); $('pErr').textContent = g.ok ? '' : g.err; $('pOk').disabled = !g.ok;
 }
 function placeNow() {
   var g = ENG.ghost; if (!g || !g.ok) { if (g && g.err) toast(g.err, 3000); return; }
   var it = C.BY[g.k]; if (!(S.free[it.k] > 0) && S.coins < it.cost) return toast('Chưa đủ xu (cần ' + fmt(it.cost) + ') — bấm 🧠 Kiếm xu nhé!', 3200);
   $('pOk').disabled = true;
-  api('/api/city/place', { k: g.k, x: g.x, y: g.y }).then(function (d) { setState(d); SND('place'); say(it.en); if (!CONT && !$('pCont').checked) setMode('view'); else { ENG.refreshGhost(); updatePbar(); } toast('🏗️ Bắt đầu xây ' + esc(it.vi) + '!', 1800); }).catch(function (e) { toast(e.message, 3600); ENG.refreshGhost(); updatePbar(); });
+  api('/api/city/place', { k: g.k, x: g.x, y: g.y, f: g.f == null ? null : g.f, c: PCOL }).then(function (d) { setState(d); SND('place'); say(it.en); if (!CONT && !$('pCont').checked) setMode('view'); else { ENG.refreshGhost(); updatePbar(); } toast('🏗️ Bắt đầu xây ' + esc(it.vi) + '!', 1800); }).catch(function (e) { toast(e.message, 3600); ENG.refreshGhost(); updatePbar(); });
 }
 
 /* ───── đường ───── */
@@ -277,6 +292,71 @@ function buildRoad() {
   api('/api/city/road', { cells: idxs }).then(function (d) { setState(d); ROADCELLS = []; ENG.roadPrev = null; roadBar(); toast('🛣️ Đã xây ' + d.roads + ' ô đường!', 1800); }).catch(function (e) { toast(e.message, 3600); });
 }
 function removeRoad(idxs) { api('/api/city/road/remove', { cells: idxs }).then(function (d) { setState(d); ROADCELLS = []; roadBar(); toast('Đã dỡ ' + d.removed + ' ô đường.', 1800); }).catch(function (e) { toast(e.message, 3600); }); }
+
+/* ───── xoay mặt · đổi màu · chọn nhiều · vẽ nhiều ô ───── */
+var PCOL = '', PFACE = 'auto', PALCB = null, PALSEL = '', PALIT = null, PSWKEY = '';
+function swHtml(id, tag) { var P = C.PAL_BY[id], st = P ? 'background:hsl(' + P.h + ',' + Math.round(P.s * 100) + '%,' + clampN(Math.round(58 + P.l * 100), 28, 88) + '%)' : ''; return '<button class="sw' + (id === (tag === 'pm' ? PALSEL : PCOL) ? ' on' : '') + (id ? '' : ' sw0') + '" data-' + tag + '="' + id + '" title="' + esc(P ? P.name : 'Màu gốc') + '" aria-label="' + esc(P ? P.name : 'Màu gốc') + '" type="button" style="' + st + '">' + (id ? '' : '⌀') + '</button>'; }
+function ghostApply(g) {   // gắn hướng mặt trước + màu đang chọn vào bóng ma
+  var it = C.BY[g.k]; g.c = PCOL;
+  if (PFACE === 'auto') { var d = C.facingToRoad(ENG.stateObj(), it, g.x, g.y); g.f = d >= 0 ? d : undefined; } else g.f = PFACE;
+}
+function pbarSwatches(it) {
+  var key = it.k + '|' + PCOL; if (key === PSWKEY) return; PSWKEY = key; var sug = C.suggestFor(it).slice(0, 6), h = swHtml('', 'pc');
+  sug.forEach(function (id) { h += swHtml(id, 'pc'); }); if (PCOL && sug.indexOf(PCOL) < 0) h += swHtml(PCOL, 'pc');
+  $('pSw').innerHTML = '<span style="font-size:11px;font-weight:800;color:var(--muted)">Gợi ý:</span>' + h;
+}
+function palPreview() {
+  var cv = $('palPv'), c = cv.getContext('2d'); c.clearRect(0, 0, 140, 140); c.drawImage(A.thumb(PALIT.k, 140, 1, PALSEL, 0), 0, 0); var P = C.PAL_BY[PALSEL]; $('palName').textContent = P ? P.name : 'Màu gốc';
+  [].forEach.call(document.querySelectorAll('#palB .sw'), function (el) { el.classList.toggle('on', el.getAttribute('data-pm') === PALSEL); });
+}
+function palBox(o) {
+  var it = o.it; PALIT = it; PALSEL = o.cur || ''; PALCB = o.cb; var sug = C.suggestFor(it);
+  var h = '<h3>🎨 ' + esc(o.title || 'Chọn màu') + '</h3><div class="pal-top"><canvas id="palPv" width="140" height="140"></canvas><div><b>' + esc(it.vi) + '</b><div style="font-weight:800;font-size:15px;margin:2px 0" id="palName"></div><div class="sub" style="margin:0">' + esc(o.note || '') + '</div></div></div>';
+  h += '<div class="pal-h">⭐ Gợi ý cho ' + esc(it.vi) + '</div><div class="sws">' + swHtml('', 'pm') + sug.map(function (id) { return swHtml(id, 'pm'); }).join('') + '</div>';
+  C.PAL_GROUPS.forEach(function (g) { h += '<div class="pal-h">' + g[1] + '</div><div class="sws">' + C.PALETTES.filter(function (p) { return p.g === g[0]; }).map(function (p) { return swHtml(p.id, 'pm'); }).join('') + '</div>'; });
+  h += '<div class="row"><button class="btn" data-close="palM" type="button">Hủy</button><button class="btn pri" id="palOk" type="button">' + esc(o.ok || 'Chọn màu này') + '</button></div>';
+  $('palB').innerHTML = h; $('palM').classList.add('on'); palPreview();
+}
+function rotateBuilding(mode) { api('/api/city/rotate', { i: INFO, mode: mode }).then(function (d) { setState(d); SND('place'); toast(mode === 'road' ? '🛣️ Đã quay mặt ra đường!' : '🔄 Đã xoay mặt trước.', 1600); }).catch(function (e) { toast(e.message, 3200); }); }
+function recolorBuilding() {
+  var b = S.bs.filter(function (x) { return x.i === INFO; })[0]; if (!b) return; var it = C.BY[b.k], cost = C.recolorCost(it);
+  palBox({ it: it, cur: b.c || '', title: 'Đổi màu ' + it.vi, note: 'Đổi màu tốn ' + fmt(cost) + ' xu (chọn màu lúc mua thì miễn phí).', ok: 'Đổi màu · ' + fmt(cost) + ' xu', cb: function (c) { api('/api/city/recolor', { i: b.i, c: c }).then(function (d) { setState(d); SND('place'); toast('🎨 Đã đổi màu ' + esc(it.vi) + '!', 1800); }).catch(function (e) { toast(e.message, 3200); }); } });
+}
+/* chọn nhiều */
+function setMulti(on) { if (on) { closeSheets(); setMode('multi'); } else setMode('view'); }
+function msList() { return ENG.mselIds().map(function (id) { return S.bs.filter(function (b) { return b.i === id; })[0]; }).filter(Boolean); }
+function updateMbar() {
+  if (ENG.mode !== 'multi') return; var l = msList(), n = l.length, pend = 0; l.forEach(function (b) { pend += b.pend; });
+  $('mTxt').innerHTML = n ? 'Đã chọn <b>' + n + '</b> công trình' + (pend >= 1 ? ' · 💰 ' + fmt(pend) + ' xu thuế chờ' : '') : 'Chạm vào công trình để chọn — hoặc bật “Kéo chọn vùng” rồi kéo trên bản đồ';
+  ['mSame', 'mClr', 'mCol', 'mUp', 'mRot', 'mRoad', 'mPal', 'mDem'].forEach(function (id) { $(id).disabled = !n; });
+}
+function bulk(action, extra) {
+  var ids = ENG.mselIds(); if (!ids.length) return Promise.resolve();
+  return api('/api/city/bulk', Object.assign({ action: action, ids: ids }, extra || {})).then(function (d) {
+    var r = d.bulk; setState(d); updateMbar();
+    var msg = { collect: '💰 Thu <b>' + fmt(r.sum) + '</b> xu từ ' + r.ok + ' công trình', upgrade: '⬆️ Đã nâng cấp ' + r.ok + ' công trình', rotate: '🔄 Đã xoay ' + r.ok + ' công trình', color: '🎨 Đã đổi màu ' + r.ok + ' công trình (−' + fmt(r.sum) + ' xu)', demolish: '🗑️ Đã dỡ ' + r.ok + ' công trình, nhận lại ' + fmt(r.sum) + ' xu' }[action];
+    if (r.fail) msg += ' · bỏ qua ' + r.fail + (r.err ? ' (' + esc(r.err) + ')' : ''); toast(msg, 3400); SND(action === 'collect' ? 'coin' : 'place');
+  }).catch(function (e) { toast(e.message, 3600); });
+}
+async function bulkUpgrade() {
+  var l = msList(), tot = 0, n = 0; l.forEach(function (b) { if (b.tg <= b.lv && b.lv < C.MAXLV) { tot += C.itemCost(C.BY[b.k], b.lv + 1); n++; } });
+  if (!n) return toast('Các công trình đã chọn chưa nâng cấp được (đang xây hoặc đã cấp cao nhất).', 3000);
+  if (!(await confirmBox('Nâng cấp ' + n + ' công trình?', 'Tổng chi phí khoảng <b>' + fmt(tot) + '</b> xu. Công trình nào thiếu xu hoặc chưa đủ cấp thành phố sẽ được bỏ qua.', 'Nâng cấp'))) return; bulk('upgrade');
+}
+async function bulkDemolish() {
+  var l = msList(), tot = 0; l.forEach(function (b) { var it = C.BY[b.k], paid = 0, k; for (k = 1; k <= Math.max(1, b.lv); k++) paid += C.itemCost(it, k); tot += Math.floor(paid * C.RULES.sellBack) + b.pend; });
+  if (!(await confirmBox('Dỡ ' + l.length + ' công trình?', 'Bạn nhận lại khoảng <b>' + fmt(tot) + '</b> xu. Không thể hoàn tác.', 'Dỡ bỏ'))) return; bulk('demolish');
+}
+function bulkColor() {
+  var l = msList(); if (!l.length) return; var cost = 0; l.forEach(function (b) { cost += C.recolorCost(C.BY[b.k]); });
+  palBox({ it: C.BY[l[0].k], cur: '', title: 'Đổi màu ' + l.length + ' công trình', note: 'Tốn khoảng ' + fmt(cost) + ' xu cho tất cả. Gợi ý theo loại công trình đầu tiên.', ok: 'Đổi màu · ~' + fmt(cost) + ' xu', cb: function (c) { bulk('color', { c: c }); } });
+}
+function paintDone(cells) {
+  var g = ENG.ghost; if (!g || !cells.length) return; var it = C.BY[g.k];
+  api('/api/city/place-many', { k: g.k, c: PCOL, cells: cells.map(function (c) { var d = PFACE === 'auto' ? C.facingToRoad(ENG.stateObj(), it, c.x, c.y) : PFACE; return [c.x, c.y, d >= 0 ? d : null]; }) }).then(function (d) {
+    setState(d); SND('place'); toast('🖌️ Đã đặt ' + d.placedMany + ' ' + esc(it.vi) + (d.stop ? ' · ' + esc(d.stop) : ''), 2400); ENG.refreshGhost(); updatePbar();
+  }).catch(function (e) { toast(e.message, 3600); });
+}
 
 /* ───── thông tin công trình ───── */
 function openInfo(id) { if (VIS) return; INFO = id; closeSheets(true); setMode('view'); renderInfo(); $('infoS').classList.add('on'); var b = S.bs.filter(function (x) { return x.i === id; })[0]; if (b) say(C.BY[b.k].en); }
@@ -297,6 +377,7 @@ function renderInfo() {
     h += '</div>';
   }
   var paid = 0, l2; for (l2 = 1; l2 <= Math.max(1, b.lv); l2++) paid += C.itemCost(it, l2);
+  h += '<div class="row"><button class="btn" data-act="rot" type="button">🔄 Xoay mặt</button><button class="btn" data-act="road" type="button">🛣️ Quay ra đường</button><button class="btn" data-act="pal" type="button">🎨 Đổi màu<small>' + COIN + ' ' + fmt(C.recolorCost(it)) + '</small></button></div>';
   h += '<div class="row"><button class="btn bad" data-act="dem" type="button">🗑️ Dỡ bỏ<small>hoàn ' + fmt(Math.floor(paid * C.RULES.sellBack)) + ' xu</small></button></div>';
   $('infoB').innerHTML = h.replace(/🪙/g, COIN);
   $('iSay') && ($('iSay').onclick = function () { say(it.en); });
@@ -624,7 +705,10 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-un]'))) { unlock(+el.getAttribute('data-un'), !!el.getAttribute('data-cp')); return; }
   if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
   if ((el = t.closest('[data-sp]'))) { speed(el.getAttribute('data-sp')); return; }
-  if ((el = t.closest('[data-act]'))) { var a = el.getAttribute('data-act'); if (a === 'collect') collect(INFO); else if (a === 'up') upgrade(); else if (a === 'dem') demolish(); return; }
+  if ((el = t.closest('[data-act]'))) { var a = el.getAttribute('data-act'); if (a === 'collect') collect(INFO); else if (a === 'up') upgrade(); else if (a === 'dem') demolish(); else if (a === 'rot') rotateBuilding('cw'); else if (a === 'road') rotateBuilding('road'); else if (a === 'pal') recolorBuilding(); return; }
+  if ((el = t.closest('[data-pc]'))) { PCOL = el.getAttribute('data-pc'); PSWKEY = ''; if (ENG.ghost) { ENG.refreshGhost(); updatePbar(); } return; }
+  if ((el = t.closest('[data-pm]'))) { PALSEL = el.getAttribute('data-pm'); palPreview(); return; }
+  if (t.closest('#palOk')) { $('palM').classList.remove('on'); var cbk = PALCB; if (cbk) cbk(PALSEL); return; }
   if ((el = t.closest('[data-ft]'))) { FT = el.getAttribute('data-ft'); SND('click'); renderFriends(); return; }
   if ((el = t.closest('[data-fv]'))) { enterVisit(FR.friends[+el.getAttribute('data-fv')].token); return; }
   if ((el = t.closest('[data-fvt]'))) { enterVisit(el.getAttribute('data-fvt')); return; }
@@ -641,6 +725,16 @@ document.addEventListener('click', function (e) {
 });
 $('bFriend').onclick = function () { openFriends('list'); }; $('visBack').onclick = leaveVisit; $('visNote').onclick = function () { stickerBox(VIS.tok, VIS.owner.short, VIS.notes, VIS.noteLeft); }; $('visGift').onclick = function () { giftBox(VIS.tok, VIS.owner.short); }; $('bLearn').onclick = function () { openLearn(); }; $('bShop').onclick = openShop; $('bQuiz').onclick = openQuiz; $('coinB').onclick = openQuiz; $('bDist').onclick = function () { openDist(); };
 $('bCol').onclick = function () { collect(null); };
+$('bMulti').onclick = function () { setMulti(ENG.mode !== 'multi'); };
+$('mNo').onclick = function () { setMulti(false); }; $('mBox').onchange = function () { ENG.boxSel = this.checked; };
+$('mClr').onclick = function () { ENG.mselSet([], false); }; $('mAll').onclick = function () { ENG.mselSet(S.bs.map(function (b) { return b.i; }), false); };
+$('mSame').onclick = function () { var ks = {}; msList().forEach(function (b) { ks[b.k] = 1; }); ENG.mselSet(S.bs.filter(function (b) { return ks[b.k]; }).map(function (b) { return b.i; }), true); };
+$('mCol').onclick = function () { bulk('collect'); }; $('mUp').onclick = bulkUpgrade; $('mDem').onclick = bulkDemolish; $('mPal').onclick = bulkColor;
+$('mRot').onclick = function () { bulk('rotate', { mode: 'cw' }); }; $('mRoad').onclick = function () { bulk('rotate', { mode: 'road' }); };
+$('pRot').onclick = function () { var g = ENG.ghost; if (!g) return; PFACE = ((g.f == null ? 0 : g.f) + 1) & 3; ENG.refreshGhost(); updatePbar(); };
+$('pRoad').onclick = function () { PFACE = 'auto'; ENG.refreshGhost(); updatePbar(); };
+$('pPal').onclick = function () { var g = ENG.ghost; if (!g) return; palBox({ it: C.BY[g.k], cur: PCOL, title: 'Chọn màu khi mua', note: 'Chọn màu lúc mua hoàn toàn miễn phí. Sau này đổi màu sẽ tốn một ít xu.', ok: 'Dùng màu này', cb: function (c) { PCOL = c; PSWKEY = ''; ENG.refreshGhost(); updatePbar(); } }); };
+$('pPaint').onchange = function () { ENG.paint = this.checked; if (this.checked) toast('🖌️ Kéo ngón tay trên bản đồ để đặt nhiều ô liền một lúc, thả tay để xác nhận.', 3800); };
 $('bDaily').onclick = openDaily; $('festChip').onclick = openDaily;
 $('bRoad').onclick = function () { if (ENG.mode === 'road') setMode('view'); else { closeSheets(); setMode('road'); } };
 $('setB').onclick = openSet; $('zIn').onclick = function () { ENG.zoomAt(1.35, ENG.cw / 2, ENG.ch / 2); }; $('zOut').onclick = function () { ENG.zoomAt(1 / 1.35, ENG.cw / 2, ENG.ch / 2); };

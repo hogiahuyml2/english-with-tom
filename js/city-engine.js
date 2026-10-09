@@ -24,6 +24,7 @@
     E.bs = []; E.roadsX = new Uint8Array(W * H); E.open = {}; E.occ = new Int32Array(W * H); E.mode = 'view'; E.ghost = null; E.sel = -1; E.hover = null; E.roadPrev = null;
     E.weather = 'clear'; E.hourOverride = null; E.quality = E.mobile ? (lowMem ? 0 : 1) : 2; E.fx = { cars: true, people: true, boats: true, sky: true, shimmer: true };
     E.gcache = {}; E.entities = { cars: [], people: [], boats: [], birds: [], balloons: [], planes: [], clouds: [] }; E.rain = []; E.skew = 0; E.dirtyRoads = true; E.fixedSorted = [];
+    E.msel = {}; E.boxSel = false; E.mrect = null; E.paint = false; E.paintCells = null;
     E.tri = []; E.last = performance.now(); E.frameMs = 16; E.slow = 0; E.cullBox = null; E.version = 0; E.allowed = null;
     E.applyQuality(); E.resize(); E.bind(); E.initSky(); E.fitAll(true);
     var loop = function (ts) { E.frame(ts); E.raf = requestAnimationFrame(loop); }; E.raf = requestAnimationFrame(loop);
@@ -51,6 +52,7 @@
     var changed = E.roadsX.length !== nr.length || v.roads.length !== E.roadCount; if (!changed) for (var i = 0; i < nr.length; i++) if (nr[i] !== E.roadsX[i]) { changed = true; break; }
     E.roadsX = nr; E.roadCount = v.roads.length; E.roadTiles = null; if (changed) { E.dirtyRoads = true; E.gcache = {}; E.scCache = null; }
     E.occ = C.buildOcc(E.bs.map(function (b) { return { k: b.k, x: b.x, y: b.y }; })); E.version++; E.pendSum = 0; E.bs.forEach(function (b) { E.pendSum += b.pend; });
+    var mk = Object.keys(E.msel), mch = false; mk.forEach(function (id) { if (!E.bs.some(function (b) { return b.i === +id; })) { delete E.msel[id]; mch = true; } }); if (mch && E.o.onMulti) E.o.onMulti();
     if (E.sel >= 0 && !E.bs.some(function (b) { return b.i === E.sel; })) { E.sel = -1; if (E.o.onSelect) E.o.onSelect(null); }
     E.allowed = null; if (E.mode === 'place' && E.ghost) E.refreshGhost(); E.lockCache = null;
   };
@@ -161,7 +163,7 @@
 
   /* ───── chế độ & bóng ma ───── */
   P.setMode = function (m, k) {
-    var E = this; E.mode = m; E.allowed = null; E.roadPrev = null;
+    var E = this; E.mode = m; E.allowed = null; E.roadPrev = null; E.mrect = null; E.paintCells = null; if (m !== 'multi') { E.msel = {}; E.boxSel = false; } if (m !== 'place') E.paint = false;
     if (m === 'place' && k) {
       var it = C.BY[k], c = E.screenToTile(E.cw / 2, E.ch / 2), st = E.stateObj(), best = null, rad, dx, dy, x, y;
       E.ghost = { k: k, x: clamp(c[0] - (it.w >> 1), 0, W - it.w), y: clamp(c[1] - (it.h >> 1), 0, H - it.h), ok: false, err: '' };
@@ -198,6 +200,8 @@
       if (ids.length === 2) { var a = ptrs[ids[0]], b = ptrs[ids[1]]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), z: E.cam.z }; drag = null; return; }
       drag = { x: p[0], y: p[1], cx: E.cam.x, cy: E.cam.y, moved: false, pid: e.pointerId, touch: e.pointerType !== 'mouse', t: performance.now(), mode: E.mode, startTile: E.screenToTile(p[0], p[1]) };
       if (E.mode === 'road') { E.roadDrag = { a: drag.startTile, b: drag.startTile }; E.roadPrev = E.roadCells(); }
+      else if (E.mode === 'multi' && E.boxSel) { drag.box = true; E.mrect = { x0: p[0], y0: p[1], x1: p[0], y1: p[1] }; }
+      else if (E.mode === 'place' && E.paint && E.ghost && C.BY[E.ghost.k].w === 1 && C.BY[E.ghost.k].h === 1) { drag.paint = true; E.paintCells = []; E.paintSt = E.stateObj(); E.paintAdd(p); }
     });
     cv.addEventListener('pointermove', function (e) {
       E.poke();
@@ -205,6 +209,7 @@
       if (pinch && Object.keys(ptrs).length >= 2) { var ids = Object.keys(ptrs), a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]); E.zoomAt((pinch.z * d / pinch.d) / E.cam.z, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); E.clampCam(); return; }
       if (drag && drag.pid === e.pointerId) {
         var dx = p[0] - drag.x, dy = p[1] - drag.y; if (!drag.moved && Math.hypot(dx, dy) > 7) drag.moved = true;
+        if (drag.box) { E.mrect.x1 = p[0]; E.mrect.y1 = p[1]; return; } if (drag.paint) { E.paintAdd(p); return; }
         if (E.mode === 'road' && !E.panRoad) { var t = E.screenToTile(p[0], p[1]); E.roadDrag.b = t; E.roadPrev = E.roadCells(); return; }
         if (drag.moved) { E.cam.x = drag.cx - dx / E.cam.z; E.cam.y = drag.cy - dy / E.cam.z; E.clampCam(); E.anim = null; }
       } else if (e.pointerType === 'mouse') { E.hover = E.screenToTile(p[0], p[1]); if (E.mode === 'place' && E.ghost) { var it = C.BY[E.ghost.k]; E.setGhost(E.hover[0] - (it.w >> 1), E.hover[1] - (it.h >> 1)); } }
@@ -212,10 +217,12 @@
     var up = function (e) {
       var p = pos(e); delete ptrs[e.pointerId]; if (pinch) { if (Object.keys(ptrs).length < 2) pinch = null; return; }
       if (!drag || drag.pid !== e.pointerId) return; var d = drag; drag = null;
+      if (d.box) { E.finishBox(); return; }
+      if (d.paint) { var pc = (E.paintCells || []).filter(function (c) { return c.ok; }); E.paintCells = null; E.paintSt = null; if (E.o.onPaint) E.o.onPaint(pc); return; }
       if (E.mode === 'road') { var cells = E.roadCells(); E.roadDrag = null; E.roadPrev = null; if (E.o.onRoad) E.o.onRoad(cells, !d.moved); return; }
       if (!d.moved) { var now = performance.now(), dbl = now - lastTap < 320 && lastTapPos && Math.hypot(p[0] - lastTapPos[0], p[1] - lastTapPos[1]) < 24; lastTap = now; lastTapPos = p; E.tap(p[0], p[1], dbl); }
     };
-    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', function (e) { delete ptrs[e.pointerId]; drag = null; pinch = null; E.roadDrag = null; E.roadPrev = null; });
+    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', function (e) { delete ptrs[e.pointerId]; drag = null; pinch = null; E.roadDrag = null; E.roadPrev = null; E.mrect = null; E.paintCells = null; });
     cv.addEventListener('wheel', function (e) { e.preventDefault(); E.poke(); var p = pos(e); E.zoomAt(Math.exp(-e.deltaY * .0016), p[0], p[1]); E.clampCam(); }, { passive: false });
     cv.addEventListener('pointerleave', function () { E.hover = null; });
     window.addEventListener('resize', function () { E.resize(); });
@@ -234,6 +241,7 @@
   P.tap = function (px, py, dbl) {
     var E = this, t = E.screenToTile(px, py);
     if (dbl && E.mode === 'view') { E.zoomAt(1.6, px, py); E.clampCam(); return; }
+    if (E.mode === 'multi') { var mbd = E.pickBuilding(px, py); if (mbd) { if (E.msel[mbd.i]) delete E.msel[mbd.i]; else E.msel[mbd.i] = 1; if (E.o.onMulti) E.o.onMulti(); } return; }
     if (E.mode === 'place' && E.ghost) { var it = C.BY[E.ghost.k], g = E.ghost, inside = t[0] >= g.x && t[0] < g.x + it.w && t[1] >= g.y && t[1] < g.y + it.h; if (inside) { if (E.o.onPlace) E.o.onPlace(g); } else E.setGhost(t[0] - (it.w >> 1), t[1] - (it.h >> 1)); return; }
     // bóng bay thu thuế
     var bub = E.pickBubble(px, py); if (bub) { if (E.o.onBubble) E.o.onBubble(bub); return; }
@@ -243,6 +251,26 @@
     if (C.inW(t[0], t[1])) { var i = t[1] * W + t[0], f = C.FOCC[i]; if (f >= 0) { if (E.o.onFixed) E.o.onFixed(C.FIXED[f]); return; } var d = C.DIST[i]; if (d !== 255 && !E.open[d]) { if (E.o.onLocked) E.o.onLocked(d); return; } if (C.ROAD[i] === 0 && E.roadsX[i]) { if (E.o.onRoadTap) E.o.onRoadTap(i); return; } }
     E.sel = -1; if (E.o.onSelect) E.o.onSelect(null);
   };
+  /* ───── chọn nhiều / vẽ nhiều ô ───── */
+  P.mselIds = function () { return Object.keys(this.msel).map(Number); };
+  P.mselSet = function (ids, add) { var E = this; if (!add) E.msel = {}; ids.forEach(function (i) { E.msel[i] = 1; }); if (E.o.onMulti) E.o.onMulti(); };
+  P.finishBox = function () {
+    var E = this, r = E.mrect; E.mrect = null; if (!r) return; var x0 = Math.min(r.x0, r.x1), x1 = Math.max(r.x0, r.x1), y0 = Math.min(r.y0, r.y1), y1 = Math.max(r.y0, r.y1), ids = [];
+    if (x1 - x0 < 6 && y1 - y0 < 6) return;
+    E.bs.forEach(function (b) { var it = C.BY[b.k], s2 = E.worldToScreen(b.x + it.w / 2, b.y + it.h / 2, 0); if (s2[0] >= x0 && s2[0] <= x1 && s2[1] >= y0 && s2[1] <= y1) ids.push(b.i); });
+    E.mselSet(ids, true);
+  };
+  P.paintAdd = function (p) {
+    var E = this, t = E.screenToTile(p[0], p[1]), g = E.ghost, cells = E.paintCells; if (!cells || !g || !C.inW(t[0], t[1])) return;
+    var i; for (i = 0; i < cells.length; i++) if (cells[i].x === t[0] && cells[i].y === t[1]) return; if (cells.length >= 150) return;
+    var r = C.canPlace(E.paintSt || E.stateObj(), C.BY[g.k], t[0], t[1], E.occ); cells.push({ x: t[0], y: t[1], ok: r.ok });
+  };
+  P.drawPaint = function (ctx) {
+    var E = this, cells = E.paintCells; if (!cells || !cells.length) return; var i, okp = new Path2D(), badp = new Path2D();
+    for (i = 0; i < cells.length; i++) quadW(cells[i].ok ? okp : badp, E.rot, [[cells[i].x, cells[i].y], [cells[i].x + 1, cells[i].y], [cells[i].x + 1, cells[i].y + 1], [cells[i].x, cells[i].y + 1]]);
+    ctx.fillStyle = 'rgba(70,220,120,.6)'; ctx.fill(okp); ctx.fillStyle = 'rgba(255,70,70,.5)'; ctx.fill(badp);
+  };
+  P.drawBox = function (ctx) { var r = this.mrect; if (!r) return; ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.fillStyle = 'rgba(60,200,130,.18)'; ctx.strokeStyle = 'rgba(30,170,100,.95)'; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.restore(); };
   P.pickBubble = function (px, py) {
     var E = this, i, b, best = null; if (E.cam.z < .45) return null;
     for (i = E.bs.length - 1; i >= 0; i--) { b = E.bs[i]; if (b.pend < 1 || b.lv < 1) continue; var p = E.bubblePos(b); if (!p) continue; if (Math.hypot(px - p[0], py - p[1]) < Math.max(16, 14 * E.cam.z + 6)) { best = b; break; } }
@@ -255,6 +283,13 @@
     return null;
   };
 
+  /* ───── hướng mặt trước: f (0 +y, 1 +x, 2 −y, 3 −x) cố định theo thế giới; chưa đặt (null) = luôn quay về mặt trái màn hình như trước ───── */
+  var DIRS = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+  P.faceOf = function (f, x, y, w, h) {
+    if (f == null) return 0;
+    var cx = x + w / 2, cy = y + h / 2, d = DIRS[f & 3], a = scr(this.rot, cx, cy), b = scr(this.rot, cx + d[0], cy + d[1]), vx = b[0] - a[0], vy = b[1] - a[1];
+    return vy > 0 ? (vx < 0 ? 0 : 1) : (vx < 0 ? 2 : 3);
+  };
   /* ───── danh sách công trình đã sắp theo chiều sâu ───── */
   P.sortedBuildings = function () {
     var E = this, key = E.version + ':' + E.rot + ':' + Math.floor(E.nowMs() / 1000 / 5); if (E.sbKey === key) return E.sb; var out = [], i, b, it, r, sp, now = E.nowMs(), t0 = performance.now(), late = false;
@@ -263,7 +298,8 @@
       var lvShow = b.lv; if (b.tg > b.lv && b.t1 <= now) lvShow = b.tg;
       var kind = lvShow === 0 ? 's' : 'b', kk = lvShow === 0 ? 'scaf' : b.k, ll = lvShow === 0 ? 1 : lvShow;
       // dựng sprite dần dần (tối đa ~12 ms mỗi khung hình) để lần mở đầu không bị khựng
-      if (!A.has(kind, kk, ll, rw, rh) && performance.now() - t0 > (E.mobile ? 6 : 12)) { late = true; sp = A.placeholder(); } else sp = A.getSprite(kind, kk, ll, rw, rh);
+      var fc = lvShow === 0 ? 0 : E.faceOf(b.f, b.x, b.y, it.w, it.h), pc = lvShow === 0 ? '' : (b.c || '');
+      if (!A.has(kind, kk, ll, rw, rh, pc, fc) && performance.now() - t0 > (E.mobile ? 6 : 12)) { late = true; sp = A.placeholder(); } else sp = A.getSprite(kind, kk, ll, rw, rh, pc, fc);
       out.push({ b: b, it: it, sp: sp, rw: rw, rh: rh, sx: (r.rx - r.ry) * HW, sy: (r.rx + r.ry) * HH, d: (r.rx + r.rw) + (r.ry + r.rh), site: lvShow === 0 });
     }
     E.sb = out.sort(function (a, b) { return a.d - b.d; }); E.sbKey = late ? null : key; return E.sb;
@@ -324,13 +360,13 @@
     // quận khoá
     E.drawLocked(ctx);
     // vật thể theo chiều sâu
-    E.drawObjects(ctx, now, night);
+    E.drawObjects(ctx, now, night); E.drawPaint(ctx);
     E.drawLockIcons(ctx);
     E.drawCelebrate(ctx);
     // bầu trời
     ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); E.drawSky(ctx, night);
     // ban đêm + thời tiết
-    ctx.setTransform(E.dpr, 0, 0, E.dpr, 0, 0); E.drawAtmosphere(ctx, night);
+    ctx.setTransform(E.dpr, 0, 0, E.dpr, 0, 0); E.drawAtmosphere(ctx, night); E.drawBox(ctx);
   };
   // vạch kẻ đường băng
   P.drawRunway = function (ctx) {
@@ -424,6 +460,8 @@
       else if (o.k === 4) E.drawBoat(ctx, o.e);
       else E.drawGhost(ctx, o.e);
     }
+    // các công trình đang được chọn nhiều
+    if (E.mode === 'multi') { var ms = E.msel; for (i = 0; i < list.length; i++) { var mb = list[i].b; if (!ms[mb.i]) continue; var mp = new Path2D(); quadW(mp, E.rot, [[mb.x, mb.y], [mb.x + list[i].it.w, mb.y], [mb.x + list[i].it.w, mb.y + list[i].it.h], [mb.x, mb.y + list[i].it.h]]); ctx.strokeStyle = 'rgba(40,190,110,.98)'; ctx.lineWidth = 3 / E.cam.z; ctx.stroke(mp); ctx.fillStyle = 'rgba(60,220,130,.3)'; ctx.fill(mp); } }
     // vòng chọn
     if (E.sel >= 0) { var sb = list.filter(function (x) { return x.b.i === E.sel; })[0]; if (sb) { var r2 = rotRect(E.rot, sb.b.x, sb.b.y, sb.it.w, sb.it.h), p = new Path2D(); quadW(p, E.rot, [[sb.b.x, sb.b.y], [sb.b.x + sb.it.w, sb.b.y], [sb.b.x + sb.it.w, sb.b.y + sb.it.h], [sb.b.x, sb.b.y + sb.it.h]]); ctx.strokeStyle = 'rgba(255,230,80,.95)'; ctx.lineWidth = 3 / E.cam.z * 1.0; ctx.stroke(p); ctx.fillStyle = 'rgba(255,230,80,.25)'; ctx.fill(p); } }
   };
@@ -561,7 +599,7 @@
     ctx.fillStyle = '#fff'; ctx.strokeStyle = 'rgba(40,28,60,.35)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(s[0], s[1] - 6 + bob); ctx.lineTo(s[0], s[1] - 20 * k + bob); ctx.lineTo(s[0] + 8 * k, s[1] - 7 + bob); ctx.closePath(); ctx.fill(); ctx.stroke();
   };
   P.drawGhost = function (ctx, o) {
-    var E = this, g = o.g, it = o.it, r = o.r, rw = Math.round(r.rw), rh = Math.round(r.rh), sp = A.getSprite('b', g.k, 1, rw, rh), sx = (r.rx - r.ry) * HW, sy = (r.rx + r.ry) * HH, p = new Path2D(); quadW(p, E.rot, [[g.x, g.y], [g.x + it.w, g.y], [g.x + it.w, g.y + it.h], [g.x, g.y + it.h]]);
+    var E = this, g = o.g, it = o.it, r = o.r, rw = Math.round(r.rw), rh = Math.round(r.rh), sp = A.getSprite('b', g.k, 1, rw, rh, g.c || '', E.faceOf(g.f, g.x, g.y, it.w, it.h)), sx = (r.rx - r.ry) * HW, sy = (r.rx + r.ry) * HH, p = new Path2D(); quadW(p, E.rot, [[g.x, g.y], [g.x + it.w, g.y], [g.x + it.w, g.y + it.h], [g.x, g.y + it.h]]);
     ctx.fillStyle = g.ok ? 'rgba(70,220,120,.55)' : 'rgba(255,70,70,.55)'; ctx.fill(p); ctx.strokeStyle = g.ok ? '#1FA85A' : '#D93A3A'; ctx.lineWidth = 2.5 / E.cam.z; ctx.stroke(p);
     ctx.globalAlpha = g.ok ? .88 : .5; ctx.drawImage(sp.c, sx - sp.ox, sy - sp.oy - Math.abs(Math.sin(E.t * 4)) * 2, sp.w, sp.h); ctx.globalAlpha = 1;
   };
