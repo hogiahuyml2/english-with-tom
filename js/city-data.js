@@ -147,6 +147,30 @@
     gridZones(9, tx, ty, ['ttt', 'tgt']);
     // đường nối công viên – thành phố cũ: cột x=60 .. 66 đã có; nối Núi với trục
     roadSeg(60, 36, 126, 36);
+    // cầu dựng sẵn trên đất trống: chỉ phủ lên mặt NƯỚC (và cát bờ), không đụng ô đất xây được → không ảnh hưởng thành phố đã có
+    function bridgeLine(x0, y0, x1, y1) {
+      var horiz = y0 === y1, n = horiz ? x1 - x0 + 1 : y1 - y0 + 1, k, cells = [];
+      for (k = 0; k < n; k++) { var x = horiz ? x0 + k : x0, y = horiz ? y0 : y0 + k; cells.push(inW(x, y) ? idx(x, y) : -1); }
+      var run = [], prevLand = false;
+      var flush = function (landNext) { if (run.length && run.length <= 40 && prevLand && landNext) run.forEach(function (q) { ROAD[q] = 2; }); run = []; };
+      cells.forEach(function (q) {
+        if (q < 0) { run = []; prevLand = false; return; }
+        if (TERR[q] === 1) { if (ROAD[q] === 0 && (prevLand || run.length)) run.push(q); else if (ROAD[q] === 2) { run = []; prevLand = true; } return; }
+        flush(true); prevLand = true;
+        if (TERR[q] === 2 && !ROAD[q] && ZONE[q] === 0) ROAD[q] = 1;   // cát bờ thành lối đi nối vào cầu
+      });
+      run = [];
+    }
+    // sông Xanh (cột 33–34) và dòng sông cũ (cột 71–72): thêm cầu giữa các cầu có sẵn
+    [20, 31, 43, 54, 66, 86, 98].forEach(function (yy) { bridgeLine(30, yy, 37, yy); });
+    [20, 30, 39, 57, 75].forEach(function (yy) { bridgeLine(68, yy, 75, yy); });
+    // kênh nối hồ công viên, hồ lớn có đảo cát (hai cầu cắt nhau ở đảo), hồ nhỏ và ao nông trại
+    bridgeLine(77, 12, 77, 20); bridgeLine(83, 12, 83, 20);
+    bridgeLine(104, 4, 104, 28); bridgeLine(84, 17, 126, 17);
+    bridgeLine(19, 16, 19, 28); bridgeLine(2, 58, 22, 58); bridgeLine(38, 66, 54, 66);
+    bridgeLine(36, 10, 76, 10);                                  // cầu gỗ ngang hồ trên núi
+    // cầu vịnh dài nối bãi biển với đảo sân bay
+    bridgeLine(54, 106, 96, 106);
   })();
 
   /* ───── công trình cố định của thành phố (ai cũng có, không dỡ được) ───── */
@@ -430,14 +454,36 @@
     B('golf', 'Golf Course', 'Sân golf', 'sport', 4, 4, 'gp', 16, 18000, 1125, 900, 0, 40, [11], 'Hit the ball into a tiny hole.'),
     B('stadium', 'Stadium', 'Sân vận động', 'sport', 4, 4, 'g', 18, 34000, 1500, 3000, 0, 12, [11], 'Thousands of fans cheer for the team.'),
     // ── Sự kiện theo mùa (chỉ mua được khi sự kiện đang diễn ra, giống EWT Garden) ──
-    B('lanternarch', 'Lantern Arch', 'Cổng đèn lồng', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5], 'Red lanterns welcome the New Year.', { ev: 'tet' }),
-    B('peachtree', 'Peach Blossom Tree', 'Cây đào Tết', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5], 'Pink flowers bring good luck at Tet.', { ev: 'tet' }),
-    B('moonlantern', 'Star Lantern', 'Đèn ông sao', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5], 'Children carry star lanterns at Mid-Autumn.', { ev: 'trungthu' }),
-    B('rabbitlantern', 'Rabbit Lantern', 'Đèn thỏ', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5], 'A cute rabbit lantern for the moon festival.', { ev: 'trungthu' }),
-    B('xmastree', 'Christmas Tree', 'Cây thông Noel', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5], 'A tree with lights and gifts.', { ev: 'noel' }),
-    B('bigsnowman', 'Big Snowman', 'Người tuyết lớn', 'event', 2, 2, '*', 1, 900, 40, 0, 0, 24, [0, 1, 2, 3, 4, 5], 'A friendly snowman with a red scarf.', { ev: 'noel' })
+    B('lanternarch', 'Lantern Arch', 'Cổng đèn lồng', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Red lanterns welcome the New Year.', { ev: 'tet' }),
+    B('peachtree', 'Peach Blossom Tree', 'Cây đào Tết', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Pink flowers bring good luck at Tet.', { ev: 'tet' }),
+    B('moonlantern', 'Star Lantern', 'Đèn ông sao', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Children carry star lanterns at Mid-Autumn.', { ev: 'trungthu' }),
+    B('rabbitlantern', 'Rabbit Lantern', 'Đèn thỏ', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A cute rabbit lantern for the moon festival.', { ev: 'trungthu' }),
+    B('xmastree', 'Christmas Tree', 'Cây thông Noel', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A tree with lights and gifts.', { ev: 'noel' }),
+    B('bigsnowman', 'Big Snowman', 'Người tuyết lớn', 'event', 2, 2, '*', 1, 900, 40, 0, 0, 24, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A friendly snowman with a red scarf.', { ev: 'noel' }),
+    // ── Lễ hội mùa của EWT City (Hoa Xuân · Biển Hè · Thu Vàng) ──
+    B('sakuraarch', 'Cherry Blossom Arch', 'Cổng hoa anh đào', 'event', 1, 1, '*', 1, 450, 20, 0, 0, 14, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A pink arch of cherry blossoms.', { ev: 'hoaxuan' }),
+    B('flowercart', 'Flower Cart', 'Xe hoa tươi', 'event', 1, 1, '*', 1, 350, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A cart full of fresh spring flowers.', { ev: 'hoaxuan' }),
+    B('kitefield', 'Kite Meadow', 'Cánh đồng thả diều', 'event', 2, 2, '*', 1, 1000, 40, 0, 0, 26, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Colourful kites fly in the spring wind.', { ev: 'hoaxuan' }),
+    B('springpavilion', 'Blossom Pavilion', 'Chòi ngắm hoa', 'event', 2, 2, '*', 1, 1200, 50, 0, 0, 28, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A quiet place to watch the blossoms.', { ev: 'hoaxuan' }),
+    B('sandcastle', 'Sandcastle', 'Lâu đài cát', 'event', 1, 1, '*', 1, 350, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A castle made of sand with a little flag.', { ev: 'bienhe' }),
+    B('icecreamcart', 'Ice Cream Cart', 'Xe kem', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 8, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Cold ice cream on a hot summer day.', { ev: 'bienhe' }),
+    B('beachvolley', 'Beach Volleyball Court', 'Sân bóng chuyền bãi biển', 'event', 2, 2, '*', 1, 1000, 40, 0, 0, 24, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Play volleyball on the warm sand.', { ev: 'bienhe' }),
+    B('surfrack', 'Surfboard Rack', 'Giá ván lướt sóng', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 12, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Colourful boards wait for the waves.', { ev: 'bienhe' }),
+    B('pumpkinpatch', 'Pumpkin Patch', 'Ruộng bí ngô', 'event', 2, 2, '*', 1, 900, 40, 0, 0, 22, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Round orange pumpkins grow in autumn.', { ev: 'thuvang' }),
+    B('scarecrow', 'Scarecrow', 'Bù nhìn', 'event', 1, 1, '*', 1, 350, 15, 0, 0, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A friendly scarecrow watches the field.', { ev: 'thuvang' }),
+    B('harvestcart', 'Harvest Cart', 'Xe thu hoạch', 'event', 1, 1, '*', 1, 400, 20, 0, 0, 10, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'A cart full of autumn fruit and vegetables.', { ev: 'thuvang' }),
+    B('leafpile', 'Maple Leaf Pile', 'Đống lá phong', 'event', 1, 1, '*', 1, 300, 15, 0, 0, 8, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'Red and orange leaves for jumping in.', { ev: 'thuvang' })
 
   ];
+  /* ───── lễ hội mùa riêng của EWT City (cố định theo ngày dương lịch; Tết · Trung thu · Giáng sinh dùng lịch sự kiện chung với Garden) ───── */
+  var FESTIVALS = [
+    { id: 'hoaxuan', icon: '🌸', name: 'Lễ hội Hoa Xuân', en: 'Spring Blossom Festival', from: '03-01', to: '04-05', bonus: 0.15, blurb: 'Hoa anh đào nở khắp phố: mở cửa hàng hoa, thả diều và ngắm hoa. Thuế thu được +15%.' },
+    { id: 'bienhe', icon: '🏖️', name: 'Lễ hội Biển Hè', en: 'Summer Beach Festival', from: '06-01', to: '08-15', bonus: 0.15, blurb: 'Mùa hè sôi động: xe kem, lâu đài cát và bóng chuyền bãi biển. Thuế thu được +15%.' },
+    { id: 'thuvang', icon: '🍂', name: 'Mùa Thu Vàng', en: 'Golden Autumn Festival', from: '10-01', to: '11-15', bonus: 0.15, blurb: 'Lá phong đỏ, bí ngô và những chiếc xe chở mùa thu hoạch. Thuế thu được +15%.' }
+  ];
+  var FEST_BY = {}; FESTIVALS.forEach(function (f) { FEST_BY[f.id] = f; });
+  // các lễ hội đang diễn ra vào ngày `day` (YYYY-MM-DD)
+  function festivalsOn(day) { var md = String(day).slice(5, 10); return FESTIVALS.filter(function (f) { return md >= f.from && md <= f.to; }).map(function (f) { return f.id; }); }
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   // công trình cố định (chỉ để vẽ)
   var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 }, bigplaza: { en: 'Harbor Plaza', vi: 'Quảng trường cảng', w: 1, h: 1 }, pier: { en: 'Fishing Pier', vi: 'Cầu tàu bãi biển', w: 7, h: 2 }, airport: { en: 'Airport Gate', vi: 'Cổng sân bay', w: 4, h: 2 } };
@@ -531,7 +577,10 @@
     { id: 'b-trees', d: -1, icon: '🌳', en: 'Little Forest Pack', vi: 'Gói Rừng nhỏ', items: { oak: 3, pine: 3, birch: 2, maple: 2, willow: 1 } },
     { id: 'b-tet', d: -1, ev: 'tet', icon: '🧧', en: 'Lunar New Year Pack', vi: 'Gói Tết', items: { lanternarch: 2, peachtree: 3 } },
     { id: 'b-moon', d: -1, ev: 'trungthu', icon: '🥮', en: 'Mid-Autumn Pack', vi: 'Gói Trung thu', items: { moonlantern: 3, rabbitlantern: 2 } },
-    { id: 'b-noel', d: -1, ev: 'noel', icon: '🎄', en: 'Christmas Pack', vi: 'Gói Giáng sinh', items: { xmastree: 2, bigsnowman: 1 } }
+    { id: 'b-noel', d: -1, ev: 'noel', icon: '🎄', en: 'Christmas Pack', vi: 'Gói Giáng sinh', items: { xmastree: 2, bigsnowman: 1 } },
+    { id: 'b-hoaxuan', d: -1, ev: 'hoaxuan', icon: '🌸', en: 'Spring Blossom Pack', vi: 'Gói Hoa Xuân', items: { sakuraarch: 2, flowercart: 2, kitefield: 1 } },
+    { id: 'b-bienhe', d: -1, ev: 'bienhe', icon: '🏖️', en: 'Summer Beach Pack', vi: 'Gói Biển Hè', items: { sandcastle: 2, icecreamcart: 1, surfrack: 2, beachvolley: 1 } },
+    { id: 'b-thuvang', d: -1, ev: 'thuvang', icon: '🍂', en: 'Golden Autumn Pack', vi: 'Gói Thu Vàng', items: { pumpkinpatch: 1, scarecrow: 2, harvestcart: 1, leafpile: 3 } }
   ];
   var BUNDLE_BY = {}; BUNDLES.forEach(function (b) { BUNDLE_BY[b.id] = b; });
   function bundleFull(b) { var t = 0, k; for (k in b.items) t += BY[k].cost * b.items[k]; return t; }
@@ -558,7 +607,7 @@
   );
   PLANS.forEach(function (pl) { pl.roads = Y5.map(function (y) { return [2, y]; }); });
   var PLAN_BY = {}; PLANS.forEach(function (pl) { PLAN_BY[pl.id] = pl; });
-  var API = { BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
+  var API = { FESTIVALS: FESTIVALS, FEST_BY: FEST_BY, festivalsOn: festivalsOn, BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
     CATS: CATS, ITEMS: ITEMS, BY: BY, MAXLV: MAXLV, RULES: RULES, LEVEL_AT: LEVEL_AT, idx: idx, inW: inW, itemCost: itemCost, buildSecs: buildSecs, incomeH: incomeH, popOf: popOf, hpOf: hpOf, speedCost: speedCost,
     levelOfScore: levelOfScore, scoreOf: scoreOf, buildOcc: buildOcc, canPlace: canPlace, canRoad: canRoad, adjacentRoad: adjacentRoad, zoneList: zoneList, isRoadAt: isRoadAt };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTCityData = API;

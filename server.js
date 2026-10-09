@@ -2363,6 +2363,7 @@ require('./achievements')(app, { db, requireAuth, now });
 require('./reading')(app, { db, requireAuth, now });
 require('./today')(app, { db, requireAuth, now });
 require('./garden')(app, { db, requireAuth, requireRole, now, notifyUser });
+require('./city-daily')(app, { db, requireAuth, now });   // EWT City: nhiệm vụ hằng ngày (phải nạp trước city.js)
 require('./city')(app, { db, requireAuth, now, notifyUser });   // EWT City
 require('./city-social')(app, { db, requireAuth, requireRole, now, notifyUser });   // EWT City: bạn bè, xếp hạng, dự án lớp
 require('./dictation')(app, { db, requireAuth, now });

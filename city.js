@@ -8,10 +8,11 @@ const L = require('./js/city-learn.js');
 module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
   const one = (sql, ...a) => db.prepare(sql).get(...a);
-  const vnDay = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
+  const vnDay = () => process.env.EWT_CITY_DAY || new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);   // EWT_CITY_DAY: chỉ để thử nghiệm trên máy
   const R = C.RULES, MATCH_DAY = 5;
-  const evOn = (id) => { try { return !!(app.locals.gardenEvActive && app.locals.gardenEvActive(id)); } catch (_) { return false; } };
-  const evList = () => { try { return app.locals.gardenEvList ? app.locals.gardenEvList() : []; } catch (_) { return []; } };
+  const festIds = () => C.festivalsOn(vnDay()), festBonus = () => festIds().reduce((a, id) => a + ((C.FEST_BY[id] || {}).bonus || 0), 0);
+  const evOn = (id) => { if (festIds().indexOf(id) >= 0) return true; try { return !!(app.locals.gardenEvActive && app.locals.gardenEvActive(id)); } catch (_) { return false; } };
+  const evList = () => { let l = []; try { l = app.locals.gardenEvList ? app.locals.gardenEvList() : []; } catch (_) { /* bỏ qua */ } return l.concat(festIds().filter((id) => l.indexOf(id) < 0)); };
   // kiểm tra chung: cấp thành phố, chương đã học, sự kiện đang diễn ra
   const itemGate = (st, s, it, role) => {
     if (s.level < it.lvl) return 'Cần thành phố cấp ' + it.lvl + ' để mở ' + it.vi + '.';
@@ -53,7 +54,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const score = C.scoreOf(st.bs.map((b) => ({ k: b.k, lv: b.lv, bt: b.lv === 0 }))), level = C.levelOfScore(score);
     return { pop, hp, happy, mult, score, level, nextAt: C.LEVEL_AT[level] || null, n };
   }
-  const pending = (b, s, t) => { if (b.lv <= 0) return 0; const it = C.BY[b.k], inc = C.incomeH(it, b.lv); if (!inc) return 0; const h = Math.min(R.incomeCapH, Math.max(0, (t - (b.last || t)) / 3600e3)); return Math.floor(inc * s.mult * h); };
+  const pending = (b, s, t) => { if (b.lv <= 0) return 0; const it = C.BY[b.k], inc = C.incomeH(it, b.lv); if (!inc) return 0; const h = Math.min(R.incomeCapH, Math.max(0, (t - (b.last || t)) / 3600e3)); return Math.floor(inc * s.mult * (1 + festBonus()) * h); };
   function view(st, uid) {
     const t = Date.now(), s = stats(st);
     return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: pending(b, s, t) })),
@@ -404,5 +405,5 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const s = stats(st); return { districts: st.districts, roads: Object.keys(st.roads).map(Number), bs: st.bs.map((b) => ({ i: b.i, k: b.k, x: b.x, y: b.y, lv: b.lv, tg: b.tg, t0: b.t0, t1: b.t1, pend: 0 })),
       free: {}, inv: {}, ev: [], tickets: 0, coupons: 0, stats: s, quizLeft: 0, chapters: Object.keys(st.chapters), matchLeft: 0, now: Date.now(), coins: 0, open: st.open };
   }
-  app.locals.city = { load, save, peek, viewOther, stats, tx, addCoins, coinsOf, spend, bad, vnDay, J, one };
+  app.locals.city = { load, save, peek, viewOther, stats, tx, addCoins, coinsOf, spend, bad, vnDay, J, one, festBonus };
 };

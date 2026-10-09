@@ -44,6 +44,11 @@ button { font-family: inherit; cursor: pointer; }
 .bar > * { pointer-events: auto; }
 .tb { min-width: 74px; border: 0; border-radius: 20px; background: var(--glass); padding: 8px 12px 7px; font-weight: 800; font-size: 12px; color: var(--ink); box-shadow: 0 6px 18px rgba(20,40,90,.3); display: flex; flex-direction: column; align-items: center; gap: 1px; position: relative; }
 .tb .ic { font-size: 24px; line-height: 1.1; } .tb:active { transform: scale(.95); } .tb.pri { background: linear-gradient(180deg, #5B9BFF, #3A6BE6); color: #fff; } .tb.on { outline: 3px solid var(--gold); }
+.dy-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; } .dy-top .st { background: #FFF3D6; border-radius: 14px; padding: 6px 12px; font-weight: 800; font-size: 13px; }
+.dy-fest { background: linear-gradient(90deg, #FFE7B8, #FFD1E0); border-radius: 14px; padding: 9px 12px; margin-bottom: 10px; font-size: 13px; line-height: 1.4; }
+.dy-m { display: flex; gap: 10px; align-items: center; background: var(--bg2, #F3F6FF); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .dy-m.done { background: #E3F7E8; } .dy-m.opt { border: 2px dashed #F2A33A; }
+.dy-m .ic { font-size: 26px; } .dy-m .tx { flex: 1; min-width: 0; font-weight: 700; font-size: 14px; line-height: 1.3; } .dy-m .bar2 { height: 8px; border-radius: 4px; background: rgba(0,0,0,.1); margin-top: 6px; overflow: hidden; } .dy-m .bar2 i { display: block; height: 100%; background: linear-gradient(90deg, #5BC47A, #2FA85A); }
+.dy-m .sm { font-size: 12px; font-weight: 600; opacity: .7; } .dy-chest { text-align: center; margin: 12px 0 4px; padding: 14px; border-radius: 18px; background: linear-gradient(180deg, #FFF3D6, #FFE2A8); } .dy-chest .big { font-size: 44px; line-height: 1; }
 .dot { position: absolute; right: 6px; top: 4px; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; place-items: center; padding: 0 4px; font-weight: 800; }
 .sheet { position: fixed; left: 0; right: 0; bottom: 0; max-height: min(74dvh, 640px); background: var(--card); border-radius: 26px 26px 0 0; box-shadow: 0 -10px 40px rgba(10,30,80,.35); z-index: 40; display: none; flex-direction: column; padding-bottom: var(--bot); }
 .sheet.on { display: flex; animation: up .22s ease-out; } @keyframes up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -113,6 +118,7 @@ button { font-family: inherit; cursor: pointer; }
   <div class="chip" title="Hạnh phúc — công viên, trường học, bệnh viện làm dân vui hơn và nộp nhiều thuế hơn"><span id="hapE">😊</span><b id="hapN">0%</b></div>
   <div class="chip" id="tkChip" title="Phiếu xây nhanh" style="display:none"><span>🎫</span><b id="tkN">0</b></div>
   <div class="chip" id="cpChip" title="Phiếu giảm giá mở quận" style="display:none"><span>🏷️</span><b id="cpN">0</b></div>
+  <button class="chip btn" id="festChip" type="button" style="display:none" title="Lễ hội đang diễn ra"></button>
   <div class="sp"></div>
   <button class="chip btn" id="sndB" type="button" aria-label="Nhạc nền" title="Bật / tắt nhạc nền theo từng quận">🔇</button>
   <button class="chip btn" id="setB" type="button" aria-label="Cài đặt">⚙️</button>
@@ -137,6 +143,7 @@ button { font-family: inherit; cursor: pointer; }
   <button class="tb" id="bQuiz" type="button"><span class="ic">🧠</span>Kiếm xu</button>
   <button class="tb" id="bFriend" type="button"><span class="ic">👥</span>Bạn bè<span class="dot" id="frDot" style="display:none"></span></button>
   <button class="tb" id="bLearn" type="button"><span class="ic">📚</span>Học từ</button>
+  <button class="tb" id="bDaily" type="button"><span class="ic">📅</span>Nhiệm vụ<span class="dot" id="dyDot"></span></button>
   <button class="tb" id="bDist" type="button"><span class="ic">🗺️</span>Các quận</button>
 </div>
 
@@ -152,6 +159,7 @@ button { font-family: inherit; cursor: pointer; }
 <div id="visBar"><b id="visT"></b><button class="btn" id="visNote" type="button">💬 Để lại lời nhắn</button><button class="btn" id="visGift" type="button">🎁 Tặng quà</button><button class="btn pri" id="visBack" type="button">⬅️ Về thành phố mình</button></div>
 <div id="floatNotes"></div><div id="fxLayer"></div>
 <div class="sheet" id="friendS"><div class="hd"><h3>👥 Bạn bè & lớp</h3><button class="x" data-close="friendS" type="button">✕</button></div><div class="tabs" id="frTabs"><button class="tab on" data-ft="list" type="button">Bạn bè</button><button class="tab" data-ft="rank" type="button">🏆 Xếp hạng</button><button class="tab" data-ft="class" type="button">🎯 Dự án lớp</button><button class="tab" data-ft="notes" type="button">💬 Lời nhắn</button></div><div class="bd" id="friendB"></div></div>
+<div class="sheet" id="dailyS"><div class="hd"><h3>📅 Nhiệm vụ hôm nay</h3><button class="x" data-close="dailyS" type="button">✕</button></div><div class="bd" id="dailyB"></div></div>
 <div class="sheet" id="learnS"><div class="hd"><h3>📚 Học từ & mở khoá công trình</h3><button class="x" data-close="learnS" type="button">✕</button></div><div class="bd" id="learnB"></div></div>
 <div class="modal" id="learnM"><div class="box"><div id="learnMB"></div></div></div>
 <div class="modal" id="quizM"><div class="box"><div id="quizB"></div></div></div>
@@ -161,9 +169,9 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=8"></script>
+<script src="js/city-data.js?v=9"></script>
 <script src="js/city-art.js?v=4"></script>
-<script src="js/city-art2.js?v=1"></script>
+<script src="js/city-art2.js?v=2"></script>
 <script src="js/city-engine.js?v=4"></script>
 <script>
 (function () {
@@ -204,7 +212,7 @@ function autoWeather() { var d = new Date(), k = (d.getDate() * 7 + Math.floor(d
 applySettings();
 
 /* ───── tải trạng thái ───── */
-function setState(d) { var prevS = S; S = d.city; if (d.role) ROLE = d.role; ENG.setState(S); if (prevS && !VIS && !prevS.visit) { var fresh = S.districts.filter(function (id) { return prevS.districts.indexOf(id) < 0; }); if (fresh.length) celebrate(fresh[0], fresh.length > 1 ? fresh.length - 1 : 0); } hud(); if (INFO != null) renderInfo(); if ($('shopS').classList.contains('on')) renderShop(); if ($('distS').classList.contains('on')) renderDist(); roadBar(); }
+function setState(d) { var prevS = S; S = d.city; if (d.role) ROLE = d.role; ENG.setState(S); if (prevS && !VIS && !prevS.visit) { var fresh = S.districts.filter(function (id) { return prevS.districts.indexOf(id) < 0; }); if (fresh.length) celebrate(fresh[0], fresh.length > 1 ? fresh.length - 1 : 0); } hud(); refreshDailySoon(); if (INFO != null) renderInfo(); if ($('shopS').classList.contains('on')) renderShop(); if ($('distS').classList.contains('on')) renderDist(); roadBar(); }
 function hud() {
   var s = S.stats; $('lvN').textContent = s.level; $('coinN').textContent = fmt(S.coins); $('coinN').title = String(S.coins); $('popN').textContent = fmt(s.pop);
   $('hapN').textContent = s.happy + '%'; $('hapE').textContent = s.happy >= 85 ? '😄' : s.happy >= 65 ? '😊' : s.happy >= 50 ? '😐' : '☹️';
@@ -363,6 +371,29 @@ function flipCard(k, fid) {
 /* ───── học từ theo chương ───── */
 var LN = null, LS = null, LT = null, LM = null;
 function lmodal(h) { $('learnMB').onclick = null; $('learnMB').innerHTML = h; $('learnM').classList.remove('peek'); $('learnM').classList.add('on'); }
+/* ───── Nhiệm vụ hằng ngày & lễ hội ───── */
+var DY = null, dyT = 0;
+function dyDot() { var n = 0; if (DY) { DY.missions.forEach(function (m) { if (m.done && !m.claimed) n++; }); if (DY.canBonus) n++; } var el = $('dyDot'); el.textContent = n; el.style.display = n ? 'grid' : 'none'; }
+function dyFest() { var c = $('festChip'); if (DY && DY.fest.length) { c.style.display = ''; c.innerHTML = DY.fest.map(function (f) { return f.icon; }).join(' ') + ' <b style="font-size:12px">Lễ hội</b>'; c.title = DY.fest.map(function (f) { return f.name; }).join(', '); } else c.style.display = 'none'; }
+function refreshDaily() { if (VIS) return Promise.resolve(); return api('/api/city/daily').then(function (d) { DY = d; dyDot(); dyFest(); if ($('dailyS').classList.contains('on')) renderDaily(); }).catch(function () {}); }
+function refreshDailySoon() { clearTimeout(dyT); dyT = setTimeout(refreshDaily, 1200); }
+function openDaily() { closeSheets(); setMode('view'); $('dailyS').classList.add('on'); $('dailyB').innerHTML = '<p class="empty">Đang tải…</p>'; refreshDaily().then(function () { if (DY) renderDaily(); }); }
+function renderDaily() {
+  var d = DY, h = '<div class="dy-top"><span class="st">🔥 Chuỗi ' + d.streak + ' ngày</span><span class="sub" style="margin:0">Làm đủ 3 nhiệm vụ để mở rương — chuỗi ngày càng dài, rương càng nhiều xu!</span></div>';
+  d.fest.forEach(function (f) { h += '<div class="dy-fest"><b>' + f.icon + ' ' + esc(f.name) + '</b> đang diễn ra — ' + esc(f.blurb) + ' Mở 🏗️ Xây dựng → tab “Sự kiện” để mua món lễ hội.</div>'; });
+  d.missions.forEach(function (m) {
+    var pc = Math.round(m.p / m.goal * 100);
+    h += '<div class="dy-m' + (m.done ? ' done' : '') + (m.optional ? ' opt' : '') + '"><span class="ic">' + m.icon + '</span><div class="tx">' + (m.optional ? '<span class="sm">Nhiệm vụ lễ hội (tuỳ chọn)</span><br>' : '') + esc(m.text) + '<div class="bar2"><i style="width:' + pc + '%"></i></div><span class="sm">' + m.p + '/' + m.goal + '</span></div>';
+    if (m.claimed) h += '<span style="font-size:22px">✅</span>';
+    else if (m.done) h += '<button class="btn pri" data-dyc="' + esc(m.id) + '" type="button">Nhận ' + fmt(m.xu) + ' 🪙</button>';
+    else h += '<div style="text-align:right"><div class="sm">🪙 ' + fmt(m.xu) + '</div>' + (d.swapLeft && !m.optional && !m.p ? '<button class="btn" data-dys="' + esc(m.id) + '" type="button" style="padding:4px 10px;font-size:12px" title="Đổi sang nhiệm vụ khác (1 lần/ngày)">🔄 Đổi</button>' : '') + '</div>';
+    h += '</div>';
+  });
+  h += '<div class="dy-chest"><div class="big">' + (d.bonusDone ? '🎁' : '🧰') + '</div><b>Rương thưởng hôm nay</b><div class="sub" style="margin:4px 0 8px">+' + fmt(d.bonus.xu) + ' 🪙 và 🎫 phiếu xây nhanh' + (d.bonus.streakNext > 1 ? ' (đã gồm thưởng chuỗi ' + d.bonus.streakNext + ' ngày)' : '') + '</div>' +
+    (d.bonusDone ? '<div class="sub">Đã mở rương hôm nay — hẹn gặp lại bạn ngày mai nhé! 🌙</div>' : '<button class="btn pri" data-dyb="1" type="button"' + (d.canBonus ? '' : ' disabled') + '>' + (d.canBonus ? 'Mở rương' : 'Nhận thưởng cả 3 nhiệm vụ để mở') + '</button>') + '</div>';
+  $('dailyB').innerHTML = h;
+}
+function dyAct(url, body, ok) { api(url, body).then(function (d) { if (d.daily) { DY = d.daily; dyDot(); dyFest(); renderDaily(); } if (ok) ok(d); load(); }).catch(function (e) { toast(e.message, 3500); }); }
 function openLearn(focusCh) {
   closeSheets(); setMode('view'); $('learnS').classList.add('on'); $('learnB').innerHTML = '<p class="empty">Đang tải…</p>';
   api('/api/city/learn').then(function (d) { LN = d; renderLearn(focusCh); }).catch(function (e) { $('learnB').innerHTML = '<p class="empty">' + esc(e.message) + '</p>'; });
@@ -582,7 +613,7 @@ function openSet() {
 }
 
 /* ───── sự kiện giao diện ───── */
-function closeSheets(keepInfo) { ['shopS', 'distS', 'learnS', 'friendS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
+function closeSheets(keepInfo) { ['shopS', 'distS', 'learnS', 'friendS', 'dailyS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
 document.addEventListener('click', function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-close]'))) { $(el.getAttribute('data-close')).classList.remove('on'); if (el.getAttribute('data-close') === 'infoS') { INFO = null; ENG.sel = -1; } return; }
@@ -598,6 +629,9 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-fvt]'))) { enterVisit(el.getAttribute('data-fvt')); return; }
   if ((el = t.closest('[data-fg]'))) { var ff = FR.friends[+el.getAttribute('data-fg')]; giftBox(ff.token, ff.short); return; }
   if ((el = t.closest('[data-fnd]'))) { api('/api/city/notes/delete', { id: +el.getAttribute('data-fnd') }).then(renderFriends); return; }
+  if ((el = t.closest('[data-dyc]'))) { dyAct('/api/city/daily/claim', { id: el.getAttribute('data-dyc') }, function (d) { SND('coin'); toast('🎉 Nhận <b>' + fmt(d.xu) + '</b> 🪙', 2500); }); return; }
+  if ((el = t.closest('[data-dyb]'))) { dyAct('/api/city/daily/bonus', {}, function (d) { SND('levelup'); toast('🧰 Rương mở ra: <b>+' + fmt(d.xu) + '</b> 🪙 và 🎫 1 phiếu xây nhanh! Chuỗi ' + d.streak + ' ngày 🔥', 4500); }); return; }
+  if ((el = t.closest('[data-dys]'))) { dyAct('/api/city/daily/swap', { id: el.getAttribute('data-dys') }); return; }
   if ((el = t.closest('[data-ln]'))) { var ac = el.getAttribute('data-ln'), cid = el.getAttribute('data-ch'); if (ac === 'study') { LS = { ch: cid, i: 0 }; studyCard(); } else if (ac === 'test') startTest(cid); else startMatch(cid); return; }
   if ((el = t.closest('[data-lt]'))) { testPick(+el.getAttribute('data-lt')); return; }
   if ((el = t.closest('[data-ml],[data-mr]')) && el.closest('#mg')) { matchTap(el); return; }
@@ -606,6 +640,7 @@ document.addEventListener('click', function (e) {
 });
 $('bFriend').onclick = function () { openFriends('list'); }; $('visBack').onclick = leaveVisit; $('visNote').onclick = function () { stickerBox(VIS.tok, VIS.owner.short, VIS.notes, VIS.noteLeft); }; $('visGift').onclick = function () { giftBox(VIS.tok, VIS.owner.short); }; $('bLearn').onclick = function () { openLearn(); }; $('bShop').onclick = openShop; $('bQuiz').onclick = openQuiz; $('coinB').onclick = openQuiz; $('bDist').onclick = function () { openDist(); };
 $('bCol').onclick = function () { collect(null); };
+$('bDaily').onclick = openDaily; $('festChip').onclick = openDaily;
 $('bRoad').onclick = function () { if (ENG.mode === 'road') setMode('view'); else { closeSheets(); setMode('road'); } };
 $('setB').onclick = openSet; $('zIn').onclick = function () { ENG.zoomAt(1.35, ENG.cw / 2, ENG.ch / 2); }; $('zOut').onclick = function () { ENG.zoomAt(1 / 1.35, ENG.cw / 2, ENG.ch / 2); };
 $('rL').onclick = function () { ENG.rotate(-1); }; $('rR').onclick = function () { ENG.rotate(1); }; $('zAll').onclick = function () { ENG.fitAll(); };
