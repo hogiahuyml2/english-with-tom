@@ -644,6 +644,26 @@
     return best;
   }
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
+  /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
+     Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
+  (function () {
+    var ALLZ = 'rcspfeihwbmatg', SERVICE = { clinic: 1, hospital: 1, firestation: 1, police: 1, school: 1, library: 1, postoffice: 1 };
+    var zd = {}; for (var q = 0; q < W * H; q++) { if (ZONE[q] && DIST[q] !== 255) { var dz = zd[DIST[q]] || (zd[DIST[q]] = {}); dz[String.fromCharCode(ZONE[q])] = 1; } }
+    var drop = function (str, rm) { return str.split('').filter(function (c) { return rm.indexOf(c) < 0; }).join(''); };
+    ITEMS.forEach(function (it) {
+      var add = '', area = it.w * it.h;
+      if (it.cat === 'home') add = drop(ALLZ, 'ht');                                   // nhà ở: mọi nơi trừ cảng & sân bay
+      else if (it.cat === 'park') add = ALLZ;                                          // công viên: mọi nơi
+      else if (it.cat === 'civic' && SERVICE[it.k]) add = ALLZ;                        // trường, y tế, cứu hoả, công an, thư viện, bưu điện: mọi nơi
+      else if (it.cat === 'shop' && area <= 4) add = drop(ALLZ, 'ht');                 // cửa hàng nhỏ: mọi nơi trừ cảng & sân bay
+      else if (it.cat === 'edu' && area <= 4) add = 'rcwp';                            // mẫu giáo, hiệu sách… gần nhà
+      else if (it.cat === 'sport' && area <= 6) add = 'rcepf';                         // phòng tập, sân nhỏ…
+      else if (it.cat === 'fun' && area <= 4) add = 'rcwbpg';                          // quầy kem, game nhỏ…
+      if (!add || it.z === '*') return;
+      it.z0 = it.z; it.ds0 = it.ds; var z2 = it.z; add.split('').forEach(function (c) { if (z2.indexOf(c) < 0) z2 += c; }); it.z = z2;
+      it.ds = Object.keys(zd).map(Number).filter(function (d) { return z2.split('').some(function (c) { return zd[d][c]; }); }).concat(it.ds).filter(function (d, i, a) { return a.indexOf(d) === i; }).sort(function (x, y) { return x - y; });
+    });
+  })();
   // công trình cố định (chỉ để vẽ)
   var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 }, bigplaza: { en: 'Harbor Plaza', vi: 'Quảng trường cảng', w: 1, h: 1 }, pier: { en: 'Fishing Pier', vi: 'Cầu tàu bãi biển', w: 7, h: 2 }, airport: { en: 'Airport Gate', vi: 'Cổng sân bay', w: 4, h: 2 } };
 
@@ -697,7 +717,7 @@
       if (FOCC[i] >= 0) return { ok: false, err: 'Chỗ này đã có công trình của thành phố.' };
       if (occ && occ[i]) return { ok: false, err: 'Chỗ này đã có công trình.' };
       if (st.districts.indexOf(DIST[i]) < 0) return { ok: false, err: 'Quận này chưa được mở.' };
-      zs = String.fromCharCode(ZONE[i]); if (it.z !== '*' && it.z.indexOf(zs) < 0) return { ok: false, err: it.vi + ' chỉ xây được ở khu ' + zoneList(it.z) + '. Ô này là khu "' + (ZONE_NAME[zs] || 'khác') + '".' };
+      zs = String.fromCharCode(ZONE[i]); if (it.z !== '*' && it.z.indexOf(zs) < 0) return { ok: false, err: it.z.length > 5 ? it.vi + ' xây được hầu hết mọi khu, trừ khu "' + (ZONE_NAME[zs] || 'khác') + '" (dành cho công trình chuyên dụng).' : it.vi + ' chỉ xây được ở khu ' + zoneList(it.z) + '. Ô này là khu "' + (ZONE_NAME[zs] || 'khác') + '".' };
     }
     if (!adjacentRoad(x, y, it.w, it.h, st.roads)) return { ok: false, err: 'Công trình cần nằm sát một con đường. Hãy xây thêm đường dẫn tới đây.' };
     return { ok: true };

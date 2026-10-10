@@ -25,6 +25,7 @@
       { id: 'tran', ic: '🚇', t: 'giao thông (buýt, taxi, tàu điện, bãi đỗ xe)', why: 'Khách và nhân viên cần chỗ đi lại, đỗ xe.', ks: ['busstop', 'taxistand', 'parking', 'metroentry'], need: { per: 10, of: 'core' }, from: 4, pri: 2 },
       { id: 'tower', ic: '🌆', t: 'toà nhà cao tầng', why: 'Toà cao tầng tạo đường chân trời đẹp (và còn chiếu đèn laser ban đêm!).', re: 'tower|skyscraper|plaza', need: 1, from: 6, pri: 3 },
       { id: 'green', ic: '🌳', t: 'cây xanh & hoa', why: 'Một chút cây xanh giữa phố cao tầng giúp dân vui hơn.', cats: ['tree', 'flower', 'park'], need: { per: 8, of: 'core' }, from: 4, pri: 2 },
+      { id: 'homes', ic: '🏙️', t: 'nhà ở / căn hộ trong trung tâm', why: 'Người làm việc ở Downtown cần nhà gần nơi làm — nhà ở xây được ở khu Thương mại.', cats: ['home'], need: { per: 6, of: 'core' }, from: 6, pri: 3 },
       { id: 'bench', ic: '🪑', t: 'ghế & tiện ích đường phố', why: 'Ghế, thùng rác, hộp thư làm phố tiện nghi.', cats: ['bench'], need: { per: 10, of: 'core' }, from: 4, pri: 3 },
       { id: 'lamp', ic: '💡', t: 'đèn đường', why: 'Đèn làm phố sáng đẹp về đêm.', cats: ['lamp'], need: { per: 8, of: 'core' }, from: 4, pri: 3 }
     ],
@@ -35,6 +36,8 @@
       { id: 'store', ic: '📦', t: 'kho & bãi container', why: 'Kho hàng và container giúp cảng vận hành.', ks: ['warehouse', 'containers', 'cargodepot'], need: 2, from: 2, pri: 2 },
       { id: 'port', ic: '⚓', t: 'thiết bị cảng (cần cẩu, hải đăng, xưởng tàu)', why: 'Cần cẩu và hải đăng làm cảng biển đúng nghĩa.', ks: ['crane', 'lighthouse', 'shipyard', 'fishmarket'], need: 2, from: 2, pri: 2 },
       { id: 'rec', ic: '♻️', t: 'tái chế / xử lý rác', why: 'Giảm ô nhiễm từ nhà máy.', ks: ['recycling', 'recyclecenter'], need: 1, from: 4, pri: 2 },
+      { id: 'park', ic: '🛝', t: 'công viên nhỏ cho công nhân', why: 'Công nhân cần chỗ nghỉ ngơi — công viên xây được cả ở khu công nghiệp.', cats: ['park'], need: { per: 8, of: 'core' }, from: 4, pri: 2 },
+      { id: 'homes', ic: '🏠', t: 'nhà ở cho công nhân', why: 'Nhà ở xây được ngay cạnh nhà máy để công nhân đi làm gần.', cats: ['home'], need: { per: 6, of: 'core' }, from: 6, pri: 3 },
       { id: 'green', ic: '🌳', t: 'cây xanh chắn ô nhiễm', why: 'Cây xanh giúp dân bớt khó chịu vì khói bụi.', cats: ['tree', 'flower'], need: { per: 6, of: 'core' }, from: 4, pri: 2 },
       { id: 'lamp', ic: '💡', t: 'đèn đường', why: 'Đèn giúp bến cảng sáng về đêm.', cats: ['lamp'], need: { per: 8, of: 'core' }, from: 4, pri: 3 }
     ],
@@ -55,6 +58,7 @@
       { id: 'lab', ic: '🔬', t: 'phòng thí nghiệm', why: 'Học thực hành và nghiên cứu khoa học.', ks: ['lab', 'techlab'], need: 1, from: 3, pri: 2 },
       { id: 'cult', ic: '🏛️', t: 'bảo tàng / phòng tranh / đài thiên văn', why: 'Mở rộng kiến thức và nghệ thuật cho học sinh.', ks: ['museum', 'artgallery', 'observatory', 'planetarium', 'artschool', 'languagecenter'], need: 2, from: 3, pri: 2 },
       { id: 'dorm', ic: '🛏️', t: 'ký túc xá', why: 'Sinh viên cần chỗ ở.', ks: ['dorm'], need: 2, from: 3, pri: 2 },
+      { id: 'homes', ic: '🏠', t: 'nhà ở gần trường', why: 'Học sinh và giáo viên cần nhà ở ngay cạnh trường — nhà ở xây được ở khu Học đường.', cats: ['home'], need: { per: 4, of: 'core' }, from: 4, pri: 2 },
       { id: 'sport', ic: '🏀', t: 'nhà thi đấu / sân thể thao', why: 'Học sinh cần vận động.', ks: ['sportshall', 'court', 'tenniscourt'], need: 1, from: 4, pri: 3 },
       { id: 'green', ic: '🌳', t: 'cây xanh & ghế đá', why: 'Khuôn viên xanh giúp học sinh thư giãn.', cats: ['tree', 'flower', 'bench'], need: { per: 4, of: 'core' }, from: 3, pri: 2 },
       { id: 'lamp', ic: '💡', t: 'đèn đường', why: 'Đèn giúp sinh viên đi học tối an toàn.', cats: ['lamp'], need: { per: 8, of: 'core' }, from: 4, pri: 3 }
