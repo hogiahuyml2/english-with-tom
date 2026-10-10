@@ -66,6 +66,7 @@ button { font-family: inherit; cursor: pointer; }
 .sheet .hd { display: flex; align-items: center; gap: 8px; padding: 12px 14px 6px; } .sheet .hd h3 { margin: 0; font-size: 17px; flex: 1; }
 .x { border: 0; background: #EEF2FA; width: 34px; height: 34px; border-radius: 50%; font-size: 17px; font-weight: 800; color: var(--ink); }
 .sheet .bd { overflow: auto; padding: 4px 14px 16px; -webkit-overflow-scrolling: touch; flex: 1; }
+.sheet > .hd, .sheet > .tabs, .sheet > .tools { flex: none; } .sheet .bd { min-height: 0; }   /* thanh tab / ô lọc không bị ép xẹp khi danh sách dài */
 .tabs { display: flex; gap: 6px; padding: 2px 14px 6px; overflow-x: auto; scrollbar-width: none; } .tabs::-webkit-scrollbar { display: none; }
 .tab { border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 6px 12px; font-weight: 800; font-size: 13px; white-space: nowrap; color: var(--ink); } .tab.on { background: var(--pri); border-color: var(--pri); color: #fff; }
 .tools { display: flex; gap: 8px; padding: 0 14px 8px; align-items: center; flex-wrap: wrap; }
