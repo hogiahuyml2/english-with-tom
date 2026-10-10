@@ -464,6 +464,12 @@
     else { var qc = Math.ceil(C0 / 2), qr = Math.ceil(R0 / 2); out.push({ i0: 0, j0: 0, ci: qc, cj: qr }, { i0: C0 - qc, j0: 0, ci: qc, cj: qr }, { i0: 0, j0: R0 - qr, ci: qc, cj: qr }, { i0: C0 - qc, j0: R0 - qr, ci: qc, cj: qr }); }
     return out;
   }
+  // các "hình dạng" (số cột × số hàng khối) của một quy hoạch + hình chữ nhật đặt tự do tại khối (i0, j0)
+  function regionShapes(rg) { var seen = {}, out = []; regionRects(rg).forEach(function (r) { var k = r.ci + 'x' + r.cj; if (!seen[k]) { seen[k] = 1; out.push({ ci: r.ci, cj: r.cj }); } }); return out; }
+  function regionRectAt(rg, i0, j0, ci, cj) {
+    var gr = GRID[rg.d], ok = regionShapes(rg).some(function (s) { return s.ci === ci && s.cj === cj; });
+    if (!ok || i0 !== Math.floor(i0) || j0 !== Math.floor(j0) || i0 < 0 || j0 < 0 || i0 + ci > gr.cols || j0 + cj > gr.rows) return null; return { i0: i0, j0: j0, ci: ci, cj: cj };
+  }
   function matchSel(p, sel) {
     if (!sel) return true; if (sel.tier && sel.tier.indexOf(p.tier) < 0) return false; if (sel.arch && sel.arch.indexOf(p.arch) < 0) return false;
     if (sel.has) { var ok = false; p.items.forEach(function (e) { if (sel.has.indexOf(e[0]) >= 0) ok = true; }); if (!ok) return false; } return true;
@@ -486,7 +492,7 @@
   }
   C.REGION_FEE = { all: 0.25, half: 0, quarter: 0 }; // phụ phí quy hoạch cả khu / thị trấn (% trên tiền xây)
   C.REGIONS = REGIONS; C.REGION_BY = {}; REGIONS.forEach(function (r) { C.REGION_BY[r.id] = r; });
-  C.regionRects = regionRects; C.regionPlacements = regionPlacements; C.REGION_SCOPES = SCOPES; C.blockGrid = GRID;
+  C.regionRects = regionRects; C.regionShapes = regionShapes; C.regionRectAt = regionRectAt; C.regionPlacements = regionPlacements; C.REGION_SCOPES = SCOPES; C.blockGrid = GRID;
   // thống kê chung (không cần đất thật): số khối, số món, giá
   C.regionInfo = function (rg, rc) {
     var pl = regionPlacements(rg, rc || regionRects(rg)[0]), o = { blocks: pl.length, count: 0, price: 0, roads: 0, lvl: 1, counts: {}, inc: 0, pop: 0, hp: 0 };

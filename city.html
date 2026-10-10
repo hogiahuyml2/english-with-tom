@@ -169,6 +169,7 @@ button { font-family: inherit; cursor: pointer; }
   <button class="tb" id="bDist" type="button"><span class="ic">🗺️</span>Các quận</button>
 </div>
 
+<div class="pbar" id="pickBar"><div style="flex:1 1 100%;text-align:center"><div class="t" id="pickT"></div><div class="sub" id="pickS"></div></div><div class="pbreak"></div><button class="btn sm" id="pickOri" type="button" style="display:none">↔️ Đổi hướng</button><button class="btn sm" id="pickX" type="button">✕ Huỷ</button><button class="btn pri sm" id="pickGo" type="button">✓ Áp dụng</button></div>
 <div class="pbar" id="pbar"><div><div class="t" id="pName"></div><div class="err" id="pErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="pCont"> Đặt liên tục</label><button class="btn bad" id="pNo" type="button">✗ Hủy</button><button class="btn good" id="pOk" type="button">✓ Đặt</button>
   <div class="pbreak"></div>
   <button class="btn sm" id="pRot" type="button" title="Xoay mặt trước của công trình">🔄 Xoay mặt</button><button class="btn sm" id="pRoad" type="button" title="Tự quay mặt trước ra phía đường">🛣️ Ra đường</button><span class="swrow" id="pSw"></span><button class="btn sm" id="pPal" type="button">🎨 Màu</button><label class="mchk" id="pPaintL" style="display:none"><input type="checkbox" id="pPaint"> 🖌️ Vẽ nhiều ô</label></div>
@@ -205,11 +206,11 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-data.js?v=12"></script>
 <script src="js/city-learn.js?v=1"></script>
 <script src="js/city-advice.js?v=2"></script>
-<script src="js/city-plans.js?v=2"></script>
+<script src="js/city-plans.js?v=3"></script>
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
-<script src="js/city-engine.js?v=16"></script>
+<script src="js/city-engine.js?v=17"></script>
 <script>
 (function () {
 'use strict';
@@ -296,7 +297,7 @@ function pick(it) {
   if (!(S.free[it.k] > 0) && !(S.inv[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
   $('shopS').classList.remove('on'); SEL = it; PCOL = ''; PFACE = 'auto'; PSWKEY = ''; $('pPaint').checked = false; setMode('place', it.k); say(it.en);
 }
-function setMode(m, k) { ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); $('mbar').classList.toggle('on', m === 'multi'); $('bMulti').classList.toggle('on', m === 'multi'); if (m === 'multi') { $('mBox').checked = false; updateMbar(); } if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
+function setMode(m, k) { if (PICK && m !== 'view') pickEnd(); ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); $('mbar').classList.toggle('on', m === 'multi'); $('bMulti').classList.toggle('on', m === 'multi'); if (m === 'multi') { $('mBox').checked = false; updateMbar(); } if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
 function updatePbar() {
   var g = ENG.ghost; if (!g) return; var it = C.BY[g.k]; ghostApply(g); pbarSwatches(it); $('pPaintL').style.display = it.w === 1 && it.h === 1 ? '' : 'none'; if (!(it.w === 1 && it.h === 1)) { $('pPaint').checked = false; ENG.paint = false; } var free = (S.free[it.k] | 0) > 0; $('pName').innerHTML = esc(it.en) + ' · <span style="font-weight:600;color:var(--muted)">' + esc(it.vi) + '</span> — ' + (free ? '<b style="color:var(--good)">MIỄN PHÍ</b>' : COIN + ' <b>' + fmt(it.cost) + '</b>'); $('pErr').textContent = g.ok ? '' : g.err; $('pOk').disabled = !g.ok;
 }
@@ -772,7 +773,7 @@ function setRegionZone(rg, rc) {
   for (var j = rc.j0; j < rc.j0 + rc.cj; j++) for (var i = rc.i0; i < rc.i0 + rc.ci; i++) { var b = gr.g[j] && gr.g[j][i]; if (b) blocks.push([b.x, b.y, b.w, b.h]); }
   pls.forEach(function (p) { plans.push([p.bx, p.by, p.plan.w, p.plan.h]); p.plan.items.forEach(function (e) { var it = C.BY[e[0]]; if (it) plans.push([p.bx + e[1], p.by + e[2], it.w, it.h, 1]); }); });
   ENG.zone = { blocks: blocks, plans: plans, name: rg.icon + ' ' + rg.vi };
-  ENG.zoneAlive = function () { var m = $('learnM'); return m.classList.contains('on') && m.classList.contains('peek') && PR && PR.q; };
+  ENG.zoneAlive = function () { var m = $('learnM'); return !!PICK || (m.classList.contains('on') && m.classList.contains('peek') && PR && PR.q); };
 }
 function regionQuote() {
   api('/api/city/region/quote', { region: PR.rg.id, alt: PR.alt, unlock: !!PR.unlock }).then(function (q) {
@@ -782,17 +783,48 @@ function regionQuote() {
     if (q.x2) h += '<p class="sub" style="color:#8A5A00">🔓 ' + q.x2 + ' món chưa mở khoá được mua với giá gấp đôi.</p>';
     h += '<p class="sub" style="margin:2px 0">🗺️ Vùng được <b>khoanh vàng</b> trên bản đồ: ' + q.blocks + ' khối đất (ô xanh dương = nơi đặt công trình). Bấm “Vị trí khác” để chuyển sang vùng khác.</p>';
     if (q.unlockCost || q.fee) h += '<p class="sub" style="margin:2px 0">Xây: ' + COIN + ' ' + fmt(q.build) + (q.fee ? ' + phụ phí thị trấn ' + COIN + ' ' + fmt(q.fee) + ' (' + Math.round(q.feePct * 100) + '%)' : '') + (q.unlockCost ? ' + mở quận ' + COIN + ' ' + fmt(q.unlockCost) : '') + '</p>';
-    h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="rgAlt" type="button"' + (q.spots > 1 ? '' : ' disabled') + '>🔄 Vị trí khác</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="rgYes" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
-    lmodal(h.replace(/🪙/g, COIN)); $('learnM').classList.add('peek'); $('rgAlt').onclick = function () { PR.alt++; regionQuote(); };
-    $('rgYes').onclick = function () { $('rgYes').disabled = true; api('/api/city/region/apply', { region: PR.rg.id, i0: q.rc.i0, j0: q.rc.j0, c: PR.c, unlock: !!PR.unlock }).then(function (r) { setState(r); $('learnM').classList.remove('on'); SND('levelup'); toast('🏙️ Đã xây ' + r.built + ' công trình theo “' + esc(PR.rg.vi) + '”!', 3600); }).catch(function (e) { toast(e.message, 3600); $('rgYes').disabled = false; }); };
+    h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="rgAlt" type="button"' + (q.spots > 1 ? '' : ' disabled') + '>🔄 Vị trí khác</button><button class="btn" id="rgFree" type="button">✋ Tự chọn chỗ</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="rgYes" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
+    lmodal(h.replace(/🪙/g, COIN)); $('learnM').classList.add('peek'); $('rgAlt').onclick = function () { PR.alt++; regionQuote(); }; $('rgFree').onclick = function () { PR.sh = 0; C.regionShapes(PR.rg).forEach(function (sp, i) { if (sp.ci === q.rc.ci && sp.cj === q.rc.cj) PR.sh = i; }); pickStart('region'); };
+    $('rgYes').onclick = function () { $('rgYes').disabled = true; api('/api/city/region/apply', { region: PR.rg.id, i0: q.rc.i0, j0: q.rc.j0, ci: q.rc.ci, cj: q.rc.cj, c: PR.c, unlock: !!PR.unlock }).then(function (r) { setState(r); $('learnM').classList.remove('on'); SND('levelup'); toast('🏙️ Đã xây ' + r.built + ' công trình theo “' + esc(PR.rg.vi) + '”!', 3600); }).catch(function (e) { toast(e.message, 3600); $('rgYes').disabled = false; }); };
   }).catch(function (e) { toast(e.message, 4200); });
 }
 var L2 = {}; (window.EWTCityLearn ? EWTCityLearn.CH : []).forEach(function (c) { L2[c.id] = c.en; });
+var PICK = null;
+function pickText(q) {
+  var nm = PICK.kind === 'plan' ? PQ.plan.vi : PR.rg.vi;
+  $('pickT').innerHTML = '📍 ' + esc(nm) + ': xây được <b>' + q.ok + '/' + q.total + '</b> món · ' + COIN + ' <b>' + fmt(q.cost) + '</b>' + (q.unlockCost ? ' (gồm mở quận)' : '');
+  $('pickS').textContent = q.note ? '⚠️ ' + q.note : q.ok ? 'Chạm chỗ khác trên bản đồ để dời · ô xanh = sẽ xây, ô đỏ = bị bỏ qua' : '⚠️ Chỗ này chưa xây được món nào — hãy chạm sang chỗ khác';
+  $('pickGo').disabled = !q.ok || S.coins < q.cost; $('pickGo').textContent = S.coins < q.cost ? 'Chưa đủ xu' : '✓ Áp dụng & trả xu';
+}
+function pickStart(kind) {
+  PICK = { kind: kind, busy: false }; $('learnM').classList.remove('on'); closeSheets(); $('pickBar').classList.add('on'); $('pickOri').style.display = kind === 'region' && C.regionShapes(PR.rg).length > 1 ? '' : 'none';
+  ENG.pickHook = pickTap; pickText(kind === 'plan' ? PQ.q : PR.q); toast('✋ Chạm vào bản đồ nơi bạn muốn đặt quy hoạch — viền vàng sẽ di chuyển theo!', 3800);
+}
+function pickEnd() { PICK = null; ENG.pickHook = null; ENG.zone = null; $('pickBar').classList.remove('on'); }
+function pickQuote(i0, j0) {
+  if (PICK.busy) return; PICK.busy = true;
+  var p = PICK.kind === 'plan' ? api('/api/city/plan/quote', { plan: PQ.plan.id, bx: i0, by: j0, unlock: !!PQ.unlock }) : api('/api/city/region/quote', { region: PR.rg.id, i0: i0, j0: j0, ci: C.regionShapes(PR.rg)[PR.sh | 0].ci, cj: C.regionShapes(PR.rg)[PR.sh | 0].cj, unlock: !!PR.unlock });
+  p.then(function (q) { PICK.busy = false; if (PICK.kind === 'plan') { PQ.q = q; setPlanZone(q); } else { PR.q = q; PR.rc = q.rc; setRegionZone(PR.rg, q.rc); } pickText(q); }).catch(function (e) { PICK.busy = false; toast(e.message, 2600); });
+}
+function pickTap(tx, ty) {
+  if (!PICK) return;
+  if (PICK.kind === 'plan') { var w = PQ.plan.w || 5, h = PQ.plan.h || 5; pickQuote(clampN(tx - (w >> 1), 1, C.W - w - 1), clampN(ty - (h >> 1), 1, C.H - h - 1)); return; }
+  var gr = C.blockGrid[PR.rg.d], sp = C.regionShapes(PR.rg)[PR.sh | 0], best = null, bd = 1e9;
+  for (var j = 0; j < gr.rows; j++) for (var i = 0; i < gr.cols; i++) { var b = gr.g[j][i]; if (!b) continue; var d = Math.hypot(b.x + b.w / 2 - tx, b.y + b.h / 2 - ty); if (d < bd) { bd = d; best = [i, j]; } }
+  if (!best) return; pickQuote(clampN(best[0] - (sp.ci >> 1), 0, gr.cols - sp.ci), clampN(best[1] - (sp.cj >> 1), 0, gr.rows - sp.cj));
+}
+$('pickX').onclick = pickEnd;
+$('pickOri').onclick = function () { if (!PICK || PICK.kind !== 'region') return; var n = C.regionShapes(PR.rg).length, sp0 = PR.rc; PR.sh = ((PR.sh | 0) + 1) % n; var sp = C.regionShapes(PR.rg)[PR.sh], gr = C.blockGrid[PR.rg.d]; pickQuote(clampN(sp0.i0, 0, gr.cols - sp.ci), clampN(sp0.j0, 0, gr.rows - sp.cj)); };
+$('pickGo').onclick = function () {
+  if (!PICK) return; var kind = PICK.kind, q = kind === 'plan' ? PQ.q : PR.q; $('pickGo').disabled = true;
+  var p = kind === 'plan' ? api('/api/city/plan/apply', { plan: PQ.plan.id, bx: q.bx, by: q.by, c: PQ.c, unlock: !!PQ.unlock }) : api('/api/city/region/apply', { region: PR.rg.id, i0: q.rc.i0, j0: q.rc.j0, ci: q.rc.ci, cj: q.rc.cj, c: PR.c, unlock: !!PR.unlock });
+  p.then(function (r) { setState(r); pickEnd(); SND('levelup'); toast('🏗️ Đã xây ' + r.built + ' công trình theo “' + esc(kind === 'plan' ? PQ.plan.vi : PR.rg.vi) + '”!', 3600); }).catch(function (e) { toast(e.message, 3600); pickText(q); });
+};
 function setPlanZone(q) {
   var pl = PQ.plan, w = pl.w || 5, h = pl.h || 5, plans = [], bad = [];
   q.items.forEach(function (i) { var it = C.BY[i.k]; if (!it) return; (i.ok ? plans : bad).push([i.x, i.y, it.w, it.h, 1]); });
   ENG.zone = { blocks: [[q.bx, q.by, w, h]], plans: plans, bad: bad, roadc: q.roadCells || [], name: '📍 Xây ở đây' };
-  ENG.zoneAlive = function () { var m = $('learnM'); return m.classList.contains('on') && m.classList.contains('peek') && PQ && PQ.q; };
+  ENG.zoneAlive = function () { var m = $('learnM'); return !!PICK || (m.classList.contains('on') && m.classList.contains('peek') && PQ && PQ.q); };
 }
 function planQuote() {
   api('/api/city/plan/quote', { plan: PQ.plan.id, alt: PQ.alt, d: PQ.d, unlock: !!PQ.unlock }).then(function (q) {
@@ -802,8 +834,8 @@ function planQuote() {
     var h = '<h3>' + PQ.plan.icon + ' ' + esc(PQ.plan.vi) + '</h3><p class="sub">Khối đất tại quận <b>' + esc(C.DISTRICTS[q.d].vi) + '</b> (tìm thấy ' + q.blocks + ' chỗ). Xây được <b>' + q.ok + '/' + q.total + '</b> món' + (q.roads ? ' + ' + q.roads + ' ô đường' : '') + '.</p><p class="sub" style="margin:2px 0;color:#8A5A00">🧭 Trên bản đồ: <b>mũi tên cam</b> + <b>viền vàng</b> là khu đất; <b>ô xanh dương</b> = công trình sẽ xây, <b>ô cam</b> = đường mới, <b>ô đỏ</b> = món bị bỏ qua.</p><p class="sub" style="margin:2px 0">' + Object.keys(sum).map(function (k) { return sum[k] + '× ' + esc(C.BY[k].vi); }).join(' · ') + '</p>';
     if (bad.length) { var why = {}; bad.forEach(function (i) { why[i.why] = (why[i.why] || 0) + 1; }); h += '<p class="sub" style="color:#B3541E">⚠️ Bỏ qua ' + bad.length + ' món: ' + Object.keys(why).slice(0, 2).map(function (w) { return esc(w); }).join(' / ') + '</p>'; }
     if (q.x2) h += '<p class="sub" style="color:#8A5A00">🔓 ' + q.x2 + ' món chưa mở khoá được mua với giá gấp đôi.</p>';
-    h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="pqAlt" type="button">🔄 Chỗ khác</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="pqGo" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
-    lmodal(h); $('learnM').classList.add('peek'); $('pqAlt').onclick = function () { PQ.alt++; planQuote(); };
+    h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="pqAlt" type="button">🔄 Chỗ khác</button><button class="btn" id="pqFree" type="button">✋ Tự chọn chỗ</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="pqGo" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
+    lmodal(h); $('learnM').classList.add('peek'); $('pqAlt').onclick = function () { PQ.alt++; planQuote(); }; $('pqFree').onclick = function () { pickStart('plan'); };
     $('pqGo').onclick = function () { api('/api/city/plan/apply', { plan: PQ.plan.id, bx: q.bx, by: q.by, c: PQ.c, unlock: !!PQ.unlock }).then(function (r) { setState(r); $('learnM').classList.remove('on'); toast('📐 Đã xây ' + r.built + ' món theo mẫu “' + esc(PQ.plan.vi) + '”!', 3000); }).catch(function (e) { toast(e.message, 3200); }); };
   }).catch(function (e) { toast(e.message, 4200); });
 }

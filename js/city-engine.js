@@ -240,6 +240,7 @@
   };
   P.tap = function (px, py, dbl) {
     var E = this, t = E.screenToTile(px, py);
+    if (E.pickHook) { E.pickHook(t[0], t[1]); return; }   // người chơi đang tự chọn chỗ cho quy hoạch
     if (dbl && E.mode === 'view') { E.zoomAt(1.6, px, py); E.clampCam(); return; }
     if (E.mode === 'multi') { var mbd = E.pickBuilding(px, py); if (mbd) { if (E.msel[mbd.i]) delete E.msel[mbd.i]; else E.msel[mbd.i] = 1; if (E.o.onMulti) E.o.onMulti(); } return; }
     if (E.mode === 'place' && E.ghost) { var it = C.BY[E.ghost.k], g = E.ghost, inside = t[0] >= g.x && t[0] < g.x + it.w && t[1] >= g.y && t[1] < g.y + it.h; if (inside) { if (E.o.onPlace) E.o.onPlace(g); } else E.setGhost(t[0] - (it.w >> 1), t[1] - (it.h >> 1)); return; }
