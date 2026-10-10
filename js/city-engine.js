@@ -180,7 +180,7 @@
   /* ───── điều khiển camera ───── */
   P.fitAll = function (instant) { var E = this, c = scr(E.rot, W / 2, H / 2), z = Math.min(E.cw / ((W + H) * HW * 1.05), E.ch / ((W + H) * HH * 1.05)); E.goto(c[0], c[1], Math.max(.09, z), instant); };
   P.goto = function (x, y, z, instant) { var E = this; if (instant) { E.cam.x = x; E.cam.y = y; E.cam.z = z == null ? E.cam.z : z; E.anim = null; return; } E.anim = { x0: E.cam.x, y0: E.cam.y, z0: E.cam.z, x1: x, y1: y, z1: z == null ? E.cam.z : z, t: 0, d: .55 }; };
-  P.focusDistrict = function (d) { var E = this, dd = C.DISTRICTS[d]; if (!dd) return; var an = distAnchor(dd), s = scr(E.rot, an[0], an[1]), w = Math.max(an[2][2], 24), h = Math.max(an[2][3], 24), z = Math.min(E.cw / ((w + h) * HW * 1.1), E.ch / ((w + h) * HH * 1.15)); E.goto(s[0], s[1], clamp(z, .3, 1.2)); };
+  P.focusDistrict = function (d) { var E = this, dd = C.DISTRICTS[d]; if (!dd) return; E.flashDistrict(d); var an = distAnchor(dd), s = scr(E.rot, an[0], an[1]), w = Math.max(an[2][2], 24), h = Math.max(an[2][3], 24), z = Math.min(E.cw / ((w + h) * HW * 1.1), E.ch / ((w + h) * HH * 1.15)); E.goto(s[0], s[1], clamp(z, .3, 1.2)); };
   P.focusTile = function (x, y, z, dy) { var s = scr(this.rot, x + .5, y + .5); this.goto(s[0], s[1] + (dy || 0) / (z || this.cam.z), z); };
   P.rotate = function (dir) {
     var E = this, c = E.baseToWorld(E.cam.x, E.cam.y); E.rot = (E.rot + (dir > 0 ? 1 : 3)) % 4; var s = scr(E.rot, c[0], c[1]); E.cam.x = s[0]; E.cam.y = s[1]; E.anim = null; E.allowed = null; E.lockCache = null;
@@ -246,9 +246,9 @@
     // bóng bay thu thuế
     var bub = E.pickBubble(px, py); if (bub) { if (E.o.onBubble) E.o.onBubble(bub); return; }
     var b = E.pickBuilding(px, py);
-    if (b) { E.sel = b.i; if (E.o.onSelect) E.o.onSelect(b); return; }
+    if (b) { E.sel = b.i; E.reveal(b); if (E.o.onSelect) E.o.onSelect(b); return; }
     // công trình cố định / quận khoá
-    if (C.inW(t[0], t[1])) { var i = t[1] * W + t[0], f = C.FOCC[i]; if (f >= 0) { if (E.o.onFixed) E.o.onFixed(C.FIXED[f]); return; } var d = C.DIST[i]; if (d !== 255 && !E.open[d]) { if (E.o.onLocked) E.o.onLocked(d); return; } if (C.ROAD[i] === 0 && E.roadsX[i]) { if (E.o.onRoadTap) E.o.onRoadTap(i); return; } }
+    if (C.inW(t[0], t[1])) { var i = t[1] * W + t[0], f = C.FOCC[i]; if (f >= 0) { E.fixFlash = { f: C.FIXED[f], t0: E.t }; if (E.o.onFixed) E.o.onFixed(C.FIXED[f]); return; } var d = C.DIST[i]; if (d !== 255 && !E.open[d]) { E.flashDistrict(d); if (E.o.onLocked) E.o.onLocked(d); return; } if (C.ROAD[i] === 0 && E.roadsX[i]) { if (E.o.onRoadTap) E.o.onRoadTap(i); return; } }
     E.sel = -1; if (E.o.onSelect) E.o.onSelect(null);
   };
   /* ───── chọn nhiều / vẽ nhiều ô ───── */
@@ -289,6 +289,26 @@
     ctx.beginPath(); ctx.moveTo(s[0], ay + 54 / z); ctx.lineTo(s[0] - aw, ay + 14 / z); ctx.lineTo(s[0] - aw * .45, ay + 14 / z); ctx.lineTo(s[0] - aw * .45, ay - 26 / z); ctx.lineTo(s[0] + aw * .45, ay - 26 / z); ctx.lineTo(s[0] + aw * .45, ay + 14 / z); ctx.lineTo(s[0] + aw, ay + 14 / z); ctx.closePath();
     ctx.lineWidth = 3 / z; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#E8590C'; ctx.stroke(); ctx.fill();
     ctx.restore();
+  };
+  // mũi tên cam nảy lên xuống, mũi nhọn chạm (x, y)
+  P.drawArrow = function (ctx, x, y, z) {
+    var bob = Math.abs(Math.sin(this.t * 4)) * 22 / z, ay = y - 56 / z - bob, aw = 24 / z; ctx.save(); ctx.beginPath(); ctx.moveTo(x, ay + 48 / z); ctx.lineTo(x - aw, ay + 12 / z); ctx.lineTo(x - aw * .45, ay + 12 / z); ctx.lineTo(x - aw * .45, ay - 24 / z); ctx.lineTo(x + aw * .45, ay - 24 / z); ctx.lineTo(x + aw * .45, ay + 12 / z); ctx.lineTo(x + aw, ay + 12 / z); ctx.closePath();
+    ctx.lineJoin = 'round'; ctx.lineWidth = 3 / z; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#E8590C'; ctx.stroke(); ctx.fill(); ctx.restore();
+  };
+  // đánh dấu tạm: quận vừa chọn / công trình cố định vừa chạm vào
+  P.flashDistrict = function (d) { this.dflash = { d: d, t0: this.t }; };
+  P.drawMarks = function (ctx) {
+    var E = this, r = E.rot, z = E.cam.z, f, k, a, p;
+    var df = E.dflash; if (df) { var age = E.t - df.t0, dd = C.DISTRICTS[df.d]; if (!dd || age > 7) E.dflash = null; else { var fade = age > 5.5 ? (7 - age) / 1.5 : 1, pu = .5 + .5 * Math.sin(E.t * 4); p = new Path2D(); dd.rects.forEach(function (q) { quadW(p, r, [[q[0], q[1]], [q[0] + q[2], q[1]], [q[0] + q[2], q[1] + q[3]], [q[0], q[1] + q[3]]]); });
+      ctx.save(); ctx.globalAlpha = fade; ctx.lineJoin = 'round'; ctx.fillStyle = 'rgba(255,214,40,' + (.12 + .1 * pu).toFixed(2) + ')'; ctx.fill(p); ctx.lineWidth = 9 / z; ctx.strokeStyle = '#fff'; ctx.stroke(p); ctx.lineWidth = 5 / z; ctx.setLineDash([22 / z, 12 / z]); ctx.lineDashOffset = -E.t * 40 / z; ctx.strokeStyle = '#E8590C'; ctx.stroke(p); ctx.setLineDash([]);
+      var an = distAnchor(dd), s = scr(r, an[0], an[1]), nm = dd.icon + ' ' + dd.vi, fs = Math.max(18, 26 / z); ctx.font = '800 ' + fs + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = fs / 5; ctx.strokeStyle = 'rgba(20,30,60,.92)'; ctx.strokeText(nm, s[0], s[1]); ctx.fillStyle = '#FFE066'; ctx.fillText(nm, s[0], s[1]); ctx.restore(); } }
+    f = E.fixFlash; if (f) { if (E.t - f.t0 > 4) E.fixFlash = null; else { var fx = f.f, pu2 = .5 + .5 * Math.sin(E.t * 5); p = new Path2D(); quadW(p, r, [[fx.x, fx.y], [fx.x + fx.w, fx.y], [fx.x + fx.w, fx.y + fx.h], [fx.x, fx.y + fx.h]]);
+      ctx.save(); ctx.lineJoin = 'round'; ctx.fillStyle = 'rgba(255,214,40,' + (.34 + .2 * pu2).toFixed(2) + ')'; ctx.fill(p); ctx.lineWidth = 7 / z; ctx.strokeStyle = '#fff'; ctx.stroke(p); ctx.lineWidth = 3.5 / z; ctx.strokeStyle = '#E8590C'; ctx.stroke(p); ctx.restore(); var c = scr(r, fx.x + fx.w / 2, fx.y + fx.h / 2); E.drawArrow(ctx, c[0], c[1] - 120 / z, z); } }
+  };
+  // đẩy công trình vừa chọn lên nửa trên màn hình để bảng thông tin ở dưới không che
+  P.reveal = function (b) {
+    var E = this, it = C.BY[b.k]; if (!it) return; var s = scr(E.rot, b.x + it.w / 2, b.y + it.h / 2), sy = (s[1] - E.cam.y) * E.cam.z + E.ch / 2; if (sy < E.ch * .36) return;
+    E.goto(E.cam.x, s[1] + E.ch * .36 / E.cam.z, E.cam.z);
   };
   P.drawBox = function (ctx) { var r = this.mrect; if (!r) return; ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.fillStyle = 'rgba(60,200,130,.18)'; ctx.strokeStyle = 'rgba(30,170,100,.95)'; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.restore(); };
   P.pickBubble = function (px, py) {
@@ -380,7 +400,7 @@
     // quận khoá
     E.drawLocked(ctx);
     // vật thể theo chiều sâu
-    E.drawObjects(ctx, now, night); E.drawPaint(ctx); E.drawRegion(ctx);
+    E.drawObjects(ctx, now, night); E.drawPaint(ctx); E.drawRegion(ctx); E.drawMarks(ctx);
     E.drawLockIcons(ctx);
     E.drawCelebrate(ctx);
     // bầu trời
@@ -483,7 +503,8 @@
     // các công trình đang được chọn nhiều
     if (E.mode === 'multi') { var ms = E.msel; for (i = 0; i < list.length; i++) { var mb = list[i].b; if (!ms[mb.i]) continue; var mp = new Path2D(); quadW(mp, E.rot, [[mb.x, mb.y], [mb.x + list[i].it.w, mb.y], [mb.x + list[i].it.w, mb.y + list[i].it.h], [mb.x, mb.y + list[i].it.h]]); ctx.strokeStyle = 'rgba(40,190,110,.98)'; ctx.lineWidth = 3 / E.cam.z; ctx.stroke(mp); ctx.fillStyle = 'rgba(60,220,130,.3)'; ctx.fill(mp); } }
     // vòng chọn
-    if (E.sel >= 0) { var sb = list.filter(function (x) { return x.b.i === E.sel; })[0]; if (sb) { var r2 = rotRect(E.rot, sb.b.x, sb.b.y, sb.it.w, sb.it.h), p = new Path2D(); quadW(p, E.rot, [[sb.b.x, sb.b.y], [sb.b.x + sb.it.w, sb.b.y], [sb.b.x + sb.it.w, sb.b.y + sb.it.h], [sb.b.x, sb.b.y + sb.it.h]]); ctx.strokeStyle = 'rgba(255,230,80,.95)'; ctx.lineWidth = 3 / E.cam.z * 1.0; ctx.stroke(p); ctx.fillStyle = 'rgba(255,230,80,.25)'; ctx.fill(p); } }
+    if (E.sel >= 0) { var sb = list.filter(function (x) { return x.b.i === E.sel; })[0]; if (sb) { var r2 = rotRect(E.rot, sb.b.x, sb.b.y, sb.it.w, sb.it.h), p = new Path2D(); quadW(p, E.rot, [[sb.b.x, sb.b.y], [sb.b.x + sb.it.w, sb.b.y], [sb.b.x + sb.it.w, sb.b.y + sb.it.h], [sb.b.x, sb.b.y + sb.it.h]]); var pu = .5 + .5 * Math.sin(E.t * 5), z0 = E.cam.z; ctx.save(); ctx.lineJoin = 'round'; ctx.fillStyle = 'rgba(255,214,40,' + (.34 + .2 * pu).toFixed(2) + ')'; ctx.fill(p); ctx.lineWidth = 7 / z0; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.stroke(p); ctx.lineWidth = 3.5 / z0; ctx.setLineDash([10 / z0, 6 / z0]); ctx.lineDashOffset = -E.t * 28 / z0; ctx.strokeStyle = 'rgba(232,89,12,1)'; ctx.stroke(p); ctx.restore();
+      if (E.selTop && E.t - E.selTop.t < .5) E.drawArrow(ctx, E.selTop.x, E.selTop.y - 18 / z0, z0); } }
   };
   P.depthOf = function (x, y) { var q = rotPt(this.rot, x, y); return q[0] + q[1]; };
   P.fixedList = function () {
@@ -531,7 +552,7 @@
     if (e.t) { E.drawProp(ctx, e, t, gl); return; }
     x = e.sx - sp.ox; y = e.sy - sp.oy;
     ctx.drawImage(E.lodImg(sp), x, y, sp.w, sp.h);
-    var b = isB ? e.b : null, m = sp.meta;
+    var b = isB ? e.b : null, m = sp.meta; if (b && b.i === E.sel) E.selTop = { x: e.sx, y: e.sy - sp.oy, t: E.t };
     if (isB && e.site) { E.drawSiteExtras(ctx, e, sp, now); }
     else if (E.cam.z >= .3) {   // khói, cờ, vòi nước, vòng quay… chỉ vẽ khi đủ gần
       var k;

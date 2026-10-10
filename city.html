@@ -199,7 +199,7 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
-<script src="js/city-engine.js?v=11"></script>
+<script src="js/city-engine.js?v=15"></script>
 <script>
 (function () {
 'use strict';
@@ -857,7 +857,7 @@ document.addEventListener('click', function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-close]'))) { $(el.getAttribute('data-close')).classList.remove('on'); if (el.getAttribute('data-close') === 'infoS') { INFO = null; ENG.sel = -1; } return; }
   if ((el = t.closest('[data-tab]'))) { TABK = el.getAttribute('data-tab'); renderShop(); return; }
-  if ((el = t.closest('[data-d]')) && el.classList.contains('dbtn')) { var d = +el.getAttribute('data-d'); if (S.districts.indexOf(d) >= 0) ENG.focusDistrict(d); else openDist(d); return; }
+  if ((el = t.closest('[data-d]')) && el.classList.contains('dbtn')) { var d = +el.getAttribute('data-d'); closeSheets(); if (S.districts.indexOf(d) >= 0) ENG.focusDistrict(d); else openDist(d); return; }
   if ((el = t.closest('[data-go]'))) { $('distS').classList.remove('on'); ENG.focusDistrict(+el.getAttribute('data-go')); return; }
   if ((el = t.closest('[data-un]'))) { unlock(+el.getAttribute('data-un'), !!el.getAttribute('data-cp')); return; }
   if ((el = t.closest('[data-say]'))) { say(el.getAttribute('data-say')); return; }
