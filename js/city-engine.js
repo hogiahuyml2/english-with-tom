@@ -390,7 +390,10 @@
     ctx.fillStyle = '#6B7280'; chs.forEach(function (c) { ctx.fill(c.tarmac); });
     if (E.fx.shimmer || true) E.drawWaterFx(ctx, chs);
     // khu quy hoạch khi đang xây
-    if (E.mode === 'place' && E.ghost) { var al = E.allowedPath(); ctx.fillStyle = 'rgba(80,220,120,.34)'; ctx.fill(al.ok); ctx.fillStyle = 'rgba(255,200,60,.2)'; ctx.fill(al.near); }
+    if (E.mode === 'place' && E.ghost) {   // ô đất khả dụng PHÁT SÁNG nhịp nhàng để dễ thấy chỗ xây được
+      var al = E.allowedPath(), gp = .5 + .5 * Math.sin(E.t * 3.2); ctx.fillStyle = 'rgba(50,235,125,' + (.32 + .24 * gp).toFixed(2) + ')'; ctx.fill(al.ok); ctx.fillStyle = 'rgba(255,200,60,' + (.2 + .14 * gp).toFixed(2) + ')'; ctx.fill(al.near);
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(80,255,170,' + (.08 + .16 * gp).toFixed(2) + ')'; ctx.fill(al.ok);
+      if (!E.mobile) { ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(1.5, 3 / z); ctx.strokeStyle = 'rgba(200,255,225,' + (.45 + .4 * gp).toFixed(2) + ')'; ctx.stroke(al.ok); } ctx.restore(); }
     if (E.showZones) { Object.keys(C.ZONE_COLOR).forEach(function (zk) { ctx.fillStyle = C.ZONE_COLOR[zk] + '66'; ctx.fill(E.zonePath(zk)); }); }
     // đường
     ctx.fillStyle = '#5C6472'; chs.forEach(function (c) { ctx.fill(c.road); });

@@ -62,7 +62,7 @@ button { font-family: inherit; cursor: pointer; }
 .pst { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; } .pst div { background: #F3F6FF; border-radius: 12px; padding: 6px 8px; text-align: center; font-size: 11.5px; color: var(--muted); font-weight: 700; } .pst b { display: block; font-size: 15px; color: var(--ink); }
 .pleg { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; } .pleg span { display: flex; align-items: center; gap: 5px; background: #F3F6FF; border-radius: 12px; padding: 3px 9px 3px 4px; font-size: 12px; font-weight: 700; } .pleg span.lk { opacity: .55; } .pleg canvas { width: 34px; height: 34px; }
 .pf .chipf.big { font-size: 14px; padding: 7px 14px; } .rcard canvas { aspect-ratio: 4 / 3; }
-.advn { display: none; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; place-items: center; padding: 0 4px; font-weight: 800; margin-left: 2px; } #advB.has .advn { display: inline-grid; } #advB.has { animation: advp 2.2s ease-in-out infinite; } @keyframes advp { 50% { box-shadow: 0 0 0 6px rgba(255,200,40,.45); } }
+.advn { display: none; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; place-items: center; padding: 0 4px; font-weight: 800; margin-left: 2px; } #advB.has .advn, #achB.has .advn { display: inline-grid; } #achB.has { animation: advp 2.2s ease-in-out infinite; } #advB.has { animation: advp 2.2s ease-in-out infinite; } @keyframes advp { 50% { box-shadow: 0 0 0 6px rgba(255,200,40,.45); } }
 .adv-sum { background: #FFF8DA; border-radius: 14px; padding: 10px 12px; margin: 4px 0 10px; font-size: 13.5px; } .adv-d { border: 1px solid var(--line, #E3E8F2); border-radius: 16px; padding: 10px 12px; margin: 0 0 10px; background: #fff; } .adv-d h4 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .adv-d h4 .sp { flex: 1; } .adv-bar { height: 7px; border-radius: 4px; background: #E9EEF7; overflow: hidden; margin: 2px 0 8px; } .adv-bar i { display: block; height: 100%; background: linear-gradient(90deg, #43C46B, #8BE04E); }
 .adv-t { padding: 8px 0; border-top: 1px dashed #E3E8F2; font-size: 13.5px; } .adv-t b { font-size: 14px; } .adv-t .w { color: var(--muted); font-size: 12.5px; margin: 1px 0 5px; } .adv-p { display: inline-block; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 9px; margin-left: 4px; } .adv-p.p1 { background: #FFE0DD; color: #B3261E; } .adv-p.p2 { background: #FFF1CC; color: #8A5A00; } .adv-p.p3 { background: #E6F2FF; color: #1D5FA8; }
 .adv-c { display: flex; gap: 6px; flex-wrap: wrap; } .adv-c button { display: flex; align-items: center; gap: 5px; border: 1px solid #D5DDF0; background: #F6F9FF; border-radius: 12px; padding: 3px 9px 3px 4px; font-size: 12.5px; font-weight: 700; color: var(--ink); } .adv-c button canvas { width: 34px; height: 34px; } .adv-c button.lk { opacity: .6; } .adv-c button:active { transform: scale(.96); }
@@ -114,7 +114,7 @@ button { font-family: inherit; cursor: pointer; }
 .modal.peek { place-items: end center; background: rgba(20,30,60,.08); pointer-events: none; } .modal.peek .box { pointer-events: auto; margin-bottom: calc(var(--bot) + 66px); }
 .lk2 { position: absolute; top: 6px; left: 6px; background: #FFF1C9; color: #8A5A00; border-radius: 8px; padding: 2px 6px; font-size: 11px; font-weight: 800; }
 
-.visiting #advB, .visiting #bar, .visiting #coinB, .visiting #tkChip, .visiting #cpChip, .visiting #pbar, .visiting #rbar { display: none !important; }
+.visiting #photoB, .visiting #advB, .visiting #achB, .visiting #bar, .visiting #coinB, .visiting #tkChip, .visiting #cpChip, .visiting #pbar, .visiting #rbar { display: none !important; }
 #visBar { position: fixed; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0px) + 58px); z-index: 30; display: none; gap: 8px; align-items: center; background: rgba(255,255,255,.96); border-radius: 18px; padding: 8px 10px; box-shadow: 0 6px 22px rgba(10,30,80,.3); max-width: calc(100vw - 20px); flex-wrap: wrap; justify-content: center; } .visiting #visBar { display: flex; } #visBar b { font-size: 14px; } #visBar .btn { padding: 7px 10px; font-size: 13px; }
 .frow { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 2px solid var(--line); border-radius: 14px; background: #fff; margin-bottom: 7px; } .frow.me { border-color: #7B6BFF; background: #F3F1FF; } .frow .nm { flex: 1; min-width: 0; font-weight: 800; font-size: 14px; } .frow .nm small { display: block; font-weight: 600; color: var(--mut); font-size: 12px; } .frow .btn { padding: 6px 10px; font-size: 12.5px; } .frow .rk { width: 30px; text-align: center; font-weight: 800; font-size: 16px; }
 .pj { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .pj.done { border-color: #5BCB8B; background: #F2FCF6; } .pj .pb { height: 12px; border-radius: 8px; background: #E6EBF5; overflow: hidden; margin: 6px 0; } .pj .pb i { display: block; height: 100%; background: linear-gradient(90deg, #4CD08A, #2BB673); }
@@ -138,6 +138,7 @@ button { font-family: inherit; cursor: pointer; }
   <div class="chip" id="cpChip" title="Phiếu giảm giá mở quận" style="display:none"><span>🏷️</span><b id="cpN">0</b></div>
   <button class="chip btn" id="festChip" type="button" style="display:none" title="Lễ hội đang diễn ra"></button>
   <div class="sp"></div>
+  <button class="chip btn" id="achB" type="button" aria-label="Huy hiệu" title="Huy hiệu & thành tựu"><span>🏅</span><span class="advn" id="achN"></span></button>
   <button class="chip btn" id="advB" type="button" aria-label="Gợi ý xây dựng" title="Gợi ý xây dựng — thành phố còn thiếu gì?"><span>💡</span><span class="advn" id="advN"></span></button>
   <button class="chip btn" id="sndB" type="button" aria-label="Nhạc nền" title="Bật / tắt nhạc nền theo từng quận">🔇</button>
   <button class="chip btn" id="setB" type="button" aria-label="Cài đặt">⚙️</button>
@@ -152,6 +153,7 @@ button { font-family: inherit; cursor: pointer; }
   <button class="rbtn" id="zOut" type="button" aria-label="Thu nhỏ">－</button>
   <button class="rbtn" id="rL" type="button" aria-label="Xoay trái">⟲</button>
   <button class="rbtn" id="rR" type="button" aria-label="Xoay phải">⟳</button>
+  <button class="rbtn" id="photoB" type="button" aria-label="Chụp ảnh thành phố" title="Chụp ảnh thành phố (lưu về máy)">📸</button>
   <button class="rbtn" id="zAll" type="button" aria-label="Xem toàn thành phố" title="Xem toàn thành phố">🗺️</button>
 </div>
 
@@ -186,6 +188,7 @@ button { font-family: inherit; cursor: pointer; }
 <div id="visBar"><b id="visT"></b><button class="btn" id="visNote" type="button">💬 Để lại lời nhắn</button><button class="btn" id="visGift" type="button">🎁 Tặng quà</button><button class="btn pri" id="visBack" type="button">⬅️ Về thành phố mình</button></div>
 <div id="floatNotes"></div><div id="fxLayer"></div>
 <div class="sheet" id="friendS"><div class="hd"><h3>👥 Bạn bè & lớp</h3><button class="x" data-close="friendS" type="button">✕</button></div><div class="tabs" id="frTabs"><button class="tab on" data-ft="list" type="button">Bạn bè</button><button class="tab" data-ft="rank" type="button">🏆 Xếp hạng</button><button class="tab" data-ft="class" type="button">🎯 Dự án lớp</button><button class="tab" data-ft="notes" type="button">💬 Lời nhắn</button></div><div class="bd" id="friendB"></div></div>
+<div class="sheet" id="achS"><div class="hd"><h3>🏅 Huy hiệu & thành tựu</h3><button class="x" data-close="achS" type="button">✕</button></div><div class="bd" id="achB2"></div></div>
 <div class="sheet" id="advS"><div class="hd"><h3>💡 Gợi ý xây dựng</h3><button class="x" data-close="advS" type="button">✕</button></div><div class="bd" id="advB2"></div></div>
 <div class="sheet" id="dailyS"><div class="hd"><h3>📅 Nhiệm vụ hôm nay</h3><button class="x" data-close="dailyS" type="button">✕</button></div><div class="bd" id="dailyB"></div></div>
 <div class="sheet" id="learnS"><div class="hd"><h3>📚 Học từ & mở khoá công trình</h3><button class="x" data-close="learnS" type="button">✕</button></div><div class="bd" id="learnB"></div></div>
@@ -206,7 +209,7 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
-<script src="js/city-engine.js?v=15"></script>
+<script src="js/city-engine.js?v=16"></script>
 <script>
 (function () {
 'use strict';
@@ -487,6 +490,33 @@ function advTip(t, d) {
   var h = '<div class="adv-t"><div>' + t.ic + ' <b>Đang thiếu ' + esc(t.t) + '</b> <span class="sub">(' + (t.variety ? 'có ' + t.have + '/' + t.need + ' loại' : 'có ' + t.have + '/' + t.need) + ')</span><span class="adv-p p' + t.pri + '">' + (t.pri === 1 ? 'Cần gấp' : t.pri === 2 ? 'Nên có' : 'Cho đẹp') + '</span></div><div class="w">' + esc(t.why) + '</div><div class="adv-c">';
   t.cands.forEach(function (c) { var it = C.BY[c.k]; h += '<button type="button" class="' + (c.locked ? 'lk' : '') + '" data-adv="' + c.k + '" data-advd="' + d + '"><canvas data-th="' + c.k + '" width="68" height="68"></canvas>' + esc(it.vi) + (c.locked ? ' 🔒' : ' · ' + COIN + fmt(it.cost)) + '</button>'; });
   return h + '</div></div>';
+}
+var ACH = null;
+function achLoad() { if (VIS) return Promise.resolve(); return api('/api/city/ach').then(function (d) { ACH = d; var b = $('achB'); b.classList.toggle('has', d.ready > 0); $('achN').textContent = d.ready > 9 ? '9+' : d.ready || ''; b.title = d.ready ? '🏅 Có ' + d.ready + ' huy hiệu chờ nhận thưởng!' : 'Huy hiệu & thành tựu (' + d.claimed + '/' + d.total + ')'; return d; }).catch(function () { return null; }); }
+function openAch() {
+  if (VIS) return; closeSheets(); setMode('view'); $('achB2').innerHTML = '<p class="empty">Đang tải…</p>'; $('achS').classList.add('on');
+  achLoad().then(function (d) {
+    if (!d) { $('achB2').innerHTML = '<p class="empty">Chưa tải được, thử lại nhé.</p>'; return; }
+    // mỗi nhóm: hiện bậc tiếp theo chưa nhận (và các bậc đã đạt chờ nhận), gom phần còn lại
+    var groups = {}, order = []; d.list.forEach(function (a) { if (!groups[a.grp]) { groups[a.grp] = []; order.push(a.grp); } groups[a.grp].push(a); });
+    var h = '<div class="adv-sum">🏅 Đã nhận <b>' + d.claimed + '/' + d.total + '</b> huy hiệu' + (d.ready ? ' · <b style="color:#B3261E">' + d.ready + ' huy hiệu đang chờ nhận thưởng!</b>' : '') + '</div>';
+    var rows = []; order.forEach(function (g) { groups[g].forEach(function (a) { rows.push(a); }); });
+    rows.sort(function (a, b) { var ra = a.done && !a.claimed ? 0 : a.claimed ? 2 : 1, rb = b.done && !b.claimed ? 0 : b.claimed ? 2 : 1; return ra - rb || a.grp.localeCompare(b.grp) || a.tier - b.tier; });
+    var nextOnly = {}; rows = rows.filter(function (a) { if (a.claimed || (a.done && !a.claimed)) return true; if (nextOnly[a.grp]) return false; nextOnly[a.grp] = 1; return true; });
+    rows.forEach(function (a) {
+      var pct = Math.round(a.cur / a.goal * 100);
+      h += '<div class="adv-d" style="display:flex;gap:10px;align-items:center;' + (a.claimed ? 'opacity:.6' : '') + '"><div style="font-size:30px">' + (a.claimed ? '✅' : a.ic) + '</div><div style="flex:1;min-width:0"><b>' + esc(a.vi) + '</b> <span class="sub">· ' + fmt(a.goal) + ' ' + esc(a.unit) + '</span><div class="adv-bar" style="margin:4px 0 2px"><i style="width:' + pct + '%"></i></div><div class="sub">' + fmt(a.cur) + ' / ' + fmt(a.goal) + '</div></div>' + (a.claimed ? '<span class="sub">Đã nhận</span>' : a.done ? '<button class="btn good sm" type="button" data-ach="' + a.id + '">Nhận ' + COIN + ' ' + fmt(a.xu) + '</button>' : '<span class="sub">🎁 ' + COIN + ' ' + fmt(a.xu) + '</span>') + '</div>';
+    });
+    $('achB2').innerHTML = h;
+  });
+}
+function photoShot() {
+  try {
+    ENG.frame(performance.now()); var cv = ENG.cv, o = document.createElement('canvas'); o.width = cv.width; o.height = cv.height; var x = o.getContext('2d'); x.drawImage(cv, 0, 0);
+    var k = o.width / 900, bh = Math.round(64 * k); x.fillStyle = 'rgba(15,30,70,.78)'; x.fillRect(0, o.height - bh, o.width, bh); x.fillStyle = '#fff'; x.font = '800 ' + Math.round(24 * k) + 'px system-ui, sans-serif'; x.textBaseline = 'middle';
+    var nm = ($('cName').textContent || 'EWT City'); x.fillText('🏙️ ' + nm + ' · cấp ' + S.stats.level + ' · 👥 ' + fmt(S.stats.pop) + ' · ' + S.stats.happy + '% hạnh phúc', 18 * k, o.height - bh / 2); x.textAlign = 'right'; x.fillStyle = '#FFE066'; x.fillText('engwithtom.online', o.width - 18 * k, o.height - bh / 2);
+    o.toBlob(function (bl) { if (!bl) return toast('Chưa chụp được ảnh, thử lại nhé.'); var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'ewt-city-' + new Date().toISOString().slice(0, 10) + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); SND('coin'); toast('📸 Đã chụp ảnh thành phố — kiểm tra thư mục Tải xuống nhé!', 3200); }, 'image/png');
+  } catch (e) { toast('Chưa chụp được ảnh, thử lại nhé.'); }
 }
 function openAdvice() {
   if (VIS) return; closeSheets(); setMode('view'); var a = advRun(true); if (!a) return toast('Chưa tải được gợi ý, thử lại nhé.');
@@ -885,7 +915,7 @@ function openSet() {
 }
 
 /* ───── sự kiện giao diện ───── */
-function closeSheets(keepInfo) { ['shopS', 'distS', 'learnS', 'friendS', 'dailyS', 'advS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
+function closeSheets(keepInfo) { ['shopS', 'distS', 'learnS', 'friendS', 'dailyS', 'advS', 'achS'].forEach(function (id) { $(id).classList.remove('on'); }); if (!keepInfo) { $('infoS').classList.remove('on'); INFO = null; } }
 document.addEventListener('click', function (e) {
   var t = e.target, el;
   if ((el = t.closest('[data-close]'))) { $(el.getAttribute('data-close')).classList.remove('on'); if (el.getAttribute('data-close') === 'infoS') { INFO = null; ENG.sel = -1; } return; }
@@ -900,6 +930,7 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-pd]'))) { PD = +el.getAttribute('data-pd'); renderPlans(); return; }
   if ((el = t.closest('[data-rd]'))) { RD = +el.getAttribute('data-rd'); renderPlans(); return; }
   if ((el = t.closest('[data-rs]'))) { RS = el.getAttribute('data-rs'); renderPlans(); return; }
+  if ((el = t.closest('[data-ach]'))) { var aid = el.getAttribute('data-ach'); el.disabled = true; api('/api/city/ach/claim', { id: aid }).then(function (r) { S.coins = r.coins; hud(); SND('coin'); burst(['🏅', '🪙', '✨'], 14); toast('🏅 Nhận thưởng <b>' + fmt(r.xu) + '</b> xu!', 2600); openAch(); }).catch(function (e) { toast(e.message, 3000); el.disabled = false; }); return; }
   if ((el = t.closest('[data-adv]'))) { var ak = el.getAttribute('data-adv'), ad = +el.getAttribute('data-advd'); closeSheets(); ENG.focusDistrict(ad); setTimeout(function () { pick(C.BY[ak]); }, 350); return; }
   if ((el = t.closest('[data-advgo]'))) { closeSheets(); ENG.focusDistrict(+el.getAttribute('data-advgo')); return; }
   if ((el = t.closest('[data-advopen]'))) { openDist(+el.getAttribute('data-advopen')); return; }
@@ -939,7 +970,7 @@ $('pRot').onclick = function () { var g = ENG.ghost; if (!g) return; PFACE = ((g
 $('pRoad').onclick = function () { PFACE = 'auto'; ENG.refreshGhost(); updatePbar(); };
 $('pPal').onclick = function () { var g = ENG.ghost; if (!g) return; palBox({ it: C.BY[g.k], cur: PCOL, title: 'Chọn màu khi mua', note: 'Chọn màu lúc mua hoàn toàn miễn phí. Sau này đổi màu sẽ tốn một ít xu.', ok: 'Dùng màu này', cb: function (c) { PCOL = c; PSWKEY = ''; ENG.refreshGhost(); updatePbar(); } }); };
 $('pPaint').onchange = function () { ENG.paint = this.checked; if (this.checked) toast('🖌️ Kéo ngón tay trên bản đồ để đặt nhiều ô liền một lúc, thả tay để xác nhận.', 3800); };
-$('bDaily').onclick = openDaily; $('advB').onclick = openAdvice; $('festChip').onclick = openDaily;
+$('bDaily').onclick = openDaily; $('advB').onclick = openAdvice; $('achB').onclick = openAch; setTimeout(achLoad, 2500); setInterval(achLoad, 60000); $('photoB').onclick = photoShot; $('festChip').onclick = openDaily;
 $('bRoad').onclick = function () { if (ENG.mode === 'road') setMode('view'); else { closeSheets(); setMode('road'); } };
 $('setB').onclick = openSet; $('zIn').onclick = function () { ENG.zoomAt(1.35, ENG.cw / 2, ENG.ch / 2); }; $('zOut').onclick = function () { ENG.zoomAt(1 / 1.35, ENG.cw / 2, ENG.ch / 2); };
 $('rL').onclick = function () { ENG.rotate(-1); }; $('rR').onclick = function () { ENG.rotate(1); }; $('zAll').onclick = function () { ENG.fitAll(); };
