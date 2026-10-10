@@ -199,7 +199,7 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
-<script src="js/city-engine.js?v=10"></script>
+<script src="js/city-engine.js?v=11"></script>
 <script>
 (function () {
 'use strict';
@@ -725,12 +725,18 @@ function regionQuote() {
   }).catch(function (e) { toast(e.message, 4200); });
 }
 var L2 = {}; (window.EWTCityLearn ? EWTCityLearn.CH : []).forEach(function (c) { L2[c.id] = c.en; });
+function setPlanZone(q) {
+  var pl = PQ.plan, w = pl.w || 5, h = pl.h || 5, plans = [], bad = [];
+  q.items.forEach(function (i) { var it = C.BY[i.k]; if (!it) return; (i.ok ? plans : bad).push([i.x, i.y, it.w, it.h, 1]); });
+  ENG.zone = { blocks: [[q.bx, q.by, w, h]], plans: plans, bad: bad, roadc: q.roadCells || [], name: '📍 Xây ở đây' };
+  ENG.zoneAlive = function () { var m = $('learnM'); return m.classList.contains('on') && m.classList.contains('peek') && PQ && PQ.q; };
+}
 function planQuote() {
   api('/api/city/plan/quote', { plan: PQ.plan.id, alt: PQ.alt, d: PQ.d, unlock: !!PQ.unlock }).then(function (q) {
-    PQ.q = q; ENG.focusTile(q.bx + (PQ.plan.w || 5) / 2, q.by + (PQ.plan.h || 5) / 2, (PQ.plan.w >= 11 ? .8 : 1.1)); $('shopS').classList.remove('on');
+    PQ.q = q; setPlanZone(q); ENG.focusTile(q.bx + (PQ.plan.w || 5) / 2, q.by + (PQ.plan.h || 5) / 2, (PQ.plan.w >= 11 ? .8 : 1.1), Math.min(150, innerHeight * .22)); $('shopS').classList.remove('on');
     var ok = q.items.filter(function (i) { return i.ok; }), bad = q.items.filter(function (i) { return !i.ok; }), sum = {};
     ok.forEach(function (i) { sum[i.k] = (sum[i.k] || 0) + 1; });
-    var h = '<h3>' + PQ.plan.icon + ' ' + esc(PQ.plan.vi) + '</h3><p class="sub">Khối đất tại quận <b>' + esc(C.DISTRICTS[q.d].vi) + '</b> (tìm thấy ' + q.blocks + ' chỗ). Xây được <b>' + q.ok + '/' + q.total + '</b> món' + (q.roads ? ' + ' + q.roads + ' ô đường' : '') + '.</p><p class="sub" style="margin:2px 0">' + Object.keys(sum).map(function (k) { return sum[k] + '× ' + esc(C.BY[k].vi); }).join(' · ') + '</p>';
+    var h = '<h3>' + PQ.plan.icon + ' ' + esc(PQ.plan.vi) + '</h3><p class="sub">Khối đất tại quận <b>' + esc(C.DISTRICTS[q.d].vi) + '</b> (tìm thấy ' + q.blocks + ' chỗ). Xây được <b>' + q.ok + '/' + q.total + '</b> món' + (q.roads ? ' + ' + q.roads + ' ô đường' : '') + '.</p><p class="sub" style="margin:2px 0;color:#8A5A00">🧭 Trên bản đồ: <b>mũi tên cam</b> + <b>viền vàng</b> là khu đất; <b>ô xanh dương</b> = công trình sẽ xây, <b>ô cam</b> = đường mới, <b>ô đỏ</b> = món bị bỏ qua.</p><p class="sub" style="margin:2px 0">' + Object.keys(sum).map(function (k) { return sum[k] + '× ' + esc(C.BY[k].vi); }).join(' · ') + '</p>';
     if (bad.length) { var why = {}; bad.forEach(function (i) { why[i.why] = (why[i.why] || 0) + 1; }); h += '<p class="sub" style="color:#B3541E">⚠️ Bỏ qua ' + bad.length + ' món: ' + Object.keys(why).slice(0, 2).map(function (w) { return esc(w); }).join(' / ') + '</p>'; }
     if (q.x2) h += '<p class="sub" style="color:#8A5A00">🔓 ' + q.x2 + ' món chưa mở khoá được mua với giá gấp đôi.</p>';
     h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="pqAlt" type="button">🔄 Chỗ khác</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="pqGo" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';

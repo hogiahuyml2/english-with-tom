@@ -353,7 +353,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     const { pl, d, alt, unlock } = planBody(req); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');
     const st = load(req.user.id), s = stats(st), f = planFind(st, s, pl, req.user.role, d, alt, unlock);
     if (!f.pick) return bad(res, 'Chưa có khối đất trống phù hợp (khu ' + C.zoneList(pl.z === '*' ? 'prcsfeihwbmatg' : pl.z) + ') trong các quận đã mở, hoặc bạn chưa đủ cấp / chưa học chương cần thiết.');
-    const p = f.pick; res.json({ plan: pl.id, d: p.d, bx: p.bx, by: p.by, cost: p.cost, roads: p.roads.length, ok: p.ok, total: p.total, items: p.items, x2: p.items.filter((i) => i.x2).length, blocks: f.list.length, coins: coinsOf(req.user.id) });
+    const p = f.pick; res.json({ plan: pl.id, d: p.d, bx: p.bx, by: p.by, cost: p.cost, roads: p.roads.length, roadCells: p.roads.map((i) => [i % C.W, Math.floor(i / C.W)]), ok: p.ok, total: p.total, items: p.items, x2: p.items.filter((i) => i.x2).length, blocks: f.list.length, coins: coinsOf(req.user.id) });
   });
   app.post('/api/city/plan/apply', requireAuth, (req, res) => {
     const { pl, d, alt, unlock } = planBody(req), uid = req.user.id, bx = Number((req.body || {}).bx), by = Number((req.body || {}).by); if (!pl) return bad(res, 'Không tìm thấy bản quy hoạch.');

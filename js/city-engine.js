@@ -281,7 +281,13 @@
     ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(3, 4 / z); ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.stroke(bp); ctx.lineWidth = Math.max(2, 2.6 / z); ctx.setLineDash([12 / z, 8 / z]); ctx.lineDashOffset = -E.t * 30 / z; ctx.strokeStyle = 'rgba(235,150,0,1)'; ctx.stroke(bp); ctx.setLineDash([]);
     // nhãn tên ở giữa vùng
     var minx = 1e9, miny = 1e9, maxx = -1, maxy = -1; zn.blocks.forEach(function (b) { minx = Math.min(minx, b[0]); miny = Math.min(miny, b[1]); maxx = Math.max(maxx, b[0] + b[2]); maxy = Math.max(maxy, b[1] + b[3]); });
+    if (zn.bad) { var xp = new Path2D(); zn.bad.forEach(function (a2) { quadW(xp, r, [[a2[0], a2[1]], [a2[0] + a2[2], a2[1]], [a2[0] + a2[2], a2[1] + a2[3]], [a2[0], a2[1] + a2[3]]]); }); ctx.fillStyle = 'rgba(255,60,60,.55)'; ctx.fill(xp); }
+    if (zn.roadc) { var rp = new Path2D(); zn.roadc.forEach(function (c) { quadW(rp, r, [[c[0], c[1]], [c[0] + 1, c[1]], [c[0] + 1, c[1] + 1], [c[0], c[1] + 1]]); }); ctx.fillStyle = 'rgba(255,160,30,.6)'; ctx.fill(rp); }
     var s = scr(r, (minx + maxx) / 2, (miny + maxy) / 2), fs = Math.max(16, 22 / z); ctx.font = '800 ' + fs + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = fs / 5; ctx.strokeStyle = 'rgba(20,30,60,.9)'; ctx.strokeText(zn.name, s[0], s[1]); ctx.fillStyle = '#FFE066'; ctx.fillText(zn.name, s[0], s[1]);
+    // mũi tên nảy trỏ xuống vùng quy hoạch
+    var bob = Math.abs(Math.sin(E.t * 4)) * 26 / z, ay = s[1] - 70 / z - bob, aw = 30 / z;
+    ctx.beginPath(); ctx.moveTo(s[0], ay + 54 / z); ctx.lineTo(s[0] - aw, ay + 14 / z); ctx.lineTo(s[0] - aw * .45, ay + 14 / z); ctx.lineTo(s[0] - aw * .45, ay - 26 / z); ctx.lineTo(s[0] + aw * .45, ay - 26 / z); ctx.lineTo(s[0] + aw * .45, ay + 14 / z); ctx.lineTo(s[0] + aw, ay + 14 / z); ctx.closePath();
+    ctx.lineWidth = 3 / z; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#E8590C'; ctx.stroke(); ctx.fill();
     ctx.restore();
   };
   P.drawBox = function (ctx) { var r = this.mrect; if (!r) return; ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.fillStyle = 'rgba(60,200,130,.18)'; ctx.strokeStyle = 'rgba(30,170,100,.95)'; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.restore(); };
