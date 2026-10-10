@@ -43,7 +43,8 @@ button { font-family: inherit; cursor: pointer; }
 .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 8px 10px calc(10px + var(--bot)); display: flex; justify-content: center; gap: 10px; z-index: 25; pointer-events: none; }
 .bar > * { pointer-events: auto; }
 .tb { min-width: 74px; border: 0; border-radius: 20px; background: var(--glass); padding: 8px 12px 7px; font-weight: 800; font-size: 12px; color: var(--ink); box-shadow: 0 6px 18px rgba(20,40,90,.3); display: flex; flex-direction: column; align-items: center; gap: 1px; position: relative; }
-.tb .ic { font-size: 24px; line-height: 1.1; } .tb:active { transform: scale(.95); } .tb.pri { background: linear-gradient(180deg, #5B9BFF, #3A6BE6); color: #fff; } .tb.on { outline: 3px solid var(--gold); }
+.tb .ic { font-size: 24px; line-height: 1.1; } .tb.rdy { outline: 3px solid #43C46B; animation: colp 1.6s ease-in-out infinite; } @keyframes colp { 50% { box-shadow: 0 0 0 7px rgba(67,196,107,.28), 0 6px 18px rgba(20,40,90,.3); } }
+.tb:active { transform: scale(.95); } .tb.pri { background: linear-gradient(180deg, #5B9BFF, #3A6BE6); color: #fff; } .tb.on { outline: 3px solid var(--gold); }
 .dy-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; } .dy-top .st { background: #FFF3D6; border-radius: 14px; padding: 6px 12px; font-weight: 800; font-size: 13px; }
 .dy-fest { background: linear-gradient(90deg, #FFE7B8, #FFD1E0); border-radius: 14px; padding: 9px 12px; margin-bottom: 10px; font-size: 13px; line-height: 1.4; }
 .dy-m { display: flex; gap: 10px; align-items: center; background: var(--bg2, #F3F6FF); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .dy-m.done { background: #E3F7E8; } .dy-m.opt { border: 2px dashed #F2A33A; }
@@ -152,7 +153,7 @@ button { font-family: inherit; cursor: pointer; }
 <div class="bar" id="bar">
   <button class="tb pri" id="bShop" type="button"><span class="ic">🏗️</span>Xây dựng</button>
   <button class="tb" id="bRoad" type="button"><span class="ic">🛣️</span>Đường</button>
-  <button class="tb" id="bCol" type="button"><span class="ic">💰</span>Thu thuế<span class="dot" id="colDot"></span></button>
+  <button class="tb" id="bCol" type="button"><span class="ic">💰</span><span id="colLbl">Thu thuế</span><small id="colSum" style="font-size:10.5px;color:#0B7A3E;display:none"></small><span class="dot" id="colDot"></span></button>
   <button class="tb" id="bQuiz" type="button"><span class="ic">🧠</span>Kiếm xu</button>
   <button class="tb" id="bFriend" type="button"><span class="ic">👥</span>Bạn bè<span class="dot" id="frDot" style="display:none"></span></button>
   <button class="tb" id="bLearn" type="button"><span class="ic">📚</span>Học từ</button>
@@ -194,11 +195,11 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/garden-sound.js?v=8"></script>
 <script src="js/city-data.js?v=11"></script>
 <script src="js/city-learn.js?v=1"></script>
-<script src="js/city-plans.js?v=1"></script>
+<script src="js/city-plans.js?v=2"></script>
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=2"></script>
-<script src="js/city-engine.js?v=8"></script>
+<script src="js/city-engine.js?v=10"></script>
 <script>
 (function () {
 'use strict';
@@ -246,7 +247,7 @@ function hud() {
   $('hapN').textContent = s.happy + '%'; $('hapE').textContent = s.happy >= 85 ? '😄' : s.happy >= 65 ? '😊' : s.happy >= 50 ? '😐' : '☹️';
   var lo = C.LEVEL_AT[s.level - 1] || 0, hi = C.LEVEL_AT[s.level]; $('xpB').style.width = (hi ? clampN((s.score - lo) / (hi - lo) * 100, 3, 100) : 100) + '%';
   $('tkChip').style.display = S.tickets ? '' : 'none'; $('tkN').textContent = S.tickets; $('cpChip').style.display = S.coupons ? '' : 'none'; $('cpN').textContent = S.coupons;
-  var sum = 0, n = 0; S.bs.forEach(function (b) { if (b.pend >= 1) { sum += b.pend; n++; } }); $('colDot').style.display = n ? 'grid' : 'none'; $('colDot').textContent = n; $('bCol').title = n ? 'Có ' + fmt(sum) + ' xu thuế đang chờ' : 'Chưa có thuế';
+  var sum = 0, n = 0; S.bs.forEach(function (b) { if (b.pend >= 1) { sum += b.pend; n++; } }); $('colDot').style.display = n ? 'grid' : 'none'; $('colSum').style.display = n ? '' : 'none'; $('colSum').textContent = n ? '+' + fmt(sum) : ''; $('colLbl').textContent = n ? 'Thu tất cả' : 'Thu thuế'; $('bCol').classList.toggle('rdy', n > 0); $('colDot').textContent = n; $('bCol').title = n ? 'Có ' + fmt(sum) + ' xu thuế đang chờ' : 'Chưa có thuế';
   $('dbar').innerHTML = C.DISTRICTS.map(function (d) { var open = S.districts.indexOf(d.id) >= 0; return '<button class="dbtn' + (open ? '' : ' lock') + '" data-d="' + d.id + '" type="button" title="' + esc(d.vi) + '"><span>' + d.icon + (open ? '' : '🔒') + '</span><span class="dn">' + esc(d.en.split(' ')[0]) + '</span></button>'; }).join('');
 }
 function clampN(v, a, b) { return Math.max(a, Math.min(b, v)); }
@@ -652,7 +653,7 @@ function renderPlans() {
     list.forEach(function (pl) {
       var inf = info[pl.id], gt = planGate(pl), d = document.createElement('div'); d.className = 'pcard'; d.setAttribute('data-pl', pl.id);
       var tags = '<span>' + ({ S: 'Nhỏ', M: 'Vừa', L: 'Lớn' }[pl.tier] || '') + ' · ' + pl.dim + '</span><span>' + (pl.z === '*' ? '🌐 Mọi khu' : C.PLAN_ZICON[pl.z] + ' ' + esc(C.ZONE_NAME[pl.z])) + '</span>' + (!gt.hasLand ? '<span class="warn">🔒 Cần mở khu đất</span>' : gt.lock ? '<span class="warn">🔒 Cấp ' + gt.maxL + ' · mua ×2 được</span>' : '<span class="ok">✅ Xây được ngay</span>');
-      d.innerHTML = '<canvas width="320" height="240"></canvas><div class="nm">' + esc(pl.vi) + '</div><div class="en2">' + esc(pl.en) + '</div><div class="tg">' + tags + '</div><div class="pc">' + inf.count + ' món · ' + COIN + ' ' + fmt(inf.cost) + '</div>';
+      d.innerHTML = '<canvas width="320" height="240"></canvas><div class="nm">' + esc(pl.vi) + '</div><div class="en2">' + esc(pl.en) + '</div><div class="tg">' + tags + '</div><div class="pc">' + inf.count + ' món · ' + COIN + ' ' + fmt(inf.cost) + (inf.fee ? ' <small>(gồm phụ phí thị trấn +' + Math.round(inf.feePct * 100) + '%)</small>' : '') + '</div>';
       g.appendChild(d); PLQ.push({ pl: pl, cv: d.querySelector('canvas') });
     });
   } else {
@@ -661,7 +662,7 @@ function renderPlans() {
     if (!rl.length) g.insertAdjacentHTML('beforeend', '<div class="empty" style="grid-column:1/-1">Chưa có quy hoạch phù hợp bộ lọc này.</div>');
     rl.forEach(function (rg) {
       var inf = C.regionInfo(rg), dd = C.DISTRICTS[rg.d], open = S.districts.indexOf(rg.d) >= 0, d = document.createElement('div'); d.className = 'pcard rcard'; d.setAttribute('data-rg', rg.id);
-      d.innerHTML = '<canvas width="400" height="300"></canvas><div class="nm">' + rg.icon + ' ' + esc(rg.vi) + '</div><div class="en2">' + esc(rg.en) + '</div><div class="tg"><span>' + esc(dShort(dd)) + '</span><span>' + inf.blocks + ' khối</span>' + (!open ? '<span class="warn">🔒 Cần mở quận</span>' : inf.lvl > S.stats.level ? '<span class="warn">🔒 Cấp ' + inf.lvl + ' · mua ×2 được</span>' : '<span class="ok">✅ Xây được ngay</span>') + '</div><div class="pc">' + inf.count + ' món · ' + COIN + ' ' + fmt(inf.cost) + '</div>';
+      d.innerHTML = '<canvas width="400" height="300"></canvas><div class="nm">' + rg.icon + ' ' + esc(rg.vi) + '</div><div class="en2">' + esc(rg.en) + '</div><div class="tg"><span>' + esc(dShort(dd)) + '</span><span>' + inf.blocks + ' khối</span>' + (!open ? '<span class="warn">🔓 Gồm phí mở quận ' + COIN + fmt(dd.cost) + '</span>' : inf.lvl > S.stats.level ? '<span class="warn">🔒 Cấp ' + inf.lvl + ' · mua ×2 được</span>' : '<span class="ok">✅ Xây được ngay</span>') + '</div><div class="pc">' + inf.count + ' món · ' + COIN + ' ' + fmt(inf.cost) + '</div>';
       g.appendChild(d); PLQ.push({ rg: rg, cv: d.querySelector('canvas') });
     });
   }
@@ -683,6 +684,7 @@ function openPlan(id) {
   PMODE_OPEN = 'block'; PQ = { plan: pl, alt: 0, d: -1, c: '', unlock: false };
   var h = '<h3>' + pl.icon + ' ' + esc(pl.vi) + ' <span style="font-weight:700;color:var(--muted);font-size:14px">· ' + esc(pl.en) + '</span></h3><canvas id="plBig" width="720" height="480"></canvas>';
   h += '<p class="sub" style="margin:8px 0 2px">' + esc(pl.desc) + '</p><p class="sub" style="margin:0 0 4px"><b>' + ({ S: 'Mẫu nhỏ', M: 'Mẫu vừa', L: 'Mẫu lớn' }[pl.tier]) + ' · ' + pl.dim + ' ô</b> · ' + (pl.z === '*' ? 'hợp với mọi khu' : 'dành cho khu <b>' + esc(C.ZONE_NAME[pl.z]) + '</b>') + (pl.arch && C.PLAN_ARCH[pl.arch] ? ' · bố cục: <b>' + esc(C.PLAN_ARCH[pl.arch].vi) + '</b>' : '') + '</p>';
+  if (inf.fee) h += '<p class="sub" style="margin:0 0 4px;color:#8A5A00">🏙️ Quy hoạch cả thị trấn có <b>phụ phí +' + Math.round(inf.feePct * 100) + '%</b> (' + COIN + ' ' + fmt(inf.fee) + ') đã tính trong giá.</p>'; if (!open) h += '<p class="sub" style="margin:0 0 4px;color:#8A5A00">🔓 Quận này chưa mở: khi áp dụng, hệ thống mở quận luôn (phí <b>' + COIN + ' ' + fmt(dd.cost) + '</b>, cần thành phố cấp ' + dd.lvl + ') rồi xây.</p>';
   h += statsHtml(inf) + '<div class="pal-h">Các công trình trong mẫu</div>' + legendHtml(inf.counts) + unlockHtml(inf.counts) + palRowHtml(first);
   h += '<div class="row"><button class="btn" data-close="planM" type="button">Đóng</button><button class="btn pri" id="plGo" type="button"' + (gt.hasLand ? '' : ' disabled') + '>📍 Tìm chỗ & xem trước</button></div>';
   $('planB').innerHTML = h; $('planM').classList.add('on');
@@ -697,17 +699,26 @@ function openRegion(id) {
   var h = '<h3>' + rg.icon + ' ' + esc(rg.vi) + '</h3><div class="sub" style="margin:-4px 0 6px">' + esc(rg.en) + '</div><canvas id="plBig" width="800" height="560" style="aspect-ratio:10/7"></canvas>';
   h += '<p class="sub" style="margin:8px 0 2px">' + esc(rg.desc) + '</p><p class="sub" style="margin:0 0 4px"><b>' + esc(dShort(dd)) + '</b> · <b>' + inf.blocks + ' khối đất</b> · ' + (rg.scope === 'all' ? 'phủ cả khu' : rg.scope === 'half' ? 'phủ nửa khu' : 'phủ một góc phố') + '. Mỗi khối được bố trí theo đúng loại khu của nó. Hình minh hoạ là một cách bố trí mẫu — vị trí thật sẽ do hệ thống tìm trong quận của bạn.</p>';
   h += statsHtml(inf) + '<div class="pal-h">Các công trình chính trong quy hoạch</div>' + legendHtml(inf.counts) + unlockHtml(inf.counts) + palRowHtml(first);
-  h += '<div class="row"><button class="btn" data-close="planM" type="button">Đóng</button><button class="btn pri" id="rgGo" type="button"' + (open ? '' : ' disabled') + '>' + (open ? '📍 Tìm vị trí & xem trước' : '🔒 Cần mở quận này trước') + '</button></div>';
+  h += '<div class="row"><button class="btn" data-close="planM" type="button">Đóng</button><button class="btn pri" id="rgGo" type="button"' + (dd.soon ? ' disabled' : '') + '>' + (open ? '📍 Tìm vị trí & xem trước' : '🔓 Mở quận & xem trước') + '</button></div>';
   $('planB').innerHTML = h; $('planM').classList.add('on');
   if ($('plUnl')) $('plUnl').onchange = function () { PR.unlock = this.checked; };
   setTimeout(function () { regionPreview(rg, rc, $('plBig'), ''); fillLegendThumbs(); }, 30);
 }
+function setRegionZone(rg, rc) {
+  var pls = C.regionPlacements(rg, rc), gr = C.blockGrid[rg.d], blocks = [], plans = [], roads = [], seen = {};
+  for (var j = rc.j0; j < rc.j0 + rc.cj; j++) for (var i = rc.i0; i < rc.i0 + rc.ci; i++) { var b = gr.g[j] && gr.g[j][i]; if (b) blocks.push([b.x, b.y, b.w, b.h]); }
+  pls.forEach(function (p) { plans.push([p.bx, p.by, p.plan.w, p.plan.h]); p.plan.items.forEach(function (e) { var it = C.BY[e[0]]; if (it) plans.push([p.bx + e[1], p.by + e[2], it.w, it.h, 1]); }); });
+  ENG.zone = { blocks: blocks, plans: plans, name: rg.icon + ' ' + rg.vi };
+  ENG.zoneAlive = function () { var m = $('learnM'); return m.classList.contains('on') && m.classList.contains('peek') && PR && PR.q; };
+}
 function regionQuote() {
   api('/api/city/region/quote', { region: PR.rg.id, alt: PR.alt, unlock: !!PR.unlock }).then(function (q) {
-    PR.q = q; PR.rc = q.rc; $('shopS').classList.remove('on'); ENG.focusTile(q.cx, q.cy, Math.max(.2, Math.min(.9, 520 / ((q.w + q.h) * 40))));
+    PR.q = q; PR.rc = q.rc; setRegionZone(PR.rg, q.rc); $('shopS').classList.remove('on'); ENG.focusTile(q.cx, q.cy, Math.max(.16, Math.min(.9, Math.min(460, innerWidth - 40) / ((q.w + q.h) * 40))), Math.min(150, innerHeight * .22));
     var h = '<h3>' + PR.rg.icon + ' ' + esc(PR.rg.vi) + '</h3><p class="sub">Tìm thấy <b>' + q.spots + '</b> vị trí trong quận <b>' + esc(C.DISTRICTS[PR.rg.d].vi) + '</b>. Xây được <b>' + q.ok + '/' + q.total + '</b> món trên ' + q.blocks + ' khối đất.</p>';
     if (q.ok < q.total) h += '<p class="sub" style="color:#B3541E">⚠️ ' + (q.total - q.ok) + ' món bị bỏ qua (chỗ đã có công trình, hoặc chưa mở khoá).</p>';
     if (q.x2) h += '<p class="sub" style="color:#8A5A00">🔓 ' + q.x2 + ' món chưa mở khoá được mua với giá gấp đôi.</p>';
+    h += '<p class="sub" style="margin:2px 0">🗺️ Vùng được <b>khoanh vàng</b> trên bản đồ: ' + q.blocks + ' khối đất (ô xanh dương = nơi đặt công trình). Bấm “Vị trí khác” để chuyển sang vùng khác.</p>';
+    if (q.unlockCost || q.fee) h += '<p class="sub" style="margin:2px 0">Xây: ' + COIN + ' ' + fmt(q.build) + (q.fee ? ' + phụ phí thị trấn ' + COIN + ' ' + fmt(q.fee) + ' (' + Math.round(q.feePct * 100) + '%)' : '') + (q.unlockCost ? ' + mở quận ' + COIN + ' ' + fmt(q.unlockCost) : '') + '</p>';
     h += '<p style="text-align:center;font-size:17px;margin:8px 0">Chi phí: <b>' + COIN + ' ' + fmt(q.cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></p><div class="row"><button class="btn" id="rgAlt" type="button"' + (q.spots > 1 ? '' : ' disabled') + '>🔄 Vị trí khác</button><button class="btn" data-close="learnM" type="button">Huỷ</button><button class="btn pri" id="rgYes" type="button"' + (S.coins < q.cost ? ' disabled' : '') + '>Áp dụng & trả xu</button></div>';
     lmodal(h.replace(/🪙/g, COIN)); $('learnM').classList.add('peek'); $('rgAlt').onclick = function () { PR.alt++; regionQuote(); };
     $('rgYes').onclick = function () { $('rgYes').disabled = true; api('/api/city/region/apply', { region: PR.rg.id, i0: q.rc.i0, j0: q.rc.j0, c: PR.c, unlock: !!PR.unlock }).then(function (r) { setState(r); $('learnM').classList.remove('on'); SND('levelup'); toast('🏙️ Đã xây ' + r.built + ' công trình theo “' + esc(PR.rg.vi) + '”!', 3600); }).catch(function (e) { toast(e.message, 3600); $('rgYes').disabled = false; }); };

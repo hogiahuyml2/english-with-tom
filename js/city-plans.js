@@ -484,13 +484,14 @@
     }
     return out;
   }
+  C.REGION_FEE = { all: 0.25, half: 0, quarter: 0 }; // phụ phí quy hoạch cả khu / thị trấn (% trên tiền xây)
   C.REGIONS = REGIONS; C.REGION_BY = {}; REGIONS.forEach(function (r) { C.REGION_BY[r.id] = r; });
   C.regionRects = regionRects; C.regionPlacements = regionPlacements; C.REGION_SCOPES = SCOPES; C.blockGrid = GRID;
   // thống kê chung (không cần đất thật): số khối, số món, giá
   C.regionInfo = function (rg, rc) {
     var pl = regionPlacements(rg, rc || regionRects(rg)[0]), o = { blocks: pl.length, count: 0, price: 0, roads: 0, lvl: 1, counts: {}, inc: 0, pop: 0, hp: 0 };
     pl.forEach(function (x) { var inf = planInfo(x.plan); o.count += inf.count; o.price += inf.price; o.roads += inf.roads; o.lvl = Math.max(o.lvl, inf.lvl); o.inc += inf.inc; o.pop += inf.pop; o.hp += inf.hp; Object.keys(inf.counts).forEach(function (k) { o.counts[k] = (o.counts[k] || 0) + inf.counts[k]; }); });
-    o.cost = o.price + o.roads * C.RULES.roadCost; return o;
+    o.cost = o.price + o.roads * C.RULES.roadCost; o.feePct = C.REGION_FEE[rg.scope] || 0; o.fee = Math.round(o.cost * o.feePct); o.cost += o.fee; return o;
   };
 
 })(typeof window !== 'undefined' ? window : this);

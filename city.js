@@ -390,28 +390,36 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
       cost += ev.cost; ok += ev.ok; total += ev.total; x2 += ev.items.filter((i) => i.x2).length; built += applyEv(st, ev, pal);
       minx = Math.min(minx, p.bx); miny = Math.min(miny, p.by); maxx = Math.max(maxx, p.bx + p.plan.w); maxy = Math.max(maxy, p.by + p.plan.h);
     }
-    return { st, cost, ok, total, x2, built, blocks: pls.length, cx: (minx + maxx) / 2, cy: (miny + maxy) / 2, w: maxx - minx, h: maxy - miny };
+    const fee = Math.round(cost * (C.REGION_FEE[rg.scope] || 0)); return { st, build: cost, fee, cost: cost + fee, ok, total, x2, built, blocks: pls.length, cx: (minx + maxx) / 2, cy: (miny + maxy) / 2, w: maxx - minx, h: maxy - miny };
   }
   const regionBody = (req) => { const b = req.body || {}; return { rg: C.REGION_BY[String(b.region)], alt: Math.floor(Number(b.alt) || 0), unlock: !!b.unlock, i0: Number(b.i0), j0: Number(b.j0) }; };
+  // quận chưa mở: cho quy hoạch luôn, gộp phí mở quận vào giá (cần đủ cấp). Trả { st (đã mở quận), unlock } hoặc { err }
+  function regionPrep(st, rg) {
+    if (st.districts.indexOf(rg.d) >= 0) return { st, unlock: 0 };
+    const dd = C.DISTRICTS[rg.d], s = stats(st);
+    if (dd.soon) return { err: 'Quận “' + dd.vi + '” sắp ra mắt — hãy chờ nhé!' };
+    if (s.level < dd.lvl) return { err: 'Cần thành phố cấp ' + dd.lvl + ' để mở quận “' + dd.vi + '” (bạn đang cấp ' + s.level + ').' };
+    st.districts.push(rg.d); return { st, unlock: dd.cost };
+  }
   app.post('/api/city/region/quote', requireAuth, (req, res) => {
     const { rg, alt, unlock } = regionBody(req); if (!rg) return bad(res, 'Không tìm thấy quy hoạch khu vực.');
-    const st = load(req.user.id); if (st.districts.indexOf(rg.d) < 0) return bad(res, 'Hãy mở quận “' + C.DISTRICTS[rg.d].vi + '” trước nhé.');
+    const pr = regionPrep(JSON.parse(JSON.stringify(load(req.user.id))), rg); if (pr.err) return bad(res, pr.err); const st = pr.st;
     const rects = C.regionRects(rg), list = rects.map((rc) => Object.assign({ rc }, regionEval(st, req.user.id, rg, rc, req.user.role, unlock, null))).filter((r) => r.ok > 0);
     if (!list.length) return bad(res, 'Chưa có chỗ phù hợp (khối đất đã kín, hoặc bạn chưa đủ cấp / chưa học chương cần thiết).');
     list.sort((a, b) => b.ok - a.ok || a.cost - b.cost); const r = list[((alt % list.length) + list.length) % list.length];
-    res.json({ region: rg.id, rc: r.rc, blocks: r.blocks, ok: r.ok, total: r.total, cost: r.cost, x2: r.x2, cx: r.cx, cy: r.cy, w: r.w, h: r.h, spots: list.length, coins: coinsOf(req.user.id) });
+    res.json({ region: rg.id, rc: r.rc, blocks: r.blocks, ok: r.ok, total: r.total, build: r.build, fee: r.fee, feePct: C.REGION_FEE[rg.scope] || 0, unlockCost: pr.unlock, cost: r.cost + pr.unlock, x2: r.x2, cx: r.cx, cy: r.cy, w: r.w, h: r.h, spots: list.length, coins: coinsOf(req.user.id) });
   });
   app.post('/api/city/region/apply', requireAuth, (req, res) => {
     const { rg, unlock, i0, j0 } = regionBody(req), uid = req.user.id; if (!rg) return bad(res, 'Không tìm thấy quy hoạch khu vực.');
     const rc = C.regionRects(rg).find((r) => r.i0 === i0 && r.j0 === j0); if (!rc) return bad(res, 'Vị trí quy hoạch không hợp lệ.');
     const out = tx(() => {
-      const st = load(uid); if (st.districts.indexOf(rg.d) < 0) return { err: 'Hãy mở quận này trước nhé.' };
+      const pr = regionPrep(load(uid), rg); if (pr.err) return { err: pr.err }; const st = pr.st;
       const r = regionEval(st, uid, rg, rc, req.user.role, unlock, { c: (req.body || {}).c }); if (!r.ok) return { err: 'Không còn chỗ phù hợp cho quy hoạch này.' };
-      if (r.cost > 0 && !spend(uid, r.cost)) return { err: 'Chưa đủ xu (cần ' + r.cost + ' 🪙).' };
-      save(uid, st); return { st, r };
+      const total = r.cost + pr.unlock; if (total > 0 && !spend(uid, total)) return { err: 'Chưa đủ xu (cần ' + total + ' 🪙).' };
+      save(uid, st); return { st, r, total };
     });
     if (out.err) return bad(res, out.err);
-    reply(res, out.st, uid, { built: out.r.built, cost: out.r.cost, regionBuilt: true });
+    reply(res, out.st, uid, { built: out.r.built, cost: out.total, regionBuilt: true });
   });
 
   /* ───── học từ theo chương (song ngữ) ───── */

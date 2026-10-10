@@ -181,7 +181,7 @@
   P.fitAll = function (instant) { var E = this, c = scr(E.rot, W / 2, H / 2), z = Math.min(E.cw / ((W + H) * HW * 1.05), E.ch / ((W + H) * HH * 1.05)); E.goto(c[0], c[1], Math.max(.09, z), instant); };
   P.goto = function (x, y, z, instant) { var E = this; if (instant) { E.cam.x = x; E.cam.y = y; E.cam.z = z == null ? E.cam.z : z; E.anim = null; return; } E.anim = { x0: E.cam.x, y0: E.cam.y, z0: E.cam.z, x1: x, y1: y, z1: z == null ? E.cam.z : z, t: 0, d: .55 }; };
   P.focusDistrict = function (d) { var E = this, dd = C.DISTRICTS[d]; if (!dd) return; var an = distAnchor(dd), s = scr(E.rot, an[0], an[1]), w = Math.max(an[2][2], 24), h = Math.max(an[2][3], 24), z = Math.min(E.cw / ((w + h) * HW * 1.1), E.ch / ((w + h) * HH * 1.15)); E.goto(s[0], s[1], clamp(z, .3, 1.2)); };
-  P.focusTile = function (x, y, z) { var s = scr(this.rot, x + .5, y + .5); this.goto(s[0], s[1], z); };
+  P.focusTile = function (x, y, z, dy) { var s = scr(this.rot, x + .5, y + .5); this.goto(s[0], s[1] + (dy || 0) / (z || this.cam.z), z); };
   P.rotate = function (dir) {
     var E = this, c = E.baseToWorld(E.cam.x, E.cam.y); E.rot = (E.rot + (dir > 0 ? 1 : 3)) % 4; var s = scr(E.rot, c[0], c[1]); E.cam.x = s[0]; E.cam.y = s[1]; E.anim = null; E.allowed = null; E.lockCache = null;
     if (E.ghost) { E.refreshGhost(); } if (E.o.onRotate) E.o.onRotate(E.rot);
@@ -269,6 +269,20 @@
     var E = this, cells = E.paintCells; if (!cells || !cells.length) return; var i, okp = new Path2D(), badp = new Path2D();
     for (i = 0; i < cells.length; i++) quadW(cells[i].ok ? okp : badp, E.rot, [[cells[i].x, cells[i].y], [cells[i].x + 1, cells[i].y], [cells[i].x + 1, cells[i].y + 1], [cells[i].x, cells[i].y + 1]]);
     ctx.fillStyle = 'rgba(70,220,120,.6)'; ctx.fill(okp); ctx.fillStyle = 'rgba(255,70,70,.5)'; ctx.fill(badp);
+  };
+  // khoanh vùng khu vực quy hoạch đang xem trước: viền vàng quanh các khối đất, ô xanh dương là nơi sẽ đặt công trình
+  P.drawRegion = function (ctx) {
+    var E = this, zn = E.zone; if (!zn) return; if (E.zoneAlive && !E.zoneAlive()) { E.zone = null; return; }
+    var pulse = .5 + .5 * Math.sin(E.t * 3.2), z = E.cam.z, i, a, fp = new Path2D(), bp = new Path2D(), r = E.rot;
+    for (i = 0; i < zn.blocks.length; i++) { a = zn.blocks[i]; quadW(bp, r, [[a[0], a[1]], [a[0] + a[2], a[1]], [a[0] + a[2], a[1] + a[3]], [a[0], a[1] + a[3]]]); }
+    ctx.save(); ctx.fillStyle = 'rgba(255,205,40,' + (.16 + .1 * pulse).toFixed(2) + ')'; ctx.fill(bp);
+    for (i = 0; i < zn.plans.length; i++) { a = zn.plans[i]; if (a[4]) quadW(fp, r, [[a[0], a[1]], [a[0] + a[2], a[1]], [a[0] + a[2], a[1] + a[3]], [a[0], a[1] + a[3]]]); }
+    ctx.fillStyle = 'rgba(40,130,255,.5)'; ctx.fill(fp);
+    ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(3, 4 / z); ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.stroke(bp); ctx.lineWidth = Math.max(2, 2.6 / z); ctx.setLineDash([12 / z, 8 / z]); ctx.lineDashOffset = -E.t * 30 / z; ctx.strokeStyle = 'rgba(235,150,0,1)'; ctx.stroke(bp); ctx.setLineDash([]);
+    // nhãn tên ở giữa vùng
+    var minx = 1e9, miny = 1e9, maxx = -1, maxy = -1; zn.blocks.forEach(function (b) { minx = Math.min(minx, b[0]); miny = Math.min(miny, b[1]); maxx = Math.max(maxx, b[0] + b[2]); maxy = Math.max(maxy, b[1] + b[3]); });
+    var s = scr(r, (minx + maxx) / 2, (miny + maxy) / 2), fs = Math.max(16, 22 / z); ctx.font = '800 ' + fs + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = fs / 5; ctx.strokeStyle = 'rgba(20,30,60,.9)'; ctx.strokeText(zn.name, s[0], s[1]); ctx.fillStyle = '#FFE066'; ctx.fillText(zn.name, s[0], s[1]);
+    ctx.restore();
   };
   P.drawBox = function (ctx) { var r = this.mrect; if (!r) return; ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.fillStyle = 'rgba(60,200,130,.18)'; ctx.strokeStyle = 'rgba(30,170,100,.95)'; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.restore(); };
   P.pickBubble = function (px, py) {
@@ -360,7 +374,7 @@
     // quận khoá
     E.drawLocked(ctx);
     // vật thể theo chiều sâu
-    E.drawObjects(ctx, now, night); E.drawPaint(ctx);
+    E.drawObjects(ctx, now, night); E.drawPaint(ctx); E.drawRegion(ctx);
     E.drawLockIcons(ctx);
     E.drawCelebrate(ctx);
     // bầu trời
