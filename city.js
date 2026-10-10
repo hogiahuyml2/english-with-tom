@@ -362,18 +362,56 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
       if (Number.isInteger(bx) && Number.isInteger(by) && bx >= 1 && by >= 1 && bx + (pl.w || 5) <= C.W && by + (pl.h || 5) <= C.H) { ev = planEval(st, s, pl, bx, by, req.user.role, unlock); if (ev) ev.d = C.DIST[by * C.W + bx]; } else { const f = planFind(st, s, pl, req.user.role, d, alt, unlock); ev = f.pick; }
       if (!ev || !ev.ok) return { err: 'Không còn chỗ phù hợp cho bản quy hoạch này.' };
       if (ev.cost > 0 && !spend(uid, ev.cost)) return { err: 'Chưa đủ xu (cần ' + ev.cost + ' 🪙).' };
-      ev.roads.forEach((i) => { st.roads[i] = 1; });
-      const t = Date.now(); let n = 0, pal = palOk((req.body || {}).c);
-      for (const e of ev.items) {
-        if (!e.ok) continue; const it = C.BY[e.k];
-        if (st.free[e.k] > 0) { st.free[e.k]--; if (!st.free[e.k]) delete st.free[e.k]; } else if (st.inv[e.k] > 0) { st.inv[e.k]--; if (!st.inv[e.k]) delete st.inv[e.k]; }
-        const nb = { i: st.nid++, k: it.k, x: e.x, y: e.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }, fd = C.facingToRoad(st, it, e.x, e.y); if (fd >= 0) nb.f = fd; if (pal) nb.c = pal;   // mặt trước quay ra đường; màu theo mẫu chọn
-        st.bs.push(nb); n++;
-      }
+      const n = applyEv(st, ev, palOk((req.body || {}).c));
       save(uid, st); return { st, n, cost: ev.cost, bx: ev.bx, by: ev.by };
     });
     if (out.err) return bad(res, out.err);
     reply(res, out.st, uid, { built: out.n, cost: out.cost, bx: out.bx, by: out.by });
+  });
+
+  // dựng thật một kết quả planEval lên trạng thái (đã trừ xu ở nơi gọi)
+  function applyEv(st, ev, pal) {
+    ev.roads.forEach((i) => { st.roads[i] = 1; }); const t = Date.now(); let n = 0;
+    for (const e of ev.items) {
+      if (!e.ok) continue; const it = C.BY[e.k];
+      if (st.free[e.k] > 0) { st.free[e.k]--; if (!st.free[e.k]) delete st.free[e.k]; } else if (st.inv[e.k] > 0) { st.inv[e.k]--; if (!st.inv[e.k]) delete st.inv[e.k]; }
+      const nb = { i: st.nid++, k: it.k, x: e.x, y: e.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }, fd = C.facingToRoad(st, it, e.x, e.y); if (fd >= 0) nb.f = fd; if (pal) nb.c = pal;
+      st.bs.push(nb); n++;
+    }
+    return n;
+  }
+  /* ───── quy hoạch KHU VỰC / THỊ TRẤN: phủ nhiều khối đất của một quận cùng lúc ───── */
+  // đánh giá lần lượt từng khối trên một BẢN SAO (khối sau thấy kết quả khối trước) → báo giá chính xác
+  function regionEval(st0, uid, rg, rc, role, unlock, commit) {
+    const st = commit ? st0 : JSON.parse(JSON.stringify(st0)), pls = C.regionPlacements(rg, rc); let cost = 0, ok = 0, total = 0, x2 = 0, built = 0, minx = 1e9, miny = 1e9, maxx = -1, maxy = -1;
+    const pal = commit ? palOk(commit.c) : '';
+    for (const p of pls) {
+      const s = stats(st), ev = planEval(st, s, p.plan, p.bx, p.by, role, unlock); if (!ev || !ev.ok) continue;
+      cost += ev.cost; ok += ev.ok; total += ev.total; x2 += ev.items.filter((i) => i.x2).length; built += applyEv(st, ev, pal);
+      minx = Math.min(minx, p.bx); miny = Math.min(miny, p.by); maxx = Math.max(maxx, p.bx + p.plan.w); maxy = Math.max(maxy, p.by + p.plan.h);
+    }
+    return { st, cost, ok, total, x2, built, blocks: pls.length, cx: (minx + maxx) / 2, cy: (miny + maxy) / 2, w: maxx - minx, h: maxy - miny };
+  }
+  const regionBody = (req) => { const b = req.body || {}; return { rg: C.REGION_BY[String(b.region)], alt: Math.floor(Number(b.alt) || 0), unlock: !!b.unlock, i0: Number(b.i0), j0: Number(b.j0) }; };
+  app.post('/api/city/region/quote', requireAuth, (req, res) => {
+    const { rg, alt, unlock } = regionBody(req); if (!rg) return bad(res, 'Không tìm thấy quy hoạch khu vực.');
+    const st = load(req.user.id); if (st.districts.indexOf(rg.d) < 0) return bad(res, 'Hãy mở quận “' + C.DISTRICTS[rg.d].vi + '” trước nhé.');
+    const rects = C.regionRects(rg), list = rects.map((rc) => Object.assign({ rc }, regionEval(st, req.user.id, rg, rc, req.user.role, unlock, null))).filter((r) => r.ok > 0);
+    if (!list.length) return bad(res, 'Chưa có chỗ phù hợp (khối đất đã kín, hoặc bạn chưa đủ cấp / chưa học chương cần thiết).');
+    list.sort((a, b) => b.ok - a.ok || a.cost - b.cost); const r = list[((alt % list.length) + list.length) % list.length];
+    res.json({ region: rg.id, rc: r.rc, blocks: r.blocks, ok: r.ok, total: r.total, cost: r.cost, x2: r.x2, cx: r.cx, cy: r.cy, w: r.w, h: r.h, spots: list.length, coins: coinsOf(req.user.id) });
+  });
+  app.post('/api/city/region/apply', requireAuth, (req, res) => {
+    const { rg, unlock, i0, j0 } = regionBody(req), uid = req.user.id; if (!rg) return bad(res, 'Không tìm thấy quy hoạch khu vực.');
+    const rc = C.regionRects(rg).find((r) => r.i0 === i0 && r.j0 === j0); if (!rc) return bad(res, 'Vị trí quy hoạch không hợp lệ.');
+    const out = tx(() => {
+      const st = load(uid); if (st.districts.indexOf(rg.d) < 0) return { err: 'Hãy mở quận này trước nhé.' };
+      const r = regionEval(st, uid, rg, rc, req.user.role, unlock, { c: (req.body || {}).c }); if (!r.ok) return { err: 'Không còn chỗ phù hợp cho quy hoạch này.' };
+      if (r.cost > 0 && !spend(uid, r.cost)) return { err: 'Chưa đủ xu (cần ' + r.cost + ' 🪙).' };
+      save(uid, st); return { st, r };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, out.st, uid, { built: out.r.built, cost: out.r.cost, regionBuilt: true });
   });
 
   /* ───── học từ theo chương (song ngữ) ───── */

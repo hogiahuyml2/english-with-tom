@@ -22,7 +22,7 @@
     var lowMem = (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
     if (E.mobile) E.dpr = Math.min(E.dpr, 1.5); E.inputT = performance.now(); E.lastDraw = 0;
     E.bs = []; E.roadsX = new Uint8Array(W * H); E.open = {}; E.occ = new Int32Array(W * H); E.mode = 'view'; E.ghost = null; E.sel = -1; E.hover = null; E.roadPrev = null;
-    E.weather = 'clear'; E.hourOverride = null; E.quality = E.mobile ? (lowMem ? 0 : 1) : 2; E.fx = { cars: true, people: true, boats: true, sky: true, shimmer: true };
+    E.weather = 'clear'; E.hourOverride = null; E.quality = E.mobile ? (lowMem ? 0 : 1) : 2; E.fx = { cars: true, people: true, boats: true, sky: true, shimmer: true, lasers: true };
     E.gcache = {}; E.entities = { cars: [], people: [], boats: [], birds: [], balloons: [], planes: [], clouds: [] }; E.rain = []; E.skew = 0; E.dirtyRoads = true; E.fixedSorted = [];
     E.msel = {}; E.boxSel = false; E.mrect = null; E.paint = false; E.paintCells = null;
     E.tri = []; E.last = performance.now(); E.frameMs = 16; E.slow = 0; E.cullBox = null; E.version = 0; E.allowed = null;
@@ -615,6 +615,37 @@
     en.birds.forEach(function (b) { var k; for (k = 0; k < b.n; k++) { var s = scr(E.rot, b.x - k * .8 * Math.sign(b.vx), b.y + k * .5 * (k % 2 ? 1 : -1)), x = s[0], y = s[1] - 130 - k * 2, f = Math.sin(b.ph + k) * 4; if (x < vis[0] - 20 || x > vis[2] + 20 || y < vis[1] - 20 || y > vis[3] + 20) continue; ctx.strokeStyle = night > .5 ? '#cfd6e8' : '#fff'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x - 6, y - f); ctx.quadraticCurveTo(x - 2, y - 3, x, y); ctx.quadraticCurveTo(x + 2, y - 3, x + 6, y - f); ctx.stroke(); } });
     en.planes.forEach(function (p) { if (p.wait > 0) return; var s = scr(E.rot, p.x, p.y), x = s[0], y = s[1] - 210; if (x < vis[0] - 80 || x > vis[2] + 80 || y < vis[1] - 80 || y > vis[3] + 80) return; var ang = Math.atan2(scr(E.rot, p.x + p.vx, p.y + p.vy)[1] - s[1], scr(E.rot, p.x + p.vx, p.y + p.vy)[0] - s[0]); ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.fillStyle = '#F4F6FA'; ctx.strokeStyle = 'rgba(40,28,60,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(0, 0, 18, 4, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-2, 0); ctx.lineTo(-9, -11); ctx.lineTo(-4, -11); ctx.lineTo(5, 0); ctx.lineTo(-4, 11); ctx.lineTo(-9, 11); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#E9573F'; ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(-20, -6); ctx.lineTo(-14, -1); ctx.fill(); ctx.restore(); ctx.fillStyle = 'rgba(0,0,0,.1)'; ctx.beginPath(); ctx.ellipse(x + 20, s[1] + 8, 16, 4, 0, 0, TAU); ctx.fill(); });
   };
+  /* ───── đèn laser lấp lánh trên các toà nhà cao tầng: quét khắp khu vực vào ban đêm ───── */
+  var LASERC = [[125, 249, 255], [255, 92, 244], [124, 255, 138], [255, 209, 102], [150, 130, 255], [255, 120, 120]];
+  P.drawLasers = function (ctx, night) {
+    var E = this, list = E.sb; if (!E.fx.lasers || !list || night < .22) return;
+    var maxN = E.quality >= 2 ? (E.mobile ? 8 : 18) : E.quality === 1 ? 6 : 0; if (!maxN) return;
+    var z = E.cam.z, cw = E.cw, ch = E.ch, vis = E.visBox(), t = E.t, srcs = [], i, e;
+    for (i = 0; i < list.length; i++) {
+      e = list[i]; if (e.site || !e.sp || !e.sp.hpx || e.sp.hpx < 260) continue;
+      var ax = e.sx + (e.rw - e.rh) / 2 * HW, gy = e.sy + (e.rw + e.rh) / 2 * HH; if (ax < vis[0] - 300 || ax > vis[2] + 300 || gy < vis[1] - 100 || gy - e.sp.hpx > vis[3] + 300) continue;
+      srcs.push({ ax: ax, gy: gy, ty: gy - e.sp.hpx, i: e.b.i, d: Math.abs(ax - E.cam.x) + Math.abs(gy - E.cam.y) });
+    }
+    if (!srcs.length) return; srcs.sort(function (a, b) { return a.d - b.d; }); if (srcs.length > maxN) srcs.length = maxN;
+    ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+    var lw = Math.min(6, 1.5 / z), a0 = Math.min(1, night * 1.2);
+    srcs.forEach(function (q) {
+      var col = LASERC[q.i % LASERC.length], rgb = col[0] + ',' + col[1] + ',' + col[2], k, dir = q.i % 2 ? 1 : -1, sp = .45 + (q.i % 3) * .13, R = 150 + (q.i % 4) * 45;
+      for (k = 0; k < 3; k++) {
+        var ang = t * sp * dir + k * 2.094 + q.i, ex = q.ax + Math.cos(ang) * R, ey = q.gy + 4 + Math.sin(ang) * R * .5, gr = ctx.createLinearGradient(q.ax, q.ty, ex, ey);
+        gr.addColorStop(0, 'rgba(' + rgb + ',' + (.9 * a0) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+        ctx.strokeStyle = gr; ctx.lineWidth = lw * 3.4; ctx.globalAlpha = .22; ctx.beginPath(); ctx.moveTo(q.ax, q.ty); ctx.lineTo(ex, ey); ctx.stroke();
+        ctx.lineWidth = lw; ctx.globalAlpha = .95; ctx.stroke();
+        // điểm sáng lấp lánh nơi tia chạm đất
+        var tw = .5 + .5 * Math.sin(t * 9 + k * 2 + q.i), sz = (3 + 4 * tw) * Math.min(2, 1 / Math.sqrt(z + .2));
+        ctx.globalAlpha = (.35 + .5 * tw) * a0; ctx.strokeStyle = 'rgba(' + rgb + ',1)'; ctx.lineWidth = lw * .9; ctx.beginPath(); ctx.moveTo(ex - sz, ey); ctx.lineTo(ex + sz, ey); ctx.moveTo(ex, ey - sz * .7); ctx.lineTo(ex, ey + sz * .7); ctx.stroke();
+      }
+      // ngôi sao nhấp nháy trên đỉnh tháp
+      var pu = .55 + .45 * Math.sin(t * 5 + q.i * 1.7), rr = (4 + 5 * pu) * Math.min(2.2, 1 / Math.sqrt(z + .2)), rg2 = ctx.createRadialGradient(q.ax, q.ty, 0, q.ax, q.ty, rr * 2.2);
+      rg2.addColorStop(0, 'rgba(255,255,255,.95)'); rg2.addColorStop(.35, 'rgba(' + rgb + ',.7)'); rg2.addColorStop(1, 'rgba(' + rgb + ',0)'); ctx.globalAlpha = a0; ctx.fillStyle = rg2; ctx.beginPath(); ctx.arc(q.ax, q.ty, rr * 2.2, 0, TAU); ctx.fill();
+    });
+    ctx.restore();
+  };
   P.drawAtmosphere = function (ctx, night) {
     var E = this, cw = E.cw, ch = E.ch, w = E.weather;
     // ánh sáng đèn ban đêm
@@ -624,6 +655,7 @@
       var gmax = E.quality >= 2 ? 1e9 : E.quality === 1 ? 140 : 0, gcount = 0;
       if (gmax) E.glowList.forEach(function (q) { if (++gcount > gmax) return; if (q[2] && q[2].glow) ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); else { var g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], q[2]); g.addColorStop(0, 'rgba(255,225,140,.9)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); } });
       ctx.restore();
+      E.drawLasers(ctx, night);
     } else { var h = E.hour(); if (h >= 17 && h < 18.5) { ctx.save(); ctx.globalCompositeOperation = 'multiply'; var gv = (h - 17) / 1.5; ctx.fillStyle = 'rgb(255,' + (255 - Math.round(40 * gv)) + ',' + (255 - Math.round(90 * gv)) + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore(); } }
     if (w === 'rain' || w === 'snow') {
       ctx.save(); if (w === 'rain') { ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgb(200,210,225)'; ctx.fillRect(0, 0, cw, ch); ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = 'rgba(210,225,255,.65)'; ctx.lineWidth = 1.1; ctx.beginPath(); E.rain.forEach(function (r) { var x = r.x * cw, y = r.y * ch; ctx.moveTo(x, y); ctx.lineTo(x - 3, y + 11); }); ctx.stroke(); }

@@ -379,4 +379,118 @@
   NEWPLANS.forEach(function (pl) { C.PLANS.push(pl); C.PLAN_BY[pl.id] = pl; });
   C.PLANS.forEach(function (pl) { pl.tier = tierOf(pl); pl.dim = pl.w + '×' + pl.h; });
   C.PLAN_ARCH = ARCH; C.PLAN_ZICON = ZICON; C.planInfo = planInfo;
+
+  /* ───────────── QUY HOẠCH KHU VỰC & THỊ TRẤN ─────────────
+     Một "quy hoạch khu vực" phủ cùng lúc NHIỀU khối đất của một quận (¼ khu, nửa khu hoặc cả thị trấn). Mỗi khối được gán một mẫu khối (5×5 / 11×11…)
+     theo loại khu của khối đó (nhà ở, thương mại, công viên…) và theo chủ đề của quy hoạch. Giá = tổng giá các món + đường (cao hơn nhiều so với mẫu khối nhỏ). */
+  var REG = {
+    0: [   // Sunny Homes
+      ['green', '🌳', 'Thị trấn xanh', 'Green Town', 'Nhà ở xen công viên, phố nhỏ, dịch vụ đầy đủ — thị trấn yên bình nhiều cây xanh.', { r: { arch: ['twin', 'ring', 'row'], tier: ['M'] }, p: { tier: ['M'] }, c: { arch: ['row', 'ring'] }, s: { tier: ['M'] } }],
+      ['luxury', '👑', 'Khu dân cư cao cấp', 'Luxury Residences', 'Biệt thự, dinh thự và tháp ở sang trọng cùng công viên và dịch vụ cao cấp.', { r: { has: ['modernvilla', 'frenchvilla', 'medvilla', 'mansion', 'lakehouse', 'luxtower', 'glasscondo'] }, p: { has: ['botanical', 'zoo', 'football', 'golf'] }, c: { has: ['boutique', 'department', 'mall', 'bankhq'] }, s: { has: ['hospital', 'cityhall', 'hospitaltower'] } }],
+      ['cozy', '🏘️', 'Làng nhà nhỏ', 'Cosy Village', 'Những ngôi nhà nhỏ xinh xếp thành phố ngắn, quán cà phê và công viên gia đình.', { r: { has: ['cottage', 'townhouse', 'japhouse', 'logcabin', 'onefloor'], arch: ['row', 'ring', 'mstreet'] }, p: { arch: ['twin', 'ring'] }, c: { has: ['cafe', 'bakery', 'noodleshop', 'minimart'] }, s: { tier: ['M'] } }],
+      ['sky', '🏙️', 'Khu cao tầng', 'High-rise District', 'Chung cư cao tầng, tháp văn phòng và bệnh viện cao giữa công viên.', { r: { has: ['towerblock', 'midrise', 'lowrise', 'glasscondo', 'ecotower', 'terracetower', 'skyresi'] }, p: { tier: ['M'] }, c: { has: ['skyoffice', 'hqtower', 'techhq', 'twinoffice', 'skyscraper'] }, s: { has: ['hospitaltower', 'cityhalltower', 'tvtower'] } }]
+    ],
+    1: [   // Downtown
+      ['shop', '🛍️', 'Phố mua sắm sầm uất', 'Shopping Heart', 'Siêu thị, chợ đêm, trung tâm thương mại và cà phê ở khắp ngã tư.', { c: { has: ['supermarket', 'market', 'nightmarket', 'mall', 'department', 'boutique', 'cinema2'] }, p: { tier: ['M'] }, s: { tier: ['M'] } }],
+      ['finance', '🏦', 'Khu văn phòng & tài chính', 'Business & Finance', 'Văn phòng kính, ngân hàng, khu khởi nghiệp và trung tâm tài chính.', { c: { has: ['office', 'glassoffice', 'bankhq', 'coworking', 'financecentre', 'twinoffice', 'bankskyscraper'] }, p: { tier: ['M'] }, s: { has: ['metroentry', 'cityhall', 'cityhalltower'] } }],
+      ['skyline', '🌆', 'Đường chân trời', 'Skyline District', 'Dãy tháp chọc trời: xoắn ốc, trụ sở tập đoàn, tháp kim — đèn laser sáng rực về đêm.', { c: { has: ['skyscraper', 'skyoffice', 'spiraltower', 'hqtower', 'worldtrade', 'needletower', 'techhq', 'hotelskyline'] }, p: { tier: ['M'] }, s: { has: ['tvtower', 'hospitaltower'] } }],
+      ['food', '🍜', 'Downtown xanh & ẩm thực', 'Green Food Downtown', 'Phố ẩm thực, quán cà phê, công viên nhỏ giữa trung tâm.', { c: { arch: ['row', 'ring', 'mstreet'], has: ['noodleshop', 'cafe', 'bakery', 'kiosk', 'flowershop'] }, p: { arch: ['ring', 'twin'] }, s: { tier: ['M'] } }]
+    ],
+    2: [   // Harbor & Industry
+      ['port', '🚢', 'Cảng container', 'Container Port', 'Cần cẩu, bãi container, kho hàng và xưởng đóng tàu.', { h: { has: ['crane', 'containers', 'warehouse', 'shipyard'] }, i: { has: ['warehouse', 'recyclecenter', 'recycling'] }, s: { tier: ['M'] } }],
+      ['heavy', '🏭', 'Khu công nghiệp nặng', 'Heavy Industry', 'Nhà máy điện, lọc dầu, xi măng, tháp làm mát — khói trắng cuồn cuộn.', { i: { has: ['factory', 'powerplant', 'refinery', 'cementplant', 'coolingtowers', 'textilemill', 'brewery'] }, h: { tier: ['M'] }, s: { tier: ['M'] } }],
+      ['green', '🌿', 'Công nghiệp xanh', 'Green Industry', 'Điện mặt trời, điện gió, nhà máy nước và trạm tái chế.', { i: { has: ['solarfarm', 'windturbines', 'waterplant', 'recycling', 'recyclecenter', 'datacenter'] }, h: { tier: ['M'] }, s: { has: ['waterplant', 'recyclecenter'] } }],
+      ['tall', '🏗️', 'Cảng & nhà máy cao tầng', 'Tall Industry', 'Nhà máy nhiều tầng, ống khói cao, silo và tháp hoá chất.', { i: { has: ['skyfactory', 'smokestackfactory', 'silotower', 'chemtower'] }, h: { has: ['crane', 'containers'] }, s: { tier: ['M'] } }]
+    ],
+    3: [   // Fun Bay
+      ['funfair', '🎡', 'Thành phố giải trí', 'Funfair City', 'Vòng quay, tàu cướp biển, rạp xiếc, nhà ma — vui cả ngày.', { f: { has: ['ferris', 'pirateship', 'circus', 'carousel', 'bumpercars', 'hauntedhouse'] }, p: { tier: ['M'] }, s: { tier: ['M'] } }],
+      ['water', '💦', 'Công viên nước & thuỷ cung', 'Water Fun', 'Công viên nước, thuỷ cung, quầy kem.', { f: { has: ['waterpark', 'aquarium', 'icecream', 'beachhut'] }, p: { has: ['pondpark', 'botanical'] }, s: { tier: ['M'] } }],
+      ['family', '🎈', 'Phố vui chơi gia đình', 'Family Fun', 'Bowling, karaoke, phố kem và sân chơi cho cả nhà.', { f: { has: ['bowling', 'karaoke', 'icecream', 'minigolf', 'cinema'], arch: ['twin', 'quad', 'row', 'mduo'] }, p: { has: ['playground', 'picnicarea', 'dogpark'] }, s: { tier: ['M'] } }]
+    ],
+    4: [   // Campus
+      ['uni', '🎓', 'Khuôn viên đại học', 'University Campus', 'Đại học, bảo tàng, ký túc xá và thư viện giữa vườn cây.', { e: { has: ['university', 'museum', 'dorm', 'artgallery', 'uniskytower'] }, p: { tier: ['M'] }, s: { has: ['library', 'school'] } }],
+      ['science', '🔬', 'Khoa học & công nghệ', 'Science & Tech', 'Cung thiên văn, đài quan sát, phòng thí nghiệm, tháp nghiên cứu.', { e: { has: ['planetarium', 'observatory', 'lab', 'techlab', 'researchtower'] }, p: { tier: ['M'] }, s: { tier: ['M'] } }],
+      ['kids', '🧒', 'Học đường xanh', 'Green Schools', 'Mầm non, trung tâm ngoại ngữ, phố sách và công viên.', { e: { has: ['kindergarten', 'languagecenter', 'bookstore', 'artschool'] }, p: { has: ['playground', 'picnicarea', 'dogpark'] }, s: { has: ['school', 'library', 'commcenter'] } }]
+    ],
+    5: [   // World Street
+      ['wonders', '🗽', 'Kỳ quan thế giới', 'World Wonders', 'Lâu đài, đấu trường La Mã, kim tự tháp, nhân sư, tháp sắt.', { w: { has: ['castle', 'colosseum', 'pyramid', 'sphinx', 'irontower', 'greektemple', 'skypod'] }, p: { tier: ['M'] }, s: { tier: ['M'] } }],
+      ['food', '🍣', 'Phố ẩm thực quốc tế', 'World Food', 'Sushi, pizza, quán trà và cổng torii nối nhau thành các con phố đẹp.', { w: { has: ['sushi', 'pizzeria', 'teahouse', 'torii'] }, p: { has: ['bandstand', 'petting', 'pondpark'] }, s: { tier: ['M'] } }],
+      ['ancient', '🏯', 'Kiến trúc cổ', 'Old Architecture', 'Chùa, cối xay, đền Hy Lạp, vòng đá cổ và tượng Moai.', { w: { has: ['pagoda', 'windmill', 'greektemple', 'stonehenge', 'moai'] }, p: { tier: ['M'] }, s: { tier: ['M'] } }]
+    ],
+    6: [   // Golden Beach
+      ['resort', '🏖️', 'Khu nghỉ dưỡng biển', 'Beach Resort Town', 'Resort lớn, biệt thự biển, spa và phố bãi biển sát vịnh.', { b: { tier: ['L'] }, r: { tier: ['L'] } }],
+      ['fish', '🦞', 'Làng chài du lịch', 'Seaside Village', 'Phố hải sản, quầy bar, nhà biển nhỏ xinh.', { b: { tier: ['M'] }, r: { tier: ['M'] } }]
+    ],
+    7: [   // Cloudy Mountain
+      ['alpine', '🏔️', 'Làng núi nghỉ dưỡng', 'Alpine Village', 'Nhà gỗ, khách sạn núi, cáp treo và suối nước nóng.', { m: { tier: ['M', 'L'] }, p: { tier: ['M'] } }]
+    ],
+    8: [   // Green Fields
+      ['farm', '🌾', 'Làng nông trại', 'Farm Town', 'Chuồng trại lớn, ruộng lúa, vườn cây ăn quả và nhà nông.', { a: { tier: ['L'] }, r: { tier: ['L', 'M'] }, p: { tier: ['M'] } }],
+      ['green', '☀️', 'Nông trại xanh', 'Green Farm', 'Nhà kính, điện mặt trời, đồng cỏ chăn thả.', { a: { has: ['greenhouse', 'solarfarm', 'windturbines', 'pasture', 'fishpond'] }, r: { tier: ['M'] }, p: { tier: ['M'] } }]
+    ],
+    9: [   // Airport Island
+      ['air', '✈️', 'Sân bay & bến xe', 'Airport & Transit', 'Nhà ga sân bay, nhà chứa máy bay, ga tàu, bến xe buýt.', { t: { tier: ['L', 'M'] }, g: { tier: ['M'] } }]
+    ],
+    10: [   // Grand Park
+      ['park', '🌳', 'Công viên Hồ Lớn hoàn chỉnh', 'Grand Park Complete', 'Vườn thú, vườn bách thảo, sân golf và sân bóng quanh hồ lớn.', { p: { tier: ['L', 'M'] } }]
+    ],
+    11: [  // Sports & Expo
+      ['sports', '🏟️', 'Thành phố thể thao', 'Sports City', 'Sân vận động, nhà thi đấu, hồ bơi và trung tâm triển lãm.', { g: { tier: ['L'] }, p: { tier: ['M'] } }]
+    ]
+  };
+  var SCOPES = { all: ['Cả khu / thị trấn', 'Whole Town', '🏙️'], half: ['Nửa khu', 'Half District', '🏘️'], quarter: ['Một góc phố', 'Quarter', '🏠'] };
+  function blockGridOf(d) {
+    var l = C.BLOCKS.filter(function (b) { return b.d === d; }), xs = [], ys = [];
+    l.forEach(function (b) { if (xs.indexOf(b.x) < 0) xs.push(b.x); if (ys.indexOf(b.y) < 0) ys.push(b.y); }); xs.sort(function (a, b) { return a - b; }); ys.sort(function (a, b) { return a - b; });
+    var g = ys.map(function () { return xs.map(function () { return null; }); }); l.forEach(function (b) { g[ys.indexOf(b.y)][xs.indexOf(b.x)] = b; });
+    return { cols: xs.length, rows: ys.length, g: g };
+  }
+  var GRID = {}; C.DISTRICTS.forEach(function (d) { GRID[d.id] = blockGridOf(d.id); });
+  var REGIONS = [];
+  Object.keys(REG).forEach(function (dk) {
+    var d = +dk, gr = GRID[d], nb = gr.cols * gr.rows;
+    REG[dk].forEach(function (t) {
+      ['all', 'half', 'quarter'].forEach(function (sc) {
+        if (sc === 'quarter' && nb < 12) return; if (sc === 'half' && nb < 4) return;
+        REGIONS.push({ id: 'g-' + d + '-' + t[0] + '-' + sc, kind: 'region', d: d, theme: t[0], scope: sc, icon: t[1], vi: t[2] + ' — ' + SCOPES[sc][0], en: t[3] + ' — ' + SCOPES[sc][1], desc: t[4], sel: t[5], z: 'R', tier: sc === 'all' ? 'T' : sc === 'half' ? 'H' : 'Q' });
+      });
+    });
+  });
+  // các hình chữ nhật khối (i0, j0, ci, cj) có thể dùng cho một quy hoạch khu vực
+  function regionRects(rg) {
+    var gr = GRID[rg.d], C0 = gr.cols, R0 = gr.rows, out = [];
+    if (rg.scope === 'all') out.push({ i0: 0, j0: 0, ci: C0, cj: R0 });
+    else if (rg.scope === 'half') { var hr = Math.ceil(R0 / 2), hc = Math.ceil(C0 / 2); out.push({ i0: 0, j0: 0, ci: C0, cj: hr }, { i0: 0, j0: R0 - hr, ci: C0, cj: hr }, { i0: 0, j0: 0, ci: hc, cj: R0 }, { i0: C0 - hc, j0: 0, ci: hc, cj: R0 }); }
+    else { var qc = Math.ceil(C0 / 2), qr = Math.ceil(R0 / 2); out.push({ i0: 0, j0: 0, ci: qc, cj: qr }, { i0: C0 - qc, j0: 0, ci: qc, cj: qr }, { i0: 0, j0: R0 - qr, ci: qc, cj: qr }, { i0: C0 - qc, j0: R0 - qr, ci: qc, cj: qr }); }
+    return out;
+  }
+  function matchSel(p, sel) {
+    if (!sel) return true; if (sel.tier && sel.tier.indexOf(p.tier) < 0) return false; if (sel.arch && sel.arch.indexOf(p.arch) < 0) return false;
+    if (sel.has) { var ok = false; p.items.forEach(function (e) { if (sel.has.indexOf(e[0]) >= 0) ok = true; }); if (!ok) return false; } return true;
+  }
+  // danh sách đặt mẫu cho một quy hoạch khu vực trong hình chữ nhật khối rc → [{ plan, bx, by }]
+  function regionPlacements(rg, rc) {
+    var gr = GRID[rg.d], out = [], n = 0;
+    for (var j = rc.j0; j < rc.j0 + rc.cj; j++) for (var i = rc.i0; i < rc.i0 + rc.ci; i++) {
+      var b = gr.g[j] && gr.g[j][i]; if (!b) continue;
+      var sel = rg.sel[b.z]; var pool = C.PLANS.filter(function (p) { return p.z === b.z && p.id.charAt(0) === 'm' && p.w <= b.w && p.h <= b.h; });
+      var cand = pool.filter(function (p) { return matchSel(p, sel); }); if (!cand.length) cand = pool.filter(function (p) { return p.tier === 'M'; }); if (!cand.length) cand = pool; if (!cand.length) continue;
+      cand.sort(function (a, b2) { return a.id < b2.id ? -1 : 1; });
+      var m = 0;
+      for (var ay = b.y; ay + 4 <= b.y + b.h - 1 || (m === 0 && ay === b.y); ay += 6) for (var ax = b.x; ax + 4 <= b.x + b.w - 1 || (m === 0 && ax === b.x); ax += 6) {
+        var plan = cand[(n + m) % cand.length]; if (ax + plan.w > b.x + b.w || ay + plan.h > b.y + b.h) { plan = cand.filter(function (p) { return ax + p.w <= b.x + b.w && ay + p.h <= b.y + b.h; })[0]; if (!plan) continue; }
+        out.push({ plan: plan, bx: ax, by: ay, d: b.d }); m++; n++;
+      }
+    }
+    return out;
+  }
+  C.REGIONS = REGIONS; C.REGION_BY = {}; REGIONS.forEach(function (r) { C.REGION_BY[r.id] = r; });
+  C.regionRects = regionRects; C.regionPlacements = regionPlacements; C.REGION_SCOPES = SCOPES; C.blockGrid = GRID;
+  // thống kê chung (không cần đất thật): số khối, số món, giá
+  C.regionInfo = function (rg, rc) {
+    var pl = regionPlacements(rg, rc || regionRects(rg)[0]), o = { blocks: pl.length, count: 0, price: 0, roads: 0, lvl: 1, counts: {}, inc: 0, pop: 0, hp: 0 };
+    pl.forEach(function (x) { var inf = planInfo(x.plan); o.count += inf.count; o.price += inf.price; o.roads += inf.roads; o.lvl = Math.max(o.lvl, inf.lvl); o.inc += inf.inc; o.pop += inf.pop; o.hp += inf.hp; Object.keys(inf.counts).forEach(function (k) { o.counts[k] = (o.counts[k] || 0) + inf.counts[k]; }); });
+    o.cost = o.price + o.roads * C.RULES.roadCost; return o;
+  };
+
 })(typeof window !== 'undefined' ? window : this);
