@@ -690,8 +690,11 @@
   // giá đẩy nhanh theo thời gian còn lại (giây)
   var speedCost = function (mode, remainSec) { var m = Math.max(0.2, remainSec / 60), r = mode === 'now' ? RULES.speedNow : RULES.speedX2; return Math.ceil(r.base + r.perMin * m * (mode === 'x2' ? 0.5 : 1)); };
 
-  // điểm thành phố → cấp (1..30)
-  var LEVEL_AT = [0]; (function () { var n; for (n = 1; n < 30; n++) LEVEL_AT.push(Math.round(35 * Math.pow(n, 1.9))); })();
+  // điểm thành phố → cấp (1..120). Cấp 1–30 giữ nguyên công thức cũ (không ai bị tụt cấp); từ cấp 31 trở đi tăng dần độ khó
+  var MAXLEVEL = 120, LEVEL_AT = [0]; (function () { var n, v; for (n = 1; n < MAXLEVEL; n++) { v = 35 * Math.pow(n, 1.9); if (n >= 30) v *= 1 + (n - 29) * 0.01; LEVEL_AT.push(Math.round(v)); } })();
+  var LEVEL_TITLES = [[1, 'Dân mới'], [5, 'Thợ xây'], [10, 'Kiến trúc sư'], [15, 'Thị trưởng'], [20, 'Nhà quy hoạch'], [30, 'Đại thị trưởng'], [40, 'Nhà kiến tạo'], [50, 'Huyền thoại thành phố'], [60, 'Bậc thầy đô thị'], [75, 'Kỳ quan đô thị'], [90, 'Thiên tài quy hoạch'], [105, 'Đại đế thành phố'], [120, 'Thần Thành Phố']];
+  var levelTitle = function (l) { var t = LEVEL_TITLES[0][1], i; for (i = 0; i < LEVEL_TITLES.length; i++) if (l >= LEVEL_TITLES[i][0]) t = LEVEL_TITLES[i][1]; return t; };
+  var levelBonus = function (l) { return 1 + 0.004 * Math.max(0, Math.min(l, MAXLEVEL) - 30); };   // từ cấp 31: mỗi cấp +0,4% thuế (tối đa +36%)
   var levelOfScore = function (s) { var l = 1; while (l < LEVEL_AT.length && s >= LEVEL_AT[l]) l++; return l; };
   var scoreOf = function (buildings) { var s = 0; buildings.forEach(function (b) { var it = BY[b.k]; if (it && !b.bt) { var n, c = 0; for (n = 1; n <= b.lv; n++) c += itemCost(it, n); s += c / 25 + popOf(it, b.lv); } }); return Math.round(s); };
 
@@ -798,7 +801,7 @@
   PLANS.forEach(function (pl) { pl.roads = Y5.map(function (y) { return [2, y]; }); });
   var PLAN_BY = {}; PLANS.forEach(function (pl) { PLAN_BY[pl.id] = pl; });
   var API = { recolorCost: recolorCost, PALETTES: PALETTES, PAL_BY: PAL_BY, PAL_GROUPS: PAL_GROUPS, suggestFor: suggestFor, facingToRoad: facingToRoad, FESTIVALS: FESTIVALS, FEST_BY: FEST_BY, festivalsOn: festivalsOn, BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
-    CATS: CATS, ITEMS: ITEMS, BY: BY, MAXLV: MAXLV, RULES: RULES, LEVEL_AT: LEVEL_AT, idx: idx, inW: inW, itemCost: itemCost, buildSecs: buildSecs, incomeH: incomeH, popOf: popOf, hpOf: hpOf, speedCost: speedCost,
+    CATS: CATS, ITEMS: ITEMS, BY: BY, MAXLV: MAXLV, RULES: RULES, LEVEL_AT: LEVEL_AT, MAXLEVEL: MAXLEVEL, levelTitle: levelTitle, levelBonus: levelBonus, idx: idx, inW: inW, itemCost: itemCost, buildSecs: buildSecs, incomeH: incomeH, popOf: popOf, hpOf: hpOf, speedCost: speedCost,
     levelOfScore: levelOfScore, scoreOf: scoreOf, buildOcc: buildOcc, canPlace: canPlace, canRoad: canRoad, adjacentRoad: adjacentRoad, zoneList: zoneList, isRoadAt: isRoadAt };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTCityData = API;
 })(typeof window !== 'undefined' ? window : this);

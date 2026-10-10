@@ -35,7 +35,7 @@ module.exports = function (app, { db, requireAuth, now }) {
   const rng = (seed) => { let h = parseInt(crypto.createHash('md5').update(seed).digest('hex').slice(0, 8), 16) >>> 0; return () => { h = (Math.imul(h ^ (h >>> 15), 2246822507) + 0x9e3779b9) >>> 0; return ((h ^ (h >>> 13)) >>> 0) / 4294967296; }; };
   const levelOf = (uid) => { try { const st = K().peek(uid); return st ? K().stats(st).level : 1; } catch (_) { return 1; } };
   const tierOf = (lv) => (lv < 6 ? 0 : lv < 14 ? 1 : 2);
-  const rewardOf = (m, lv) => Math.min(900, Math.round(m.xu * m.goal * (1 + Math.min(lv, 30) * 0.06)));
+  const rewardOf = (m, lv) => Math.min(900 + Math.max(0, Math.min(lv, 120) - 30) * 15, Math.round(m.xu * m.goal * (1 + Math.min(lv, 60) * 0.06)));
   const mk = (t, lv, uid) => { const goal = t.goal[tierOf(lv)]; return { id: t.k, k: t.k, goal, p: 0, xu: t.xu, c: 0 }; };
 
   function rowOf(uid, day) {

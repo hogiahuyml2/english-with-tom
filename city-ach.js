@@ -9,7 +9,7 @@ module.exports = function (app, { db, requireAuth }) {
   // chuỗi huy hiệu: [nhóm, biểu tượng, mô tả đơn vị, [mốc], [xu], [tên từng bậc]]
   const CH = [
     ['pop', '👥', 'dân cư', [50, 200, 500, 1000, 3000, 10000], [100, 300, 800, 2000, 6000, 20000], ['Xóm nhỏ', 'Làng xinh', 'Thị trấn', 'Thành phố sầm uất', 'Đô thị lớn', 'Siêu đô thị']],
-    ['level', '⭐', 'cấp thành phố', [3, 6, 10, 15, 20], [150, 400, 1000, 2500, 6000], ['Tân binh', 'Kiến trúc sư', 'Thị trưởng', 'Nhà quy hoạch', 'Huyền thoại']],
+    ['level', '⭐', 'cấp thành phố', [3, 6, 10, 15, 20, 30, 40, 50, 60, 80, 100, 120], [150, 400, 1000, 2500, 6000, 10000, 15000, 22000, 32000, 55000, 90000, 150000], ['Tân binh', 'Kiến trúc sư', 'Thị trưởng', 'Nhà quy hoạch', 'Huyền thoại', 'Đại thị trưởng', 'Nhà kiến tạo', 'Huyền thoại thành phố', 'Bậc thầy đô thị', 'Kỳ quan đô thị', 'Thiên tài quy hoạch', 'Thần Thành Phố']],
     ['bcount', '🏗️', 'công trình', [10, 50, 150, 400], [120, 500, 1500, 4000], ['Thợ xây', 'Nhà thầu', 'Tổng thầu', 'Ông trùm xây dựng']],
     ['dist', '🗺️', 'quận đã mở', [2, 4, 7, 12], [200, 600, 1800, 5000], ['Mở rộng', 'Khai phá', 'Nhà thám hiểm', 'Chủ cả vùng']],
     ['kinds', '🎨', 'loại công trình khác nhau', [10, 30, 60, 120], [150, 500, 1500, 4000], ['Tò mò', 'Nhà sưu tập', 'Bảo tàng sống', 'Bách khoa toàn thư']],

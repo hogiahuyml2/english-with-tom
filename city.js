@@ -53,9 +53,9 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   function stats(st) {
     let pop = 0, hp = 0, n = 0;
     st.bs.forEach((b) => { if (b.lv > 0) { const it = C.BY[b.k]; pop += C.popOf(it, b.lv); hp += C.hpOf(it, b.lv); n++; } });
-    const ratio = hp / (0.35 * pop + 10), happy = Math.round(40 + 60 * Math.min(1, ratio)), mult = 0.7 + 0.4 * (happy / 100);
-    const score = C.scoreOf(st.bs.map((b) => ({ k: b.k, lv: b.lv, bt: b.lv === 0 }))), level = C.levelOfScore(score);
-    return { pop, hp, happy, mult, score, level, nextAt: C.LEVEL_AT[level] || null, n };
+    const ratio = hp / (0.35 * pop + 10), happy = Math.round(40 + 60 * Math.min(1, ratio));
+    const score = C.scoreOf(st.bs.map((b) => ({ k: b.k, lv: b.lv, bt: b.lv === 0 }))), level = C.levelOfScore(score), mult = (0.7 + 0.4 * (happy / 100)) * C.levelBonus(level);
+    return { pop, hp, happy, mult, score, level, title: C.levelTitle(level), nextAt: C.LEVEL_AT[level] || null, n };
   }
   const pending = (b, s, t) => { if (b.lv <= 0) return 0; const it = C.BY[b.k], inc = C.incomeH(it, b.lv); if (!inc) return 0; const h = Math.min(R.incomeCapH, Math.max(0, (t - (b.last || t)) / 3600e3)); return Math.floor(inc * s.mult * (1 + festBonus()) * h); };
   function view(st, uid) {

@@ -22,6 +22,7 @@ button { font-family: inherit; cursor: pointer; }
 .hud > * { pointer-events: auto; }
 .badge { display: flex; align-items: center; gap: 8px; background: var(--glass); border-radius: 18px; padding: 5px 12px 5px 6px; box-shadow: 0 4px 14px rgba(20,40,90,.22); min-width: 0; }
 .lvl { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(145deg, #5B9BFF, #3A5BE0); color: #fff; font-weight: 800; font-size: 18px; display: grid; place-items: center; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); flex: none; }
+.lvl.l3 { font-size: 15px; } .lvl.l3 small { font-size: 7px; }
 .lvl small { display: block; font-size: 8px; font-weight: 700; margin-top: -3px; opacity: .85; }
 .cname { font-weight: 800; font-size: 14px; line-height: 1.1; white-space: nowrap; }
 .xpbar { height: 6px; width: 110px; border-radius: 9px; background: #D9E2F2; overflow: hidden; margin-top: 4px; } .xpbar i { display: block; height: 100%; background: linear-gradient(90deg, #3FC986, #2FB36D); border-radius: 9px; width: 0; transition: width .4s; }
@@ -203,7 +204,7 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=12"></script>
+<script src="js/city-data.js?v=13"></script>
 <script src="js/city-learn.js?v=1"></script>
 <script src="js/city-advice.js?v=2"></script>
 <script src="js/city-plans.js?v=3"></script>
@@ -253,11 +254,11 @@ applySettings();
 
 /* ───── tải trạng thái ───── */
 function setState(d) { var prevS = S; S = d.city; if (d.role) ROLE = d.role; ENG.setState(S); if (prevS && !VIS && !prevS.visit) { var fresh = S.districts.filter(function (id) { return prevS.districts.indexOf(id) < 0; }); if (fresh.length) celebrate(fresh[0], fresh.length > 1 ? fresh.length - 1 : 0); } hud(); refreshDailySoon(); if (INFO != null) renderInfo(); if ($('shopS').classList.contains('on')) renderShop(); if ($('distS').classList.contains('on')) renderDist(); roadBar(); }
-var ADV = null, ADVT = 0, ADVTOAST = 0;
+var ADV = null, ADVT = 0, ADVTOAST = 0, LVPREV = 0;
 function advRun(force) { var n = Date.now(); if (!force && ADV && n - ADVT < 1200) return ADV; ADVT = n; try { ADV = EWTCityAdvice.analyze(C, S, ROLE); } catch (e) { ADV = null; } return ADV; }
 function advBadge() { var a = advRun(); var b = $('advB'); if (!a || !a.count) { b.classList.remove('has'); $('advN').textContent = ''; b.title = 'Gợi ý xây dựng — thành phố đang ổn!'; return; } if (!ADVTOAST && !VIS) { ADVTOAST = 1; setTimeout(function () { if (!VIS) toast('💡 Có <b>' + a.count + '</b> gợi ý xây dựng cho thành phố — bấm bóng đèn 💡 ở góc trên để xem!', 4200); }, 2500); } b.classList.add('has'); $('advN').textContent = a.count > 9 ? '9+' : a.count; b.title = 'Có ' + a.count + ' gợi ý xây dựng cần làm — bấm để xem'; }
 function hud() {
-  var s = S.stats; $('lvN').textContent = s.level; $('coinN').textContent = fmt(S.coins); $('coinN').title = String(S.coins); $('popN').textContent = fmt(s.pop);
+  var s = S.stats; $('lvN').textContent = s.level; $('lvN').parentNode.classList.toggle('l3', s.level >= 100); $('lvN').parentNode.title = 'Danh hiệu: ' + C.levelTitle(s.level) + (s.level > 30 ? ' · +' + (Math.round((C.levelBonus(s.level) - 1) * 1000) / 10) + '% thuế' : ''); if (!VIS) { if (LVPREV && s.level > LVPREV) { SND('levelup'); toast('⭐ <b>Lên cấp ' + s.level + '!</b> Danh hiệu: ' + esc(C.levelTitle(s.level)), 4200); } LVPREV = s.level; } $('coinN').textContent = fmt(S.coins); $('coinN').title = String(S.coins); $('popN').textContent = fmt(s.pop);
   $('hapN').textContent = s.happy + '%'; $('hapE').textContent = s.happy >= 85 ? '😄' : s.happy >= 65 ? '😊' : s.happy >= 50 ? '😐' : '☹️';
   var lo = C.LEVEL_AT[s.level - 1] || 0, hi = C.LEVEL_AT[s.level]; $('xpB').style.width = (hi ? clampN((s.score - lo) / (hi - lo) * 100, 3, 100) : 100) + '%';
   $('tkChip').style.display = S.tickets ? '' : 'none'; $('tkN').textContent = S.tickets; $('cpChip').style.display = S.coupons ? '' : 'none'; $('cpN').textContent = S.coupons;
