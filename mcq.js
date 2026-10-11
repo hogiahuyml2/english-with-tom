@@ -80,6 +80,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     return n;
   };
   if (app.locals.classJoin) app.locals.classJoin.push(mcqJoin);
+  if (app.locals.classCatch) app.locals.classCatch.push((user) => { let n = 0; for (const g of require('./class-catchup')(db, { tests: 'mcq_tests', assign: 'mcq_assign', idcol: 'test_id', grp: 'mcq_groups' }, user.id)) n += mcqJoin(user, g.id, g.name) || 0; return n; });
   // Một lần duy nhất: đề/bộ từ giao TRƯỚC khi có tính năng này → suy ra lớp (mọi thành viên lớp của cùng giáo viên đều đã được giao) rồi giao bù cho người vào lớp muộn
   if (__mcqJoinNew) {
     try {
@@ -391,6 +392,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
 
   // ───────────── Học sinh ─────────────
   app.get('/api/mcq/mine', requireAuth, (req, res) => {
+    if (app.locals.runClassCatch) app.locals.runClassCatch(req.user);
     try {
       const rows = db.prepare(`SELECT t.id,t.title,t.note,t.duration_min,t.deadline,t.start_at,t.reveal,t.show_score,t.pick_n,t.max_points,t.questions,u.name AS teacher FROM mcq_assign a JOIN mcq_tests t ON t.id=a.test_id LEFT JOIN users u ON u.id=t.teacher_id WHERE a.user_id=? ORDER BY t.id DESC LIMIT 60`).all(req.user.id);
       const t0 = Date.now();

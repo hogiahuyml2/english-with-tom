@@ -865,6 +865,7 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     return n;
   };
   if (app.locals.classJoin) app.locals.classJoin.push(wsJoin);
+  if (app.locals.classCatch) app.locals.classCatch.push((user) => { let n = 0; for (const g of require('./class-catchup')(db, { tests: 'word_sets', assign: 'word_set_assign', idcol: 'set_id', grp: 'word_set_groups' }, user.id)) n += wsJoin(user, g.id, g.name) || 0; return n; });
   // Một lần duy nhất: đề/bộ từ giao TRƯỚC khi có tính năng này → suy ra lớp (mọi thành viên lớp của cùng giáo viên đều đã được giao) rồi giao bù cho người vào lớp muộn
   if (__wsJoinNew) {
     try {

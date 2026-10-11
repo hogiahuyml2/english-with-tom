@@ -536,6 +536,7 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
     return n;
   };
   if (app.locals.classJoin) app.locals.classJoin.push(lsJoin);
+  if (app.locals.classCatch) app.locals.classCatch.push((user) => { let n = 0; for (const g of require('./class-catchup')(db, { tests: 'lesson_sets', assign: 'lesson_assign', idcol: 'set_id', grp: 'lesson_set_groups' }, user.id)) n += lsJoin(user, g.id, g.name) || 0; return n; });
   // Một lần duy nhất: đề/bộ từ giao TRƯỚC khi có tính năng này → suy ra lớp (mọi thành viên lớp của cùng giáo viên đều đã được giao) rồi giao bù cho người vào lớp muộn
   if (__lsJoinNew) {
     try {

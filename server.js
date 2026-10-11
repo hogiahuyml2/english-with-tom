@@ -2309,6 +2309,14 @@ app.get('/api/me/classes', requireAuth, (req, res) => {
 // Giao lại cho học sinh mới vào lớp các bài đã giao cho lớp (còn hạn hoặc không có hạn)
 // Các module (trắc nghiệm, tự luận, bộ từ, speaking…) đăng ký hàm ở đây để học sinh vào lớp SAU khi giao bài vẫn nhận được bài còn hạn
 app.locals.classJoin = [];
+app.locals.classCatch = []; // chạy định kỳ cho học sinh: giao bù đề/bộ từ của lớp mình còn hạn mà chưa nhận
+const _catchAt = new Map();
+function runClassCatch(user) {
+  if (!user || user.role !== 'student') return;
+  const last = _catchAt.get(user.id) || 0; if (Date.now() - last < 90e3) return; _catchAt.set(user.id, Date.now());
+  for (const fn of app.locals.classCatch) { try { fn(user); } catch (e) { console.error('[classCatch]', e.message); } }
+}
+app.locals.runClassCatch = runClassCatch;
 function runClassJoin(user, groupId, groupName) {
   let n = 0;
   for (const fn of app.locals.classJoin) { try { n += Number(fn(user, groupId, groupName)) || 0; } catch (e) { console.error('[classJoin]', e.message); } }
@@ -2734,6 +2742,7 @@ app.get('/api/notifications/unread-count', requireAuth, (req, res) => {
 
 // Danh sách thông báo gần nhất (mới nhất trước)
 app.get('/api/notifications', requireAuth, (req, res) => {
+  runClassCatch(req.user);
   const rows = db.prepare('SELECT id,type,title,body,link,read_at,created_at FROM notifications WHERE user_id=? ORDER BY id DESC LIMIT 30')
     .all(req.user.id);
   res.json({ notifications: rows });
