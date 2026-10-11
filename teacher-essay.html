@@ -225,5 +225,7 @@ var ECLSNAME = function (s) { return (s.class_ids || []).map(function (id) { var
 
 api('/api/essay/teacher/tasks').then(function (d) { GROUPS = d.groups || []; AIOK = d.ai_ready; if (QP.get('new')) { QP.delete('new'); newForm(null); } else { tab('list'); loadList(); } }).catch(function (e) { $('vList').innerHTML = '<p>' + esc(e.message) + '</p>'; });
 </script>
+<script src="js/snippets.js?v=1"></script>
+<script>EWTSnippets.watch(['#gTc']);</script>
 </body>
 </html>
