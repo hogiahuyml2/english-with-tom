@@ -66,6 +66,18 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     });
   }
 
+  db.exec('CREATE TABLE IF NOT EXISTS mcq_groups (test_id INTEGER NOT NULL, group_id INTEGER NOT NULL, PRIMARY KEY (test_id, group_id))'); // đề giao cho CẢ LỚP → học sinh vào lớp sau vẫn nhận
+  const recGroups = (testId, b) => { for (const gid of (Array.isArray(b.group_ids) ? b.group_ids : []).map(Number).filter(Number.isInteger)) db.prepare('INSERT OR IGNORE INTO mcq_groups (test_id,group_id) VALUES (?,?)').run(testId, gid); };
+  if (app.locals.classJoin) app.locals.classJoin.push((user, gid, gname) => {
+    let n = 0;
+    for (const t of db.prepare('SELECT t.* FROM mcq_groups mg JOIN mcq_tests t ON t.id=mg.test_id WHERE mg.group_id=?').all(gid)) {
+      if (t.deadline && vnMs(t.deadline) && vnMs(t.deadline) < Date.now()) continue; // đề đã hết hạn → không báo
+      if (!Number(db.prepare('INSERT OR IGNORE INTO mcq_assign (test_id,user_id,assigned_at) VALUES (?,?,?)').run(t.id, user.id, now()).changes || 0)) continue;
+      n++; const sf = vnMs(t.start_at) > Date.now() + 30000;
+      try { notifyUser(user.id, 'mcq', (sf ? '📅 Sắp có đề trắc nghiệm: ' : '📝 Đề trắc nghiệm mới: ') + t.title + ' (lớp ' + gname + ')', (sf ? 'Đề mở lúc ' + fmtVN(vnMs(t.start_at)) + ' · ' : '') + effN(t, J(t.questions, []).length) + ' câu · ' + fmtLimit(t) + (t.deadline ? ' · hạn nộp ' + fmtVN(vnMs(t.deadline)) : ''), 'mcq.html?id=' + t.id); } catch (e) {}
+    }
+    return n;
+  });
   function collectRecipients(b) {
     const set = new Set();
     for (const gid of (Array.isArray(b.group_ids) ? b.group_ids : []).map(Number).filter(Number.isInteger))
@@ -217,6 +229,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
       const id = Number(r.lastInsertRowid);
       const ins = db.prepare('INSERT OR IGNORE INTO mcq_assign (test_id,user_id,assigned_at) VALUES (?,?,?)');
       for (const uid of rec) ins.run(id, uid, now());
+      recGroups(id, b);
       db.exec('COMMIT');
       const t = { duration_min: duration };
       for (const uid of rec) { try { notifyUser(uid, 'mcq', (startFuture ? '📅 Sắp có đề trắc nghiệm: ' : '📝 Đề trắc nghiệm mới: ') + title, (startFuture ? 'Đề mở lúc ' + fmtVN(vnMs(startAt)) + ' · ' : '') + effN({ pick_n: pickN }, questions.length) + ' câu · ' + fmtLimit(t) + (deadline ? ' · hạn nộp ' + fmtVN(vnMs(deadline)) : ''), 'mcq.html?id=' + id); } catch (e) {} }
@@ -234,6 +247,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     if (!isOwner(req.user, t)) return res.status(403).json({ error: 'Chỉ người tạo đề mới giao thêm được.' });
     const rec = collectRecipients(req.body || {});
     if (!rec.size) return res.status(400).json({ error: 'Chưa chọn học sinh nào.' });
+    recGroups(t.id, req.body || {});
     let added = 0; const ins = db.prepare('INSERT OR IGNORE INTO mcq_assign (test_id,user_id,assigned_at) VALUES (?,?,?)');
     for (const uid of rec) if (Number(ins.run(t.id, uid, now()).changes || 0)) { added++; try { const sf = vnMs(t.start_at) > Date.now() + 30000; notifyUser(uid, 'mcq', (sf ? '📅 Sắp có đề trắc nghiệm: ' : '📝 Đề trắc nghiệm mới: ') + t.title, (sf ? 'Đề mở lúc ' + fmtVN(vnMs(t.start_at)) + ' · ' : '') + effN(t, J(t.questions, []).length) + ' câu · ' + fmtLimit(t), 'mcq.html?id=' + t.id); } catch (e) {} }
     res.json({ ok: true, added, already: rec.size - added });

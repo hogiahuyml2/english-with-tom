@@ -523,6 +523,17 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
       return { target: String(q.target || '').trim().slice(0, 40), stem, options, answer_index: ai2 };
     });
   }
+  db.exec('CREATE TABLE IF NOT EXISTS lesson_set_groups (set_id INTEGER NOT NULL, group_id INTEGER NOT NULL, PRIMARY KEY (set_id, group_id))');
+  const dlGone = (s) => { if (!s) return false; const t = Date.parse(/[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : (/^\d{4}-\d{2}-\d{2}$/.test(String(s)) ? s + 'T23:59:59' : String(s).replace(' ', 'T')) + '+07:00'); return t > 0 && t < Date.now(); }; // hạn đã qua (giờ VN nếu không ghi múi giờ)
+  if (app.locals.classJoin) app.locals.classJoin.push((user, gid, gname) => {
+    let n = 0;
+    for (const t of db.prepare('SELECT t.* FROM lesson_set_groups lg JOIN lesson_sets t ON t.id=lg.set_id WHERE lg.group_id=?').all(gid)) {
+      if (dlGone(t.deadline)) continue;
+      if (!Number(db.prepare('INSERT OR IGNORE INTO lesson_assign (set_id,user_id,assigned_at) VALUES (?,?,?)').run(t.id, user.id, now()).changes || 0)) continue;
+      n++; try { notifyUser(user.id, 'lesson_vocab', '📘 Bộ từ mới: ' + t.title + ' (lớp ' + gname + ')', 'Bộ từ + 10 câu luyện tập' + (t.deadline ? ' · hạn ' + String(t.deadline).replace('T', ' ') : ''), 'lesson-vocab.html?id=' + t.id); } catch (e) {}
+    }
+    return n;
+  });
   function collectRecipients(b) {
     const set = new Set();
     for (const gid of (Array.isArray(b.group_ids) ? b.group_ids : []).map(Number).filter(Number.isInteger)) {
@@ -558,6 +569,7 @@ module.exports = function registerLessonVocab(app, { db, requireAuth, requireRol
       const id = Number(r.lastInsertRowid);
       const ins = db.prepare('INSERT OR IGNORE INTO lesson_assign (set_id,user_id,assigned_at) VALUES (?,?,?)');
       for (const uid of recipients) ins.run(id, uid, now());
+      for (const gid of (Array.isArray(b.group_ids) ? b.group_ids : []).map(Number).filter(Number.isInteger)) db.prepare('INSERT OR IGNORE INTO lesson_set_groups (set_id,group_id) VALUES (?,?)').run(id, gid);
       db.exec('COMMIT');
       const dl = deadline ? ' · hạn ' + deadline.replace('T', ' ') : '';
       for (const uid of recipients) { try { notifyUser(uid, 'lesson_vocab', '📘 Bộ từ mới: ' + title, cards.length + ' từ + 10 câu luyện tập' + dl, 'lesson-vocab.html?id=' + id); } catch (e) {} }

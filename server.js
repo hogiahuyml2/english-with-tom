@@ -356,7 +356,11 @@ app.post('/api/register', rlRegister, rlRegAll, async (req, res) => {
 
 // Việc làm khi tài khoản học sinh bắt đầu được dùng (sau đăng ký, hoặc sau khi xác thực email nếu bật REQUIRE_EMAIL_VERIFY)
 function onStudentActivated(id, name, mail) {
-  try { db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(id, mail); } catch (e) {}
+  try {
+    const inv = db.prepare('SELECT gm.group_id, g.name FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.invited_email=? AND gm.user_id IS NULL').all(mail);
+    db.prepare('UPDATE group_members SET user_id=?, invited_email=NULL WHERE invited_email=?').run(id, mail);
+    for (const r of inv) { try { backfillGroupAssignments({ id, name, email: mail }, r.group_id, r.name); } catch (e) { console.error('[backfill]', e.message); } }
+  } catch (e) {}
   // Báo cho giáo viên tối đa 30 học sinh mới/giờ — tránh bị spam đăng ký làm ngập chuông thông báo
   if (security.hit('notify:newstudent', 30, mins(60)).ok)
     notifyAllStaff('new_student', '🎓 Học sinh mới: ' + name, mail + ' vừa đăng ký tài khoản.', 'teacher.html?tab=students');
@@ -2259,6 +2263,7 @@ app.post('/api/groups/:id/members', requireRole('teacher','admin'), async (req, 
     } catch (e) {
       return res.status(409).json({ error: 'Học sinh này đã có trong lớp.' });
     }
+    try { const gg = db.prepare('SELECT name FROM groups WHERE id=?').get(groupId); backfillGroupAssignments({ id: user.id, name: user.name, email: mail }, groupId, gg ? gg.name : ''); } catch (e) { console.error('[backfill]', e.message); }
     res.json({ ok: true, status: 'added', name: user.name, email: mail });
   } else {
     // Chưa có tài khoản → lưu lời mời, gửi email
@@ -2302,6 +2307,13 @@ app.get('/api/me/classes', requireAuth, (req, res) => {
   res.json({ open: openClasses(), mine, pending: pend, can_choose: req.user.role === 'student', choice: (ch && ch.class_choice) || null });
 });
 // Giao lại cho học sinh mới vào lớp các bài đã giao cho lớp (còn hạn hoặc không có hạn)
+// Các module (trắc nghiệm, tự luận, bộ từ, speaking…) đăng ký hàm ở đây để học sinh vào lớp SAU khi giao bài vẫn nhận được bài còn hạn
+app.locals.classJoin = [];
+function runClassJoin(user, groupId, groupName) {
+  let n = 0;
+  for (const fn of app.locals.classJoin) { try { n += Number(fn(user, groupId, groupName)) || 0; } catch (e) { console.error('[classJoin]', e.message); } }
+  return n;
+}
 function backfillGroupAssignments(user, groupId, groupName) {
   const byEx = new Map();
   for (const r of db.prepare('SELECT exercise_id, assigned_by, deadline, note, strict, max_leaves FROM assignments WHERE group_id=? ORDER BY id').all(groupId)) byEx.set(r.exercise_id, r);
@@ -2318,7 +2330,7 @@ function backfillGroupAssignments(user, groupId, groupName) {
     const ex = db.prepare('SELECT title FROM exercises WHERE id=?').get(r.exercise_id); if (ex) titles.push(ex.title); n++;
   }
   if (n) notifyUser(user.id, 'assignment_created', '📝 Bạn có ' + n + ' bài tập của lớp ' + groupName, titles.slice(0, 3).join(' · ') + (n > 3 ? '…' : ''), '/assigned.html');
-  return n;
+  return n + runClassJoin(user, groupId, groupName);
 }
 // Đưa học sinh vào lớp (nguồn 'self'): bỏ lớp tự chọn cũ, thêm thành viên, gộp lời mời theo email, giao lại bài còn hạn. Gọi bên trong BEGIN/COMMIT.
 function applySelfJoin(user, g) {

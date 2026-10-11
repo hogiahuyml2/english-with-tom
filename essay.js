@@ -147,6 +147,17 @@ module.exports = function registerEssay(app, { db, requireAuth, requireRole, now
     });
     return n;
   }
+  if (app.locals.classJoin) app.locals.classJoin.push((user, gid, gname) => {
+    let n = 0;
+    for (const r of all('SELECT t.id FROM essay_targets et JOIN essay_tasks t ON t.id=et.task_id WHERE et.group_id=?', gid)) {
+      const t = taskOf(r.id); if (!t || t.status !== 'open') continue;
+      if (t.deadline && !t.allow_late && Date.now() > msOf(t.deadline)) continue; // hết hạn → không báo
+      if (one('SELECT 1 x FROM essay_subs WHERE task_id=? AND user_id=?', t.id, user.id)) continue;
+      syncAssignments(t); n++;
+      try { notifyUser(user.id, 'essay_assigned', '✍️ Bài tự luận mới: ' + t.title + ' (lớp ' + gname + ')', (t.minutes ? 'Thời gian ' + t.minutes + ' phút. ' : '') + (t.deadline ? 'Hạn nộp: ' + new Date(t.deadline).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : ''), 'essay.html?id=' + t.id); } catch (e) {}
+    }
+    return n;
+  });
   function notifyNew(t) {
     const link = 'essay.html?id=' + t.id;
     targetUsers(t).forEach((uid) => {

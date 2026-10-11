@@ -188,6 +188,16 @@ module.exports = function (app, deps) {
   const ownGroup = (u, gid) => { const g = one('SELECT id,name,teacher_id FROM groups WHERE id=?', Number(gid)); return g && (u.role === 'admin' || g.teacher_id === u.id) ? g : null; };
   const partsLabel = (p) => (p && p.length ? 'Part ' + p.join(', ') : 'cả bài');
 
+  if (app.locals.classJoin) app.locals.classJoin.push((user, gid, gname) => {
+    let n = 0;
+    for (const a of all('SELECT * FROM speaking_assign WHERE group_id=?', gid)) {
+      if (a.deadline && dlMs(a.deadline) && dlMs(a.deadline) < Date.now()) continue; // hết hạn → không báo
+      if (!BANK.FORMATS[a.exam]) continue;
+      n++;
+      try { notifyUser(user.id, 'speaking_assigned', '🎤 Bài Speaking của lớp ' + gname + ': ' + BANK.FORMATS[a.exam].short + ' (' + partsLabel(a.parts ? JSON.parse(a.parts) : null) + ')', (a.deadline ? 'Hạn: ' + fmtVN(a.deadline) + '. ' : '') + (a.note ? String(a.note).slice(0, 120) : 'Ghi âm và nhận nhận xét từ AI.'), '/speaking.html'); } catch (e) {}
+    }
+    return n;
+  });
   app.post('/api/teacher/speaking/assign', T, (req, res) => {
     const b = req.body || {}, exam = String(b.exam || '');
     if (!BANK.FORMATS[exam]) return res.status(400).json({ error: 'Hãy chọn kỳ thi.' });
