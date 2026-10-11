@@ -63,6 +63,7 @@ button { font-family: inherit; cursor: pointer; }
 .pst { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; } .pst div { background: #F3F6FF; border-radius: 12px; padding: 6px 8px; text-align: center; font-size: 11.5px; color: var(--muted); font-weight: 700; } .pst b { display: block; font-size: 15px; color: var(--ink); }
 .pleg { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; } .pleg span { display: flex; align-items: center; gap: 5px; background: #F3F6FF; border-radius: 12px; padding: 3px 9px 3px 4px; font-size: 12px; font-weight: 700; } .pleg span.lk { opacity: .55; } .pleg canvas { width: 34px; height: 34px; }
 .pf .chipf.big { font-size: 14px; padding: 7px 14px; } .rcard canvas { aspect-ratio: 4 / 3; }
+.hlg { display: inline-flex; gap: 3px; vertical-align: middle; margin: 0 4px; } .hlg i { width: 16px; height: 10px; border-radius: 3px; display: inline-block; } #heatB.on { outline: 3px solid #2563eb; }
 .advn { display: none; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; place-items: center; padding: 0 4px; font-weight: 800; margin-left: 2px; } #advB.has .advn, #achB.has .advn { display: inline-grid; } #achB.has { animation: advp 2.2s ease-in-out infinite; } #advB.has { animation: advp 2.2s ease-in-out infinite; } @keyframes advp { 50% { box-shadow: 0 0 0 6px rgba(255,200,40,.45); } }
 .adv-sum { background: #FFF8DA; border-radius: 14px; padding: 10px 12px; margin: 4px 0 10px; font-size: 13.5px; } .adv-d { border: 1px solid var(--line, #E3E8F2); border-radius: 16px; padding: 10px 12px; margin: 0 0 10px; background: #fff; } .adv-d h4 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .adv-d h4 .sp { flex: 1; } .adv-bar { height: 7px; border-radius: 4px; background: #E9EEF7; overflow: hidden; margin: 2px 0 8px; } .adv-bar i { display: block; height: 100%; background: linear-gradient(90deg, #43C46B, #8BE04E); }
 .adv-t { padding: 8px 0; border-top: 1px dashed #E3E8F2; font-size: 13.5px; } .adv-t b { font-size: 14px; } .adv-t .w { color: var(--muted); font-size: 12.5px; margin: 1px 0 5px; } .adv-p { display: inline-block; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 9px; margin-left: 4px; } .adv-p.p1 { background: #FFE0DD; color: #B3261E; } .adv-p.p2 { background: #FFF1CC; color: #8A5A00; } .adv-p.p3 { background: #E6F2FF; color: #1D5FA8; }
@@ -115,7 +116,7 @@ button { font-family: inherit; cursor: pointer; }
 .modal.peek { place-items: end center; background: rgba(20,30,60,.08); pointer-events: none; } .modal.peek .box { pointer-events: auto; margin-bottom: calc(var(--bot) + 66px); }
 .lk2 { position: absolute; top: 6px; left: 6px; background: #FFF1C9; color: #8A5A00; border-radius: 8px; padding: 2px 6px; font-size: 11px; font-weight: 800; }
 
-.visiting #photoB, .visiting #advB, .visiting #achB, .visiting #bar, .visiting #coinB, .visiting #tkChip, .visiting #cpChip, .visiting #pbar, .visiting #rbar { display: none !important; }
+.visiting #heatB, .visiting #photoB, .visiting #advB, .visiting #achB, .visiting #bar, .visiting #coinB, .visiting #tkChip, .visiting #cpChip, .visiting #pbar, .visiting #rbar { display: none !important; }
 #visBar { position: fixed; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0px) + 58px); z-index: 30; display: none; gap: 8px; align-items: center; background: rgba(255,255,255,.96); border-radius: 18px; padding: 8px 10px; box-shadow: 0 6px 22px rgba(10,30,80,.3); max-width: calc(100vw - 20px); flex-wrap: wrap; justify-content: center; } .visiting #visBar { display: flex; } #visBar b { font-size: 14px; } #visBar .btn { padding: 7px 10px; font-size: 13px; }
 .frow { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 2px solid var(--line); border-radius: 14px; background: #fff; margin-bottom: 7px; } .frow.me { border-color: #7B6BFF; background: #F3F1FF; } .frow .nm { flex: 1; min-width: 0; font-weight: 800; font-size: 14px; } .frow .nm small { display: block; font-weight: 600; color: var(--mut); font-size: 12px; } .frow .btn { padding: 6px 10px; font-size: 12.5px; } .frow .rk { width: 30px; text-align: center; font-weight: 800; font-size: 16px; }
 .pj { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; margin-bottom: 8px; } .pj.done { border-color: #5BCB8B; background: #F2FCF6; } .pj .pb { height: 12px; border-radius: 8px; background: #E6EBF5; overflow: hidden; margin: 6px 0; } .pj .pb i { display: block; height: 100%; background: linear-gradient(90deg, #4CD08A, #2BB673); }
@@ -154,6 +155,7 @@ button { font-family: inherit; cursor: pointer; }
   <button class="rbtn" id="zOut" type="button" aria-label="Thu nhỏ">－</button>
   <button class="rbtn" id="rL" type="button" aria-label="Xoay trái">⟲</button>
   <button class="rbtn" id="rR" type="button" aria-label="Xoay phải">⟳</button>
+  <button class="rbtn" id="heatB" type="button" aria-label="Bản đồ hạnh phúc" title="Bản đồ hạnh phúc: ô nào dân vui, ô nào thiếu dịch vụ">🌡️</button>
   <button class="rbtn" id="photoB" type="button" aria-label="Chụp ảnh thành phố" title="Chụp ảnh thành phố (lưu về máy)">📸</button>
   <button class="rbtn" id="zAll" type="button" aria-label="Xem toàn thành phố" title="Xem toàn thành phố">🗺️</button>
 </div>
@@ -170,6 +172,7 @@ button { font-family: inherit; cursor: pointer; }
   <button class="tb" id="bDist" type="button"><span class="ic">🗺️</span>Các quận</button>
 </div>
 
+<div class="pbar" id="heatBar"><div style="flex:1 1 100%;text-align:center"><div class="t" id="heatT"></div><div class="sub" id="heatS"></div></div><div class="pbreak"></div><button class="btn sm" id="heatAdv" type="button">💡 Xem gợi ý xây</button><button class="btn pri sm" id="heatX" type="button">✕ Tắt bản đồ</button></div>
 <div class="pbar" id="pickBar"><div style="flex:1 1 100%;text-align:center"><div class="t" id="pickT"></div><div class="sub" id="pickS"></div></div><div class="pbreak"></div><button class="btn sm" id="pickOri" type="button" style="display:none">↔️ Đổi hướng</button><button class="btn sm" id="pickX" type="button">✕ Huỷ</button><button class="btn pri sm" id="pickGo" type="button">✓ Áp dụng</button></div>
 <div class="pbar" id="pbar"><div><div class="t" id="pName"></div><div class="err" id="pErr"></div></div><label style="font-size:12px;font-weight:700;display:flex;gap:5px;align-items:center"><input type="checkbox" id="pCont"> Đặt liên tục</label><button class="btn bad" id="pNo" type="button">✗ Hủy</button><button class="btn good" id="pOk" type="button">✓ Đặt</button>
   <div class="pbreak"></div>
@@ -212,7 +215,7 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=3"></script>
 <script src="js/city-art4.js?v=2"></script>
-<script src="js/city-engine.js?v=17"></script>
+<script src="js/city-engine.js?v=18"></script>
 <script>
 (function () {
 'use strict';
@@ -234,12 +237,17 @@ function saveSet() { try { localStorage.setItem('ewt-city-set', JSON.stringify(s
 
 /* ───── khởi động động cơ ───── */
 ENG = new EWTCityEngine($('cv'), $('mm'), {
-  onSelect: function (b) { if (VIS) { if (b) toast('🏠 ' + esc(C.BY[b.k].en) + ' — ' + esc(C.BY[b.k].vi) + ' (cấp ' + b.lv + ')', 2200); ENG.sel = -1; return; } if (b) openInfo(b.i); else { INFO = null; $('infoS').classList.remove('on'); } },
+  onSelect: function (b) { if (b && ENG.heatOn) heatToggle(false); if (VIS) { if (b) toast('🏠 ' + esc(C.BY[b.k].en) + ' — ' + esc(C.BY[b.k].vi) + ' (cấp ' + b.lv + ')', 2200); ENG.sel = -1; return; } if (b) openInfo(b.i); else { INFO = null; $('infoS').classList.remove('on'); } },
   onBubble: function (b) { collect(b.i); },
   onPlace: function (g) { placeNow(); },
   onGhost: function (g) { updatePbar(); },
   onRoad: function (cells, tapOnly) { roadDone(cells, tapOnly); },
   onRoadTap: function (i) { if (ENG.mode === 'road' && ROADDEL) removeRoad([i]); },
+  onHeat: function (x, y, h) {
+    var col = h.score < 25 ? '#dc2626' : h.score < 45 ? '#ea580c' : h.score < 65 ? '#ca8a04' : h.score < 85 ? '#65a30d' : '#16a34a', lbl = h.score < 25 ? 'Rất thiếu' : h.score < 45 ? 'Còn thiếu nhiều' : h.score < 65 ? 'Tạm ổn' : h.score < 85 ? 'Khá tốt' : 'Rất tốt';
+    $('heatT').innerHTML = '📍 Ô này: <b style="color:' + col + '">' + h.score + '/100 — ' + lbl + '</b>';
+    $('heatS').innerHTML = (h.miss.length ? 'Gần đây còn thiếu: ' + h.miss.slice(0, 4).map(function (m) { return m.ic + ' ' + esc(m.n) + (m.far > 0 ? ' (xa ' + m.far + ' ô)' : ''); }).join(' · ') : '✅ Đủ mọi dịch vụ ở gần') + (h.polluted ? ' · 🏭 gần nhà máy (ô nhiễm)' : '');
+  },
   onFixed: function (f) { var d = C.FIXED_DEF[f.k]; if (d) { toast('🏛️ <b>' + d.en + '</b> — ' + d.vi + ' <button class="x" style="width:28px;height:28px;margin-left:6px" id="fxSay">🔊</button>', 3500); setTimeout(function () { var b = $('fxSay'); if (b) b.onclick = function () { say(d.en); }; }, 30); } },
   onLocked: function (d) { if (!VIS) openDist(d); },
   onMode: function (m) { $('bRoad').classList.toggle('on', m === 'road'); },
@@ -299,7 +307,7 @@ function pick(it) {
   if (!(S.free[it.k] > 0) && !(S.inv[it.k] > 0) && S.coins < it.cost) toast('Bạn chưa đủ xu cho ' + it.vi + ' (cần ' + fmt(it.cost) + ') — hãy 🧠 Kiếm xu hoặc xây nhà rẻ trước nhé.', 3600);
   $('shopS').classList.remove('on'); SEL = it; PCOL = ''; PFACE = 'auto'; PSWKEY = ''; $('pPaint').checked = false; setMode('place', it.k); say(it.en);
 }
-function setMode(m, k) { if (PICK && m !== 'view') pickEnd(); ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); $('mbar').classList.toggle('on', m === 'multi'); $('bMulti').classList.toggle('on', m === 'multi'); if (m === 'multi') { $('mBox').checked = false; updateMbar(); } if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
+function setMode(m, k) { if (PICK && m !== 'view') pickEnd(); if (ENG.heatOn && m !== 'view') heatToggle(false); ENG.setMode(m, k); $('pbar').classList.toggle('on', m === 'place'); $('rbar').classList.toggle('on', m === 'road'); $('mbar').classList.toggle('on', m === 'multi'); $('bMulti').classList.toggle('on', m === 'multi'); if (m === 'multi') { $('mBox').checked = false; updateMbar(); } if (m === 'place') updatePbar(); if (m === 'road') { ROADCELLS = []; roadBar(); } if (m === 'view') { SEL = null; } $('bRoad').classList.toggle('on', m === 'road'); }
 function updatePbar() {
   var g = ENG.ghost; if (!g) return; var it = C.BY[g.k]; ghostApply(g); pbarSwatches(it); $('pPaintL').style.display = it.w === 1 && it.h === 1 ? '' : 'none'; if (!(it.w === 1 && it.h === 1)) { $('pPaint').checked = false; ENG.paint = false; } var free = (S.free[it.k] | 0) > 0; $('pName').innerHTML = esc(it.en) + ' · <span style="font-weight:600;color:var(--muted)">' + esc(it.vi) + '</span> — ' + (free ? '<b style="color:var(--good)">MIỄN PHÍ</b>' : COIN + ' <b>' + fmt(it.cost) + '</b>'); $('pErr').textContent = g.ok ? '' : g.err; $('pOk').disabled = !g.ok;
 }
@@ -521,6 +529,11 @@ function photoShot() {
     o.toBlob(function (bl) { if (!bl) return toast('Chưa chụp được ảnh, thử lại nhé.'); var a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = 'ewt-city-' + new Date().toISOString().slice(0, 10) + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); SND('coin'); toast('📸 Đã chụp ảnh thành phố — kiểm tra thư mục Tải xuống nhé!', 3200); }, 'image/png');
   } catch (e) { toast('Chưa chụp được ảnh, thử lại nhé.'); }
 }
+function heatToggle(on) {
+  if (VIS) return; if (on === undefined) on = !ENG.heatOn; ENG.setHeat(on); $('heatB').classList.toggle('on', on); $('heatBar').classList.toggle('on', on);
+  if (on) { setMode('view'); closeSheets(); var sm = ENG.heatSummary(); $('heatT').innerHTML = '🌡️ Bản đồ hạnh phúc — điểm trung bình <b>' + sm.avg + '/100</b> <span class="hlg"><i style="background:#dc2626"></i><i style="background:#ea580c"></i><i style="background:#eab308"></i><i style="background:#84cc16"></i><i style="background:#16a34a"></i></span>'; $('heatS').textContent = 'Đỏ = thiếu dịch vụ, xanh = dân vui. Chạm vào một ô đất để xem chỗ đó còn thiếu gì.'; }
+}
+$('heatB').onclick = function () { heatToggle(); }; $('heatX').onclick = function () { heatToggle(false); }; $('heatAdv').onclick = function () { heatToggle(false); openAdvice(); };
 function openAdvice() {
   if (VIS) return; closeSheets(); setMode('view'); var a = advRun(true); if (!a) return toast('Chưa tải được gợi ý, thử lại nhé.');
   var h = '', open = a.districts.filter(function (x) { return x.open; }), tot = open.length ? Math.round(open.reduce(function (s2, x) { return s2 + x.pct; }, 0) / open.length) : 0;

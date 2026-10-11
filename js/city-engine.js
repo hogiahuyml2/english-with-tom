@@ -250,6 +250,7 @@
     if (b) { E.sel = b.i; E.reveal(b); if (E.o.onSelect) E.o.onSelect(b); return; }
     // công trình cố định / quận khoá
     if (C.inW(t[0], t[1])) { var i = t[1] * W + t[0], f = C.FOCC[i]; if (f >= 0) { E.fixFlash = { f: C.FIXED[f], t0: E.t }; if (E.o.onFixed) E.o.onFixed(C.FIXED[f]); return; } var d = C.DIST[i]; if (d !== 255 && !E.open[d]) { E.flashDistrict(d); if (E.o.onLocked) E.o.onLocked(d); return; } if (C.ROAD[i] === 0 && E.roadsX[i]) { if (E.o.onRoadTap) E.o.onRoadTap(i); return; } }
+    if (E.heatOn && C.inW(t[0], t[1])) { var hi = E.heatInfo(t[0], t[1]); if (hi) { E.heatSel = { x: t[0], y: t[1], t0: E.t }; if (E.o.onHeat) E.o.onHeat(t[0], t[1], hi); return; } }
     E.sel = -1; if (E.o.onSelect) E.o.onSelect(null);
   };
   /* ───── chọn nhiều / vẽ nhiều ô ───── */
@@ -311,6 +312,48 @@
     var E = this, it = C.BY[b.k]; if (!it) return; var s = scr(E.rot, b.x + it.w / 2, b.y + it.h / 2), sy = (s[1] - E.cam.y) * E.cam.z + E.ch / 2; if (sy < E.ch * .36) return;
     E.goto(E.cam.x, s[1] + E.ch * .36 / E.cam.z, E.cam.z);
   };
+  /* ───── 🌡️ BẢN ĐỒ HẠNH PHÚC: mỗi ô đất được chấm điểm theo các dịch vụ (trường, y tế, an ninh, cây xanh, cửa hàng, giao thông) ở gần đó ───── */
+  var HSVC = [
+    { id: 'edu', ic: '🏫', n: 'trường học / thư viện', w: 22, r: 13, f: function (it) { return it.k === 'school' || it.k === 'kindergarten' || it.k === 'library' || it.k === 'university' || it.cat === 'edu'; } },
+    { id: 'health', ic: '🏥', n: 'phòng khám / bệnh viện', w: 22, r: 15, f: function (it) { return it.k === 'clinic' || it.k === 'hospital' || it.k === 'pharmacy' || it.k === 'smarthospital' || it.k === 'hospitaltower'; } },
+    { id: 'safe', ic: '🚓', n: 'công an / cứu hoả', w: 14, r: 16, f: function (it) { return it.k === 'police' || it.k === 'firestation' || it.k === 'coastguard'; } },
+    { id: 'green', ic: '🌳', n: 'công viên / cây xanh', w: 22, r: 7, f: function (it) { return it.cat === 'park' || it.cat === 'tree' || it.cat === 'flower'; } },
+    { id: 'shop', ic: '🛒', n: 'cửa hàng', w: 12, r: 10, f: function (it) { return it.cat === 'shop'; } },
+    { id: 'bus', ic: '🚏', n: 'giao thông (buýt, ga, taxi)', w: 8, r: 11, f: function (it) { return it.k === 'busstop' || it.k === 'taxistand' || it.k === 'metroentry' || it.k === 'busterminal' || it.k === 'trainstation' || it.k === 'railstation' || it.k === 'busdepot'; } }
+  ];
+  var HPOL = function (it) { return it.cat === 'port' && it.inc > 1500; };   // nhà máy / điện / công nghiệp lớn gây ô nhiễm
+  P.heatData = function () {
+    var E = this; if (E.heat && E.heat.v === E.version) return E.heat; var T = C.TERR, R = C.ROAD, i, j, x, y, pts = HSVC.map(function () { return []; }), pol = [];
+    E.bs.forEach(function (b) { if (b.lv < 1) return; var it = C.BY[b.k]; if (!it) return; var cx = b.x + it.w / 2, cy = b.y + it.h / 2; for (i = 0; i < HSVC.length; i++) if (HSVC[i].f(it)) pts[i].push([cx, cy]); if (HPOL(it)) pol.push([cx, cy]); });
+    var sc = new Uint8Array(W * H).fill(255), buckets = [new Uint8Array(W * H), new Uint8Array(W * H), new Uint8Array(W * H), new Uint8Array(W * H), new Uint8Array(W * H)];
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      i = y * W + x; if (T[i] !== 0 || R[i] || E.roadsX[i] || C.FOCC[i] >= 0 || !E.open[C.DIST[i]]) continue;
+      var tot = 0; for (j = 0; j < HSVC.length; j++) { var v = HSVC[j], best = 1e9, a = pts[j], k; for (k = 0; k < a.length; k++) { var dx = a[k][0] - x - .5, dy = a[k][1] - y - .5, d2 = dx * dx + dy * dy; if (d2 < best) best = d2; } var d = Math.sqrt(best); tot += d <= v.r ? v.w : d >= v.r * 1.6 ? 0 : v.w * (1 - (d - v.r) / (v.r * .6)); }
+      var pen = 0; for (k = 0; k < pol.length; k++) { var px = pol[k][0] - x - .5, py = pol[k][1] - y - .5, pd = Math.sqrt(px * px + py * py); if (pd < 7) pen = Math.max(pen, 18 * (1 - pd / 7)); }
+      var s2 = Math.max(0, Math.min(100, Math.round(tot - pen))); sc[i] = s2; buckets[s2 < 25 ? 0 : s2 < 45 ? 1 : s2 < 65 ? 2 : s2 < 85 ? 3 : 4][i] = 1;
+    }
+    return (E.heat = { v: E.version, sc: sc, bk: buckets, pts: pts, pol: pol, paths: null, pr: -1 });
+  };
+  P.heatPaths = function () {
+    var E = this, h = E.heatData(); if (h.paths && h.pr === E.rot) return h.paths; var ps = [], b;
+    for (b = 0; b < 5; b++) { var p = new Path2D(), bk = h.bk[b]; runs(p, E.rot, 0, 0, W, H, function (x, y) { return bk[y * W + x] === 1; }); ps.push(p); } h.paths = ps; h.pr = E.rot; return ps;
+  };
+  // thông tin cho một ô: điểm 0–100 và các dịch vụ còn thiếu (xếp theo mức quan trọng)
+  P.heatInfo = function (x, y) {
+    var E = this, h = E.heatData(), s = h.sc[y * W + x]; if (s === 255) return null; var miss = [], j, k, pen = false;
+    for (j = 0; j < HSVC.length; j++) { var v = HSVC[j], best = 1e9; for (k = 0; k < h.pts[j].length; k++) { var dx = h.pts[j][k][0] - x - .5, dy = h.pts[j][k][1] - y - .5, d = Math.sqrt(dx * dx + dy * dy); if (d < best) best = d; } if (best > v.r) miss.push({ id: v.id, ic: v.ic, n: v.n, far: best > 1e8 ? -1 : Math.round(best), w: v.w }); }
+    for (k = 0; k < h.pol.length; k++) { var px = h.pol[k][0] - x - .5, py = h.pol[k][1] - y - .5; if (Math.sqrt(px * px + py * py) < 7) pen = true; }
+    miss.sort(function (a, b) { return b.w - a.w; }); return { score: s, miss: miss, polluted: pen };
+  };
+  P.heatSummary = function () {   // điểm trung bình toàn thành phố + dịch vụ thiếu nhiều nhất
+    var E = this, h = E.heatData(), n = 0, tot = 0, i; for (i = 0; i < h.sc.length; i++) if (h.sc[i] !== 255) { n++; tot += h.sc[i]; } return { n: n, avg: n ? Math.round(tot / n) : 0 };
+  };
+  P.drawHeat = function (ctx) {
+    var E = this; if (!E.heatOn) return; var ps = E.heatPaths(), cols = ['rgba(235,60,60,.5)', 'rgba(250,140,40,.46)', 'rgba(250,215,50,.42)', 'rgba(150,215,70,.42)', 'rgba(50,190,100,.42)'], b;
+    for (b = 0; b < 5; b++) { ctx.fillStyle = cols[b]; ctx.fill(ps[b]); }
+    if (E.heatSel) { var hs = E.heatSel, p = new Path2D(); quadW(p, E.rot, [[hs.x, hs.y], [hs.x + 1, hs.y], [hs.x + 1, hs.y + 1], [hs.x, hs.y + 1]]); ctx.lineWidth = Math.max(2, 3 / E.cam.z); ctx.strokeStyle = '#fff'; ctx.stroke(p); ctx.strokeStyle = '#2563eb'; ctx.lineWidth = Math.max(1, 1.5 / E.cam.z); ctx.stroke(p); }
+  };
+  P.setHeat = function (on) { this.heatOn = !!on; if (!on) this.heatSel = null; };
   P.drawBox = function (ctx) { var r = this.mrect; if (!r) return; ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.fillStyle = 'rgba(60,200,130,.18)'; ctx.strokeStyle = 'rgba(30,170,100,.95)'; ctx.lineWidth = 2; ctx.setLineDash([7, 5]); ctx.fillRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.restore(); };
   P.pickBubble = function (px, py) {
     var E = this, i, b, best = null; if (E.cam.z < .45) return null;
@@ -395,6 +438,7 @@
       var al = E.allowedPath(), gp = .5 + .5 * Math.sin(E.t * 3.2); ctx.fillStyle = 'rgba(50,235,125,' + (.32 + .24 * gp).toFixed(2) + ')'; ctx.fill(al.ok); ctx.fillStyle = 'rgba(255,200,60,' + (.2 + .14 * gp).toFixed(2) + ')'; ctx.fill(al.near);
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(80,255,170,' + (.08 + .16 * gp).toFixed(2) + ')'; ctx.fill(al.ok);
       if (!E.mobile) { ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(1.5, 3 / z); ctx.strokeStyle = 'rgba(200,255,225,' + (.45 + .4 * gp).toFixed(2) + ')'; ctx.stroke(al.ok); } ctx.restore(); }
+    E.drawHeat(ctx);
     if (E.showZones) { Object.keys(C.ZONE_COLOR).forEach(function (zk) { ctx.fillStyle = C.ZONE_COLOR[zk] + '66'; ctx.fill(E.zonePath(zk)); }); }
     // đường
     ctx.fillStyle = '#5C6472'; chs.forEach(function (c) { ctx.fill(c.road); });
