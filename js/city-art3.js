@@ -361,4 +361,5 @@
     lot(g, rw, rh, '#B9B3A6'); var z = H(lv, 380, 440); g.box(.15, .15, rw - .3, rh - .3, 0, 18, '#E8EDF2'); var p = g.P(rw / 2, rh / 2, 18), q = g.P(rw / 2, rh / 2, z); g.poly([[p[0] - 14, p[1]], [p[0] + 14, p[1]], [q[0] + 4, q[1]], [q[0] - 4, q[1]]], '#DDE6F0', INK);
     var pod = g.P(rw / 2, rh / 2, z * .7); g.ell(pod[0], pod[1], 20, 7, '#B9C6D8', INK); g.ell(pod[0], pod[1] - 5, 20, 7, '#DDE6F0', INK); g.ell(pod[0], pod[1] - 11, 13, 4.5, '#6FB5E3'); var p2 = g.P(rw / 2, rh / 2, z * .9); g.ell(p2[0], p2[1], 9, 3.4, '#B9C6D8', INK); g.line(q, g.P(rw / 2, rh / 2, z + 130), '#E9573F', 1.8); beacon(g, rw / 2, rh / 2, z + 130); g.doorL(.15, .15, rw - .3, rh - .3, .5, 0, .22, 10, '#1F3A5F');
   });
+  A.kit = { tower: tower, house: house, lot: lot, beacon: beacon, sign: sign, smoke: smoke, H: H, def: def, shadowAt: shadowAt, dot: dot, INK: INK };
 })(typeof window !== 'undefined' ? window : this);

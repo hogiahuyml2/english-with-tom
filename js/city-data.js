@@ -643,6 +643,87 @@
     for (d = 0; d < 4; d++) { cnt = 0; for (k = 0; k < (d % 2 ? it.h : it.w); k++) { var tx = d === 0 ? x + k : d === 2 ? x + k : d === 1 ? x + it.w : x - 1, ty = d === 1 || d === 3 ? y + k : d === 0 ? y + it.h : y - 1; if (isRoadAt(tx, ty, st.roads)) cnt++; } if (cnt > bc) { bc = cnt; best = d; } }
     return best;
   }
+
+  /* ───── công trình CAO CẤP mở khoá từ cấp 23 đến 120 (siêu tháp, kỳ quan, công nghệ…) ───── */
+  (function () {
+    // [mã, en, vi, loại, w, h, khu, cấp, quận, chương, kiểu kinh tế, mô tả]
+    var T = [
+      ['skyvilla', 'Sky Villa', 'Biệt thự trên không', 'home', 3, 2, 'r', 23, [0, 6, 8], 'home2', 'home', 'A glass villa with a rooftop pool.'],
+      ['auroratower', 'Aurora Residences', 'Cao ốc Cực Quang', 'home', 3, 3, 'rc', 25, [0, 1], 'home2', 'home', 'Green glass apartments with a helipad.'],
+      ['vgarden', 'Vertical Garden Tower', 'Toà nhà vườn đứng', 'home', 3, 3, 'rc', 28, [0, 1], 'home2', 'home', 'Every floor has a balcony full of plants.'],
+      ['marinaresi', 'Marina Residences', 'Căn hộ Bến Du Thuyền', 'home', 4, 3, 'rc', 31, [0, 1, 6], 'home2', 'home', 'Twin towers by the water.'],
+      ['crystalvilla', 'Crystal Villa', 'Biệt thự Pha Lê', 'home', 3, 3, 'r', 34, [0, 6, 8], 'home2', 'home', 'A sparkling glass villa.'],
+      ['greentower', 'Eco Tower', 'Toà nhà Sinh Thái', 'home', 3, 3, 'rc', 38, [0, 1], 'home2', 'home', 'A green tower full of trees.'],
+      ['diamondtower', 'Diamond Residences', 'Chung cư Kim Cương', 'home', 3, 3, 'rc', 44, [0, 1], 'home2', 'home', 'A twisting diamond-glass tower.'],
+      ['royalpalace', 'Royal Palace', 'Cung điện Hoàng Gia', 'home', 5, 4, 'r', 50, [0, 6, 8], 'home2', 'home', 'A palace with golden domes.'],
+      ['cloudapts', 'Cloud Apartments', 'Căn hộ Trên Mây', 'home', 4, 4, 'rc', 58, [0, 1], 'home2', 'home', 'Terraced towers above the clouds.'],
+      ['arcology', 'Arcology Pyramid', 'Thành phố trong tháp', 'home', 5, 5, 'rc', 70, [0, 1], 'home2', 'home', 'A whole town inside one green pyramid.'],
+      ['orbitalresi', 'Orbital Residences', 'Cao ốc Vành Đai', 'home', 4, 4, 'rc', 85, [0, 1], 'home2', 'home', 'A tower with a ring in the sky.'],
+      ['edensky', 'Eden Skycity', 'Thiên Đường Xanh', 'home', 5, 5, 'rc', 100, [0, 1], 'home2', 'home', 'Four green towers: a garden city in the sky.'],
+      ['techhub', 'Tech Hub Tower', 'Toà Công Nghệ', 'shop', 3, 3, 'c', 23, [0, 1], 'town2', 'shop', 'Start-ups and computers work here.'],
+      ['sapphire', 'Sapphire Tower', 'Toà Sapphire', 'shop', 3, 3, 'c', 26, [0, 1], 'town2', 'shop', 'A deep-blue glass tower.'],
+      ['auroramall', 'Aurora Mall', 'TTTM Cực Quang', 'shop', 4, 4, 'c', 29, [0, 1], 'town2', 'shop', 'A shiny purple shopping mall.'],
+      ['goldbank', 'Golden Bank Tower', 'Toà Ngân hàng Vàng', 'shop', 3, 3, 'c', 32, [0, 1], 'town2', 'shop', 'A bank tower with a golden crown.'],
+      ['quantumtower', 'Quantum Tower', 'Toà Lượng Tử', 'shop', 3, 3, 'c', 36, [0, 1], 'town2', 'shop', 'A violet tower that twists as it rises.'],
+      ['digitalplaza', 'Digital Plaza', 'Quảng trường Số', 'shop', 4, 4, 'c', 40, [0, 1], 'town2', 'shop', 'Twin screens and neon lights.'],
+      ['neonskyline', 'Neon Skyline Tower', 'Toà Neon', 'shop', 3, 3, 'c', 45, [0, 1], 'town2', 'shop', 'It glows pink and blue all night.'],
+      ['globetower', 'Globe Tower', 'Toà Quả Cầu', 'shop', 3, 3, 'c', 52, [0, 1], 'town2', 'shop', 'A giant glass globe on a tower.'],
+      ['sailhotel', 'Sail Hotel', 'Khách sạn Cánh Buồm', 'shop', 4, 3, 'c', 55, [0, 1, 6], 'town2', 'shop', 'A hotel shaped like a huge sail.'],
+      ['galaxymall', 'Galaxy Mall', 'TTTM Dải Ngân Hà', 'shop', 5, 5, 'c', 62, [0, 1], 'town2', 'shop', 'The biggest mall under a ring of stars.'],
+      ['obsidian', 'Obsidian Spire', 'Tháp Hắc Diện', 'shop', 3, 3, 'c', 68, [0, 1], 'town2', 'shop', 'A black glass spire with cyan lights.'],
+      ['crownfinance', 'Crown Finance Tower', 'Toà Vương Miện', 'shop', 4, 4, 'c', 76, [0, 1], 'town2', 'shop', 'The golden crown of the city.'],
+      ['titantower', 'Titan Tower', 'Tháp Titan', 'shop', 4, 4, 'c', 90, [0, 1], 'town2', 'shop', 'A supertall tower with a golden spire.'],
+      ['apexneedle', 'Apex Sky Needle', 'Kim Chọc Trời', 'shop', 4, 4, 'c', 110, [0, 1], 'town2', 'shop', 'The tallest needle in the world.'],
+      ['smarthospital', 'Smart Hospital', 'Bệnh viện Thông Minh', 'civic', 4, 3, 's', 24, [0, 1], 'civic1', 'civic', 'A hospital with robots and a helipad.'],
+      ['futurelibrary', 'Future Library', 'Thư viện Tương Lai', 'civic', 4, 3, 's', 27, [0, 1], 'civic1', 'civic', 'Books and screens under a glass dome.'],
+      ['innovuni', 'Innovation University', 'Đại học Đổi Mới', 'edu', 4, 4, 'e', 33, [4], 'edu2', 'edu', 'Two brick towers of new ideas.'],
+      ['scienceorb', 'Science Orb', 'Bảo tàng Quả Cầu', 'edu', 3, 3, 'e', 41, [4], 'edu2', 'edu', 'A huge globe full of science.'],
+      ['spaceobs', 'Space Observatory', 'Đài Vũ Trụ', 'edu', 3, 3, 'e', 48, [4], 'edu2', 'edu', 'A big telescope looks at the stars.'],
+      ['airesearch', 'AI Institute', 'Viện Trí Tuệ Nhân Tạo', 'edu', 4, 4, 'e', 56, [4], 'edu2', 'edu', 'Smart computers learn here.'],
+      ['megaacademy', 'Mega Academy', 'Học Viện Đại Siêu', 'edu', 5, 4, 'e', 73, [4], 'edu2', 'edu', 'A grand academy with a clock tower.'],
+      ['megawheel', 'Mega Wheel', 'Vòng Quay Siêu Khổng Lồ', 'fun', 4, 4, 'f', 30, [3], 'fun2', 'fun', 'A wheel so big you can see the whole city.'],
+      ['skycoaster', 'Sky Coaster Park', 'Công viên Tàu Lượn Trời', 'fun', 5, 4, 'f', 37, [3], 'fun2', 'fun', 'A fast roller coaster in the sky.'],
+      ['aquadome', 'Aqua Dome', 'Vòm Đại Dương', 'fun', 5, 5, 'f', 43, [3], 'fun2', 'fun', 'A glass dome with a water world inside.'],
+      ['neonarena', 'Neon Arena', 'Đấu trường Neon', 'sport', 4, 4, 'g', 49, [11], 'edu2', 'sport', 'A glowing arena for e-sports.'],
+      ['olympicstadium', 'Olympic Stadium', 'Sân Vận Động Olympic', 'sport', 6, 6, 'g', 57, [11], 'edu2', 'sport', 'The biggest stadium for the Games.'],
+      ['vrpark', 'VR Theme Park', 'Công viên Thực Tế Ảo', 'fun', 5, 5, 'f', 65, [3], 'fun2', 'fun', 'Virtual worlds you can walk into.'],
+      ['lasertower', 'Laser Show Tower', 'Tháp Laser', 'fun', 3, 3, 'f', 80, [3], 'fun2', 'fun', 'It shoots colourful lasers at night.'],
+      ['solarpark', 'Solar Farm', 'Trang trại Mặt Trời', 'port', 4, 4, 'i', 25, [2], 'port2', 'port', 'Rows of panels make clean power.'],
+      ['windfield', 'Wind Field', 'Cánh đồng Gió', 'port', 4, 4, 'i', 28, [2], 'port2', 'port', 'Tall wind turbines spin all day.'],
+      ['smartfactory', 'Smart Factory', 'Nhà máy Thông Minh', 'port', 4, 4, 'i', 31, [2], 'port2', 'port', 'Robots build things here.'],
+      ['datahub', 'Data Center', 'Trung tâm Dữ liệu', 'port', 4, 3, 'i', 35, [2], 'port2', 'port', 'Thousands of computers keep the city online.'],
+      ['hyperloop', 'Hyperloop Station', 'Ga Hyperloop', 'trans', 5, 3, 't', 46, [9], 'world1', 'port', 'A super-fast train in a tube.'],
+      ['fusionreactor', 'Fusion Reactor', 'Lò Phản ứng Nhiệt Hạch', 'port', 4, 4, 'i', 60, [2], 'port2', 'port', 'A little sun that makes endless power.'],
+      ['maglev', 'Maglev Terminal', 'Ga Tàu Đệm Từ', 'trans', 6, 4, 't', 53, [9], 'world1', 'port', 'A train that floats on magnets.'],
+      ['spaceport', 'Spaceport', 'Cảng Vũ Trụ', 'trans', 7, 5, 't', 75, [9], 'world1', 'port', 'Rockets leave for space from here.'],
+      ['airshiphub', 'Airship Hub', 'Bến Khinh Khí Cầu', 'trans', 6, 5, 't', 95, [9], 'world1', 'port', 'Giant airships dock at the tall mast.'],
+      ['dragonpagoda', 'Dragon Pagoda', 'Bảo Tháp Rồng', 'world', 3, 3, 'w', 35, [5], 'world1', 'world', 'A tall pagoda with red and gold roofs.'],
+      ['crystalpalace', 'Crystal Palace', 'Cung Pha Lê', 'world', 4, 4, 'w', 47, [5], 'world1', 'world', 'A glass palace full of golden light.'],
+      ['goldpyramid', 'Golden Pyramid', 'Kim Tự Tháp Vàng', 'world', 4, 4, 'w', 64, [5], 'world1', 'world', 'A pyramid of pure gold.'],
+      ['timetower', 'Grand Time Tower', 'Tháp Đồng Hồ Vĩ Đại', 'world', 3, 3, 'w', 72, [5], 'world1', 'world', 'The clock everyone in the city can see.'],
+      ['holostatue', 'Hologram Statue', 'Tượng Hologram', 'world', 3, 3, 'w', 82, [5], 'world1', 'world', 'A glowing statue made of light.'],
+      ['floatingisle', 'Floating Island', 'Đảo Bay', 'park', 6, 6, 'p', 88, [10], 'world1', 'park', 'A green island floats in the sky.'],
+      ['atlantis', 'Atlantis Dome', 'Thành phố Atlantis', 'park', 7, 7, 'p', 96, [10], 'world1', 'park', 'A whole city under a glass dome.'],
+      ['dysonmonument', 'Sun Sphere Monument', 'Đài Cầu Mặt Trời', 'sport', 5, 5, 'g', 104, [11], 'world1', 'sport', 'A burning sun held by golden rings.'],
+      ['spaceelevator', 'Space Elevator', 'Thang Máy Vũ Trụ', 'trans', 4, 4, 't', 112, [9], 'world1', 'port', 'A cable that goes all the way to space.'],
+      ['worldtree', 'World Tree', 'Cây Thế Giới', 'park', 6, 6, 'p', 116, [10], 'world1', 'park', 'The giant tree of all the world.'],
+      ['citygod', 'Monument of EWT', 'Đài Tưởng Niệm EWT', 'world', 4, 4, 'w', 120, [5], 'world1', 'world', 'The highest honour for a city.']
+    ];
+    var nice = function (n) { var m = Math.pow(10, Math.max(0, String(Math.round(n)).length - 3)); return Math.round(n / m) * m; };
+    T.forEach(function (r) {
+      var lvl = r[7], area = r[4] * r[5], cost = nice(60000 * Math.pow(lvl / 20, 2.4) * Math.pow(area / 12, .6)), secs = Math.min(2400, Math.max(900, Math.round(cost / 80))), kind = r[10], inc = 0, pop = 0, hp = 0;
+      if (kind === 'home') { inc = Math.round(cost / 21); pop = Math.round(cost / 85); }
+      else if (kind === 'civic') { hp = 60 + Math.round(lvl * 1.6); }
+      else if (kind === 'edu') { inc = Math.round(cost / 16); hp = 80 + Math.round(lvl * 1.5); }
+      else if (kind === 'shop') { inc = Math.round(cost / 15); hp = 1; }
+      else if (kind === 'fun') { inc = Math.round(cost / 12); hp = 6 + Math.round(lvl / 4); }
+      else if (kind === 'sport') { inc = Math.round(cost / 13); hp = 8 + Math.round(lvl / 4); }
+      else if (kind === 'park') { inc = Math.round(cost / 18); hp = 40 + Math.round(lvl * 1.2); }
+      else if (kind === 'world') { inc = Math.round(cost / 16); hp = 60 + Math.round(lvl * 1.4); }
+      else { inc = Math.round(cost / 12); hp = r[3] === 'trans' ? 6 : 0; }
+      ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8], r[11], { ch: r[9] }));
+    });
+  })();
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
@@ -659,7 +740,7 @@
       else if (it.cat === 'edu' && area <= 4) add = 'rcwp';                            // mẫu giáo, hiệu sách… gần nhà
       else if (it.cat === 'sport' && area <= 6) add = 'rcepf';                         // phòng tập, sân nhỏ…
       else if (it.cat === 'fun' && area <= 4) add = 'rcwbpg';                          // quầy kem, game nhỏ…
-      if (!add || it.z === '*') return;
+      if (!add || it.z === '*' || (it.lvl > 22 && it.cat !== 'home')) return;
       it.z0 = it.z; it.ds0 = it.ds; var z2 = it.z; add.split('').forEach(function (c) { if (z2.indexOf(c) < 0) z2 += c; }); it.z = z2;
       it.ds = Object.keys(zd).map(Number).filter(function (d) { return z2.split('').some(function (c) { return zd[d][c]; }); }).concat(it.ds).filter(function (d, i, a) { return a.indexOf(d) === i; }).sort(function (x, y) { return x - y; });
     });
