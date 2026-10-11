@@ -1,6 +1,8 @@
 // Service Worker — English With Tom (PWA + Push Notifications)
 
-var CACHE = 'ewt-v2';
+var CACHE = 'ewt-v3';
+var API_CACHE = 'ewt-api-v1';   // dữ liệu học từ vựng để học OFFLINE (xoá khi đăng nhập / đăng xuất để không lẫn tài khoản)
+var API_OFFLINE = ['/api/words', '/api/word-game/me', '/api/me', '/api/word-sets/mine', '/api/word-dialogues'];
 var SHELL = [
   '/offline.html',
   '/css/style.css',
@@ -27,7 +29,7 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
       return Promise.all(
-        keys.filter(function(k) { return k !== CACHE; })
+        keys.filter(function(k) { return k !== CACHE && k !== API_CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
     }).then(function() { return self.clients.claim(); })
@@ -39,10 +41,29 @@ self.addEventListener('fetch', function(event) {
   var req = event.request;
   var url = new URL(req.url);
 
+  // Đăng nhập / đăng xuất: xoá dữ liệu offline của tài khoản cũ
+  if (req.method === 'POST' && url.origin === self.location.origin && (url.pathname === '/api/login' || url.pathname === '/api/logout')) { event.waitUntil(caches.delete(API_CACHE)); return; }
+
   // Bỏ qua non-GET và cross-origin
   if (req.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // API calls: network only (không cache)
+  // Dữ liệu học từ vựng: ưu tiên mạng, mất mạng thì dùng bản đã lưu (để học offline)
+  if (API_OFFLINE.indexOf(url.pathname) >= 0) {
+    event.respondWith(
+      fetch(req).then(function(res) {
+        if (res.ok) { var c = res.clone(); caches.open(API_CACHE).then(function(ch) { ch.put(url.pathname, c); }); }
+        return res;
+      }).catch(function() {
+        return caches.open(API_CACHE).then(function(ch) { return ch.match(url.pathname); }).then(function(cached) {
+          if (!cached) return new Response(JSON.stringify({ error: 'Đang offline và chưa có dữ liệu đã tải.' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
+          var h = new Headers(cached.headers); h.set('X-EWT-Offline', '1'); return cached.blob().then(function(b) { return new Response(b, { status: 200, headers: h }); });
+        });
+      })
+    );
+    return;
+  }
+
+  // API khác: chỉ dùng mạng (không cache)
   if (url.pathname.startsWith('/api/')) return;
 
   // Static assets (CSS/JS/images/fonts): cache-first
