@@ -115,7 +115,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
       .run(fin, JSON.stringify(answers), g.score, g.total, reason && reason !== 'manual' ? reason : null, fresh.id);
     try {
       const u = db.prepare('SELECT name FROM users WHERE id=?').get(fresh.user_id);
-      notifyUser(test.teacher_id, 'mcq_result', '📝 ' + (u ? u.name : 'Học sinh') + ' đã nộp: ' + test.title, 'Điểm: ' + g.score + '/' + g.total + (reason === 'time' ? ' (hết giờ)' : reason === 'leave' ? ' (rời tab quá số lần)' : ''), 'mcq.html?id=' + test.id + '&tab=results');
+      notifyUser(test.teacher_id, 'mcq_result', '📝 ' + (u ? u.name : 'Học sinh') + ' đã nộp: ' + test.title, 'Điểm: ' + ptsOf(g.score, g.total, maxPts(test)) + '/' + maxPts(test) + ' (' + g.score + '/' + g.total + ' câu)' + (reason === 'time' ? ' (hết giờ)' : reason === 'leave' ? ' (rời tab quá số lần)' : ''), 'mcq.html?id=' + test.id + '&tab=results');
     } catch (e) {}
     return db.prepare('SELECT * FROM mcq_attempts WHERE id=?').get(fresh.id);
   }
@@ -124,10 +124,13 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     if (att && att.status === 'in_progress' && att.ends_at && Date.now() > att.ends_at + GRACE_MS) return finalize(att, 'time');
     return att;
   }
+  // Điểm = số câu đúng / tổng số câu × tổng điểm cả bài (giáo viên đặt), làm tròn 2 chữ số
+  const maxPts = t => { const m = Number(t && t.max_points); return m > 0 ? m : 10; };
+  const ptsOf = (score, total, max) => (total ? Math.round(score / total * max * 100) / 100 : 0);
   function resultPayload(test, att, forceReveal) {
     const answers = J(att.answers, []);
     const hideScore = !test.show_score && !forceReveal && att.status === 'done';
-    const out = { attemptId: att.id, status: att.status, score: hideScore ? null : att.score, total: att.total, percent: hideScore ? null : (att.total ? Math.round(att.score / att.total * 100) : 0), scoreHidden: hideScore,
+    const out = { attemptId: att.id, status: att.status, score: hideScore ? null : att.score, total: att.total, percent: hideScore ? null : (att.total ? Math.round(att.score / att.total * 100) : 0), points: hideScore ? null : ptsOf(att.score, att.total, maxPts(test)), maxPoints: maxPts(test), scoreHidden: hideScore,
       autoSubmit: att.auto_submit || null, leaves: att.leaves, awayMs: att.away_ms, usedMs: att.finished_at ? att.finished_at - att.started_at : null,
       reveal: !!test.reveal, showExp: !!test.show_exp, review: null };
     if (att.status === 'done' && (test.reveal || test.show_exp || forceReveal)) {
@@ -209,8 +212,8 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     if (!rec.size) return res.status(400).json({ error: 'Chưa chọn học sinh nào nhận đề (chọn lớp, tick học sinh hoặc nhập email).' });
     try {
       db.exec('BEGIN');
-      const r = db.prepare('INSERT INTO mcq_tests (teacher_id,title,note,questions,duration_min,max_leaves,shuffle_q,shuffle_o,reveal,deadline,source_name,created_at,pick_n,show_score,show_exp,start_at,start_notified) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-        .run(req.user.id, title, String(b.note || '').trim().slice(0, 400) || null, JSON.stringify(questions), duration, maxLeaves, b.shuffle_q === false ? 0 : 1, b.shuffle_o === false ? 0 : 1, b.reveal ? 1 : 0, deadline, String(b.source_name || '').slice(0, 120) || null, now(), pickN >= questions.length ? 0 : pickN, b.show_score === false ? 0 : 1, b.show_exp ? 1 : 0, startAt, startFuture ? 0 : 1);
+      const r = db.prepare('INSERT INTO mcq_tests (teacher_id,title,note,questions,duration_min,max_leaves,shuffle_q,shuffle_o,reveal,deadline,source_name,created_at,pick_n,show_score,show_exp,start_at,start_notified,max_points) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+        .run(req.user.id, title, String(b.note || '').trim().slice(0, 400) || null, JSON.stringify(questions), duration, maxLeaves, b.shuffle_q === false ? 0 : 1, b.shuffle_o === false ? 0 : 1, b.reveal ? 1 : 0, deadline, String(b.source_name || '').slice(0, 120) || null, now(), pickN >= questions.length ? 0 : pickN, b.show_score === false ? 0 : 1, b.show_exp ? 1 : 0, startAt, startFuture ? 0 : 1, Math.min(1000, Math.max(0.5, Number(b.max_points) || 10)));
       const id = Number(r.lastInsertRowid);
       const ins = db.prepare('INSERT OR IGNORE INTO mcq_assign (test_id,user_id,assigned_at) VALUES (?,?,?)');
       for (const uid of rec) ins.run(id, uid, now());
@@ -242,7 +245,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
       res.json({ tests: rows.map(t => {
         const assignedN = Number(db.prepare('SELECT COUNT(*) c FROM mcq_assign WHERE test_id=?').get(t.id).c);
         const st = db.prepare("SELECT COUNT(*) c, AVG(score*100.0/total) a FROM mcq_attempts WHERE test_id=? AND status='done' AND voided=0").get(t.id);
-        return { id: t.id, title: t.title, questions: J(t.questions, []).length, pick: effN(t, J(t.questions, []).length), duration: t.duration_min, deadline: t.deadline || '', startAt: t.start_at || '', reveal: !!t.reveal, showScore: !!t.show_score, showExp: !!t.show_exp, maxLeaves: t.max_leaves, created: t.created_at, assigned: assignedN, done: Number(st.c || 0), avg: st.a == null ? null : Math.round(Number(st.a)) };
+        return { id: t.id, title: t.title, questions: J(t.questions, []).length, pick: effN(t, J(t.questions, []).length), duration: t.duration_min, deadline: t.deadline || '', startAt: t.start_at || '', reveal: !!t.reveal, showScore: !!t.show_score, showExp: !!t.show_exp, maxLeaves: t.max_leaves, maxPoints: maxPts(t), created: t.created_at, assigned: assignedN, done: Number(st.c || 0), avg: st.a == null ? null : Math.round(Number(st.a)) };
       }) });
     } catch (e) { console.error('[mcq/list]', e.message); res.status(500).json({ error: 'Không tải được danh sách đề.' }); }
   });
@@ -256,6 +259,7 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
     try {
       if (b.reveal !== undefined) db.prepare('UPDATE mcq_tests SET reveal=? WHERE id=?').run(b.reveal ? 1 : 0, t.id);
       if (b.show_score !== undefined) db.prepare('UPDATE mcq_tests SET show_score=? WHERE id=?').run(b.show_score ? 1 : 0, t.id);
+      if (b.max_points !== undefined) { const m = Number(b.max_points); if (!(m > 0 && m <= 1000)) return res.status(400).json({ error: 'Tổng điểm phải từ 0.5 đến 1000.' }); db.prepare('UPDATE mcq_tests SET max_points=? WHERE id=?').run(m, t.id); }
       if (b.show_exp !== undefined) db.prepare('UPDATE mcq_tests SET show_exp=? WHERE id=?').run(b.show_exp ? 1 : 0, t.id);
       if (b.duration_min !== undefined) db.prepare('UPDATE mcq_tests SET duration_min=? WHERE id=?').run(Math.max(0, Math.min(300, parseInt(b.duration_min, 10) || 0)), t.id); // chỉ áp dụng cho lượt làm mới
       if (b.pick_n !== undefined) { const n = Math.max(0, parseInt(b.pick_n, 10) || 0); if (n > J(t.questions, []).length) return res.status(400).json({ error: 'Số câu lớn hơn ngân hàng câu hỏi.' }); db.prepare('UPDATE mcq_tests SET pick_n=? WHERE id=?').run(n >= J(t.questions, []).length ? 0 : n, t.id); } // chỉ áp dụng cho lượt làm mới
@@ -315,12 +319,12 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
         const a = sweep(activeAttempt(t.id, u.id));
         const o = { id: u.id, name: u.name, email: u.email, status: a ? a.status : 'new', score: null, total: effN(t, qs.length), percent: null, usedMs: null, leaves: a ? a.leaves : 0, awayMs: a ? a.away_ms : 0, auto: a ? a.auto_submit : null, startedAt: a ? a.started_at : null };
         if (a && a.status === 'done') {
-          o.score = a.score; o.total = a.total; o.percent = a.total ? Math.round(a.score / a.total * 100) : 0; o.usedMs = a.finished_at - a.started_at; doneN++;
+          o.score = a.score; o.total = a.total; o.percent = a.total ? Math.round(a.score / a.total * 100) : 0; o.points = ptsOf(a.score, a.total, maxPts(t)); o.usedMs = a.finished_at - a.started_at; doneN++;
           const g = grade(t, a, J(a.answers, [])); g.per.forEach(p => { seen[p.qi]++; if (!p.ok) wrong[p.qi]++; });
         }
         return o;
       });
-      res.json({ test: { id: t.id, title: t.title, total: effN(t, qs.length), bank: qs.length, showScore: !!t.show_score, showExp: !!t.show_exp, duration: t.duration_min, maxLeaves: t.max_leaves, reveal: !!t.reveal, deadline: t.deadline || '' }, students,
+      res.json({ test: { id: t.id, title: t.title, maxPoints: maxPts(t), total: effN(t, qs.length), bank: qs.length, showScore: !!t.show_score, showExp: !!t.show_exp, duration: t.duration_min, maxLeaves: t.max_leaves, reveal: !!t.reveal, deadline: t.deadline || '' }, students,
         hardest: qs.map((q, i) => ({ n: i + 1, q: q.q.slice(0, 140), wrong: wrong[i], of: seen[i] })).filter(x => x.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 8) });
     } catch (e) { console.error('[mcq/results]', e.message); res.status(500).json({ error: 'Không tải được kết quả.' }); }
   });
@@ -350,14 +354,14 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
   // ───────────── Học sinh ─────────────
   app.get('/api/mcq/mine', requireAuth, (req, res) => {
     try {
-      const rows = db.prepare(`SELECT t.id,t.title,t.note,t.duration_min,t.deadline,t.start_at,t.reveal,t.show_score,t.pick_n,t.questions,u.name AS teacher FROM mcq_assign a JOIN mcq_tests t ON t.id=a.test_id LEFT JOIN users u ON u.id=t.teacher_id WHERE a.user_id=? ORDER BY t.id DESC LIMIT 60`).all(req.user.id);
+      const rows = db.prepare(`SELECT t.id,t.title,t.note,t.duration_min,t.deadline,t.start_at,t.reveal,t.show_score,t.pick_n,t.max_points,t.questions,u.name AS teacher FROM mcq_assign a JOIN mcq_tests t ON t.id=a.test_id LEFT JOIN users u ON u.id=t.teacher_id WHERE a.user_id=? ORDER BY t.id DESC LIMIT 60`).all(req.user.id);
       const t0 = Date.now();
       res.json({ tests: rows.map(r => {
         const a = sweep(activeAttempt(r.id, req.user.id));
         const dl = vnMs(r.deadline), st0 = vnMs(r.start_at);
         let status = a ? (a.status === 'done' ? 'done' : 'in_progress') : 'new';
         if (status === 'new' && dl && t0 > dl) status = 'expired'; else if (status === 'new' && st0 && t0 < st0) status = 'upcoming';
-        return { id: r.id, title: r.title, note: r.note || '', duration: r.duration_min, deadline: r.deadline || '', startAt: r.start_at || '', teacher: r.teacher || '', questions: effN(r, J(r.questions, []).length), status, score: a && a.status === 'done' && r.show_score ? a.score : null, scoreHidden: !!(a && a.status === 'done' && !r.show_score), total: a && a.status === 'done' ? a.total : null };
+        return { id: r.id, title: r.title, note: r.note || '', duration: r.duration_min, deadline: r.deadline || '', startAt: r.start_at || '', teacher: r.teacher || '', questions: effN(r, J(r.questions, []).length), status, score: a && a.status === 'done' && r.show_score ? a.score : null, scoreHidden: !!(a && a.status === 'done' && !r.show_score), total: a && a.status === 'done' ? a.total : null, points: a && a.status === 'done' && r.show_score ? ptsOf(a.score, a.total, maxPts(r)) : null, maxPoints: maxPts(r) };
       }) });
     } catch (e) { console.error('[mcq/mine]', e.message); res.status(500).json({ error: 'Không tải được đề.' }); }
   });

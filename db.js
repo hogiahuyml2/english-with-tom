@@ -616,6 +616,7 @@ try {
     ['pick_n',     'ALTER TABLE mcq_tests ADD COLUMN pick_n INTEGER NOT NULL DEFAULT 0'],
     ['show_score', 'ALTER TABLE mcq_tests ADD COLUMN show_score INTEGER NOT NULL DEFAULT 1'],
     ['show_exp',   'ALTER TABLE mcq_tests ADD COLUMN show_exp INTEGER NOT NULL DEFAULT 0'],
+    ['max_points', 'ALTER TABLE mcq_tests ADD COLUMN max_points REAL NOT NULL DEFAULT 10'],   // tổng điểm cả bài (chia đều theo số câu); đề cũ = thang 10
     ['start_at',   'ALTER TABLE mcq_tests ADD COLUMN start_at TEXT'],                        // giờ MỞ đề (giờ VN); trống = mở ngay khi giao
     ['start_notified', 'ALTER TABLE mcq_tests ADD COLUMN start_notified INTEGER NOT NULL DEFAULT 1'], // 0 = đang chờ báo "đề đã mở"
   ]);
