@@ -42,10 +42,23 @@ module.exports = function (app, { db, requireRole, notifyUser }) {
         mark('mcq', t.id, a.user_id, stage); const m = msgFor(stage, left, 'Đề trắc nghiệm', t.title, fmtVN(d)); try { notifyUser(a.user_id, 'mcq_reminder', m[0], m[1], 'mcq.html?id=' + t.id); stat.mcq++; } catch (_) { /* bỏ qua */ }
       });
     });
+    Object.assign(stat, weakWordsReminder(false));
     if (stat.assign + stat.essay + stat.mcq) console.log('📬 Nhắc bổ sung:', JSON.stringify(stat));
     return stat;
   }
-  app.post('/api/admin/auto-remind2/run', requireRole('admin'), (req, res) => { try { res.json({ ok: true, ...run() }); } catch (e) { console.error('[remind2]', e.message); res.status(500).json({ error: 'Chạy nhắc thất bại.' }); } });
+  // 🔁 Nhắc ôn từ hay sai: mỗi sáng (6–10 giờ VN) báo cho học sinh có từ sai ngày hôm qua. Mỗi ngày tối đa 1 lần / học sinh.
+  function weakWordsReminder(force) {
+    const vn = new Date(Date.now() + 7 * H), hour = vn.getUTCHours(), today = vn.toISOString().slice(0, 10), yest = new Date(vn.getTime() - 24 * H).toISOString().slice(0, 10), out = { weak: 0 };
+    if (!force && (hour < 6 || hour >= 10)) return out;
+    try {
+      all(`SELECT p.user_id AS uid, COUNT(*) AS n FROM word_progress p JOIN users u ON u.id=p.user_id WHERE u.role='student' AND p.wrong>=1 AND p.box<=1 AND substr(p.due_day,1,10) <= ? AND substr(p.last_seen,1,10) >= ? GROUP BY p.user_id HAVING n >= 3 LIMIT 3000`, today, yest).forEach((r) => {
+        if (logged('weak', Number(today.replace(/-/g, '')), r.uid, 'd')) return; mark('weak', Number(today.replace(/-/g, '')), r.uid, 'd');
+        try { notifyUser(r.uid, 'weak_words', '🔁 ' + r.n + ' từ bạn hay sai đang chờ ôn lại', 'Ôn nhanh 5 phút hôm nay để nhớ chắc hơn nhé!', 'word-hub.html?weak=1'); out.weak++; } catch (_) { /* bỏ qua */ }
+      });
+    } catch (e) { console.error('[remind-weak]', e.message); }
+    return out;
+  }
+  app.post('/api/admin/auto-remind2/run', requireRole('admin'), (req, res) => { try { res.json({ ok: true, ...run(), ...(req.query.force === '1' ? weakWordsReminder(true) : {}) }); } catch (e) { console.error('[remind2]', e.message); res.status(500).json({ error: 'Chạy nhắc thất bại.' }); } });
   app.locals.remindExtra = run;
   setTimeout(() => { try { run(); } catch (e) { console.error('[remind2]', e.message); } setInterval(() => { try { run(); } catch (e) { console.error('[remind2]', e.message); } }, 10 * 60 * 1000); }, 50_000);
 };

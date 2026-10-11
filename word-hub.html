@@ -435,6 +435,19 @@ function renderStats() {
   $('bSound').onclick = function () { soundOn = !soundOn; try { localStorage.setItem('wh_sound', soundOn ? '1' : '0'); } catch (e) {} renderStats(); };
 }
 
+/* 🔁 Từ hay sai: từ đã sai nhiều so với số lần đúng (mọi cấp), sai nhiều nhất lên đầu */
+function weakWords() {
+  var out = [];
+  S.all.forEach(function (w) { var p = prog(w.id); if (!p) return; var ok = p[2], bad = p[3]; if (bad < 1) return; var rate = bad / (ok + bad); if ((bad >= 2 && rate >= .35) || (p[0] <= 1 && rate >= .5)) out.push({ w: w, rate: rate, bad: bad }); });
+  out.sort(function (a, b) { return b.rate - a.rate || b.bad - a.bad; });
+  return out.map(function (x) { return x.w; });
+}
+function startWeak() {
+  var list = weakWords().slice(0, 12);
+  if (!list.length) { toast('Bạn chưa có từ nào hay sai — tuyệt vời! 🎉'); return; }
+  var queue = []; shuffle(list).forEach(function (w) { queue.push({ id: w.id, w: w, type: 'teach' }); queue.push(makeQ(w, w.kind === 'word' ? typeForBox(Math.min(box(w.id), 2)) : 'x')); });
+  startPlay('smart', queue, { pool: null });
+}
 function smartCounts() {
   var lw = levelItems(), due = 0, fresh = 0;
   lw.forEach(function (w) { if (isDue(w.id)) due++; else if (!prog(w.id)) fresh++; });
@@ -454,6 +467,7 @@ function renderToday() {
     '<div class="wh-today-txt"><h3>Học hôm nay</h3><p>' + line + '<br><span style="font-size:12px;">' + streakNote + '</span></p>' +
     '<button class="wh-cta" id="bSmart">🎯 Bắt đầu học</button></div></div>';
   $('bSmart').onclick = function () { startSmart(); };
+  var wk = weakWords().length; if (wk) { $('whToday').insertAdjacentHTML('beforeend', '<div style="margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff7ed;border:1.5px solid #fed7aa;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:22px">🔁</span><div style="flex:1;min-width:160px;font-size:13px"><b>' + wk + ' từ bạn hay làm sai</b><br><span class="wh-sub">Ôn lại 5 phút để nhớ chắc hơn — hệ thống chọn đúng những từ khó nhất cho bạn.</span></div><button class="wh-cta" id="bWeak" style="padding:8px 14px">Ôn ngay</button></div>'); $('bWeak').onclick = startWeak; }
 }
 
 function renderQuests() {
@@ -506,7 +520,8 @@ function renderPickers() {
 function save() { try { localStorage.setItem('wh_level', S.level); localStorage.setItem('wh_topic', S.topic); } catch (e) {} }
 
 function renderModes() {
-  var M = [
+  var wkN = weakWords().length;
+  var M = (wkN ? [['weak', '🔁', 'Ôn từ hay sai (' + wkN + ')', 'Chỉ ôn những từ bạn đã làm sai nhiều — cách nhanh nhất để lấp lỗ hổng.']] : []).concat([
     ['flash', '🃏', 'Flashcard', 'Lật thẻ, tự đánh giá "nhớ / chưa nhớ". Nhẹ nhàng để làm quen từ mới.'],
     ['blitz', '⚡', 'Blitz 60 giây', 'Trả lời thật nhanh — đúng liên tục để lên combo, sai bị trừ giờ!'],
     ['type', '⌨️', 'Gõ từ', 'Nhìn nghĩa tiếng Việt, tự gõ từ tiếng Anh. Cách nhớ chính tả tốt nhất.'],
@@ -517,12 +532,12 @@ function renderModes() {
     ['dialogue', '🗣️', 'Hội thoại', 'Đọc đoạn hội thoại đời thực (nhà hàng, sân bay, phỏng vấn...) và điền nhiều chỗ trống.'],
     ['dictation', '🎧', 'Nghe chép chính tả', ttsOK ? 'Nghe câu tiếng Anh rồi gõ lại — luyện nghe + chính tả, rất hợp thi Listening.' : 'Cần trình duyệt có giọng đọc (Chrome/Safari/Edge) để chơi chế độ này.'],
     ['library', '📖', 'Thư viện', 'Xem lại toàn bộ cụm từ & từ nâng cấp của cấp độ này, có phát âm.']
-  ];
+  ]);
   $('whModes').innerHTML = M.map(function (m) {
     return '<button class="wh-mode" data-m="' + m[0] + '"><span class="mi">' + m[1] + '</span><span class="mn">' + m[2] + '</span><span class="md">' + m[3] + '</span></button>';
   }).join('');
   Array.prototype.forEach.call($('whModes').querySelectorAll('[data-m]'), function (b) {
-    b.onclick = function () { var m = b.getAttribute('data-m'); if (m === 'library') openLibrary(); else if (m === 'dialogue') openDialogues(); else startMode(m); };
+    b.onclick = function () { var m = b.getAttribute('data-m'); if (m === 'library') openLibrary(); else if (m === 'dialogue') openDialogues(); else if (m === 'weak') startWeak(); else startMode(m); };
   });
 }
 function renderAll() { renderStats(); renderToday(); renderQuests(); renderPickers(); renderModes(); }
@@ -1275,6 +1290,7 @@ function boot() {
     if (!LEVEL_DEF.some(function (l) { return l.id === S.level; })) S.level = 'KET';
     var m = /[?&]set=(\d+)/.exec(location.search); if (m) S.focusSet = parseInt(m[1], 10);
     renderAll();
+    if (/[?&]weak=1/.test(location.search)) setTimeout(startWeak, 400);
     loadSets(); loadLesson();
     if (S.role === 'teacher' || S.role === 'admin') initTeacher();
   }).catch(function (e) {
