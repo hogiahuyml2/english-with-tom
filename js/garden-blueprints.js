@@ -43,7 +43,7 @@
   function hash(str) { var h = 2166136261, i; for (i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return h >>> 0; }
 
   function pools(G, zid, lvl) {
-    var ok = function (it) { return it.lvl <= lvl && !it.ev && !it.bd && (!it.z || it.z === zid); };
+    var ok = function (it) { return it.lvl <= lvl && !it.ev && !it.bd && !it.up && (!it.z || it.z === zid); };
     var byCost = function (a, b) { return a.cost - b.cost || (a.id < b.id ? -1 : 1); };
     var zi = G.ITEMS.filter(function (i) { return i.z === zid && ok(i); }), gi = G.ITEMS.filter(function (i) { return !i.z && ok(i) && i.cost > 0; });
     var pick = function (kind, n, maxGeneric) {

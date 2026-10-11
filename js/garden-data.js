@@ -625,7 +625,7 @@
   function petSlots(level) { return Math.min(RULES.maxPets, 1 + Math.floor(level / 2) + 1); }
   // Nông trại nuôi được nhiều vật nuôi hơn (mỗi chuồng chứa tối đa penCap con, thả ngoài chuồng cũng tính vào chỗ của khu)
   function slotsFor(zid, level) { var z = ZBY[zid], n = petSlots(level); return z && z.farm ? n + 12 : n; }
-  function penCap(item) { return item && item.pen ? Math.max(2, Math.min(6, item.w * item.h)) : 0; }
+  function penCap(item) { return item && item.pen ? Math.max(2, Math.min(16, item.w * item.h)) : 0; }
   // Giai đoạn cây: 0 hạt, 1 mầm, 2 nụ, 3 nở. Thời gian lớn bị rút ngắn theo số lần tưới.
   function growMs(item, waters) { return item.grow * MIN * (1 - Math.min(waters || 0, RULES.waterMax) * RULES.waterCut); }
   function stageOf(item, tile, now) {

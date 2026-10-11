@@ -29,7 +29,12 @@
       (d.d || []).forEach(function (s, i) { var t = cx(s[5]), id = z.id + '_d' + (i + 1); SPEC[id] = ['d', s];
         ctx.items.push({ id: id, name: s[0], kind: 'deco', cost: r10(unit * TIER.deco[t - 1]), lvl: Math.min(14, L + LV.deco[t - 1]), b: 3 + t * 3 + Math.floor(L / 2), z: z.id, cx: t }); });
       (d.b || []).forEach(function (s, i) { var t = cx(s[8]), id = z.id + '_b' + (i + 1), area = s[1] * s[2]; SPEC[id] = ['b', s];
-        ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + area * 2, z: z.id, cx: t, pen: (s[9] && s[9].pen) || undefined }); });
+        ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + area * 2, z: z.id, cx: t, pen: (s[9] && s[9].pen) || undefined });
+        // CHUỒNG MỞ RỘNG: 2 cỡ lớn hơn (ẩn khỏi cửa hàng, chỉ có khi bấm "Mở rộng chuồng" — giữ nguyên góc trên-trái, mở sang phải & xuống dưới)
+        if (s[9] && s[9].pen) [[1, 1, 1, 2], [2, 2, 2, 3.5]].forEach(function (u) {
+          var vid = id + '_u' + u[0], vs = s.slice(); vs[1] = s[1] + u[1]; vs[2] = s[2] + u[2]; SPEC[vid] = ['b', vs];
+          ctx.items.push({ id: vid, name: s[0] + ' (mở rộng ' + u[0] + ')', kind: 'big', w: vs[1], h: vs[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6) * u[3]), lvl: Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + vs[1] * vs[2] * 2, z: z.id, cx: t, pen: s[9].pen, up: u[0], base: id });
+        }); });
       (d.p || []).forEach(function (s, i) { var t = cx(s[5]), id = z.id + '_p' + (i + 1); SPEC[id] = ['p', s];
         ctx.pets.push({ id: id, name: s[0], cost: r10(unit * TIER.pet[t - 1]), lvl: Math.min(14, L + LV.pet[t - 1]), z: z.id, cx: t, sp: (s[6] && s[6].sp) || undefined }); });
     });

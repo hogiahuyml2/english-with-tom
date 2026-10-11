@@ -129,6 +129,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   /* Đặt MỘT món vào ô i (dùng chung cho đặt lẻ, đặt hàng loạt và dựng theo mẫu). Trả { err, need } hoặc { used }. Đã thay đổi st trong bộ nhớ khi thành công (chưa save). */
   function placeCore(st, uid, lvl, i, it) {
     if (!it) return { err: 'Món này không tồn tại.' };
+    if (it.up && !((st.bag.items[it.id] | 0) > 0)) return { err: 'Chuồng mở rộng chỉ có bằng cách bấm "Mở rộng chuồng" ở chuồng bạn đang có.' };
     if (!Number.isInteger(i) || i < 0 || i >= st.tiles.length) return { err: 'Ô đất không hợp lệ.' };
     const zn = G.zoneOfCell(i), ll = landLv(st, zn);
     const fp = it.kind === 'big' ? G.footprint(i, it, ll) : (G.inLand(i, ll) ? [i] : null);
@@ -150,6 +151,32 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     X.evOwn(st, it.id);
     return { used, paid: used ? 0 : (it.cost || 0) };
   }
+  // Mở rộng chuồng tại chỗ: giữ góc trên-trái, lớn thêm sang phải và xuống dưới; vật nuôi trong chuồng được giữ nguyên
+  app.post('/api/garden/pen/upgrade', requireAuth, (req, res) => {
+    const i0 = Number((req.body || {}).i);
+    try {
+      const out = txStrict(() => {
+        const st = load(req.user), lvl = G.levelOf(G.beautyOf(st));
+        if (!Number.isInteger(i0) || i0 < 0 || i0 >= st.tiles.length || !st.tiles[i0]) return { err: 'Ô này đang trống.' };
+        const i = st.tiles[i0].ref != null ? st.tiles[i0].ref : i0, t = st.tiles[i]; if (!t) return { err: 'Ô này đang trống.' };
+        const it = G.BY[t.k]; if (!it || !it.pen) return { err: 'Đây không phải chuồng nuôi thú.' };
+        const nx = G.BY[(it.base || it.id) + '_u' + ((it.up || 0) + 1)]; if (!nx) return { err: 'Chuồng đã ở cỡ lớn nhất rồi.' };
+        const zn = G.zoneOfCell(i), fp = G.footprint(i, nx, landLv(st, zn));
+        if (!fp) return { err: 'Chưa đủ đất để mở rộng — hãy mở rộng đất của khu (cần ' + nx.w + '×' + nx.h + ' ô tính từ góc trên-trái chuồng).' };
+        if (fp.some((k) => k !== i && (G.isBlocked(k) || G.zoneOfCell(k).id !== zn.id))) return { err: 'Có phong cảnh có sẵn chắn lối — cần ' + nx.w + '×' + nx.h + ' ô trống từ góc trên-trái chuồng (mở sang phải và xuống dưới).' };
+        const busy = fp.filter((k) => k !== i && st.tiles[k] && st.tiles[k].ref !== i);
+        if (busy.length) return { err: 'Cần dọn ' + busy.length + ' ô đang có đồ ở bên phải / phía dưới chuồng để có đủ ' + nx.w + '×' + nx.h + ' ô trống.', cells: busy };
+        const cost = Math.max(0, nx.cost - it.cost);
+        if (nx.lvl > lvl) return { err: 'Cần vườn cấp ' + nx.lvl + ' để mở rộng chuồng này.' };
+        if (cost > 0) { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(cost, req.user.id, cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + cost + ' 🪙 để mở rộng).', need: cost }; }
+        st.tiles[i] = { k: nx.id, at: t.at, w: t.w };
+        fp.forEach((k) => { if (k !== i) st.tiles[k] = { ref: i }; });
+        save(st); return { st, cost, cap: G.penCap(nx) };
+      });
+      if (out.err) return bad(res, out.err);
+      reply(res, req.user, out.st, { upgraded: true, cost: out.cost, cap: out.cap });
+    } catch (e) { console.error('[garden/pen/upgrade]', e.message); bad(res, 'Có lỗi, thử lại nhé.', 500); }
+  });
   // Dọn MỘT ô (hoặc cả công trình lớn nếu là phần phụ): món đã mua vào giỏ. Trả tên món hoặc null.
   function removeCore(st, i) {
     if (!Number.isInteger(i) || !st.tiles[i]) return { err: 'Ô này đang trống.' };
