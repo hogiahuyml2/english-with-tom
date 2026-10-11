@@ -286,4 +286,5 @@
     g.poly([[tp[0] - 14, tp[1]], [tp[0] + 14, tp[1]], [tp[0], tp[1] - 34]], '#FFD54A', INK); orb(g, cx, cy, z + 56, 16, '#FFFFFF', '#FFC83A', false); ring(g, cx, cy, z + 56, 36, 11, 'rgba(255,230,140,.95)', 2.4); var k; for (k = 0; k < 12; k++) { var an = k * TAU / 12, q = g.P(cx, cy, z + 56); g.line([q[0] + Math.cos(an) * 22, q[1] + Math.sin(an) * 22], [q[0] + Math.cos(an) * 46, q[1] + Math.sin(an) * 46], 'rgba(255,240,170,.7)', 1.4); }
     glowAt(g, cx, cy, z + 56, 64); beacon(g, cx, cy, z + 100); g.tree(.2, rh - .1, .8, 'cherry'); g.tree(rw - .2, rh - .1, .8, 'cherry'); g.doorL(.2, .2, rw - .4, rh - .4, .5, 0, .3, 10, '#8A5A00');
   });
+  A.kit4 = { tw: tw, twist: twist, terrace: terrace, vforest: vforest, domebld: domebld, stadium: stadium, wheel: wheel };
 })(typeof window !== 'undefined' ? window : this);

@@ -13,6 +13,8 @@
   var LV = { plant: [0, 0, 1, 1, 2], tree: [0, 0, 1, 1, 2], deco: [0, 0, 1, 1, 2], big: [0, 1, 1, 2, 2], pet: [0, 0, 1, 1, 2] };
   var r10 = function (n) { return Math.max(10, Math.round(n / 10) * 10); }, r50 = function (n) { return Math.max(100, Math.round(n / 50) * 50); };
   function add(zid, def) { Z[zid] = def; }
+  // thêm món vào khu đã có (nối tiếp danh sách f / t / d / b / p của lệnh add)
+  function more(zid, def) { var z = Z[zid]; if (!z) return; ['f', 't', 'd', 'b', 'p'].forEach(function (k) { if (def[k]) z[k] = (z[k] || []).concat(def[k]); }); }
   function cx(n) { n = Math.round(n) || 1; return Math.max(1, Math.min(5, n)); }
   // Biến định nghĩa của từng khu thành món: gán z cho món đã có, thêm món mới vào ctx.items / ctx.pets
   function build(ctx) {
@@ -29,7 +31,7 @@
       (d.d || []).forEach(function (s, i) { var t = cx(s[5]), id = z.id + '_d' + (i + 1); SPEC[id] = ['d', s];
         ctx.items.push({ id: id, name: s[0], kind: 'deco', cost: r10(unit * TIER.deco[t - 1]), lvl: Math.min(14, L + LV.deco[t - 1]), b: 3 + t * 3 + Math.floor(L / 2), z: z.id, cx: t }); });
       (d.b || []).forEach(function (s, i) { var t = cx(s[8]), id = z.id + '_b' + (i + 1), area = s[1] * s[2]; SPEC[id] = ['b', s];
-        ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + area * 2, z: z.id, cx: t, pen: (s[9] && s[9].pen) || undefined });
+        ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: (s[9] && s[9].lv) || Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + area * 2, z: z.id, cx: t, pen: (s[9] && s[9].pen) || undefined });
         // CHUỒNG MỞ RỘNG: 2 cỡ lớn hơn (ẩn khỏi cửa hàng, chỉ có khi bấm "Mở rộng chuồng" — giữ nguyên góc trên-trái, mở sang phải & xuống dưới)
         if (s[9] && s[9].pen) [[1, 1, 1, 2], [2, 2, 2, 3.5]].forEach(function (u) {
           var vid = id + '_u' + u[0], vs = s.slice(); vs[1] = s[1] + u[1]; vs[2] = s[2] + u[2]; SPEC[vid] = ['b', vs];
@@ -40,6 +42,6 @@
     });
   }
   function eachSpec(fn) { Object.keys(SPEC).forEach(function (id) { fn(id, SPEC[id][0], SPEC[id][1]); }); }
-  var API = { Z: Z, SPEC: SPEC, add: add, build: build, eachSpec: eachSpec };
+  var API = { Z: Z, SPEC: SPEC, add: add, more: more, build: build, eachSpec: eachSpec };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenCatalog = API;
 })(typeof window !== 'undefined' ? window : this);

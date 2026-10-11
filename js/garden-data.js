@@ -346,10 +346,11 @@
     { n: 6, at: 160, title: 'Vườn cổ tích' }, { n: 7, at: 240, title: 'Vườn thượng uyển' }, { n: 8, at: 340, title: 'Vườn thần tiên' }, { n: 9, at: 480, title: 'Vườn huyền thoại' }, { n: 10, at: 650, title: 'Khu vườn của Tom' },
     { n: 11, at: 850, title: 'Vườn pha lê' }, { n: 12, at: 1100, title: 'Vườn ngân hà' }, { n: 13, at: 1400, title: 'Vườn bất tử' }, { n: 14, at: 1800, title: 'Vườn vô cực' }
   ];
-  /* Cấp 15 → 100: mỗi 5 cấp đổi một danh hiệu; ngưỡng "điểm đẹp" tăng dần (cấp 100 cần ~48.000 điểm đẹp) để đi lâu dài cùng 60+ khu vườn */
+  /* Cấp 15 → 150: mỗi 5 cấp đổi một danh hiệu; ngưỡng "điểm đẹp" tăng dần (cấp 100 cần ~48.000 điểm đẹp) để đi lâu dài cùng 60+ khu vườn */
   (function () {
     var tiers = ['Vườn Thiên Hà', 'Vườn Tinh Vân', 'Vườn Cực Quang', 'Vườn Thần Thoại', 'Vườn Bất Tận', 'Vườn Cầu Vồng', 'Vườn Hoàng Kim', 'Vườn Kim Cương', 'Vườn Ngọc Bích', 'Vườn Phượng Hoàng', 'Vườn Rồng Thiêng', 'Vườn Thiên Đường', 'Vườn Vĩnh Hằng', 'Vườn Tinh Tú', 'Vườn Vũ Trụ', 'Vườn Đại Đế', 'Vườn Tối Thượng'], roman = ['I', 'II', 'III', 'IV', 'V'], n, k;
-    for (n = 15; n <= 100; n++) { k = n - 14; LEVELS.push({ n: n, at: 1800 + Math.round(k * 95 + 5.2 * k * k), title: n === 100 ? 'Huyền thoại EWT Garden' : tiers[Math.floor((n - 15) / 5)] + ' ' + roman[(n - 15) % 5] }); }
+    var tiers2 = ['Vườn Thiên Sứ', 'Vườn Nguyệt Quang', 'Vườn Nhật Quang', 'Vườn Hằng Tinh', 'Vườn Thiên Môn', 'Vườn Bất Diệt', 'Vườn Sáng Thế', 'Vườn Vô Biên', 'Vườn Chí Tôn', 'Vườn Vĩnh Hằng'];
+    for (n = 15; n <= 150; n++) { k = n - 14; LEVELS.push({ n: n, at: 1800 + Math.round(k * 95 + 5.2 * k * k), title: n === 100 ? 'Huyền thoại EWT Garden' : n === 150 ? 'Thần Vườn Vĩnh Cửu' : n < 100 ? tiers[Math.floor((n - 15) / 5)] + ' ' + roman[(n - 15) % 5] : tiers2[Math.floor((n - 101) / 5)] + ' ' + roman[(n - 101) % 5] }); }
   })();
   // Các khu của EWT Garden: mỗi khu có một "khung ô" tối đa MAXC×MAXR; đất của khu mở rộng dần (xem LAND) từ góc trên-trái.
   // "blocks" là phong cảnh có sẵn (nhà, cung điện, sông, hồ…) nằm trong vùng đất gốc 7×5 — học sinh chỉ xây trên các ô còn trống.
@@ -633,7 +634,7 @@
     free: { free_plant: { n: 5, cls: 'plant', label: 'hoa' }, free_tree: { n: 2, cls: 'tree', label: 'cây' }, free_deco: { n: 3, cls: 'deco', label: 'đồ trang trí' }, free_big: { n: 1, cls: 'big', label: 'công trình lớn' }, free_pet: { n: 1, cls: 'pet', label: 'thú cưng' } },
     water: 10, boost: 1 };
   // Kho đặc sản từng khu (5 hoa · 5 cây · 5 trang trí · 5 công trình · 5 thú cưng cho MỖI khu): xem js/garden-catalog.js + garden-cat-*.js
-  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'].forEach(function (k) { try { require('./garden-cat-' + k + '.js'); } catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e; } }); return c; })() : null);
+  var CAT = root.EWTGardenCatalog || (typeof require === 'function' ? (function () { var c = require('./garden-catalog.js'); ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'].forEach(function (k) { try { require('./garden-cat-' + k + '.js'); } catch (e) { if (e.code !== 'MODULE_NOT_FOUND') throw e; } }); return c; })() : null);
   if (CAT) CAT.build({ zones: ZONES, items: ITEMS, pets: PETS });
   var EV = root.EWTGardenEvents || (typeof require === 'function' ? require('./garden-events.js') : null); if (EV) EV.build({ items: ITEMS, pets: PETS });   // món giới hạn theo sự kiện
   var BD = root.EWTGardenBundles || (typeof require === 'function' ? require('./garden-bundles.js') : null); if (BD) BD.build({ items: ITEMS });   // món trong các bộ lễ hội / ẩm thực
