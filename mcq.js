@@ -350,13 +350,19 @@ module.exports = function registerMcq(app, { db, requireAuth, requireRole, now, 
       const students = studs.map(u => {
         const a = sweep(activeAttempt(t.id, u.id));
         const o = { id: u.id, name: u.name, email: u.email, status: a ? a.status : 'new', score: null, total: effN(t, qs.length), percent: null, usedMs: null, leaves: a ? a.leaves : 0, awayMs: a ? a.away_ms : 0, auto: a ? a.auto_submit : null, startedAt: a ? a.started_at : null };
+        o.class_ids = db.prepare('SELECT group_id FROM group_members WHERE user_id=?').all(u.id).map(r => Number(r.group_id));
+        o.wrongQ = [];
         if (a && a.status === 'done') {
           o.score = a.score; o.total = a.total; o.percent = a.total ? Math.round(a.score / a.total * 100) : 0; o.points = ptsOf(a.score, a.total, maxPts(t)); o.usedMs = a.finished_at - a.started_at; doneN++;
-          const g = grade(t, a, J(a.answers, [])); g.per.forEach(p => { seen[p.qi]++; if (!p.ok) wrong[p.qi]++; });
+          const g = grade(t, a, J(a.answers, [])); g.per.forEach(p => { seen[p.qi]++; if (!p.ok) { wrong[p.qi]++; o.wrongQ.push(p.qi); } });
         }
         return o;
       });
-      res.json({ test: { id: t.id, title: t.title, maxPoints: maxPts(t), total: effN(t, qs.length), bank: qs.length, showScore: !!t.show_score, showExp: !!t.show_exp, duration: t.duration_min, maxLeaves: t.max_leaves, reveal: !!t.reveal, deadline: t.deadline || '' }, students,
+      // Các lớp để giáo viên lọc: lớp được giao đề + lớp (của giáo viên) có học sinh được giao
+      const gAll = req.user.role === 'admin' ? db.prepare('SELECT id,name FROM groups ORDER BY name').all() : db.prepare('SELECT id,name FROM groups WHERE teacher_id=? ORDER BY name').all(req.user.id);
+      const used = new Set(); students.forEach(o => o.class_ids.forEach(g => used.add(g))); db.prepare('SELECT group_id FROM mcq_groups WHERE test_id=?').all(t.id).forEach(r => used.add(Number(r.group_id)));
+      const groups = gAll.filter(g => used.has(Number(g.id))).map(g => ({ id: Number(g.id), name: g.name }));
+      res.json({ groups, qlist: qs.map((q, i) => ({ n: i + 1, q: q.q.slice(0, 140) })), test: { id: t.id, title: t.title, maxPoints: maxPts(t), total: effN(t, qs.length), bank: qs.length, showScore: !!t.show_score, showExp: !!t.show_exp, duration: t.duration_min, maxLeaves: t.max_leaves, reveal: !!t.reveal, deadline: t.deadline || '' }, students,
         hardest: qs.map((q, i) => ({ n: i + 1, q: q.q.slice(0, 140), wrong: wrong[i], of: seen[i] })).filter(x => x.wrong > 0).sort((a, b) => b.wrong - a.wrong).slice(0, 8) });
     } catch (e) { console.error('[mcq/results]', e.message); res.status(500).json({ error: 'Không tải được kết quả.' }); }
   });
