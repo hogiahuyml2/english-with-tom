@@ -36,13 +36,18 @@
   .es-err { border-left:4px solid #f59e0b; background:#fffbeb; border-radius:8px; padding:8px 12px; margin-bottom:8px; font-size:13.5px; line-height:1.6; } .es-err s { color:#b91c1c; } .es-err b { color:#15803d; }
   .es-ul { margin:6px 0 0 18px; line-height:1.8; font-size:14px; }
   #esLb { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:none; align-items:center; justify-content:center; padding:16px; cursor:zoom-out; } #esLb.on { display:flex; } #esLb img { max-width:100%; max-height:100%; border-radius:8px; }
-  @media (max-width:760px) { .two-col { grid-template-columns:1fr !important; } }
+  .two-col.has-img { grid-template-columns:minmax(0,1.75fr) minmax(0,1fr) !important; } .two-col.has-img > .passage { position:sticky; top:10px; align-self:start; max-height:calc(100vh - 20px); overflow:auto; } .container:has(.two-col.has-img), main:has(.two-col.has-img) { max-width:1500px !important; }
+  .es-img img { min-height:200px; background:#fff; } .es-imgbar { display:flex; gap:8px; flex-wrap:wrap; margin:-4px 0 12px; } .es-imgbar button { border:1.5px solid var(--border); background:var(--surface); border-radius:10px; padding:6px 12px; font-weight:700; font-size:13px; cursor:pointer; color:var(--primary); font-family:inherit; }
+  #esLb { align-items:flex-start; justify-content:flex-start; padding:0; cursor:default; overflow:auto; } #esLb img { max-width:none; max-height:none; border-radius:0; margin:auto; display:block; } #esLb.fit { align-items:center; justify-content:center; } #esLb.fit img { max-width:100%; max-height:100%; margin:0; }
+  #esLbTools { position:fixed; top:10px; right:14px; z-index:310; display:none; gap:6px; } #esLb.on ~ #esLbTools { display:flex; } #esLbTools button { border:0; background:rgba(255,255,255,.95); border-radius:10px; padding:9px 14px; font-weight:800; font-size:15px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.35); font-family:inherit; }
+  @media (max-width:760px) { .two-col, .two-col.has-img { grid-template-columns:1fr !important; } .two-col.has-img > .passage { position:static; max-height:none; } }
 </style>
 <script src="js/dialog.js?v=1"></script>
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
-<div id="esLb" onclick="this.classList.remove('on')"><img id="esLbImg" alt=""></div>
+<div id="esLb" class="fit"><img id="esLbImg" alt=""></div>
+<div id="esLbTools"><button type="button" id="lbMinus">➖</button><button type="button" id="lbFit">Vừa màn hình</button><button type="button" id="lbPlus">➕ Phóng to</button><button type="button" id="lbX">✕ Đóng</button></div>
 
 <section class="section" style="padding-top:14px; padding-bottom:30px;">
   <div class="container" id="root"><p style="color:var(--text-muted)">Đang tải…</p></div>
@@ -80,7 +85,17 @@ function promptHtml(t) {
   return (t.prompt_image ? '<div class="es-img" id="esImg"><img src="' + esc(t.prompt_image) + '" alt="Đề bài"><span>🔍 Bấm để phóng to</span></div>' : '') + '<h3 style="margin-bottom:8px">📋 Đề bài</h3>' + (t.prompt_html ? '<div class="es-rich">' + t.prompt_html + '</div>' : t.prompt_text ? '<div class="es-prompt">' + esc(t.prompt_text) + '</div>' : '') +
     '<div class="es-meta" style="margin-top:12px">' + (t.min_words || t.max_words ? '✏️ Độ dài: ' + (t.min_words ? 'từ ' + t.min_words : '') + (t.max_words ? ' đến ' + t.max_words : '') + ' từ<br>' : '') + (t.minutes ? '⏱ Thời gian: ' + t.minutes + ' phút<br>' : '') + (t.deadline ? '📅 Hạn nộp: ' + fmtDt(t.deadline) : '') + '</div>';
 }
-function bindImg() { var e = $('esImg'); if (e) e.onclick = function () { $('esLbImg').src = T.prompt_image; $('esLb').classList.add('on'); }; }
+var LBZ = 0;   // 0 = vừa màn hình; còn lại = bội số chiều rộng màn hình
+function lbSet(z) { var lb = $('esLb'), im = $('esLbImg'); LBZ = z; if (!z) { lb.classList.add('fit'); im.style.width = ''; } else { lb.classList.remove('fit'); im.style.width = Math.round(z * 100) + 'vw'; } }
+function bindImg() {
+  var e = $('esImg'); if (!e) return; [].forEach.call(document.querySelectorAll('.two-col'), function (c) { if (c.querySelector('.passage #esImg')) c.classList.add('has-img'); });
+  var open = function () { $('esLbImg').src = T.prompt_image; $('esLb').classList.add('on'); lbSet(1.6); document.body.style.overflow = 'hidden'; $('esLb').scrollTop = 0; $('esLb').scrollLeft = 0; };
+  e.onclick = open; if (!e.nextElementSibling || !e.nextElementSibling.classList.contains('es-imgbar')) e.insertAdjacentHTML('afterend', '<div class="es-imgbar"><button type="button" id="imgBig">🔍 Phóng to đề bài</button><a href="' + esc(T.prompt_image) + '" target="_blank" rel="noopener"><button type="button">↗ Mở ảnh ở tab mới</button></a></div>');
+  $('imgBig').onclick = open;
+}
+$('lbPlus').onclick = function () { lbSet(Math.min(5, (LBZ || 1) + .6)); }; $('lbMinus').onclick = function () { lbSet(LBZ <= 1.2 ? 0 : LBZ - .6); }; $('lbFit').onclick = function () { lbSet(0); };
+function lbClose() { $('esLb').classList.remove('on'); document.body.style.overflow = ''; } $('lbX').onclick = lbClose; $('esLb').addEventListener('click', function (ev) { if (ev.target === this) lbClose(); });
+document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') lbClose(); });
 function showTask() {
   api('/api/essay/task/' + ID).then(function (t) { T = t; skew = t.now - Date.now(); render(); }).catch(function (e) { $('root').innerHTML = '<p>' + esc(e.message) + '</p><p><a class="btn" href="essay.html">‹ Danh sách</a></p>'; });
 }
