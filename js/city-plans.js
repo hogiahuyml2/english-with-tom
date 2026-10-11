@@ -451,6 +451,21 @@
     ],
     16: [  // Space Port
       ['space', '🚀', 'Cảng vũ trụ & khoa học', 'Space & Science Port', 'Trung tâm điều khiển, đài thiên văn, nhà thi đấu và khu khoa học.', { t: { tier: ['M'] }, g: { tier: ['L'] }, e: { tier: ['M'] } }]
+    ],
+    17: [  // Arts & Fashion
+      ['arts', '🎨', 'Phố nghệ thuật', 'Arts Street', 'Phòng tranh, cửa hàng thời trang, phố quốc tế nhỏ và quảng trường.', { c: { tier: ['L', 'M'] }, e: { tier: ['M'] }, w: { tier: ['M'] }, p: { tier: ['M'] } }]
+    ],
+    18: [  // Garden Residences
+      ['garden', '🌷', 'Biệt thự vườn hoa', 'Garden Residences', 'Biệt thự và nhà vườn bao quanh hồ nhỏ, nhiều cây xanh.', { r: { tier: ['L', 'M'] }, p: { tier: ['M'] } }]
+    ],
+    19: [  // Snow Village
+      ['snow', '⛄', 'Làng tuyết', 'Snow Village', 'Nhà gỗ, cáp treo, sân trượt và khu vui chơi mùa đông.', { m: { tier: ['M', 'L'] }, f: { tier: ['M'] }, p: { tier: ['M'] } }]
+    ],
+    20: [  // Marina Port
+      ['marina', '⛵', 'Bến du thuyền', 'Marina', 'Bến thuyền, nhà hàng bên cảng và bãi biển nhỏ.', { h: { tier: ['M', 'L'] }, b: { tier: ['M'] }, i: { tier: ['M'] } }]
+    ],
+    21: [  // Oasis Wonders
+      ['oasis', '🏺', 'Ốc đảo kỳ quan', 'Oasis Wonders', 'Công trình kỳ quan, bến xe và nhà thi đấu quanh ốc đảo.', { w: { tier: ['L', 'M'] }, g: { tier: ['M'] }, t: { tier: ['M'] } }]
     ]
   };
   var SCOPES = { all: ['Cả khu / thị trấn', 'Whole Town', '🏙️'], half: ['Nửa khu', 'Half District', '🏘️'], quarter: ['Một góc phố', 'Quarter', '🏠'] };

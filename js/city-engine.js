@@ -570,7 +570,7 @@
   P.drawProp = function (ctx, e, t, gl) {
     var x = e.sx, y = e.sy, s = e.s || 1, k;
     switch (e.t) {
-      case 'lamp': ctx.strokeStyle = '#4B4F5A'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 17); ctx.stroke(); ctx.fillStyle = '#FFE9A0'; ctx.beginPath(); ctx.arc(x, y - 18, 2.8, 0, TAU); ctx.fill(); gl.push([x, y - 18, 9]); break;
+      case 'lamp': ctx.strokeStyle = '#4B4F5A'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 17); ctx.stroke(); ctx.fillStyle = '#FFE9A0'; ctx.beginPath(); ctx.arc(x, y - 18, 2.8, 0, TAU); ctx.fill(); gl.push([x, y - 18, 30]); if ((e.k % 3) === 0) { var tw = .5 + .5 * Math.sin(t * 3 + e.k); gl.push([x + 5, y - 15, 6 + 6 * tw]); } break;
       case 'palm': ctx.strokeStyle = '#8A5A33'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + 3, y - 12, x + 1 + Math.sin(t + x) * 1.2, y - 24); ctx.stroke(); ctx.fillStyle = '#3FA55B'; var tx = x + 1, ty = y - 24; for (k = 0; k < 5; k++) { var a = k * 1.26 + Math.sin(t * 1.4 + k) * .12; ctx.beginPath(); ctx.ellipse(tx + Math.cos(a) * 6, ty + Math.sin(a) * 3 - 1, 7, 2.2, a, 0, TAU); ctx.fill(); } break;
       case 'pine': ctx.fillStyle = 'rgba(20,50,30,.2)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 9 * s, 3.4 * s, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#6B4A2E'; ctx.fillRect(x - 1.4 * s, y - 6 * s, 2.8 * s, 7 * s);
         for (k = 0; k < 3; k++) { var yy = y - (4 + k * 8) * s, ww = (11 - k * 2.6) * s; ctx.fillStyle = k % 2 ? '#2F7D4A' : '#3A9158'; ctx.beginPath(); ctx.moveTo(x - ww, yy); ctx.lineTo(x, yy - 14 * s); ctx.lineTo(x + ww, yy); ctx.closePath(); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.55)'; if (e.sy < 0 || (e.k % 4 === 0)) { ctx.beginPath(); ctx.moveTo(x - ww * .45, yy - 6 * s); ctx.lineTo(x, yy - 14 * s); ctx.lineTo(x + ww * .45, yy - 6 * s); ctx.closePath(); ctx.fill(); } } break;
@@ -719,15 +719,14 @@
     ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
     var lw = Math.min(6, 1.5 / z), a0 = Math.min(1, night * 1.2);
     srcs.forEach(function (q) {
-      var col = LASERC[q.i % LASERC.length], rgb = col[0] + ',' + col[1] + ',' + col[2], k, dir = q.i % 2 ? 1 : -1, sp = .45 + (q.i % 3) * .13, R = 150 + (q.i % 4) * 45;
+      var col = LASERC[q.i % LASERC.length], rgb = col[0] + ',' + col[1] + ',' + col[2], k, dir = q.i % 2 ? 1 : -1, sp = .55 + (q.i % 3) * .16, LEN = 300 + (q.i % 4) * 50, SW = 120 + (q.i % 3) * 25;
+      // ĐÈN PHA: các tia phóng LÊN TRỜI từ đỉnh tháp, xoay vòng như đèn hải đăng
       for (k = 0; k < 3; k++) {
-        var ang = t * sp * dir + k * 2.094 + q.i, ex = q.ax + Math.cos(ang) * R, ey = q.gy + 4 + Math.sin(ang) * R * .5, gr = ctx.createLinearGradient(q.ax, q.ty, ex, ey);
-        gr.addColorStop(0, 'rgba(' + rgb + ',' + (.9 * a0) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
-        ctx.strokeStyle = gr; ctx.lineWidth = lw * 3.4; ctx.globalAlpha = .22; ctx.beginPath(); ctx.moveTo(q.ax, q.ty); ctx.lineTo(ex, ey); ctx.stroke();
-        ctx.lineWidth = lw; ctx.globalAlpha = .95; ctx.stroke();
-        // điểm sáng lấp lánh nơi tia chạm đất
-        var tw = .5 + .5 * Math.sin(t * 9 + k * 2 + q.i), sz = (3 + 4 * tw) * Math.min(2, 1 / Math.sqrt(z + .2));
-        ctx.globalAlpha = (.35 + .5 * tw) * a0; ctx.strokeStyle = 'rgba(' + rgb + ',1)'; ctx.lineWidth = lw * .9; ctx.beginPath(); ctx.moveTo(ex - sz, ey); ctx.lineTo(ex + sz, ey); ctx.moveTo(ex, ey - sz * .7); ctx.lineTo(ex, ey + sz * .7); ctx.stroke();
+        var ang = t * sp * dir + k * 2.094 + q.i, ex = q.ax + Math.cos(ang) * SW, ey = q.ty - LEN + Math.sin(ang) * SW * .35, dx = ex - q.ax, dy = ey - q.ty, dl = Math.hypot(dx, dy) || 1, nx = -dy / dl, ny = dx / dl, wb = 2.2, wt = 15 + (q.i % 3) * 4, depth = .5 + .5 * Math.sin(ang);
+        var gr = ctx.createLinearGradient(q.ax, q.ty, ex, ey);
+        gr.addColorStop(0, 'rgba(' + rgb + ',' + (.85 * a0) + ')'); gr.addColorStop(.55, 'rgba(' + rgb + ',' + (.3 * a0) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+        ctx.fillStyle = gr; ctx.globalAlpha = .55 + .35 * depth; ctx.beginPath(); ctx.moveTo(q.ax - nx * wb, q.ty - ny * wb); ctx.lineTo(ex - nx * wt, ey - ny * wt); ctx.lineTo(ex + nx * wt, ey + ny * wt); ctx.lineTo(q.ax + nx * wb, q.ty + ny * wb); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = gr; ctx.lineWidth = Math.max(1, lw); ctx.globalAlpha = .9; ctx.beginPath(); ctx.moveTo(q.ax, q.ty); ctx.lineTo(ex, ey); ctx.stroke();
       }
       // ngôi sao nhấp nháy trên đỉnh tháp
       var pu = .55 + .45 * Math.sin(t * 5 + q.i * 1.7), rr = (4 + 5 * pu) * Math.min(2.2, 1 / Math.sqrt(z + .2)), rg2 = ctx.createRadialGradient(q.ax, q.ty, 0, q.ax, q.ty, rr * 2.2);
@@ -739,8 +738,8 @@
     var E = this, cw = E.cw, ch = E.ch, w = E.weather;
     // ánh sáng đèn ban đêm
     if (night > .02 && E.glowList) {
-      var z = E.cam.z; ctx.save(); ctx.globalCompositeOperation = 'multiply'; var k = night, fr = 255 - Math.round(150 * k), fg = 255 - Math.round(125 * k), fb = 255 - Math.round(60 * k); ctx.fillStyle = 'rgb(' + fr + ',' + fg + ',' + fb + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore();
-      ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(.85, night * 1.1);
+      var z = E.cam.z; ctx.save(); ctx.globalCompositeOperation = 'multiply'; var k = night, fr = 255 - Math.round(122 * k), fg = 255 - Math.round(106 * k), fb = 255 - Math.round(46 * k); ctx.fillStyle = 'rgb(' + fr + ',' + fg + ',' + fb + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore();
+      ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, night * 1.35);
       var gmax = E.quality >= 2 ? 1e9 : E.quality === 1 ? 140 : 0, gcount = 0;
       if (gmax) E.glowList.forEach(function (q) { if (++gcount > gmax) return; if (q[2] && q[2].glow) ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); else { var g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], q[2]); g.addColorStop(0, 'rgba(255,225,140,.9)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); } });
       ctx.restore();

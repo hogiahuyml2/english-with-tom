@@ -35,7 +35,7 @@ button { font-family: inherit; cursor: pointer; }
 .rbtn { width: 46px; height: 46px; border-radius: 15px; border: 0; background: var(--glass); font-size: 20px; box-shadow: 0 4px 14px rgba(20,40,90,.25); color: var(--ink); display: grid; place-items: center; font-weight: 800; }
 .rbtn:active { transform: scale(.94); }
 .mini { position: fixed; left: 10px; top: calc(66px + var(--top)); z-index: 20; background: var(--glass); border-radius: 14px; padding: 5px; box-shadow: 0 4px 14px rgba(20,40,90,.25); }
-.mini canvas { display: block; width: 150px; height: 107px; border-radius: 10px; cursor: pointer; touch-action: none; }
+.mini canvas { display: block; width: 150px; height: 136px; border-radius: 10px; cursor: pointer; touch-action: none; }
 .mini .mt { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; margin-top: 3px; }
 .dbar { position: fixed; left: 10px; bottom: calc(86px + var(--bot)); display: flex; flex-direction: column; gap: 6px; z-index: 20; max-height: calc(100dvh - 330px); overflow-y: auto; scrollbar-width: none; padding-right: 2px; } .dbar::-webkit-scrollbar { display: none; }
 .fl { position: absolute; top: -40px; font-size: 26px; will-change: transform; animation: flfall linear forwards; } @keyframes flfall { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: 1; } 100% { transform: translate(var(--sx), calc(100vh + 80px)) rotate(var(--sr)); opacity: .9; } } @media (prefers-reduced-motion: reduce) { .fl { animation-duration: .01s; } }
@@ -148,7 +148,7 @@ button { font-family: inherit; cursor: pointer; }
   <a class="chip btn" href="word-hub.html" style="text-decoration:none;color:inherit" title="Về Luyện từ">🏠</a>
 </div>
 
-<div class="mini"><canvas id="mm" width="336" height="240" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
+<div class="mini"><canvas id="mm" width="336" height="304" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
 <div class="dbar" id="dbar"></div>
 <div class="side">
   <button class="rbtn" id="zIn" type="button" aria-label="Phóng to">＋</button>
@@ -207,15 +207,15 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=14"></script>
+<script src="js/city-data.js?v=15"></script>
 <script src="js/city-learn.js?v=1"></script>
-<script src="js/city-advice.js?v=2"></script>
-<script src="js/city-plans.js?v=3"></script>
+<script src="js/city-advice.js?v=2b"></script>
+<script src="js/city-plans.js?v=3b"></script>
 <script src="js/city-art.js?v=7"></script>
 <script src="js/city-art2.js?v=3"></script>
 <script src="js/city-art3.js?v=3"></script>
 <script src="js/city-art4.js?v=2"></script>
-<script src="js/city-engine.js?v=18"></script>
+<script src="js/city-engine.js?v=20"></script>
 <script>
 (function () {
 'use strict';
@@ -856,7 +856,7 @@ function planQuote() {
 }
 
 /* ───── nhạc nền theo quận (dùng bộ phát nhạc của Garden) ───── */
-var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna', 'cyber', 'ocean', 'palace', 'forest', 'space'], lastScene = '';
+var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna', 'cyber', 'ocean', 'palace', 'forest', 'space', 'candy', 'cottage', 'arctic', 'pirate', 'desert'], lastScene = '';
 function sndScene() {
   if (!window.EWTSound || !ENG || !S) return; var c = ENG.cam, t = ENG.screenToTile(ENG.cw / 2, ENG.ch / 2), x = Math.max(0, Math.min(C.W - 1, t[0])), y = Math.max(0, Math.min(C.H - 1, t[1])), d = C.DIST[y * C.W + x], dd = DSCENE[d] ? d : (sndScene.last || 0); sndScene.last = dd;
   var night = ENG.nightK() > .5, evs = S.ev || [], key = dd + '|' + night + '|' + evs.join(','); if (key === lastScene) return; lastScene = key;

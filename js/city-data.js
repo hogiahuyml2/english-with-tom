@@ -2,8 +2,8 @@
    Mọi phép kiểm tra (đặt công trình, xây đường, giá, thời gian…) đều dùng đúng các hàm ở đây nên hai phía luôn cho cùng kết quả. */
 (function (root) {
   'use strict';
-  /* ───── bản đồ 168×120 ô (gấp ~5 lần bản đồ cũ 72×48). Thành phố cũ (6 quận) được giữ NGUYÊN VẸN ở vị trí (OX,OY) để không ai mất công trình ───── */
-  var W = 168, H = 120, OX = 60, OY = 36, OW = 72, OH = 48, PER = 6;
+  /* ───── bản đồ 168×152 ô (hàng 120–151 là vùng mở rộng phía Nam; chỉ số ô y*168+x của vùng cũ KHÔNG đổi) (gấp ~5 lần bản đồ cũ 72×48). Thành phố cũ (6 quận) được giữ NGUYÊN VẸN ở vị trí (OX,OY) để không ai mất công trình ───── */
+  var W = 168, H = 152, OX = 60, OY = 36, OW = 72, OH = 48, PER = 6;
 
   /* ───── các quận ─────
      rects: các hình chữ nhật tạo nên quận (đa dạng diện tích) · lvl: cấp thành phố tối thiểu để MUA bằng xu · cost: giá xu · auto: đạt cấp này thì được MỞ MIỄN PHÍ
@@ -26,7 +26,13 @@
     { id: 13, key: 'lake', en: 'Crystal Lake', vi: 'Hồ Pha Lê & Nghỉ dưỡng', icon: '🏞️', lvl: 52, cost: 60000, auto: 68, rects: [[135, 57, 30, 16]], blurb: 'Hồ nước trong vắt, khu nghỉ dưỡng, công viên giải trí và những bãi cát nhỏ bên hồ.' },
     { id: 14, key: 'heritage', en: 'Heritage Old Town', vi: 'Phố cổ Di sản', icon: '🏯', lvl: 64, cost: 90000, auto: 80, rects: [[151, 93, 14, 26]], blurb: 'Hòn đảo nhỏ phía Đông Nam với phố cổ lát đá, đền chùa và các công trình di sản.' },
     { id: 15, key: 'eco', en: 'Eco Forest Village', vi: 'Làng Sinh thái Rừng Xanh', icon: '🌲', lvl: 76, cost: 130000, auto: 92, rects: [[68, 86, 25, 18]], blurb: 'Làng xanh giữa vịnh: nông trại hữu cơ, nhà gỗ trên núi nhỏ và rừng cây xanh mát.' },
-    { id: 16, key: 'space', en: 'Space Port', vi: 'Cảng Vũ trụ & Khoa học', icon: '🚀', lvl: 88, cost: 180000, auto: 104, rects: [[135, 73, 30, 19]], blurb: 'Bệ phóng tên lửa, đài thiên văn, nhà thi đấu và trung tâm khoa học ở cực Đông.' }
+    { id: 16, key: 'space', en: 'Space Port', vi: 'Cảng Vũ trụ & Khoa học', icon: '🚀', lvl: 88, cost: 180000, auto: 104, rects: [[135, 73, 30, 19]], blurb: 'Bệ phóng tên lửa, đài thiên văn, nhà thi đấu và trung tâm khoa học ở cực Đông.' },
+    // ── 5 quận mới ở dải đảo phía Nam (hàng 124–147) ──
+    { id: 17, key: 'arts', en: 'Arts & Fashion', vi: 'Phố Nghệ thuật & Thời trang', icon: '🎨', lvl: 84, cost: 220000, auto: 100, rects: [[4, 124, 29, 24]], blurb: 'Phòng tranh, cửa hàng thời trang, nhà hát và quán cà phê nghệ sĩ.' },
+    { id: 18, key: 'garden', en: 'Garden Residences', vi: 'Biệt thự Vườn Hoa', icon: '🌷', lvl: 90, cost: 280000, auto: 106, rects: [[36, 124, 29, 24]], blurb: 'Khu nhà ở cao cấp giữa những khu vườn, hồ nhỏ và công viên.' },
+    { id: 19, key: 'snow', en: 'Snow Village', vi: 'Làng Tuyết & Trượt tuyết', icon: '⛄', lvl: 96, cost: 360000, auto: 112, rects: [[68, 124, 29, 24]], blurb: 'Đảo núi nhỏ với nhà gỗ, cáp treo, sân trượt và rừng thông.' },
+    { id: 20, key: 'marina', en: 'Marina Port', vi: 'Bến Du thuyền & Cảng Xanh', icon: '⛵', lvl: 102, cost: 450000, auto: 116, rects: [[100, 124, 29, 24]], blurb: 'Bến du thuyền, nhà hàng bên cảng, kho lạnh và bãi biển nhỏ.' },
+    { id: 21, key: 'oasis', en: 'Oasis Wonders', vi: 'Ốc đảo Kỳ quan', icon: '🏺', lvl: 108, cost: 560000, auto: 120, rects: [[132, 124, 29, 24]], blurb: 'Ốc đảo xanh với các công trình kỳ quan, bến xe và nhà thi đấu.' }
   ];
   var ZONE_NAME = { r: 'Nhà ở', c: 'Thương mại', s: 'Dịch vụ công', p: 'Công viên', f: 'Vui chơi', e: 'Học đường', i: 'Công nghiệp', h: 'Cảng', w: 'Phố quốc tế', b: 'Du lịch biển', m: 'Du lịch núi', a: 'Nông trại', t: 'Giao thông', g: 'Thể thao & Triển lãm' };
   var ZONE_COLOR = { r: '#9BD36B', c: '#8CC8E8', s: '#F2C86B', p: '#6FC98B', f: '#F29BC0', e: '#B7A0E8', i: '#B8B2A6', h: '#7FB4C9', w: '#F0A56B', b: '#FFD36B', m: '#9DB8E8', a: '#C9D96B', t: '#A8B0BC', g: '#FF9A7A' };
@@ -77,6 +83,12 @@
     fillRect(141, 76, 146, 79, 5);                                                      // bệ phóng của Cảng Vũ trụ
     fillRect(151, 93, 164, 118, 2); fillRect(153, 95, 163, 116, 0);
     fillRect(68, 86, 92, 103, 2); fillRect(70, 88, 90, 101, 0);
+    // dải đảo phía Nam (5 quận mới, hàng 124–147)
+    [[4, 17], [36, 18], [68, 19], [100, 20], [132, 21]].forEach(function (a) { fillRect(a[0], 124, a[0] + 28, 147, 2); fillRect(a[0] + 2, 126, a[0] + 26, 145, 0); });
+    fillEll(22, 131, 3.4, 2, 1);                                       // ao nhỏ phố Nghệ thuật
+    fillEll(48, 139.5, 4.6, 3.4, 2, 0); fillEll(48, 139.5, 3.6, 2.4, 1);  // hồ khu Vườn Hoa
+    fillRect(108, 128, 109, 133, 1);                                   // kênh nhỏ trong bến du thuyền
+    fillEll(140, 130.5, 4.4, 3.4, 2, 0); fillEll(140, 130.5, 3.2, 2.2, 1); // ao ốc đảo
     // thành phố cũ: nguyên bản
     for (y = 0; y < OH; y++) for (x = 0; x < OW; x++) TERR[idx(OX + x, OY + y)] = oldTerr(x, y);
     // cầu dẫn ra đảo: cát hai đầu để đường nối liền
@@ -205,6 +217,13 @@
     var vx = [70, 80, 90], vy = [88, 94, 101];
     gridRoads(vx, vy, 70, 88, 90, 101); gridZones(15, vx, vy, ['am', 'rp']);
     link(80, 102, 80, 105, 15);                                                        // nối xuống cầu vịnh dài (hàng 106)
+    // ─── 5 quận phía Nam ───
+    var sy2 = [126, 135, 145];
+    [[17, [6, 14, 30], ['ce', 'wp'], 14, 107], [18, [38, 54, 62], ['rp', 'pr'], 54, 107], [19, [70, 82, 94], ['mf', 'pm'], 82, 107], [20, [102, 112, 126], ['hb', 'bi'], 112, 113], [21, [134, 146, 158], ['wg', 'tw'], 146, 113]].forEach(function (q) {
+      gridRoads(q[1], sy2, q[1][0], 126, q[1][2], 145); gridZones(q[0], q[1], sy2, q[2]); link(q[3], q[4], q[3], 125, q[0]);
+    });
+    BLOCKS.forEach(function (b) { if (b.d === 18 && b.z === 'p') { var a, c, q; for (c = b.y; c < b.y + b.h; c++) for (a = b.x; a < b.x + b.w; a++) { q = idx(a, c); if (TERR[q] === 0 && !ROAD[q] && hash(a, c, 31) > .55) { TERR[q] = 4; ZONE[q] = 0; } } }
+      if (b.d === 19 && b.z === 'm') { var a2, c2, q2, hv; for (c2 = b.y; c2 < b.y + b.h; c2++) for (a2 = b.x; a2 < b.x + b.w; a2++) { q2 = idx(a2, c2); hv = hash(a2, c2, 41); if (TERR[q2] === 0 && !ROAD[q2] && hv > .82) { TERR[q2] = hv > .94 ? 3 : 4; ZONE[q2] = 0; } } } });
     BLOCKS.forEach(function (b) { if (b.d !== 15 || b.z !== 'p') return; var a, c, q; for (c = b.y; c < b.y + b.h; c++) for (a = b.x; a < b.x + b.w; a++) { q = idx(a, c); if (TERR[q] === 0 && !ROAD[q] && hash(a, c, 21) > .4) { TERR[q] = 4; ZONE[q] = 0; } } });
   })();
 
@@ -237,7 +256,7 @@
       if (t === 3) { if (r > .93) PROPS.push({ t: 'peak', x: x, y: y, s: .8 + hash(x, y, 2) * .9 }); else if (r > .75) PROPS.push({ t: 'rock', x: x, y: y, s: .7 + hash(x, y, 6) * .5 }); }
       else if (t === 4) { if (r > .2) PROPS.push({ t: hash(x, y, 7) > .25 ? 'pine' : 'tree', x: x, y: y, s: .8 + hash(x, y, 8) * .5 }); }
       else if (t === 2 && DIST[i] !== 255 && DIST[i] !== 7) {
-        if (r > .84 && (DIST[i] === 6 || DIST[i] === 9 || DIST[i] === 3 || DIST[i] === 5 || DIST[i] === 2 || DIST[i] === 11 || DIST[i] === 13 || DIST[i] === 14)) PROPS.push({ t: 'palm', x: x, y: y });
+        if (r > .84 && (DIST[i] === 6 || DIST[i] === 9 || DIST[i] === 3 || DIST[i] === 5 || DIST[i] === 2 || DIST[i] === 11 || DIST[i] === 13 || DIST[i] === 14 || DIST[i] === 20 || DIST[i] === 21)) PROPS.push({ t: 'palm', x: x, y: y });
         else if (r > .66 && DIST[i] === 6 && ((x + y) % 3 === 0)) PROPS.push({ t: r > .78 ? 'lounger' : 'umbrella', x: x, y: y, c: Math.floor(hash(x, y, 1) * 5) });
       } else if (t === 1) {
         if (r > .985 && near(x, y, 2, 5)) PROPS.push({ t: 'rock', x: x, y: y, s: 1, sea: 1 });
@@ -247,12 +266,14 @@
     // đèn đường ở các ngã tư
     for (y = 1; y < H - 1; y++) for (x = 1; x < W - 1; x++) {
       i = idx(x, y); if (ROAD[i] !== 1) continue; var n4 = (ROAD[i - 1] > 0 ? 1 : 0) + (ROAD[i + 1] > 0 ? 1 : 0) + (ROAD[i - W] > 0 ? 1 : 0) + (ROAD[i + W] > 0 ? 1 : 0);
-      if (n4 >= 3) LAMPS.push([x, y]); else if (n4 === 2 && ((x * 7 + y * 13) % 11 === 0) && DIST[i] !== 255) LAMPS.push([x, y]);
+      if (n4 >= 3) LAMPS.push([x, y]); else if (n4 === 2 && ((x * 7 + y * 13) % 5 === 0) && DIST[i] !== 255) LAMPS.push([x, y]);
     }
   })();
 
   /* ───── luồng thuyền (thuyền chạy theo các tuyến đường nước) ───── */
   var LANES = [
+    { p: [[2, 120.5], [165, 120.5]], n: 4, v: .03, s: 1.2, c: ['#fff', '#4F80BA', '#F2C21B'] },
+    { p: [[165, 149.5], [2, 149.5]], n: 3, v: .028, s: 1.2, c: ['#fff', '#E9573F', '#2E9E7F'] },
     { p: [[71.6, 14], [71.6, 82]], n: 3, v: .03, s: .9, c: ['#fff', '#F2C21B', '#E9573F'] },
     { p: [[33.6, 20], [33.6, 112]], n: 2, v: .03, s: .9, c: ['#fff', '#4F80BA'] },
     { p: [[132, 38], [132.5, 60], [132.5, 90], [133, 118]], n: 3, v: .03, s: 1.2, c: ['#fff', '#4F80BA', '#F2C21B'] },
@@ -764,7 +785,7 @@
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
   /* ───── quận mới "thừa hưởng" danh mục của các quận mẫu: công trình xây được ở quận mẫu cũng xây được ở quận mới (khối đất mới dùng cùng chữ khối) ───── */
   (function () {
-    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4] };
+    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4], 17: [1, 4, 5], 18: [0, 10], 19: [7, 3], 20: [2, 6], 21: [5, 11] };
     ITEMS.forEach(function (it) { Object.keys(MIRROR).forEach(function (nd) { nd = +nd; if (it.ds.indexOf(nd) < 0 && MIRROR[nd].some(function (m) { return it.ds.indexOf(m) >= 0; })) it.ds = it.ds.concat([nd]); }); });
   })();
   (function () {
