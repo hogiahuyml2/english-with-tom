@@ -4,7 +4,8 @@
    Định dạng mỗi khu: { map: { f: [id có sẵn], t: [], d: [], b: [], p: [] },
      f: [[tên, mẫu hoa, màu 1, màu 2, độ tinh xảo 1–5, tuỳ chọn]], t: [[tên, mẫu cây, màu 1, màu 2, tinh xảo, tuỳ chọn]],
      d: [[tên, đế, biểu tượng, màu 1, màu 2, tinh xảo]], b: [[tên, rộng, cao, kiểu nhà, màu tường, màu mái, màu nhấn, chi tiết, tinh xảo]],
-     p: [[tên, mẫu thú, màu 1, màu 2, phụ kiện, tinh xảo]] } */
+     p: [[tên, mẫu thú, màu 1, màu 2, phụ kiện, tinh xảo]] }
+   NÔNG TRẠI: công trình có thể kèm {pen:'loài'} ở phần tử thứ 10 (chuồng nuôi MỘT loài), thú cưng kèm {sp:'loài'} ở phần tử thứ 7 (loài vật nuôi). */
 (function (root) {
   'use strict';
   var Z = {}, SPEC = {};   // Z: khu → định nghĩa; SPEC: id món → [loại, spec]
@@ -28,9 +29,9 @@
       (d.d || []).forEach(function (s, i) { var t = cx(s[5]), id = z.id + '_d' + (i + 1); SPEC[id] = ['d', s];
         ctx.items.push({ id: id, name: s[0], kind: 'deco', cost: r10(unit * TIER.deco[t - 1]), lvl: Math.min(14, L + LV.deco[t - 1]), b: 3 + t * 3 + Math.floor(L / 2), z: z.id, cx: t }); });
       (d.b || []).forEach(function (s, i) { var t = cx(s[8]), id = z.id + '_b' + (i + 1), area = s[1] * s[2]; SPEC[id] = ['b', s];
-        ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + area * 2, z: z.id, cx: t }); });
+        ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: r50(unit * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: Math.min(14, L + LV.big[t - 1]), b: 16 + t * 14 + L * 3 + area * 2, z: z.id, cx: t, pen: (s[9] && s[9].pen) || undefined }); });
       (d.p || []).forEach(function (s, i) { var t = cx(s[5]), id = z.id + '_p' + (i + 1); SPEC[id] = ['p', s];
-        ctx.pets.push({ id: id, name: s[0], cost: r10(unit * TIER.pet[t - 1]), lvl: Math.min(14, L + LV.pet[t - 1]), z: z.id, cx: t }); });
+        ctx.pets.push({ id: id, name: s[0], cost: r10(unit * TIER.pet[t - 1]), lvl: Math.min(14, L + LV.pet[t - 1]), z: z.id, cx: t, sp: (s[6] && s[6].sp) || undefined }); });
     });
   }
   function eachSpec(fn) { Object.keys(SPEC).forEach(function (id) { fn(id, SPEC[id][0], SPEC[id][1]); }); }

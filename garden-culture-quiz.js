@@ -142,4 +142,84 @@ module.exports = {
     ['Lemurs are wild animals from ___.', ['Madagascar', 'Canada', 'Norway', 'Peru'], 'Lemurs are wild animals from Madagascar.'],
     ['Vanilla comes from an ___.', ['orchid', 'apple', 'onion', 'egg'], 'Vanilla comes from an orchid.'],
     ['On the flag of Madagascar, white is on the ___.', ['left', 'right', 'top', 'bottom'], 'White is on the left.'] ]
+  ,farmvn: [
+    ['Rice grows in ___ in Vietnam.', ['water', 'sand', 'snow', 'fire'], 'Rice grows in water in Vietnam.'],
+    ['Farmers use ___ to help in the rice fields.', ['water buffaloes', 'tigers', 'penguins', 'camels'], 'Farmers use water buffaloes to help in the fields.'],
+    ['What colour is the star on the flag of Vietnam?', ['Yellow', 'Blue', 'Green', 'White'], 'The flag of Vietnam is red with a yellow star.'] ]
+  ,farmnl: [
+    ['Dutch farmers keep many cows for ___.', ['milk', 'wool', 'eggs', 'honey'], 'Dutch farmers keep many cows for milk.'],
+    ['Gouda is a famous Dutch ___.', ['cheese', 'cake', 'soup', 'fish'], 'Gouda is a famous Dutch cheese.'],
+    ['The flag of the Netherlands has ___ stripes.', ['three', 'two', 'five', 'seven'], 'The flag of the Netherlands has three stripes.'] ]
+  ,farmch: [
+    ['A chalet is a ___ house in the mountains.', ['wooden', 'paper', 'glass', 'ice'], 'A chalet is a wooden house in the mountains.'],
+    ['A cow wears a ___ on its neck.', ['bell', 'hat', 'scarf', 'crown'], 'A cow wears a bell on its neck.'],
+    ['The flag of Switzerland is red with a white ___.', ['cross', 'star', 'circle', 'stripe'], 'The flag of Switzerland is red with a white cross.'] ]
+  ,farmau: [
+    ['Australia has many ___.', ['sheep', 'penguins', 'polar bears', 'yaks'], 'Australia has many sheep.'],
+    ['Farmers cut the ___ from sheep in a woolshed.', ['wool', 'milk', 'eggs', 'feathers'], 'Farmers cut the wool from sheep.'],
+    ['People in the outback boil water in a ___ can.', ['billy', 'tea', 'sand', 'cow'], 'People in the outback boil water in a billy can.'] ]
+  ,farmus: [
+    ['Many American farms have a ___ barn.', ['red', 'purple', 'pink', 'black'], 'Many American farms have a red barn.'],
+    ['A silo keeps corn and ___.', ['grain', 'snow', 'sand', 'stone'], 'A silo keeps corn and grain.'],
+    ['A cowboy hat protects a cowboy from the ___.', ['sun', 'moon', 'fish', 'sea'], 'A cowboy hat protects a cowboy from the sun.'] ]
+  ,farmmx: [
+    ['A hacienda often has arches and a bell ___.', ['tower', 'boat', 'tree', 'snowman'], 'A hacienda often has arches and a bell tower.'],
+    ['Agave is a plant with long, ___ leaves.', ['sharp', 'soft', 'round', 'wet'], 'Agave has long, sharp leaves.'],
+    ['Red chilies make food ___.', ['spicy', 'cold', 'sweet', 'blue'], 'Chilies make food spicy.'] ]
+  ,farmar: [
+    ['An estancia is a big ___ in Argentina.', ['farm', 'school', 'hospital', 'airport'], 'An estancia is a big farm in Argentina.'],
+    ['Gauchos look after cows and ___.', ['horses', 'dolphins', 'parrots', 'lions'], 'Gauchos look after the cows and horses.'],
+    ['In Argentina, people cook meat slowly over a ___. This is called asado.', ['fire', 'river', 'cloud', 'mirror'], 'People cook meat slowly over a fire. This is called asado.'] ]
+  ,farmmn: [
+    ['A ger is a round white ___.', ['tent', 'bridge', 'ship', 'tower'], 'A ger is a round white tent.'],
+    ['Mongolian families move their ger to find new ___ for their animals.', ['grass', 'cars', 'shoes', 'books'], 'Families move it to find new grass.'],
+    ['An ovoo is a pile of ___.', ['stones', 'books', 'balloons', 'apples'], 'An ovoo is a pile of stones.'] ]
+  ,farmfr: [
+    ['Farmers in Provence grow ___.', ['lavender', 'bananas', 'coconuts', 'cactus'], 'Farmers grow lavender in Provence.'],
+    ['Lavender is a ___ flower.', ['purple', 'green', 'black', 'orange'], 'Lavender is a purple flower.'],
+    ['Bees make ___ from flowers.', ['honey', 'milk', 'bread', 'rice'], 'Bees make honey from flowers.'] ]
+  ,farmke: [
+    ['The Maasai people live in Kenya and ___.', ['Tanzania', 'Canada', 'Norway', 'Chile'], 'The Maasai live in Kenya and Tanzania.'],
+    ['An acacia tree gives ___ on the savanna.', ['shade', 'snow', 'ice', 'sand'], 'An acacia tree gives shade on the savanna.'],
+    ['A Maasai shield is made from animal ___.', ['skin', 'glass', 'paper', 'metal'], 'A Maasai shield is made from animal skin.'] ]
+  ,portugal: [
+    ['Belém Tower is an old ___ tower in Lisbon.', ['stone', 'glass', 'paper', 'ice'], 'Belém Tower is an old stone tower.'],
+    ['Azulejos are blue and white ___.', ['tiles', 'shoes', 'fruits', 'balloons'], 'Azulejos are blue and white tiles.'],
+    ['The rooster of Barcelos is a ___ of Portugal.', ['symbol', 'river', 'mountain', 'song'], 'The rooster of Barcelos is a symbol of Portugal.'] ]
+  ,poland: [
+    ['The mermaid is the symbol of ___.', ['Warsaw', 'Tokyo', 'Lima', 'Cairo'], 'The mermaid is the symbol of Warsaw.'],
+    ['On the flag of Poland, ___ is on the top.', ['white', 'red', 'blue', 'green'], 'White is on the top.'],
+    ['Pierogi are ___.', ['dumplings', 'shoes', 'boats', 'hats'], 'Pierogi are dumplings.'] ]
+  ,austria: [
+    ['Mozart was born in ___.', ['Salzburg', 'Sydney', 'Seoul', 'Santiago'], 'Mozart was born in Salzburg.'],
+    ['Hohensalzburg is a big ___ on a hill.', ['castle', 'farm', 'beach', 'school'], 'Hohensalzburg is a big castle on a hill.'],
+    ['The flag of Austria is red, white and ___.', ['red', 'blue', 'green', 'yellow'], 'The flag of Austria is red, white and red.'] ]
+  ,denmark: [
+    ['Nyhavn is a colourful ___ in Copenhagen.', ['harbour', 'desert', 'forest', 'volcano'], 'Nyhavn is a colourful harbour.'],
+    ['LEGO bricks come from ___.', ['Denmark', 'Egypt', 'Peru', 'Kenya'], 'LEGO bricks come from Denmark.'],
+    ['The flag of Denmark is red with a white ___.', ['cross', 'star', 'sun', 'moon'], 'The flag of Denmark is red with a white cross.'] ]
+  ,finland: [
+    ['A sauna is a ___ room.', ['hot', 'cold', 'dark', 'noisy'], 'A sauna is a hot room.'],
+    ['Lapland is in the ___ of Finland.', ['north', 'south', 'centre', 'sea'], 'Lapland is in the north of Finland.'],
+    ['The flag of Finland is white with a ___ cross.', ['blue', 'red', 'green', 'yellow'], 'The flag of Finland is white with a blue cross.'] ]
+  ,iceland: [
+    ['A geyser shoots hot ___ into the air.', ['water', 'sand', 'snow', 'paper'], 'A geyser shoots hot water.'],
+    ['A puffin is a ___ with a colourful beak.', ['bird', 'fish', 'tree', 'car'], 'A puffin is a bird.'],
+    ['The flag of Iceland is blue with a ___ cross.', ['red', 'green', 'black', 'pink'], 'It has a red cross.'] ]
+  ,czechia: [
+    ['The Astronomical Clock is in ___.', ['Prague', 'Rio', 'Delhi', 'Lima'], 'The Astronomical Clock is in Prague.'],
+    ['Charles Bridge crosses a ___.', ['river', 'desert', 'mountain', 'road'], 'Charles Bridge crosses the river.'],
+    ['The flag of the Czech Republic has a blue ___.', ['triangle', 'circle', 'star', 'cross'], 'It has a blue triangle.'] ]
+  ,hungary: [
+    ['The Hungarian Parliament stands beside the ___ river.', ['Danube', 'Nile', 'Amazon', 'Thames'], 'It stands beside the Danube river.'],
+    ['The Chain Bridge connects Buda and ___.', ['Pest', 'Rome', 'Paris', 'Oslo'], 'The Chain Bridge connects Buda and Pest.'],
+    ['Erno Rubik invented the ___ Cube.', ['Rubik\'s', 'Magic', 'Chain', 'Cheese'], 'Erno Rubik invented the Rubik\'s Cube.'] ]
+  ,philippines: [
+    ['The Chocolate Hills are many ___ hills.', ['round', 'square', 'flat', 'blue'], 'The Chocolate Hills are many round hills.'],
+    ['A jeepney is a ___ bus.', ['colourful', 'invisible', 'tiny', 'frozen'], 'A jeepney is a colourful bus.'],
+    ['A parol is a star-shaped ___.', ['lantern', 'shoe', 'boat', 'book'], 'A parol is a star-shaped lantern.'] ]
+  ,newzealand: [
+    ['A waka is a traditional Māori ___.', ['canoe', 'hat', 'drum', 'castle'], 'A waka is a traditional Māori canoe.'],
+    ['The silver fern is a symbol of ___.', ['New Zealand', 'Egypt', 'Iceland', 'Mexico'], 'The silver fern is a symbol of New Zealand.'],
+    ['The kiwi is a bird that cannot ___.', ['fly', 'sleep', 'eat', 'walk'], 'The kiwi cannot fly.'] ]
 };

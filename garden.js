@@ -65,6 +65,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
     st.zones = st.zones.filter((id) => G.ZBY[id]); if (st.zones.indexOf('cottage') < 0) st.zones.unshift('cottage');
     // Thú cưng thuộc về MỘT khu: thú cũ chưa có khu → ở Vườn nhà Tom
     st.pets = (Array.isArray(st.pets) ? st.pets : []).filter((p) => p && G.PBY[p.k]).map((p) => { if (!p.z || !G.ZBY[p.z]) p.z = 'cottage'; return p; });
+    fixPens(st);
     // Vườn cũ được GIỮ NGUYÊN: nếu bố cục cảnh phụ đổi và có đồ của học sinh nằm trúng ô cảnh phụ mới thì vẫn giữ đồ đó tại chỗ (không dọn, không mất).
     st.purged = 0; st.purgedAny = false;
     Object.keys(st.land).forEach((k) => { const n = Number(st.land[k]); if (!G.ZBY[k] || !Number.isInteger(n) || n < 1) delete st.land[k]; else st.land[k] = Math.min(n, G.LAND.length - 1); });
@@ -89,15 +90,26 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   // Chỉ lưu đến ô cuối cùng có đồ (khung ô rất lớn, phần lớn để trống)
   function trimTiles(t) { let n = t.length; while (n > 0 && !t[n - 1]) n--; return t.slice(0, n); }
   const landLv = (st, z) => (z ? st.land[z.id] | 0 : 0);
+  // Chuồng nuôi thú: mỗi vật nuôi có thể ở trong một chuồng (p.pen = chỉ số ô góc chuồng) hoặc chạy ngoài chuồng. Dọn các tham chiếu hỏng sau mọi thay đổi.
+  function fixPens(st) {
+    const cnt = {};
+    (st.pets || []).forEach((p) => {
+      if (p.pen == null) { delete p.pen; return; }
+      const t = st.tiles[p.pen], it = t && t.ref == null ? G.BY[t.k] : null, pt = G.PBY[p.k], zi = G.ZBY[p.z] ? G.ZBY[p.z].i : -1;
+      if (!it || !it.pen || !pt || pt.sp !== it.pen || Math.floor(p.pen / G.PER) !== zi) { delete p.pen; return; }
+      cnt[p.pen] = (cnt[p.pen] || 0) + 1; if (cnt[p.pen] > G.penCap(it)) { delete p.pen; cnt[p.pen]--; }
+    });
+  }
   function save(st) {
+    fixPens(st);
     db.prepare('UPDATE garden SET name=?,size=?,tiles=?,zones=?,land=?,bag=?,quests=?,passport=?,v=3,pets=?,water=?,water_day=?,yield_day=?,yield_xu=?,feed_day=?,feed_xu=?,quiz_day=?,quiz_ok=?,quiz_total=?,updated_at=? WHERE user_id=?')
       .run(st.name, st.size, JSON.stringify(trimTiles(st.tiles)), JSON.stringify(st.zones), JSON.stringify(st.land || {}), JSON.stringify(st.bag || normBag(null)), JSON.stringify(st.q || {}), JSON.stringify(st.passport || {}), JSON.stringify(st.pets), st.water, st.water_day, st.yield_day, st.yield_xu, st.feed_day, st.feed_xu, st.quiz_day, st.quiz_ok, st.quiz_total, now(), st.uid);
   }
   function view(st) {
     const beauty = G.beautyOf(st), level = G.levelOf(beauty), nl = G.nextLevel(beauty), t = Date.now(), R = G.RULES;
     return {
-      name: st.name, zones: st.zones, land: st.land, bag: st.bag, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, z: p.z, o: p.o || null, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
-      next: nl ? { level: nl.n, need: nl.at - beauty, title: nl.title } : null, slots: G.petSlots(level),
+      name: st.name, zones: st.zones, land: st.land, bag: st.bag, tiles: trimTiles(st.tiles), pets: st.pets.map((p) => ({ id: p.id, k: p.k, name: p.name, z: p.z, o: p.o || null, pen: p.pen == null ? null : p.pen, fed: p.fed === vnDay() })), water: st.water, beauty, level, levelTitle: G.LEVELS[level - 1].title,
+      next: nl ? { level: nl.n, need: nl.at - beauty, title: nl.title } : null, slots: G.petSlots(level), farmSlots: G.petSlots(level) + 12,
       quests: X ? X.questsView(st) : null, events: X ? X.eventsView(st) : null, passport: Object.keys(st.passport || {}).filter((k) => st.passport[k] && st.passport[k].stamp),
       left: { yield: Math.max(0, R.yieldCapDay - st.yield_xu), feed: Math.max(0, R.feedCapDay - st.feed_xu), quiz: Math.max(0, R.quizCapDay - st.quiz_ok) }, now: t, quizTotal: st.quiz_total
     };
@@ -403,6 +415,30 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   });
 
   /* ───── thú cưng ───── */
+  // Kiểm tra có thả được vật nuôi vào chuồng tại ô `idx` không (đúng loài, cùng khu, còn chỗ). `self` = vật nuôi đang được chuyển (không tính vào số con).
+  function penCheck(st, pt, zid, idx, self) {
+    if (!Number.isInteger(idx) || idx < 0 || idx >= G.TOTAL) return { err: 'Chuồng không hợp lệ.' };
+    const t = st.tiles[idx], it = t && t.ref == null ? G.BY[t.k] : null;
+    if (!it || !it.pen) return { err: 'Ô này không phải là chuồng.' };
+    if (!pt.sp) return { err: 'Bé này không phải vật nuôi nông trại nên không vào chuồng được.' };
+    if (it.pen !== pt.sp) return { err: 'Chuồng này chỉ nuôi một loài khác — hãy chọn đúng chuồng của bé.' };
+    if (!G.ZBY[zid] || Math.floor(idx / G.PER) !== G.ZBY[zid].i) return { err: 'Chuồng ở khu khác, bé không vào được.' };
+    const n = st.pets.filter((x) => x !== self && x.pen === idx).length;
+    if (n >= G.penCap(it)) return { err: 'Chuồng này đã đủ ' + G.penCap(it) + ' con. Hãy chọn chuồng khác hoặc mua thêm chuồng nhé.' };
+    return { ok: true };
+  }
+  app.post('/api/garden/pet/move', requireAuth, (req, res) => {
+    const out = tx(() => {
+      const st = load(req.user), p = st.pets.find((x) => x.id === (req.body || {}).pid);
+      if (!p) return { err: 'Không tìm thấy bé.' };
+      const want = (req.body || {}).pen;
+      if (want == null || want === '') { delete p.pen; save(st); return { st, where: 'out' }; }
+      const pt = G.PBY[p.k], pe = penCheck(st, pt, p.z, Number(want), p); if (pe.err) return pe;
+      p.pen = Number(want); save(st); return { st, where: 'pen' };
+    });
+    if (out.err) return bad(res, out.err);
+    reply(res, req.user, out.st, { where: out.where });
+  });
   app.post('/api/garden/pet/adopt', requireAuth, (req, res) => {
     const pt = G.PBY[(req.body || {}).id], zid = String((req.body || {}).zone || '');
     const out = tx(() => {
@@ -410,7 +446,7 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
       if (!pt) return { err: 'Thú cưng này không tồn tại.' };
       if (pt.z && pt.z !== zid) return { err: 'Bé này là thú cưng đặc sản của khu "' + ((G.ZBY[pt.z] || {}).name || pt.z) + '" — chỉ nuôi được ở khu đó.' };
       if (!G.ZBY[zid] || st.zones.indexOf(zid) < 0) return { err: 'Hãy vào một khu của bạn rồi nhận nuôi thú cưng ở đó nhé — mỗi bé chỉ sống ở một khu.' };
-      if (st.pets.filter((x) => x.z === zid).length >= G.petSlots(lvl)) return { err: 'Khu này đã đủ chỗ cho thú cưng — hãy lên cấp vườn để có thêm chỗ, hoặc nhận nuôi ở khu khác nhé.' };
+      if (st.pets.filter((x) => x.z === zid).length >= G.slotsFor(zid, lvl)) return { err: 'Khu này đã đủ chỗ cho thú cưng — hãy lên cấp vườn để có thêm chỗ, hoặc nhận nuôi ở khu khác nhé.' };
       const bi = st.bag.pets.findIndex((x) => x.k === pt.id); let nm = pt.name, used = null;
       if (bi >= 0) { nm = st.bag.pets[bi].name || pt.name; st.bag.pets.splice(bi, 1); used = 'bag'; }
       else {
@@ -419,7 +455,10 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
         if (pt.cost > 0 && st.bag.free.pet > 0) { st.bag.free.pet--; used = 'free'; }
         else { const r = db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(pt.cost, req.user.id, pt.cost); if (!r.changes) return { err: 'Chưa đủ xu (cần ' + pt.cost + ' 🪙).' }; }
       }
-      st.pets.push({ id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: nm, z: zid, fed: null }); X.evOwn(st, pt.id); save(st); return { st, used };
+      let penIdx = null; const want = (req.body || {}).pen;
+      if (want != null && want !== '') { const pe = penCheck(st, pt, zid, Number(want), null); if (pe.err) return pe; penIdx = Number(want); }
+      const np = { id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: nm, z: zid, fed: null }; if (penIdx != null) np.pen = penIdx;
+      st.pets.push(np); X.evOwn(st, pt.id); save(st); return { st, used };
     });
     if (out.err) return bad(res, out.err);
     reply(res, req.user, out.st, { used: out.used });

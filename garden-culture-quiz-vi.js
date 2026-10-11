@@ -142,4 +142,84 @@ module.exports = {
     ['Vượn cáo (lemur) là loài thú hoang đến từ ___.', ['Madagascar', 'Canada', 'Na Uy', 'Peru'], 'Vượn cáo là loài thú hoang đến từ Madagascar.'],
     ['Vani đến từ một loài ___.', ['hoa lan', 'quả táo', 'củ hành', 'quả trứng'], 'Vani đến từ một loài hoa lan.'],
     ['Trên quốc kỳ Madagascar, màu trắng nằm ở bên ___.', ['trái', 'phải', 'trên', 'dưới'], 'Màu trắng nằm ở bên trái.'] ]
+  ,farmvn: [
+    ['Ở Việt Nam, lúa được trồng trong ___.', ['nước', 'cát', 'tuyết', 'lửa'], 'Lúa được trồng trong nước.'],
+    ['Nông dân dùng ___ để giúp làm ruộng lúa.', ['trâu', 'hổ', 'chim cánh cụt', 'lạc đà'], 'Nông dân dùng trâu để giúp làm đồng.'],
+    ['Ngôi sao trên quốc kỳ Việt Nam có màu gì?', ['Màu vàng', 'Màu xanh dương', 'Màu xanh lá', 'Màu trắng'], 'Quốc kỳ Việt Nam nền đỏ, sao vàng.'] ]
+  ,farmnl: [
+    ['Nông dân Hà Lan nuôi nhiều bò để lấy ___.', ['sữa', 'len', 'trứng', 'mật ong'], 'Nông dân Hà Lan nuôi nhiều bò để lấy sữa.'],
+    ['Gouda là loại ___ nổi tiếng của Hà Lan.', ['phô mai', 'bánh ngọt', 'món súp', 'con cá'], 'Gouda là loại phô mai nổi tiếng của Hà Lan.'],
+    ['Quốc kỳ Hà Lan có ___ sọc.', ['ba', 'hai', 'năm', 'bảy'], 'Quốc kỳ Hà Lan có ba sọc.'] ]
+  ,farmch: [
+    ['Chalet là ngôi nhà ___ trên núi.', ['bằng gỗ', 'bằng giấy', 'bằng kính', 'bằng băng'], 'Chalet là ngôi nhà gỗ trên núi.'],
+    ['Con bò đeo ___ ở cổ.', ['chuông', 'mũ', 'khăn', 'vương miện'], 'Con bò đeo chuông ở cổ.'],
+    ['Quốc kỳ Thuỵ Sĩ nền đỏ có ___ trắng.', ['chữ thập', 'ngôi sao', 'hình tròn', 'sọc'], 'Quốc kỳ Thuỵ Sĩ nền đỏ có chữ thập trắng.'] ]
+  ,farmau: [
+    ['Nước Úc có rất nhiều ___.', ['cừu', 'chim cánh cụt', 'gấu Bắc cực', 'bò Tây Tạng'], 'Nước Úc có rất nhiều cừu.'],
+    ['Nông dân xén ___ của cừu trong nhà xén lông.', ['lông', 'sữa', 'trứng', 'lông vũ'], 'Nông dân xén lông cừu.'],
+    ['Người dân vùng outback đun nước trong ___ billy.', ['ấm', 'tách', 'cát', 'bò'], 'Họ đun nước trong ấm billy.'] ]
+  ,farmus: [
+    ['Nhiều trang trại Mỹ có chuồng màu ___.', ['đỏ', 'tím', 'hồng', 'đen'], 'Nhiều trang trại Mỹ có chuồng màu đỏ.'],
+    ['Tháp silo chứa ngô và ___.', ['ngũ cốc', 'tuyết', 'cát', 'đá'], 'Tháp silo chứa ngô và ngũ cốc.'],
+    ['Mũ cao bồi che chở chàng cao bồi khỏi ___.', ['nắng', 'mặt trăng', 'con cá', 'biển'], 'Mũ che nắng cho chàng cao bồi.'] ]
+  ,farmmx: [
+    ['Hacienda thường có các vòm cuốn và ___ chuông.', ['tháp', 'thuyền', 'cây', 'người tuyết'], 'Hacienda thường có các vòm cuốn và tháp chuông.'],
+    ['Agave là cây có lá dài và ___.', ['nhọn', 'mềm', 'tròn', 'ướt'], 'Agave có lá dài và nhọn.'],
+    ['Ớt đỏ làm món ăn ___.', ['cay', 'lạnh', 'ngọt', 'xanh dương'], 'Ớt làm món ăn cay.'] ]
+  ,farmar: [
+    ['Estancia là một ___ lớn ở Argentina.', ['nông trại', 'trường học', 'bệnh viện', 'sân bay'], 'Estancia là nông trại lớn ở Argentina.'],
+    ['Các gaucho chăm sóc bò và ___.', ['ngựa', 'cá heo', 'vẹt', 'sư tử'], 'Gaucho chăm sóc bò và ngựa.'],
+    ['Ở Argentina, người ta nướng thịt chậm trên ___. Cách nấu này gọi là asado.', ['lửa', 'dòng sông', 'đám mây', 'tấm gương'], 'Người ta nướng thịt chậm trên lửa.'] ]
+  ,farmmn: [
+    ['Ger là chiếc ___ tròn màu trắng.', ['lều', 'cây cầu', 'con tàu', 'ngọn tháp'], 'Ger là chiếc lều tròn màu trắng.'],
+    ['Các gia đình Mông Cổ dời ger để tìm ___ mới cho vật nuôi.', ['cỏ', 'xe hơi', 'giày', 'sách'], 'Họ dời đi để tìm cỏ mới.'],
+    ['Ovoo là một đống ___.', ['đá', 'sách', 'bóng bay', 'táo'], 'Ovoo là một đống đá.'] ]
+  ,farmfr: [
+    ['Nông dân ở Provence trồng ___.', ['oải hương', 'chuối', 'dừa', 'xương rồng'], 'Nông dân Provence trồng oải hương.'],
+    ['Oải hương là loài hoa màu ___.', ['tím', 'xanh lá', 'đen', 'cam'], 'Oải hương là hoa màu tím.'],
+    ['Ong làm ra ___ từ hoa.', ['mật ong', 'sữa', 'bánh mì', 'gạo'], 'Ong làm mật từ hoa.'] ]
+  ,farmke: [
+    ['Người Maasai sống ở Kenya và ___.', ['Tanzania', 'Canada', 'Na Uy', 'Chile'], 'Người Maasai sống ở Kenya và Tanzania.'],
+    ['Cây keo cho ___ trên thảo nguyên.', ['bóng mát', 'tuyết', 'băng', 'cát'], 'Cây keo cho bóng mát.'],
+    ['Khiên Maasai làm từ ___ thú.', ['da', 'kính', 'giấy', 'kim loại'], 'Khiên Maasai làm từ da thú.'] ]
+  ,portugal: [
+    ['Tháp Belém là ngọn tháp ___ cổ ở Lisbon.', ['đá', 'kính', 'giấy', 'băng'], 'Tháp Belém là ngọn tháp đá cổ.'],
+    ['Azulejo là những viên ___ xanh trắng.', ['gạch men', 'giày', 'trái cây', 'bóng bay'], 'Azulejo là gạch men xanh trắng.'],
+    ['Gà trống Barcelos là ___ của Bồ Đào Nha.', ['biểu tượng', 'dòng sông', 'ngọn núi', 'bài hát'], 'Gà trống Barcelos là biểu tượng của Bồ Đào Nha.'] ]
+  ,poland: [
+    ['Nàng tiên cá là biểu tượng của ___.', ['Warsaw', 'Tokyo', 'Lima', 'Cairo'], 'Nàng tiên cá là biểu tượng của Warsaw.'],
+    ['Trên quốc kỳ Ba Lan, màu ___ ở phía trên.', ['trắng', 'đỏ', 'xanh dương', 'xanh lá'], 'Màu trắng ở phía trên.'],
+    ['Pierogi là món ___.', ['bánh bao hấp', 'giày', 'thuyền', 'mũ'], 'Pierogi là món bánh bao.'] ]
+  ,austria: [
+    ['Mozart sinh ra ở ___.', ['Salzburg', 'Sydney', 'Seoul', 'Santiago'], 'Mozart sinh ra ở Salzburg.'],
+    ['Hohensalzburg là một ___ lớn trên đồi.', ['lâu đài', 'nông trại', 'bãi biển', 'trường học'], 'Hohensalzburg là lâu đài lớn trên đồi.'],
+    ['Quốc kỳ Áo có màu đỏ, trắng và ___.', ['đỏ', 'xanh dương', 'xanh lá', 'vàng'], 'Quốc kỳ Áo là đỏ, trắng, đỏ.'] ]
+  ,denmark: [
+    ['Nyhavn là ___ nhiều màu sắc ở Copenhagen.', ['bến cảng', 'sa mạc', 'khu rừng', 'núi lửa'], 'Nyhavn là bến cảng nhiều màu sắc.'],
+    ['Khối LEGO đến từ ___.', ['Đan Mạch', 'Ai Cập', 'Peru', 'Kenya'], 'Khối LEGO đến từ Đan Mạch.'],
+    ['Quốc kỳ Đan Mạch nền đỏ có ___ trắng.', ['chữ thập', 'ngôi sao', 'mặt trời', 'mặt trăng'], 'Quốc kỳ Đan Mạch có chữ thập trắng.'] ]
+  ,finland: [
+    ['Sauna là căn phòng ___.', ['nóng', 'lạnh', 'tối', 'ồn ào'], 'Sauna là căn phòng nóng.'],
+    ['Lapland ở phía ___ của Phần Lan.', ['bắc', 'nam', 'giữa', 'biển'], 'Lapland ở phía bắc.'],
+    ['Quốc kỳ Phần Lan nền trắng có chữ thập màu ___.', ['xanh dương', 'đỏ', 'xanh lá', 'vàng'], 'Chữ thập màu xanh dương.'] ]
+  ,iceland: [
+    ['Suối phun phun ___ nóng lên không trung.', ['nước', 'cát', 'tuyết', 'giấy'], 'Suối phun phun nước nóng.'],
+    ['Puffin là loài ___ có mỏ nhiều màu.', ['chim', 'cá', 'cây', 'xe hơi'], 'Puffin là loài chim.'],
+    ['Quốc kỳ Iceland nền xanh có chữ thập màu ___.', ['đỏ', 'xanh lá', 'đen', 'hồng'], 'Chữ thập màu đỏ.'] ]
+  ,czechia: [
+    ['Đồng hồ thiên văn nằm ở ___.', ['Praha', 'Rio', 'Delhi', 'Lima'], 'Đồng hồ thiên văn ở Praha.'],
+    ['Cầu Charles bắc qua một ___.', ['dòng sông', 'sa mạc', 'ngọn núi', 'con đường'], 'Cầu bắc qua sông.'],
+    ['Quốc kỳ Séc có ___ xanh dương.', ['hình tam giác', 'hình tròn', 'ngôi sao', 'chữ thập'], 'Có tam giác xanh dương.'] ]
+  ,hungary: [
+    ['Toà Quốc hội Hungary đứng bên sông ___.', ['Danube', 'Nile', 'Amazon', 'Thames'], 'Toà Quốc hội đứng bên sông Danube.'],
+    ['Cầu Xích nối Buda và ___.', ['Pest', 'Rome', 'Paris', 'Oslo'], 'Cầu Xích nối Buda và Pest.'],
+    ['Ernő Rubik đã phát minh ra khối ___.', ['Rubik', 'ma thuật', 'xích', 'phô mai'], 'Ernő Rubik phát minh khối Rubik.'] ]
+  ,philippines: [
+    ['Đồi Chocolate là nhiều ngọn đồi ___.', ['tròn', 'vuông', 'phẳng', 'xanh dương'], 'Đồi Chocolate là những ngọn đồi tròn.'],
+    ['Jeepney là loại xe buýt ___.', ['nhiều màu', 'vô hình', 'tí hon', 'đóng băng'], 'Jeepney là xe nhiều màu.'],
+    ['Parol là chiếc ___ hình ngôi sao.', ['đèn lồng', 'giày', 'thuyền', 'sách'], 'Parol là đèn lồng hình sao.'] ]
+  ,newzealand: [
+    ['Waka là ___ truyền thống của người Māori.', ['ca-nô', 'mũ', 'trống', 'lâu đài'], 'Waka là ca-nô truyền thống.'],
+    ['Dương xỉ bạc là biểu tượng của ___.', ['New Zealand', 'Ai Cập', 'Iceland', 'Mexico'], 'Dương xỉ bạc là biểu tượng của New Zealand.'],
+    ['Chim kiwi là loài chim không biết ___.', ['bay', 'ngủ', 'ăn', 'đi'], 'Chim kiwi không biết bay.'] ]
 };

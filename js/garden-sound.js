@@ -74,7 +74,27 @@
     kenya: { sc: 'pmaj', r: 60, bpm: 108, sig: 4, lead: 'kalimba', l2: 'marimba', pad: null, d: .65, rh: 'djembe', amb: ['birds'] },
     southafrica: { sc: 'pmaj', r: 57, bpm: 100, sig: 4, lead: 'marimba', l2: 'harp', pad: 'warm', bass: 1, d: .6, rh: 'djembe', amb: ['birds'] },
     ethiopia: { sc: 'ambassel', r: 59, bpm: 92, sig: 4, lead: 'masenqo', l2: 'kalimba', pad: null, d: .5, rh: 'tab', amb: ['wind'] },
-    madagascar: { sc: 'pmaj', r: 62, bpm: 150, sig: 3, lead: 'valiha', l2: 'kalimba', pad: null, d: .7, rh: 'salegy', amb: ['birds', 'waves'] }
+    madagascar: { sc: 'pmaj', r: 62, bpm: 150, sig: 3, lead: 'valiha', l2: 'kalimba', pad: null, d: .7, rh: 'salegy', amb: ['birds', 'waves'] },
+    farmvn: { sc: 'yo', r: 62, bpm: 84, sig: 4, lead: 'dan', l2: 'flute', pad: null, d: 0.5, rh: 'wood', amb: ['birds', 'brook'] },
+    farmnl: { sc: 'maj', r: 60, bpm: 96, sig: 4, lead: 'carillon', l2: 'accord', pad: null, d: 0.55, amb: ['wind', 'birds'] },
+    farmch: { sc: 'pmaj', r: 57, bpm: 88, sig: 4, lead: 'horn', l2: 'pluck', pad: 'warm', d: 0.45, rh: 'cow', amb: ['wind', 'birds'] },
+    farmau: { sc: 'pmaj', r: 57, bpm: 90, sig: 4, lead: 'horn', l2: 'marimba', pad: null, d: 0.4, rh: 'wood', amb: ['wind', 'birds'] },
+    farmus: { sc: 'mix', r: 62, bpm: 104, sig: 4, lead: 'banjo', l2: 'fiddle', pad: null, bass: 1, d: 0.55, rh: 'clap', amb: ['wind', 'birds'] },
+    farmmx: { sc: 'maj', r: 62, bpm: 112, sig: 3, lead: 'mandolin', l2: 'accord', pad: null, bass: 1, d: 0.6, rh: 'oom', amb: ['birds'] },
+    farmar: { sc: 'hmin', r: 57, bpm: 108, sig: 4, lead: 'bandoneon', l2: 'pluck', pad: null, bass: 1, d: 0.55, rh: 'tango', amb: ['wind'] },
+    farmmn: { sc: 'pmin', r: 55, bpm: 96, sig: 4, lead: 'horn', l2: 'fiddle', pad: null, d: 0.5, rh: 'drum', amb: ['wind'] },
+    farmfr: { sc: 'maj', r: 62, bpm: 92, sig: 3, lead: 'accord', l2: 'mandolin', pad: null, d: 0.5, amb: ['birds', 'brook'] },
+    farmke: { sc: 'pmaj', r: 60, bpm: 108, sig: 4, lead: 'kalimba', l2: 'marimba', pad: null, d: 0.65, rh: 'djembe', amb: ['birds'] },
+    portugal: { sc: 'min', r: 57, bpm: 100, sig: 4, lead: 'pluck', l2: 'accord', pad: null, bass: 1, d: 0.55, amb: ['waves', 'birds'] },
+    poland: { sc: 'dor', r: 60, bpm: 112, sig: 3, lead: 'accord', l2: 'fiddle', pad: null, bass: 1, d: 0.55, rh: 'oom', amb: ['wind'] },
+    austria: { sc: 'maj', r: 62, bpm: 120, sig: 3, lead: 'harp', l2: 'accord', pad: 'warm', d: 0.55, amb: ['birds', 'brook'] },
+    denmark: { sc: 'maj', r: 60, bpm: 96, sig: 4, lead: 'music', l2: 'harp', pad: 'warm', d: 0.5, amb: ['waves', 'wind'] },
+    finland: { sc: 'dor', r: 57, bpm: 84, sig: 4, lead: 'harp', l2: 'fiddle', pad: 'warm', d: 0.45, amb: ['wind', 'birds'] },
+    iceland: { sc: 'lyd', r: 57, bpm: 76, sig: 4, lead: 'harp', l2: 'bell', pad: 'warm', d: 0.4, amb: ['wind', 'waves'] },
+    czechia: { sc: 'dor', r: 60, bpm: 108, sig: 3, lead: 'fiddle', l2: 'accord', pad: null, bass: 1, d: 0.55, rh: 'oom', amb: ['birds'] },
+    hungary: { sc: 'hmin', r: 57, bpm: 116, sig: 4, lead: 'fiddle', l2: 'mandolin', pad: null, bass: 1, d: 0.55, rh: 'clap', amb: ['birds'] },
+    philippines: { sc: 'pmaj', r: 62, bpm: 104, sig: 4, lead: 'pluck', l2: 'marimba', pad: null, d: 0.6, rh: 'shaker', amb: ['waves', 'birds'] },
+    newzealand: { sc: 'pmaj', r: 60, bpm: 88, sig: 4, lead: 'flute', l2: 'harp', pad: 'warm', d: 0.45, amb: ['birds', 'waves'] }
   };
   /* Giai điệu "đặc trưng quốc gia" soạn riêng cho từng khu quốc gia: mỗi câu dài 2 ô nhịp, dạng "bước:cao độ(nửa cung so với nốt gốc):độ dài" — câu A và câu B xen kẽ.
      Mỗi khu dùng thang âm + nhạc cụ + nhịp điệu của nước đó (flamenco 12 phách, jig 6/8 Ai-len, tango, son Cuba, salegy Madagascar, thang âm 5 nốt Andes/Ethiopia...). Đây là các câu nhạc tự soạn, không trích bản nhạc có bản quyền. */

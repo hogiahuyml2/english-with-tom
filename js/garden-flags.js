@@ -87,7 +87,21 @@
     // Madagascar (2:3): dải dọc trắng chiếm 1/3 cạnh cột cờ; hai dải ngang bên phải — đỏ #FC3D32 ở trên, xanh lá #007E3A ở dưới
     mg: { w: 300, h: 200, body: function () { return rc(0, 0, 100, 200, '#FFFFFF') + rc(100, 0, 200, 100, '#FC3D32') + rc(100, 100, 200, 100, '#007E3A'); } },
     // Indonesia (2:3): hai dải ngang bằng nhau — đỏ ở trên, trắng ở dưới
-    id: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#CE1126') + rc(0, 100, 300, 100, '#FFFFFF'); } }
+    id: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#CE1126') + rc(0, 100, 300, 100, '#FFFFFF'); } },
+    // Ba Lan (5:8): hai dải ngang bằng nhau — trắng ở trên, đỏ ở dưới
+    pl: { w: 320, h: 200, body: function () { return rc(0, 0, 320, 100, '#FFFFFF') + rc(0, 100, 320, 100, '#DC143C'); } },
+    // Áo (2:3): ba dải ngang bằng nhau — đỏ, trắng, đỏ
+    at: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 200 / 3, '#ED2939') + rc(0, 200 / 3, 300, 200 / 3, '#FFFFFF') + rc(0, 400 / 3, 300, 200 / 3, '#ED2939'); } },
+    // Đan Mạch (28:37): nền đỏ, chữ thập Bắc Âu trắng — dọc 12:4:21, ngang 12:4:12
+    dk: { w: 370, h: 280, body: function () { return rc(0, 0, 370, 280, '#C8102E') + rc(120, 0, 40, 280, '#FFFFFF') + rc(0, 120, 370, 40, '#FFFFFF'); } },
+    // Phần Lan (11:18): nền trắng, chữ thập xanh — dọc 5:3:10, ngang 4:3:4
+    fi: { w: 180, h: 110, body: function () { return rc(0, 0, 180, 110, '#FFFFFF') + rc(50, 0, 30, 110, '#003580') + rc(0, 40, 180, 30, '#003580'); } },
+    // Iceland (18:25): nền xanh, chữ thập trắng viền đỏ — dọc 7:2:2:2:12, ngang 7:2:2:2:7
+    is: { w: 250, h: 180, body: function () { return rc(0, 0, 250, 180, '#02529C') + rc(70, 0, 60, 180, '#FFFFFF') + rc(0, 70, 250, 40, '#FFFFFF') + rc(80, 0, 20, 180, '#DC1E35') + rc(0, 80, 250, 20, '#DC1E35'); } },
+    // Cộng hoà Séc (2:3): trắng ở trên, đỏ ở dưới, tam giác xanh từ cột cờ vươn tới giữa lá cờ
+    cz: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#FFFFFF') + rc(0, 100, 300, 100, '#D7141A') + '<polygon points="0,0 150,100 0,200" fill="#11457E"/>'; } },
+    // Hungary (1:2): ba dải ngang bằng nhau — đỏ, trắng, xanh lá
+    hu: { w: 300, h: 150, body: function () { return rc(0, 0, 300, 50, '#CD2A3E') + rc(0, 50, 300, 50, '#FFFFFF') + rc(0, 100, 300, 50, '#436F4D'); } }
   };
   var RATIO = {}; Object.keys(D).forEach(function (k) { RATIO[k] = D[k].h / D[k].w; });
   // Vẽ cờ có chiều rộng `width` tại (x, y); thêm viền mảnh để cờ trắng không chìm vào nền

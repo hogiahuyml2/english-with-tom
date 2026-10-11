@@ -117,6 +117,8 @@
 .gt .wd { position: absolute; left: 3px; bottom: 1px; z-index: 2; font-size: calc(var(--ts) * .2); letter-spacing: -2px; }
 .gd-pets { position: absolute; left: 0; top: 0; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); pointer-events: none; z-index: 4; }
 .gd-pet { position: absolute; left: 0; top: 0; width: var(--ts); height: var(--ts); transition: transform 3.2s linear; pointer-events: auto; cursor: pointer; z-index: 5; }
+.gd-pet.inpen { z-index: 6; } .gd-pet.inpen svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+.gd-penb { position: absolute; transform: translateX(-50%); background: rgba(255,255,255,.92); border: 1.5px solid #8A5A2E; color: #5A3A1A; border-radius: 99px; padding: 1px 7px; font-size: calc(var(--ts) * .2); font-weight: 800; white-space: nowrap; pointer-events: none; z-index: 7; line-height: 1.35; } .gd-penb.full { background: #FFE9A8; } .gd-penb.empty { opacity: .8; }
 .gd-pet svg { width: 100%; height: 100%; animation: gdHop .7s ease-in-out infinite; transform-origin: 50% 90%; } .gd-pet.rest svg { animation: gdBreath 2.4s ease-in-out infinite; }
 .gd-pet .mood { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); font-size: calc(var(--ts) * .26); animation: gdPop 1.4s ease-in-out infinite; }
 @keyframes gdHop { 50% { transform: translateY(-9%); } } @keyframes gdBreath { 50% { transform: scale(1.04, .97); } } .gd-spin { animation: gdSpin 5s linear infinite; } @keyframes gdSpin { to { transform: rotate(360deg); } }
@@ -276,6 +278,26 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-lawn.z-kenya { --bed: #F0E0A0; --bed2: #E6D288; --bedl: rgba(160,120,50,.4); background: repeating-linear-gradient(90deg, #000000 0 10px,#BB0000 10px 20px,#006600 20px 30px); border-color: #BB0000; }
 .gd-lawn.z-southafrica { --bed: #D8E8A8; --bed2: #CADC94; --bedl: rgba(100,130,50,.4); background: repeating-linear-gradient(90deg, #007749 0 10px,#FFB612 10px 20px,#DE3831 20px 30px); border-color: #007749; }
 .gd-lawn.z-ethiopia { --bed: #E4EAB0; --bed2: #D6DC9C; --bedl: rgba(110,130,50,.4); background: repeating-linear-gradient(90deg, #078930 0 10px,#FCDD09 10px 20px,#DA121A 20px 30px); border-color: #078930; }
+.gd-lawn.z-portugal { --bed: #C4EEA8; --bed2: #B2E496; --bedl: rgba(60,140,60,.4); background: repeating-linear-gradient(90deg, #006600 0 12px, #FF0000 12px 24px); border-color: #006600; }
+.gd-lawn.z-poland { --bed: #B8E8A0; --bed2: #A4DC8A; --bedl: rgba(60,130,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 12px, #DC143C 12px 24px); border-color: #DC143C; }
+.gd-lawn.z-austria { --bed: #C0EAB0; --bed2: #ACDEA0; --bedl: rgba(60,130,70,.4); background: repeating-linear-gradient(90deg, #ED2939 0 12px, #FFFFFF 12px 24px); border-color: #ED2939; }
+.gd-lawn.z-denmark { --bed: #B8E8A0; --bed2: #A4DC8A; --bedl: rgba(60,130,60,.4); background: repeating-linear-gradient(90deg, #C8102E 0 12px, #FFFFFF 12px 24px); border-color: #C8102E; }
+.gd-lawn.z-finland { --bed: #C4ECC0; --bed2: #B0E0AC; --bedl: rgba(60,130,90,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 12px, #003580 12px 24px); border-color: #003580; }
+.gd-lawn.z-iceland { --bed: #C0E4B8; --bed2: #ACD8A4; --bedl: rgba(70,130,100,.4); background: repeating-linear-gradient(90deg, #02529C 0 12px, #DC1E35 12px 24px); border-color: #02529C; }
+.gd-lawn.z-czechia { --bed: #B8E4A0; --bed2: #A4D88A; --bedl: rgba(70,140,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 12px, #D7141A 12px 24px); border-color: #11457E; }
+.gd-lawn.z-hungary { --bed: #B8E4A0; --bed2: #A4D88A; --bedl: rgba(70,140,60,.4); background: repeating-linear-gradient(90deg, #CD2A3E 0 12px, #436F4D 12px 24px); border-color: #436F4D; }
+.gd-lawn.z-philippines { --bed: #B0E898; --bed2: #9CDC84; --bedl: rgba(60,150,70,.4); background: repeating-linear-gradient(90deg, #0038A8 0 12px, #CE1126 12px 24px); border-color: #FCD116; }
+.gd-lawn.z-newzealand { --bed: #B0E8A8; --bed2: #9CDC94; --bedl: rgba(60,150,80,.4); background: repeating-linear-gradient(90deg, #00247D 0 12px, #CC142B 12px 24px); border-color: #00247D; }
+.gd-lawn.z-farmvn { --bed: #CFEFB0; --bed2: #BFE49E; --bedl: rgba(60,130,50,.4); background: repeating-linear-gradient(90deg, #D9A82A 0 12px, #8A6A12 12px 14px); border-color: #DA251D; }
+.gd-lawn.z-farmnl { --bed: #B8E8A0; --bed2: #A4DC8A; --bedl: rgba(60,120,50,.4); background: repeating-linear-gradient(90deg, #C8402F 0 12px, #7A241B 12px 14px); border-color: #21468B; }
+.gd-lawn.z-farmch { --bed: #C0EAB4; --bed2: #ACDCA0; --bedl: rgba(60,120,60,.4); background: repeating-linear-gradient(90deg, #E5334B 0 12px, #B01E30 12px 14px); border-color: #FFFFFF; }
+.gd-lawn.z-farmau { --bed: #E4DC9A; --bed2: #D6CC84; --bedl: rgba(150,120,50,.4); background: repeating-linear-gradient(90deg, #C98A4B 0 12px, #8A5A2E 12px 14px); border-color: #2E4F9A; }
+.gd-lawn.z-farmus { --bed: #B8E090; --bed2: #A4D47A; --bedl: rgba(60,130,50,.4); background: repeating-linear-gradient(90deg, #C8402F 0 12px, #7A241B 12px 14px); border-color: #2B3F8A; }
+.gd-lawn.z-farmmx { --bed: #D8E48A; --bed2: #C8D874; --bedl: rgba(150,130,40,.4); background: repeating-linear-gradient(90deg, #2B9B6A 0 12px, #16603A 12px 14px); border-color: #E5334B; }
+.gd-lawn.z-farmar { --bed: #CCE48E; --bed2: #BCD878; --bedl: rgba(130,160,50,.4); background: repeating-linear-gradient(90deg, #8EC8F0 0 12px, #5A9AC8 12px 14px); border-color: #F2C94C; }
+.gd-lawn.z-farmmn { --bed: #CCE49A; --bed2: #BCD884; --bedl: rgba(120,160,50,.4); background: repeating-linear-gradient(90deg, #2B9BD8 0 12px, #16609A 12px 14px); border-color: #E5334B; }
+.gd-lawn.z-farmfr { --bed: #C4E4A0; --bed2: #B2D88A; --bedl: rgba(100,150,60,.4); background: repeating-linear-gradient(90deg, #A878D8 0 12px, #6A3A9A 12px 14px); border-color: #8E5FC4; }
+.gd-lawn.z-farmke { --bed: #E8DC98; --bed2: #DCCE80; --bedl: rgba(160,130,50,.4); background: repeating-linear-gradient(90deg, #BB0000 0 12px, #7A0000 12px 14px); border-color: #006600; }
 .gd-lawn.z-madagascar { --bed: #C4EEA8; --bed2: #B2E496; --bedl: rgba(50,140,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px,#FC3D32 10px 20px,#007E3A 20px 30px); border-color: #007E3A; }
 .gd-nof { font-size: 40px; line-height: 1; height: 56px; display: grid; place-items: center; }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
@@ -562,6 +584,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
   <div class="gd-act"><button class="gd-btn" id="qclose">Đóng</button></div>
 </div></div>
 <div class="gd-modal" id="bpm"><div class="gd-box bp-box"><div id="bpbody"></div></div></div>
+<div class="gd-modal" id="penm"><div class="gd-box" style="max-width:430px"><div id="penbody"></div></div></div>
 <div class="gd-modal" id="petm"><div class="gd-box" style="max-width:380px"><div id="petbody"></div><div class="gd-act"><button class="gd-btn" id="petclose">Đóng</button></div></div></div>
 <div class="gd-modal" id="frm"><div class="gd-box" style="max-width:460px">
   <h3>👀 Thăm vườn của bạn bè</h3>
@@ -628,9 +651,11 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-cat-d.js?v=2"></script>
 <script src="js/garden-cat-e.js?v=1"></script>
 <script src="js/garden-cat-f.js?v=1"></script>
+<script src="js/garden-cat-g.js?v=1"></script>
+<script src="js/garden-cat-h.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
 <script src="js/garden-bundles.js?v=2"></script>
-<script src="js/garden-data.js?v=24"></script>
+<script src="js/garden-data.js?v=25"></script>
 <script src="js/garden-blueprints.js?v=5"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
@@ -647,21 +672,24 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-world9.js?v=1"></script>
 <script src="js/garden-world10.js?v=1"></script>
 <script src="js/garden-world11.js?v=1"></script>
+<script src="js/garden-world12.js?v=1"></script>
+<script src="js/garden-world13.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-art5.js?v=1"></script>
 <script src="js/garden-art6.js?v=2"></script>
 <script src="js/garden-art7.js?v=1"></script>
 <script src="js/garden-art8.js?v=1"></script>
 <script src="js/garden-art9.js?v=1"></script>
-<script src="js/garden-culture.js?v=2"></script>
+<script src="js/garden-culture.js?v=3"></script>
 <script src="js/garden-gen1.js?v=3"></script>
 <script src="js/garden-gen2.js?v=3"></script>
 <script src="js/garden-gen3.js?v=3"></script>
 <script src="js/garden-gen4.js?v=5"></script>
+<script src="js/garden-gen5.js?v=1"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
-<script src="js/garden-sound.js?v=8"></script>
+<script src="js/garden-sound.js?v=9"></script>
 <script>
 (function () {
 'use strict';
@@ -1047,17 +1075,47 @@ document.addEventListener('click', async function (e) {
 });
 
 /* ───────── thú cưng đi dạo ───────── */
+/* ───────── CHUỒNG NUÔI: vật nuôi có thể ở trong chuồng đúng loài hoặc chạy ngoài chuồng ───────── */
+var SPEMO = { cow: '🐄', buffalo: '🐃', pig: '🐖', hen: '🐔', duck: '🦆', goat: '🐐', sheep: '🐑', horse: '🐎', bunny: '🐇', emu: '🐦', turkey: '🦃', bison: '🦬', donkey: '🐴', llama: '🦙', camel: '🐫', yak: '🐂', goose: '🦢' };
+var PENRECT = {}, PETPEN = {};
+function zonePens(z) {
+  var d = zdim(z), out = [], tc, r, c, gi, t, it;
+  for (tc = 0; tc < d.c * d.r; tc++) { r = Math.floor(tc / d.c); c = tc % d.c; gi = z.i * PER + r * MAXC + c; t = S.tiles[gi]; if (t && t.ref == null) { it = D.BY[t.k]; if (it && it.pen) out.push({ idx: gi, it: it, r: r, c: c, n: 0, cap: D.penCap(it) }); } }
+  S.pets.forEach(function (p) { if (p.pen != null) out.forEach(function (pe) { if (pe.idx === p.pen) pe.n++; }); });
+  return out;
+}
+function penRect(pe) { return { x0: pe.c + pe.it.w * .08, x1: Math.max(pe.c + pe.it.w * .08, pe.c + pe.it.w * .92 - 1), y0: pe.r + pe.it.h * .12, y1: pe.r + pe.it.h * .47 }; }
 function renderPets(ts) {
-  var el = $('pets'), h = '', dm = zdim(D.ZBY[VIEW]);
-  S.pets.filter(function (p) { return p.z === VIEW; }).forEach(function (p) { var pt = D.PBY[p.k]; if (!PETPOS[p.id]) PETPOS[p.id] = { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 }; var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%', '', p.o && D.BD ? D.BD.OBY[p.o].acc : null) + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>'; });
+  var el = $('pets'), h = '', z = D.ZBY[VIEW], dm = zdim(z), pens = zonePens(z), penBy = {}; pens.forEach(function (pe) { penBy[pe.idx] = pe; });
+  S.pets.filter(function (p) { return p.z === VIEW; }).forEach(function (p) {
+    var pt = D.PBY[p.k], pe = p.pen != null ? penBy[p.pen] : null, rc = pe ? penRect(pe) : null;
+    if (!PETPOS[p.id] || PETPEN[p.id] !== (pe ? pe.idx : null)) PETPOS[p.id] = rc ? { x: rc.x0 + Math.random() * (rc.x1 - rc.x0), y: rc.y0 + Math.random() * (rc.y1 - rc.y0), f: 1 } : { x: Math.random() * (dm.c - 1), y: Math.random() * (dm.r - 1), f: 1 };
+    PETPEN[p.id] = pe ? pe.idx : null; if (rc) PENRECT[p.id] = rc; else delete PENRECT[p.id];
+    var q = PETPOS[p.id]; h += '<div class="gd-pet' + (p.fed ? '' : ' rest') + (pe ? ' inpen' : '') + '" data-pid="' + p.id + '" style="transform:translate(' + q.x * ts + 'px,' + q.y * ts + 'px)" title="' + esc(p.name) + '"><div style="width:100%;height:100%;transform:scaleX(' + q.f + ')">' + A.petSvg(pt, '100%', '', p.o && D.BD ? D.BD.OBY[p.o].acc : null) + '</div>' + (VISIT ? '' : p.fed ? '<div class="mood">💗</div>' : '<div class="mood">🍪</div>') + '</div>';
+  });
+  pens.forEach(function (pe) { h += '<div class="gd-penb' + (pe.n >= pe.cap ? ' full' : pe.n ? '' : ' empty') + '" style="left:' + (pe.c + pe.it.w / 2) * ts + 'px;top:' + (pe.r - .02) * ts + 'px">' + (SPEMO[pe.it.pen] || '🐾') + ' ' + pe.n + '/' + pe.cap + '</div>'; });
   el.innerHTML = h;
 }
 function wander() {
   if (!S || document.hidden || VIEW === 'map') return; var ts = parseFloat(getComputedStyle($('lawn')).getPropertyValue('--ts')) || 64;
   [].forEach.call(document.querySelectorAll('.gd-pet'), function (el) {
     var id = el.getAttribute('data-pid'), q = PETPOS[id]; if (!q || Math.random() < 0.35) return;
-    var dm = zdim(D.ZBY[VIEW]), nx = Math.max(0, Math.min(dm.c - 1, q.x + (Math.random() * 3 - 1.5))), ny = Math.max(0, Math.min(dm.r - 1, q.y + (Math.random() * 3 - 1.5)));
+    var dm = zdim(D.ZBY[VIEW]), rc = PENRECT[id], nx, ny;
+    if (rc) { nx = Math.max(rc.x0, Math.min(rc.x1, q.x + (Math.random() * 1.2 - .6))); ny = Math.max(rc.y0, Math.min(rc.y1, q.y + (Math.random() * .5 - .25))); }
+    else { nx = Math.max(0, Math.min(dm.c - 1, q.x + (Math.random() * 3 - 1.5))); ny = Math.max(0, Math.min(dm.r - 1, q.y + (Math.random() * 3 - 1.5))); }
     q.f = nx >= q.x ? 1 : -1; q.x = nx; q.y = ny; el.style.transform = 'translate(' + nx * ts + 'px,' + ny * ts + 'px)'; el.firstChild.style.transform = 'scaleX(' + q.f + ')';
+  });
+}
+// hộp chọn chỗ ở cho vật nuôi: vào một chuồng đúng loài (còn chỗ) hoặc thả ngoài chuồng. Trả về { pen: ô | null } hoặc null nếu huỷ.
+function askPen(pt, zid, selfPet) {
+  return new Promise(function (resolve) {
+    var z = D.ZBY[zid], pens = zonePens(z).filter(function (pe) { return pe.it.pen === pt.sp; }), spare = pens.filter(function (pe) { return pe.n - (selfPet && selfPet.pen === pe.idx ? 1 : 0) < pe.cap; }), h = '<h3 style="margin:0 0 6px">' + (SPEMO[pt.sp] || '🐾') + ' ' + esc(pt.name) + ' ở đâu nhé?</h3>';
+    var mk = D.ITEMS.filter(function (i) { return i.pen === pt.sp && i.z === zid; })[0];
+    if (spare.length) h += '<p class="gd-sub" style="margin:0 0 8px">Mỗi chuồng chỉ nuôi <b>một loài</b>. Bạn muốn thả bé vào chuồng hay cho chạy chơi ngoài chuồng?</p>' + spare.map(function (pe) { return '<button class="gd-btn pri" style="width:100%;margin:4px 0" data-pn="' + pe.idx + '">🏠 ' + esc(pe.it.name) + ' <small>(hàng ' + (pe.r + 1) + ', cột ' + (pe.c + 1) + ' · ' + pe.n + '/' + pe.cap + ')</small></button>'; }).join('');
+    else h += '<p class="gd-sub" style="margin:0 0 8px">' + (pens.length ? 'Các chuồng của loài này đã <b>đầy chỗ</b>.' : 'Bạn chưa có chuồng cho loài này.') + (mk ? ' Mua <b>' + esc(mk.name) + '</b> ở tab 🏠 Công trình rồi chuyển bé vào chuồng sau nhé.' : '') + ' Bé sẽ chạy chơi ngoài chuồng trước.</p>';
+    h += '<button class="gd-btn" style="width:100%;margin:4px 0" data-pn="out">🌾 Thả ngoài chuồng</button><button class="gd-btn" style="width:100%;margin:4px 0;opacity:.8" data-pn="cancel">Huỷ</button>';
+    $('penbody').innerHTML = h; $('penm').classList.add('on');
+    $('penbody').onclick = function (e) { var b = e.target.closest('[data-pn]'); if (!b) return; var v = b.getAttribute('data-pn'); $('penm').classList.remove('on'); resolve(v === 'cancel' ? null : { pen: v === 'out' ? null : Number(v) }); };
   });
 }
 setInterval(wander, 3400);
@@ -1217,7 +1275,7 @@ document.addEventListener('click', async function (e) {
     var id = el.getAttribute('data-pick'), kind = el.getAttribute('data-kind'), oo = kind === 'pet' ? D.PBY[id] : D.BY[id];
     if (STKM && !VISIT && TAB !== 'bag') { buyStock(id, kind); return; }
     if (oo && oo.z && D.ZBY[VIEW] && oo.z !== VIEW && !bagN(id) && !bagPetN(id)) return toast('📍 Món này là đặc sản của khu "' + D.ZBY[oo.z].name + '" — hãy vào khu đó để mua và đặt nhé' + (zoneUnlocked(oo.z) ? '.' : ' (khu đó chưa mở).'), 4200);
-    if (kind === 'pet') { if (!D.ZBY[VIEW]) return toast('Hãy vào một khu rồi nhận nuôi thú cưng ở đó nhé — mỗi bé chỉ sống ở một khu.', 3600); var pt = D.PBY[id], pc = priceOf(pt, 'pet'); if (pt.lvl > S.level && !bagPetN(id)) return toast('Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.'); if (!(await ewtConfirm(bagPetN(id) ? 'Nhận nuôi ' + pt.name + ' từ giỏ (miễn phí)?' : pc ? 'Nhận nuôi ' + pt.name + ' với giá ' + pt.cost + ' xu?' : 'Nhận nuôi ' + pt.name + ' bằng phiếu miễn phí?'))) return; return api('/api/garden/pet/adopt', { id: id, zone: VIEW }).then(function (d) { setState(d); toast('🎉 Chào mừng ' + pt.name + ' đến khu "' + D.ZBY[VIEW].name + '"!'); }).catch(function (er) { toast(er.message, 3600); }); }
+    if (kind === 'pet') { if (!D.ZBY[VIEW]) return toast('Hãy vào một khu rồi nhận nuôi thú cưng ở đó nhé — mỗi bé chỉ sống ở một khu.', 3600); var pt = D.PBY[id], pc = priceOf(pt, 'pet'); if (pt.lvl > S.level && !bagPetN(id)) return toast('Cần vườn cấp ' + pt.lvl + ' để nhận nuôi bé này.'); if (!(await ewtConfirm(bagPetN(id) ? 'Nhận nuôi ' + pt.name + ' từ giỏ (miễn phí)?' : pc ? 'Nhận nuôi ' + pt.name + ' với giá ' + pt.cost + ' xu?' : 'Nhận nuôi ' + pt.name + ' bằng phiếu miễn phí?'))) return; var wp = null; if (pt.sp) { wp = await askPen(pt, VIEW, null); if (!wp) return; } return api('/api/garden/pet/adopt', { id: id, zone: VIEW, pen: wp && wp.pen != null ? wp.pen : null }).then(function (d) { setState(d); toast('🎉 Chào mừng ' + pt.name + ' đến khu "' + D.ZBY[VIEW].name + '"!' + (wp && wp.pen != null ? ' Bé đã vào chuồng.' : '')); }).catch(function (er) { toast(er.message, 3600); }); }
     var it = D.BY[id]; if (it.lvl > S.level && !bagN(id)) return toast('Cần vườn cấp ' + it.lvl + ' để mở món này. Hãy trang trí thêm để lên cấp nhé!', 3400);
     BRUSH = BRUSH && BRUSH.id === id ? null : { id: id, kind: kind }; if (TOOL !== 'multi') TOOL = null; render(); return;
   }
@@ -1261,10 +1319,12 @@ function openDress(pid) {
   if ($('pundress')) $('pundress').onclick = function () { go(null); };
   $('pback').onclick = function () { openPet(pid); };
 }
+function penWhere(p) { if (p.pen == null) return '🌾 Đang chạy chơi <b>ngoài chuồng</b>.'; var t = S.tiles[p.pen], it = t && D.BY[t.k]; return '🏠 Đang ở <b>' + esc(it ? it.name : 'chuồng') + '</b>.'; }
 function openPet(pid) {
   if (VISIT) return;
   var p = S.pets.filter(function (x) { return x.id === pid; })[0]; if (!p) return; var pt = D.PBY[p.k];
-  $('petbody').innerHTML = '<div style="text-align:center"><div style="width:120px;height:120px;margin:0 auto">' + A.petSvg(pt, '100%', '', p.o && D.BD ? D.BD.OBY[p.o].acc : null) + '</div><h3 style="margin:6px 0 2px">' + esc(p.name) + '</h3><p class="gd-sub">' + esc(pt.name) + ' · ' + H(p.fed ? '💗 Đã được ăn hôm nay, bé rất vui!' : '🍪 Bé đang đói, cho ăn nhé (+' + D.RULES.feedXu + ' 🪙).') + '</p></div><div class="gd-act" style="justify-content:center"><button class="gd-btn pri" id="pfeed"' + (p.fed ? ' disabled' : '') + '>🍪 Cho ăn</button><button class="gd-btn" id="pdress">👗 Mặc đồ</button><button class="gd-btn" id="pren">✏️ Đổi tên</button><button class="gd-btn" id="prel">👋 Tạm biệt</button></div>';
+  $('petbody').innerHTML = '<div style="text-align:center"><div style="width:120px;height:120px;margin:0 auto">' + A.petSvg(pt, '100%', '', p.o && D.BD ? D.BD.OBY[p.o].acc : null) + '</div><h3 style="margin:6px 0 2px">' + esc(p.name) + '</h3><p class="gd-sub">' + esc(pt.name) + ' · ' + H(p.fed ? '💗 Đã được ăn hôm nay, bé rất vui!' : '🍪 Bé đang đói, cho ăn nhé (+' + D.RULES.feedXu + ' 🪙).') + '</p></div><div class="gd-act" style="justify-content:center"><button class="gd-btn pri" id="pfeed"' + (p.fed ? ' disabled' : '') + '>🍪 Cho ăn</button><button class="gd-btn" id="pdress">👗 Mặc đồ</button><button class="gd-btn" id="pren">✏️ Đổi tên</button><button class="gd-btn" id="prel">👋 Tạm biệt</button></div>' + (pt.sp ? '<p class="gd-sub" style="text-align:center;margin:8px 0 0">' + penWhere(p) + '</p><div class="gd-act" style="justify-content:center"><button class="gd-btn" id="pmove">🏠 Đổi chỗ ở (chuồng / ngoài chuồng)</button></div>' : '');
+  if (pt.sp) $('pmove').onclick = async function () { var wp = await askPen(pt, p.z, p); if (!wp) return; api('/api/garden/pet/move', { pid: pid, pen: wp.pen }).then(function (d) { setState(d); $('petm').classList.remove('on'); toast(wp.pen != null ? '🏠 ' + p.name + ' đã vào chuồng.' : '🌾 ' + p.name + ' ra chạy chơi ngoài chuồng.'); }).catch(function (er) { toast(er.message, 3400); }); };
   $('petm').classList.add('on');
   $('pfeed').onclick = function () { api('/api/garden/pet/feed', { pid: pid }).then(function (d) { setState(d); $('petm').classList.remove('on'); toast('💗 ' + p.name + ' ăn no rồi!' + (d.gained ? ' +' + d.gained + ' 🪙' : '')); }).catch(function (er) { toast(er.message); }); };
   $('pdress').onclick = function () { openDress(pid); };
@@ -1343,7 +1403,7 @@ $('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') go
 $('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
 
 /* ───────── nhiệm vụ · quà thầy cô · lớp học ───────── */
-var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma', cuba: 'cu', chile: 'cl', norway: 'no', russia: 'ru', ireland: 'ie', madagascar: 'mg' };
+var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma', cuba: 'cu', chile: 'cl', norway: 'no', russia: 'ru', ireland: 'ie', madagascar: 'mg', farmvn: 'vn', farmnl: 'nl', farmch: 'ch', farmau: 'au', farmus: 'us', farmfr: 'fr', poland: 'pl', austria: 'at', denmark: 'dk', finland: 'fi', iceland: 'is', czechia: 'cz', hungary: 'hu' };
 function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch (e) {} }
 function claimable() { var q = S && S.quests; if (!q) return 0; var n = 0; q.daily.concat(q.weekly).forEach(function (x) { if (x.p >= x.goal && !x.claimed) n++; }); q.streak.miles.forEach(function (m) { if (m.ready) n++; }); return n; }
 window.updDots = function () { var n = (S && !VISIT ? claimable() : 0) + INBOX + TRADES, d = $('questDot'); if (d) { d.textContent = n; d.style.display = n ? '' : 'none'; } };
