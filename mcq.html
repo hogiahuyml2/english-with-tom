@@ -33,6 +33,7 @@
 .mq-ex { display: block; padding: 10px 12px; margin: 6px 0; white-space: pre-wrap; line-height: 1.6; } .mq-ex b.r { color: #ef4444; }
 .mq-drop { border: 2px dashed var(--border); border-radius: 14px; padding: 22px 14px; text-align: center; cursor: pointer; background: var(--bg-soft); } .mq-drop:hover, .mq-drop.over { border-color: var(--primary); background: var(--primary-soft); }
 .mq-q { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin: 10px 0; background: var(--surface); } .mq-q.bad { border-color: #ef4444; background: rgba(239,68,68,.05); }
+.rt { border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 10px; background: var(--surface); color: var(--text); min-height: 22px; line-height: 1.6; font-size: 14px; word-break: break-word; } .rt:focus { outline: none; border-color: var(--primary); } .rt.stem { font-weight: 600; margin-top: 4px; } .mq-q .opt .rt { flex: 1; } .rt-bar { position: sticky; top: 56px; z-index: 20; display: flex; gap: 6px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 6px 8px; margin: 8px 0; box-shadow: var(--shadow); } .rt-bar button { min-width: 38px; height: 34px; border: 1.5px solid var(--border); background: var(--bg-soft); border-radius: 8px; font-size: 15px; cursor: pointer; color: var(--text); }
 .mq-q .opt { display: flex; gap: 8px; align-items: center; margin: 5px 0; } .mq-q .opt input[type=text] { flex: 1; } .mq-q .opt input[type=radio] { width: auto; flex-shrink: 0; }
 .mq-list-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); flex-wrap: wrap; } .mq-list-item:first-of-type { border-top: none; } .mq-list-item .main { flex: 1; min-width: 200px; }
 .mq-badge { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); } .mq-badge.g { background: var(--success-soft); color: var(--success); } .mq-badge.w { background: var(--warning-soft); color: var(--warning); } .mq-badge.r { background: rgba(239,68,68,.12); color: #ef4444; }
@@ -77,6 +78,10 @@ function api(method, url, body) {
     .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error(d.error || 'Lỗi kết nối'); e.status = r.status; e.data = d; throw e; } return d; }); });
 }
 function qs(k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(location.search); return m ? decodeURIComponent(m[1]) : ''; }
+// Chữ có định dạng (đã được máy chủ làm sạch: chỉ b/i/u/sup/sub/s/br) hoặc chữ thuần đã escape
+function rh(html, plain) { return html ? html : esc(plain).replace(/\n/g, '<br>'); }
+function plainOf(el) { var c = el.cloneNode(true); [].forEach.call(c.querySelectorAll('br'), function (b) { b.replaceWith('\n'); }); [].forEach.call(c.querySelectorAll('div,p'), function (d) { d.insertAdjacentText('beforebegin', '\n'); }); return c.textContent.replace(/\u00a0/g, ' ').replace(/^\n+/, '').trim(); }
+function htmlOf(el) { var h = el.innerHTML; return /<(b|i|u|sup|sub|s|strong|em|strike)\b/i.test(h) ? h : ''; }
 function fmtDl(s) { if (!s) return ''; var d = new Date(s); if (isNaN(d)) return s; var p = function (n) { return (n < 10 ? '0' : '') + n; }; return p(d.getHours()) + ':' + p(d.getMinutes()) + ' ngày ' + p(d.getDate()) + '/' + p(d.getMonth() + 1); }
 function fmtDur(ms) { if (ms == null) return '—'; var s = Math.round(ms / 1000); if (s < 60) return s + ' giây'; var m = Math.floor(s / 60); return m + ' phút' + (s % 60 ? ' ' + (s % 60) + ' giây' : ''); }
 function msg(id, kind, h) { var el = $(id); if (el) el.innerHTML = h ? '<div class="mq-msg ' + kind + '">' + h + '</div>' : ''; }
@@ -88,12 +93,12 @@ function viewStudentList() {
   api('GET', '/api/mcq/mine').then(function (r) {
     var h = '<div class="mq-card"><div class="mq-title">📝 Đề của bạn</div>';
     if (!r.tests.length) h += '<div class="mq-sub" style="padding:10px 0;">Chưa có đề nào được giao. Khi giáo viên giao đề, bạn sẽ nhận thông báo 🔔 và đề hiện ở đây (và trong trang Bài tập được giao).</div>';
-    var lab = { new: ['Chưa làm', 'w'], in_progress: ['Đang làm dở', 'r'], done: ['Đã nộp', 'g'], expired: ['Quá hạn', 'r'] };
+    var lab = { new: ['Chưa làm', 'w'], upcoming: ['Sắp mở', 'w'], in_progress: ['Đang làm dở', 'r'], done: ['Đã nộp', 'g'], expired: ['Quá hạn', 'r'] };
     r.tests.forEach(function (t) {
       var b = lab[t.status] || lab.new;
-      h += '<div class="mq-list-item"><div class="main"><b>' + esc(t.title) + '</b> <span class="mq-badge ' + b[1] + '">' + b[0] + '</span><div class="mq-sub">' + t.questions + ' câu · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn thời gian') + (t.deadline ? ' · hạn ' + fmtDl(t.deadline) : '') + (t.teacher ? ' · ' + esc(t.teacher) : '') + '</div>' +
+      h += '<div class="mq-list-item"><div class="main"><b>' + esc(t.title) + '</b> <span class="mq-badge ' + b[1] + '">' + b[0] + '</span><div class="mq-sub">' + t.questions + ' câu · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn thời gian') + (t.startAt && t.status === 'upcoming' ? ' · <b>mở lúc ' + fmtDl(t.startAt) + '</b>' : '') + (t.deadline ? ' · hạn nộp ' + fmtDl(t.deadline) : '') + (t.teacher ? ' · ' + esc(t.teacher) : '') + '</div>' +
         (t.status === 'done' ? '<div class="mq-sub"><b>' + (t.scoreHidden ? 'Đã nộp bài · giáo viên chưa mở điểm' : 'Điểm: ' + t.score + '/' + t.total) + '</b></div>' : '') + '</div>' +
-        '<a class="mq-btn' + (t.status === 'expired' ? ' ghost' : '') + '" href="mcq.html?id=' + t.id + '">' + (t.status === 'done' ? 'Xem kết quả' : t.status === 'in_progress' ? 'Tiếp tục làm' : t.status === 'expired' ? 'Xem' : 'Làm bài') + '</a></div>';
+        '<a class="mq-btn' + (t.status === 'expired' ? ' ghost' : '') + '" href="mcq.html?id=' + t.id + '">' + (t.status === 'done' ? 'Xem kết quả' : t.status === 'in_progress' ? 'Tiếp tục làm' : t.status === 'expired' || t.status === 'upcoming' ? 'Xem' : 'Làm bài') + '</a></div>';
     });
     root.innerHTML = h + '</div>';
   }).catch(function (e) { root.innerHTML = '<div class="mq-card"><div class="mq-msg err">' + esc(e.message) + '</div></div>'; });
@@ -112,8 +117,9 @@ function viewIntro(id) {
       '<li><b>Không chuyển tab, không mở ứng dụng khác</b> trong lúc làm bài. Hệ thống ghi nhận mỗi lần bạn rời khỏi trang' + (d.maxLeaves ? ' — nếu rời quá <b>' + d.maxLeaves + ' lần</b> bài sẽ <b>tự động nộp</b>' : '') + ' và giáo viên sẽ thấy số lần rời trang.</li>' +
       '<li>Không sao chép/dán, không chụp màn hình chia sẻ đề.</li></ul>';
     root.innerHTML = back + '<div class="mq-card"><div class="mq-title">📋 Trước khi bắt đầu</div>' + (d.note ? '<div class="mq-msg warn" style="margin:0 0 10px;">💬 ' + esc(d.note) + '</div>' : '') + rules +
-      (d.deadline ? '<div class="mq-sub" style="margin-top:10px;">Hạn làm bài: <b>' + fmtDl(d.deadline) + '</b></div>' : '') +
-      '<div style="margin-top:16px;"><button class="mq-btn" id="mqStart">' + (d.status === 'in_progress' ? '▶️ Tiếp tục làm bài' : '🚀 Bắt đầu làm bài') + '</button></div><div id="mqIntroMsg"></div></div>';
+      (d.startAt ? '<div class="mq-sub" style="margin-top:10px;">🕐 Đề mở lúc: <b>' + fmtDl(d.startAt) + '</b></div>' : '') + (d.deadline ? '<div class="mq-sub" style="margin-top:' + (d.startAt ? '4' : '10') + 'px;">⏰ Hạn cuối nộp bài: <b>' + fmtDl(d.deadline) + '</b></div>' : '') + (d.startsInMs > 0 ? '<div class="mq-msg warn" id="mqWait" style="margin-top:10px;"></div>' : '') +
+      '<div style="margin-top:16px;"><button class="mq-btn" id="mqStart"' + (d.startsInMs > 0 ? ' disabled' : '') + '>' + (d.status === 'in_progress' ? '▶️ Tiếp tục làm bài' : '🚀 Bắt đầu làm bài') + '</button></div><div id="mqIntroMsg"></div></div>';
+    if (d.startsInMs > 0) { var t0 = Date.now(), tick = function () { var left = d.startsInMs - (Date.now() - t0); if (left <= 0) { clearInterval(iv); var w = $('mqWait'); if (w) w.remove(); $('mqStart').disabled = false; return; } var m = Math.floor(left / 60000), sc = Math.floor(left % 60000 / 1000), hr = Math.floor(m / 60); var w2 = $('mqWait'); if (w2) w2.innerHTML = '⏳ Đề <b>chưa mở</b>. Còn ' + (hr ? hr + ' giờ ' : '') + (m % 60) + ' phút ' + sc + ' giây nữa là làm bài được.'; }, iv = setInterval(tick, 1000); tick(); }
     $('mqStart').onclick = function () {
       var b = this; b.disabled = true;
       try { var el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen().catch(function () {}); } catch (e) {}
@@ -144,8 +150,8 @@ function renderTest() {
   var q = T.qs[T.cur], n = T.qs.length;
   var nav = T.qs.map(function (_, i) { return '<button class="tk-n' + (T.ans[i] != null ? ' done' : '') + (i === T.cur ? ' cur' : '') + (T.flags[i] ? ' flag' : '') + '" data-i="' + i + '">' + (i + 1) + '</button>'; }).join('');
   root.innerHTML = '<div class="tk-bar"><div class="tk-timer" id="tkTimer">--:--</div><div style="flex:1;min-width:140px;"><b>' + esc(T.title) + '</b><div class="mq-sub" id="tkProg">Đã trả lời ' + answeredN() + '/' + n + (T.maxLeaves ? ' · Rời trang: ' + T.leaves + '/' + T.maxLeaves : '') + '</div></div><button class="mq-btn" id="tkSubmit">📤 Nộp bài</button></div>' +
-    '<div class="tk-q" id="tkQ"><div class="mq-sub" style="margin-bottom:6px;">Câu ' + (T.cur + 1) + '/' + n + '</div><div class="tk-stem">' + esc(q.q) + '</div>' +
-    q.opts.map(function (o, k) { return '<button class="tk-opt' + (T.ans[T.cur] === k ? ' sel' : '') + '" data-k="' + k + '"><span class="l">' + LET[k] + '</span><span>' + esc(o) + '</span></button>'; }).join('') +
+    '<div class="tk-q" id="tkQ"><div class="mq-sub" style="margin-bottom:6px;">Câu ' + (T.cur + 1) + '/' + n + '</div><div class="tk-stem">' + rh(q.qh, q.q) + '</div>' +
+    q.opts.map(function (o, k) { return '<button class="tk-opt' + (T.ans[T.cur] === k ? ' sel' : '') + '" data-k="' + k + '"><span class="l">' + LET[k] + '</span><span>' + rh(q.oh && q.oh[k], o) + '</span></button>'; }).join('') +
     '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;"><button class="mq-btn ghost" id="tkPrev"' + (T.cur === 0 ? ' disabled' : '') + '>← Câu trước</button><button class="mq-btn ghost" id="tkFlag">' + (T.flags[T.cur] ? '🚩 Bỏ đánh dấu' : '🏳️ Đánh dấu xem lại') + '</button><button class="mq-btn" id="tkNext"' + (T.cur === n - 1 ? ' disabled' : '') + ' style="margin-left:auto;">Câu sau →</button></div></div>' +
     '<div class="mq-card" style="margin-top:14px;"><div class="mq-title">🧭 Danh sách câu <span class="mq-sub">xanh = đã trả lời · 🚩 = đánh dấu</span></div><div class="tk-nav">' + nav + '</div></div><div id="tkMsg"></div>';
   Array.prototype.forEach.call(root.querySelectorAll('.tk-opt'), function (b) { b.onclick = function () { T.ans[T.cur] = +b.getAttribute('data-k'); scheduleSave(); renderTest(); tick(); }; });
@@ -220,9 +226,9 @@ function unbindGuards() {
 /* ═══════════════════ HỌC SINH: KẾT QUẢ + ĐÁP ÁN ═══════════════════ */
 function reviewHtml(rv) {
   return rv.map(function (x) {
-    return '<div class="rv"><div class="qt">Câu ' + x.n + '. ' + esc(x.q) + ' ' + (x.ok === undefined ? (x.chosen < 0 ? '<span class="mq-badge w">Chưa trả lời</span>' : '') : x.ok ? '<span class="mq-badge g">✔ Đúng</span>' : '<span class="mq-badge r">' + (x.chosen < 0 ? '✖ Chưa trả lời' : '✖ Sai') + '</span>') + '</div>' +
-      x.opts.map(function (o, k) { return '<div class="tk-opt' + (k === x.correct ? ' ok' : (k === x.chosen ? ' no' : '')) + (k === x.chosen ? ' pick' : '') + '" style="cursor:default;"><span class="l">' + LET[k] + '</span><span>' + esc(o) + (k === x.correct ? ' <b>✔ Đáp án đúng</b>' : '') + (k === x.chosen ? ' <b>(đã chọn)</b>' : '') + '</span></div>'; }).join('') +
-      (x.exp ? '<div class="ex">💡 ' + esc(x.exp) + '</div>' : '') + '</div>';
+    return '<div class="rv"><div class="qt">Câu ' + x.n + '. ' + rh(x.qh, x.q) + ' ' + (x.ok === undefined ? (x.chosen < 0 ? '<span class="mq-badge w">Chưa trả lời</span>' : '') : x.ok ? '<span class="mq-badge g">✔ Đúng</span>' : '<span class="mq-badge r">' + (x.chosen < 0 ? '✖ Chưa trả lời' : '✖ Sai') + '</span>') + '</div>' +
+      x.opts.map(function (o, k) { return '<div class="tk-opt' + (k === x.correct ? ' ok' : (k === x.chosen ? ' no' : '')) + (k === x.chosen ? ' pick' : '') + '" style="cursor:default;"><span class="l">' + LET[k] + '</span><span>' + rh(x.oh && x.oh[k], o) + (k === x.correct ? ' <b>✔ Đáp án đúng</b>' : '') + (k === x.chosen ? ' <b>(đã chọn)</b>' : '') + '</span></div>'; }).join('') +
+      (x.exp ? '<div class="ex">💡 ' + rh(x.eh, x.exp) + '</div>' : '') + '</div>';
   }).join('');
 }
 function viewResult(id, info, res) {
@@ -284,7 +290,7 @@ function rulesHtml() {
     '<b>Cách 1 — KHUNG ĐÁP ÁN:</b><ul><li>Cuối file, một dòng chữ <code>ĐÁP ÁN</code> rồi các đáp án theo số câu, ví dụ:</li></ul><span class="mq-ex">ĐÁP ÁN\n1. B    2. C    3. A    4. D    5. B</span><ul><li>Hoặc dạng <b>bảng</b> (hàng trên là số câu, hàng dưới là đáp án), hoặc ghi <b>ngay dưới từng câu</b> một dòng: <code>Đáp án: C</code>.</li></ul>' +
     '<b>Cách 2 — IN ĐỎ đáp án đúng:</b><ul><li>Tô <b style="color:#ef4444">màu đỏ</b> (Font color: Red) cho <b>dòng phương án đúng</b>, ví dụ:</li></ul><span class="mq-ex">Câu 1. She ___ to school every day.\nA. go\n<b class="r">B. goes</b>\nC. going\nD. went</span><ul><li>Chỉ <b>1 phương án</b> in đỏ mỗi câu. Không tô đỏ phần câu hỏi hay các phương án khác.</li></ul>' +
     '<h4>4. Giải thích (tuỳ chọn)</h4><ul><li>Thêm dòng <code>Giải thích: ...</code> ngay dưới đáp án — học sinh sẽ thấy khi thầy/cô cho hiện đáp án.</li></ul>' +
-    '<h4>5. Sau khi tải lên</h4><ul><li>Hệ thống hiện <b>bản xem trước</b> toàn bộ câu hỏi + đáp án đã nhận. Câu nào lỗi sẽ viền đỏ và nói rõ lý do — thầy/cô sửa ngay trên màn hình rồi mới giao.</li></ul>' +
+    '<h4>5. Định dạng chữ & độ chính xác</h4><ul><li>Chữ <b>in đậm</b>, <i>in nghiêng</i>, <u>gạch chân</u>, chỉ số trên/dưới (x², H₂O) trong file Word sẽ được <b>giữ nguyên</b> cho học sinh xem. Màu chữ KHÔNG được giữ (để không lộ đáp án in đỏ).</li><li>Hệ thống <b>đối chiếu từng chữ</b> trong file với đề đã đọc và báo rõ đoạn nào bị bỏ sót. Công thức toán (Equation) và hình ảnh không được đưa vào đề.</li></ul><h4>6. Sau khi tải lên</h4><ul><li>Hệ thống hiện <b>bản xem trước</b> toàn bộ câu hỏi + đáp án đã nhận. Câu nào lỗi sẽ viền đỏ và nói rõ lý do — thầy/cô sửa ngay trên màn hình rồi mới giao.</li></ul>' +
     '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"><a class="mq-btn sm" href="/api/mcq/sample/key" style="text-decoration:none;">⬇️ Tải file mẫu 1 (khung đáp án)</a><a class="mq-btn sm" href="/api/mcq/sample/red" style="text-decoration:none;">⬇️ Tải file mẫu 2 (đáp án in đỏ)</a></div></details>';
 }
 function viewCreate() {
@@ -301,7 +307,7 @@ function parseFile(file) {
   msg('mqParseMsg', 'warn', '⏳ Đang đọc "' + esc(file.name) + '"...'); $('mqReview').innerHTML = '';
   var fd = new FormData(); fd.append('file', file, file.name);
   fetch('/api/mcq/parse', { method: 'POST', credentials: 'same-origin', body: fd }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.error || 'Không đọc được file.'); return d; }); }).then(function (d) {
-    D.questions = d.questions.map(function (q) { return { q: q.q, opts: q.opts.slice(), ans: q.ans, exp: q.exp || '' }; }); D.title = d.title; D.fileName = file.name;
+    D.questions = d.questions.map(function (q) { return { q: q.q, opts: q.opts.slice(), ans: q.ans, exp: q.exp || '', qh: q.qh || '', oh: q.oh ? q.oh.slice() : null, eh: q.eh || '', src: q.src || 0 }; }); D.title = d.title; D.fileName = file.name; D.report = d.report || null; D.keepFmt = true; D.confirmed = false;
     var modeTxt = { key: 'khung/bảng đáp án', red: 'chữ đỏ', mixed: 'chữ đỏ + bảng đáp án', none: '' }[d.mode] || '';
     var h = '✅ Đã đọc được <b>' + d.questions.length + '</b> câu' + (modeTxt ? ' (nhận đáp án theo <b>' + modeTxt + '</b>)' : '') + '.';
     if (d.errors.length) h += '<br>❌ <b>' + d.errors.length + ' lỗi cần sửa:</b><ul style="margin:4px 0 0 18px;">' + d.errors.slice(0, 15).map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + (d.errors.length > 15 ? '<li>... và ' + (d.errors.length - 15) + ' lỗi khác</li>' : '') + '</ul>';
@@ -311,39 +317,66 @@ function parseFile(file) {
   }).catch(function (e) { msg('mqParseMsg', 'err', esc(e.message)); });
 }
 function qValid(q) { return q.q.trim() && q.opts.length >= 2 && q.opts.every(function (o) { return String(o).trim(); }) && Number.isInteger(q.ans) && q.ans >= 0 && q.ans < q.opts.length; }
+// ô soạn thảo có định dạng (đậm / nghiêng / gạch chân…) — giữ nguyên như file gốc, giáo viên sửa được ngay
+function rtBox(attrs, html, plain, cls) { return '<div class="rt ' + (cls || '') + '" contenteditable="true" ' + attrs + '>' + rh(html, plain) + '</div>'; }
+function reportHtml() {
+  var r = D.report; if (!r) return '';
+  var optTxt = Object.keys(r.options || {}).map(function (k) { return r.options[k] + ' câu có ' + k + ' phương án'; }).join(' · ');
+  var h = '<div class="mq-card" style="margin-top:14px;"><div class="mq-title">🔍 Kiểm tra độ chính xác so với file gốc</div><ul style="margin:0 0 6px 18px;line-height:1.9;font-size:14px;">' +
+    '<li>File <b>' + esc(D.fileName) + '</b>: đọc <b>' + r.paragraphs + '</b> đoạn văn → nhận <b>' + r.questions + ' câu</b> (' + esc(optTxt) + ').</li>' +
+    '<li>Đáp án nhận từ: ' + (r.withRed ? '<b>' + r.withRed + '</b> câu theo chữ đỏ' : '') + (r.withRed && r.withKey ? ' + ' : '') + (r.withKey ? '<b>' + r.withKey + '</b> câu theo bảng đáp án' : '') + '.</li>' +
+    '<li>Đối chiếu chữ: <b style="color:' + (r.coverage >= 99 && !(r.skipped || []).length ? '#15803d' : '#b45309') + '">' + r.coverage + '%</b> số chữ trong phần đề của file đã nằm trong các câu bên dưới' + ((r.skipped || []).length ? ' — còn <b>' + r.skipped.length + ' đoạn chưa đưa vào đề</b> (xem bên dưới)' : ' ✅') + '.</li>' +
+    '<li>' + (r.withFormat ? 'Có <b>' + r.withFormat + '</b> câu giữ <b>định dạng chữ</b> từ file gốc (đậm / nghiêng / gạch chân…) — hiển thị ngay trong bản xem trước.' : 'File gốc không có chữ đậm / nghiêng / gạch chân nên đề hiển thị chữ thường.') + '</li></ul>';
+  if ((r.skipped || []).length) h += '<div class="mq-msg warn" style="margin:6px 0;"><b>Các đoạn trong file KHÔNG được đưa vào đề</b> (tiêu đề, hướng dẫn… là bình thường; nếu là nội dung câu hỏi thì hãy sửa file hoặc thêm vào bản xem trước):<ul style="margin:4px 0 0 18px;">' + r.skipped.slice(0, 12).map(function (x) { return '<li>Đoạn ' + x.n + ': “' + esc(x.text) + '”</li>'; }).join('') + '</ul></div>';
+  if (r.withFormat) h += '<label class="mq-chk"><input type="checkbox" id="sKeepFmt"' + (D.keepFmt ? ' checked' : '') + '> <b>Giữ định dạng chữ</b> như file gốc cho học sinh xem (tắt đi nếu chữ đậm/nghiêng trong file chỉ để thầy/cô đánh dấu)</label>';
+  return h + '</div>';
+}
 function renderReviewT() {
-  var h = '<div class="mq-title" style="margin-top:18px;">🔎 Xem trước & kiểm tra <span class="mq-sub">chấm tròn = đáp án đúng · sửa trực tiếp nếu cần</span></div><div id="rtBanner"></div>';
+  var h = reportHtml() + '<div class="mq-title" style="margin-top:18px;">🔎 Xem trước & kiểm tra <span class="mq-sub">chấm tròn = đáp án đúng · bôi đen chữ rồi dùng nút B / I / U để chỉnh định dạng · đối chiếu từng câu với file gốc</span></div>' +
+    '<div class="rt-bar" id="rtBar"><button type="button" data-cmd="bold" title="In đậm"><b>B</b></button><button type="button" data-cmd="italic" title="In nghiêng"><i>I</i></button><button type="button" data-cmd="underline" title="Gạch chân"><u>U</u></button><button type="button" data-cmd="superscript" title="Chỉ số trên (x²)">x²</button><button type="button" data-cmd="subscript" title="Chỉ số dưới (H₂O)">x₂</button><button type="button" data-cmd="removeFormat" title="Xoá định dạng đang chọn">⌫</button></div><div id="rtBanner"></div>';
   D.questions.forEach(function (q, i) {
-    h += '<div class="mq-q" id="rq' + i + '"><div class="mq-sub">Câu ' + (i + 1) + '</div><textarea rows="2" data-i="' + i + '" data-f="q">' + esc(q.q) + '</textarea>' +
-      q.opts.map(function (o, k) { return '<div class="opt"><input type="radio" name="ra' + i + '" data-i="' + i + '" data-r="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b><input type="text" data-i="' + i + '" data-o="' + k + '" value="' + esc(o) + '"></div>'; }).join('') +
-      '<input type="text" data-i="' + i + '" data-f="exp" value="' + esc(q.exp) + '" placeholder="Giải thích (không bắt buộc)" style="margin-top:6px;"><div style="text-align:right;margin-top:6px;"><button class="mq-btn sm ghost" data-del="' + i + '">🗑 Xoá câu này</button></div></div>';
+    h += '<div class="mq-q" id="rq' + i + '"><div class="mq-sub">Câu ' + (i + 1) + (q.src ? ' <span style="opacity:.7">· ở đoạn ' + q.src + ' của file Word</span>' : '') + '</div>' + rtBox('data-i="' + i + '" data-f="q"', q.qh, q.q, 'stem') +
+      q.opts.map(function (o, k) { return '<div class="opt"><input type="radio" name="ra' + i + '" data-i="' + i + '" data-r="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b>' + rtBox('data-i="' + i + '" data-o="' + k + '"', q.oh && q.oh[k], o, 'op') + '</div>'; }).join('') +
+      '<div class="mq-sub" style="margin-top:6px;">Giải thích (không bắt buộc)</div>' + rtBox('data-i="' + i + '" data-f="exp"', q.eh, q.exp, 'ex') + '<div style="text-align:right;margin-top:6px;"><button class="mq-btn sm ghost" data-del="' + i + '">🗑 Xoá câu này</button></div></div>';
   });
-  h += '<div class="mq-card mq-form" style="margin-top:16px;"><div class="mq-title">⚙️ Cài đặt bài làm</div>' +
-    '<label class="f">Tên đề</label><input type="text" id="sTitle" maxlength="100" value="' + esc(D.title) + '">' +
-    '<div class="mq-grid3"><div><label class="f">⏱ Thời gian làm bài (phút) — đồng hồ đếm ngược</label><input type="number" id="sDur" min="0" max="300" value="30"><div class="mq-sub">0 = không giới hạn</div></div><div><label class="f">Cho phép rời trang tối đa (lần)</label><input type="number" id="sLeave" min="0" max="20" value="3"><div class="mq-sub">Vượt quá → tự nộp. 0 = chỉ ghi nhận, không tự nộp</div></div><div><label class="f">Hạn bắt đầu làm bài (tuỳ chọn)</label><input type="datetime-local" id="sDl"></div></div>' +
+  h += '<div class="mq-card mq-form" style="margin-top:16px;"><div class="mq-title">⚙️ Tên đề & cài đặt bài làm</div>' +
+    '<label class="f">📝 Tên đề (học sinh sẽ thấy tên này — hãy đặt trước khi giao)</label><input type="text" id="sTitle" maxlength="100" value="' + esc(D.title) + '" placeholder="Ví dụ: Kiểm tra Unit 5 — Thì hiện tại hoàn thành">' +
+    '<div class="mq-grid3"><div><label class="f">⏱ Thời gian làm bài (phút) — đồng hồ đếm ngược</label><input type="number" id="sDur" min="0" max="300" value="30"><div class="mq-sub">0 = không giới hạn</div></div><div><label class="f">Cho phép rời trang tối đa (lần)</label><input type="number" id="sLeave" min="0" max="20" value="3"><div class="mq-sub">Vượt quá → tự nộp. 0 = chỉ ghi nhận, không tự nộp</div></div></div>' +
+    '<div class="mq-grid3"><div><label class="f">🕐 Giờ MỞ đề — bắt đầu giao bài (tuỳ chọn)</label><input type="datetime-local" id="sStart"><div class="mq-sub">Để trống = học sinh làm được ngay khi giao. Nếu đặt giờ, học sinh nhận thông báo “sắp có đề” ngay và thông báo “đề đã mở” đúng giờ; trước giờ đó chưa bấm làm được. Giờ Việt Nam.</div></div><div><label class="f">⏰ Hạn CUỐI nộp bài (tuỳ chọn)</label><input type="datetime-local" id="sDl"><div class="mq-sub">Sau giờ này học sinh chưa bắt đầu sẽ không làm được nữa. Giờ Việt Nam.</div></div></div>' +
     '<label class="mq-chk"><input type="checkbox" id="sShQ" checked> Xáo trộn thứ tự câu hỏi (mỗi học sinh một thứ tự khác nhau)</label><label class="mq-chk"><input type="checkbox" id="sShO" checked> Xáo trộn thứ tự đáp án A/B/C/D</label>' +
     '<div style="background:var(--primary-soft);border-radius:12px;padding:12px;margin:10px 0;"><label class="f" style="margin-top:0;">🎲 Số câu mỗi học sinh làm (lấy ngẫu nhiên từ ngân hàng ' + D.questions.length + ' câu)</label><input type="number" id="sPick" min="0" max="' + D.questions.length + '" value="0" style="max-width:140px;"><div class="mq-sub">0 hoặc bằng ' + D.questions.length + ' = làm cả ' + D.questions.length + ' câu. Ví dụ nhập 10: mỗi bạn nhận <b>10 câu khác nhau</b> được chọn ngẫu nhiên và trộn thứ tự riêng.</div></div><div class="mq-sub" style="font-weight:700;margin-top:8px;">Sau khi nộp bài, cho phép học sinh xem (có thể bật/tắt lại bất cứ lúc nào):</div><label class="mq-chk"><input type="checkbox" id="sScore" checked> Xem <b>điểm</b></label><label class="mq-chk"><input type="checkbox" id="sReveal"> Xem <b>đáp án đúng</b></label><label class="mq-chk"><input type="checkbox" id="sExp"> Xem <b>giải thích chi tiết</b></label><label class="f">Ghi chú cho học sinh (tuỳ chọn)</label><input type="text" id="sNote" maxlength="400"></div>' +
     '<div class="mq-card mq-form"><div class="mq-title">📨 Giao cho học sinh</div><label class="f">Giao cho lớp</label><div class="mq-stu" id="gGroups">Đang tải lớp...</div><label class="f">Hoặc chọn từng học sinh</label>' + stuPicker('gStu') + '<label class="f">Hoặc email học sinh (mỗi dòng/dấu phẩy một email)</label><textarea id="gEmails" rows="2"></textarea><label class="mq-chk"><input type="checkbox" id="gAll"> Giao cho TẤT CẢ học sinh</label>' +
+    '<label class="mq-chk" style="margin-top:10px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:8px 10px;"><input type="checkbox" id="gConfirm"> <b>Tôi đã đối chiếu bản xem trước với file Word gốc</b> (tên đề, nội dung từng câu, đáp án đúng, định dạng chữ) và thấy chính xác.</label>' +
     '<button class="mq-btn" id="gGo" style="margin-top:10px;">📨 Giao đề</button><div id="gMsg"></div></div>';
   $('mqReview').innerHTML = h;
-  Array.prototype.forEach.call($('mqReview').querySelectorAll('textarea[data-f],input[data-f]'), function (el) { el.oninput = function () { D.questions[+el.getAttribute('data-i')][el.getAttribute('data-f')] = el.value; checkBanner(); }; });
-  Array.prototype.forEach.call($('mqReview').querySelectorAll('input[data-o]'), function (el) { el.oninput = function () { D.questions[+el.getAttribute('data-i')].opts[+el.getAttribute('data-o')] = el.value; checkBanner(); }; });
+  var Q = function (el) { return D.questions[+el.getAttribute('data-i')]; };
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('.rt[data-f]'), function (el) { el.oninput = function () { var q = Q(el), f = el.getAttribute('data-f'); q[f] = plainOf(el); if (f === 'q') q.qh = htmlOf(el); else if (f === 'exp') q.eh = htmlOf(el); checkBanner(); }; });
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('.rt[data-o]'), function (el) { el.oninput = function () { var q = Q(el), k = +el.getAttribute('data-o'); q.opts[k] = plainOf(el); if (!q.oh) q.oh = q.opts.map(function () { return ''; }); q.oh[k] = htmlOf(el); checkBanner(); }; });
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('.rt'), function (el) { el.onpaste = function (e) { e.preventDefault(); var t = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, t.replace(/\r?\n/g, ' ')); }; el.onkeydown = function (e) { if (e.key === 'Enter' && !el.classList.contains('stem') && !el.classList.contains('ex')) e.preventDefault(); }; });
   Array.prototype.forEach.call($('mqReview').querySelectorAll('input[data-r]'), function (el) { el.onchange = function () { D.questions[+el.getAttribute('data-i')].ans = +el.getAttribute('data-r'); checkBanner(); }; });
-  Array.prototype.forEach.call($('mqReview').querySelectorAll('[data-del]'), function (b) { b.onclick = function () { D.questions.splice(+b.getAttribute('data-del'), 1); renderReviewT(); }; });
-  api('GET', '/api/groups').then(function (r) { $('gGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="gGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="mq-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="mq-sub" style="padding:6px 0;">Chưa có lớp.</div>'; }).catch(function () { $('gGroups').innerHTML = '<div class="mq-sub">Không tải được lớp.</div>'; });
+  Array.prototype.forEach.call($('mqReview').querySelectorAll('[data-del]'), function (b) { b.onclick = function () { D.questions.splice(+b.getAttribute('data-del'), 1); D.confirmed = false; renderReviewT(); }; });
+  Array.prototype.forEach.call($('rtBar').querySelectorAll('[data-cmd]'), function (b) { b.onmousedown = function (e) { e.preventDefault(); document.execCommand(b.getAttribute('data-cmd'), false, null); var a = document.activeElement; if (a && a.classList.contains('rt') && a.oninput) a.oninput(); }; });
+  if ($('sKeepFmt')) $('sKeepFmt').onchange = function () { D.keepFmt = this.checked; };
+  $('gConfirm').onchange = function () { D.confirmed = this.checked; checkBanner(); };
+  api('GET', '/api/groups').then(function (r) { $('gGroups').innerHTML = (r.groups && r.groups.length) ? r.groups.map(function (g) { return '<label><input type="checkbox" class="gGrp" value="' + g.id + '"> ' + esc(g.name) + ' <span class="mq-sub">(' + g.member_count + ' học sinh)</span></label>'; }).join('') : '<div class="mq-sub">Chưa có lớp. Hãy tạo lớp ở Khu vực giáo viên hoặc chọn học sinh bên dưới.</div>'; }).catch(function () {});
   bindPicker('gStu'); $('gGo').onclick = publish; checkBanner();
 }
 function checkBanner() {
   var bad = []; D.questions.forEach(function (q, i) { var ok = qValid(q); var el = $('rq' + i); if (el) el.classList.toggle('bad', !ok); if (!ok) bad.push(i + 1); });
-  var b = $('rtBanner'); if (b) b.innerHTML = bad.length ? '<div class="mq-msg err">❌ Còn <b>' + bad.length + '</b> câu cần sửa (viền đỏ): câu ' + bad.slice(0, 20).join(', ') + '. Hãy chọn đáp án đúng (chấm tròn) và điền đủ nội dung.</div>' : '<div class="mq-msg ok">✅ Tất cả ' + D.questions.length + ' câu đều hợp lệ — thầy/cô xem lại lần cuối rồi giao đề ở cuối trang.</div>';
-  var g = $('gGo'); if (g) g.disabled = !!bad.length || !D.questions.length;
+  var b = $('rtBanner'); if (b) b.innerHTML = bad.length ? '<div class="mq-msg err">❌ Còn <b>' + bad.length + '</b> câu cần sửa (viền đỏ): câu ' + bad.slice(0, 20).join(', ') + '. Hãy chọn đáp án đúng (chấm tròn) và điền đủ nội dung.</div>' : '<div class="mq-msg ok">✅ Tất cả ' + D.questions.length + ' câu đã hợp lệ. Hãy đối chiếu với file gốc rồi tick xác nhận ở dưới để giao đề.</div>';
+  var g = $('gGo'); if (g) g.disabled = !!bad.length || !D.questions.length || !D.confirmed;
 }
 function publish() {
-  var b = $('gGo'); b.disabled = true; msg('gMsg', '', '');
-  var body = { title: $('sTitle').value, duration_min: +$('sDur').value || 0, max_leaves: +$('sLeave').value || 0, shuffle_q: $('sShQ').checked, shuffle_o: $('sShO').checked, reveal: $('sReveal').checked, show_score: $('sScore').checked, show_exp: $('sExp').checked, pick_n: +$('sPick').value || 0, deadline: $('sDl').value || null, note: $('sNote').value, source_name: D.fileName,
-    questions: D.questions.map(function (q) { return { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp }; }),
+  var b = $('gGo'); msg('gMsg', '', '');
+  var title = $('sTitle').value.trim(); if (!title) { msg('gMsg', 'err', 'Hãy đặt <b>tên đề</b> trước khi giao.'); $('sTitle').focus(); return; }
+  var st = $('sStart').value, dl = $('sDl').value;
+  if (st && dl && st >= dl) { msg('gMsg', 'err', 'Giờ mở đề phải <b>sớm hơn</b> hạn cuối nộp bài.'); return; }
+  b.disabled = true;
+  var keep = D.keepFmt !== false;
+  var body = { title: title, duration_min: +$('sDur').value || 0, max_leaves: +$('sLeave').value || 0, shuffle_q: $('sShQ').checked, shuffle_o: $('sShO').checked, reveal: $('sReveal').checked, show_score: $('sScore').checked, show_exp: $('sExp').checked, pick_n: +$('sPick').value || 0, start_at: st || null, deadline: dl || null, note: $('sNote').value, source_name: D.fileName,
+    questions: D.questions.map(function (q) { var o = { q: q.q, opts: q.opts, ans: q.ans, exp: q.exp }; if (keep) { if (q.qh) o.qh = q.qh; if (q.oh && q.oh.some(Boolean)) o.oh = q.oh; if (q.eh) o.eh = q.eh; } return o; }),
     group_ids: Array.prototype.map.call(document.querySelectorAll('.gGrp:checked'), function (c) { return +c.value; }), user_ids: picked('gStu'), emails: $('gEmails').value.split(/[\n,;]+/).map(function (s) { return s.trim(); }).filter(Boolean), all_students: $('gAll').checked };
-  api('POST', '/api/mcq', body).then(function (r) { msg('gMsg', 'ok', '✅ Đã giao đề cho <b>' + r.recipients + '</b> học sinh — mỗi bạn nhận một thông báo 🔔 và thấy đề trong "Bài tập được giao". <a href="mcq.html?id=' + r.id + '&tab=results">Xem kết quả</a> khi học sinh làm bài.'); }).catch(function (e) { msg('gMsg', 'err', esc(e.message)); b.disabled = false; });
+  api('POST', '/api/mcq', body).then(function (r) { msg('gMsg', 'ok', '✅ Đã giao đề “' + esc(title) + '” cho <b>' + r.recipients + '</b> học sinh' + (st ? ' — đề sẽ <b>mở lúc ' + fmtDl(st) + '</b>' : '') + '. Mỗi bạn nhận một thông báo 🔔 và thấy đề trong "Bài tập được giao". <a href="mcq.html?id=' + r.id + '&tab=results">Xem kết quả</a> khi học sinh làm bài.'); }).catch(function (e) { msg('gMsg', 'err', esc(e.message)); b.disabled = false; });
 }
 
 function viewTeacherList() {
@@ -351,7 +384,7 @@ function viewTeacherList() {
   api('GET', '/api/mcq').then(function (r) {
     if (!r.tests.length) { $('mqTab').innerHTML = '<div class="mq-sub" style="padding:10px 0;">Chưa có đề nào. Hãy tạo đề đầu tiên ở tab "Tạo đề từ file Word".</div>'; return; }
     $('mqTab').innerHTML = r.tests.map(function (t) {
-      return '<div class="mq-list-item"><div class="main"><b>' + esc(t.title) + '</b><div class="mq-sub">' + (t.pick < t.questions ? 'ngân hàng ' + t.questions + ' câu · mỗi bạn làm ' + t.pick : t.questions + ' câu') + ' · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn giờ') + ' · rời tab tối đa ' + (t.maxLeaves || '∞') + (t.deadline ? ' · hạn ' + fmtDl(t.deadline) : '') + '</div><div class="mq-sub">Giao ' + t.assigned + ' · đã nộp ' + t.done + (t.avg != null ? ' · điểm TB ' + t.avg + '%' : '') + '</div></div>' +
+      return '<div class="mq-list-item"><div class="main"><b>' + esc(t.title) + '</b><div class="mq-sub">' + (t.pick < t.questions ? 'ngân hàng ' + t.questions + ' câu · mỗi bạn làm ' + t.pick : t.questions + ' câu') + ' · ' + (t.duration ? t.duration + ' phút' : 'không giới hạn giờ') + ' · rời tab tối đa ' + (t.maxLeaves || '∞') + (t.startAt ? ' · mở ' + fmtDl(t.startAt) : '') + (t.deadline ? ' · hạn nộp ' + fmtDl(t.deadline) : '') + '</div><div class="mq-sub">Giao ' + t.assigned + ' · đã nộp ' + t.done + (t.avg != null ? ' · điểm TB ' + t.avg + '%' : '') + '</div></div>' +
         '<div style="display:flex;gap:10px;flex-wrap:wrap;">' + [['showScore', 'Điểm', 'show_score'], ['reveal', 'Đáp án', 'reveal'], ['showExp', 'Giải thích', 'show_exp']].map(function (f) { return '<label class="mq-sub" style="display:flex;gap:6px;align-items:center;" title="Học sinh chỉ thấy khi bật">' + f[1] + ' <button class="mq-sw' + (t[f[0]] ? ' on' : '') + '" data-rv="' + t.id + '" data-f="' + f[2] + '" aria-label="' + f[1] + '"></button></label>'; }).join('') + '</div>' +
         '<a class="mq-btn sm" style="text-decoration:none;" href="mcq.html?id=' + t.id + '&tab=results">📊 Kết quả</a><button class="mq-btn sm ghost" data-del="' + t.id + '">🗑</button></div>';
     }).join('');
@@ -381,7 +414,7 @@ function viewResults(id) {
     $('aGo').onclick = function () { var ids = picked('aStu'); if (!ids.length) { msg('aMsg', 'err', 'Hãy chọn ít nhất một học sinh.'); return; } api('POST', '/api/mcq/' + id + '/assign', { user_ids: ids }).then(function (x) { msg('aMsg', 'ok', '✅ Đã giao thêm cho ' + x.added + ' học sinh' + (x.already ? ' (' + x.already + ' bạn đã có)' : '') + '.'); setTimeout(function () { viewResults(id); }, 1400); }).catch(function (e) { msg('aMsg', 'err', esc(e.message)); }); };
     $('rsFix').onclick = function () {
       api('GET', '/api/mcq/' + id + '/full').then(function (f) {
-        $('rsFixBox').innerHTML = '<div style="margin-top:10px;">' + f.questions.map(function (q, i) { return '<div class="mq-q"><div class="mq-sub">Câu ' + (i + 1) + '</div><div style="font-weight:600;white-space:pre-wrap;">' + esc(q.q) + '</div>' + q.opts.map(function (o, k) { return '<label class="opt" style="cursor:pointer;"><input type="radio" name="fx' + i + '" data-i="' + i + '" data-k="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b> ' + esc(o) + '</label>'; }).join('') + '</div>'; }).join('') + '</div><div id="fxMsg"></div>';
+        $('rsFixBox').innerHTML = '<div style="margin-top:10px;">' + f.questions.map(function (q, i) { return '<div class="mq-q"><div class="mq-sub">Câu ' + (i + 1) + '</div><div style="font-weight:600;">' + rh(q.qh, q.q) + '</div>' + q.opts.map(function (o, k) { return '<label class="opt" style="cursor:pointer;"><input type="radio" name="fx' + i + '" data-i="' + i + '" data-k="' + k + '"' + (q.ans === k ? ' checked' : '') + '><b>' + LET[k] + '.</b> ' + rh(q.oh && q.oh[k], o) + '</label>'; }).join('') + '</div>'; }).join('') + '</div><div id="fxMsg"></div>';
         Array.prototype.forEach.call($('rsFixBox').querySelectorAll('input[data-k]'), function (el) { el.onchange = function () { api('PATCH', '/api/mcq/' + id, { fix: [{ i: +el.getAttribute('data-i'), ans: +el.getAttribute('data-k') }] }).then(function (x) { msg('fxMsg', 'ok', '✅ Đã lưu đáp án mới' + (x.regraded ? ' và chấm lại ' + x.regraded + ' bài đã nộp' : '') + '.'); }).catch(function (e) { msg('fxMsg', 'err', esc(e.message)); }); }; });
       }).catch(function (e) { ewtAlert(e.message); });
     };

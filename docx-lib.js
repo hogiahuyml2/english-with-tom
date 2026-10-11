@@ -46,32 +46,47 @@ function isRedColor(v) {
   return r >= 0xb0 && g <= 0x78 && b <= 0x78 && r - Math.max(g, b) >= 0x60;
 }
 
-// Trả về { paragraphs:[{ text, red:[bool theo từng ký tự], num:{numId,ilvl}|null }], hasImages }
+// Định dạng ký tự (bit): 1 đậm · 2 nghiêng · 4 gạch chân · 8 chỉ số trên · 16 chỉ số dưới · 32 gạch ngang
+const F = { B: 1, I: 2, U: 4, SUP: 8, SUB: 16, S: 32 };
+const onOff = (rpr, tag) => { const m = rpr.match(new RegExp('<w:' + tag + '(?:\\s[^>]*)?/?>')); if (!m) return false; const v = (m[0].match(/\bw:val="([^"]+)"/) || [])[1]; return !(v && /^(0|false|off|none)$/i.test(v)); };
+function runFormat(rpr) {
+  let f = 0;
+  if (onOff(rpr, 'b')) f |= F.B; if (onOff(rpr, 'i')) f |= F.I; if (onOff(rpr, 'strike') || onOff(rpr, 'dstrike')) f |= F.S;
+  const u = rpr.match(/<w:u\b[^>]*>/); if (u) { const v = (u[0].match(/\bw:val="([^"]+)"/) || [])[1]; if (!v || !/^none$/i.test(v)) f |= F.U; }
+  const va = (rpr.match(/<w:vertAlign\b[^>]*\bw:val="([^"]+)"/) || [])[1]; if (va === 'superscript') f |= F.SUP; else if (va === 'subscript') f |= F.SUB;
+  const rs = (rpr.match(/<w:rStyle\b[^>]*\bw:val="([^"]+)"/) || [])[1]; if (rs && /^(strong)$/i.test(rs)) f |= F.B; if (rs && /^(emphasis)$/i.test(rs)) f |= F.I;
+  return f;
+}
+// Trả về { paragraphs:[{ text, red:[bool theo ký tự], fmt:[bit định dạng theo ký tự], num }], hasImages, hasMath }
 function docxParagraphs(buf) {
   const z = zipEntries(buf);
-  const xml = zipRead(buf, z.get('word/document.xml')).toString('utf8');
+  let xml = zipRead(buf, z.get('word/document.xml')).toString('utf8');
   const hasImages = /<w:drawing|<w:pict|<v:imagedata/.test(xml);
+  xml = xml.replace(/<mc:Fallback\b[\s\S]*?<\/mc:Fallback>/g, '');                       // hộp văn bản / hình có bản dự phòng → tránh đọc trùng
+  let hasMath = false;
+  xml = xml.replace(/<m:oMath\b[\s\S]*?<\/m:oMath>/g, (mm) => { hasMath = true; const t = [...mm.matchAll(/<m:t(?:\s[^>]*)?>([\s\S]*?)<\/m:t>/g)].map(x => x[1]).join(''); return '<w:r><w:t xml:space="preserve">' + t + '</w:t></w:r>'; });   // công thức: giữ phần chữ/số
   const out = [];
   for (const pm of xml.matchAll(/<w:p\b[^>]*>([\s\S]*?)<\/w:p>/g)) {
     const inner = pm[1];
-    let text = '', red = [];
+    let text = '', red = [], fmt = [];
     for (const rm of inner.matchAll(/<w:r\b[^>]*>([\s\S]*?)<\/w:r>/g)) {
       const r = rm[1];
       const rpr = (r.match(/<w:rPr>([\s\S]*?)<\/w:rPr>/) || [])[1] || '';
       const col = (rpr.match(/<w:color\b[^>]*\bw:val="([^"]+)"/) || [])[1];
       const hl = (rpr.match(/<w:highlight\b[^>]*\bw:val="([^"]+)"/) || [])[1];
       const isRed = isRedColor(col) || /^(red|darkRed)$/i.test(hl || '');
-      for (const tk of r.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\/>/g)) {
-        const piece = tk[1] !== undefined ? xmlDecode(tk[1]) : (tk[0] === '<w:tab/>' ? '\t' : ' ');
+      const f = runFormat(rpr);
+      for (const tk of r.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\b[^>]*\/>|<w:cr\/>|<w:noBreakHyphen\/>/g)) {
+        const piece = tk[1] !== undefined ? xmlDecode(tk[1]) : (tk[0] === '<w:tab/>' ? '\t' : tk[0] === '<w:noBreakHyphen/>' ? '-' : ' ');
         text += piece;
-        for (let i = 0; i < piece.length; i++) red.push(isRed);
+        for (let i = 0; i < piece.length; i++) { red.push(isRed); fmt.push(f); }
       }
     }
     const np = inner.match(/<w:numPr>([\s\S]*?)<\/w:numPr>/);
     const num = np ? { ilvl: parseInt((np[1].match(/<w:ilvl\b[^>]*\bw:val="(\d+)"/) || [])[1], 10) || 0, numId: (np[1].match(/<w:numId\b[^>]*\bw:val="(\d+)"/) || [])[1] || '0' } : null;
-    out.push({ text, red, num });
+    out.push({ text, red, fmt, num });
   }
-  return { paragraphs: out, hasImages };
+  return { paragraphs: out, hasImages, hasMath };
 }
 
 // ── Tạo file .docx đơn giản (dùng cho FILE MẪU tải về) ──
@@ -81,7 +96,7 @@ const xmlEsc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').rep
 // paragraphs: [ [ {t, color?, bold?}, ... ], ... ]
 function buildDocx(paragraphs) {
   const body = paragraphs.map(runs => '<w:p>' + (Array.isArray(runs) ? runs : [{ t: runs }]).map(r =>
-    '<w:r>' + ((r.color || r.bold) ? '<w:rPr>' + (r.bold ? '<w:b/>' : '') + (r.color ? '<w:color w:val="' + r.color + '"/>' : '') + '</w:rPr>' : '') + '<w:t xml:space="preserve">' + xmlEsc(r.t) + '</w:t></w:r>').join('') + '</w:p>').join('');
+    '<w:r>' + ((r.color || r.bold || r.italic || r.underline || r.sup || r.sub) ? '<w:rPr>' + (r.bold ? '<w:b/>' : '') + (r.italic ? '<w:i/>' : '') + (r.underline ? '<w:u w:val="single"/>' : '') + (r.color ? '<w:color w:val="' + r.color + '"/>' : '') + (r.sup ? '<w:vertAlign w:val="superscript"/>' : '') + (r.sub ? '<w:vertAlign w:val="subscript"/>' : '') + '</w:rPr>' : '') + '<w:t xml:space="preserve">' + xmlEsc(r.t) + '</w:t></w:r>').join('') + '</w:p>').join('');
   const files = [
     ['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
     ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
@@ -103,4 +118,4 @@ function buildDocx(paragraphs) {
   return Buffer.concat([...parts, cdBuf, end]);
 }
 
-module.exports = { zipEntries, zipRead, xmlDecode, isRedColor, docxParagraphs, buildDocx };
+module.exports = { zipEntries, zipRead, xmlDecode, isRedColor, docxParagraphs, buildDocx, FMT: F };
