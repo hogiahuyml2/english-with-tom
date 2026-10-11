@@ -25,12 +25,13 @@ module.exports = function (app, { db, requireAuth, requireRole, now }) {
     const exId = Number((req.body || {}).exercise_id) || 0, type = String((req.body || {}).type || '');
     if (req.user.role !== 'student' || !ALL.includes(type)) return res.json({ ok: true, strict: false, leaves: 0, max: 0, force: false });
     const c = exId && conf(req.user, exId);
-    if (!c || !c.strict) return res.json({ ok: true, strict: false, leaves: 0, max: 0, force: false });
+    if (!c) return res.json({ ok: true, strict: false, leaves: 0, max: 0, force: false });
     const prev = db.prepare('SELECT created_at FROM exam_events WHERE user_id=? AND exercise_id=? AND type=? ORDER BY id DESC LIMIT 1').get(req.user.id, exId, type);
     if (!prev || Date.now() - Date.parse(prev.created_at) > 1500) { // gộp các sự kiện trùng (tab + blur xảy ra gần như cùng lúc)
       const recent = LEAVE.includes(type) ? db.prepare(`SELECT created_at FROM exam_events WHERE user_id=? AND exercise_id=? AND type IN ('tab','blur','reopen') ORDER BY id DESC LIMIT 1`).get(req.user.id, exId) : null;
       if (!recent || Date.now() - Date.parse(recent.created_at) > 1500) db.prepare('INSERT INTO exam_events (user_id,exercise_id,type,created_at) VALUES (?,?,?,?)').run(req.user.id, exId, type, now());
     }
+    if (!c.strict) return res.json({ ok: true, strict: false, leaves: leavesOf(req.user.id, exId), max: 0, force: false });   // bài giao thường: chỉ ghi nhận, không tự nộp
     res.json(out(c, leavesOf(req.user.id, exId)));
   });
 

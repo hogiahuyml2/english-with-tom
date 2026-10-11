@@ -60,7 +60,7 @@
       if (!S || S.done) return;
       if (d && d.force) { force(); return; }
       var left = Math.max(0, S.max - S.leaves);
-      overlay('<div class="ewtg-ico">⚠️</div><h3>Bạn vừa rời khỏi trang làm bài</h3><div class="ewtg-big">' + S.leaves + ' / ' + S.max + '</div><p>Việc rời trang đã được <b>ghi nhận và gửi cho giáo viên</b>. Bạn chỉ còn <b>' + left + ' lần</b> nữa — khi hết lượt, bài sẽ <b>tự động nộp</b>.</p><button class="ewtg-btn" id="ewtgOk">Tôi hiểu, tiếp tục làm bài</button>', true);
+      var dsc = window.EWTLeaveAlert ? EWTLeaveAlert.describe(type, 0) : { icon: '⚠️', title: 'Bạn vừa rời khỏi trang làm bài' }; overlay('<div class="ewtg-ico">' + dsc.icon + '</div><h3>' + dsc.title + '</h3><div class="ewtg-big">' + S.leaves + ' / ' + S.max + '</div><p>Việc rời trang đã được <b>ghi nhận và gửi cho giáo viên</b>. Bạn chỉ còn <b>' + left + ' lần</b> nữa — khi hết lượt, bài sẽ <b>tự động nộp</b>.</p><button class="ewtg-btn" id="ewtgOk">Tôi hiểu, tiếp tục làm bài</button>', true);
       var ok = document.getElementById('ewtgOk'); if (ok) ok.onclick = closeOv;
     });
   }

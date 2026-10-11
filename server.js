@@ -1172,6 +1172,7 @@ app.get('/api/exercises/:id', requireAuth, async (req, res) => {
     if (req.user && req.user.role === 'student') {
       try { // chế độ thi do giáo viên bật khi giao bài
         const as = db.prepare('SELECT strict, max_leaves FROM assignments WHERE exercise_id=? AND student_email=? ORDER BY id DESC LIMIT 1').get(id, req.user.email);
+        if (as) result.assigned = 1;   // bài được giao: học sinh sẽ được cảnh báo khi chuyển tab / thoát app
         if (as && as.strict) { result.strict = 1; result.max_leaves = as.max_leaves || 3; }
       } catch (_) {}
     }

@@ -621,7 +621,8 @@
 <script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=53"></script>
-<script src="js/exam-guard.js?v=1"></script>
+<script src="js/exam-guard.js?v=2"></script>
+<script src="js/leave-alert.js?v=1"></script>
 <script>
 /* ── Utilities ── */
 function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
@@ -1012,7 +1013,7 @@ function showLoadError(msg) {
   } else if (e.strict && window.EWTGuard) {
     // Chế độ thi (giáo viên bật khi giao bài): chống rời trang / dán bài làm, vượt giới hạn thì tự nộp phần đã viết
     EWTGuard.start({ exerciseId: EXERCISE_ID, maxLeaves: e.max_leaves, onForce: function(){ window.G_forceSubmit = true; document.getElementById('submitBtn').click(); } });
-  }
+  } else if (e.assigned && window.EWTLeaveAlert) { EWTLeaveAlert.start({ exerciseId: EXERCISE_ID }); }
   })
   .catch(function(err){
     clearTimeout(timeout);
@@ -1079,7 +1080,7 @@ document.getElementById('submitBtn').addEventListener('click', async function(){
         '<p style="color:var(--text-muted);margin-top:8px;">Giáo viên sẽ chấm và phản hồi sớm nhất có thể. Bạn có thể theo dõi kết quả tại <a href="assigned.html" style="color:var(--primary);">Bài tập được giao</a>.</p>';
       document.getElementById('result').scrollIntoView({behavior:'smooth'});
       this.style.display = 'none';
-      if (window.EWTGuard) EWTGuard.stop();
+      if (window.EWTGuard) EWTGuard.stop(); if (window.EWTLeaveAlert) EWTLeaveAlert.stop();
     } else {
       var err0 = await r0.json().catch(function(){return {};});
       ewtAlert(err0.error || 'Nộp bài thất bại.');

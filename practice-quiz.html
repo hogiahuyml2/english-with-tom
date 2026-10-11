@@ -78,7 +78,8 @@
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=53"></script>
-<script src="js/exam-guard.js?v=1"></script>
+<script src="js/exam-guard.js?v=2"></script>
+<script src="js/leave-alert.js?v=1"></script>
 <script>
   function qp(n){ return new URLSearchParams(location.search).get(n); }
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
@@ -172,6 +173,7 @@
     }).join('');
     // Chế độ thi (giáo viên bật khi giao bài): chống rời trang / dán nội dung, vượt giới hạn thì tự nộp
     if (e.strict && window.EWTGuard) EWTGuard.start({ exerciseId: EXERCISE_ID, maxLeaves: e.max_leaves, onForce: function(){ document.getElementById('submitBtn').click(); } });
+    else if (e.assigned && window.EWTLeaveAlert) EWTLeaveAlert.start({ exerciseId: EXERCISE_ID });
   }).catch(function(err){
     clearTimeout(_quizTimeout);
     if (attempt < 8) {
@@ -200,7 +202,7 @@
     document.getElementById('resScore').textContent = data.score + '/' + data.max_score;
     document.getElementById('resPercent').textContent = (data.max_score ? Math.round(data.score/data.max_score*100) : 0) + '%';
     var box = document.getElementById('result'); box.style.display='block'; box.scrollIntoView({behavior:'smooth'});
-    if (window.EWTGuard) EWTGuard.stop();
+    if (window.EWTGuard) EWTGuard.stop(); if (window.EWTLeaveAlert) EWTLeaveAlert.stop();
   });
 </script>
 </body>

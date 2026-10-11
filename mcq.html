@@ -54,6 +54,7 @@
 @media print { .tk-q, .tk-nav { display: none !important; } }
 </style>
 <script src="js/dialog.js?v=1"></script>
+<script src="js/leave-alert.js?v=1"></script>
 </head>
 <body data-page="assigned" data-guard="auth">
 <div id="site-header"></div>
@@ -186,7 +187,7 @@ var G = null;
 function bindGuards() {
   G = {};
   var leave = function (kind) {
-    if (!T || T.done || T.away) return; T.away = true;
+    if (!T || T.done || T.away) return; T.away = true; T.awayKind = kind; T.awayAt = Date.now();
     var body = JSON.stringify({ state: 'hidden', kind: kind });
     fetch('/api/mcq/attempt/' + T.aid + '/leave', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).then(function (r) { return r.json(); }).then(function (d) {
       if (d.leaves != null) T.leaves = d.leaves; if (d.status === 'done') { T.away = false; finishFromServer(); }
@@ -197,7 +198,7 @@ function bindGuards() {
     api('POST', '/api/mcq/attempt/' + T.aid + '/leave', { state: 'visible' }).then(function (d) {
       if (d.status === 'done') return finishFromServer(); if (d.leaves != null) T.leaves = d.leaves;
       var left = T.maxLeaves ? Math.max(0, T.maxLeaves - T.leaves) : null, ov = document.createElement('div'); ov.className = 'tk-ov';
-      ov.innerHTML = '<div><div style="font-size:46px;">⚠️</div><h3 style="margin:6px 0;">Bạn vừa rời khỏi bài làm</h3><p style="font-size:14px;line-height:1.6;">Đây là lần rời thứ <b>' + T.leaves + '</b>' + (T.maxLeaves ? '/' + T.maxLeaves : '') + '. Giáo viên sẽ thấy số lần này.' + (left != null ? '<br>' + (left > 0 ? 'Bạn chỉ còn <b>' + left + '</b> lần nữa, sau đó bài sẽ <b>tự động nộp</b>.' : '<b>Lần rời tiếp theo bài sẽ tự động nộp!</b>') : '') + '</p><button class="mq-btn" id="ovOk" style="margin-top:12px;">Tôi đã hiểu, tiếp tục làm bài</button></div>';
+      var dsc = window.EWTLeaveAlert ? EWTLeaveAlert.describe(T.awayKind, Date.now() - (T.awayAt || Date.now())) : { icon: '⚠️', title: 'Bạn vừa rời khỏi bài làm', dur: '' }; ov.innerHTML = '<div><div style="font-size:46px;">' + dsc.icon + '</div><h3 style="margin:6px 0;">' + dsc.title + '</h3>' + (dsc.dur ? '<p style="font-size:14px;margin:0 0 4px;">Bạn đã rời trang khoảng <b>' + dsc.dur + '</b>.</p>' : '') + '<p style="font-size:14px;line-height:1.6;">Đây là lần rời thứ <b>' + T.leaves + '</b>' + (T.maxLeaves ? '/' + T.maxLeaves : '') + '. Giáo viên sẽ thấy số lần này.' + (left != null ? '<br>' + (left > 0 ? 'Bạn chỉ còn <b>' + left + '</b> lần nữa, sau đó bài sẽ <b>tự động nộp</b>.' : '<b>Lần rời tiếp theo bài sẽ tự động nộp!</b>') : '') + '</p><button class="mq-btn" id="ovOk" style="margin-top:12px;">Tôi đã hiểu, tiếp tục làm bài</button></div>';
       document.body.appendChild(ov); $('ovOk').onclick = function () { ov.remove(); }; renderTestProg();
     }).catch(function () {});
   };

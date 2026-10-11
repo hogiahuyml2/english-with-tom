@@ -46,6 +46,7 @@
 </head>
 <body data-page="" data-guard="auth">
 <div id="site-header"></div>
+<script src="js/leave-alert.js?v=1"></script>
 <div id="esLb" class="fit"><img id="esLbImg" alt=""></div>
 <div id="esLbTools"><button type="button" id="lbMinus">➖</button><button type="button" id="lbFit">Vừa màn hình</button><button type="button" id="lbPlus">➕ Phóng to</button><button type="button" id="lbX">✕ Đóng</button></div>
 
@@ -119,7 +120,7 @@ function renderWrite(head) {
   var upd = function () { var n = wc(box.value), el = $('wcN'); el.textContent = n; el.style.color = T.max_words && n > T.max_words ? '#dc2626' : T.min_words && n >= T.min_words ? '#15803d' : ''; };
   upd(); box.oninput = function () { dirty = true; upd(); $('saveSt').textContent = 'Đang soạn…'; };
   box.onpaste = function () { pastes++; }; box.oncopy = function () { pastes++; };
-  document.addEventListener('visibilitychange', function () { if (document.hidden && T && T.sub && T.sub.status === 'draft') { leaves++; saveNow(); } });
+  if (window.EWTLeaveAlert) EWTLeaveAlert.start({ onLeave: function (kind) { if (T && T.sub && T.sub.status === 'draft') { if (kind !== 'blur') leaves++; saveNow(); } } });
   window.onbeforeunload = function () { return dirty ? 'Bài viết chưa lưu xong!' : undefined; };
   SAVE = setInterval(function () { if (dirty) saveNow(); }, 8000); box.onblur = function () { if (dirty) saveNow(); };
   $('subBtn').onclick = function () { var n = wc(box.value); if (T.min_words && n < T.min_words && !confirm('Bạn mới viết ' + n + ' từ (yêu cầu khoảng ' + T.min_words + '). Vẫn nộp bài?')) return; if (!confirm('Nộp bài ngay bây giờ? Sau khi nộp bạn không sửa được nữa.')) return; submit(false); };
@@ -134,7 +135,7 @@ function renderWrite(head) {
 function saveNow() { if (!T || !T.sub || T.sub.status !== 'draft') return Promise.resolve(); var box = $('essayBox'); if (!box) return Promise.resolve(); dirty = false; return api('/api/essay/save/' + ID, { text: box.value, leaves: leaves, pastes: pastes }).then(function (r) { if (r.expired) { submit(true); return; } var el = $('saveSt'); if (el) el.textContent = '✓ Đã lưu ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }).catch(function () { dirty = true; var el = $('saveSt'); if (el) el.textContent = '⚠️ Chưa lưu được — kiểm tra mạng'; }); }
 function submit(auto) {
   if (submitting) return; submitting = true; clearInterval(TICK); clearInterval(SAVE); var box = $('essayBox'), txt = box ? box.value : '';
-  api('/api/essay/submit/' + ID, { text: txt, leaves: leaves, pastes: pastes }).then(function () { window.onbeforeunload = null; dirty = false; submitting = false; if (auto) alert('⏰ Hết giờ! Bài viết của bạn đã được nộp tự động.'); showTask(); }).catch(function (e) { submitting = false; alert(e.message); if (!auto) { TICK = setInterval(function () {}, 1000); } });
+  api('/api/essay/submit/' + ID, { text: txt, leaves: leaves, pastes: pastes }).then(function () { window.onbeforeunload = null; if (window.EWTLeaveAlert) EWTLeaveAlert.stop(); dirty = false; submitting = false; if (auto) alert('⏰ Hết giờ! Bài viết của bạn đã được nộp tự động.'); showTask(); }).catch(function (e) { submitting = false; alert(e.message); if (!auto) { TICK = setInterval(function () {}, 1000); } });
 }
 function renderResult(head) {
   var r = T.result, s = T.sub, pc = T.max ? Math.round(T.score / T.max * 100) : 0;
