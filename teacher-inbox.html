@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bài cần chấm — English With Tom</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6F58EE">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English With Tom">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=27">
+<style>
+.ib-wrap { max-width: 1100px; margin: 0 auto; padding: 14px 18px 70px; }
+.ib-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; } .ib-top h1 { font-size: 24px; margin: 0; flex: 1; min-width: 220px; }
+.ib-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 13px inherit; font-family: inherit; cursor: pointer; text-decoration: none; } .ib-btn.pri { background: var(--gradient); color: #fff; border-color: transparent; }
+.ib-sel, .ib-in { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font: 14px inherit; font-family: inherit; }
+.ib-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.ib-card { background: var(--surface); border: 2px solid var(--border); border-radius: 14px; padding: 12px 14px; cursor: pointer; text-align: left; font-family: inherit; color: var(--text); } .ib-card b { display: block; font-size: 28px; line-height: 1.1; } .ib-card span { font-size: 12.5px; color: var(--text-muted); } .ib-card.on { border-color: var(--primary); background: var(--primary-soft); } .ib-card.hot b { color: #dc2626; }
+.ib-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.ib-row { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--border); } .ib-row:last-child { border-bottom: 0; } .ib-row:hover { background: var(--bg-soft); }
+.ib-ic { font-size: 24px; flex: none; width: 34px; text-align: center; } .ib-tx { flex: 1; min-width: 0; } .ib-tx b { font-size: 14.5px; } .ib-tx small { display: block; color: var(--text-muted); font-size: 12.5px; margin-top: 2px; line-height: 1.5; }
+.ib-wait { flex: none; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 99px; background: var(--bg-soft); color: var(--text-muted); } .ib-wait.old { background: #fee2e2; color: #b91c1c; } .ib-wait.mid { background: #fef3c7; color: #92400e; }
+.ib-flag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 99px; background: #fee2e2; color: #b91c1c; margin-left: 6px; }
+.ib-empty { text-align: center; padding: 50px 14px; color: var(--text-muted); } .ib-empty .big { font-size: 46px; }
+@media (max-width: 640px) { .ib-row { flex-wrap: wrap; } .ib-wait { order: 3; } }
+</style>
+</head>
+<body data-page="" data-guard="teacher">
+<div id="site-header"></div>
+<main class="ib-wrap">
+  <div class="ib-top">
+    <h1>📥 Bài cần chấm</h1>
+    <select class="ib-sel" id="cls" aria-label="Lọc theo lớp"><option value="0">Tất cả lớp</option></select>
+    <a class="ib-btn pri" href="teacher-writing.html" title="Cho AI chấm nháp hàng loạt rồi duyệt nhanh">✍️ Chấm Writing hàng loạt</a>
+    <a class="ib-btn" href="teacher.html">← Khu vực giáo viên</a>
+  </div>
+  <div class="ib-cards" id="cards"></div>
+  <div class="ib-box" id="list"><div class="ib-empty">Đang tải…</div></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/track.js?v=1" defer></script>
+<script src="js/main.js?v=53"></script>
+<script>
+(function () {
+var $ = function (id) { return document.getElementById(id); }, esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var D = null, KIND = 'all', ICON = { sub: '📝', essay: '✍️', speaking: '🎤', flag: '🚨' }, LBL = { all: 'Tất cả', sub: 'Quiz / Writing', essay: 'Tự luận viết', speaking: 'Speaking', flag: 'Cảnh báo rời trang' };
+function waitTxt(h) { return h >= 48 ? Math.round(h / 24) + ' ngày' : h >= 1 ? h + ' giờ' : 'vừa xong'; }
+function load() {
+  var c = Number($('cls').value) || 0;
+  fetch('/api/teacher/inbox' + (c ? '?class=' + c : ''), { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+    if (d.error) { $('list').innerHTML = '<div class="ib-empty">' + esc(d.error) + '</div>'; return; }
+    D = d; if ($('cls').options.length <= 1) d.groups.forEach(function (g) { var o = document.createElement('option'); o.value = g.id; o.textContent = g.name; $('cls').appendChild(o); }); $('cls').value = c; render();
+  }).catch(function () { $('list').innerHTML = '<div class="ib-empty">Không tải được dữ liệu. Thử tải lại trang.</div>'; });
+}
+function render() {
+  var c = D.counts; $('cards').innerHTML = ['all', 'sub', 'essay', 'speaking', 'flag'].map(function (k) { return '<button class="ib-card' + (KIND === k ? ' on' : '') + (k === 'all' && c.old ? ' hot' : '') + '" data-k="' + k + '" type="button"><b>' + (c[k] || 0) + '</b><span>' + LBL[k] + (k === 'all' && c.old ? ' · ' + c.old + ' chờ trên 2 ngày' : '') + '</span></button>'; }).join('');
+  var rows = D.items.filter(function (i) { return KIND === 'all' || i.kind === KIND; });
+  if (!rows.length) { $('list').innerHTML = '<div class="ib-empty"><div class="big">🎉</div><p style="font-weight:700;margin:8px 0 2px">Không còn bài nào cần xử lý!</p><p>Khi học sinh nộp bài mới, bài sẽ hiện ở đây.</p></div>'; return; }
+  $('list').innerHTML = rows.map(function (i) {
+    var cls = i.waiting_h >= 48 && i.kind !== 'flag' ? ' old' : i.waiting_h >= 24 && i.kind !== 'flag' ? ' mid' : '';
+    return '<div class="ib-row"><div class="ib-ic">' + ICON[i.kind] + '</div><div class="ib-tx"><b>' + esc(i.student) + '</b> — ' + esc(i.title) + (i.flag ? '<span class="ib-flag">' + esc(i.flag) + '</span>' : '') + '<small>' + (i.classes ? esc(i.classes) + ' · ' : '') + esc(i.skill) + ' · ' + esc(i.note) + '</small></div><span class="ib-wait' + cls + '">' + (i.kind === 'flag' ? '' : 'chờ ') + waitTxt(i.waiting_h) + '</span><a class="ib-btn pri" href="' + esc(i.link) + '">' + (i.kind === 'flag' ? 'Xem' : 'Chấm') + '</a></div>';
+  }).join('');
+}
+document.addEventListener('click', function (e) { var b = e.target.closest('.ib-card'); if (b && D) { KIND = b.getAttribute('data-k'); render(); } });
+$('cls').onchange = load; load();
+})();
+</script>
+</body>
+</html>

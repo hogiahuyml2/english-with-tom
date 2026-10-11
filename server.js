@@ -2875,6 +2875,13 @@ try {
   console.error('[mcq] Không khởi động được:', e.message);
 }
 
+// ===================== NHẮC BỔ SUNG: 2 giờ cuối (bài giao), 24 giờ + 2 giờ (tự luận, trắc nghiệm) =====================
+try {
+  require('./reminders-extra')(app, { db, requireRole, notifyUser });
+} catch (e) {
+  console.error('[remind2] Không khởi động được:', e.message);
+}
+
 // ===================== KIỂM TRA ĐẦU VÀO (đề cố định cấu trúc, rút ngẫu nhiên từ ngân hàng Cambridge; quy đổi CEFR; lộ trình học) =====================
 try {
   require('./templates')(app, { requireRole });

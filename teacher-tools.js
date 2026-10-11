@@ -446,4 +446,57 @@ module.exports = function (app, deps) {
     const gs = db.prepare('SELECT g.id,g.name,g.lb_anon FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.user_id=? AND g.lb_on=1 ORDER BY g.name').all(req.user.id);
     res.json({ metrics: METRICS, metric, classes: gs.map(g => boardOf(g, metric, req.user.id, false)) });
   });
+
+  /* ───────────────────────── 6. HỘP THƯ "BÀI CẦN CHẤM" (gom mọi loại bài chờ giáo viên) ───────────────────────── */
+  app.get('/api/teacher/inbox', T, (req, res) => {
+    const u = req.user, admin = isAdmin(u), t0 = Date.now(), all = (sql, ...a) => db.prepare(sql).all(...a), cls = Number(req.query.class) || 0;
+    const groups = ownGroups(u), myG = groups.map((g) => g.id);
+    const classesOf = {};   // user_id → tên lớp (chỉ lớp của giáo viên)
+    if (myG.length) all(`SELECT gm.user_id, g.name FROM group_members gm JOIN groups g ON g.id=gm.group_id WHERE gm.group_id IN (${myG.map(() => '?').join(',')})`, ...myG).forEach((r) => { (classesOf[r.user_id] = classesOf[r.user_id] || []).push(r.name); });
+    const inClass = cls ? new Set(all('SELECT user_id FROM group_members WHERE group_id=?', cls).map((r) => r.user_id)) : null;
+    const items = [], hrs = (iso) => Math.max(0, Math.round((t0 - Date.parse(iso || new Date().toISOString())) / 3600e3));
+    const keep = (uid) => !inClass || inClass.has(uid);
+    // a) Quiz / Writing / Speaking-bài-nộp… chờ chấm (không tính bài tự luận — có mục riêng bên dưới)
+    all(`SELECT s.id, s.submitted_at, s.status, us.id AS uid, us.name, us.email, e.title, e.skill, e.task_type FROM submissions s JOIN exercises e ON e.id=s.exercise_id JOIN users us ON us.id=s.user_id
+         WHERE s.status IN ('pending','pending_review') AND COALESCE(e.task_type,'') != 'essay'
+         ${admin ? '' : 'AND (e.created_by = ? OR EXISTS (SELECT 1 FROM assignments a WHERE a.exercise_id = s.exercise_id AND a.assigned_by = ?))'} ORDER BY s.submitted_at ASC LIMIT 1500`, ...(admin ? [] : [u.id, u.id]))
+      .forEach((r) => { if (keep(r.uid)) items.push({ kind: 'sub', id: r.id, student: r.name || r.email, email: r.email, classes: (classesOf[r.uid] || []).join(', '), title: r.title, skill: r.skill || '', note: r.status === 'pending_review' ? 'AI đã chấm nháp — chờ thầy/cô duyệt' : 'Chưa chấm', waiting_h: hrs(r.submitted_at), link: 'teacher.html?tab=grade&sub=' + r.id }); });
+    // b) Bài tự luận viết đã nộp / AI chấm nháp, chưa gửi cho học sinh
+    all(`SELECT s.id, s.status, s.submitted_at, s.task_id, s.leaves, us.id AS uid, us.name, us.email, t.title FROM essay_subs s JOIN essay_tasks t ON t.id=s.task_id JOIN users us ON us.id=s.user_id
+         WHERE s.status IN ('submitted','ai_draft') ${admin ? '' : 'AND t.teacher_id = ?'} ORDER BY s.submitted_at ASC LIMIT 1500`, ...(admin ? [] : [u.id]))
+      .forEach((r) => { if (keep(r.uid)) items.push({ kind: 'essay', id: r.id, student: r.name || r.email, email: r.email, classes: (classesOf[r.uid] || []).join(', '), title: r.title, skill: 'Tự luận', note: r.status === 'ai_draft' ? 'AI đã chấm nháp — chờ thầy/cô duyệt & gửi' : 'Đã nộp, chưa chấm', waiting_h: hrs(r.submitted_at), flag: r.leaves >= 3 ? 'Rời trang ' + r.leaves + ' lần' : '', link: 'teacher-essay.html?task=' + r.task_id + '&sub=' + r.id }); });
+    // c) Speaking đã được AI chấm nhưng thầy/cô chưa xem
+    if (myG.length) {
+      const ph = myG.map(() => '?').join(',');
+      all(`SELECT s.id, s.exam, s.submitted_at, s.created_at, us.id AS uid, us.name, us.email FROM speaking_sessions s JOIN users us ON us.id=s.user_id
+           WHERE s.status='done' AND s.teacher IS NULL AND us.id IN (SELECT user_id FROM group_members WHERE group_id IN (${ph})) ORDER BY s.id ASC LIMIT 300`, ...myG)
+        .forEach((r) => { if (keep(r.uid)) items.push({ kind: 'speaking', id: r.id, student: r.name || r.email, email: r.email, classes: (classesOf[r.uid] || []).join(', '), title: 'Speaking ' + String(r.exam || '').toUpperCase(), skill: 'Speaking', note: 'AI đã chấm — thầy/cô chưa xem', waiting_h: hrs(r.submitted_at || r.created_at), link: 'teacher-speaking.html?id=' + r.id }); });
+    }
+    // d) Rời trang / dán bài nhiều lần trong 7 ngày gần đây ở bài mình giao
+    const ev = all(`SELECT x.user_id AS uid, x.exercise_id AS ex, COUNT(*) AS n, MAX(x.created_at) AS last, us.name, us.email, e.title FROM exam_events x JOIN users us ON us.id=x.user_id JOIN exercises e ON e.id=x.exercise_id
+        WHERE x.created_at > ? ${admin ? '' : 'AND EXISTS (SELECT 1 FROM assignments a WHERE a.exercise_id=x.exercise_id AND a.assigned_by=?)'} GROUP BY x.user_id, x.exercise_id HAVING n >= 3 ORDER BY n DESC LIMIT 100`, new Date(t0 - 7 * DAY).toISOString(), ...(admin ? [] : [u.id]));
+    ev.forEach((r) => { if (keep(r.uid)) items.push({ kind: 'flag', id: r.ex, student: r.name || r.email, email: r.email, classes: (classesOf[r.uid] || []).join(', '), title: r.title, skill: 'Cảnh báo', note: 'Rời trang / dán bài ' + r.n + ' lần trong 7 ngày', waiting_h: hrs(r.last), link: 'teacher-track.html?ex=' + r.ex + '&q=' + encodeURIComponent(r.email) }); });
+    const counts = { all: items.length, sub: 0, essay: 0, speaking: 0, flag: 0, old: 0 }; items.forEach((i) => { counts[i.kind]++; if (i.kind !== 'flag' && i.waiting_h >= 48) counts.old++; });
+    items.sort((a, b) => (b.kind !== 'flag') - (a.kind !== 'flag') || b.waiting_h - a.waiting_h);
+    res.json({ now: t0, counts, groups: groups.map((g) => ({ id: g.id, name: g.name })), items: items.slice(0, 500) });
+  });
+
+  /* ───────────────────────── 7. MẪU NHẬN XÉT CỦA GIÁO VIÊN ───────────────────────── */
+  db.exec(`CREATE TABLE IF NOT EXISTS comment_snippets (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, title TEXT NOT NULL, body TEXT NOT NULL, tag TEXT NOT NULL DEFAULT '', uses INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL)`);
+  const SEED = [['Khen bài viết tốt', 'Bài viết của em rõ ràng, có bố cục tốt và dùng từ vựng phù hợp. Cố gắng phát huy nhé!', 'khen'], ['Cần thêm ví dụ', 'Em nên bổ sung thêm ví dụ cụ thể để làm rõ ý chính hơn.', 'góp ý'], ['Lỗi thì / ngữ pháp', 'Em chú ý chia thì của động từ cho đúng (đặc biệt là thì quá khứ đơn và hiện tại hoàn thành) và kiểm tra lại sự hoà hợp chủ ngữ – động từ.', 'ngữ pháp'], ['Thiếu từ nối', 'Hãy dùng thêm các từ nối (however, moreover, therefore…) để các ý liền mạch hơn.', 'bố cục'], ['Chính tả', 'Em kiểm tra lại chính tả trước khi nộp bài nhé — vài từ còn viết sai.', 'chính tả'], ['Chưa đủ số từ', 'Bài viết còn ngắn so với yêu cầu. Em hãy viết thêm để đủ số từ quy định.', 'góp ý'], ['Lạc đề', 'Một số ý chưa bám sát đề bài. Em đọc kỹ yêu cầu và trả lời đúng trọng tâm câu hỏi nhé.', 'góp ý']];
+  const snips = (uid) => {
+    let rows = db.prepare('SELECT id,title,body,tag,uses FROM comment_snippets WHERE user_id=? ORDER BY uses DESC, id').all(uid);
+    if (!rows.length && !db.prepare("SELECT 1 FROM comment_snippets WHERE user_id=?").get(uid)) { const ins = db.prepare('INSERT INTO comment_snippets (user_id,title,body,tag,created_at) VALUES (?,?,?,?,?)'); SEED.forEach((r) => ins.run(uid, r[0], r[1], r[2], now())); rows = db.prepare('SELECT id,title,body,tag,uses FROM comment_snippets WHERE user_id=? ORDER BY uses DESC, id').all(uid); }
+    return rows;
+  };
+  app.get('/api/teacher/snippets', T, (req, res) => res.json({ snippets: snips(req.user.id) }));
+  app.post('/api/teacher/snippets', T, (req, res) => {
+    const b = req.body || {}, title = String(b.title || '').trim().slice(0, 60), body = String(b.body || '').trim().slice(0, 1500), tag = String(b.tag || '').trim().slice(0, 20), id = Number(b.id) || 0;
+    if (!body) return res.status(400).json({ error: 'Hãy nhập nội dung nhận xét.' });
+    if (db.prepare('SELECT COUNT(*) n FROM comment_snippets WHERE user_id=?').get(req.user.id).n >= 100 && !id) return res.status(400).json({ error: 'Tối đa 100 mẫu nhận xét.' });
+    if (id) { const r = db.prepare('UPDATE comment_snippets SET title=?, body=?, tag=? WHERE id=? AND user_id=?').run(title || body.slice(0, 30), body, tag, id, req.user.id); if (!r.changes) return res.status(404).json({ error: 'Không tìm thấy mẫu.' }); return res.json({ ok: true, id }); }
+    snips(req.user.id); const r = db.prepare('INSERT INTO comment_snippets (user_id,title,body,tag,created_at) VALUES (?,?,?,?,?)').run(req.user.id, title || body.slice(0, 30), body, tag, now()); res.json({ ok: true, id: r.lastInsertRowid });
+  });
+  app.post('/api/teacher/snippets/:id/use', T, (req, res) => { db.prepare('UPDATE comment_snippets SET uses=uses+1 WHERE id=? AND user_id=?').run(Number(req.params.id), req.user.id); res.json({ ok: true }); });
+  app.delete('/api/teacher/snippets/:id', T, (req, res) => { db.prepare('DELETE FROM comment_snippets WHERE id=? AND user_id=?').run(Number(req.params.id), req.user.id); res.json({ ok: true }); });
 };
