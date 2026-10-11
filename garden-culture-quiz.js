@@ -222,4 +222,44 @@ module.exports = {
     ['A waka is a traditional Māori ___.', ['canoe', 'hat', 'drum', 'castle'], 'A waka is a traditional Māori canoe.'],
     ['The silver fern is a symbol of ___.', ['New Zealand', 'Egypt', 'Iceland', 'Mexico'], 'The silver fern is a symbol of New Zealand.'],
     ['The kiwi is a bird that cannot ___.', ['fly', 'sleep', 'eat', 'walk'], 'The kiwi cannot fly.'] ]
+  ,singapore: [
+    ['Marina Bay Sands has ___ towers.', ['three', 'one', 'ten', 'five'], 'It has three towers.'],
+    ['The Merlion has the head of a ___ and the body of a fish.', ['lion', 'dog', 'bird', 'horse'], 'The Merlion has a lion head and a fish body.'],
+    ['Chilli crab is a famous dish in ___.', ['Singapore', 'Norway', 'Peru', 'Egypt'], 'Chilli crab is a famous dish in Singapore.'] ]
+  ,malaysia: [
+    ['The Petronas Towers are in ___.', ['Kuala Lumpur', 'Paris', 'Lima', 'Cairo'], 'The Petronas Towers are in Kuala Lumpur.'],
+    ['A wau is a traditional Malaysian ___.', ['kite', 'boat', 'shoe', 'drum'], 'A wau is a traditional kite.'],
+    ['Durian is called the king of ___.', ['fruits', 'birds', 'cities', 'rivers'], 'Durian is called the king of fruits.'] ]
+  ,cambodia: [
+    ['Angkor Wat is a very big ___.', ['temple', 'airport', 'school', 'farm'], 'Angkor Wat is a very big temple.'],
+    ['The towers of Angkor Wat look like ___ buds.', ['lotus', 'apple', 'rose', 'corn'], 'The towers look like lotus buds.'],
+    ['The Bayon has big smiling ___ on its towers.', ['faces', 'boats', 'books', 'cars'], 'Big smiling faces look out from the towers.'] ]
+  ,nepal: [
+    ['Mount Everest is the ___ mountain in the world.', ['highest', 'smallest', 'newest', 'coldest'], 'Mount Everest is the highest mountain.'],
+    ['Momo are ___.', ['dumplings', 'shoes', 'boats', 'hats'], 'Momo are dumplings.'],
+    ['People turn a prayer ___ with their hand.', ['wheel', 'book', 'door', 'chair'], 'People turn a prayer wheel.'] ]
+  ,jordan: [
+    ['The Treasury is cut into a pink ___.', ['rock', 'tree', 'cloud', 'river'], 'The Treasury is cut into a pink rock.'],
+    ['Wadi Rum is a ___ with red sand.', ['desert', 'forest', 'lake', 'farm'], 'Wadi Rum is a desert.'],
+    ['A mosaic is a picture made of small coloured ___.', ['pieces', 'balls', 'shoes', 'trees'], 'A mosaic is made of small pieces.'] ]
+  ,belgium: [
+    ['The Atomium has ___ shiny balls.', ['nine', 'two', 'twenty', 'four'], 'The Atomium has nine shiny balls.'],
+    ['Belgium is famous for waffles and ___.', ['chocolate', 'rice', 'tea', 'noodles'], 'Belgium is famous for waffles and chocolate.'],
+    ['The flag of Belgium is black, yellow and ___.', ['red', 'blue', 'green', 'white'], 'The flag is black, yellow and red.'] ]
+  ,croatia: [
+    ['Strong stone walls go around the old city of ___.', ['Dubrovnik', 'Sydney', 'Tokyo', 'Lima'], 'Walls go around Dubrovnik.'],
+    ['Waterfalls join the lakes at ___.', ['Plitvice', 'Everest', 'Petra', 'Angkor'], 'Waterfalls join the lakes at Plitvice.'],
+    ['The Dalmatian dog has black ___ on white fur.', ['spots', 'wings', 'stripes', 'horns'], 'It has black spots.'] ]
+  ,colombia: [
+    ['The old houses in Cartagena have bright ___.', ['colours', 'roofs of ice', 'wings', 'engines'], 'The houses have bright colours.'],
+    ['Cocora Valley has the tallest ___ trees in the world.', ['palm', 'pine', 'apple', 'cherry'], 'Cocora has the tallest palm trees.'],
+    ['On the flag of Colombia, the biggest part is ___.', ['yellow', 'red', 'blue', 'green'], 'Yellow is the biggest part.'] ]
+  ,tanzania: [
+    ['Mount Kilimanjaro is the highest mountain in ___.', ['Africa', 'Europe', 'Asia', 'Australia'], 'It is the highest mountain in Africa.'],
+    ['Many zebras walk across the ___.', ['Serengeti', 'Alps', 'Nile', 'Andes'], 'Many zebras walk across the Serengeti.'],
+    ['Tanzanite is a blue-purple ___.', ['gem', 'fish', 'cloud', 'road'], 'Tanzanite is a gem.'] ]
+  ,scotland: [
+    ['Edinburgh Castle stands on a high ___.', ['rock', 'boat', 'cloud', 'bridge'], 'It stands on a high rock.'],
+    ['A story says a ___ lives in Loch Ness.', ['monster', 'whale', 'panda', 'camel'], 'A story says a monster lives there.'],
+    ['The flag of Scotland is blue with a white ___.', ['cross', 'star', 'circle', 'heart'], 'It has a white cross.'] ]
 };

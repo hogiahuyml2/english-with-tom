@@ -222,4 +222,44 @@ module.exports = {
     ['Waka là ___ truyền thống của người Māori.', ['ca-nô', 'mũ', 'trống', 'lâu đài'], 'Waka là ca-nô truyền thống.'],
     ['Dương xỉ bạc là biểu tượng của ___.', ['New Zealand', 'Ai Cập', 'Iceland', 'Mexico'], 'Dương xỉ bạc là biểu tượng của New Zealand.'],
     ['Chim kiwi là loài chim không biết ___.', ['bay', 'ngủ', 'ăn', 'đi'], 'Chim kiwi không biết bay.'] ]
+  ,singapore: [
+    ['Marina Bay Sands có ___ toà tháp.', ['ba', 'một', 'mười', 'năm'], 'Nó có ba toà tháp.'],
+    ['Merlion có đầu của ___ và thân cá.', ['sư tử', 'con chó', 'con chim', 'con ngựa'], 'Merlion có đầu sư tử và thân cá.'],
+    ['Cua sốt ớt là món nổi tiếng ở ___.', ['Singapore', 'Na Uy', 'Peru', 'Ai Cập'], 'Cua sốt ớt nổi tiếng ở Singapore.'] ]
+  ,malaysia: [
+    ['Tháp đôi Petronas ở ___.', ['Kuala Lumpur', 'Paris', 'Lima', 'Cairo'], 'Tháp đôi Petronas ở Kuala Lumpur.'],
+    ['Wau là một ___ truyền thống của Malaysia.', ['con diều', 'chiếc thuyền', 'chiếc giày', 'cái trống'], 'Wau là con diều truyền thống.'],
+    ['Sầu riêng được gọi là vua của các loại ___.', ['trái cây', 'loài chim', 'thành phố', 'dòng sông'], 'Sầu riêng là vua của các loại trái cây.'] ]
+  ,cambodia: [
+    ['Angkor Wat là một ___ rất lớn.', ['ngôi đền', 'sân bay', 'trường học', 'nông trại'], 'Angkor Wat là ngôi đền rất lớn.'],
+    ['Các ngọn tháp Angkor Wat trông giống nụ ___.', ['sen', 'táo', 'hồng', 'ngô'], 'Các ngọn tháp giống nụ sen.'],
+    ['Đền Bayon có những ___ lớn đang cười trên các ngọn tháp.', ['khuôn mặt', 'chiếc thuyền', 'quyển sách', 'xe hơi'], 'Những khuôn mặt cười lớn nhìn ra từ các tháp.'] ]
+  ,nepal: [
+    ['Đỉnh Everest là ngọn núi ___ thế giới.', ['cao nhất', 'nhỏ nhất', 'mới nhất', 'lạnh nhất'], 'Đỉnh Everest là ngọn núi cao nhất.'],
+    ['Momo là món ___.', ['bánh bao hấp', 'giày', 'thuyền', 'mũ'], 'Momo là món bánh bao hấp.'],
+    ['Người ta quay ___ cầu nguyện bằng tay.', ['bánh xe', 'quyển sách', 'cánh cửa', 'chiếc ghế'], 'Người ta quay bánh xe cầu nguyện.'] ]
+  ,jordan: [
+    ['Điện Kho Báu được đục vào một ___ hồng.', ['tảng đá', 'cái cây', 'đám mây', 'dòng sông'], 'Điện được đục vào tảng đá hồng.'],
+    ['Wadi Rum là một ___ có cát đỏ.', ['sa mạc', 'khu rừng', 'cái hồ', 'nông trại'], 'Wadi Rum là sa mạc.'],
+    ['Tranh khảm là bức tranh làm từ những ___ nhỏ nhiều màu.', ['mảnh', 'quả bóng', 'đôi giày', 'cái cây'], 'Tranh khảm làm từ những mảnh nhỏ.'] ]
+  ,belgium: [
+    ['Atomium có ___ quả cầu sáng bóng.', ['chín', 'hai', 'hai mươi', 'bốn'], 'Atomium có chín quả cầu.'],
+    ['Nước Bỉ nổi tiếng với bánh waffle và ___.', ['sô-cô-la', 'gạo', 'trà', 'mì'], 'Bỉ nổi tiếng với waffle và sô-cô-la.'],
+    ['Quốc kỳ Bỉ có màu đen, vàng và ___.', ['đỏ', 'xanh dương', 'xanh lá', 'trắng'], 'Quốc kỳ Bỉ: đen, vàng, đỏ.'] ]
+  ,croatia: [
+    ['Những bức tường đá bao quanh thành cổ ___.', ['Dubrovnik', 'Sydney', 'Tokyo', 'Lima'], 'Tường thành bao quanh Dubrovnik.'],
+    ['Các thác nước nối những hồ ở ___.', ['Plitvice', 'Everest', 'Petra', 'Angkor'], 'Thác nước nối các hồ ở Plitvice.'],
+    ['Chó Dalmatian có ___ đen trên bộ lông trắng.', ['đốm', 'đôi cánh', 'sọc', 'cặp sừng'], 'Nó có đốm đen.'] ]
+  ,colombia: [
+    ['Những ngôi nhà cổ ở Cartagena có ___ rực rỡ.', ['màu sắc', 'mái băng', 'đôi cánh', 'động cơ'], 'Nhà có màu sắc rực rỡ.'],
+    ['Thung lũng Cocora có những cây ___ cao nhất thế giới.', ['cọ', 'thông', 'táo', 'anh đào'], 'Cocora có cây cọ cao nhất thế giới.'],
+    ['Trên quốc kỳ Colombia, phần lớn nhất có màu ___.', ['vàng', 'đỏ', 'xanh dương', 'xanh lá'], 'Màu vàng chiếm phần lớn nhất.'] ]
+  ,tanzania: [
+    ['Núi Kilimanjaro là ngọn núi cao nhất ___.', ['châu Phi', 'châu Âu', 'châu Á', 'nước Úc'], 'Đó là ngọn núi cao nhất châu Phi.'],
+    ['Rất nhiều ngựa vằn đi qua ___.', ['Serengeti', 'dãy Alps', 'sông Nile', 'dãy Andes'], 'Ngựa vằn đi qua Serengeti.'],
+    ['Tanzanite là một ___ màu xanh tím.', ['viên đá quý', 'con cá', 'đám mây', 'con đường'], 'Tanzanite là viên đá quý.'] ]
+  ,scotland: [
+    ['Lâu đài Edinburgh đứng trên một ___ cao.', ['tảng đá', 'chiếc thuyền', 'đám mây', 'cây cầu'], 'Lâu đài đứng trên tảng đá cao.'],
+    ['Có câu chuyện kể rằng một ___ sống ở Loch Ness.', ['quái vật', 'con cá voi', 'con gấu trúc', 'con lạc đà'], 'Truyện kể có quái vật sống ở hồ.'],
+    ['Quốc kỳ Scotland nền xanh dương có ___ trắng.', ['chữ thập', 'ngôi sao', 'hình tròn', 'trái tim'], 'Có chữ thập trắng.'] ]
 };

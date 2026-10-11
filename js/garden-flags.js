@@ -101,7 +101,13 @@
     // Cộng hoà Séc (2:3): trắng ở trên, đỏ ở dưới, tam giác xanh từ cột cờ vươn tới giữa lá cờ
     cz: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#FFFFFF') + rc(0, 100, 300, 100, '#D7141A') + '<polygon points="0,0 150,100 0,200" fill="#11457E"/>'; } },
     // Hungary (1:2): ba dải ngang bằng nhau — đỏ, trắng, xanh lá
-    hu: { w: 300, h: 150, body: function () { return rc(0, 0, 300, 50, '#CD2A3E') + rc(0, 50, 300, 50, '#FFFFFF') + rc(0, 100, 300, 50, '#436F4D'); } }
+    hu: { w: 300, h: 150, body: function () { return rc(0, 0, 300, 50, '#CD2A3E') + rc(0, 50, 300, 50, '#FFFFFF') + rc(0, 100, 300, 50, '#436F4D'); } },
+    // Bỉ (13:15): ba dải đứng bằng nhau — đen, vàng, đỏ
+    be: { w: 300, h: 260, body: function () { return rc(0, 0, 100, 260, '#000000') + rc(100, 0, 100, 260, '#FAE042') + rc(200, 0, 100, 260, '#ED2939'); } },
+    // Colombia (2:3): nửa trên vàng, hai phần tư dưới: xanh dương rồi đỏ
+    co: { w: 300, h: 200, body: function () { return rc(0, 0, 300, 100, '#FCD116') + rc(0, 100, 300, 50, '#003893') + rc(0, 150, 300, 50, '#CE1126'); } },
+    // Scotland (3:5): nền xanh, chữ thập chéo trắng St Andrew
+    sct: { w: 300, h: 180, body: function () { return '<defs><clipPath id="fl-sct"><rect width="300" height="180"/></clipPath></defs><rect width="300" height="180" fill="#0065BD"/><path d="M0,0 L300,180 M300,0 L0,180" stroke="#FFFFFF" stroke-width="38" clip-path="url(#fl-sct)"/>'; } }
   };
   var RATIO = {}; Object.keys(D).forEach(function (k) { RATIO[k] = D[k].h / D[k].w; });
   // Vẽ cờ có chiều rộng `width` tại (x, y); thêm viền mảnh để cờ trắng không chìm vào nền

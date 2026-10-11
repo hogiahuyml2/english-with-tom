@@ -94,7 +94,17 @@
     czechia: { sc: 'dor', r: 60, bpm: 108, sig: 3, lead: 'fiddle', l2: 'accord', pad: null, bass: 1, d: 0.55, rh: 'oom', amb: ['birds'] },
     hungary: { sc: 'hmin', r: 57, bpm: 116, sig: 4, lead: 'fiddle', l2: 'mandolin', pad: null, bass: 1, d: 0.55, rh: 'clap', amb: ['birds'] },
     philippines: { sc: 'pmaj', r: 62, bpm: 104, sig: 4, lead: 'pluck', l2: 'marimba', pad: null, d: 0.6, rh: 'shaker', amb: ['waves', 'birds'] },
-    newzealand: { sc: 'pmaj', r: 60, bpm: 88, sig: 4, lead: 'flute', l2: 'harp', pad: 'warm', d: 0.45, amb: ['birds', 'waves'] }
+    newzealand: { sc: 'pmaj', r: 60, bpm: 88, sig: 4, lead: 'flute', l2: 'harp', pad: 'warm', d: 0.45, amb: ['birds', 'waves'] },
+    singapore: { sc: 'pmaj', r: 62, bpm: 100, sig: 4, lead: 'gamelan', l2: 'marimba', pad: null, d: 0.55, rh: 'shaker', amb: ['waves', 'birds'] },
+    malaysia: { sc: 'pmaj', r: 60, bpm: 104, sig: 4, lead: 'gamelan', l2: 'flute', pad: null, d: 0.55, rh: 'drum', amb: ['birds', 'brook'] },
+    cambodia: { sc: 'pelog', r: 57, bpm: 84, sig: 4, lead: 'gamelan', l2: 'flute', pad: 'warm', d: 0.5, amb: ['birds', 'temple'] },
+    nepal: { sc: 'pmin', r: 55, bpm: 76, sig: 4, lead: 'flute', l2: 'sitar', pad: 'warm', d: 0.45, amb: ['wind', 'temple'] },
+    jordan: { sc: 'hijaz', r: 57, bpm: 92, sig: 4, lead: 'oud', l2: 'flute', pad: null, d: 0.5, rh: 'tab', amb: ['wind', 'sun'] },
+    belgium: { sc: 'maj', r: 62, bpm: 100, sig: 4, lead: 'carillon', l2: 'accord', pad: null, bass: 1, d: 0.55, amb: ['birds'] },
+    croatia: { sc: 'dor', r: 60, bpm: 108, sig: 3, lead: 'mandolin', l2: 'accord', pad: null, bass: 1, d: 0.55, rh: 'oom', amb: ['waves', 'birds'] },
+    colombia: { sc: 'maj', r: 62, bpm: 108, sig: 4, lead: 'marimba', l2: 'accord', pad: null, bass: 1, d: 0.65, rh: 'conga', amb: ['birds', 'waves'] },
+    tanzania: { sc: 'pmaj', r: 60, bpm: 104, sig: 4, lead: 'kalimba', l2: 'marimba', pad: null, d: 0.65, rh: 'djembe', amb: ['birds', 'wind'] },
+    scotland: { sc: 'mix', r: 62, bpm: 96, sig: 4, lead: 'whistle', l2: 'fiddle', pad: 'warm', d: 0.5, rh: 'jig', amb: ['wind', 'birds'] }
   };
   /* Giai điệu "đặc trưng quốc gia" soạn riêng cho từng khu quốc gia: mỗi câu dài 2 ô nhịp, dạng "bước:cao độ(nửa cung so với nốt gốc):độ dài" — câu A và câu B xen kẽ.
      Mỗi khu dùng thang âm + nhạc cụ + nhịp điệu của nước đó (flamenco 12 phách, jig 6/8 Ai-len, tango, son Cuba, salegy Madagascar, thang âm 5 nốt Andes/Ethiopia...). Đây là các câu nhạc tự soạn, không trích bản nhạc có bản quyền. */
