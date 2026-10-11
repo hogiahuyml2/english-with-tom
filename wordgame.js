@@ -852,9 +852,10 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
     return new Date(hasZone ? s : s.replace(' ', 'T') + '+07:00') < new Date();
   }
   function parseIds(json) { try { const a = JSON.parse(json); return Array.isArray(a) ? a.map(Number).filter(Number.isInteger) : []; } catch (e) { return []; } }
+  const __wsJoinNew = !db.prepare("SELECT 1 FROM sqlite_master WHERE name='word_set_groups'").get();
   db.exec('CREATE TABLE IF NOT EXISTS word_set_groups (set_id INTEGER NOT NULL, group_id INTEGER NOT NULL, PRIMARY KEY (set_id, group_id))');
   const dlGone = (s) => { if (!s) return false; const t = Date.parse(/[+-]\d{2}:?\d{2}$|Z$/i.test(s) ? s : (/^\d{4}-\d{2}-\d{2}$/.test(String(s)) ? s + 'T23:59:59' : String(s).replace(' ', 'T')) + '+07:00'); return t > 0 && t < Date.now(); };
-  if (app.locals.classJoin) app.locals.classJoin.push((user, gid, gname) => {
+  const wsJoin = (user, gid, gname) => {
     let n = 0;
     for (const t of db.prepare('SELECT t.* FROM word_set_groups wg JOIN word_sets t ON t.id=wg.set_id WHERE wg.group_id=?').all(gid)) {
       if (dlGone(t.deadline)) continue;
@@ -862,7 +863,24 @@ module.exports = function registerWordGame(app, { db, requireAuth, requireRole, 
       n++; try { notifyUser(user.id, 'word_set', '📚 Bộ từ mới: ' + t.title + ' (lớp ' + gname + ')', (t.deadline ? 'hạn ' + String(t.deadline).replace('T', ' ') : 'Bộ từ của lớp'), 'word-hub.html?set=' + t.id); } catch (e) {}
     }
     return n;
-  });
+  };
+  if (app.locals.classJoin) app.locals.classJoin.push(wsJoin);
+  // Một lần duy nhất: đề/bộ từ giao TRƯỚC khi có tính năng này → suy ra lớp (mọi thành viên lớp của cùng giáo viên đều đã được giao) rồi giao bù cho người vào lớp muộn
+  if (__wsJoinNew) {
+    try {
+      for (const g of db.prepare('SELECT id, teacher_id, name FROM groups').all()) {
+        const ms = (x) => { const v = String(x || ''); const t = Date.parse(v.replace(' ', 'T') + (/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? '' : 'Z')); return Number.isFinite(t) ? t : 0; };
+        const mem = db.prepare('SELECT u.id, u.name, u.email, gm.added_at FROM group_members gm JOIN users u ON u.id=gm.user_id WHERE gm.group_id=?').all(g.id);
+        if (!mem.length) continue;
+        for (const t of db.prepare('SELECT id, teacher_id, created_at FROM word_sets WHERE teacher_id=?').all(g.teacher_id)) {
+          const have = new Set(db.prepare('SELECT user_id FROM word_set_assign WHERE set_id=?').all(t.id).map(r => Number(r.user_id)));
+          const early = mem.filter(m => ms(m.added_at) <= ms(t.created_at) + 60000); // thành viên đã có trong lớp lúc giao
+          if (early.length && early.every(m => have.has(Number(m.id)))) db.prepare('INSERT OR IGNORE INTO word_set_groups (set_id,group_id) VALUES (?,?)').run(t.id, g.id);
+        }
+        for (const m of mem) { try { wsJoin(m, g.id, g.name); } catch (e) { console.error('[classJoin/migrate]', e.message); } }
+      }
+    } catch (e) { console.error('[classJoin/migrate]', e.message); }
+  }
   function setStats(uid, ids, today) {
     const live = ids.filter(id => bank.byId.has(id));
     if (!live.length) return { total: 0, learned: 0, seen: 0, due: 0 };
