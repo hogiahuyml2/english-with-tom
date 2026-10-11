@@ -856,7 +856,7 @@ function planQuote() {
 }
 
 /* ───── nhạc nền theo quận (dùng bộ phát nhạc của Garden) ───── */
-var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna'], lastScene = '';
+var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna', 'cyber', 'ocean', 'palace', 'forest', 'space'], lastScene = '';
 function sndScene() {
   if (!window.EWTSound || !ENG || !S) return; var c = ENG.cam, t = ENG.screenToTile(ENG.cw / 2, ENG.ch / 2), x = Math.max(0, Math.min(C.W - 1, t[0])), y = Math.max(0, Math.min(C.H - 1, t[1])), d = C.DIST[y * C.W + x], dd = DSCENE[d] ? d : (sndScene.last || 0); sndScene.last = dd;
   var night = ENG.nightK() > .5, evs = S.ev || [], key = dd + '|' + night + '|' + evs.join(','); if (key === lastScene) return; lastScene = key;

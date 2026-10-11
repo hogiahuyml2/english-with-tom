@@ -436,6 +436,21 @@
     ],
     11: [  // Sports & Expo
       ['sports', '🏟️', 'Thành phố thể thao', 'Sports City', 'Sân vận động, nhà thi đấu, hồ bơi và trung tâm triển lãm.', { g: { tier: ['L'] }, p: { tier: ['M'] } }]
+    ],
+    12: [  // Tech Valley
+      ['tech', '💻', 'Thung lũng công nghệ', 'Tech Valley', 'Toà văn phòng, phòng thí nghiệm, trường học và công viên xanh quanh khuôn viên nghiên cứu.', { c: { tier: ['L', 'M'] }, e: { tier: ['M'] }, s: { tier: ['M'] }, p: { tier: ['M'] } }]
+    ],
+    13: [  // Crystal Lake
+      ['lake', '🏞️', 'Khu nghỉ dưỡng bên hồ', 'Lakeside Resort', 'Resort bên hồ, nhà nghỉ, công viên giải trí và phố kem.', { b: { tier: ['L'] }, f: { tier: ['M'] }, r: { tier: ['M'] } }]
+    ],
+    14: [  // Heritage Old Town
+      ['heritage', '🏯', 'Phố cổ di sản', 'Heritage Old Town', 'Đền chùa, phố cổ lát đá, quán trà và công viên nhỏ.', { w: { tier: ['M', 'L'] }, p: { tier: ['M'] } }]
+    ],
+    15: [  // Eco Forest Village
+      ['eco', '🌲', 'Làng sinh thái', 'Eco Village', 'Nông trại hữu cơ, nhà gỗ trên núi nhỏ và rừng xanh mát.', { a: { tier: ['L'] }, m: { tier: ['M'] }, r: { tier: ['M'] }, p: { tier: ['M'] } }]
+    ],
+    16: [  // Space Port
+      ['space', '🚀', 'Cảng vũ trụ & khoa học', 'Space & Science Port', 'Trung tâm điều khiển, đài thiên văn, nhà thi đấu và khu khoa học.', { t: { tier: ['M'] }, g: { tier: ['L'] }, e: { tier: ['M'] } }]
     ]
   };
   var SCOPES = { all: ['Cả khu / thị trấn', 'Whole Town', '🏙️'], half: ['Nửa khu', 'Half District', '🏘️'], quarter: ['Một góc phố', 'Quarter', '🏠'] };

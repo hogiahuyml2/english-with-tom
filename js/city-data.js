@@ -20,7 +20,13 @@
     { id: 8, key: 'farm', en: 'Green Fields', vi: 'Nông trại Đồng Xanh', icon: '🌾', lvl: 5, cost: 3000, auto: 11, rects: [[0, 36, 60, 44]], blurb: 'Cánh đồng rộng, ao cá, vườn cây ăn trái và trang trại chăn nuôi.' },
     { id: 9, key: 'transport', en: 'Airport Island', vi: 'Đảo Giao thông & Sân bay', icon: '✈️', lvl: 11, cost: 15000, auto: 24, rects: [[94, 92, 56, 24], [96, 79, 1, 13]], blurb: 'Đảo nối với đất liền bằng cầu dài: sân bay, ga tàu, bến xe và kho vận.' },
     { id: 10, key: 'park', en: 'Grand Park', vi: 'Công viên Hồ Lớn', icon: '🌳', lvl: 4, cost: 2500, auto: 10, rects: [[72, 0, 60, 36]], blurb: 'Hồ nước rộng, đồng cỏ, vườn thú và khu dã ngoại giữa thành phố.' },
-    { id: 11, key: 'sports', en: 'Sports & Expo', vi: 'Thể thao & Triển lãm', icon: '🏟️', lvl: 13, cost: 18000, auto: 26, rects: [[132, 0, 28, 36]], blurb: 'Sân vận động, nhà thi đấu, hồ bơi và trung tâm triển lãm lớn.' }
+    { id: 11, key: 'sports', en: 'Sports & Expo', vi: 'Thể thao & Triển lãm', icon: '🏟️', lvl: 13, cost: 18000, auto: 26, rects: [[132, 0, 28, 36]], blurb: 'Sân vận động, nhà thi đấu, hồ bơi và trung tâm triển lãm lớn.' },
+    // ── 5 quận mới xây trên vùng biển phía Đông & vịnh phía Nam (mở khi thành phố đã lớn) ──
+    { id: 12, key: 'tech', en: 'Tech Valley', vi: 'Thung lũng Công nghệ', icon: '💻', lvl: 40, cost: 40000, auto: 56, rects: [[135, 38, 30, 19]], blurb: 'Toà văn phòng kính, phòng thí nghiệm, trung tâm dữ liệu và khuôn viên nghiên cứu trên đảo phía Đông.' },
+    { id: 13, key: 'lake', en: 'Crystal Lake', vi: 'Hồ Pha Lê & Nghỉ dưỡng', icon: '🏞️', lvl: 52, cost: 60000, auto: 68, rects: [[135, 57, 30, 16]], blurb: 'Hồ nước trong vắt, khu nghỉ dưỡng, công viên giải trí và những bãi cát nhỏ bên hồ.' },
+    { id: 14, key: 'heritage', en: 'Heritage Old Town', vi: 'Phố cổ Di sản', icon: '🏯', lvl: 64, cost: 90000, auto: 80, rects: [[151, 93, 14, 26]], blurb: 'Hòn đảo nhỏ phía Đông Nam với phố cổ lát đá, đền chùa và các công trình di sản.' },
+    { id: 15, key: 'eco', en: 'Eco Forest Village', vi: 'Làng Sinh thái Rừng Xanh', icon: '🌲', lvl: 76, cost: 130000, auto: 92, rects: [[68, 86, 25, 18]], blurb: 'Làng xanh giữa vịnh: nông trại hữu cơ, nhà gỗ trên núi nhỏ và rừng cây xanh mát.' },
+    { id: 16, key: 'space', en: 'Space Port', vi: 'Cảng Vũ trụ & Khoa học', icon: '🚀', lvl: 88, cost: 180000, auto: 104, rects: [[135, 73, 30, 19]], blurb: 'Bệ phóng tên lửa, đài thiên văn, nhà thi đấu và trung tâm khoa học ở cực Đông.' }
   ];
   var ZONE_NAME = { r: 'Nhà ở', c: 'Thương mại', s: 'Dịch vụ công', p: 'Công viên', f: 'Vui chơi', e: 'Học đường', i: 'Công nghiệp', h: 'Cảng', w: 'Phố quốc tế', b: 'Du lịch biển', m: 'Du lịch núi', a: 'Nông trại', t: 'Giao thông', g: 'Thể thao & Triển lãm' };
   var ZONE_COLOR = { r: '#9BD36B', c: '#8CC8E8', s: '#F2C86B', p: '#6FC98B', f: '#F29BC0', e: '#B7A0E8', i: '#B8B2A6', h: '#7FB4C9', w: '#F0A56B', b: '#FFD36B', m: '#9DB8E8', a: '#C9D96B', t: '#A8B0BC', g: '#FF9A7A' };
@@ -65,6 +71,12 @@
     [[74, 2, 5, 3], [124, 2, 6, 4], [3, 38, 3, 6], [56, 38, 3, 5]].forEach(function (g) { var a, b; for (b = 0; b < g[3] * 2; b++) for (a = 0; a < g[2] * 2; a++) { var xx = g[0] + a, yy = g[1] + b; if (inW(xx, yy) && TERR[idx(xx, yy)] === 0 && hash(xx, yy, 5) > .35) TERR[idx(xx, yy)] = 4; } });
     // đường băng & sân bãi sân bay (đảo)
     fillRect(100, 98, 143, 100, 5);
+    // 5 quận mới: dải đảo phía Đông (3 quận), đảo nhỏ Đông Nam, đảo giữa vịnh phía Nam — viền cát bên ngoài, đất xây bên trong
+    fillRect(135, 38, 164, 91, 2); fillRect(137, 40, 162, 89, 0);
+    fillEll(143.5, 60.5, 4.6, 3.6, 2, 0); fillEll(143.5, 60.5, 3.5, 2.5, 1);          // hồ Pha Lê (có bờ cát)
+    fillRect(141, 76, 146, 79, 5);                                                      // bệ phóng của Cảng Vũ trụ
+    fillRect(151, 93, 164, 118, 2); fillRect(153, 95, 163, 116, 0);
+    fillRect(68, 86, 92, 103, 2); fillRect(70, 88, 90, 101, 0);
     // thành phố cũ: nguyên bản
     for (y = 0; y < OH; y++) for (x = 0; x < OW; x++) TERR[idx(OX + x, OY + y)] = oldTerr(x, y);
     // cầu dẫn ra đảo: cát hai đầu để đường nối liền
@@ -171,6 +183,29 @@
     bridgeLine(36, 10, 76, 10);                                  // cầu gỗ ngang hồ trên núi
     // cầu vịnh dài nối bãi biển với đảo sân bay
     bridgeLine(54, 106, 96, 106);
+    // ─── 5 quận mới ───
+    // nối thẳng một đoạn: nước → cầu, cát → lối đi; ô nước/cầu thuộc quận d (để xe & người đi lại khi quận mở)
+    function link(x0, y0, x1, y1, d) {
+      var horiz = y0 === y1, n = horiz ? Math.abs(x1 - x0) + 1 : Math.abs(y1 - y0) + 1, sx = horiz ? Math.sign(x1 - x0) || 1 : 0, sy = horiz ? 0 : Math.sign(y1 - y0) || 1, k, q, x, y;
+      for (k = 0; k < n; k++) { x = x0 + sx * k; y = y0 + sy * k; if (!inW(x, y)) continue; q = idx(x, y);
+        if (TERR[q] === 1) { ROAD[q] = 2; if (DIST[q] === 255) DIST[q] = d; } else if (TERR[q] === 2 || TERR[q] === 0) { if (!ZONE[q] || ROAD[q]) { ROAD[q] = ROAD[q] || 1; if (DIST[q] === 255) DIST[q] = d; } } }
+    }
+    // dải đảo phía Đông: lưới đường chung cho 3 quận (Thung lũng Công nghệ · Hồ Pha Lê · Cảng Vũ trụ)
+    var ex = [137, 149, 162], ey = [40, 48, 56, 64, 72, 80, 88];
+    gridRoads(ex, ey, 137, 40, 162, 88);
+    gridZones(12, ex, [40, 48, 56], ['ce', 'sp']);
+    gridZones(13, ex, [56, 64, 72], ['bf', 'rb']);
+    gridZones(16, ex, [72, 80, 88], ['tg', 'ge']);
+    link(127, 48, 136, 48, 12); link(127, 72, 136, 72, 13);                          // cầu nối từ phố cũ sang đảo Đông
+    // đảo Đông Nam: phố cổ
+    var hx = [153, 163], hy = [95, 103, 110, 116];
+    gridRoads(hx, hy, 153, 95, 163, 116); gridZones(14, hx, hy, ['w', 'w', 'p']);
+    link(147, 103, 152, 103, 14);                                                      // cầu nối từ đảo sân bay
+    // đảo giữa vịnh phía Nam: làng sinh thái (+ rừng thông ở các khối công viên)
+    var vx = [70, 80, 90], vy = [88, 94, 101];
+    gridRoads(vx, vy, 70, 88, 90, 101); gridZones(15, vx, vy, ['am', 'rp']);
+    link(80, 102, 80, 105, 15);                                                        // nối xuống cầu vịnh dài (hàng 106)
+    BLOCKS.forEach(function (b) { if (b.d !== 15 || b.z !== 'p') return; var a, c, q; for (c = b.y; c < b.y + b.h; c++) for (a = b.x; a < b.x + b.w; a++) { q = idx(a, c); if (TERR[q] === 0 && !ROAD[q] && hash(a, c, 21) > .4) { TERR[q] = 4; ZONE[q] = 0; } } });
   })();
 
   /* ───── công trình cố định của thành phố (ai cũng có, không dỡ được) ───── */
@@ -202,7 +237,7 @@
       if (t === 3) { if (r > .93) PROPS.push({ t: 'peak', x: x, y: y, s: .8 + hash(x, y, 2) * .9 }); else if (r > .75) PROPS.push({ t: 'rock', x: x, y: y, s: .7 + hash(x, y, 6) * .5 }); }
       else if (t === 4) { if (r > .2) PROPS.push({ t: hash(x, y, 7) > .25 ? 'pine' : 'tree', x: x, y: y, s: .8 + hash(x, y, 8) * .5 }); }
       else if (t === 2 && DIST[i] !== 255 && DIST[i] !== 7) {
-        if (r > .84 && (DIST[i] === 6 || DIST[i] === 9 || DIST[i] === 3 || DIST[i] === 5 || DIST[i] === 2 || DIST[i] === 11)) PROPS.push({ t: 'palm', x: x, y: y });
+        if (r > .84 && (DIST[i] === 6 || DIST[i] === 9 || DIST[i] === 3 || DIST[i] === 5 || DIST[i] === 2 || DIST[i] === 11 || DIST[i] === 13 || DIST[i] === 14)) PROPS.push({ t: 'palm', x: x, y: y });
         else if (r > .66 && DIST[i] === 6 && ((x + y) % 3 === 0)) PROPS.push({ t: r > .78 ? 'lounger' : 'umbrella', x: x, y: y, c: Math.floor(hash(x, y, 1) * 5) });
       } else if (t === 1) {
         if (r > .985 && near(x, y, 2, 5)) PROPS.push({ t: 'rock', x: x, y: y, s: 1, sea: 1 });
@@ -220,9 +255,9 @@
   var LANES = [
     { p: [[71.6, 14], [71.6, 82]], n: 3, v: .03, s: .9, c: ['#fff', '#F2C21B', '#E9573F'] },
     { p: [[33.6, 20], [33.6, 112]], n: 2, v: .03, s: .9, c: ['#fff', '#4F80BA'] },
-    { p: [[132, 38], [140, 60], [138, 118]], n: 3, v: .03, s: 1.2, c: ['#fff', '#4F80BA', '#F2C21B'] },
-    { p: [[62, 86], [92, 96], [92, 118], [64, 117]], n: 3, v: .026, s: 1.2, c: ['#fff', '#E9573F', '#F2C21B'] },
-    { p: [[150, 90], [150, 118], [166, 110], [166, 50]], n: 2, v: .026, s: 1.4, c: ['#fff', '#2E9E7F'] },
+    { p: [[132, 38], [132.5, 60], [132.5, 90], [133, 118]], n: 3, v: .03, s: 1.2, c: ['#fff', '#4F80BA', '#F2C21B'] },
+    { p: [[62, 109], [92, 109], [92, 118], [64, 118]], n: 3, v: .026, s: 1.2, c: ['#fff', '#E9573F', '#F2C21B'] },
+    { p: [[166.4, 40], [166.4, 118], [150, 118], [150, 94]], n: 2, v: .026, s: 1.4, c: ['#fff', '#2E9E7F'] },
     { p: [[90, 12], [104, 24], [118, 14], [104, 8], [90, 12]], n: 3, v: .02, s: .8, c: ['#F2C21B', '#E9573F', '#fff'] },
     { p: [[48, 6], [62, 12], [66, 8], [52, 5]], n: 2, v: .02, s: .8, c: ['#fff', '#4F80BA'] }
   ];
@@ -727,6 +762,11 @@
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
+  /* ───── quận mới "thừa hưởng" danh mục của các quận mẫu: công trình xây được ở quận mẫu cũng xây được ở quận mới (khối đất mới dùng cùng chữ khối) ───── */
+  (function () {
+    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4] };
+    ITEMS.forEach(function (it) { Object.keys(MIRROR).forEach(function (nd) { nd = +nd; if (it.ds.indexOf(nd) < 0 && MIRROR[nd].some(function (m) { return it.ds.indexOf(m) >= 0; })) it.ds = it.ds.concat([nd]); }); });
+  })();
   (function () {
     var ALLZ = 'rcspfeihwbmatg', SERVICE = { clinic: 1, hospital: 1, firestation: 1, police: 1, school: 1, library: 1, postoffice: 1 };
     var zd = {}; for (var q = 0; q < W * H; q++) { if (ZONE[q] && DIST[q] !== 255) { var dz = zd[DIST[q]] || (zd[DIST[q]] = {}); dz[String.fromCharCode(ZONE[q])] = 1; } }

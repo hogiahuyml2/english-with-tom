@@ -130,6 +130,9 @@
     ]
   };
 
+  // quận mới dùng chung gợi ý với quận mẫu: Công nghệ ← Trung tâm · Hồ ← Giải trí · Phố cổ ← Phố quốc tế · Làng xanh ← Nông trại · Cảng vũ trụ ← Thể thao
+  R[12] = R[1]; R[13] = R[3]; R[14] = R[5]; R[15] = R[8]; R[16] = R[11];
+
   function analyze(C, S, role) {
     var W = C.W, lvl = S.stats.level, ch = S.chapters || [], evs = S.ev || [];
     var byD = {}; C.DISTRICTS.forEach(function (d) { byD[d.id] = []; });
