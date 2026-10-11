@@ -128,9 +128,9 @@ function parseMcq(paragraphs) {
       continue;
     }
     if (cur) {
-      if (expOpen) { cur.exp = cur.exp.s ? rtCat(cur.exp, ' ', tt) : tt; continue; }
+      if (expOpen) { cur.exp = cur.exp.s ? rtCat(cur.exp, '\n', tt) : tt; continue; }
       if (cur.opts.length === 0) cur.q = cur.q.s ? rtCat(cur.q, '\n', tt) : tt;
-      else { const o = cur.opts[cur.opts.length - 1]; o.r = rtCat(o.r, ' ', tt); }
+      else { const o = cur.opts[cur.opts.length - 1]; o.r = rtCat(o.r, '\n', tt); }
     }
   }
   if (!qs.length) { errors.push('Không tìm thấy câu hỏi nào. Mỗi câu cần bắt đầu bằng số thứ tự (VD: "Câu 1." hoặc "1.") và có các phương án A. B. C. D.'); return { questions: [], errors, warnings, mode: 'none', report: { paragraphs: paras.length, questions: 0, skipped: [], coverage: 0 } }; }

@@ -77,7 +77,7 @@ function docxParagraphs(buf) {
       const isRed = isRedColor(col) || /^(red|darkRed)$/i.test(hl || '');
       const f = runFormat(rpr);
       for (const tk of r.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\b[^>]*\/>|<w:cr\/>|<w:noBreakHyphen\/>/g)) {
-        const piece = tk[1] !== undefined ? xmlDecode(tk[1]) : (tk[0] === '<w:tab/>' ? '\t' : tk[0] === '<w:noBreakHyphen/>' ? '-' : ' ');
+        const piece = tk[1] !== undefined ? xmlDecode(tk[1]) : (tk[0] === '<w:tab/>' ? '\t' : tk[0] === '<w:noBreakHyphen/>' ? '-' : /w:type="(page|column)"/.test(tk[0]) ? ' ' : '\n'); // Shift+Enter trong Word = xuống dòng, giữ nguyên
         text += piece;
         for (let i = 0; i < piece.length; i++) { red.push(isRed); fmt.push(f); }
       }
@@ -96,7 +96,7 @@ const xmlEsc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').rep
 // paragraphs: [ [ {t, color?, bold?}, ... ], ... ]
 function buildDocx(paragraphs) {
   const body = paragraphs.map(runs => '<w:p>' + (Array.isArray(runs) ? runs : [{ t: runs }]).map(r =>
-    '<w:r>' + ((r.color || r.bold || r.italic || r.underline || r.sup || r.sub) ? '<w:rPr>' + (r.bold ? '<w:b/>' : '') + (r.italic ? '<w:i/>' : '') + (r.underline ? '<w:u w:val="single"/>' : '') + (r.color ? '<w:color w:val="' + r.color + '"/>' : '') + (r.sup ? '<w:vertAlign w:val="superscript"/>' : '') + (r.sub ? '<w:vertAlign w:val="subscript"/>' : '') + '</w:rPr>' : '') + '<w:t xml:space="preserve">' + xmlEsc(r.t) + '</w:t></w:r>').join('') + '</w:p>').join('');
+    '<w:r>' + ((r.color || r.bold || r.italic || r.underline || r.sup || r.sub) ? '<w:rPr>' + (r.bold ? '<w:b/>' : '') + (r.italic ? '<w:i/>' : '') + (r.underline ? '<w:u w:val="single"/>' : '') + (r.color ? '<w:color w:val="' + r.color + '"/>' : '') + (r.sup ? '<w:vertAlign w:val="superscript"/>' : '') + (r.sub ? '<w:vertAlign w:val="subscript"/>' : '') + '</w:rPr>' : '') + String(r.t).split('\n').map(x => '<w:t xml:space="preserve">' + xmlEsc(x) + '</w:t>').join('<w:br/>') + '</w:r>').join('') + '</w:p>').join('');
   const files = [
     ['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
     ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
