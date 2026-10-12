@@ -117,6 +117,7 @@
 .gt .wd { position: absolute; left: 3px; bottom: 1px; z-index: 2; font-size: calc(var(--ts) * .2); letter-spacing: -2px; }
 .gd-pets { position: absolute; left: 0; top: 0; width: calc(var(--ts) * var(--cols)); height: calc(var(--ts) * var(--rows)); pointer-events: none; z-index: 4; }
 .gd-pet { position: absolute; left: 0; top: 0; width: var(--ts); height: var(--ts); transition: transform 3.2s linear; pointer-events: auto; cursor: pointer; z-index: 5; }
+.au-r { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 8px 10px; border: 1.5px solid rgba(120,80,30,.25); border-radius: 14px; margin: 0 0 8px; background: rgba(255,255,255,.7); } .au-r.off { opacity: .5; } .au-r input[type=checkbox] { width: 20px; height: 20px; flex: none; } .au-r .th { width: 48px; height: 48px; flex: none; } .au-r .mid { flex: 1; min-width: 160px; font-size: 13px; } .au-r select { max-width: 100%; font-size: 13px; padding: 4px 6px; border-radius: 10px; border: 1px solid rgba(120,80,30,.3); } .au-r .qty { display: flex; align-items: center; gap: 4px; } .au-r .qty button { width: 26px; height: 26px; border-radius: 8px; border: 1px solid rgba(120,80,30,.3); background: #fff; font-weight: 800; } .au-r .st { flex-basis: 100%; font-size: 12.5px; } .au-r .st.ok { color: #1E8A4F; } .au-r .st.warn { color: #B3541E; }
 .gd-pet.inpen { z-index: 6; } .gd-pet.inpen svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
 .gd-penb { position: absolute; transform: translateX(-50%); background: rgba(255,255,255,.92); border: 1.5px solid #8A5A2E; color: #5A3A1A; border-radius: 99px; padding: 1px 7px; font-size: calc(var(--ts) * .2); font-weight: 800; white-space: nowrap; pointer-events: none; z-index: 7; line-height: 1.35; } .gd-penb.full { background: #FFE9A8; } .gd-penb.empty { opacity: .8; }
 .gd-pet svg { width: 100%; height: 100%; animation: gdHop .7s ease-in-out infinite; transform-origin: 50% 90%; } .gd-pet.rest svg { animation: gdBreath 2.4s ease-in-out infinite; }
@@ -566,6 +567,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
       <button class="gd-tool" data-tool="remove"><i class="ic" data-ic="broom"></i>Dọn</button>
       <button class="gd-tool" data-tool="multi" title="Chạm hoặc kéo để chọn nhiều ô rồi đặt / tưới / thu hoạch / dọn một lượt"><span class="ic em">☑️</span>Chọn nhiều</button>
       <button class="gd-tool" id="feedAll" title="Cho tất cả thú cưng trong khu này ăn"><span class="ic em">🍪</span>Cho ăn</button>
+      <button class="gd-tool" id="autoBtn" title="Dựng đủ các món gợi ý cho khu này: bạn tick chọn, hệ thống tự sắp xếp và xây"><span class="ic em">🏗️</span>Dựng đủ</button>
       <button class="gd-tool" id="bpBtn" title="Xem 3 bản thiết kế mẫu cho khu này và dựng nhanh"><span class="ic em">🎨</span>Mẫu vườn</button>
       <button class="gd-tool" id="clearZ" title="Dọn sạch khu này: mọi món và thú cưng về lại Giỏ"><span class="ic em">♻️</span>Làm mới</button>
       <button class="gd-tool" id="toMapTool"><i class="ic" data-ic="map"></i>Bản đồ</button>
@@ -593,6 +595,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
   <div id="qbody"></div>
   <div class="gd-act"><button class="gd-btn" id="qclose">Đóng</button></div>
 </div></div>
+<div class="gd-modal" id="autom"><div class="gd-box" style="max-width:640px;max-height:92vh;overflow:auto"><div id="autobody"></div></div></div>
 <div class="gd-modal" id="bpm"><div class="gd-box bp-box"><div id="bpbody"></div></div></div>
 <div class="gd-modal" id="penm"><div class="gd-box" style="max-width:430px"><div id="penbody"></div></div></div>
 <div class="gd-modal" id="petm"><div class="gd-box" style="max-width:380px"><div id="petbody"></div><div class="gd-act"><button class="gd-btn" id="petclose">Đóng</button></div></div></div>
@@ -624,7 +627,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <div class="gd-modal" id="xum"><div class="gd-box" style="max-width:420px">
   <h3 id="xuh">💰 Tặng xu</h3><p class="gd-sub" id="xusub"></p>
   <div class="gd-qk" id="xuq"></div>
-  <input class="gd-field-in" id="xuamt" type="number" min="10" max="50000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 50.000)">
+  <input class="gd-field-in" id="xuamt" type="number" min="10" max="200000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 200.000)">
   <input class="gd-field-in" id="xunote" maxlength="60" placeholder="Lời nhắn (không bắt buộc)" style="margin-top:8px">
   <div class="gd-act"><button class="gd-btn" id="xuclose">Đóng</button><button class="gd-btn pri" id="xusend">💰 Tặng xu</button></div>
 </div></div>
@@ -1040,6 +1043,78 @@ async function clearZone() {
 /* Mẫu vườn: 3 bản thiết kế sinh cho khu hiện tại (cùng thuật toán với máy chủ) */
 var BPS = null, BPI = 0, BPQ = null, BPCLR = false;
 function bpZoneEmpty(z) { var d0 = zdim(z), r, c, gi; for (r = 0; r < d0.r; r++) for (c = 0; c < d0.c; c++) { gi = z.i * PER + r * MAXC + c; if (S.tiles[gi] && !D.isBlocked(gi)) return false; } return true; }
+/* ───── Dựng đủ theo gợi ý (giống EWT City): tick chọn → hệ thống tính bố cục → xác nhận → xây ───── */
+var AU = null, auT = 0;
+function auThumb(kind, id) { if (kind === 'pet') return A.petSvg(D.PBY[id], '100%', ''); var it = D.BY[id]; return it.kind === 'big' ? W.bigSvg(id) : A.itemSvg(it, 3, '100%'); }
+function auRows(z) {
+  var lvl = S.level, cnt = {}, d = zdim(z), r, c, t, rows = [], ok = function (i) { return !i.up && (i.lvl <= lvl || bagN(i.id) > 0); };
+  for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) { t = S.tiles[z.i * PER + r * MAXC + c]; if (t && t.ref == null) cnt[t.k] = (cnt[t.k] | 0) + 1; }
+  var its = D.ITEMS.filter(function (i) { return i.z === z.id && ok(i); }), byK = function (k) { return its.filter(function (i) { return i.kind === k; }).sort(function (a, b) { return a.cost - b.cost; }); };
+  var kindCount = function (k) { var n = 0; Object.keys(cnt).forEach(function (id) { var i = D.BY[id]; if (i && i.kind === k && i.z === z.id) n += cnt[id]; }); return n; };
+  var bigs = byK('big').filter(function (i) { return !cnt[i.id]; }), bi = 0;
+  bigs.slice(0, 4).forEach(function (i) { rows.push({ kind: 'item', label: i.pen ? '🏠 Chuồng nuôi (' + (SPEMO[i.pen] || '') + ')' : '🏠 Công trình đặc trưng', cands: bigs.map(function (b) { return b.id; }), id: i.id, n: 1, on: true, res: {} }); });
+  var trees = byK('tree'), tm = Math.max(0, 4 - kindCount('tree')); if (trees.length && tm) { rows.push({ kind: 'item', label: '🌳 Cây', cands: trees.map(function (i) { return i.id; }), id: trees[0].id, n: Math.ceil(tm / 2), on: true, res: {} }); if (trees[1]) rows.push({ kind: 'item', label: '🌳 Cây', cands: trees.map(function (i) { return i.id; }), id: trees[1].id, n: Math.floor(tm / 2) || 1, on: true, res: {} }); }
+  var dec = byK('deco'), dm = Math.max(0, 3 - kindCount('deco')); if (dec.length && dm) rows.push({ kind: 'item', label: '🪑 Trang trí đặc trưng', cands: dec.map(function (i) { return i.id; }), id: dec[0].id, n: dm, on: true, res: {} });
+  var pl = byK('plant'), pm = Math.max(0, 8 - kindCount('plant')); if (pl.length && pm) { rows.push({ kind: 'item', label: '🌸 Hoa & cây trồng', cands: pl.map(function (i) { return i.id; }), id: pl[0].id, n: Math.ceil(pm / 2), on: true, res: {} }); if (pl[1]) rows.push({ kind: 'item', label: '🌸 Hoa & cây trồng', cands: pl.map(function (i) { return i.id; }), id: pl[1].id, n: Math.floor(pm / 2) || 1, on: true, res: {} }); }
+  var slots = D.slotsFor(z.id, lvl) - S.pets.filter(function (p) { return p.z === z.id; }).length, pets = D.PETS.filter(function (p) { return p.z === z.id && p.lvl <= lvl; }).sort(function (a, b) { return a.cost - b.cost; });
+  if (slots > 0 && pets.length) rows.push({ kind: 'pet', label: '🐾 Thú cưng' + (z.farm ? ' (tự vào chuồng đúng loài)' : ''), cands: pets.map(function (p) { return p.id; }), id: pets[0].id, n: Math.min(slots, 2), on: true, res: {} });
+  return rows;
+}
+function openAuto() {
+  if (VISIT) return; var z = D.ZBY[VIEW]; if (!z) return toast('Hãy vào một khu rồi bấm 🏗️ Dựng đủ nhé.');
+  var rows = auRows(z); if (!rows.length) return toast('Khu này đã đủ theo gợi ý rồi 🎉 — thử 🎨 Mẫu vườn để làm mới nhé.', 3600);
+  AU = { z: z, rows: rows, plan: null, land: false }; $('autom').classList.add('on'); renderAu(); auSoon();
+}
+function auCost(r) { var o = r.kind === 'pet' ? D.PBY[r.id] : D.BY[r.id]; return (o ? o.cost : 0) * r.n; }
+function renderAu() {
+  var z = AU.z, h = '<h3>🏗️ Dựng đủ theo gợi ý · ' + esc(z.name.replace(' Culture Park', '')) + '</h3><p class="gd-sub">Bỏ tick món chưa muốn, đổi món hoặc số lượng. Hệ thống tự sắp xếp cho đẹp (công trình → cây viền khu → trang trí cạnh nhà → hoa gom từng cụm) rồi xây khi bạn xác nhận.</p>';
+  AU.rows.forEach(function (r, i) {
+    var nm = function (id) { return (r.kind === 'pet' ? D.PBY[id] : D.BY[id]).name; };
+    h += '<div class="au-r' + (r.on ? '' : ' off') + '" data-ari="' + i + '"><input type="checkbox" data-auc="' + i + '"' + (r.on ? ' checked' : '') + '><div class="th">' + auThumb(r.kind, r.id) + '</div><div class="mid"><b>' + esc(r.label) + '</b><br><select data-auk="' + i + '">' + r.cands.map(function (id) { var o = r.kind === 'pet' ? D.PBY[id] : D.BY[id]; return '<option value="' + id + '"' + (id === r.id ? ' selected' : '') + '>' + esc(o.name) + ' · ' + o.cost + '</option>'; }).join('') + '</select><div class="gd-sub" style="margin:2px 0 0">' + auCost(r) + ' 🪙</div></div><div class="qty"><button data-auq="' + i + ':-1">−</button><b>' + r.n + '</b><button data-auq="' + i + ':1">+</button></div><div class="st" id="aus' + i + '"></div></div>';
+  });
+  h += '<div id="auland"></div><div id="aufoot"></div>'; $('autobody').innerHTML = h.replace(/🪙/g, COIN); renderAuFoot();
+}
+function renderAuFoot() {
+  var on = AU.rows.filter(function (r) { return r.on; }), n = on.reduce(function (a, r) { return a + r.n; }, 0), cost = AU.plan ? AU.plan.cost : on.reduce(function (a, r) { return a + auCost(r); }, 0);
+  if (AU.land && AU.plan && AU.plan.land) cost += AU.plan.land.cost;
+  var lh = '', L = AU.plan && AU.plan.land; if (L) lh = '<label style="display:flex;gap:8px;align-items:flex-start;margin:8px 0;font-weight:700;font-size:13.5px"><input type="checkbox" id="auLandCk"' + (AU.land ? ' checked' : '') + ' style="width:20px;height:20px"> <span>🌱 Mở rộng đất của khu lên ' + L.c + '×' + L.r + ' ô (' + L.cost + ' 🪙) để có thêm chỗ' + (L.fits ? ' — đủ chỗ cho cả danh sách' : '') + '</span></label>';
+  $('auland').innerHTML = lh.replace(/🪙/g, COIN);
+  $('aufoot').innerHTML = ('<div class="bp-sum"><div>Món sẽ dựng<b>' + n + '</b></div><div>Tổng cần trả<b style="color:' + (cost > COINS ? '#C0392B' : '#2E8A2E') + '">' + cost + ' 🪙</b>(bạn có ' + COINS + ')</div></div><div class="gd-act" style="justify-content:flex-end"><button class="gd-btn" id="auClose">Để sau</button><button class="gd-btn pri" id="auGo"' + (on.length ? '' : ' disabled') + '>🏗️ Xác nhận &amp; xây</button></div>').replace(/🪙/g, COIN);
+}
+function auSoon() { clearTimeout(auT); auT = setTimeout(auPlan, 250); }
+function auPlan() {
+  if (!AU) return; var on = AU.rows.filter(function (r) { return r.on; }); AU.plan = null;
+  AU.rows.forEach(function (r, i) { var e = $('aus' + i); if (e) { e.className = 'st'; e.innerHTML = r.on ? '<span class="gd-sub">…đang tính chỗ</span>' : ''; } });
+  if (!on.length) { renderAuFoot(); return; }
+  api('/api/garden/auto-plan', { zone: AU.z.id, rows: on.map(function (r) { return { kind: r.kind, id: r.id, n: r.n }; }) }).then(function (p) {
+    if (!AU) return; AU.plan = p; var j = 0;
+    AU.rows.forEach(function (r, i) {
+      var e = $('aus' + i); if (!e || !r.on) return; var pr = p.rows[j++]; if (!pr) return; r.repl = pr.repl;
+      if (pr.why && !pr.placed) { e.className = 'st warn'; e.textContent = '⚠️ ' + pr.why; return; }
+      if (!pr.left) { e.className = 'st ok'; e.textContent = '✅ Đủ chỗ — sẽ dựng ' + pr.placed + (r.kind === 'pet' ? ' bé.' : ' món.'); r.res = {}; return; }
+      var opts = '<option value="">Bỏ qua ' + pr.left + ' món thiếu chỗ</option>'; pr.repl.forEach(function (q) { opts += '<option value="' + q.i + '"' + (r.res.rep === q.i ? ' selected' : '') + '>Thay thế “' + esc(q.name) + '” hiện có (cất vào giỏ)</option>'; });
+      e.className = 'st warn'; e.innerHTML = '⚠️ ' + (pr.placed ? 'Chỉ đủ chỗ cho ' + pr.placed + '; ' : 'Hết chỗ; ') + 'thiếu ' + pr.left + '. Bạn muốn: <select data-aur="' + i + '">' + opts + '</select>' + (p.land ? ' <span class="gd-sub">(hoặc mở rộng đất ở bên dưới)</span>' : '');
+    }); renderAuFoot();
+  }).catch(function (e) { toast(e.message, 4000); });
+}
+async function auGo() {
+  var A2 = AU, rows = [], lines = '', extra = '';
+  A2.rows.forEach(function (r) { if (!r.on) return; var o = { kind: r.kind, id: r.id, n: r.n }, it = r.kind === 'pet' ? D.PBY[r.id] : D.BY[r.id]; lines += '<div style="display:flex;justify-content:space-between;gap:8px"><span>' + esc(it.name) + '</span><b>×' + r.n + '</b></div>'; if (r.res && r.res.rep != null && r.res.rep !== '') { o.replace = [r.res.rep]; var t = S.tiles[r.res.rep]; extra += '<li>Cất “' + esc(t && D.BY[t.k] ? D.BY[t.k].name : 'đồ cũ') + '” vào giỏ để lấy chỗ cho ' + esc(it.name) + '</li>'; } rows.push(o); });
+  if (A2.land && A2.plan && A2.plan.land) extra += '<li>Mở rộng đất lên ' + A2.plan.land.c + '×' + A2.plan.land.r + ' ô (' + A2.plan.land.cost + ' xu)</li>';
+  var okk = await ewtConfirm('Dựng ' + rows.reduce(function (a, b) { return a + b.n; }, 0) + ' món theo gợi ý? Hệ thống sẽ tự chọn chỗ và thu xu ngay.' + (extra ? '\n' + extra.replace(/<li>/g, '• ').replace(/<\/li>/g, '\n') : ''));
+  if (!okk) return;
+  api('/api/garden/auto-layout', { zone: A2.z.id, rows: rows, land: !!(A2.land && A2.plan && A2.plan.land) }).then(function (d) {
+    setState(d); AU = null; $('autom').classList.remove('on'); var a = d.auto || {};
+    toast('🏗️ Đã dựng ' + (a.placed | 0) + ' món' + (a.pets ? ' + nhận nuôi ' + a.pets + ' bé' + (a.inPen ? ' (' + a.inPen + ' bé đã vào chuồng)' : '') : '') + (a.failed && a.failed.length ? ' · ' + a.failed.length + ' món chưa dựng được' : '') + '!', 4600);
+  }).catch(function (e) { toast(e.message, 5200); });
+}
+document.addEventListener('change', function (e) {
+  var t = e.target, el, A2 = AU; if (!A2) return;
+  if ((el = t.closest('[data-auc]'))) { A2.rows[+el.getAttribute('data-auc')].on = el.checked; el.closest('.au-r').classList.toggle('off', !el.checked); auSoon(); return; }
+  if ((el = t.closest('[data-auk]'))) { var r = A2.rows[+el.getAttribute('data-auk')]; r.id = el.value; r.res = {}; renderAu(); auSoon(); return; }
+  if (t.id === 'auLandCk') { A2.land = t.checked; renderAuFoot(); return; }
+  if ((el = t.closest('[data-aur]'))) { var r2 = A2.rows[+el.getAttribute('data-aur')]; r2.res = { rep: el.value === '' ? null : +el.value }; }
+});
 async function openBp() {
   var z = D.ZBY[VIEW]; if (!z) return toast('Hãy vào một khu rồi bấm 🎨 Mẫu vườn nhé.');
   if (VISIT) return;
@@ -1076,6 +1151,8 @@ function renderBp() {
 document.addEventListener('click', async function (e) {
   var t = e.target, el;
   if (t.closest('#feedAll')) { feedAllZone(); return; } if (t.closest('#clearZ')) { clearZone(); return; } if (t.closest('#bpBtn')) { openBp(); return; }
+  if (t.closest('#autoBtn')) { openAuto(); return; } if (t.closest('#auClose')) { AU = null; $('autom').classList.remove('on'); return; } if (t.closest('#auGo')) { auGo(); return; }
+  var auq = t.closest('[data-auq]'); if (auq && AU) { var qp = auq.getAttribute('data-auq').split(':'), qr = AU.rows[+qp[0]]; if (qr) { qr.n = Math.max(1, Math.min(30, qr.n + +qp[1])); renderAu(); auSoon(); } return; }
   if ((el = t.closest('[data-bpt]'))) { BPI = +el.getAttribute('data-bpt'); renderBp(); return; }
   if (t.closest('#bpClose') || t.id === 'bpm') { $('bpm').classList.remove('on'); return; }
   if (t.id === 'bpClr') { BPCLR = t.checked; await bpQuote(); return; }
@@ -1721,7 +1798,7 @@ document.addEventListener('click', function (e) {
   if (t.closest('#xuclose') || t === $('xum')) { $('xum').classList.remove('on'); return; }
   if ((el = t.closest('[data-xuq]'))) { $('xuamt').value = el.getAttribute('data-xuq'); return; }
   if (t.closest('#xusend') && XU) {
-    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 50000)) return toast('Nhập số xu từ 10 đến 50.000 nhé.');
+    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 200000)) return toast('Nhập số xu từ 10 đến 200.000 nhé.');
     var xb = $('xusend'); xb.disabled = true;
     api('/api/garden/xu/send', { to: XU.to, xu: xv, note: $('xunote').value || '' }).then(function (d) { COINS = d.coins; render(); $('xum').classList.remove('on'); xb.disabled = false; toast('💰 Đã tặng ' + xv + ' xu cho ' + d.to + '!', 4200); celebrate(8); if (QTAB === 'f' && $('qstm').classList.contains('on')) drawQst(); }).catch(function (er) { xb.disabled = false; toast(er.message, 4200); });
     return;
@@ -1751,7 +1828,7 @@ document.addEventListener('input', function (e) { if (e.target && e.target.id ==
 var XU = null, NT = null, NOTES = [], NKEY = '', STICKERS = ['🌸', '🌻', '🌷', '💐', '🌈', '⭐', '✨', '💖', '😍', '👍', '👏', '🎉', '🦋', '🐰', '🐶', '🍀', '🌟', '😊', '🥰', '🏆'];
 function openXu(token, name) {
   XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 50.000 xu mỗi lần · 300.000 xu mỗi ngày cho một bạn · tối đa 20 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
-  $('xuq').innerHTML = [500, 1000, 5000, 10000, 20000, 50000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
+  $('xuq').innerHTML = [500, 1000, 5000, 10000, 50000, 100000, 200000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
   if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 50.000 xu mỗi lần · 300.000 xu mỗi ngày cho một bạn · tối đa 20 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
 }
 function drawNoteModal() { $('ntst').innerHTML = STICKERS.map(function (s) { return '<button data-nts="' + s + '" class="' + (NT.st === s ? 'on' : '') + '">' + s + '</button>'; }).join(''); $('ntsend').disabled = false; }

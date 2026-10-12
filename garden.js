@@ -410,6 +410,87 @@ module.exports = function (app, { db, requireAuth, requireRole, now, notifyUser 
   });
 
   // Mở rộng đất của một khu (đã mở): lưới ô to hơn, ô nhỏ lại để vừa màn hình
+  /* ───── DỰNG ĐỦ theo gợi ý: tự sắp xếp công trình → cây → trang trí → hoa (cụm cùng loại), nhận nuôi thú rồi cho vào chuồng; thiếu chỗ thì gợi ý mở rộng đất / thay thế ───── */
+  const GRANK = (it) => (it.kind === 'big' ? 0 : it.kind === 'tree' ? 1 : it.kind === 'plant' ? 3 : 2);
+  function gLayout(st, uid, lvl, z, units, dry) {
+    const T = dry ? st.tiles.slice() : st.tiles, ll = landLv(st, z), dm = G.landOf(ll), placed = [], left = [], fail = [];
+    const idOf = (k) => { const t = T[k]; if (!t) return null; return t.ref != null ? (T[t.ref] || {}).k : t.k; };
+    const order = units.map((u, n) => ({ u, n })).sort((a, b) => GRANK(a.u.it) - GRANK(b.u.it) || (b.u.it.w || 1) * (b.u.it.h || 1) - (a.u.it.w || 1) * (a.u.it.h || 1) || a.n - b.n);
+    for (const { u } of order) {
+      const it = u.it; let best = null;
+      if (it.z && it.z !== z.id) { left.push(u); continue; }
+      for (let r = 0; r < dm.r; r++) for (let c = 0; c < dm.c; c++) {
+        const i = z.i * G.PER + r * G.MAXC + c; if (T[i] || G.isBlocked(i)) continue;
+        const fp = it.kind === 'big' ? G.footprint(i, it, ll) : [i]; if (!fp || fp.some((k) => G.isBlocked(k) || T[k])) continue;
+        const w = it.kind === 'big' ? it.w : 1, h = it.kind === 'big' ? it.h : 1; let sc = 0, same = 0, anyP = 0, bigN = 0, trees = 0, free = 0;
+        for (let a = -1; a <= w; a++) for (let b = -1; b <= h; b++) {
+          if (a >= 0 && a < w && b >= 0 && b < h) continue; const rr = r + b, cc = c + a; if (rr < 0 || cc < 0 || rr >= dm.r || cc >= dm.c) continue;
+          const k = z.i * G.PER + rr * G.MAXC + cc; if (G.isBlocked(k)) continue; const id = idOf(k);
+          if (!id) { if (a >= 0 && a < w || b >= 0 && b < h) free++; continue; }
+          const o = G.BY[id]; if (!o) continue; if (id === it.id) same++; if (o.kind === 'plant') anyP++; if (o.kind === 'big') bigN++; if (o.kind === 'tree') trees++;
+        }
+        const edge = Math.min(r, c, dm.r - 1 - r, dm.c - 1 - c);
+        if (it.kind === 'big') sc = -(r * 0.4 + c * 0.05) + Math.min(free, 8) * 0.8 - bigN * 1.5;
+        else if (it.kind === 'tree') sc = (edge <= 1 ? 5 : 0) - edge * 0.5 + trees * 2 - anyP;
+        else if (it.kind === 'plant') sc = Math.min(same, 3) * 5 + Math.min(anyP, 3) + bigN * 0.3 - r * 0.01;
+        else sc = Math.min(bigN, 3) * 4 + trees * 0.5 - r * 0.02;
+        if (!best || sc > best.sc) best = { sc, i, fp };
+      }
+      if (!best) { left.push(u); continue; }
+      if (dry) { T[best.i] = { k: it.id }; if (it.kind === 'big') best.fp.forEach((k) => { if (k !== best.i) T[k] = { ref: best.i }; }); placed.push({ u, i: best.i }); continue; }
+      const r2 = placeCore(st, uid, lvl, best.i, it); if (r2.err) { fail.push({ k: it.id, why: r2.err }); if (r2.need) break; continue; } placed.push({ u, i: best.i, paid: r2.paid });
+    }
+    return { placed, left, fail };
+  }
+  const gUnits = (rows) => { const u = []; (rows || []).forEach((r) => { if (r.kind !== 'item') return; const it = G.BY[String(r.id)]; if (!it || it.up) return; const n = Math.max(1, Math.min(30, Math.floor(Number(r.n)) || 1)); for (let i = 0; i < n; i++) u.push({ it }); }); return u; };
+  function gAdopt(st, uid, lvl, pt, zid) {
+    if (st.pets.filter((x) => x.z === zid).length >= G.slotsFor(zid, lvl)) return { err: 'Khu này đã đủ chỗ cho thú cưng.' };
+    if (pt.z && pt.z !== zid) return { err: 'Bé này chỉ nuôi được ở khu "' + ((G.ZBY[pt.z] || {}).name || pt.z) + '".' };
+    if (pt.lvl > lvl) return { err: 'Cần vườn cấp ' + pt.lvl + ' để nhận nuôi ' + pt.name + '.' };
+    const bi = st.bag.pets.findIndex((x) => x.k === pt.id); let nm = pt.name;
+    if (bi >= 0) { nm = st.bag.pets[bi].name || pt.name; st.bag.pets.splice(bi, 1); }
+    else if (pt.cost > 0 && st.bag.free.pet > 0) st.bag.free.pet--;
+    else if (!db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(pt.cost, uid, pt.cost).changes) return { err: 'Chưa đủ xu (cần ' + pt.cost + ').', need: pt.cost };
+    const np = { id: crypto.randomBytes(3).toString('hex'), k: pt.id, name: nm, z: zid, fed: null };
+    if (pt.sp) { const z = G.ZBY[zid]; for (let r = 0; r < G.MAXR && np.pen == null; r++) for (let c = 0; c < G.MAXC; c++) { const i = z.i * G.PER + r * G.MAXC + c, t = st.tiles[i]; if (t && t.ref == null && (G.BY[t.k] || {}).pen === pt.sp && !penCheck(st, pt, zid, i, null).err) { np.pen = i; break; } } }
+    st.pets.push(np); return { pen: np.pen != null };
+  }
+  app.post('/api/garden/auto-plan', requireAuth, (req, res) => {
+    const z = G.ZBY[String((req.body || {}).zone)], rows = (Array.isArray((req.body || {}).rows) ? req.body.rows : []).slice(0, 30);
+    const st = load(req.user), lvl = G.levelOf(G.beautyOf(st)); if (!z || st.zones.indexOf(z.id) < 0) return bad(res, 'Khu này chưa mở.');
+    const items = rows.map((r, ri) => ({ r, ri })).filter((o) => o.r.kind === 'item'), units = [], out = rows.map((r) => ({ kind: r.kind, id: r.id, n: Math.max(1, Math.min(30, Math.floor(Number(r.n)) || 1)), placed: 0, left: 0, alts: [], repl: [] }));
+    items.forEach(({ r, ri }) => { const it = G.BY[String(r.id)]; if (!it || it.up) { out[ri].left = out[ri].n; out[ri].why = 'Món không hợp lệ.'; return; } if (it.lvl > lvl && !(st.bag.items[it.id] > 0)) { out[ri].left = out[ri].n; out[ri].why = 'Cần vườn cấp ' + it.lvl + '.'; return; } if (it.z && it.z !== z.id) { out[ri].left = out[ri].n; out[ri].why = 'Món này không đặt được ở khu này.'; return; } for (let i = 0; i < out[ri].n; i++) units.push({ it, ri }); });
+    const lay = gLayout(st, req.user.id, lvl, z, units, true); let cost = 0;
+    lay.placed.forEach((p) => { out[p.u.ri].placed++; if (!((st.bag.items[p.u.it.id] | 0) > 0)) cost += p.u.it.cost; }); lay.left.forEach((u) => { out[u.ri].left++; });
+    let slots = G.slotsFor(z.id, lvl) - st.pets.filter((x) => x.z === z.id).length;
+    rows.forEach((r, ri) => { if (r.kind !== 'pet') return; const pt = G.PBY[String(r.id)]; const o = out[ri]; if (!pt || (pt.z && pt.z !== z.id)) { o.left = o.n; o.why = 'Thú cưng không hợp lệ.'; return; } if (pt.lvl > lvl) { o.left = o.n; o.why = 'Cần vườn cấp ' + pt.lvl + '.'; return; } const ok = Math.max(0, Math.min(o.n, slots)); slots -= ok; o.placed = ok; o.left = o.n - ok; cost += ok * pt.cost; if (o.left) o.why = 'Khu chỉ còn ' + ok + ' chỗ cho thú cưng — lên cấp vườn để có thêm chỗ.'; });
+    // thiếu chỗ → gợi ý mở rộng đất / thay thế đồ trang trí rẻ
+    const need = out.some((o) => o.kind === 'item' && o.left && !o.why);
+    let land = null; const nx = G.LAND[landLv(st, z) + 1];
+    if (need && nx && nx.lvl <= lvl) { const st2 = Object.assign({}, st, { land: Object.assign({}, st.land, { [z.id]: landLv(st, z) + 1 }) }); const l2 = gLayout(st2, req.user.id, lvl, z, units, true); land = { c: nx.c, r: nx.r, cost: nx.cost, fits: l2.left.length === 0, placed: l2.placed.length - lay.placed.length }; }
+    if (need) {
+      const cands = []; zoneCells(z, st).forEach((i) => { const t = st.tiles[i]; if (!t || t.ref != null) return; const o = G.BY[t.k]; if (o && o.kind !== 'big' && o.cost > 0) cands.push({ i, o }); }); cands.sort((a, b) => (a.o.kind === 'plant' ? 0 : 1) - (b.o.kind === 'plant' ? 0 : 1) || a.o.cost - b.o.cost);
+      out.forEach((o, ri) => { if (o.kind !== 'item' || !o.left || o.why) return; const it = G.BY[o.id]; for (const cd of cands.slice(0, 40)) { if (o.repl.length >= 3) break; const st3 = Object.assign({}, st, { tiles: st.tiles.slice() }); st3.tiles[cd.i] = null; if (gLayout(st3, req.user.id, lvl, z, [{ it }], true).placed.length) o.repl.push({ i: cd.i, name: cd.o.name }); } });
+    }
+    res.json({ rows: out, cost, coins: coinsOf(req.user.id), land });
+  });
+  app.post('/api/garden/auto-layout', requireAuth, (req, res) => {
+    const b = req.body || {}, z = G.ZBY[String(b.zone)], rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 30);
+    const out = tx(() => {
+      const st = load(req.user), lvl = G.levelOf(G.beautyOf(st)); if (!z || st.zones.indexOf(z.id) < 0) return { err: 'Khu này chưa mở.' };
+      const done = { placed: 0, pets: 0, inPen: 0, failed: [], removed: 0, landUp: false };
+      if (b.land) { const nx = G.LAND[landLv(st, z) + 1]; if (nx && nx.lvl <= lvl && (nx.cost <= 0 || db.prepare('UPDATE word_game SET coins=coins-? WHERE user_id=? AND coins>=?').run(nx.cost, req.user.id, nx.cost).changes)) { st.land[z.id] = landLv(st, z) + 1; done.landUp = true; X.track(st, 'expand', 1); } else done.failed.push({ k: 'land', why: 'Không mở rộng được đất (thiếu xu hoặc chưa đủ cấp).' }); }
+      rows.forEach((r) => (Array.isArray(r.replace) ? r.replace : []).slice(0, 5).forEach((i) => { i = Number(i); const t = st.tiles[i]; if (Number.isInteger(i) && t && t.ref == null && Math.floor(i / G.PER) === z.i && (G.BY[t.k] || {}).kind !== 'big') { const rm = removeCore(st, i); if (!rm.err) done.removed++; } }));
+      const units = gUnits(rows), lay = gLayout(st, req.user.id, lvl, z, units, false);
+      done.placed = lay.placed.length; lay.left.forEach((u) => done.failed.push({ k: u.it.id, why: 'Không còn chỗ trống phù hợp.' })); lay.fail.forEach((f) => done.failed.push(f));
+      rows.forEach((r) => { if (r.kind !== 'pet') return; const pt = G.PBY[String(r.id)]; if (!pt) return; for (let i = 0; i < Math.min(10, Math.floor(Number(r.n)) || 1); i++) { const a = gAdopt(st, req.user.id, lvl, pt, z.id); if (a.err) { done.failed.push({ k: pt.id, why: a.err }); break; } done.pets++; if (a.pen) done.inPen++; } });
+      if (!done.placed && !done.pets && !done.landUp && !done.removed) return { err: done.failed.length ? done.failed[0].why : 'Không dựng được gì.', failed: done.failed };
+      save(st); return { st, done };
+    });
+    if (out.err) return res.status(400).json({ error: out.err, failed: out.failed || [] });
+    reply(res, req.user, out.st, { auto: out.done });
+  });
+
   app.post('/api/garden/land/expand', requireAuth, (req, res) => {
     const z = G.ZBY[String((req.body || {}).zone)];
     const out = tx(() => {
