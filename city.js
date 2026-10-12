@@ -92,6 +92,46 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     reply(res, out.st, uid, { placed: out.id });
   });
 
+  /* ───── XÂY TỰ ĐỘNG theo gợi ý: người chơi chọn nhiều món (kèm số lượng), hệ thống tự tìm chỗ đất hợp lý (ưu tiên giáp đường, khối đất còn thưa) rồi xây ───── */
+  const countIn = (occ, b) => { let n = 0; for (let yy = b.y; yy < b.y + b.h; yy++) for (let xx = b.x; xx < b.x + b.w; xx++) if (occ[C.idx(xx, yy)]) n++; return n; };
+  function findSpot(st, it, d, occ) {
+    const blocks = C.BLOCKS.filter((b) => b.d === d && b.w >= it.w && b.h >= it.h && (it.z === '*' || it.z.indexOf(b.z) >= 0)).map((b) => ({ b, n: countIn(occ, b) / (b.w * b.h) })).sort((a, c) => a.n - c.n);
+    let any = null, why = '';
+    for (const { b } of blocks) {
+      for (let y = b.y; y + it.h <= b.y + b.h; y++) for (let x = b.x; x + it.w <= b.x + b.w; x++) {
+        const ok = C.canPlace(st, it, x, y, occ); if (!ok.ok) { why = ok.err; continue; }
+        const f = C.facingToRoad(st, it, x, y);
+        if (f >= 0) return { x, y, f };
+        if (!any) any = { x, y, f: -1 };
+      }
+    }
+    return any ? any : { err: why || 'Không còn chỗ đất trống phù hợp trong quận này.' };
+  }
+  app.post('/api/city/auto-build', requireAuth, (req, res) => {
+    const uid = req.user.id, list = (Array.isArray((req.body || {}).items) ? req.body.items : []).slice(0, 40);
+    const want = []; list.forEach((r) => { const it = C.BY[String(r.k)], d = Number(r.d), n = Math.max(1, Math.min(10, Math.floor(Number(r.n)) || 1)); if (it && C.DISTRICTS[d]) for (let i = 0; i < n; i++) want.push({ it, d }); });
+    if (!want.length) return bad(res, 'Chưa chọn công trình nào.');
+    if (want.length > 60) return bad(res, 'Mỗi lần xây tối đa 60 công trình.');
+    const out = tx(() => {
+      const st = load(uid), s = stats(st); let occ = C.buildOcc(st.bs); const placed = [], failed = [];
+      for (const { it, d } of want) {
+        const gate = itemGate(st, s, it, req.user.role); if (gate) { failed.push({ k: it.k, why: gate }); continue; }
+        if (st.districts.indexOf(d) < 0) { failed.push({ k: it.k, why: 'Quận này chưa mở.' }); continue; }
+        const sp = findSpot(st, it, d, occ); if (sp.err) { failed.push({ k: it.k, why: sp.err }); continue; }
+        if (st.free[it.k] > 0) { st.free[it.k]--; if (!st.free[it.k]) delete st.free[it.k]; }
+        else if (st.inv[it.k] > 0) { st.inv[it.k]--; if (!st.inv[it.k]) delete st.inv[it.k]; }
+        else if (!spend(uid, it.cost)) { failed.push({ k: it.k, why: 'Chưa đủ xu (cần ' + it.cost + ').' }); continue; }
+        const t = Date.now(), nb = { i: st.nid++, k: it.k, x: sp.x, y: sp.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t };
+        if (sp.f >= 0) nb.f = sp.f;
+        st.bs.push(nb); placed.push({ k: it.k, x: sp.x, y: sp.y, d }); occ = C.buildOcc(st.bs);
+      }
+      if (!placed.length) return { err: failed.length ? failed[0].why : 'Không xây được công trình nào.', failed };
+      save(uid, st); return { st, placed, failed };
+    });
+    if (out.err) return res.status(400).json({ error: out.err, failed: out.failed || [] });
+    reply(res, out.st, uid, { auto: { placed: out.placed, failed: out.failed } });
+  });
+
   /* ───── xây / dỡ đường ───── */
   app.post('/api/city/road', requireAuth, (req, res) => {
     const cells = Array.isArray((req.body || {}).cells) ? req.body.cells.map(Number) : [], uid = req.user.id;

@@ -65,6 +65,11 @@ button { font-family: inherit; cursor: pointer; }
 .pf .chipf.big { font-size: 14px; padding: 7px 14px; } .rcard canvas { aspect-ratio: 4 / 3; }
 .hlg { display: inline-flex; gap: 3px; vertical-align: middle; margin: 0 4px; } .hlg i { width: 16px; height: 10px; border-radius: 3px; display: inline-block; } #heatB.on { outline: 3px solid #2563eb; }
 .advn { display: none; background: var(--bad); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; place-items: center; padding: 0 4px; font-weight: 800; margin-left: 2px; } #advB.has .advn, #achB.has .advn { display: inline-grid; } #achB.has { animation: advp 2.2s ease-in-out infinite; } #advB.has { animation: advp 2.2s ease-in-out infinite; } @keyframes advp { 50% { box-shadow: 0 0 0 6px rgba(255,200,40,.45); } }
+.adv-tb { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; } .adv-tb .btn.on { background: #2E7BEF; color: #fff; }
+.adv-c button { position: relative; } .adv-c button.on { background: #E3F5E8; border-color: #2FB36D; box-shadow: 0 0 0 2px rgba(47,179,109,.35); } .adv-c button .advq { display: none; position: absolute; top: -7px; right: -5px; background: #2FB36D; color: #fff; font-style: normal; font-size: 11px; font-weight: 800; border-radius: 10px; min-width: 20px; height: 20px; line-height: 20px; text-align: center; padding: 0 5px; } .adv-c button.on .advq { display: block; }
+.adv-c button .advm { display: none; margin-left: 4px; background: #fff; border: 1px solid #2FB36D; color: #2FB36D; border-radius: 8px; width: 20px; height: 20px; line-height: 17px; text-align: center; font-weight: 800; } .adv-c button.on .advm { display: inline-block; }
+.advmode .adv-c button:not(.lk) { cursor: copy; }
+.advfoot { display: none; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--line, #E3E8F2); background: #F4FBF6; } .advfoot.on { display: flex; } .advfoot .t { flex: 1; min-width: 160px; font-size: 13px; } .advfoot .t b { font-size: 15px; }
 .adv-sum { background: #FFF8DA; border-radius: 14px; padding: 10px 12px; margin: 4px 0 10px; font-size: 13.5px; } .adv-d { border: 1px solid var(--line, #E3E8F2); border-radius: 16px; padding: 10px 12px; margin: 0 0 10px; background: #fff; } .adv-d h4 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .adv-d h4 .sp { flex: 1; } .adv-bar { height: 7px; border-radius: 4px; background: #E9EEF7; overflow: hidden; margin: 2px 0 8px; } .adv-bar i { display: block; height: 100%; background: linear-gradient(90deg, #43C46B, #8BE04E); }
 .adv-t { padding: 8px 0; border-top: 1px dashed #E3E8F2; font-size: 13.5px; } .adv-t b { font-size: 14px; } .adv-t .w { color: var(--muted); font-size: 12.5px; margin: 1px 0 5px; } .adv-p { display: inline-block; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 9px; margin-left: 4px; } .adv-p.p1 { background: #FFE0DD; color: #B3261E; } .adv-p.p2 { background: #FFF1CC; color: #8A5A00; } .adv-p.p3 { background: #E6F2FF; color: #1D5FA8; }
 .adv-c { display: flex; gap: 6px; flex-wrap: wrap; } .adv-c button { display: flex; align-items: center; gap: 5px; border: 1px solid #D5DDF0; background: #F6F9FF; border-radius: 12px; padding: 3px 9px 3px 4px; font-size: 12.5px; font-weight: 700; color: var(--ink); } .adv-c button canvas { width: 34px; height: 34px; } .adv-c button.lk { opacity: .6; } .adv-c button:active { transform: scale(.96); }
@@ -194,7 +199,7 @@ button { font-family: inherit; cursor: pointer; }
 <div id="floatNotes"></div><div id="fxLayer"></div>
 <div class="sheet" id="friendS"><div class="hd"><h3>👥 Bạn bè & lớp</h3><button class="x" data-close="friendS" type="button">✕</button></div><div class="tabs" id="frTabs"><button class="tab on" data-ft="list" type="button">Bạn bè</button><button class="tab" data-ft="rank" type="button">🏆 Xếp hạng</button><button class="tab" data-ft="class" type="button">🎯 Dự án lớp</button><button class="tab" data-ft="notes" type="button">💬 Lời nhắn</button></div><div class="bd" id="friendB"></div></div>
 <div class="sheet" id="achS"><div class="hd"><h3>🏅 Huy hiệu & thành tựu</h3><button class="x" data-close="achS" type="button">✕</button></div><div class="bd" id="achB2"></div></div>
-<div class="sheet" id="advS"><div class="hd"><h3>💡 Gợi ý xây dựng</h3><button class="x" data-close="advS" type="button">✕</button></div><div class="bd" id="advB2"></div></div>
+<div class="sheet" id="advS"><div class="hd"><h3>💡 Gợi ý xây dựng</h3><button class="x" data-close="advS" type="button">✕</button></div><div class="bd" id="advB2"></div><div class="advfoot" id="advFoot"></div></div>
 <div class="sheet" id="dailyS"><div class="hd"><h3>📅 Nhiệm vụ hôm nay</h3><button class="x" data-close="dailyS" type="button">✕</button></div><div class="bd" id="dailyB"></div></div>
 <div class="sheet" id="learnS"><div class="hd"><h3>📚 Học từ & mở khoá công trình</h3><button class="x" data-close="learnS" type="button">✕</button></div><div class="bd" id="learnB"></div></div>
 <div class="modal" id="planM"><div class="box"><div id="planB"></div></div></div>
@@ -500,7 +505,7 @@ function refreshDaily() { if (VIS) return Promise.resolve(); return api('/api/ci
 function refreshDailySoon() { clearTimeout(dyT); dyT = setTimeout(refreshDaily, 1200); }
 function advTip(t, d) {
   var h = '<div class="adv-t"><div>' + t.ic + ' <b>Đang thiếu ' + esc(t.t) + '</b> <span class="sub">(' + (t.variety ? 'có ' + t.have + '/' + t.need + ' loại' : 'có ' + t.have + '/' + t.need) + ')</span><span class="adv-p p' + t.pri + '">' + (t.pri === 1 ? 'Cần gấp' : t.pri === 2 ? 'Nên có' : 'Cho đẹp') + '</span></div><div class="w">' + esc(t.why) + '</div><div class="adv-c">';
-  t.cands.forEach(function (c) { var it = C.BY[c.k]; h += '<button type="button" class="' + (c.locked ? 'lk' : '') + '" data-adv="' + c.k + '" data-advd="' + d + '"><canvas data-th="' + c.k + '" width="68" height="68"></canvas>' + esc(it.vi) + (c.locked ? ' 🔒' : ' · ' + COIN + fmt(it.cost)) + '</button>'; });
+  t.cands.forEach(function (c) { var it = C.BY[c.k]; h += '<button type="button" class="' + (c.locked ? 'lk' : '') + '" data-adv="' + c.k + '" data-advd="' + d + '"><canvas data-th="' + c.k + '" width="68" height="68"></canvas>' + esc(it.vi) + (c.locked ? ' 🔒' : ' · ' + COIN + fmt(it.cost)) + (c.locked ? '' : '<i class="advq"></i><span class="advm" data-advm="' + c.k + '" data-advd="' + d + '">−</span>') + '</button>'; });
   return h + '</div></div>';
 }
 var ACH = null;
@@ -535,11 +540,38 @@ function heatToggle(on) {
   if (on) { setMode('view'); closeSheets(); var sm = ENG.heatSummary(); $('heatT').innerHTML = '🌡️ Bản đồ hạnh phúc — điểm trung bình <b>' + sm.avg + '/100</b> <span class="hlg"><i style="background:#dc2626"></i><i style="background:#ea580c"></i><i style="background:#eab308"></i><i style="background:#84cc16"></i><i style="background:#16a34a"></i></span>'; $('heatS').textContent = 'Đỏ = thiếu dịch vụ, xanh = dân vui. Chạm vào một ô đất để xem chỗ đó còn thiếu gì.'; }
 }
 $('heatB').onclick = function () { heatToggle(); }; $('heatX').onclick = function () { heatToggle(false); }; $('heatAdv').onclick = function () { heatToggle(false); openAdvice(); };
+var ADVA = null, AVS = {}, AVM = false;
+function advKey(k, d) { return d + ':' + k; }
+function advRefresh() {
+  var n = 0, cost = 0; Object.keys(AVS).forEach(function (key) { var q = AVS[key], k = key.split(':')[1], it = C.BY[k]; if (q > 0 && it) { n += q; cost += q * it.cost; } });
+  [].forEach.call($('advB2').querySelectorAll('[data-adv]'), function (b) { var q = AVS[advKey(b.getAttribute('data-adv'), b.getAttribute('data-advd'))] || 0, i = b.querySelector('.advq'); b.classList.toggle('on', q > 0); if (i) i.textContent = '×' + q; });
+  var f = $('advFoot'); f.classList.toggle('on', n > 0);
+  f.innerHTML = n ? '<div class="t">Đã chọn <b>' + n + '</b> công trình · khoảng ' + COIN + ' <b>' + fmt(cost) + '</b> <span class="sub">(bạn có ' + fmt(S.coins) + ')</span></div><button class="btn sm" id="advClr" type="button">Bỏ chọn</button><button class="btn good" id="advGo" type="button">🏗️ Xây theo lựa chọn</button>' : '';
+}
+function advToggle(k, d, el, delta) {
+  if (el && el.classList.contains('lk')) return toast('🔒 Công trình này chưa mở khoá — hãy lên cấp hoặc học từ trước nhé.', 2800);
+  var key = advKey(k, d), q = (AVS[key] || 0) + (delta || 1); q = Math.max(0, Math.min(6, q)); if (q) AVS[key] = q; else delete AVS[key]; advRefresh();
+}
+function advSelectUrgent() {
+  if (!ADVA) return; var cnt = 0; ADVA.districts.forEach(function (x) { if (!x.open) return; x.tips.forEach(function (t) { if (t.pri !== 1) return; var c = t.cands.filter(function (c2) { return !c2.locked; })[0]; if (c) { var key = advKey(c.k, x.d); if (!AVS[key]) { AVS[key] = 1; cnt++; } } }); });
+  if (!cnt) return toast('Không còn việc cần gấp nào để chọn 🎉', 2600); $('advS').classList.add('advmode'); AVM = true; $('advMulti').classList.add('on'); advRefresh(); toast('✨ Đã chọn ' + cnt + ' việc cần gấp — xem lại rồi bấm “Xây theo lựa chọn”.', 3200);
+}
+async function advBuild() {
+  var items = [], total = 0, lines = ''; Object.keys(AVS).forEach(function (key) { var p = key.split(':'), d = +p[0], k = p[1], it = C.BY[k], q = AVS[key]; if (!it || !q) return; items.push({ k: k, d: d, n: q }); total += q * it.cost; lines += '<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dashed #D5DDF0"><span>' + esc(it.vi) + ' <span class="sub">· ' + esc(C.DISTRICTS[d].vi) + '</span></span><b>×' + q + ' · ' + fmt(q * it.cost) + '</b></div>'; });
+  if (!items.length) return;
+  var ok = await confirmBox('Xây ' + items.reduce(function (a, b) { return a + b.n; }, 0) + ' công trình theo gợi ý?', '<div style="text-align:left;max-height:34vh;overflow:auto">' + lines + '</div><p style="margin:8px 0 0">Tổng khoảng <b>' + fmt(total) + ' xu</b> (bạn đang có ' + fmt(S.coins) + '). Hệ thống sẽ <b>tự chọn chỗ đất hợp lý</b> trong từng quận: ưu tiên sát đường, khối đất còn thưa. Món nào hết chỗ hoặc thiếu xu sẽ được bỏ qua và báo lại.</p>', 'Xây ngay');
+  if (!ok) return;
+  api('/api/city/auto-build', { items: items }).then(function (d) {
+    setState(d); SND('place'); closeSheets(); var a = d.auto || { placed: [], failed: [] };
+    if (a.placed.length) setTimeout(function () { ENG.focusDistrict(a.placed[0].d); }, 300);
+    if (a.failed.length) confirmBox('Đã xây ' + a.placed.length + ' công trình', '<div style="text-align:left">Một số mục chưa xây được:<ul style="margin:6px 0 0 18px;padding:0">' + a.failed.slice(0, 8).map(function (f) { return '<li><b>' + esc((C.BY[f.k] || {}).vi || f.k) + '</b>: ' + esc(f.why) + '</li>'; }).join('') + '</ul></div>', 'Đã hiểu'); else toast('🏗️ Đã bắt đầu xây ' + a.placed.length + ' công trình theo gợi ý!', 3600);
+  }).catch(function (e) { toast(e.message, 5200); });
+}
 function openAdvice() {
-  if (VIS) return; closeSheets(); setMode('view'); var a = advRun(true); if (!a) return toast('Chưa tải được gợi ý, thử lại nhé.');
+  if (VIS) return; closeSheets(); setMode('view'); var a = advRun(true); if (!a) return toast('Chưa tải được gợi ý, thử lại nhé.'); ADVA = a; AVS = {}; AVM = false;
   var h = '', open = a.districts.filter(function (x) { return x.open; }), tot = open.length ? Math.round(open.reduce(function (s2, x) { return s2 + x.pct; }, 0) / open.length) : 0;
-  h += '<div class="adv-sum">🏙️ Mức hoàn thiện chung của các quận đã mở: <b>' + tot + '%</b>' + (a.count ? ' · <b style="color:#B3261E">' + a.count + ' việc cần gấp</b>' : ' · 🎉 không còn việc gấp!') + '<div class="sub" style="margin:3px 0 0">Bấm vào một công trình bên dưới để xây ngay; ô có 🔒 cần mở khoá bằng cách lên cấp hoặc học từ.</div></div>';
-  a.global.forEach(function (g) { h += '<div class="adv-d"><h4>' + g.ic + ' ' + esc(g.t) + '</h4><div class="sub" style="margin:0 0 6px">' + esc(g.why) + '</div>' + (g.cands ? '<div class="adv-c">' + g.cands.map(function (c) { var it = C.BY[c.k]; return '<button type="button" class="' + (c.locked ? 'lk' : '') + '" data-adv="' + c.k + '" data-advd="0"><canvas data-th="' + c.k + '" width="68" height="68"></canvas>' + esc(it.vi) + (c.locked ? ' 🔒' : '') + '</button>'; }).join('') + '</div>' : '') + (g.openDist != null ? '<div class="adv-c"><button type="button" data-advopen="' + g.openDist + '">🗺️ Xem các quận</button></div>' : '') + '</div>'; });
+  h += '<div class="adv-sum">🏙️ Mức hoàn thiện chung của các quận đã mở: <b>' + tot + '%</b>' + (a.count ? ' · <b style="color:#B3261E">' + a.count + ' việc cần gấp</b>' : ' · 🎉 không còn việc gấp!') + '<div class="sub" style="margin:3px 0 0">Bấm vào một công trình bên dưới để xây ngay; ô có 🔒 cần mở khoá bằng cách lên cấp hoặc học từ.</div></div><div class="adv-tb"><button class="btn sm" id="advMulti" type="button">☑️ Chọn nhiều &amp; xây tự động</button><button class="btn sm" id="advAllU" type="button">✨ Chọn các việc cần gấp</button></div>';
+  a.global.forEach(function (g) { h += '<div class="adv-d"><h4>' + g.ic + ' ' + esc(g.t) + '</h4><div class="sub" style="margin:0 0 6px">' + esc(g.why) + '</div>' + (g.cands ? '<div class="adv-c">' + g.cands.map(function (c) { var it = C.BY[c.k]; return '<button type="button" class="' + (c.locked ? 'lk' : '') + '" data-adv="' + c.k + '" data-advd="0"><canvas data-th="' + c.k + '" width="68" height="68"></canvas>' + esc(it.vi) + (c.locked ? ' 🔒' : '<i class="advq"></i><span class="advm" data-advm="' + c.k + '" data-advd="0">−</span>') + '</button>'; }).join('') + '</div>' : '') + (g.openDist != null ? '<div class="adv-c"><button type="button" data-advopen="' + g.openDist + '">🗺️ Xem các quận</button></div>' : '') + '</div>'; });
   var ord = a.districts.slice().sort(function (x, y) { return (y.open - x.open) || ((y.urgent || 0) - (x.urgent || 0)) || (x.pct - y.pct); });
   ord.forEach(function (x) {
     var dd = C.DISTRICTS[x.d];
@@ -550,7 +582,7 @@ function openAdvice() {
     x.tips.forEach(function (t) { h += advTip(t, x.d); });
     h += '</div>';
   });
-  $('advB2').innerHTML = h; $('advS').classList.add('on');
+  $('advB2').innerHTML = h; $('advS').classList.add('on'); $('advS').classList.remove('advmode'); advRefresh();
   [].forEach.call($('advB2').querySelectorAll('canvas[data-th]'), function (c) { try { c.getContext('2d').drawImage(A.thumb(c.getAttribute('data-th'), 68, 1, ''), 0, 0); } catch (e) { /* bỏ qua */ } });
 }
 function openDaily() { closeSheets(); setMode('view'); $('dailyS').classList.add('on'); $('dailyB').innerHTML = '<p class="empty">Đang tải…</p>'; refreshDaily().then(function () { if (DY) renderDaily(); }); }
@@ -979,7 +1011,12 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-rd]'))) { RD = +el.getAttribute('data-rd'); renderPlans(); return; }
   if ((el = t.closest('[data-rs]'))) { RS = el.getAttribute('data-rs'); renderPlans(); return; }
   if ((el = t.closest('[data-ach]'))) { var aid = el.getAttribute('data-ach'); el.disabled = true; api('/api/city/ach/claim', { id: aid }).then(function (r) { S.coins = r.coins; hud(); SND('coin'); burst(['🏅', '🪙', '✨'], 14); toast('🏅 Nhận thưởng <b>' + fmt(r.xu) + '</b> xu!', 2600); openAch(); }).catch(function (e) { toast(e.message, 3000); el.disabled = false; }); return; }
-  if ((el = t.closest('[data-adv]'))) { var ak = el.getAttribute('data-adv'), ad = +el.getAttribute('data-advd'); closeSheets(); ENG.focusDistrict(ad); setTimeout(function () { pick(C.BY[ak]); }, 350); return; }
+  if ((el = t.closest('[data-advm]'))) { advToggle(el.getAttribute('data-advm'), el.getAttribute('data-advd'), null, -1); return; }
+  if (t.closest('#advMulti')) { AVM = !AVM; $('advMulti').classList.toggle('on', AVM); $('advS').classList.toggle('advmode', AVM); if (!AVM) { AVS = {}; advRefresh(); } else toast('Bấm vào các công trình muốn xây (bấm nhiều lần để xây nhiều cái), rồi bấm “Xây theo lựa chọn”.', 4200); return; }
+  if (t.closest('#advAllU')) { advSelectUrgent(); return; }
+  if (t.closest('#advClr')) { AVS = {}; advRefresh(); return; }
+  if (t.closest('#advGo')) { advBuild(); return; }
+  if ((el = t.closest('[data-adv]'))) { var ak = el.getAttribute('data-adv'), ad = +el.getAttribute('data-advd'); if (AVM) { advToggle(ak, ad, el); return; } closeSheets(); ENG.focusDistrict(ad); setTimeout(function () { pick(C.BY[ak]); }, 350); return; }
   if ((el = t.closest('[data-advgo]'))) { closeSheets(); ENG.focusDistrict(+el.getAttribute('data-advgo')); return; }
   if ((el = t.closest('[data-advopen]'))) { openDist(+el.getAttribute('data-advopen')); return; }
   if ((el = t.closest('[data-rg]'))) { openRegion(el.getAttribute('data-rg')); return; }
