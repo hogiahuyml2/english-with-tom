@@ -132,6 +132,103 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     reply(res, out.st, uid, { auto: { placed: out.placed, failed: out.failed } });
   });
 
+  /* ───── DỰNG ĐỦ theo gợi ý: sắp xếp có tính toán (cụm công trình cùng loại, sát đường, cây xanh viền phố), gợi ý chỗ khác / thay thế khi hết đất ───── */
+  const DECOR = { tree: 1, flower: 1, bench: 1, lamp: 1, orna: 1 };
+  // mô phỏng bố trí: units = [{it}] trong quận d trên bản sao trạng thái; trả { placed:[{u,x,y,f}], left:[u] }
+  function layoutUnits(st, d, units, occ, catAt) {
+    const placed = [], left = [], order = units.map((u, n) => ({ u, n })).sort((a, b) => (b.u.it.w * b.u.it.h) - (a.u.it.w * a.u.it.h) || b.u.it.cost - a.u.it.cost || a.n - b.n);
+    const blockOcc = new Map(); const blocksAll = C.BLOCKS.filter((b) => b.d === d);
+    const fracOf = (b) => { let v = blockOcc.get(b); if (v == null) { v = countIn(occ, b) / (b.w * b.h); blockOcc.set(b, v); } return v; };
+    const newCells = [];
+    for (const { u } of order) {
+      const it = u.it, blocks = blocksAll.filter((b) => b.w >= it.w && b.h >= it.h && (it.z === '*' || it.z.indexOf(b.z) >= 0)); let best = null;
+      for (const b of blocks) {
+        const fr = fracOf(b);
+        for (let y = b.y; y + it.h <= b.y + b.h; y++) for (let x = b.x; x + it.w <= b.x + b.w; x++) {
+          if (occ[C.idx(x, y)]) continue; const ok = C.canPlace(st, it, x, y, occ); if (!ok.ok) continue;
+          const f = C.facingToRoad(st, it, x, y); let sc = f >= 0 ? 12 : 0, same = 0, any = 0;
+          for (let a = -1; a <= it.w; a++) for (let c = -1; c <= it.h; c++) { if ((a >= 0 && a < it.w) && (c >= 0 && c < it.h)) continue; if ((a < 0 || a >= it.w) && (c < 0 || c >= it.h)) continue; const q = C.idx(x + a, y + c); if (C.inW(x + a, y + c) && occ[q]) { any++; if (catAt.get(q) === it.cat) same++; } }
+          sc += Math.min(any, 4) * 1.5 + Math.min(same, 3) * 3;
+          if (DECOR[it.cat]) { sc += f >= 0 ? 8 : -6; let near = 99; for (const nc of newCells) near = Math.min(near, Math.abs(nc[0] - x) + Math.abs(nc[1] - y)); if (near <= 4) sc += 6 - near; }
+          else if (it.w * it.h >= 4) sc += (1 - fr) * 6;
+          sc -= ((y - b.y) + (x - b.x)) * 0.01;
+          if (!best || sc > best.sc) best = { sc, x, y, f };
+        }
+      }
+      if (!best) { left.push(u); continue; }
+      for (let a = 0; a < it.w; a++) for (let c = 0; c < it.h; c++) { occ[C.idx(best.x + a, best.y + c)] = 1; catAt.set(C.idx(best.x + a, best.y + c), it.cat); }
+      blocksAll.forEach((b) => blockOcc.delete(b)); if (!DECOR[it.cat]) newCells.push([best.x, best.y]);
+      placed.push({ u, x: best.x, y: best.y, f: best.f });
+    }
+    return { placed, left };
+  }
+  const catMap = (st) => { const m = new Map(); st.bs.forEach((b) => { const it = C.BY[b.k]; if (!it) return; for (let a = 0; a < it.w; a++) for (let c = 0; c < it.h; c++) m.set(C.idx(b.x + a, b.y + c), it.cat); }); return m; };
+  const unitsOf = (rows) => { const u = []; (rows || []).forEach((r) => { const it = C.BY[String(r.k)]; if (!it) return; const n = Math.max(1, Math.min(12, Math.floor(Number(r.n)) || 1)); for (let i = 0; i < n; i++) u.push({ it }); }); return u; };
+  // cây / hoa / đèn / ghế trang trí rẻ nhất đang mở khoá cho quận d
+  function decoPool(st, s, d, role) { const names = ['tree', 'flowerbed', 'oak', 'bench', 'pine', 'streetlamp', 'lamp', 'birch', 'cherry', 'fountain']; return names.map((k) => C.BY[k]).filter((it) => it && it.ds.indexOf(d) >= 0 && it.w === 1 && it.h === 1 && !itemGate(st, s, it, role)); }
+  // thử đặt lại nếu dỡ công trình b: có chỗ cho item không?
+  const fitsAfterRemoving = (st, d, it, b) => { const st2 = Object.assign({}, st, { bs: st.bs.filter((x) => x.i !== b.i) }), occ = C.buildOcc(st2.bs); return layoutUnits(st2, d, [{ it }], occ, catMap(st2)).placed.length > 0; };
+
+  app.post('/api/city/auto-plan', requireAuth, (req, res) => {
+    const uid = req.user.id, b = req.body || {}, d = Number(b.d); if (!C.DISTRICTS[d]) return bad(res, 'Quận không hợp lệ.');
+    const st = load(uid), s = stats(st); if (st.districts.indexOf(d) < 0) return bad(res, 'Quận này chưa mở.');
+    const rows = (Array.isArray(b.items) ? b.items : []).slice(0, 30), occ = C.buildOcc(st.bs), cat = catMap(st), out = [], units = [];
+    let cost = 0;
+    rows.forEach((r, ri) => { const it = C.BY[String(r.k)]; const n = Math.max(1, Math.min(12, Math.floor(Number(r.n)) || 1)); if (!it) { out.push(null); return; } const gate = itemGate(st, s, it, req.user.role); if (gate) { out.push({ k: it.k, n, placed: 0, left: n, why: gate, alts: [], repl: [] }); return; } out.push({ k: it.k, n, placed: 0, left: 0, alts: [], repl: [] }); for (let i = 0; i < n; i++) units.push({ it, ri }); });
+    const lay = layoutUnits(st, d, units, occ, cat);
+    lay.placed.forEach((pl) => { out[pl.u.ri].placed++; cost += pl.u.it.cost; }); lay.left.forEach((u) => { out[u.ri].left++; });
+    for (const row of out) {
+      if (!row || !row.left || row.why) continue; const it = C.BY[row.k];
+      for (const dd of st.districts) { if (dd === d || it.ds.indexOf(dd) < 0) continue; const o2 = C.buildOcc(st.bs), c2 = catMap(st), lu = []; for (let i = 0; i < row.left; i++) lu.push({ it }); const r2 = layoutUnits(st, dd, lu, o2, c2); if (r2.placed.length) row.alts.push({ d: dd, vi: C.DISTRICTS[dd].vi, n: r2.placed.length }); }
+      row.alts.sort((a, c) => c.n - a.n); row.alts = row.alts.slice(0, 3);
+      const cands = st.bs.filter((x) => C.DIST[C.idx(x.x, x.y)] === d && x.lv >= 1 && x.tg <= x.lv).map((x) => ({ x, it2: C.BY[x.k] })).filter((o) => o.it2 && o.it2.k !== it.k).sort((a, c) => (DECOR[c.it2.cat] ? 1 : 0) - (DECOR[a.it2.cat] ? 1 : 0) || a.it2.cost - c.it2.cost);
+      for (const o of cands) { if (row.repl.length >= 3) break; if (fitsAfterRemoving(st, d, it, o.x)) { let paid = 0; for (let lv = 1; lv <= Math.max(1, o.x.lv); lv++) paid += C.itemCost(o.it2, lv); row.repl.push({ i: o.x.i, k: o.it2.k, vi: o.it2.vi, refund: Math.floor(paid * R.sellBack) }); } }
+    }
+    const pool = decoPool(st, s, d, req.user.role);
+    res.json({ rows: out.filter(Boolean), cost, coins: coinsOf(uid), deco: pool.length ? pool.map((it) => it.vi) : [] });
+  });
+
+  // thi công thật: { d, items:[{k,n, alt:{d,n}, replace:[id]}], deco:số cây/hoa trang trí }
+  app.post('/api/city/auto-layout', requireAuth, (req, res) => {
+    const uid = req.user.id, b = req.body || {}, d = Number(b.d); if (!C.DISTRICTS[d]) return bad(res, 'Quận không hợp lệ.');
+    const rows = (Array.isArray(b.items) ? b.items : []).slice(0, 30), decoN = Math.max(0, Math.min(40, Math.floor(Number(b.deco)) || 0));
+    const out = tx(() => {
+      const st = load(uid), s = stats(st); if (st.districts.indexOf(d) < 0) return { err: 'Quận này chưa mở.' };
+      const placed = [], failed = [], refunded = []; const groups = new Map(); const addG = (dd, it) => { if (!groups.has(dd)) groups.set(dd, []); groups.get(dd).push({ it }); };
+      let back = 0;
+      for (const r of rows) {
+        const it = C.BY[String(r.k)]; if (!it) continue; const n = Math.max(1, Math.min(12, Math.floor(Number(r.n)) || 1)), gate = itemGate(st, s, it, req.user.role);
+        if (gate) { failed.push({ k: it.k, why: gate }); continue; }
+        const altN = r.alt && st.districts.indexOf(Number(r.alt.d)) >= 0 && it.ds.indexOf(Number(r.alt.d)) >= 0 ? Math.min(n, Math.max(0, Math.floor(Number(r.alt.n)) || 0)) : 0;
+        (Array.isArray(r.replace) ? r.replace : []).slice(0, 5).forEach((id) => { const bb = getB(st, id); if (bb && C.DIST[C.idx(bb.x, bb.y)] === d) { back += demolishOne(st, uid, bb); refunded.push(bb.k); } });
+        for (let i = 0; i < n - altN; i++) addG(d, it); for (let i = 0; i < altN; i++) addG(Number(r.alt.d), it);
+      }
+      for (const [dd, units] of groups) {
+        const occ = C.buildOcc(st.bs), cat = catMap(st), lay = layoutUnits(st, dd, units, occ, cat);
+        lay.left.forEach((u) => failed.push({ k: u.it.k, why: 'Không còn chỗ trống phù hợp trong ' + C.DISTRICTS[dd].vi + '.' }));
+        for (const pl of lay.placed.sort((a, c) => (c.u.it.w * c.u.it.h) - (a.u.it.w * a.u.it.h))) {
+          const it = pl.u.it;
+          if (st.free[it.k] > 0) { st.free[it.k]--; if (!st.free[it.k]) delete st.free[it.k]; } else if (st.inv[it.k] > 0) { st.inv[it.k]--; if (!st.inv[it.k]) delete st.inv[it.k]; } else if (!spend(uid, it.cost)) { failed.push({ k: it.k, why: 'Chưa đủ xu (cần ' + it.cost + ').' }); continue; }
+          const t = Date.now(), nb = { i: st.nid++, k: it.k, x: pl.x, y: pl.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }; if (pl.f >= 0) nb.f = pl.f;
+          st.bs.push(nb); placed.push({ k: it.k, x: pl.x, y: pl.y, d: dd });
+        }
+      }
+      // cảnh quan: cây / hoa / đèn trang trí viền đường, gần các công trình vừa xây
+      if (decoN) {
+        const pool = decoPool(st, s, d, req.user.role); if (pool.length) {
+          const units = []; for (let i = 0; i < decoN; i++) units.push({ it: pool[i % pool.length] });
+          const occ = C.buildOcc(st.bs), cat = catMap(st), lay = layoutUnits(st, d, units, occ, cat); let nd = 0;
+          for (const pl of lay.placed) { const it = pl.u.it; if (!spend(uid, it.cost)) break; const t = Date.now(), nb = { i: st.nid++, k: it.k, x: pl.x, y: pl.y, lv: 0, tg: 1, t0: t, t1: t + C.buildSecs(it, 1) * 1000, last: t }; if (pl.f >= 0) nb.f = pl.f; st.bs.push(nb); nd++; }
+          if (nd) placed.push({ k: 'deco', x: 0, y: 0, d, n: nd });
+        }
+      }
+      if (!placed.length) return { err: failed.length ? failed[0].why : 'Không xây được công trình nào.', failed };
+      save(uid, st); return { st, placed, failed, back, refunded };
+    });
+    if (out.err) return res.status(400).json({ error: out.err, failed: out.failed || [] });
+    reply(res, out.st, uid, { auto: { placed: out.placed, failed: out.failed, refund: out.back, replaced: out.refunded.length } });
+  });
+
   /* ───── xây / dỡ đường ───── */
   app.post('/api/city/road', requireAuth, (req, res) => {
     const cells = Array.isArray((req.body || {}).cells) ? req.body.cells.map(Number) : [], uid = req.user.id;
