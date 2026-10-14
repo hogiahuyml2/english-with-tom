@@ -262,4 +262,44 @@ module.exports = {
     ['Edinburgh Castle stands on a high ___.', ['rock', 'boat', 'cloud', 'bridge'], 'It stands on a high rock.'],
     ['A story says a ___ lives in Loch Ness.', ['monster', 'whale', 'panda', 'camel'], 'A story says a monster lives there.'],
     ['The flag of Scotland is blue with a white ___.', ['cross', 'star', 'circle', 'heart'], 'It has a white cross.'] ]
+  ,th_aqua: [
+    ['The ocean covers most of our ___.', ['planet', 'house', 'school', 'garden'], 'The ocean covers most of our planet.'],
+    ['Corals are tiny ___ that live together.', ['animals', 'stones', 'clouds', 'shoes'], 'Corals are tiny animals.'],
+    ['A pearl grows inside a ___.', ['shell', 'tree', 'car', 'book'], 'A pearl grows inside a shell.'] ]
+  ,th_ancient: [
+    ['Ancient Greek temples have tall stone ___.', ['columns', 'boats', 'balloons', 'chairs'], 'They have tall stone columns.'],
+    ['The Great Sphinx has the body of a ___.', ['lion', 'fish', 'bird', 'horse'], 'The Sphinx has a lion body.'],
+    ['An amphora is a tall clay ___.', ['jar', 'shoe', 'hat', 'ball'], 'An amphora is a tall clay jar.'] ]
+  ,th_modern: [
+    ['Modern houses use big ___ to let in light.', ['windows', 'walls', 'doors', 'stairs'], 'They use big windows.'],
+    ['The Louvre Pyramid is made of glass and ___.', ['metal', 'paper', 'cheese', 'snow'], 'It is made of glass and metal.'],
+    ['LED lights use less ___.', ['energy', 'water', 'sand', 'paint'], 'LED lights use less energy.'] ]
+  ,th_pink: [
+    ['Jaipur is called the ___ City.', ['Pink', 'Blue', 'Black', 'Green'], 'Jaipur is called the Pink City.'],
+    ['Cherry trees have pink flowers in ___.', ['spring', 'winter', 'autumn', 'the night'], 'Cherry trees flower in spring.'],
+    ['A cupcake is a small ___.', ['cake', 'car', 'bird', 'tree'], 'A cupcake is a small cake.'] ]
+  ,th_gold: [
+    ['The Golden Pavilion is covered with thin ___ leaf.', ['gold', 'paper', 'wood', 'ice'], 'It is covered with gold leaf.'],
+    ['Gold is a shiny yellow ___.', ['metal', 'fruit', 'animal', 'flower'], 'Gold is a shiny yellow metal.'],
+    ['People hang ___ at festivals.', ['lanterns', 'shoes', 'books', 'chairs'], 'People hang lanterns.'] ]
+  ,th_violet: [
+    ['Purple is made by mixing red and ___.', ['blue', 'green', 'yellow', 'white'], 'Mix red and blue.'],
+    ['Amethyst is a purple ___.', ['crystal', 'cloud', 'fruit', 'bird'], 'Amethyst is a purple crystal.'],
+    ['A crystal ball is made of ___.', ['glass', 'bread', 'wool', 'paper'], 'It is made of glass.'] ]
+  ,th_emerald: [
+    ['A pagoda has many ___, one above the other.', ['roofs', 'doors', 'dogs', 'rivers'], 'It has many roofs.'],
+    ['Pandas love to eat ___.', ['bamboo', 'pizza', 'ice cream', 'rice cakes'], 'Pandas love bamboo.'],
+    ['A bonsai is a small ___ in a pot.', ['tree', 'fish', 'car', 'star'], 'A bonsai is a small tree.'] ]
+  ,th_sunset: [
+    ['A lighthouse shows ___ the way at night.', ['ships', 'trains', 'birds', 'cars'], 'It shows ships the way.'],
+    ['At sunset, the sky turns orange and ___.', ['red', 'blue', 'black', 'white'], 'The sky turns orange and red.'],
+    ['A beach umbrella gives ___ from the sun.', ['shade', 'water', 'snow', 'food'], 'It gives shade.'] ]
+  ,th_silver: [
+    ['People build ice castles in ___.', ['winter', 'summer', 'spring', 'the desert'], 'They build ice castles in winter.'],
+    ['A snowman often has a ___ for the nose.', ['carrot', 'banana', 'book', 'shoe'], 'A carrot is the nose.'],
+    ['An ice lantern has a ___ inside.', ['candle', 'fish', 'coin', 'leaf'], 'A candle shines inside.'] ]
+  ,th_celestial: [
+    ['Scientists use a ___ to look at the stars.', ['telescope', 'spoon', 'brush', 'ladder'], 'They use a telescope.'],
+    ['The Moon goes around the ___.', ['Earth', 'sea', 'tree', 'house'], 'The Moon goes around the Earth.'],
+    ['A shooting star is a small ___ that burns in the sky.', ['rock', 'bird', 'fish', 'cloud'], 'It is a small rock.'] ]
 };

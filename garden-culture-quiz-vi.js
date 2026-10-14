@@ -262,4 +262,44 @@ module.exports = {
     ['Lâu đài Edinburgh đứng trên một ___ cao.', ['tảng đá', 'chiếc thuyền', 'đám mây', 'cây cầu'], 'Lâu đài đứng trên tảng đá cao.'],
     ['Có câu chuyện kể rằng một ___ sống ở Loch Ness.', ['quái vật', 'con cá voi', 'con gấu trúc', 'con lạc đà'], 'Truyện kể có quái vật sống ở hồ.'],
     ['Quốc kỳ Scotland nền xanh dương có ___ trắng.', ['chữ thập', 'ngôi sao', 'hình tròn', 'trái tim'], 'Có chữ thập trắng.'] ]
+  ,th_aqua: [
+    ['Đại dương bao phủ phần lớn ___ của chúng ta.', ['hành tinh', 'ngôi nhà', 'trường học', 'khu vườn'], 'Đại dương bao phủ phần lớn hành tinh.'],
+    ['San hô là những ___ nhỏ sống cùng nhau.', ['con vật', 'hòn đá', 'đám mây', 'đôi giày'], 'San hô là những con vật nhỏ.'],
+    ['Ngọc trai lớn lên bên trong ___.', ['vỏ sò', 'cái cây', 'xe hơi', 'quyển sách'], 'Ngọc trai lớn lên trong vỏ sò.'] ]
+  ,th_ancient: [
+    ['Đền Hy Lạp cổ có những ___ đá cao.', ['cột', 'thuyền', 'bóng bay', 'ghế'], 'Có những cây cột đá cao.'],
+    ['Tượng Nhân sư có thân của ___.', ['sư tử', 'con cá', 'con chim', 'con ngựa'], 'Thân sư tử.'],
+    ['Amphora là một cái ___ đất sét cao.', ['bình', 'chiếc giày', 'cái mũ', 'quả bóng'], 'Amphora là bình đất sét cao.'] ]
+  ,th_modern: [
+    ['Nhà hiện đại dùng ___ lớn để đón ánh sáng.', ['cửa sổ', 'bức tường', 'cửa ra vào', 'cầu thang'], 'Dùng cửa sổ lớn.'],
+    ['Kim tự tháp Louvre làm bằng kính và ___.', ['kim loại', 'giấy', 'phô mai', 'tuyết'], 'Làm bằng kính và kim loại.'],
+    ['Đèn LED dùng ít ___ hơn.', ['năng lượng', 'nước', 'cát', 'sơn'], 'Đèn LED tiết kiệm năng lượng.'] ]
+  ,th_pink: [
+    ['Jaipur được gọi là Thành phố ___.', ['Hồng', 'Xanh dương', 'Đen', 'Xanh lá'], 'Jaipur là Thành phố Hồng.'],
+    ['Cây anh đào có hoa hồng vào ___.', ['mùa xuân', 'mùa đông', 'mùa thu', 'ban đêm'], 'Hoa nở vào mùa xuân.'],
+    ['Cupcake là một chiếc ___ nhỏ.', ['bánh ngọt', 'xe hơi', 'con chim', 'cái cây'], 'Cupcake là bánh nhỏ.'] ]
+  ,th_gold: [
+    ['Gác Vàng được phủ lá ___ mỏng.', ['vàng', 'giấy', 'gỗ', 'băng'], 'Phủ lá vàng.'],
+    ['Vàng là ___ màu vàng sáng bóng.', ['kim loại', 'trái cây', 'con vật', 'bông hoa'], 'Vàng là kim loại.'],
+    ['Người ta treo ___ trong lễ hội.', ['đèn lồng', 'giày', 'sách', 'ghế'], 'Treo đèn lồng.'] ]
+  ,th_violet: [
+    ['Màu tím được tạo bằng cách trộn đỏ và ___.', ['xanh dương', 'xanh lá', 'vàng', 'trắng'], 'Trộn đỏ và xanh dương.'],
+    ['Thạch anh tím là một ___ màu tím.', ['tinh thể', 'đám mây', 'trái cây', 'con chim'], 'Là tinh thể tím.'],
+    ['Quả cầu pha lê làm bằng ___.', ['thuỷ tinh', 'bánh mì', 'len', 'giấy'], 'Làm bằng thuỷ tinh.'] ]
+  ,th_emerald: [
+    ['Chùa tháp có nhiều ___, cái nọ chồng lên cái kia.', ['mái', 'cửa', 'con chó', 'dòng sông'], 'Nhiều mái chồng nhau.'],
+    ['Gấu trúc rất thích ăn ___.', ['tre', 'pizza', 'kem', 'bánh gạo'], 'Gấu trúc thích tre.'],
+    ['Bonsai là một ___ nhỏ trong chậu.', ['cái cây', 'con cá', 'xe hơi', 'ngôi sao'], 'Bonsai là cây nhỏ.'] ]
+  ,th_sunset: [
+    ['Hải đăng chỉ đường cho ___ vào ban đêm.', ['tàu thuyền', 'tàu hoả', 'chim', 'xe hơi'], 'Chỉ đường cho tàu thuyền.'],
+    ['Lúc hoàng hôn, bầu trời chuyển sang cam và ___.', ['đỏ', 'xanh dương', 'đen', 'trắng'], 'Cam và đỏ.'],
+    ['Dù đi biển tạo ___ che nắng.', ['bóng mát', 'nước', 'tuyết', 'đồ ăn'], 'Tạo bóng mát.'] ]
+  ,th_silver: [
+    ['Người ta xây lâu đài băng vào ___.', ['mùa đông', 'mùa hè', 'mùa xuân', 'sa mạc'], 'Vào mùa đông.'],
+    ['Người tuyết thường dùng ___ làm mũi.', ['cà rốt', 'chuối', 'sách', 'giày'], 'Cà rốt làm mũi.'],
+    ['Đèn băng có ___ bên trong.', ['ngọn nến', 'con cá', 'đồng xu', 'chiếc lá'], 'Có ngọn nến.'] ]
+  ,th_celestial: [
+    ['Các nhà khoa học dùng ___ để ngắm sao.', ['kính thiên văn', 'cái muỗng', 'cái chổi', 'cái thang'], 'Dùng kính thiên văn.'],
+    ['Mặt Trăng quay quanh ___.', ['Trái Đất', 'biển', 'cái cây', 'ngôi nhà'], 'Quay quanh Trái Đất.'],
+    ['Sao băng là một ___ nhỏ cháy trên trời.', ['hòn đá', 'con chim', 'con cá', 'đám mây'], 'Là hòn đá nhỏ.'] ]
 };

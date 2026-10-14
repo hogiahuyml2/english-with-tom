@@ -13,6 +13,8 @@
   var LV = { plant: [0, 0, 1, 1, 2], tree: [0, 0, 1, 1, 2], deco: [0, 0, 1, 1, 2], big: [0, 1, 1, 2, 2], pet: [0, 0, 1, 1, 2] };
   var r10 = function (n) { return Math.max(10, Math.round(n / 10) * 10); }, r50 = function (n) { return Math.max(100, Math.round(n / 50) * 50); };
   function add(zid, def) { Z[zid] = def; }
+  var GEN = [];   // món chung (không thuộc khu nào, bán ở mọi khu): công trình "Kiến trúc" dùng các kiểu nhà mới
+  function gen(list) { GEN = GEN.concat(list); }
   // thêm món vào khu đã có (nối tiếp danh sách f / t / d / b / p của lệnh add)
   function more(zid, def) { var z = Z[zid]; if (!z) return; ['f', 't', 'd', 'b', 'p'].forEach(function (k) { if (def[k]) z[k] = (z[k] || []).concat(def[k]); }); }
   function cx(n) { n = Math.round(n) || 1; return Math.max(1, Math.min(5, n)); }
@@ -40,8 +42,12 @@
       (d.p || []).forEach(function (s, i) { var t = cx(s[5]), id = z.id + '_p' + (i + 1); SPEC[id] = ['p', s];
         ctx.pets.push({ id: id, name: s[0], cost: r10(unit * TIER.pet[t - 1]), lvl: Math.min(14, L + LV.pet[t - 1]), z: z.id, cx: t, sp: (s[6] && s[6].sp) || undefined }); });
     });
+    GEN.forEach(function (s, i) {
+      var id = 'arch' + (i + 1), o = s[9] || {}, t = cx(s[8]), area = s[1] * s[2]; SPEC[id] = ['b', s];
+      ctx.items.push({ id: id, name: s[0], kind: 'big', w: s[1], h: s[2], cost: o.cost || r50(400 * TIER.big[t - 1] * Math.pow(area / 4, 0.6)), lvl: o.lv || Math.min(14, 2 + t * 2), b: 14 + t * 12 + area * 2, cx: t });
+    });
   }
   function eachSpec(fn) { Object.keys(SPEC).forEach(function (id) { fn(id, SPEC[id][0], SPEC[id][1]); }); }
-  var API = { Z: Z, SPEC: SPEC, add: add, more: more, build: build, eachSpec: eachSpec };
+  var API = { Z: Z, SPEC: SPEC, add: add, more: more, gen: gen, build: build, eachSpec: eachSpec };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTGardenCatalog = API;
 })(typeof window !== 'undefined' ? window : this);

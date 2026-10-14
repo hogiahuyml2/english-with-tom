@@ -299,6 +299,26 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-lawn.z-colombia { --bed: #B0E8A0; --bed2: #9CDC88; --bedl: rgba(60,150,70,.4); background: repeating-linear-gradient(90deg, #FCD116 0 12px, #003893 12px 24px, #CE1126 24px 36px); border-color: #FCD116; }
 .gd-lawn.z-tanzania { --bed: #E0E4A8; --bed2: #D0DA92; --bedl: rgba(170,150,70,.4); background: repeating-linear-gradient(90deg, #1EB53A 0 12px, #FCD116 12px 24px, #00A3DD 24px 36px); border-color: #1EB53A; }
 .gd-lawn.z-scotland { --bed: #B4E0A8; --bed2: #9CD494; --bedl: rgba(90,130,90,.4); background: repeating-linear-gradient(90deg, #0065BD 0 12px, #FFFFFF 12px 24px); border-color: #0065BD; }
+.gd-lawn.z-th_aqua { --bed: #BDF0F0; --bed2: #A4E4E8; --bedl: rgba(40,150,170,.4); background: repeating-linear-gradient(90deg, #00A6C8 0 12px, #7FE0E8 12px 24px); border-color: #00A6C8; }
+.gd-lawn.z-th_ancient { --bed: #EFE4B8; --bed2: #E4D6A0; --bedl: rgba(160,130,60,.4); background: repeating-linear-gradient(90deg, #D8C8A0 0 12px, #B8A878 12px 24px); border-color: #B8A878; }
+.gd-lawn.z-th_modern { --bed: #D4E8D4; --bed2: #C0DCC0; --bedl: rgba(80,140,100,.35); background: repeating-linear-gradient(90deg, #E8ECF2 0 12px, #8A94A4 12px 24px); border-color: #8A94A4; }
+.gd-lawn.z-th_pink { --bed: #FFE0EA; --bed2: #FFD0DE; --bedl: rgba(230,110,150,.4); background: repeating-linear-gradient(90deg, #FFB6C8 0 12px, #FFFFFF 12px 24px); border-color: #FF8AA8; }
+.gd-lawn.z-th_gold { --bed: #FFF3B8; --bed2: #FFEA8C; --bedl: rgba(210,160,30,.4); background: repeating-linear-gradient(90deg, #F2C94C 0 12px, #FFF3A0 12px 24px); border-color: #C9A22A; }
+.gd-lawn.z-th_violet { --bed: #E8DCFA; --bed2: #DACCF4; --bedl: rgba(130,90,200,.4); background: repeating-linear-gradient(90deg, #9A6ADA 0 12px, #E0D0F8 12px 24px); border-color: #7A4AB8; }
+.gd-lawn.z-th_emerald { --bed: #C4F4DA; --bed2: #AEECC8; --bedl: rgba(30,140,90,.4); background: repeating-linear-gradient(90deg, #2EA860 0 12px, #B8F0D0 12px 24px); border-color: #2E8A5A; }
+.gd-lawn.z-th_sunset { --bed: #FFE0B8; --bed2: #FFD0A0; --bedl: rgba(200,90,40,.4); background: repeating-linear-gradient(90deg, #FF8A2E 0 12px, #E5334B 12px 24px); border-color: #E5533B; }
+.gd-lawn.z-th_silver { --bed: #F4F8FC; --bed2: #E8F0F8; --bedl: rgba(120,170,210,.4); background: repeating-linear-gradient(90deg, #E8ECF2 0 12px, #BFE6F5 12px 24px); border-color: #8EC8E8; }
+.gd-lawn.z-th_celestial { --bed: #AAB6F0; --bed2: #9AA8E8; --bedl: rgba(60,70,170,.4); background: repeating-linear-gradient(90deg, #2A3A8A 0 12px, #5B6AEF 12px 24px); border-color: #2A3A8A; }
+@keyframes gdAmb { from { background-position: 0 0, 40px 60px; } to { background-position: 0 -240px, 40px -180px; } }
+.gd-lawn.z-th_aqua::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(255,255,255,.55) 0 3px, transparent 4px), radial-gradient(circle, rgba(255,255,255,.55) 0 3px, transparent 4px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_pink::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(255,200,220,.7) 0 3px, transparent 4px), radial-gradient(circle, rgba(255,200,220,.7) 0 3px, transparent 4px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_gold::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(255,240,150,.8) 0 2px, transparent 3px), radial-gradient(circle, rgba(255,240,150,.8) 0 2px, transparent 3px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_violet::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(230,200,255,.8) 0 2px, transparent 3px), radial-gradient(circle, rgba(230,200,255,.8) 0 2px, transparent 3px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_emerald::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(200,255,220,.7) 0 2px, transparent 3px), radial-gradient(circle, rgba(200,255,220,.7) 0 2px, transparent 3px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_sunset::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(255,200,120,.7) 0 2px, transparent 3px), radial-gradient(circle, rgba(255,200,120,.7) 0 2px, transparent 3px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_silver::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(255,255,255,.9) 0 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,.9) 0 2px, transparent 3px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_celestial::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3; background-image: radial-gradient(circle, rgba(255,240,170,.95) 0 2px, transparent 3px), radial-gradient(circle, rgba(255,240,170,.95) 0 2px, transparent 3px); background-size: 90px 120px, 140px 160px; opacity: .8; animation: gdAmb 14s linear infinite; }
+.gd-lawn.z-th_celestial, .gd-lawn.z-th_aqua { position: relative; }
 .gd-lawn.z-farmvn { --bed: #CFEFB0; --bed2: #BFE49E; --bedl: rgba(60,130,50,.4); background: repeating-linear-gradient(90deg, #D9A82A 0 12px, #8A6A12 12px 14px); border-color: #DA251D; }
 .gd-lawn.z-farmnl { --bed: #B8E8A0; --bed2: #A4DC8A; --bedl: rgba(60,120,50,.4); background: repeating-linear-gradient(90deg, #C8402F 0 12px, #7A241B 12px 14px); border-color: #21468B; }
 .gd-lawn.z-farmch { --bed: #C0EAB4; --bed2: #ACDCA0; --bedl: rgba(60,120,60,.4); background: repeating-linear-gradient(90deg, #E5334B 0 12px, #B01E30 12px 14px); border-color: #FFFFFF; }
@@ -657,7 +677,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <div id="site-footer"></div>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=53"></script>
-<script src="js/garden-catalog.js?v=3"></script>
+<script src="js/garden-catalog.js?v=4"></script>
 <script src="js/garden-cat-a.js?v=2"></script>
 <script src="js/garden-cat-b.js?v=2"></script>
 <script src="js/garden-cat-c.js?v=2"></script>
@@ -668,9 +688,10 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-cat-h.js?v=1"></script>
 <script src="js/garden-cat-i.js?v=1"></script>
 <script src="js/garden-cat-j.js?v=2"></script>
+<script src="js/garden-cat-k.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
 <script src="js/garden-bundles.js?v=2"></script>
-<script src="js/garden-data.js?v=29"></script>
+<script src="js/garden-data.js?v=30"></script>
 <script src="js/garden-blueprints.js?v=6"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
@@ -690,22 +711,24 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-world12.js?v=1"></script>
 <script src="js/garden-world13.js?v=1"></script>
 <script src="js/garden-world14.js?v=1"></script>
+<script src="js/garden-world15.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-art5.js?v=1"></script>
 <script src="js/garden-art6.js?v=2"></script>
 <script src="js/garden-art7.js?v=1"></script>
 <script src="js/garden-art8.js?v=1"></script>
 <script src="js/garden-art9.js?v=1"></script>
-<script src="js/garden-culture.js?v=4"></script>
+<script src="js/garden-culture.js?v=5"></script>
 <script src="js/garden-gen1.js?v=3"></script>
 <script src="js/garden-gen2.js?v=3"></script>
 <script src="js/garden-gen3.js?v=3"></script>
 <script src="js/garden-gen4.js?v=5"></script>
 <script src="js/garden-gen5.js?v=1"></script>
+<script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
-<script src="js/garden-sound.js?v=10"></script>
+<script src="js/garden-sound.js?v=11"></script>
 <script>
 (function () {
 'use strict';
