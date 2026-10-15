@@ -595,11 +595,21 @@
     if (!sp[key]) { var f = lvl === 2 ? .25 : .5, cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sp.c.width * f)); cv.height = Math.max(1, Math.round(sp.c.height * f)); var cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(lvl === 2 && sp.c2 ? sp.c2 : sp.c, 0, 0, cv.width, cv.height); sp[key] = cv; }
     return sp[key];
   };
+  // mùa theo tháng thật (bán cầu Bắc): xuân 3–5 · hè 6–8 · thu 9–11 · đông 12–2. Có thể ép bằng E.seasonOverride.
+  P.season = function () { if (this.seasonOverride) return this.seasonOverride; var m = new Date().getMonth(); return m >= 2 && m <= 4 ? 'spring' : m >= 5 && m <= 7 ? 'summer' : m >= 8 && m <= 10 ? 'autumn' : 'winter'; };
+  // lớp tuyết phủ mái: trắng mờ ở phần trên của sprite, tạo 1 lần cho mỗi sprite (độ phân giải nửa)
+  P.snowImg = function (sp) {
+    if (sp.ph || !sp.c || !sp.c.width) return null; if (sp.snow !== undefined) return sp.snow;
+    try { var cv = document.createElement('canvas'); cv.width = Math.max(1, Math.round(sp.c.width * .5)); cv.height = Math.max(1, Math.round(sp.c.height * .5)); var c = cv.getContext('2d'); c.drawImage(sp.c, 0, 0, cv.width, cv.height);
+      c.globalCompositeOperation = 'source-in'; var g = c.createLinearGradient(0, 0, 0, cv.height * .38); g.addColorStop(0, 'rgba(255,255,255,.88)'); g.addColorStop(.7, 'rgba(255,255,255,.4)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, cv.width, cv.height); sp.snow = cv; } catch (er) { sp.snow = null; }
+    return sp.snow;
+  };
   P.drawSprite = function (ctx, e, now, t, isB, gl) {
     var E = this, sp = e.sp, x, y;
     if (e.t) { E.drawProp(ctx, e, t, gl); return; }
     x = e.sx - sp.ox; y = e.sy - sp.oy;
     ctx.drawImage(E.lodImg(sp), x, y, sp.w, sp.h);
+    if (isB && !e.site && E.fx.magic && E.quality >= 1 && (E.snowOn === undefined || E.snowOn)) { if (E._ss !== E.season()) { E._ss = E.season(); } if (E._ss === 'winter') { var sn = E.snowImg(sp); if (sn) ctx.drawImage(sn, x, y, sp.w, sp.h); } }
     var b = isB ? e.b : null, m = sp.meta; if (b && b.i === E.sel) E.selTop = { x: e.sx, y: e.sy - sp.oy, t: E.t };
     if (isB && e.site) { E.drawSiteExtras(ctx, e, sp, now); }
     else if (E.cam.z >= .3) {   // khói, cờ, vòi nước, vòng quay… chỉ vẽ khi đủ gần
@@ -743,11 +753,12 @@
     ctx.save();
     var dry = w !== 'rain' && w !== 'snow';
     if (night < .35 && dry) {
-      // cánh hoa & lá bay
-      var np = Math.round(26 * q), cols = ['#FFB7CE', '#fff', '#9FD98A', '#FFD27A'];
+      // cánh hoa & lá bay — đổi theo mùa: xuân hoa anh đào · hè lá xanh nhẹ · thu lá đỏ cam rơi nhiều · đông bông tuyết
+      var ss = E.season(), np = Math.round((ss === 'autumn' ? 40 : ss === 'summer' ? 12 : ss === 'winter' ? 46 : 26) * q), cols = ss === 'autumn' ? ['#E58A3C', '#C9503C', '#F2B01B', '#8A5A33'] : ss === 'summer' ? ['#9FD98A', '#7BC96B', '#FFD27A', '#fff'] : ss === 'winter' ? ['#fff', '#EAF4FF', '#fff', '#D6E8FA'] : ['#FFB7CE', '#fff', '#FFC4D8', '#FFD27A'];
       for (i = 0; i < np; i++) {
-        x = ((MRND(i, 5) * cw + t * (12 + MRND(i, 6) * 16)) % (cw + 60)) - 30; y = ((MRND(i, 7) * ch + t * (16 + MRND(i, 8) * 14)) % (ch + 60)) - 30; x += Math.sin(t * 1.3 + i) * 10;
-        ctx.globalAlpha = .8 * (1 - night * 2); ctx.fillStyle = cols[i % 4]; ctx.save(); ctx.translate(x, y); ctx.rotate(t * .8 + i); ctx.beginPath(); ctx.ellipse(0, 0, 4.4, 2.2, 0, 0, TAU); ctx.fill(); ctx.restore();
+        var sp2 = ss === 'winter' ? .5 : 1; x = ((MRND(i, 5) * cw + t * (12 + MRND(i, 6) * 16) * sp2) % (cw + 60)) - 30; y = ((MRND(i, 7) * ch + t * (16 + MRND(i, 8) * 14) * (ss === 'winter' ? .8 : 1)) % (ch + 60)) - 30; x += Math.sin(t * 1.3 + i) * (ss === 'winter' ? 16 : 10);
+        ctx.globalAlpha = .85 * (1 - night * 2); ctx.fillStyle = cols[i % 4]; ctx.save(); ctx.translate(x, y); ctx.rotate(t * .8 + i);
+        ctx.beginPath(); if (ss === 'winter') ctx.arc(0, 0, 1.8 + MRND(i, 9) * 1.8, 0, TAU); else if (ss === 'autumn') { ctx.moveTo(-5.5, 0); ctx.quadraticCurveTo(0, -4.2, 5.5, 0); ctx.quadraticCurveTo(0, 4.2, -5.5, 0); } else ctx.ellipse(0, 0, 4.4, 2.2, 0, 0, TAU); ctx.fill(); ctx.restore();
       }
       // tia nắng
       var hr = E.hour(); if (hr >= 7.5 && hr <= 16.5 && w === 'clear') {
@@ -762,6 +773,10 @@
         var rc = ['#E9573F', '#F28B2B', '#FFD84A', '#6BCB6F', '#4F9CFF', '#B77CFF']; ctx.globalAlpha = .22 * (1 - night * 2); ctx.lineWidth = 6;
         for (k = 0; k < 6; k++) { ctx.strokeStyle = rc[k]; ctx.beginPath(); ctx.arc(cw * .72, ch * .86, Math.min(cw, ch) * .56 - k * 6, Math.PI * 1.08, Math.PI * 1.92); ctx.stroke(); }
       }
+    }
+    if (w === 'rain') {   // gợn nước khi mưa: các vòng tròn lan rộng trên mặt đất
+      var nr = Math.round(18 * q); ctx.lineWidth = 1.2;
+      for (i = 0; i < nr; i++) { var cy2 = t * .9 + MRND(i, 91), cyc = Math.floor(cy2), pr = cy2 - cyc, rx = 3 + pr * 15; x = MRND(i + cyc * 7, 92) * cw; y = ch * (.35 + MRND(i + cyc * 5, 93) * .62); ctx.globalAlpha = (1 - pr) * .55 * (1 - night * .4); ctx.strokeStyle = '#EAF4FF'; ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .42, 0, 0, TAU); ctx.stroke(); }
     }
     if (night >= .25 && dry) {
       var a0 = Math.min(1, (night - .2) * 1.6);
