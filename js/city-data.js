@@ -3,7 +3,7 @@
 (function (root) {
   'use strict';
   /* ───── bản đồ 168×152 ô (hàng 120–151 là vùng mở rộng phía Nam; chỉ số ô y*168+x của vùng cũ KHÔNG đổi) (gấp ~5 lần bản đồ cũ 72×48). Thành phố cũ (6 quận) được giữ NGUYÊN VẸN ở vị trí (OX,OY) để không ai mất công trình ───── */
-  var W = 168, H = 152, OX = 60, OY = 36, OW = 72, OH = 48, PER = 6;
+  var W = 168, H = 206, OX = 60, OY = 36, OW = 72, OH = 48, PER = 6;
 
   /* ───── các quận ─────
      rects: các hình chữ nhật tạo nên quận (đa dạng diện tích) · lvl: cấp thành phố tối thiểu để MUA bằng xu · cost: giá xu · auto: đạt cấp này thì được MỞ MIỄN PHÍ
@@ -32,7 +32,16 @@
     { id: 18, key: 'garden', en: 'Garden Residences', vi: 'Biệt thự Vườn Hoa', icon: '🌷', lvl: 90, cost: 280000, auto: 106, rects: [[36, 124, 29, 24]], blurb: 'Khu nhà ở cao cấp giữa những khu vườn, hồ nhỏ và công viên.' },
     { id: 19, key: 'snow', en: 'Snow Village', vi: 'Làng Tuyết & Trượt tuyết', icon: '⛄', lvl: 96, cost: 360000, auto: 112, rects: [[68, 124, 29, 24]], blurb: 'Đảo núi nhỏ với nhà gỗ, cáp treo, sân trượt và rừng thông.' },
     { id: 20, key: 'marina', en: 'Marina Port', vi: 'Bến Du thuyền & Cảng Xanh', icon: '⛵', lvl: 102, cost: 450000, auto: 116, rects: [[100, 124, 29, 24]], blurb: 'Bến du thuyền, nhà hàng bên cảng, kho lạnh và bãi biển nhỏ.' },
-    { id: 21, key: 'oasis', en: 'Oasis Wonders', vi: 'Ốc đảo Kỳ quan', icon: '🏺', lvl: 108, cost: 560000, auto: 120, rects: [[132, 124, 29, 24]], blurb: 'Ốc đảo xanh với các công trình kỳ quan, bến xe và nhà thi đấu.' }
+    { id: 21, key: 'oasis', en: 'Oasis Wonders', vi: 'Ốc đảo Kỳ quan', icon: '🏺', lvl: 108, cost: 560000, auto: 120, rects: [[132, 124, 29, 24]], blurb: 'Ốc đảo xanh với các công trình kỳ quan, bến xe và nhà thi đấu.' },
+    // ── 8 khu phố văn hoá (hàng 152–203) ──
+    { id: 22, key: 'chinatown', en: 'Chinatown', vi: 'Khu phố Hoa', icon: '🏮', lvl: 30, cost: 25000, auto: 46, rects: [[4, 152, 29, 24]], blurb: 'Cổng bài lâu đỏ, đèn lồng, chùa Hoa và những quán dimsum nhộn nhịp.' },
+    { id: 23, key: 'japantown', en: 'Japan Town', vi: 'Khu phố Nhật', icon: '⛩️', lvl: 34, cost: 32000, auto: 50, rects: [[36, 152, 29, 24]], blurb: 'Cổng torii, nhà gỗ machiya, lâu đài trắng và hoa anh đào.' },
+    { id: 24, key: 'vietnam', en: 'Viet Quarter', vi: 'Khu phố Việt', icon: '🛵', lvl: 38, cost: 40000, auto: 54, rects: [[68, 152, 29, 24]], blurb: 'Nhà ống nhiều màu, quán phở, chợ lớn, chùa và ruộng bậc thang.' },
+    { id: 25, key: 'thai', en: 'Thai Town', vi: 'Khu phố Thái', icon: '🛕', lvl: 42, cost: 50000, auto: 58, rects: [[100, 152, 29, 24]], blurb: 'Chùa vàng nhọn, nhà sàn, chợ nổi và xe tuk-tuk.' },
+    { id: 26, key: 'bali', en: 'Bali Quarter', vi: 'Khu phố Indonesia', icon: '🌴', lvl: 46, cost: 60000, auto: 62, rects: [[132, 152, 29, 24]], blurb: 'Đền bậc thang, cổng Bali, nhà joglo và ruộng bậc thang xanh.' },
+    { id: 27, key: 'british', en: 'British Quarter', vi: 'Khu phố Anh', icon: '☎️', lvl: 50, cost: 75000, auto: 66, rects: [[4, 180, 29, 24]], blurb: 'Tháp đồng hồ, hộp điện thoại đỏ, xe buýt hai tầng và lâu đài cổ.' },
+    { id: 28, key: 'american', en: 'American Quarter', vi: 'Khu phố Mỹ', icon: '🗽', lvl: 54, cost: 90000, auto: 70, rects: [[36, 180, 29, 24]], blurb: 'Nhà chọc trời, quán diner, nhà gạch nâu và tượng Nữ thần Tự do.' },
+    { id: 29, key: 'aussie', en: 'Aussie Quarter', vi: 'Khu phố Úc', icon: '🦘', lvl: 58, cost: 110000, auto: 74, rects: [[68, 180, 29, 24]], blurb: 'Nhà hát vỏ sò, cầu cảng, núi đá đỏ, bãi biển lướt sóng và kangaroo.' }
   ];
   var ZONE_NAME = { r: 'Nhà ở', c: 'Thương mại', s: 'Dịch vụ công', p: 'Công viên', f: 'Vui chơi', e: 'Học đường', i: 'Công nghiệp', h: 'Cảng', w: 'Phố quốc tế', b: 'Du lịch biển', m: 'Du lịch núi', a: 'Nông trại', t: 'Giao thông', g: 'Thể thao & Triển lãm' };
   var ZONE_COLOR = { r: '#9BD36B', c: '#8CC8E8', s: '#F2C86B', p: '#6FC98B', f: '#F29BC0', e: '#B7A0E8', i: '#B8B2A6', h: '#7FB4C9', w: '#F0A56B', b: '#FFD36B', m: '#9DB8E8', a: '#C9D96B', t: '#A8B0BC', g: '#FF9A7A' };
@@ -89,6 +98,8 @@
     fillEll(48, 139.5, 4.6, 3.4, 2, 0); fillEll(48, 139.5, 3.6, 2.4, 1);  // hồ khu Vườn Hoa
     fillRect(108, 128, 109, 133, 1);                                   // kênh nhỏ trong bến du thuyền
     fillEll(140, 130.5, 4.4, 3.4, 2, 0); fillEll(140, 130.5, 3.2, 2.2, 1); // ao ốc đảo
+    // 8 khu phố văn hoá: hai dải đảo ở hàng 152–175 và 180–203 (viền cát bên ngoài, đất bên trong, ao ở khối công viên)
+    [[4, 152],[36, 152],[68, 152],[100, 152],[132, 152],[4, 180],[36, 180],[68, 180]].forEach(function (a) { fillRect(a[0], a[1], a[0] + 28, a[1] + 23, 2); fillRect(a[0] + 2, a[1] + 2, a[0] + 26, a[1] + 21, 0); var cx = [[6, 14, 30], [38, 54, 62], [70, 82, 94], [102, 112, 126], [134, 146, 158]][[4, 36, 68, 100, 132].indexOf(a[0])], px = (cx[1] + cx[2]) / 2 + .5, py = a[1] + 16.5, rr = Math.min(4.5, (cx[2] - cx[1]) / 2 - 1.8); fillEll(px, py, rr + 1, 3.2, 2, 0); fillEll(px, py, rr, 2.2, 1); });
     // thành phố cũ: nguyên bản
     for (y = 0; y < OH; y++) for (x = 0; x < OW; x++) TERR[idx(OX + x, OY + y)] = oldTerr(x, y);
     // cầu dẫn ra đảo: cát hai đầu để đường nối liền
@@ -222,6 +233,11 @@
     [[17, [6, 14, 30], ['ce', 'wp'], 14, 107], [18, [38, 54, 62], ['rp', 'pr'], 54, 107], [19, [70, 82, 94], ['mf', 'pm'], 82, 107], [20, [102, 112, 126], ['hb', 'bi'], 112, 113], [21, [134, 146, 158], ['wg', 'tw'], 146, 113]].forEach(function (q) {
       gridRoads(q[1], sy2, q[1][0], 126, q[1][2], 145); gridZones(q[0], q[1], sy2, q[2]); link(q[3], q[4], q[3], 125, q[0]);
     });
+    // ─── 8 khu phố văn hoá ───
+    [[22, 4, 152, 14, 146], [23, 36, 152, 54, 146], [24, 68, 152, 82, 146], [25, 100, 152, 112, 146], [26, 132, 152, 146, 146], [27, 4, 180, 14, 174], [28, 36, 180, 54, 174], [29, 68, 180, 82, 174]].forEach(function (q) {
+      var cx = [[6, 14, 30], [38, 54, 62], [70, 82, 94], [102, 112, 126], [134, 146, 158]][[4, 36, 68, 100, 132].indexOf(q[1])], cy = [q[2] + 2, q[2] + 11, q[2] + 21];
+      gridRoads(cx, cy, cx[0], cy[0], cx[2], cy[2]); gridZones(q[0], cx, cy, ['cw', 'rp']); link(q[3], q[4], q[3], q[2] + 1, q[0]);
+    });
     BLOCKS.forEach(function (b) { if (b.d === 18 && b.z === 'p') { var a, c, q; for (c = b.y; c < b.y + b.h; c++) for (a = b.x; a < b.x + b.w; a++) { q = idx(a, c); if (TERR[q] === 0 && !ROAD[q] && hash(a, c, 31) > .55) { TERR[q] = 4; ZONE[q] = 0; } } }
       if (b.d === 19 && b.z === 'm') { var a2, c2, q2, hv; for (c2 = b.y; c2 < b.y + b.h; c2++) for (a2 = b.x; a2 < b.x + b.w; a2++) { q2 = idx(a2, c2); hv = hash(a2, c2, 41); if (TERR[q2] === 0 && !ROAD[q2] && hv > .82) { TERR[q2] = hv > .94 ? 3 : 4; ZONE[q2] = 0; } } } });
     BLOCKS.forEach(function (b) { if (b.d !== 15 || b.z !== 'p') return; var a, c, q; for (c = b.y; c < b.y + b.h; c++) for (a = b.x; a < b.x + b.w; a++) { q = idx(a, c); if (TERR[q] === 0 && !ROAD[q] && hash(a, c, 21) > .4) { TERR[q] = 4; ZONE[q] = 0; } } });
@@ -243,6 +259,25 @@
     FIXED.push({ k: 'bigplaza', x: OX + 63, y: OY + 21, w: 1, h: 1 });
     FIXED.push({ k: 'pier', x: 60, y: 95, w: 7, h: 2 });                  // cầu tàu của bãi biển
     FIXED.push({ k: 'airport', x: 100, y: 96, w: 4, h: 2 });              // nhà ga sân bay (trang trí)
+  })();
+  // công trình CÓ SẴN của 8 khu phố văn hoá: cổng, biểu tượng ở khối trung tâm, đồ trang trí đặc trưng
+  (function () {
+    FIXED.push({ k: 'fx22gate', x: 9, y: 155, w: 3, h: 1 }); FIXED.push({ k: 'fx22mark', x: 21, y: 157, w: 3, h: 3 });
+    FIXED.push({ k: 'fx22da', x: 15, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx22db', x: 29, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx22da', x: 29, y: 162, w: 1, h: 1 }); FIXED.push({ k: 'fx22db', x: 15, y: 162, w: 1, h: 1 });
+    FIXED.push({ k: 'fx23gate', x: 45, y: 155, w: 3, h: 1 }); FIXED.push({ k: 'fx23mark', x: 57, y: 157, w: 3, h: 3 });
+    FIXED.push({ k: 'fx23da', x: 55, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx23db', x: 61, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx23da', x: 61, y: 162, w: 1, h: 1 }); FIXED.push({ k: 'fx23db', x: 55, y: 162, w: 1, h: 1 });
+    FIXED.push({ k: 'fx24gate', x: 75, y: 155, w: 3, h: 1 }); FIXED.push({ k: 'fx24mark', x: 87, y: 157, w: 3, h: 3 });
+    FIXED.push({ k: 'fx24da', x: 83, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx24db', x: 93, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx24da', x: 93, y: 162, w: 1, h: 1 }); FIXED.push({ k: 'fx24db', x: 83, y: 162, w: 1, h: 1 });
+    FIXED.push({ k: 'fx25gate', x: 106, y: 155, w: 3, h: 1 }); FIXED.push({ k: 'fx25mark', x: 118, y: 157, w: 3, h: 3 });
+    FIXED.push({ k: 'fx25da', x: 113, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx25db', x: 125, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx25da', x: 125, y: 162, w: 1, h: 1 }); FIXED.push({ k: 'fx25db', x: 113, y: 162, w: 1, h: 1 });
+    FIXED.push({ k: 'fx26gate', x: 139, y: 155, w: 3, h: 1 }); FIXED.push({ k: 'fx26mark', x: 151, y: 157, w: 3, h: 3 });
+    FIXED.push({ k: 'fx26da', x: 147, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx26db', x: 157, y: 156, w: 1, h: 1 }); FIXED.push({ k: 'fx26da', x: 157, y: 162, w: 1, h: 1 }); FIXED.push({ k: 'fx26db', x: 147, y: 162, w: 1, h: 1 });
+    FIXED.push({ k: 'fx27gate', x: 9, y: 183, w: 3, h: 1 }); FIXED.push({ k: 'fx27mark', x: 21, y: 185, w: 3, h: 3 });
+    FIXED.push({ k: 'fx27da', x: 15, y: 184, w: 1, h: 1 }); FIXED.push({ k: 'fx27db', x: 29, y: 184, w: 1, h: 1 }); FIXED.push({ k: 'fx27da', x: 29, y: 190, w: 1, h: 1 }); FIXED.push({ k: 'fx27db', x: 15, y: 190, w: 1, h: 1 });
+    FIXED.push({ k: 'fx28gate', x: 45, y: 183, w: 3, h: 1 }); FIXED.push({ k: 'fx28mark', x: 57, y: 185, w: 3, h: 3 });
+    FIXED.push({ k: 'fx28da', x: 55, y: 184, w: 1, h: 1 }); FIXED.push({ k: 'fx28db', x: 61, y: 184, w: 1, h: 1 }); FIXED.push({ k: 'fx28da', x: 61, y: 190, w: 1, h: 1 }); FIXED.push({ k: 'fx28db', x: 55, y: 190, w: 1, h: 1 });
+    FIXED.push({ k: 'fx29gate', x: 75, y: 183, w: 3, h: 1 }); FIXED.push({ k: 'fx29mark', x: 87, y: 185, w: 3, h: 3 });
+    FIXED.push({ k: 'fx29da', x: 83, y: 184, w: 1, h: 1 }); FIXED.push({ k: 'fx29db', x: 93, y: 184, w: 1, h: 1 }); FIXED.push({ k: 'fx29da', x: 93, y: 190, w: 1, h: 1 }); FIXED.push({ k: 'fx29db', x: 83, y: 190, w: 1, h: 1 });
   })();
   var FOCC = new Int16Array(W * H).fill(-1); FIXED.forEach(function (f, n) { var a, b; for (b = 0; b < f.h; b++) for (a = 0; a < f.w; a++) if (inW(f.x + a, f.y + b)) FOCC[idx(f.x + a, f.y + b)] = n; });
 
@@ -280,7 +315,8 @@
     { p: [[62, 109], [92, 109], [92, 118], [64, 118]], n: 3, v: .026, s: 1.2, c: ['#fff', '#E9573F', '#F2C21B'] },
     { p: [[166.4, 40], [166.4, 118], [150, 118], [150, 94]], n: 2, v: .026, s: 1.4, c: ['#fff', '#2E9E7F'] },
     { p: [[90, 12], [104, 24], [118, 14], [104, 8], [90, 12]], n: 3, v: .02, s: .8, c: ['#F2C21B', '#E9573F', '#fff'] },
-    { p: [[48, 6], [62, 12], [66, 8], [52, 5]], n: 2, v: .02, s: .8, c: ['#fff', '#4F80BA'] }
+    { p: [[48, 6], [62, 12], [66, 8], [52, 5]], n: 2, v: .02, s: .8, c: ['#fff', '#4F80BA'] },
+    { p: [[165, 177.5], [2, 177.5]], n: 3, v: .028, s: 1.2, c: ['#fff', '#E9573F', '#4F80BA'] }
   ];
 
   /* ───── chuyển dữ liệu từ bản đồ cũ (72×48) sang bản đồ mới: toàn bộ công trình & đường tự xây được DỊCH nguyên vẹn ───── */
@@ -1173,12 +1209,138 @@
       ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
     });
   })();
+  /* ───── 8 KHU PHỐ VĂN HOÁ (Hoa · Nhật · Việt · Thái · Indonesia · Anh · Mỹ · Úc): công trình bán riêng cho từng khu — đồ hoạ ở js/city-art9.js ───── */
+  (function () {
+    var T = [
+      ['cnteahouse', 'Tea House', 'Trà lầu', 'shop', 2, 2, '*', 30, [22], 'world1', 'shop', 'Hot tea and sweet cakes.', 82100],
+      ['cndimsum', 'Dim Sum Restaurant', 'Nhà hàng dimsum', 'shop', 3, 2, '*', 32, [22], 'world1', 'shop', 'Steamers full of dumplings.', 122000],
+      ['cnherb', 'Herbal Shop', 'Tiệm thuốc Bắc', 'shop', 2, 2, '*', 34, [22], 'world1', 'shop', 'Little drawers of herbs.', 111000],
+      ['cnsilk', 'Silk Market', 'Chợ lụa', 'shop', 3, 3, '*', 38, [22], 'world1', 'shop', 'Colourful silk cloth for sale.', 236000],
+      ['cnshophouse', 'Shophouse Apartments', 'Nhà phố Hoa', 'home', 3, 2, '*', 36, [22], 'home2', 'home', 'A narrow home above a little shop.', 162000],
+      ['cncourtyard', 'Courtyard Home', 'Tứ hợp viện', 'home', 4, 4, '*', 44, [22], 'home2', 'home', 'Rooms around a quiet yard.', 473000],
+      ['cntemple', 'Chinese Temple', 'Chùa Hoa', 'world', 4, 4, '*', 48, [22], 'world1', 'world', 'Incense smoke and golden roofs.', 583000],
+      ['cnpagoda', 'Nine-tier Pagoda', 'Bảo tháp chín tầng', 'world', 3, 3, '*', 54, [22], 'world1', 'world', 'A tall tower with curved roofs.', 548000],
+      ['cnpailou', 'Paifang Gate', 'Cổng bài lâu', 'park', 4, 2, '*', 40, [22], 'world1', 'park', 'A grand gate to the old street.', 248000],
+      ['cnlanternst', 'Lantern Street', 'Phố đèn lồng Hoa', 'park', 5, 2, '*', 42, [22], 'world1', 'park', 'Hundreds of red lights.', 319000],
+      ['cndragonsq', 'Dragon Dance Square', 'Quảng trường múa lân', 'fun', 3, 3, '*', 46, [22], 'world1', 'fun', 'A dragon dances on New Year.', 373000],
+      ['cnmoonbridge', 'Moon Bridge', 'Cầu Trăng', 'park', 4, 2, '*', 36, [22], 'world1', 'park', 'A round red bridge.', 193000],
+      ['cnlanternpost', 'Red Lantern', 'Đèn lồng đỏ', 'orna', 1, 1, '*', 30, [22], 'world1', 'deco', 'It glows red at night.', 7850],
+      ['cndragonstat', 'Dragon Statue', 'Tượng rồng', 'orna', 1, 1, '*', 45, [22], 'world1', 'deco', 'A green dragon on a stone.', 14700],
+      ['jpmachiya', 'Machiya Shop', 'Cửa hàng machiya', 'shop', 2, 2, '*', 34, [23], 'world1', 'shop', 'A dark wooden shop with a curtain.', 111000],
+      ['jpsushi', 'Sushi Bar', 'Quán sushi', 'shop', 2, 2, '*', 36, [23], 'world1', 'shop', 'Fresh fish on rice.', 127000],
+      ['jpramen', 'Ramen Shop', 'Quán ramen', 'shop', 2, 2, '*', 38, [23], 'world1', 'shop', 'Hot noodle soup.', 145000],
+      ['jptea', 'Tea Garden House', 'Nhà trà vườn', 'shop', 3, 2, '*', 42, [23], 'world1', 'shop', 'A quiet tea ceremony.', 235000],
+      ['jphouse', 'Japanese House', 'Nhà Nhật', 'home', 3, 3, '*', 40, [23], 'home2', 'home', 'Paper doors and a tiled roof.', 266000],
+      ['jpapart', 'Japanese Apartments', 'Chung cư Nhật', 'home', 3, 2, '*', 46, [23], 'home2', 'home', 'Small and neat homes.', 292000],
+      ['jpshrine', 'Shinto Shrine', 'Đền thần đạo', 'world', 4, 4, '*', 50, [23], 'world1', 'world', 'A red shrine in the trees.', 643000],
+      ['jpcastle', 'White Castle', 'Lâu đài trắng', 'world', 4, 4, '*', 58, [23], 'world1', 'world', 'A white castle with grey roofs.', 918000],
+      ['jppagoda5', 'Five-storey Pagoda', 'Tháp năm tầng', 'world', 3, 3, '*', 62, [23], 'world1', 'world', 'A tall wooden pagoda.', 763000],
+      ['jptorii', 'Great Torii', 'Cổng torii lớn', 'park', 4, 2, '*', 44, [23], 'world1', 'park', 'The red gate of a sacred place.', 312000],
+      ['jpzen', 'Zen Garden', 'Vườn thiền Nhật', 'park', 4, 3, '*', 46, [23], 'world1', 'park', 'Rocks and raked sand.', 443000],
+      ['jpkoi', 'Koi Garden', 'Vườn cá Koi Nhật', 'park', 4, 4, '*', 52, [23], 'world1', 'park', 'A pond with red bridge.', 706000],
+      ['jpsakura', 'Sakura Park', 'Công viên anh đào', 'park', 5, 4, '*', 56, [23], 'world1', 'park', 'Pink blossoms everywhere.', 965000],
+      ['jpsakuratree', 'Sakura Tree', 'Cây anh đào Nhật', 'orna', 1, 1, '*', 34, [23], 'world1', 'deco', 'A tree full of pink flowers.', 9520],
+      ['jpbonsai', 'Bonsai Pot', 'Chậu bonsai', 'orna', 1, 1, '*', 38, [23], 'world1', 'deco', 'A tiny old tree.', 11300],
+      ['vntube', 'Tube House', 'Nhà ống', 'home', 2, 2, '*', 38, [24], 'home2', 'home', 'Narrow, tall and very colourful.', 145000],
+      ['vnpho', 'Pho Restaurant', 'Quán phở', 'shop', 2, 2, '*', 40, [24], 'world1', 'shop', 'A bowl of hot beef noodles.', 164000],
+      ['vncoffee', 'Coffee Shop', 'Quán cà phê', 'shop', 3, 2, '*', 42, [24], 'world1', 'shop', 'Strong coffee with milk.', 235000],
+      ['vnmarket', 'Central Market', 'Chợ trung tâm', 'shop', 4, 3, '*', 48, [24], 'world1', 'shop', 'Fruit, fish, flowers and a clock tower.', 491000],
+      ['vnstilt', 'Stilt House', 'Nhà sàn', 'home', 3, 3, '*', 44, [24], 'home2', 'home', 'A wooden house on poles.', 335000],
+      ['vnpagoda', 'Old Pagoda', 'Chùa cổ Việt', 'world', 3, 3, '*', 50, [24], 'world1', 'world', 'A peaceful temple with ochre walls.', 455000],
+      ['vnonepillar', 'One Pillar Pagoda', 'Chùa Một Cột', 'world', 2, 2, '*', 54, [24], 'world1', 'world', 'A little temple on one pillar.', 337000],
+      ['vnlake', 'Sword Lake', 'Hồ Gươm', 'park', 5, 4, '*', 46, [24], 'world1', 'park', 'A calm lake with a small tower.', 602000],
+      ['vngate', 'Village Gate', 'Cổng làng', 'park', 4, 2, '*', 40, [24], 'world1', 'park', 'A brick village gate.', 248000],
+      ['vnrice', 'Rice Terraces', 'Ruộng bậc thang Việt', 'park', 5, 4, '*', 52, [24], 'world1', 'park', 'Green steps for rice.', 808000],
+      ['vnlantern', 'Lantern Town Street', 'Phố đèn lồng Hội An', 'park', 5, 2, '*', 56, [24], 'world1', 'park', 'Yellow walls and bright lanterns.', 637000],
+      ['vncovered', 'Covered Bridge', 'Cầu có mái', 'park', 4, 2, '*', 42, [24], 'world1', 'park', 'A bridge with a little roof.', 279000],
+      ['vnconical', 'Conical Hat', 'Nón lá', 'orna', 1, 1, '*', 38, [24], 'world1', 'deco', 'A hat made of palm leaves.', 11300],
+      ['vncyclo', 'Cyclo', 'Xích lô', 'orna', 1, 1, '*', 46, [24], 'world1', 'deco', 'A three-wheel city ride.', 15200],
+      ['thwat', 'Wat Temple', 'Chùa Wat', 'world', 4, 4, '*', 42, [25], 'world1', 'world', 'Gold and red roofs.', 423000],
+      ['thchedi', 'Golden Chedi', 'Chùa tháp vàng', 'world', 4, 4, '*', 50, [25], 'world1', 'world', 'A tall golden spire.', 643000],
+      ['thstilt', 'Thai Stilt House', 'Nhà sàn Thái', 'home', 3, 3, '*', 44, [25], 'home2', 'home', 'A teak house with tall roof.', 335000],
+      ['thstilt2', 'Thai Garden Villa', 'Biệt thự vườn Thái', 'home', 4, 3, '*', 56, [25], 'home2', 'home', 'A wooden villa in the garden.', 710000],
+      ['thfloat', 'Floating Market', 'Chợ nổi', 'shop', 3, 3, '*', 48, [25], 'world1', 'shop', 'Boats full of fruit.', 413000],
+      ['thmassage', 'Massage Spa', 'Tiệm massage', 'shop', 2, 2, '*', 46, [25], 'world1', 'shop', 'Calm hands and herbal tea.', 229000],
+      ['thnoodle', 'Street Noodle Shop', 'Quán mì Thái', 'shop', 2, 2, '*', 40, [25], 'world1', 'shop', 'Spicy and sweet noodles.', 164000],
+      ['thhotel', 'Boutique Hotel', 'Khách sạn Thái', 'shop', 4, 3, '*', 60, [25], 'world1', 'shop', 'A gold hotel with many roofs.', 838000],
+      ['thgate', 'Golden Gate', 'Cổng vàng Thái', 'park', 4, 2, '*', 44, [25], 'world1', 'park', 'A bright golden gate.', 312000],
+      ['thlotus', 'Lotus Pond', 'Hồ sen Thái', 'park', 4, 4, '*', 50, [25], 'world1', 'park', 'Pink lotus on green leaves.', 643000],
+      ['thbuddha', 'Golden Buddha', 'Tượng Phật vàng', 'world', 2, 2, '*', 58, [25], 'world1', 'world', 'A calm golden statue.', 400000],
+      ['thgarden', 'Tropical Garden', 'Vườn nhiệt đới', 'park', 4, 4, '*', 52, [25], 'world1', 'park', 'Palms and warm water.', 706000],
+      ['thtuktuk', 'Tuk-tuk', 'Xe tuk-tuk', 'orna', 1, 1, '*', 42, [25], 'world1', 'deco', 'A three-wheel taxi.', 13200],
+      ['thbuddhasm', 'Small Buddha', 'Tượng Phật nhỏ', 'orna', 1, 1, '*', 48, [25], 'world1', 'deco', 'A little golden friend.', 16200],
+      ['idborobudur', 'Stepped Temple', 'Đền bậc thang', 'world', 5, 5, '*', 60, [26], 'world1', 'world', 'Stone terraces and little stupas.', 1300000],
+      ['idbalitemple', 'Bali Temple', 'Đền Bali', 'world', 4, 4, '*', 50, [26], 'world1', 'world', 'Black thatched roofs and stone walls.', 643000],
+      ['idjoglo', 'Joglo House', 'Nhà Joglo', 'home', 3, 3, '*', 48, [26], 'home2', 'home', 'A big roof made of wood.', 413000],
+      ['idvilla', 'Bali Villa', 'Biệt thự Bali', 'home', 4, 3, '*', 58, [26], 'home2', 'home', 'A thatched villa by the rice field.', 773000],
+      ['idwarung', 'Warung', 'Quán warung', 'shop', 2, 2, '*', 46, [26], 'world1', 'shop', 'A small cafe with fried rice.', 229000],
+      ['idbatik', 'Batik Shop', 'Cửa hàng batik', 'shop', 3, 2, '*', 50, [26], 'world1', 'shop', 'Cloth printed with wax.', 357000],
+      ['idmarket', 'Art Market', 'Chợ nghệ thuật', 'shop', 4, 3, '*', 54, [26], 'world1', 'shop', 'Wooden masks and paintings.', 651000],
+      ['idgate', 'Split Gate', 'Cổng chẻ Bali', 'park', 4, 2, '*', 46, [26], 'world1', 'park', 'A gate split in two.', 347000],
+      ['idrice', 'Rice Terraces Bali', 'Ruộng bậc thang Bali', 'park', 5, 4, '*', 52, [26], 'world1', 'park', 'Water and green rice steps.', 808000],
+      ['idbeach', 'Palm Beach', 'Bãi biển cọ', 'park', 4, 4, '*', 56, [26], 'world1', 'park', 'Blue water and white sand.', 844000],
+      ['idspa', 'Garden Spa', 'Spa vườn', 'shop', 3, 3, '*', 62, [26], 'world1', 'shop', 'A quiet place with flowers.', 763000],
+      ['idoffering', 'Offering Basket', 'Lễ vật Bali', 'orna', 1, 1, '*', 46, [26], 'world1', 'deco', 'Flowers and a small flag.', 15200],
+      ['idumbrella', 'Beach Umbrella', 'Dù biển Bali', 'orna', 1, 1, '*', 40, [26], 'world1', 'deco', 'Shade by the sea.', 12200],
+      ['ukterrace', 'Terraced Houses', 'Nhà dãy kiểu Anh', 'home', 3, 2, '*', 50, [27], 'home2', 'home', 'Brick houses with chimneys.', 357000],
+      ['ukvictorian', 'Victorian Row', 'Dãy nhà Victoria', 'home', 4, 2, '*', 56, [27], 'home2', 'home', 'Pastel houses with bay windows.', 557000],
+      ['ukpub', 'Old Pub', 'Quán rượu cổ', 'shop', 3, 2, '*', 52, [27], 'world1', 'shop', 'Fish and chips and a warm fire.', 392000],
+      ['ukbookshop', 'Bookshop', 'Hiệu sách Anh', 'shop', 2, 2, '*', 48, [27], 'world1', 'shop', 'Old books and a cat.', 254000],
+      ['ukmarket', 'Covered Market', 'Chợ có mái', 'shop', 3, 3, '*', 56, [27], 'world1', 'shop', 'A market in a brick hall.', 598000],
+      ['ukbigben', 'Great Clock Tower', 'Tháp đồng hồ Anh', 'world', 3, 3, '*', 60, [27], 'world1', 'world', 'A famous tower and bell.', 705000],
+      ['ukcastle', 'Old Castle', 'Lâu đài cổ Anh', 'world', 5, 4, '*', 66, [27], 'world1', 'world', 'Stone walls and towers.', 1430000],
+      ['uktowerbridge', 'Tower Bridge', 'Cầu Tháp', 'world', 6, 3, '*', 70, [27], 'world1', 'world', 'Two towers over a river.', 1550000],
+      ['ukstation', 'Victorian Station', 'Ga Victoria', 'trans', 5, 3, '*', 54, [27], 'world1', 'port', 'Brick station with a clock.', 744000],
+      ['ukhyde', 'Royal Park Pond', 'Công viên hồ Hoàng gia', 'park', 5, 4, '*', 58, [27], 'world1', 'park', 'Ducks and benches.', 1050000],
+      ['ukrose', 'English Rose Garden', 'Vườn hồng Anh', 'park', 4, 3, '*', 62, [27], 'world1', 'park', 'Roses along stone paths.', 907000],
+      ['ukphone', 'Red Phone Box', 'Hộp điện thoại đỏ', 'orna', 1, 1, '*', 50, [27], 'world1', 'deco', 'A famous red box.', 17300],
+      ['ukbus', 'Double-decker Bus', 'Xe buýt hai tầng', 'orna', 1, 1, '*', 58, [27], 'world1', 'deco', 'A red bus with two floors.', 21700],
+      ['ussky', 'Skyscraper', 'Nhà chọc trời Mỹ', 'shop', 4, 4, '*', 54, [28], 'world1', 'shop', 'A tall tower with a spire.', 773000],
+      ['usdeco', 'Art Deco Tower', 'Toà Art Deco', 'shop', 3, 3, '*', 58, [28], 'world1', 'shop', 'Stepped tower with golden light.', 650000],
+      ['usbrownstone', 'Brownstone Row', 'Dãy nhà gạch nâu', 'home', 4, 2, '*', 56, [28], 'home2', 'home', 'Stone steps and tall windows.', 557000],
+      ['ustownhouse', 'City Townhouses', 'Nhà phố Mỹ', 'home', 3, 2, '*', 60, [28], 'home2', 'home', 'Neat homes with stairs.', 553000],
+      ['usdiner', 'Retro Diner', 'Quán diner xưa', 'shop', 3, 2, '*', 58, [28], 'world1', 'shop', 'Milkshakes and burgers.', 510000],
+      ['usgas', 'Route 66 Gas Station', 'Trạm xăng Route 66', 'shop', 2, 2, '*', 62, [28], 'world1', 'shop', 'A road trip stop.', 469000],
+      ['usbarn', 'Red Barn House', 'Nhà kho đỏ', 'home', 3, 3, '*', 64, [28], 'home2', 'home', 'A farm house from the prairie.', 823000],
+      ['usliberty', 'Statue of Liberty', 'Tượng Nữ thần Tự do', 'world', 4, 4, '*', 70, [28], 'world1', 'world', 'A torch lights the harbour.', 1440000],
+      ['usstadium', 'Baseball Stadium', 'Sân bóng chày', 'sport', 5, 5, '*', 68, [28], 'world1', 'sport', 'Peanuts and a home run.', 1760000],
+      ['uscentral', 'Central Park Pond', 'Công viên Trung tâm', 'park', 6, 4, '*', 60, [28], 'world1', 'park', 'A big park in the city.', 1270000],
+      ['ustheatre', 'Broadway Theatre', 'Nhà hát Broadway', 'fun', 4, 3, '*', 74, [28], 'world1', 'fun', 'Bright lights and big shows.', 1390000],
+      ['ushotdog', 'Hot Dog Cart', 'Xe xúc xích', 'orna', 1, 1, '*', 56, [28], 'world1', 'deco', 'A snack on the street.', 20600],
+      ['ustaxi', 'Yellow Taxi', 'Taxi vàng', 'orna', 1, 1, '*', 64, [28], 'world1', 'deco', 'A New York cab.', 25300],
+      ['auopera', 'Harbour Opera House', 'Nhà hát vỏ sò Úc', 'fun', 5, 4, '*', 64, [29], 'world1', 'fun', 'White shells by the harbour.', 1330000],
+      ['auharbour', 'Harbour Bridge', 'Cầu cảng lớn', 'park', 7, 3, '*', 72, [29], 'world1', 'park', 'A steel arch over the bay.', 1820000],
+      ['auuluru', 'Red Rock', 'Núi đá đỏ', 'world', 5, 5, '*', 60, [29], 'world1', 'world', 'A giant red rock in the desert.', 1300000],
+      ['ausurf', 'Surf Shop', 'Cửa hàng lướt sóng', 'shop', 2, 2, '*', 58, [29], 'world1', 'shop', 'Boards, wax and sun cream.', 400000],
+      ['aubeachhouse', 'Beach House', 'Nhà bãi biển', 'home', 3, 3, '*', 62, [29], 'home2', 'home', 'A house by the surf.', 763000],
+      ['aupub', 'Outback Pub', 'Quán rượu miền hoang', 'shop', 3, 2, '*', 66, [29], 'world1', 'shop', 'A cold drink and a long veranda.', 695000],
+      ['aufarm', 'Sheep Farm House', 'Nhà trang trại cừu', 'home', 4, 3, '*', 68, [29], 'home2', 'home', 'Big farm in the dry land.', 1130000],
+      ['aureef', 'Reef Lagoon', 'Đầm rạn san hô', 'park', 4, 4, '*', 70, [29], 'world1', 'park', 'Clear water and coral.', 1440000],
+      ['aukoala', 'Koala Park', 'Công viên koala', 'park', 4, 4, '*', 64, [29], 'world1', 'park', 'Koalas sleep in gum trees.', 1160000],
+      ['aubotanic', 'Botanic Glasshouse', 'Nhà kính thực vật Úc', 'park', 4, 4, '*', 72, [29], 'world1', 'park', 'Flowers of the continent.', 1540000],
+      ['auroo', 'Kangaroo Statue', 'Tượng kangaroo', 'orna', 1, 1, '*', 60, [29], 'world1', 'deco', 'A big hopper.', 22900],
+      ['ausurfboards', 'Surfboards', 'Ván lướt sóng', 'orna', 1, 1, '*', 56, [29], 'world1', 'deco', 'Three colourful boards.', 20600],
+      ['aucumtree', 'Gum Tree', 'Cây bạch đàn', 'tree', 1, 1, '*', 50, [29], 'world1', 'deco', 'The koala’s home.', 17300]
+    ];
+    T.forEach(function (r) {
+      var kind = r[10], lvl = r[7], cost = r[12], inc = 0, pop = 0, hp = 0, secs = Math.max(8, Math.min(2400, Math.round(cost / (lvl < 23 ? 45 : 80))));
+      if (kind === 'home') { inc = Math.round(cost / 21); pop = Math.round(cost / 85); }
+      else if (kind === 'shop') { inc = Math.round(cost / 15); hp = 1; }
+      else if (kind === 'fun') { inc = Math.round(cost / 12); hp = 6 + Math.round(lvl / 4); }
+      else if (kind === 'sport') { inc = Math.round(cost / 13); hp = 8 + Math.round(lvl / 4); }
+      else if (kind === 'park') { inc = Math.round(cost / 22); hp = 20 + Math.round(lvl * 1.1); }
+      else if (kind === 'port') { inc = Math.round(cost / 12); hp = 6; }
+      else if (kind === 'deco') { hp = 2 + Math.round(lvl / 6); secs = Math.max(4, Math.min(300, Math.round(cost / 40))); }
+      else { inc = Math.round(cost / 16); hp = 60 + Math.round(lvl * 1.4); }
+      ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
+    });
+  })();
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
   /* ───── quận mới "thừa hưởng" danh mục của các quận mẫu: công trình xây được ở quận mẫu cũng xây được ở quận mới (khối đất mới dùng cùng chữ khối) ───── */
   (function () {
-    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4], 17: [1, 4, 5], 18: [0, 10], 19: [7, 3], 20: [2, 6], 21: [5, 11] };
+    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4], 17: [1, 4, 5], 18: [0, 10], 19: [7, 3], 20: [2, 6], 21: [5, 11], 22: [1, 5], 23: [1, 5], 24: [0, 5], 25: [5, 3], 26: [5, 6], 27: [1, 5], 28: [1, 11], 29: [6, 11] };
     ITEMS.forEach(function (it) { Object.keys(MIRROR).forEach(function (nd) { nd = +nd; if (it.ds.indexOf(nd) < 0 && MIRROR[nd].some(function (m) { return it.ds.indexOf(m) >= 0; })) it.ds = it.ds.concat([nd]); }); });
   })();
   (function () {
@@ -1200,7 +1362,39 @@
     });
   })();
   // công trình cố định (chỉ để vẽ)
-  var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 }, bigplaza: { en: 'Harbor Plaza', vi: 'Quảng trường cảng', w: 1, h: 1 }, pier: { en: 'Fishing Pier', vi: 'Cầu tàu bãi biển', w: 7, h: 2 }, airport: { en: 'Airport Gate', vi: 'Cổng sân bay', w: 4, h: 2 } };
+  var FIXED_DEF = { plaza: { en: 'Town Plaza', vi: 'Quảng trường', w: 1, h: 1 }, townhall: { en: 'Town Hall', vi: 'Toà thị chính', w: 3, h: 3 }, clocktower: { en: 'Clock Tower', vi: 'Tháp đồng hồ', w: 1, h: 1 }, bigplaza: { en: 'Harbor Plaza', vi: 'Quảng trường cảng', w: 1, h: 1 }, pier: { en: 'Fishing Pier', vi: 'Cầu tàu bãi biển', w: 7, h: 2 }, airport: { en: 'Airport Gate', vi: 'Cổng sân bay', w: 4, h: 2 },
+    fx22gate: { en: 'Pailou Gate', vi: 'Cổng Bài Lâu', w: 3, h: 1 },
+    fx22mark: { en: 'Dragon Pagoda', vi: 'Bảo tháp Rồng', w: 3, h: 3 },
+    fx22da: { en: 'Red Lantern', vi: 'Đèn lồng đỏ', w: 1, h: 1 },
+    fx22db: { en: 'Dragon Statue', vi: 'Tượng rồng', w: 1, h: 1 },
+    fx23gate: { en: 'Torii Gate', vi: 'Cổng Torii', w: 3, h: 1 },
+    fx23mark: { en: 'White Castle', vi: 'Lâu đài Trắng', w: 3, h: 3 },
+    fx23da: { en: 'Cherry Tree', vi: 'Cây anh đào', w: 1, h: 1 },
+    fx23db: { en: 'Bonsai', vi: 'Cây bonsai', w: 1, h: 1 },
+    fx24gate: { en: 'Village Gate', vi: 'Cổng làng', w: 3, h: 1 },
+    fx24mark: { en: 'Old Temple', vi: 'Chùa cổ', w: 3, h: 3 },
+    fx24da: { en: 'Conical Hat', vi: 'Nón lá', w: 1, h: 1 },
+    fx24db: { en: 'Cyclo', vi: 'Xích lô', w: 1, h: 1 },
+    fx25gate: { en: 'Golden Gate', vi: 'Cổng vàng', w: 3, h: 1 },
+    fx25mark: { en: 'Golden Chedi', vi: 'Chùa tháp vàng', w: 3, h: 3 },
+    fx25da: { en: 'Golden Buddha', vi: 'Phật vàng', w: 1, h: 1 },
+    fx25db: { en: 'Tuk-tuk', vi: 'Xe tuk-tuk', w: 1, h: 1 },
+    fx26gate: { en: 'Bali Split Gate', vi: 'Cổng chẻ Bali', w: 3, h: 1 },
+    fx26mark: { en: 'Stone Temple', vi: 'Đền đá bậc thang', w: 3, h: 3 },
+    fx26da: { en: 'Offering', vi: 'Lễ vật', w: 1, h: 1 },
+    fx26db: { en: 'Beach Umbrella', vi: 'Dù biển', w: 1, h: 1 },
+    fx27gate: { en: 'Welcome Arch', vi: 'Cổng chào', w: 3, h: 1 },
+    fx27mark: { en: 'Great Clock Tower', vi: 'Tháp đồng hồ lớn', w: 3, h: 3 },
+    fx27da: { en: 'Red Phone Box', vi: 'Hộp điện thoại đỏ', w: 1, h: 1 },
+    fx27db: { en: 'Double-decker Bus', vi: 'Xe buýt hai tầng', w: 1, h: 1 },
+    fx28gate: { en: 'Welcome Sign', vi: 'Biển chào', w: 3, h: 1 },
+    fx28mark: { en: 'Statue of Liberty', vi: 'Tượng Nữ thần Tự do', w: 3, h: 3 },
+    fx28da: { en: 'Hot Dog Cart', vi: 'Xe bánh mì xúc xích', w: 1, h: 1 },
+    fx28db: { en: 'Yellow Taxi', vi: 'Taxi vàng', w: 1, h: 1 },
+    fx29gate: { en: 'Welcome Sign', vi: 'Biển chào', w: 3, h: 1 },
+    fx29mark: { en: 'Red Rock', vi: 'Núi đá đỏ', w: 3, h: 3 },
+    fx29da: { en: 'Kangaroo', vi: 'Kangaroo', w: 1, h: 1 },
+    fx29db: { en: 'Gum Tree', vi: 'Cây bạch đàn', w: 1, h: 1 } };
 
   /* ───── luật chơi ───── */
   var MAXLV = 3, LVMUL = [0, 1, 1.8, 3.0], POPMUL = [0, 1, 1.8, 3.0];

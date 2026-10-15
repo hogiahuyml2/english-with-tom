@@ -120,6 +120,7 @@
     cone(g, cx, cy, w * 1.1, zb + 22, zb + 46, p.c2 || '#4A4F5C'); beacon(g, cx, cy, zb + 48);
   };
   var beacon = function (g, cx, cy, z) { var q = g.P(cx, cy, z); g.ell(q[0], q[1], 2.2, 2.2, '#FF5A5A'); g.meta.beacon = q; };
+  A.kit8 = Z;
   var reg = function (key, style, p) { var f = Z[style]; if (!f) return; p = p || {}; def(key, function (g, rw, rh, lv) { f(g, rw, rh, lv || 1, p); }); };
   var R = reg;
   R('stonebridge', 'b_arch', {});

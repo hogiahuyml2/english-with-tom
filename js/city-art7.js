@@ -116,6 +116,7 @@
     var i; for (i = 0; i < 4; i++) { var x = .55 + (i % 2) * (rw - 1.6), y = .55 + Math.floor(i / 2) * (rh - 1.6); g.box(x, y, .45, .4, z, z + 9, ['#F6CBA2', '#C3DCF3', '#F3B9B9', '#F5E6C8'][i]); g.hip(x - .03, y - .03, .51, .46, z + 9, z + 16, ['#D95A42', '#4F80BA', '#B8485E', '#E58A3C'][i], .25); }
     g.tree(rw / 2, rh / 2, .7, 'cherry'); beaconAt(g, rw / 2, rh / 2, z + 22);
   };
+  A.kit7 = Y;
   var reg = function (key, style, p) { var f = Y[style]; if (!f) return; p = p || {}; def(key, function (g, rw, rh, lv) { f(g, rw, rh, lv || 1, p); }); };
   var R = reg;
   R('stackhabitat', 'stacked', {});
