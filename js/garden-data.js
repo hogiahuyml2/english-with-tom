@@ -642,7 +642,7 @@
     waterCut: 0.25,       // mỗi lần tưới rút ngắn 25% thời gian lớn
     yieldCapDay: 40,      // xu tối đa nhận từ thu hoạch mỗi ngày
     feedXu: 1, feedCapDay: 5, // cho thú cưng ăn: +1 xu / con, tối đa 5 xu mỗi ngày
-    quizWater: 1, quizCapDay: 150, // trả lời đúng: +1 lượt tưới và được lật thẻ thưởng (xem FLIP); tối đa 150 câu đúng được thưởng mỗi ngày
+    quizWater: 1, quizCapDay: 1000000, // trả lời đúng: +1 lượt tưới và được lật thẻ thưởng (xem FLIP); tối đa 150 câu đúng được thưởng mỗi ngày
     maxPets: 12, sellBack: 0.5,
     boostRate: 0.5, boostMin: 3 // cho cây lớn ngay: 0,5 xu mỗi phút còn lại (cây chờ càng lâu càng tốn), tối thiểu 3 xu
   };
@@ -650,7 +650,7 @@
   // thẻ quà: phiếu mua miễn phí (hoa/cây/đồ trang trí/công trình/thú cưng), một thú cưng, một khu mới, lượt tưới, phép cho cây lớn ngay.
   var FLIP = { cards: 3, normal: [[20, 34], [30, 26], [40, 16], [50, 10], [60, 6], [80, 3.5], [100, 1.5]],
     types: [['coin', 44], ['b500', 11], ['b1000', 5], ['x2', 4], ['x3', 2], ['free_plant', 6], ['free_tree', 3], ['free_deco', 3], ['free_big', 2], ['free_pet', 2], ['pet', 2], ['zone', 2], ['water', 3], ['boost', 3]],
-    big: { b500: 500, b1000: 1000 }, mult: { x2: 2, x3: 3 }, multMin: 100, dayCap: 300000,
+    big: { b500: 500, b1000: 1000 }, mult: { x2: 2, x3: 3 }, multMin: 100, dayCap: 1000000000,
     free: { free_plant: { n: 5, cls: 'plant', label: 'hoa' }, free_tree: { n: 2, cls: 'tree', label: 'cây' }, free_deco: { n: 3, cls: 'deco', label: 'đồ trang trí' }, free_big: { n: 1, cls: 'big', label: 'công trình lớn' }, free_pet: { n: 1, cls: 'pet', label: 'thú cưng' } },
     water: 10, boost: 1 };
   // Kho đặc sản từng khu (5 hoa · 5 cây · 5 trang trí · 5 công trình · 5 thú cưng cho MỖI khu): xem js/garden-catalog.js + garden-cat-*.js

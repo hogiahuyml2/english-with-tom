@@ -10,7 +10,7 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
   const J = (s, d) => { try { return JSON.parse(s); } catch (_) { return d; } };
   const one = (sql, ...a) => db.prepare(sql).get(...a);
   const vnDay = () => process.env.EWT_CITY_DAY || new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);   // EWT_CITY_DAY: chỉ để thử nghiệm trên máy
-  const R = C.RULES, MATCH_DAY = 5;
+  const R = C.RULES, MATCH_DAY = 1000000;
   const festIds = () => C.festivalsOn(vnDay()), festBonus = () => festIds().reduce((a, id) => a + ((C.FEST_BY[id] || {}).bonus || 0), 0);
   const evOn = (id) => { if (festIds().indexOf(id) >= 0) return true; try { return !!(app.locals.gardenEvActive && app.locals.gardenEvActive(id)); } catch (_) { return false; } };
   const evList = () => { let l = []; try { l = app.locals.gardenEvList ? app.locals.gardenEvList() : []; } catch (_) { /* bỏ qua */ } return l.concat(festIds().filter((id) => l.indexOf(id) < 0)); };

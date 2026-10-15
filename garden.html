@@ -647,7 +647,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <div class="gd-modal" id="xum"><div class="gd-box" style="max-width:420px">
   <h3 id="xuh">💰 Tặng xu</h3><p class="gd-sub" id="xusub"></p>
   <div class="gd-qk" id="xuq"></div>
-  <input class="gd-field-in" id="xuamt" type="number" min="10" max="200000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 200.000)">
+  <input class="gd-field-in" id="xuamt" type="number" min="10" max="500000" inputmode="numeric" placeholder="Nhập số xu muốn tặng (10 – 500.000)">
   <input class="gd-field-in" id="xunote" maxlength="60" placeholder="Lời nhắn (không bắt buộc)" style="margin-top:8px">
   <div class="gd-act"><button class="gd-btn" id="xuclose">Đóng</button><button class="gd-btn pri" id="xusend">💰 Tặng xu</button></div>
 </div></div>
@@ -1499,7 +1499,7 @@ function nextQ() {
   $('qbody').innerHTML = '<p class="gd-sub">Đang tìm câu hỏi…</p>'; QLOCK = false;
   var url = '/api/garden/quiz?src=' + QS.src + (QS.src === 'grammar' ? '&grade=' + QS.grade + '&lesson=' + encodeURIComponent(QS.lesson) : '&level=' + QS.level + '&type=' + (QS.vtype || 'mix'));
   api(url).then(function (q) {
-    QCUR = q; $('qsub').innerHTML = q.left > 0 ? 'Trả lời đúng để <b>lật thẻ thưởng</b>: 20–100 ' + COIN + ', hay trúng thẻ <b>+500</b>, <b>+1000</b>, <b>×2</b>, <b>×3</b> toàn bộ số xu hiện có (hiếm; mỗi ngày kiếm tối đa 300.000 xu từ thẻ), hoặc thẻ quà: <b>mở khoá thú cưng / khu mới</b>, <b>mua hoa-cây miễn phí</b>, <b>⚡ cho cây lớn ngay</b>! Kèm <b>+' + D.RULES.quizWater + ' 💧</b>. Hôm nay còn <b>' + q.left + '</b> câu có thưởng.' : 'Hôm nay bạn đã nhận đủ thưởng — vẫn có thể luyện thêm cho vui nhé!';
+    QCUR = q; $('qsub').innerHTML = q.left > 0 ? 'Trả lời đúng để <b>lật thẻ thưởng</b>: 20–100 ' + COIN + ', hay trúng thẻ <b>+500</b>, <b>+1000</b>, <b>×2</b>, <b>×3</b> toàn bộ số xu hiện có (hiếm), hoặc thẻ quà: <b>mở khoá thú cưng / khu mới</b>, <b>mua hoa-cây miễn phí</b>, <b>⚡ cho cây lớn ngay</b>! Kèm <b>+' + D.RULES.quizWater + ' 💧</b>. Câu có thưởng <b>không giới hạn</b> — cứ trả lời đúng là được lật thẻ!' : 'Hôm nay bạn đã nhận đủ thưởng — vẫn có thể luyện thêm cho vui nhé!';
     $('qbody').innerHTML = '<div class="gd-q"><div class="tp">' + esc(q.topic) + '</div><div class="qt">' + esc(q.q) + '</div>' + (q.ctx ? '<div class="tp" style="text-transform:none;font-weight:600;margin-top:4px">💬 ' + esc(q.ctx) + '</div>' : '') + '</div><div class="gd-opts">' + q.opts.map(function (o, i) { return '<button class="gd-opt" data-oi="' + i + '">' + esc(o) + '</button>'; }).join('') + '</div><div id="qfb"></div>';
     $('qbody').onclick = function (e) { var b = e.target.closest('[data-oi]'); if (b && !QLOCK) answer(+b.getAttribute('data-oi')); };
   }).catch(function (e) { $('qbody').innerHTML = '<p class="gd-sub">' + esc(e.message) + '</p>'; });
@@ -1821,7 +1821,7 @@ document.addEventListener('click', function (e) {
   if (t.closest('#xuclose') || t === $('xum')) { $('xum').classList.remove('on'); return; }
   if ((el = t.closest('[data-xuq]'))) { $('xuamt').value = el.getAttribute('data-xuq'); return; }
   if (t.closest('#xusend') && XU) {
-    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 200000)) return toast('Nhập số xu từ 10 đến 200.000 nhé.');
+    var xv = Math.floor(Number($('xuamt').value)); if (!(xv >= 10 && xv <= 500000)) return toast('Nhập số xu từ 10 đến 500.000 nhé.');
     var xb = $('xusend'); xb.disabled = true;
     api('/api/garden/xu/send', { to: XU.to, xu: xv, note: $('xunote').value || '' }).then(function (d) { COINS = d.coins; render(); $('xum').classList.remove('on'); xb.disabled = false; toast('💰 Đã tặng ' + xv + ' xu cho ' + d.to + '!', 4200); celebrate(8); if (QTAB === 'f' && $('qstm').classList.contains('on')) drawQst(); }).catch(function (er) { xb.disabled = false; toast(er.message, 4200); });
     return;
@@ -1850,9 +1850,9 @@ document.addEventListener('input', function (e) { if (e.target && e.target.id ==
 /* ───────── tặng xu · sticker & lời nhắn nổi ───────── */
 var XU = null, NT = null, NOTES = [], NKEY = '', STICKERS = ['🌸', '🌻', '🌷', '💐', '🌈', '⭐', '✨', '💖', '😍', '👍', '👏', '🎉', '🦋', '🐰', '🐶', '🍀', '🌟', '😊', '🥰', '🏆'];
 function openXu(token, name) {
-  XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 50.000 xu mỗi lần · 300.000 xu mỗi ngày cho một bạn · tối đa 20 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
-  $('xuq').innerHTML = [500, 1000, 5000, 10000, 50000, 100000, 200000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
-  if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 50.000 xu mỗi lần · 300.000 xu mỗi ngày cho một bạn · tối đa 20 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
+  XU = { to: token, name: name }; $('xuh').textContent = '💰 Tặng xu cho ' + name; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 500.000 xu mỗi lần · 1.000.000 xu mỗi ngày cho một bạn · tặng thoải mái trong số xu bạn đang có · tối đa 40 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.');
+  $('xuq').innerHTML = [1000, 5000, 10000, 50000, 100000, 200000, 500000].map(function (v) { return '<button data-xuq="' + v + '">' + v + '</button>'; }).join(''); $('xuamt').value = ''; $('xunote').value = ''; $('xum').classList.add('on');
+  if (VISIT) api('/api/word-game/me').then(function (d) { COINS = d.coins; $('xusub').innerHTML = H('Xu chuyển ngay vào ví của bạn ấy. Tối đa 500.000 xu mỗi lần · 1.000.000 xu mỗi ngày cho một bạn · tặng thoải mái trong số xu bạn đang có · tối đa 40 lượt mỗi ngày. Bạn đang có ' + fmtXu(COINS) + ' 🪙.'); }).catch(function () {});
 }
 function drawNoteModal() { $('ntst').innerHTML = STICKERS.map(function (s) { return '<button data-nts="' + s + '" class="' + (NT.st === s ? 'on' : '') + '">' + s + '</button>'; }).join(''); $('ntsend').disabled = false; }
 function openNote(token, name) { NT = { to: token, name: name, st: '' }; $('nth').textContent = '🎈 Thả sticker trong vườn của ' + name; $('ntxt').value = ''; drawNoteModal(); $('ntm').classList.add('on'); }

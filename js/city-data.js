@@ -1408,7 +1408,7 @@
     speedNow: { base: 15, perMin: 10 },  // xong ngay: đắt hơn
     freeStart: { cottage: 2, kiosk: 1 }, // vài món miễn phí để học sinh có "vốn" đầu tiên (không phát xu)
     quizReward: [[20, 40], [30, 30], [40, 18], [60, 8], [100, 4]],   // [xu, trọng số]
-    quizDayCap: 60,
+    quizDayCap: 1000000,
     ticketChance: 0.12
   };
   var itemCost = function (it, lv) { return lv <= 1 ? it.cost : Math.round(it.cost * RULES.upgradeMul[lv]); };
