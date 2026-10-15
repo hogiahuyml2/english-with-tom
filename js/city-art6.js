@@ -401,7 +401,7 @@
     var f = X[style]; if (!f) return; p = p || {}; var seed = hashS(key); p.id = key;
     def(key, function (g, rw, rh, lv) { f(g, rw, rh, lv || 1, p, rng(seed)); });
   };
-  A.kit6 = { reg: reg, styles: X, deco: D, dome: dome, cone: cone, big: big, rng: rng, hashS: hashS, pool: pool, sh: sh };
+  A.kit6 = { reg: reg, styles: X, deco: D, dome: dome, cone: cone, big: big, rng: rng, hashS: hashS, pool: pool, sh: sh, fence: fence, flowersAt: flowersAt, trees: trees, chim: chim };
   var R = reg;
   R('gardencottage', 'cottage', {"wall": "#F6E2B8", "roof": "#D95A42", "tree": "cherry"});
   R('pinkcottage', 'cottage', {"wall": "#F8D7E3", "roof": "#B8485E", "fl": ["#fff", "#FF7AA8"]});

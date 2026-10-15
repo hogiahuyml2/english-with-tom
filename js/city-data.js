@@ -1102,6 +1102,77 @@
       ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
     });
   })();
+  /* ───── đợt CẦU, GA & BẾN, công trình THEO MÙA và LỄ HỘI — đồ hoạ ở js/city-art8.js ───── */
+  (function () {
+    var ALLD = []; for (var q = 0; q < 22; q++) ALLD.push(q);
+    var T = [
+      ['stonebridge', 'Stone Arch Bridge', 'Cầu Vòm Đá', 'park', 4, 2, '*', 6, ALLD, 'world1', 'park', 'An old stone bridge with round arches.', 2620],
+      ['mosscbridge', 'Mossy Stone Bridge', 'Cầu Đá Rêu', 'park', 4, 2, '*', 18, ALLD, 'world1', 'park', 'A quiet bridge covered by green moss.', 36500],
+      ['whitebridge', 'White Marble Bridge', 'Cầu Đá Trắng', 'park', 5, 2, '*', 37, ALLD, 'world1', 'park', 'A white bridge with smooth arches.', 235000],
+      ['goldbridge', 'Golden Arch Bridge', 'Cầu Vòm Vàng', 'park', 5, 3, '*', 86, ALLD, 'world1', 'park', 'A bridge of shining gold stone.', 2270000],
+      ['cablebridge', 'Cable Bridge', 'Cầu Dây Văng', 'park', 6, 3, '*', 16, ALLD, 'world1', 'park', 'Two towers hold the road with long cables.', 44800],
+      ['redcable', 'Red Cable Bridge', 'Cầu Dây Văng Đỏ', 'park', 6, 3, '*', 40, ALLD, 'world1', 'park', 'Red towers and white cables.', 404000],
+      ['azurecable', 'Azure Cable Bridge', 'Cầu Dây Văng Lam', 'park', 7, 3, '*', 74, ALLD, 'world1', 'park', 'A blue bridge that is long and graceful.', 1940000],
+      ['nightcable', 'Night Light Bridge', 'Cầu Ánh Đêm', 'park', 7, 3, '*', 120, ALLD, 'world1', 'park', 'Its cables glow golden at night.', 6190000],
+      ['steeltruss', 'Steel Truss Bridge', 'Cầu Giàn Thép', 'park', 5, 2, '*', 12, ALLD, 'world1', 'park', 'A strong red steel bridge for trains.', 15800],
+      ['greentruss', 'Green Truss Bridge', 'Cầu Giàn Xanh', 'park', 5, 2, '*', 31, ALLD, 'world1', 'park', 'A green steel bridge by the park.', 154000],
+      ['bluetruss', 'Blue Truss Bridge', 'Cầu Giàn Lam', 'park', 6, 2, '*', 59, ALLD, 'world1', 'park', 'A blue bridge over the wide river.', 805000],
+      ['redarch', 'Red Steel Arch Bridge', 'Cầu Vòm Thép Đỏ', 'park', 5, 2, '*', 26, ALLD, 'world1', 'park', 'A tall red arch holds the road.', 101000],
+      ['whitearch', 'White Arch Bridge', 'Cầu Vòm Trắng', 'park', 6, 3, '*', 64, ALLD, 'world1', 'park', 'A white arch like a rainbow of steel.', 1250000],
+      ['goldarch', 'Golden Arch Bridge XL', 'Cầu Vòm Vàng Lớn', 'park', 7, 3, '*', 110, ALLD, 'world1', 'park', 'A giant golden arch over the bay.', 5020000],
+      ['woodbridge', 'Wooden Bridge', 'Cầu Gỗ Cong', 'park', 3, 2, '*', 4, ALLD, 'world1', 'park', 'A small red bridge in the garden.', 832],
+      ['cherrybridge', 'Cherry Blossom Bridge', 'Cầu Hoa Anh Đào', 'park', 4, 2, '*', 23, ALLD, 'world1', 'park', 'A red bridge under pink flowers.', 65800],
+      ['lanternbridge', 'Lantern Bridge', 'Cầu Đèn Lồng', 'park', 4, 2, '*', 52, ALLD, 'world1', 'park', 'A wooden bridge with a view of the pond.', 466000],
+      ['glassstation', 'Glass Station', 'Ga Kính', 'trans', 5, 3, 't', 15, [9], 'world1', 'port', 'A big glass roof over the platforms.', 34400],
+      ['skystation', 'Sky Glass Station', 'Ga Kính Trời', 'trans', 6, 4, 't', 45, [9], 'world1', 'port', 'A modern station with blue trains.', 637000],
+      ['greenstation', 'Green Eco Station', 'Ga Sinh Thái', 'trans', 6, 4, 't', 78, [9], 'world1', 'port', 'Solar glass and a green train.', 2380000],
+      ['bulletstation', 'Bullet Train Station', 'Ga Tàu Cao Tốc', 'trans', 7, 4, 't', 115, [9], 'world1', 'port', 'White fast trains rush through here.', 6640000],
+      ['clockstation', 'Clock Station', 'Ga Đồng Hồ', 'trans', 5, 3, 't', 10, [9], 'world1', 'port', 'A brick station with a clock tower.', 13000],
+      ['grandstation', 'Grand Central', 'Ga Trung Tâm', 'trans', 6, 4, 't', 35, [9], 'world1', 'port', 'The biggest old station in the city.', 348000],
+      ['royalstation', 'Royal Station', 'Ga Hoàng Gia', 'trans', 6, 4, 't', 68, [9], 'world1', 'port', 'A pink-roof station for royal trains.', 1720000],
+      ['metrostairs', 'Metro Entrance', 'Lối Vào Metro', 'trans', 2, 2, 't', 8, [9], 'world1', 'port', 'Stairs go down to the underground train.', 3440],
+      ['metrohub', 'Metro Hub', 'Ga Metro Trung Tâm', 'trans', 3, 3, 't', 28, [9], 'world1', 'port', 'A hub where five lines meet.', 113000],
+      ['metrostar', 'Metro Star Station', 'Ga Metro Sao', 'trans', 3, 3, 't', 60, [9], 'world1', 'port', 'A bright violet station.', 705000],
+      ['busplaza', 'Bus Stop Plaza', 'Bến Xe Buýt', 'trans', 4, 2, 't', 5, [9], 'world1', 'port', 'Orange buses wait under a roof.', 1690],
+      ['bluebusdepot', 'Blue Bus Terminal', 'Bến Xe Buýt Xanh', 'trans', 5, 3, 't', 21, [9], 'world1', 'port', 'A big terminal for city buses.', 77100],
+      ['ecobusdepot', 'Eco Bus Terminal', 'Bến Xe Điện', 'trans', 6, 3, 't', 50, [9], 'world1', 'port', 'Electric buses charge here.', 690000],
+      ['springcottage', 'Spring Cottage', 'Nhà Mùa Xuân', 'home', 3, 3, 'rc', 9, [0, 1], 'home2', 'home', 'A home among blooming cherry trees.', 7430],
+      ['springcafe', 'Spring Cafe', 'Quán Cà Phê Mùa Xuân', 'shop', 3, 3, 'c', 17, [0, 1], 'world1', 'shop', 'Sweet tea and flower petals.', 34200],
+      ['springmanor', 'Spring Manor', 'Dinh Thự Mùa Xuân', 'home', 4, 4, 'rc', 47, [0, 1], 'home2', 'home', 'A large house full of pink blossoms.', 554000],
+      ['summercottage', 'Summer Cottage', 'Nhà Mùa Hè', 'home', 3, 3, 'rc', 11, [0, 1], 'home2', 'home', 'A bright house with sunflowers.', 12000],
+      ['summerbeachcafe', 'Summer Beach Cafe', 'Quán Mùa Hè', 'shop', 3, 3, 'c', 19, [0, 1], 'world1', 'shop', 'Cold drinks for hot days.', 44600],
+      ['summervilla', 'Summer Villa', 'Biệt Thự Mùa Hè', 'home', 4, 4, 'rc', 49, [0, 1], 'home2', 'home', 'A white villa with a sunny garden.', 613000],
+      ['autumncottage', 'Autumn Cottage', 'Nhà Mùa Thu', 'home', 3, 3, 'rc', 13, [0, 1], 'home2', 'home', 'A cosy house with orange leaves.', 18000],
+      ['autumncafe', 'Autumn Cafe', 'Quán Mùa Thu', 'shop', 3, 3, 'c', 25, [0, 1], 'world1', 'shop', 'Hot cocoa and warm bread.', 86300],
+      ['autumnmanor', 'Autumn Manor', 'Dinh Thự Mùa Thu', 'home', 4, 4, 'rc', 55, [0, 1], 'home2', 'home', 'A red-roof manor in a golden garden.', 808000],
+      ['wintercottage', 'Winter Cottage', 'Nhà Mùa Đông', 'home', 3, 3, 'rc', 15, [0, 1], 'home2', 'home', 'A snowy house with a warm chimney.', 25300],
+      ['wintercafe', 'Winter Cafe', 'Quán Mùa Đông', 'shop', 3, 3, 'c', 29, [0, 1], 'world1', 'shop', 'Hot soup when it snows.', 123000],
+      ['wintermanor', 'Winter Manor', 'Dinh Thự Mùa Đông', 'home', 4, 4, 'rc', 61, [0, 1], 'home2', 'home', 'A big white house under the snow.', 1040000],
+      ['seasongarden', 'Four Seasons Lodge', 'Nhà Bốn Mùa', 'home', 5, 4, 'rc', 92, [0, 1], 'home2', 'home', 'A lodge for all year long.', 3180000],
+      ['bigxmastree', 'Big Christmas Tree', 'Cây Thông Noel Lớn', 'park', 3, 3, '*', 14, ALLD, 'world1', 'park', 'A giant tree with lights and gifts.', 21400],
+      ['grandxmas', 'Grand Christmas Tree', 'Cây Thông Noel Khổng Lồ', 'park', 4, 4, '*', 56, ALLD, 'world1', 'park', 'It lights up the whole square.', 844000],
+      ['carouselfair', 'Merry-go-round', 'Vòng Quay Ngựa Gỗ', 'fun', 3, 3, 'f', 13, [3], 'world1', 'fun', 'Painted horses go round and round.', 18000],
+      ['goldcarousel', 'Golden Carousel', 'Vòng Quay Ngựa Vàng', 'fun', 4, 4, 'f', 50, [3], 'world1', 'fun', 'A carousel with golden horses.', 643000],
+      ['circustent', 'Circus Tent', 'Rạp Xiếc', 'fun', 4, 4, 'f', 20, [3], 'world1', 'fun', 'Clowns, acrobats and lions.', 71300],
+      ['bluecircus', 'Big Blue Circus', 'Rạp Xiếc Lam', 'fun', 5, 5, 'f', 66, [3], 'world1', 'fun', 'A giant blue and white circus.', 1640000],
+      ['lanterngate', 'Lantern Gate', 'Cổng Đèn Lồng', 'park', 4, 2, '*', 12, ALLD, 'world1', 'park', 'Red lanterns light up the street.', 13800],
+      ['festivalgate', 'Festival Lanterns', 'Phố Đèn Lồng', 'park', 5, 3, '*', 44, ALLD, 'world1', 'park', 'A festival of warm lights.', 455000],
+      ['moonlanternst', 'Moon Lantern Street', 'Phố Đèn Trăng', 'park', 6, 3, '*', 95, ALLD, 'world1', 'park', 'Violet and gold lanterns for the moon night.', 3220000],
+      ['bigben', 'Great Clock Tower', 'Tháp Đồng Hồ Lớn', 'world', 3, 3, 'w', 26, [5], 'world1', 'world', 'A famous tower with a big clock.', 94800],
+      ['goldclock', 'Golden Clock Tower', 'Tháp Đồng Hồ Vàng', 'world', 3, 3, 'w', 57, [5], 'world1', 'world', 'A tower with a golden roof.', 623000],
+      ['crystalclock', 'Crystal Clock Tower', 'Tháp Đồng Hồ Pha Lê', 'world', 4, 4, 'w', 98, [5], 'world1', 'world', 'A clock tower of light blue glass.', 3230000]
+    ];
+    T.forEach(function (r) {
+      var kind = r[10], lvl = r[7], cost = r[12], inc = 0, pop = 0, hp = 0, secs = Math.max(8, Math.min(2400, Math.round(cost / (lvl < 23 ? 45 : 80))));
+      if (kind === 'home') { inc = Math.round(cost / 21); pop = Math.round(cost / 85); }
+      else if (kind === 'shop') { inc = Math.round(cost / 15); hp = 1; }
+      else if (kind === 'fun') { inc = Math.round(cost / 12); hp = 6 + Math.round(lvl / 4); }
+      else if (kind === 'park') { inc = Math.round(cost / 22); hp = 20 + Math.round(lvl * 1.1); }
+      else if (kind === 'port') { inc = Math.round(cost / 12); hp = 6; }
+      else { inc = Math.round(cost / 16); hp = 60 + Math.round(lvl * 1.4); }
+      ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
+    });
+  })();
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
