@@ -397,9 +397,16 @@
   D.crystalp = function (g, rw, rh, c) { sh(g, c, 9); [[-6, 0, 10, '#8FD3F5'], [5, 1, 14, '#B77CFF'], [0, -1, 20, '#6FE0D0']].forEach(function (q) { g.poly([[c[0] + q[0] - 4, c[1] + q[1]], [c[0] + q[0], c[1] + q[1] - q[2] - 6], [c[0] + q[0] + 4, c[1] + q[1]]], q[3], INK); g.poly([[c[0] + q[0], c[1] + q[1]], [c[0] + q[0], c[1] + q[1] - q[2] - 6], [c[0] + q[0] + 4, c[1] + q[1]]], shade(q[3], .8), false); }); g.glow.push({ c: [c[0], c[1] - 12], r: 16 }); };
   X.deco = function (g, rw, rh, lv, p) { var c = ctr(g, rw, rh); if (p.under) lot(g, rw, rh, p.under); (D[p.t] || D.well)(g, rw, rh, c); };
 
+  // công viên lớn: thêm hàng cây ven rìa, bồn hoa, ghế & đèn để không trống trải
+  var enrich = function (g, rw, rh, r, lv) {
+    if (rw * rh < 12) return; var i, n = Math.max(2, Math.round((rw + rh) * .9)), tr = ['oak', 'cherry', 'pine', 'autumn'];
+    for (i = 0; i < n; i++) { var t = (i + .5) / n; g.tree(.18 + t * (rw - .36), .14, .5 + r() * .15, tr[i % 4]); g.tree(.14, .18 + t * (rh - .36), .5 + r() * .15, tr[(i + 1) % 4]); }
+    for (i = 0; i < Math.round(rw * rh / 5); i++) { var q = g.P(.4 + r() * (rw - .8), .4 + r() * (rh - .8), 2); dot(g, q[0], q[1], 1.5, ['#FF7AA8', '#FFD84A', '#fff', '#B77CFF'][i % 4]); }
+    var b = g.P(rw - .35, rh - .22, 0); g.box(rw - .6, rh - .3, .5, .16, 0, 4, '#8A5A33'); g.line([b[0], b[1] - 6], [b[0], b[1] - 24], '#4B4F5A', 1.8); g.ell(b[0], b[1] - 25, 2.6, 2.6, '#FFE9A0', INK); g.glow.push({ c: [b[0], b[1] - 25], r: 11 });
+  };
   var reg = function (key, style, p) {
     var f = X[style]; if (!f) return; p = p || {}; var seed = hashS(key); p.id = key;
-    def(key, function (g, rw, rh, lv) { f(g, rw, rh, lv || 1, p, rng(seed)); });
+    def(key, function (g, rw, rh, lv) { var r = rng(seed); f(g, rw, rh, lv || 1, p, r); if (/^park_(pond|fountain|glade|picnic|orchard|lake|snow|sculpt|kids)$/.test(style)) enrich(g, rw, rh, rng(seed + 7), lv); });
   };
   A.kit6 = { reg: reg, styles: X, deco: D, dome: dome, cone: cone, big: big, rng: rng, hashS: hashS, pool: pool, sh: sh, fence: fence, flowersAt: flowersAt, trees: trees, chim: chim };
   var R = reg;

@@ -480,8 +480,15 @@
     var ox = rh * HW + 70, oy = 1100, g = new Gfx(ctx, ox, oy), P = pal && root.EWTCityData && root.EWTCityData.PAL_BY[pal]; face = face | 0; g.sw = !!(face & 1); g.nf = face >= 2;
     if (P) { curG = g; hookCtx(ctx, P); }
     try { if (g.sw) fn(g, rh, rw, lv); else fn(g, rw, rh, lv); } finally { if (P) { unhookCtx(ctx); curG = null; } }
-    var b = g.b, x0 = Math.max(0, Math.floor(b.x0 - 3)), y0 = Math.max(0, Math.floor(b.y0 - 3)), x1 = Math.ceil(b.x1 + 3), y1 = Math.ceil(b.y1 + 3), w = x1 - x0, h = y1 - y0;
+    var b = g.b, x0 = Math.max(0, Math.floor(b.x0 - 9)), y0 = Math.max(0, Math.floor(b.y0 - 9)), x1 = Math.ceil(b.x1 + 9), y1 = Math.ceil(b.y1 + 9), w = x1 - x0, h = y1 - y0;
     var cv = document.createElement('canvas'); cv.width = w * SS; cv.height = h * SS; cv.getContext('2d').drawImage(tmp, x0 * SS, y0 * SS, w * SS, h * SS, 0, 0, w * SS, h * SS);
+    // làm đẹp chung: ánh sáng khối (sáng trên – tối dưới) + bóng đổ mềm dưới công trình → mọi sprite có chiều sâu hơn
+    try {
+      var qc = cv.getContext('2d'), lg = qc.createLinearGradient(0, 0, 0, cv.height); lg.addColorStop(0, 'rgba(255,248,225,.20)'); lg.addColorStop(.45, 'rgba(255,255,255,0)'); lg.addColorStop(1, 'rgba(20,30,70,.16)');
+      qc.globalCompositeOperation = 'source-atop'; qc.fillStyle = lg; qc.fillRect(0, 0, cv.width, cv.height); qc.globalCompositeOperation = 'source-over';
+      var c2 = document.createElement('canvas'); c2.width = cv.width; c2.height = cv.height; var q2 = c2.getContext('2d');
+      q2.shadowColor = 'rgba(24,32,70,.30)'; q2.shadowBlur = 5 * SS; q2.shadowOffsetX = 1.5 * SS; q2.shadowOffsetY = 3 * SS; q2.drawImage(cv, 0, 0); cv = c2;
+    } catch (e) { /* giữ bản gốc */ }
     // lớp ánh sáng ban đêm (cửa sổ + đèn)
     var gl = null;
     if (g.glow.length) {
