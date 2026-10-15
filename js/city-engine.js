@@ -403,7 +403,8 @@
   P.poke = function () { this.inputT = performance.now(); };
   P.applyQuality = function () { var f = this.fx; f.shimmer = this.quality >= 2; f.people = this.quality >= 1; f.sky = this.quality >= 1; f.carsMax = this.quality >= 2 ? 60 : this.quality === 1 ? 30 : 12; };
   P.update = function (dt) {
-    var E = this, en = E.entities, i, L = E.roadList(), nc = Math.min(E.fx.carsMax || 60, Math.round(L.length / 28)), np = E.fx.people ? Math.min(E.quality >= 2 ? 70 : 30, Math.round(L.length / 22)) : 0;
+    var E = this, en = E.entities, i, L = E.roadList(), nc = Math.min(E.fx.carsMax || 60, Math.round(L.length / 28)), np = E.fx.people ? Math.min(E.quality >= 2 ? 70 : 30, Math.round(L.length / 22)) : 0, zf = E.cam && E.cam.z < .45 ? .5 : 1;   // zoom xa: giảm một nửa xe & người để máy yếu đỡ giật
+    nc = Math.round(nc * zf); np = Math.round(np * zf);
     if (L.length) {
       while (en.cars.length < nc) { var c = E.spawnWalker('car'); if (!c) break; en.cars.push(c); } while (en.cars.length > nc) en.cars.pop();
       while (en.people.length < np) { var p = E.spawnWalker('ppl'); if (!p) break; en.people.push(p); } while (en.people.length > np) en.people.pop();

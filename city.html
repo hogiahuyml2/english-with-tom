@@ -35,9 +35,9 @@ button { font-family: inherit; cursor: pointer; }
 .rbtn { width: 46px; height: 46px; border-radius: 15px; border: 0; background: var(--glass); font-size: 20px; box-shadow: 0 4px 14px rgba(20,40,90,.25); color: var(--ink); display: grid; place-items: center; font-weight: 800; }
 .rbtn:active { transform: scale(.94); }
 .mini { position: fixed; left: 10px; top: calc(66px + var(--top)); z-index: 20; background: var(--glass); border-radius: 14px; padding: 5px; box-shadow: 0 4px 14px rgba(20,40,90,.25); }
-.mini canvas { display: block; width: 150px; height: 136px; border-radius: 10px; cursor: pointer; touch-action: none; }
+.mini canvas { display: block; width: 150px; height: 184px; border-radius: 10px; cursor: pointer; touch-action: none; }
 .mini .mt { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; margin-top: 3px; }
-.dbar { position: fixed; left: 10px; bottom: calc(86px + var(--bot)); display: flex; flex-direction: column; gap: 6px; z-index: 20; max-height: calc(100dvh - 330px); overflow-y: auto; scrollbar-width: none; padding-right: 2px; } .dbar::-webkit-scrollbar { display: none; }
+.dbar { position: fixed; left: 10px; bottom: calc(86px + var(--bot)); display: flex; flex-direction: column; gap: 6px; z-index: 20; max-height: calc(100dvh - 378px); overflow-y: auto; scrollbar-width: none; padding-right: 2px; } .dbar::-webkit-scrollbar { display: none; }
 .fl { position: absolute; top: -40px; font-size: 26px; will-change: transform; animation: flfall linear forwards; } @keyframes flfall { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 8% { opacity: 1; } 100% { transform: translate(var(--sx), calc(100vh + 80px)) rotate(var(--sr)); opacity: .9; } } @media (prefers-reduced-motion: reduce) { .fl { animation-duration: .01s; } }
 .dbtn { border: 0; background: var(--glass); border-radius: 13px; padding: 6px 10px; font-weight: 700; font-size: 12.5px; box-shadow: 0 3px 10px rgba(20,40,90,.22); text-align: left; color: var(--ink); display: flex; gap: 6px; align-items: center; }
 .dbtn.lock { opacity: .75; } .dbtn.on { outline: 2px solid var(--pri); }
@@ -154,7 +154,7 @@ button { font-family: inherit; cursor: pointer; }
   <a class="chip btn" href="word-hub.html" style="text-decoration:none;color:inherit" title="Về Luyện từ">🏠</a>
 </div>
 
-<div class="mini"><canvas id="mm" width="336" height="304" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
+<div class="mini"><canvas id="mm" width="336" height="412" title="Chạm để nhảy tới nơi bạn muốn"></canvas><div class="mt">Bản đồ nhỏ</div></div>
 <div class="dbar" id="dbar"></div>
 <div class="side">
   <button class="rbtn" id="zIn" type="button" aria-label="Phóng to">＋</button>
@@ -192,6 +192,7 @@ button { font-family: inherit; cursor: pointer; }
 
 <div class="sheet" id="shopS"><div class="hd"><h3>🏗️ Cửa hàng xây dựng</h3><button class="x" data-close="shopS" type="button">✕</button></div><div class="tabs" id="shopTabs"></div>
   <div class="tools"><input id="shopQ" placeholder="🔍 Tìm công trình (tiếng Anh hoặc Việt)…" autocomplete="off"><select id="shopD" aria-label="Lọc theo quận"></select><select id="shopO" aria-label="Sắp xếp"><option value="lvl">Theo cấp</option><option value="cost">Giá tăng dần</option><option value="inc">Thu nhập</option><option value="hp">Hạnh phúc</option></select></div>
+  <div class="pf" id="shopChips" style="padding:0 12px 6px"></div>
   <div class="bd"><div class="grid" id="shopG"></div></div></div>
 <div class="sheet" id="infoS"><div class="hd"><h3 id="infoT">Công trình</h3><button class="x" data-close="infoS" type="button">✕</button></div><div class="bd info" id="infoB"></div></div>
 <div class="sheet" id="distS"><div class="hd"><h3>🗺️ Các quận của thành phố</h3><button class="x" data-close="distS" type="button">✕</button></div><div class="bd" id="distB"></div></div>
@@ -229,7 +230,7 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art8.js?v=2"></script>
 <script src="js/city-art9.js?v=1"></script>
 <script src="js/city-art10.js?v=1"></script>
-<script src="js/city-engine.js?v=22"></script>
+<script src="js/city-engine.js?v=23"></script>
 <script>
 (function () {
 'use strict';
@@ -290,15 +291,41 @@ function hud() {
 }
 function clampN(v, a, b) { return Math.max(a, Math.min(b, v)); }
 var firstLoad = true;
-function load() { if (VIS) return Promise.resolve(); return api('/api/city').then(function (d) { setState(d); if (firstLoad) { firstLoad = false; var qp = new URLSearchParams(location.search); if (qp.get('visit')) setTimeout(function () { enterVisit(qp.get('visit')); }, 300); else if (qp.get('vuid')) setTimeout(function () { enterVisit('uid:' + qp.get('vuid')); }, 300); else setTimeout(showFloatNotes, 1200); setTimeout(function () { ENG.focusDistrict(0); }, 80); if (!S.bs.length) toast('👋 Chào mừng đến EWT City! Bấm 🏗️ Xây dựng để đặt ngôi nhà đầu tiên (miễn phí).', 6000); } }).catch(function (e) { toast(e.message, 4000); }); }
+/* ───── hướng dẫn chơi cho người mới (hiện 1 lần, mở lại trong Cài đặt) ───── */
+var TOUR = [['🏗️', 'Xây dựng', 'Bấm <b>Xây dựng</b> ở thanh dưới, chọn một công trình (nhà, cửa hàng, công viên…) rồi chạm vào ô xanh để đặt. Hai món đầu tiên miễn phí!'],
+  ['🛣️', 'Làm đường', 'Công trình phải nằm sát đường. Bấm <b>Đường</b> rồi kéo ngón tay trên bản đồ để vẽ. Có nút <b>Dựng đủ</b> nếu bạn muốn hệ thống tự sắp xếp giúp.'],
+  ['💰', 'Thu thuế & kiếm xu', 'Nhà và cửa hàng tự sinh xu. Bấm <b>Thu thuế</b> để nhận. Trả lời câu hỏi ở <b>Kiếm xu</b> và <b>Học từ</b> để có thêm xu và phiếu thưởng.'],
+  ['🗺️', 'Mở khu mới', 'Bấm <b>Các quận</b> để mở khu mới (Phố Nhật, Phố Việt, Phố Anh…). Lên cấp thành phố sẽ mở thêm công trình, cầu, ga và nhiều bất ngờ.']];
+function showTour(step) {
+  step = step | 0; var old = document.getElementById('tourO'); if (old) old.remove(); var t = TOUR[step];
+  var o = document.createElement('div'); o.id = 'tourO'; o.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(20,30,60,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+  o.innerHTML = '<div style="background:#fff;border-radius:22px;max-width:380px;width:100%;padding:20px 20px 16px;text-align:center;box-shadow:0 14px 40px rgba(10,20,50,.4)"><div style="font-size:46px">' + t[0] + '</div><h3 style="margin:6px 0 8px;font-size:20px">' + (step + 1) + '/' + TOUR.length + ' · ' + t[1] + '</h3><p style="font-size:15px;line-height:1.5;color:#46506A;margin:0 0 14px">' + t[2] + '</p>'
+    + '<div style="display:flex;gap:8px;justify-content:center"><button class="btn" id="tourX" type="button">Bỏ qua</button>' + (step ? '<button class="btn" id="tourP" type="button">◀ Trước</button>' : '') + '<button class="btn pri" id="tourN" type="button">' + (step === TOUR.length - 1 ? 'Bắt đầu chơi!' : 'Tiếp ▶') + '</button></div></div>';
+  document.body.appendChild(o);
+  var done = function () { o.remove(); try { localStorage.setItem('ewt-city-tour', '1'); } catch (e) {} };
+  o.querySelector('#tourX').onclick = done; o.querySelector('#tourN').onclick = function () { if (step >= TOUR.length - 1) done(); else showTour(step + 1); }; var pv = o.querySelector('#tourP'); if (pv) pv.onclick = function () { showTour(step - 1); };
+}
+function load() { if (VIS) return Promise.resolve(); return api('/api/city').then(function (d) { setState(d); if (firstLoad) { firstLoad = false; try { if (!VIS && !localStorage.getItem('ewt-city-tour') && (!S.bs || S.bs.length < 3)) setTimeout(function () { showTour(0); }, 900); } catch (er) {} var qp = new URLSearchParams(location.search); if (qp.get('visit')) setTimeout(function () { enterVisit(qp.get('visit')); }, 300); else if (qp.get('vuid')) setTimeout(function () { enterVisit('uid:' + qp.get('vuid')); }, 300); else setTimeout(showFloatNotes, 1200); setTimeout(function () { ENG.focusDistrict(0); }, 80); if (!S.bs.length) toast('👋 Chào mừng đến EWT City! Bấm 🏗️ Xây dựng để đặt ngôi nhà đầu tiên (miễn phí).', 6000); } }).catch(function (e) { toast(e.message, 4000); }); }
 
 /* ───── cửa hàng ───── */
+var TH = '', THEMES = [['', '✨ Tất cả'], ['afford', '💰 Đủ tiền mua'], ['bridge', '🌉 Cầu'], ['station', '🚉 Ga & bến'], ['season', '🍁 Theo mùa'], ['castle', '🏰 Lâu đài'], ['d22', '🏮 Phố Hoa'], ['d23', '⛩️ Phố Nhật'], ['d24', '🛵 Phố Việt'], ['d25', '🛕 Phố Thái'], ['d26', '🌴 Indonesia'], ['d27', '☎️ Phố Anh'], ['d28', '🗽 Phố Mỹ'], ['d29', '🦘 Phố Úc']];
+function themeOk(it) {
+  var t = (it.en + ' ' + it.vi).toLowerCase();
+  if (TH === 'afford') return S.stats.level >= it.lvl && S.coins >= it.cost;
+  if (TH === 'bridge') return /bridge|cầu /.test(t + ' ') && !/cầu thang|cầu tàu|cầu trượt/.test(t);
+  if (TH === 'station') return /station|terminal|bến|\bga\b|metro/.test(t);
+  if (TH === 'season') return /spring|summer|autumn|winter|four seasons|mùa/.test(t);
+  if (TH === 'castle') return /castle|palace|lâu đài|cung /.test(t);
+  if (/^d\d+$/.test(TH)) { var d = +TH.slice(1); return it.ds.length === 1 && it.ds[0] === d; }
+  return true;
+}
 var CATTAB = C.CATS.map(function (c) { return c; }).concat([['bundle', '📦 Gói combo'], ['plan', '📐 Quy hoạch']]);
 function renderShop() {
   $('shopTabs').innerHTML = CATTAB.map(function (c) { return '<button class="tab' + (TABK === c[0] ? ' on' : '') + '" data-tab="' + c[0] + '" type="button">' + c[1] + '</button>'; }).join('');
   var tl = document.querySelector('#shopS .tools'); if (tl) tl.style.display = (TABK === 'plan' || TABK === 'bundle') ? 'none' : '';   // ô tìm kiếm / lọc chỉ dùng cho tab món lẻ
   if (TABK === 'bundle') return renderBundles(); if (TABK === 'plan') return renderPlans();
-  var q = $('shopQ').value.trim().toLowerCase(), list = C.ITEMS.filter(function (it) { if (TABK !== 'all' && it.cat !== TABK && !q) return false; if (DF >= 0 && it.ds.indexOf(DF) < 0) return false; if (q && (it.en + ' ' + it.vi + ' ' + it.k).toLowerCase().indexOf(q) < 0) return false; return true; });
+  $('shopChips').style.display = (TABK === 'plan' || TABK === 'bundle') ? 'none' : ''; $('shopChips').innerHTML = chipsHtml(THEMES, TH, 'data-th');
+  var q = $('shopQ').value.trim().toLowerCase(), list = C.ITEMS.filter(function (it) { if (TABK !== 'all' && it.cat !== TABK && !q && !TH) return false; if (TH && !themeOk(it)) return false; if (DF >= 0 && it.ds.indexOf(DF) < 0) return false; if (q && (it.en + ' ' + it.vi + ' ' + it.k).toLowerCase().indexOf(q) < 0) return false; return true; });
   list.sort(function (a, b) { return SORT === 'cost' ? a.cost - b.cost : SORT === 'inc' ? b.inc - a.inc : SORT === 'hp' ? b.hp - a.hp : a.lvl - b.lvl || a.cost - b.cost; });
   $('shopG').innerHTML = list.length ? '' : '<div class="empty" style="grid-column:1/-1">Không tìm thấy công trình nào.</div>';
   list.forEach(function (it) {
@@ -1065,12 +1092,13 @@ function openSet() {
   var sw = function (id, on) { return '<label class="sw"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '><i></i></label>'; };
   var h = '<div class="field">Thời tiết' + sel('sWea', [['auto', 'Tự động'], ['clear', '☀️ Nắng'], ['cloud', '☁️ Nhiều mây'], ['rain', '🌧️ Mưa'], ['snow', '❄️ Tuyết']], setting.weather) + '</div>';
   h += '<div class="field">Thời gian' + sel('sTime', [['auto', 'Theo giờ thật'], ['day', '🌞 Luôn ban ngày'], ['night', '🌙 Luôn ban đêm']], setting.time) + '</div>';
-  h += '<div class="field">Xe cộ chạy trên đường' + sw('sCars', setting.cars) + '</div><div class="field">Người đi bộ' + sw('sPpl', setting.people) + '</div><div class="field">Thuyền trên sông, biển' + sw('sBoat', setting.boats) + '</div><div class="field">Mây, chim, khinh khí cầu, máy bay' + sw('sSky', setting.sky) + '</div><div class="field">Đèn laser lấp lánh trên toà nhà cao tầng (ban đêm)' + sw('sLas', setting.lasers) + '</div><div class="field">Hiệu ứng lung linh: cánh hoa, tia nắng, cầu vồng, sao, đom đóm, sao băng, pháo hoa, đèn trời, cực quang' + sw('sMag', setting.magic) + '</div>';
+  h += '<div class="field">Xe cộ chạy trên đường' + sw('sCars', setting.cars) + '</div><div class="field">Người đi bộ' + sw('sPpl', setting.people) + '</div><div class="field">Thuyền trên sông, biển' + sw('sBoat', setting.boats) + '</div><div class="field">Mây, chim, khinh khí cầu, máy bay' + sw('sSky', setting.sky) + '</div><div class="field">Đèn laser lấp lánh trên toà nhà cao tầng (ban đêm)' + sw('sLas', setting.lasers) + '</div><div class="field">Hiệu ứng lung linh: cánh hoa, tia nắng, cầu vồng, sao, đom đóm, sao băng, pháo hoa, đèn trời, cực quang' + sw('sMag', setting.magic) + '</div><div class="field"><button class="btn sm" id="tourB" type="button">📖 Xem lại hướng dẫn chơi</button></div>';
   h += '<div class="field">Hiện khu quy hoạch<label class="sw"><input type="checkbox" id="sZone"' + (ENG.showZones ? ' checked' : '') + '><i></i></label></div>';
   if (ROLE === 'admin') h += '<div class="row"><button class="btn warn" id="sCoins" type="button">💰 Nạp 999.999.999 xu để thử game (chỉ quản trị)</button></div>';
   $('setB2').innerHTML = h; $('setM').classList.add('on');
   var ch = function () { setting.weather = $('sWea').value; setting.time = $('sTime').value; setting.cars = $('sCars').checked ? 1 : 0; setting.people = $('sPpl').checked ? 1 : 0; setting.boats = $('sBoat').checked ? 1 : 0; setting.sky = $('sSky').checked ? 1 : 0; setting.lasers = $('sLas').checked ? 1 : 0; setting.magic = $('sMag').checked ? 1 : 0; ENG.showZones = $('sZone').checked; saveSet(); applySettings(); };
-  ['sWea', 'sTime', 'sCars', 'sPpl', 'sBoat', 'sSky', 'sLas', 'sZone'].forEach(function (id) { $(id).onchange = ch; });
+  ['sWea', 'sTime', 'sCars', 'sPpl', 'sBoat', 'sSky', 'sLas', 'sMag', 'sZone'].forEach(function (id) { if ($(id)) $(id).onchange = ch; });
+  if ($('tourB')) $('tourB').onclick = function () { $('learnM').classList.remove('on'); var ss = document.getElementById('setS'); if (ss) ss.classList.remove('on'); showTour(0); };
   if ($('sCoins')) $('sCoins').onclick = function () { api('/api/garden/admin/test-coins', {}).then(function () { toast('💰 Đã nạp xu thử nghiệm!'); load(); }).catch(function (e) { toast(e.message); }); };
 }
 
@@ -1144,6 +1172,7 @@ $('setB').onclick = openSet; $('zIn').onclick = function () { ENG.zoomAt(1.35, E
 $('rL').onclick = function () { ENG.rotate(-1); }; $('rR').onclick = function () { ENG.rotate(1); }; $('zAll').onclick = function () { ENG.fitAll(); };
 $('pOk').onclick = placeNow; $('pNo').onclick = function () { setMode('view'); }; $('pCont').onchange = function () { CONT = this.checked; };
 $('rNo').onclick = function () { setMode('view'); }; $('rOk').onclick = buildRoad; $('rDel').onchange = function () { ROADDEL = this.checked; ROADCELLS = []; ENG.roadPrev = null; roadBar(); };
+$('shopChips').onclick = function (e) { var b = e.target.closest('[data-th]'); if (!b) return; TH = b.getAttribute('data-th'); renderShop(); };
 $('shopQ').oninput = renderShop; $('shopD').onchange = function () { DF = +this.value; renderShop(); }; $('shopO').onchange = function () { SORT = this.value; renderShop(); };
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { setMode('view'); closeSheets(); } if (e.key === 'q' || e.key === 'Q') ENG.rotate(-1); if (e.key === 'e' || e.key === 'E') ENG.rotate(1); });
 window.addEventListener('resize', function () { ENG.resize(); });
