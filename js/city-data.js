@@ -1026,6 +1026,82 @@
       ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice ? r[8].slice() : r[8], r[11], { ch: r[9] }));
     });
   })();
+  /* ───── đợt kiến trúc mới lạ (tháp nghiêng, cổng trời, tháp kim, nhà vỏ sò, kim tự tháp kính, nhà hoa sen…) — đồ hoạ ở js/city-art7.js ───── */
+  (function () {
+    var ALLD = []; for (var q = 0; q < 22; q++) ALLD.push(q);
+    var T = [
+      ['stackhabitat', 'Stacked Habitat', 'Khối Nhà Xếp Tầng', 'home', 3, 3, 'rc', 7, [0, 1], 'home2', 'home', 'Boxes stacked like a hill, with gardens on every roof.', 4060],
+      ['greenstack', 'Green Stack Homes', 'Nhà Xếp Tầng Xanh', 'home', 4, 3, 'rc', 34, [0, 1], 'home2', 'home', 'Stacked homes covered in plants.', 214000],
+      ['sunstack', 'Sun Stack Residences', 'Căn Hộ Xếp Tầng Nắng', 'home', 4, 4, 'rc', 69, [0, 1], 'home2', 'home', 'Golden terraces that catch the sun.', 1390000],
+      ['cloudstack', 'Cloud Stack Towers', 'Tháp Xếp Tầng Mây', 'home', 5, 4, 'rc', 118, [0, 1], 'home2', 'home', 'Terraces above the clouds.', 5770000],
+      ['skygate', 'Sky Gate', 'Cổng Trời', 'shop', 3, 3, 'c', 19, [0, 1], 'world1', 'shop', 'Two towers joined by a big frame in the sky.', 44600],
+      ['silvergate', 'Silver Gate Tower', 'Tháp Cổng Bạc', 'shop', 4, 3, 'c', 43, [0, 1], 'world1', 'shop', 'A silver gate for the business district.', 377000],
+      ['goldgate', 'Golden Gate Plaza', 'Quảng Trường Cổng Vàng', 'shop', 4, 4, 'c', 81, [0, 1], 'world1', 'shop', 'A gate of golden glass.', 2050000],
+      ['galaxygate', 'Galaxy Gate', 'Cổng Thiên Hà', 'shop', 5, 4, 'c', 132, [0, 1], 'world1', 'shop', 'Violet lights shine through the gate.', 7550000],
+      ['leantower', 'Leaning Tower', 'Tháp Nghiêng', 'shop', 3, 3, 'c', 22, [0, 1], 'world1', 'shop', 'Every floor leans a little more.', 63500],
+      ['rosetwist', 'Rose Leaning Tower', 'Tháp Nghiêng Hồng', 'home', 3, 3, 'rc', 46, [0, 1], 'home2', 'home', 'A pink tower that seems to dance.', 373000],
+      ['jadelean', 'Jade Leaning Tower', 'Tháp Nghiêng Ngọc', 'shop', 4, 3, 'c', 72, [0, 1], 'world1', 'shop', 'A green tower of smooth glass.', 1300000],
+      ['azurelean', 'Azure Leaning Tower', 'Tháp Nghiêng Lam', 'shop', 4, 4, 'c', 126, [0, 1], 'world1', 'shop', 'A blue tower leaning over the avenue.', 5910000],
+      ['canton', 'Canton Needle', 'Tháp Eo Thắt', 'fun', 3, 3, 'f', 24, [3], 'world1', 'fun', 'A tall twisting tower with a thin waist.', 78200],
+      ['amberhyper', 'Amber Hyper Tower', 'Tháp Eo Hổ Phách', 'fun', 3, 3, 'f', 52, [3], 'world1', 'fun', 'It glows amber at night.', 500000],
+      ['rosehyper', 'Rose Hyper Tower', 'Tháp Eo Hồng', 'fun', 4, 4, 'f', 90, [3], 'world1', 'fun', 'A pink tower with a lit pod.', 2640000],
+      ['stardyper', 'Star Hyper Tower', 'Tháp Eo Sao', 'fun', 4, 4, 'f', 152, [3], 'world1', 'fun', 'The tower of the stars.', 9270000],
+      ['operahouse', 'Opera Sails', 'Nhà Hát Vỏ Sò', 'fun', 5, 4, 'f', 27, [3], 'world1', 'fun', 'White shells rise from the harbour.', 168000],
+      ['pearlopera', 'Pearl Opera', 'Nhà Hát Ngọc Trai', 'fun', 5, 4, 'f', 60, [3], 'world1', 'fun', 'Pink-white shells like a pearl.', 1140000],
+      ['seashellhall', 'Seashell Hall', 'Hội Trường Vỏ Ốc', 'civic', 4, 3, 's', 84, [0, 1], 'world1', 'civic', 'A hall that looks like a seashell.', 1880000],
+      ['crystalopera', 'Crystal Opera', 'Nhà Hát Pha Lê', 'fun', 6, 5, 'f', 138, [3], 'world1', 'fun', 'Shells of blue glass.', 10700000],
+      ['globehall', 'Globe Hall', 'Hội Trường Quả Cầu', 'world', 3, 3, 'w', 30, [5], 'world1', 'world', 'A big shining ball on four legs.', 134000],
+      ['goldglobe', 'Golden Globe Center', 'Trung Tâm Cầu Vàng', 'world', 3, 3, 'w', 65, [5], 'world1', 'world', 'A golden ball above the plaza.', 854000],
+      ['emeraldglobe', 'Emerald Globe', 'Cầu Ngọc Lục Bảo', 'world', 4, 4, 'w', 105, [5], 'world1', 'world', 'A green ball that glows at night.', 3820000],
+      ['cosmosglobe', 'Cosmos Globe', 'Cầu Vũ Trụ', 'world', 4, 4, 'w', 165, [5], 'world1', 'world', 'A purple planet with a bright ring.', 11300000],
+      ['twinbridge', 'Twin Bridge Towers', 'Tháp Đôi Nối Cầu', 'shop', 4, 3, 'c', 32, [0, 1], 'world1', 'shop', 'Two towers with a glass sky bridge.', 185000],
+      ['pearltwin', 'Pearl Twin Towers', 'Tháp Đôi Ngọc', 'home', 4, 3, 'rc', 58, [0, 1], 'home2', 'home', 'Pearl towers with a bridge between them.', 773000],
+      ['azuretwin', 'Azure Twin Towers', 'Tháp Đôi Lam', 'shop', 4, 4, 'c', 96, [0, 1], 'world1', 'shop', 'Blue twin towers.', 3080000],
+      ['sunsettwin', 'Sunset Twin Towers', 'Tháp Đôi Hoàng Hôn', 'home', 5, 4, 'rc', 145, [0, 1], 'home2', 'home', 'Orange glass glows at sunset.', 9460000],
+      ['glasspyramid', 'Glass Pyramid', 'Kim Tự Tháp Kính', 'civic', 4, 4, 's', 29, [0, 1], 'world1', 'civic', 'A glass pyramid full of light.', 174000],
+      ['icepyramid', 'Ice Pyramid', 'Kim Tự Tháp Băng', 'edu', 4, 4, 'e', 55, [4], 'world1', 'edu', 'A pyramid of ice and science.', 808000],
+      ['emeraldpyramid', 'Emerald Pyramid', 'Kim Tự Tháp Lục Bảo', 'world', 5, 5, 'w', 100, [5], 'world1', 'world', 'A green pyramid in the city centre.', 4440000],
+      ['solarpyramid', 'Solar Pyramid', 'Kim Tự Tháp Mặt Trời', 'world', 5, 5, 'w', 160, [5], 'world1', 'world', 'It stores the power of the sun.', 13700000],
+      ['wavehall', 'Wave Hall', 'Toà Mái Sóng', 'civic', 3, 3, 's', 21, [0, 1], 'world1', 'civic', 'A hall with a roof like waves.', 56800],
+      ['seawave', 'Sea Wave Centre', 'Trung Tâm Mái Sóng Biển', 'fun', 4, 3, 'f', 48, [3], 'world1', 'fun', 'Blue waves on the roof.', 491000],
+      ['aurorawave', 'Aurora Wave Museum', 'Bảo Tàng Sóng Cực Quang', 'edu', 5, 4, 'e', 92, [4], 'world1', 'edu', 'Colourful waves like the aurora.', 3180000],
+      ['lotushall', 'Lotus Hall', 'Hội Trường Hoa Sen', 'world', 4, 4, 'w', 36, [5], 'world1', 'world', 'White petals open like a lotus.', 292000],
+      ['pinklotus', 'Pink Lotus Temple', 'Đền Sen Hồng', 'world', 4, 4, 'w', 70, [5], 'world1', 'world', 'Pink petals around a quiet lake.', 1440000],
+      ['goldlotus', 'Golden Lotus Palace', 'Cung Sen Vàng', 'world', 5, 5, 'w', 112, [5], 'world1', 'world', 'A golden lotus palace.', 5820000],
+      ['jadelotus', 'Jade Lotus Garden', 'Vườn Sen Ngọc', 'park', 5, 5, '*', 148, ALLD, 'world1', 'park', 'A giant green lotus in the garden.', 11400000],
+      ['trio', 'Trio Towers', 'Ba Tháp Kề Vai', 'shop', 4, 3, 'c', 25, [0, 1], 'world1', 'shop', 'Three towers of different heights.', 103000],
+      ['silvertrio', 'Silver Trio', 'Bộ Ba Bạc', 'shop', 4, 4, 'c', 54, [0, 1], 'world1', 'shop', 'Silver glass towers side by side.', 773000],
+      ['hightrio', 'Harbour Trio Residences', 'Căn Hộ Ba Tháp Cảng', 'home', 5, 4, 'rc', 85, [0, 1], 'home2', 'home', 'Three apartment towers by the harbour.', 2630000],
+      ['aurotrio', 'Aurora Trio', 'Ba Tháp Cực Quang', 'shop', 5, 4, 'c', 136, [0, 1], 'world1', 'shop', 'Green and violet glass towers.', 8110000],
+      ['spaceneedle', 'Space Needle', 'Tháp Kim Vũ Trụ', 'fun', 3, 3, 'f', 33, [3], 'world1', 'fun', 'A tall needle with a flying-saucer lookout.', 168000],
+      ['rubyneedle', 'Ruby Needle', 'Tháp Kim Ruby', 'fun', 3, 3, 'f', 67, [3], 'world1', 'fun', 'A ruby-red lookout over the city.', 919000],
+      ['skyneedle', 'Sky Needle Plus', 'Tháp Kim Trời Xanh', 'fun', 4, 4, 'f', 114, [3], 'world1', 'fun', 'A needle that touches the clouds.', 4650000],
+      ['arcadegate', 'Arcade Gate', 'Toà Khung Cổng', 'shop', 4, 3, 'c', 38, [0, 1], 'world1', 'shop', 'A building shaped like a big gate.', 280000],
+      ['grandarche', 'Grand Arche', 'Cổng Vòm Lớn', 'civic', 5, 4, 's', 76, [0, 1], 'world1', 'civic', 'A hollow cube you can see through.', 2010000],
+      ['violetarche', 'Violet Arche', 'Cổng Vòm Tím', 'shop', 5, 5, 'c', 128, [0, 1], 'world1', 'shop', 'A violet gate of glass.', 8020000],
+      ['greenziggurat', 'Green Ziggurat', 'Tháp Bậc Xanh', 'park', 4, 4, '*', 41, ALLD, 'world1', 'park', 'Round steps covered with gardens.', 399000],
+      ['goldziggurat', 'Golden Ziggurat', 'Tháp Bậc Vàng', 'world', 4, 4, 'w', 78, [5], 'world1', 'world', 'A stepped tower with golden rings.', 1870000],
+      ['cloudziggurat', 'Cloud Ziggurat', 'Tháp Bậc Mây', 'home', 5, 5, 'rc', 122, [0, 1], 'home2', 'home', 'Rounded terraces above the city.', 7150000],
+      ['solarslant', 'Solar Slant Tower', 'Tháp Mái Xéo Mặt Trời', 'shop', 3, 3, 'c', 35, [0, 1], 'world1', 'shop', 'The slanted roof is covered with solar panels.', 193000],
+      ['ecoslant', 'Eco Slant Tower', 'Tháp Mái Xéo Sinh Thái', 'home', 4, 3, 'rc', 63, [0, 1], 'home2', 'home', 'A green home tower that makes its own power.', 942000],
+      ['techslant', 'Tech Slant Tower', 'Tháp Mái Xéo Công Nghệ', 'shop', 4, 4, 'c', 104, [0, 1], 'world1', 'shop', 'A blue tower for smart companies.', 3730000],
+      ['infinityslant', 'Infinity Slant', 'Tháp Mái Xéo Vô Cực', 'shop', 5, 4, 'c', 156, [0, 1], 'world1', 'shop', 'The roof points to the sky.', 11300000],
+      ['skyvillage', 'Sky Village', 'Làng Trên Mây', 'home', 4, 4, 'rc', 44, [0, 1], 'home2', 'home', 'Little houses live on the roof of a tower.', 473000],
+      ['terracevillage', 'Terrace Village', 'Làng Trên Sân Thượng', 'home', 5, 4, 'rc', 88, [0, 1], 'home2', 'home', 'A whole village in the sky.', 2850000],
+      ['eternalvillage', 'Eternal Sky Village', 'Làng Mây Vĩnh Cửu', 'home', 5, 5, 'rc', 170, [0, 1], 'home2', 'home', 'The most peaceful village of all.', 15800000]
+    ];
+    T.forEach(function (r) {
+      var kind = r[10], lvl = r[7], cost = r[12], inc = 0, pop = 0, hp = 0, secs = Math.max(8, Math.min(2400, Math.round(cost / (lvl < 23 ? 45 : 80))));
+      if (kind === 'home') { inc = Math.round(cost / 21); pop = Math.round(cost / 85); }
+      else if (kind === 'civic') { hp = 60 + Math.round(lvl * 1.6); }
+      else if (kind === 'edu') { inc = Math.round(cost / 16); hp = 80 + Math.round(lvl * 1.5); }
+      else if (kind === 'shop') { inc = Math.round(cost / 15); hp = 1; }
+      else if (kind === 'fun') { inc = Math.round(cost / 12); hp = 6 + Math.round(lvl / 4); }
+      else if (kind === 'park') { inc = Math.round(cost / 22); hp = 40 + Math.round(lvl * 1.2); }
+      else { inc = Math.round(cost / 16); hp = 60 + Math.round(lvl * 1.4); }
+      ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
+    });
+  })();
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
