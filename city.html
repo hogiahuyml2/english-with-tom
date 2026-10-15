@@ -214,7 +214,7 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=16"></script>
+<script src="js/city-data.js?v=17"></script>
 <script src="js/city-learn.js?v=1"></script>
 <script src="js/city-advice.js?v=2b"></script>
 <script src="js/city-plans.js?v=3b"></script>
@@ -223,7 +223,8 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art3.js?v=3"></script>
 <script src="js/city-art4.js?v=3"></script>
 <script src="js/city-art5.js?v=1"></script>
-<script src="js/city-engine.js?v=20"></script>
+<script src="js/city-art6.js?v=1"></script>
+<script src="js/city-engine.js?v=21"></script>
 <script>
 (function () {
 'use strict';
@@ -239,7 +240,7 @@ function api(url, body) {
   });
 }
 function confirmBox(title, text, yes) { return new Promise(function (res) { $('cfmT').textContent = title; $('cfmP').innerHTML = text; $('cfmYes').textContent = yes || 'Đồng ý'; $('cfmM').classList.add('on'); $('cfmYes').onclick = function () { $('cfmM').classList.remove('on'); res(true); }; $('cfmNo').onclick = function () { $('cfmM').classList.remove('on'); res(false); }; }); }
-var setting = { weather: 'auto', time: 'auto', cars: 1, people: 1, boats: 1, sky: 1, lasers: 1 };
+var setting = { weather: 'auto', time: 'auto', cars: 1, people: 1, boats: 1, sky: 1, lasers: 1, magic: 1 };
 try { var sv = JSON.parse(localStorage.getItem('ewt-city-set') || 'null'); if (sv) Object.keys(sv).forEach(function (k) { setting[k] = sv[k]; }); } catch (e) {}
 function saveSet() { try { localStorage.setItem('ewt-city-set', JSON.stringify(setting)); } catch (e) {} }
 
@@ -263,7 +264,7 @@ ENG = new EWTCityEngine($('cv'), $('mm'), {
   onPaint: function (cells) { paintDone(cells); }
 });
 function applySettings() {
-  var f = ENG.fx; f.cars = !!setting.cars; f.people = !!setting.people; f.boats = !!setting.boats; f.sky = !!setting.sky; f.lasers = !!setting.lasers;
+  var f = ENG.fx; f.cars = !!setting.cars; f.people = !!setting.people; f.boats = !!setting.boats; f.sky = !!setting.sky; f.lasers = !!setting.lasers; f.magic = !!setting.magic;
   ENG.weather = setting.weather === 'auto' ? autoWeather() : setting.weather; ENG.hourOverride = setting.time === 'day' ? 12 : setting.time === 'night' ? 23 : null;
 }
 function autoWeather() { var d = new Date(), k = (d.getDate() * 7 + Math.floor(d.getHours() / 4)) % 9; return k === 0 || k === 5 ? 'cloud' : k === 3 ? 'rain' : 'clear'; }
@@ -1058,11 +1059,11 @@ function openSet() {
   var sw = function (id, on) { return '<label class="sw"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '><i></i></label>'; };
   var h = '<div class="field">Thời tiết' + sel('sWea', [['auto', 'Tự động'], ['clear', '☀️ Nắng'], ['cloud', '☁️ Nhiều mây'], ['rain', '🌧️ Mưa'], ['snow', '❄️ Tuyết']], setting.weather) + '</div>';
   h += '<div class="field">Thời gian' + sel('sTime', [['auto', 'Theo giờ thật'], ['day', '🌞 Luôn ban ngày'], ['night', '🌙 Luôn ban đêm']], setting.time) + '</div>';
-  h += '<div class="field">Xe cộ chạy trên đường' + sw('sCars', setting.cars) + '</div><div class="field">Người đi bộ' + sw('sPpl', setting.people) + '</div><div class="field">Thuyền trên sông, biển' + sw('sBoat', setting.boats) + '</div><div class="field">Mây, chim, khinh khí cầu, máy bay' + sw('sSky', setting.sky) + '</div><div class="field">Đèn laser lấp lánh trên toà nhà cao tầng (ban đêm)' + sw('sLas', setting.lasers) + '</div>';
+  h += '<div class="field">Xe cộ chạy trên đường' + sw('sCars', setting.cars) + '</div><div class="field">Người đi bộ' + sw('sPpl', setting.people) + '</div><div class="field">Thuyền trên sông, biển' + sw('sBoat', setting.boats) + '</div><div class="field">Mây, chim, khinh khí cầu, máy bay' + sw('sSky', setting.sky) + '</div><div class="field">Đèn laser lấp lánh trên toà nhà cao tầng (ban đêm)' + sw('sLas', setting.lasers) + '</div><div class="field">Hiệu ứng lung linh: cánh hoa, tia nắng, cầu vồng, sao, đom đóm, sao băng, pháo hoa, đèn trời, cực quang' + sw('sMag', setting.magic) + '</div>';
   h += '<div class="field">Hiện khu quy hoạch<label class="sw"><input type="checkbox" id="sZone"' + (ENG.showZones ? ' checked' : '') + '><i></i></label></div>';
   if (ROLE === 'admin') h += '<div class="row"><button class="btn warn" id="sCoins" type="button">💰 Nạp 999.999.999 xu để thử game (chỉ quản trị)</button></div>';
   $('setB2').innerHTML = h; $('setM').classList.add('on');
-  var ch = function () { setting.weather = $('sWea').value; setting.time = $('sTime').value; setting.cars = $('sCars').checked ? 1 : 0; setting.people = $('sPpl').checked ? 1 : 0; setting.boats = $('sBoat').checked ? 1 : 0; setting.sky = $('sSky').checked ? 1 : 0; setting.lasers = $('sLas').checked ? 1 : 0; ENG.showZones = $('sZone').checked; saveSet(); applySettings(); };
+  var ch = function () { setting.weather = $('sWea').value; setting.time = $('sTime').value; setting.cars = $('sCars').checked ? 1 : 0; setting.people = $('sPpl').checked ? 1 : 0; setting.boats = $('sBoat').checked ? 1 : 0; setting.sky = $('sSky').checked ? 1 : 0; setting.lasers = $('sLas').checked ? 1 : 0; setting.magic = $('sMag').checked ? 1 : 0; ENG.showZones = $('sZone').checked; saveSet(); applySettings(); };
   ['sWea', 'sTime', 'sCars', 'sPpl', 'sBoat', 'sSky', 'sLas', 'sZone'].forEach(function (id) { $(id).onchange = ch; });
   if ($('sCoins')) $('sCoins').onclick = function () { api('/api/garden/admin/test-coins', {}).then(function () { toast('💰 Đã nạp xu thử nghiệm!'); load(); }).catch(function (e) { toast(e.message); }); };
 }
