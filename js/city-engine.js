@@ -571,7 +571,7 @@
   P.drawProp = function (ctx, e, t, gl) {
     var x = e.sx, y = e.sy, s = e.s || 1, k;
     switch (e.t) {
-      case 'lamp': ctx.strokeStyle = '#4B4F5A'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 17); ctx.stroke(); ctx.fillStyle = '#FFE9A0'; ctx.beginPath(); ctx.arc(x, y - 18, 2.8, 0, TAU); ctx.fill(); gl.push([x, y - 18, 30]); if ((e.k % 3) === 0) { var tw = .5 + .5 * Math.sin(t * 3 + e.k); gl.push([x + 5, y - 15, 6 + 6 * tw]); } break;
+      case 'lamp': ctx.strokeStyle = '#4B4F5A'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 17); ctx.stroke(); ctx.fillStyle = '#FFE9A0'; ctx.beginPath(); ctx.arc(x, y - 18, 2.8, 0, TAU); ctx.fill(); gl.push([x, y - 18, 42]); gl.push([x, y - 16, 18]); if ((e.k % 3) === 0) { var tw = .5 + .5 * Math.sin(t * 3 + e.k); gl.push([x + 5, y - 15, 6 + 6 * tw]); } break;
       case 'palm': ctx.strokeStyle = '#8A5A33'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + 3, y - 12, x + 1 + Math.sin(t + x) * 1.2, y - 24); ctx.stroke(); ctx.fillStyle = '#3FA55B'; var tx = x + 1, ty = y - 24; for (k = 0; k < 5; k++) { var a = k * 1.26 + Math.sin(t * 1.4 + k) * .12; ctx.beginPath(); ctx.ellipse(tx + Math.cos(a) * 6, ty + Math.sin(a) * 3 - 1, 7, 2.2, a, 0, TAU); ctx.fill(); } break;
       case 'pine': ctx.fillStyle = 'rgba(20,50,30,.2)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 9 * s, 3.4 * s, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#6B4A2E'; ctx.fillRect(x - 1.4 * s, y - 6 * s, 2.8 * s, 7 * s);
         for (k = 0; k < 3; k++) { var yy = y - (4 + k * 8) * s, ww = (11 - k * 2.6) * s; ctx.fillStyle = k % 2 ? '#2F7D4A' : '#3A9158'; ctx.beginPath(); ctx.moveTo(x - ww, yy); ctx.lineTo(x, yy - 14 * s); ctx.lineTo(x + ww, yy); ctx.closePath(); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.55)'; if (e.sy < 0 || (e.k % 4 === 0)) { ctx.beginPath(); ctx.moveTo(x - ww * .45, yy - 6 * s); ctx.lineTo(x, yy - 14 * s); ctx.lineTo(x + ww * .45, yy - 6 * s); ctx.closePath(); ctx.fill(); } } break;
@@ -834,10 +834,10 @@
     var E = this, cw = E.cw, ch = E.ch, w = E.weather;
     // ánh sáng đèn ban đêm
     if (night > .02 && E.glowList) {
-      var z = E.cam.z; ctx.save(); ctx.globalCompositeOperation = 'multiply'; var k = night, fr = 255 - Math.round(122 * k), fg = 255 - Math.round(106 * k), fb = 255 - Math.round(46 * k); ctx.fillStyle = 'rgb(' + fr + ',' + fg + ',' + fb + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore();
-      ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, night * 1.35);
+      var z = E.cam.z; ctx.save(); ctx.globalCompositeOperation = 'multiply'; var k = night, fr = 255 - Math.round(84 * k), fg = 255 - Math.round(70 * k), fb = 255 - Math.round(26 * k); ctx.fillStyle = 'rgb(' + fr + ',' + fg + ',' + fb + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore();
+      ctx.save(); ctx.setTransform(E.dpr * z, 0, 0, E.dpr * z, E.dpr * (cw / 2 - E.cam.x * z), E.dpr * (ch / 2 - E.cam.y * z)); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = Math.min(1, night * 1.6);
       var gmax = E.quality >= 2 ? 1e9 : E.quality === 1 ? 140 : 0, gcount = 0;
-      if (gmax) E.glowList.forEach(function (q) { if (++gcount > gmax) return; if (q[2] && q[2].glow) ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); else { var g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], q[2]); g.addColorStop(0, 'rgba(255,225,140,.9)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); } });
+      if (gmax) E.glowList.forEach(function (q) { if (++gcount > gmax) return; if (q[2] && q[2].glow) { ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); if (q[2].hpx > 110) ctx.drawImage(q[2].glow, q[0], q[1], q[2].w, q[2].h); } else { var g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], q[2]); g.addColorStop(0, 'rgba(255,225,140,.9)'); g.addColorStop(1, 'rgba(255,225,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], q[2], 0, TAU); ctx.fill(); } });
       ctx.restore();
       E.drawLasers(ctx, night);
     } else { var h = E.hour(); if (h >= 17 && h < 18.5) { ctx.save(); ctx.globalCompositeOperation = 'multiply'; var gv = (h - 17) / 1.5; ctx.fillStyle = 'rgb(255,' + (255 - Math.round(40 * gv)) + ',' + (255 - Math.round(90 * gv)) + ')'; ctx.fillRect(0, 0, cw, ch); ctx.restore(); } }

@@ -301,7 +301,7 @@
     // đèn đường ở các ngã tư
     for (y = 1; y < H - 1; y++) for (x = 1; x < W - 1; x++) {
       i = idx(x, y); if (ROAD[i] !== 1) continue; var n4 = (ROAD[i - 1] > 0 ? 1 : 0) + (ROAD[i + 1] > 0 ? 1 : 0) + (ROAD[i - W] > 0 ? 1 : 0) + (ROAD[i + W] > 0 ? 1 : 0);
-      if (n4 >= 3) LAMPS.push([x, y]); else if (n4 === 2 && ((x * 7 + y * 13) % 5 === 0) && DIST[i] !== 255) LAMPS.push([x, y]);
+      if (n4 >= 3) LAMPS.push([x, y]); else if (n4 === 2 && ((x * 7 + y * 13) % 3 === 0) && DIST[i] !== 255) LAMPS.push([x, y]);
     }
   })();
 
