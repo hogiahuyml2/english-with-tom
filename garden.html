@@ -109,12 +109,25 @@
 .gt.has::after { content: ""; position: absolute; left: 20%; right: 20%; bottom: 8%; height: 16%; border-radius: 50%; background: rgba(60,35,10,.32); }
 .gt:not(.blk):hover::before { box-shadow: inset 0 0 0 3px rgba(255,255,255,.85), 0 3px 0 rgba(70,40,10,.3); } .gt.sel::before { box-shadow: inset 0 0 0 3px #FFD23F, 0 3px 0 rgba(70,40,10,.3); }
 .gt:hover, .gt.sel { z-index: 3; }
-/* góc nhìn nghiêng 2.5D (giống EWT City): khu vườn nghiêng như bản đồ, cây & công trình đứng thẳng (billboard). Bật bằng nút 🧊 2.5D. */
-#stage.gd-iso .gd-lawn { transform: perspective(1500px) rotateX(54deg) rotateZ(-40deg) scale(.8); transform: perspective(1500px) rotateX(54deg) rotateZ(-40deg) scale(min(1, calc(7.5 / max(var(--cols), var(--rows))))); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; }
+/* góc nhìn nghiêng 2.5D (giống EWT City): khu vườn nghiêng như bản đồ, cây & công trình đứng thẳng (billboard). Bật bằng nút 🧊 2.5D.
+   --isos: tỉ lệ vừa khung (JS fitIso tính theo kích thước vườn & màn hình). Hoạt hình lắc cây/thú nhún đã viết lại để giữ tư thế đứng. */
+#stage.gd-iso .gd-lawn { --isos: .8; transform: perspective(1500px) rotateX(54deg) rotateZ(-40deg) scale(var(--isos)); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
 #stage.gd-iso .gd-lawn .gd-zwrap, #stage.gd-iso .gd-lawn .gd-grid, #stage.gd-iso .gd-lawn .gd-pets, #stage.gd-iso .gd-lawn .gt { transform-style: preserve-3d; overflow: visible; }
-#stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(40deg) rotateX(-54deg); transform-origin: 50% 88%; animation: none !important; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
-#stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready { transform: rotateZ(40deg) rotateX(-54deg); }
-#stage.gd-iso .gd-lawn { box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
+#stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
+#stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready, #stage.gd-iso .gd-lawn .gt .tm, #stage.gd-iso .gd-lawn .gt .wd { transform: rotateZ(40deg) rotateX(-54deg); }
+@keyframes isoSway { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) rotate(-1.8deg); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) rotate(1.8deg); } }
+@keyframes isoHop { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) translateY(-9%); } }
+@keyframes isoBreath { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.15, 1.07); } }
+#stage.gd-iso.gd-hq .gd-lawn .gt.grow svg.sp { animation: isoSway 4.5s ease-in-out infinite; } #stage.gd-iso.gd-hq .gd-lawn .gt.tree svg.sp { animation-duration: 6s; }
+#stage.gd-iso.gd-hq .gd-lawn .gd-pet svg { animation: isoHop .7s ease-in-out infinite; } #stage.gd-iso.gd-hq .gd-lawn .gd-pet.rest svg { animation: isoBreath 2.4s ease-in-out infinite; }
+/* ban đêm / hoàng hôn trong 2.5D: nền vườn tối ấm hơn, bóng chân đậm, sprite có viền sáng ánh trăng, đèn & cửa sổ vẫn toả sáng */
+#stage.gd-iso.night .gd-lawn { box-shadow: 0 30px 50px -10px rgba(0,0,20,.7), 0 0 60px rgba(255,200,110,.18); }
+#stage.gd-iso .gd-lawn .gd-grid::before { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 6px; }
+#stage.gd-iso.night .gd-lawn .gd-grid::before { background: rgba(8,14,60,.34); }
+#stage.gd-iso.dusk .gd-lawn .gd-grid::before { background: rgba(160,70,10,.16); }
+#stage.gd-iso.night .gd-lawn .gt svg.sp, #stage.gd-iso.night .gd-lawn .bigart svg, #stage.gd-iso.night .gd-lawn .gd-pet svg { filter: drop-shadow(0 -1px .6px rgba(175,205,255,.65)) drop-shadow(0 3px 2px rgba(0,0,25,.55)); }
+#stage.gd-iso.night .gd-lawn .gt.has::after { background: rgba(0,0,25,.5); }
+#stage.gd-iso.night .gd-lawn .win, #stage.gd-iso.dusk .gd-lawn .win { filter: drop-shadow(0 0 7px #FFC93C) brightness(1.25); }
 /* chế độ Tiết kiệm (điện thoại): vẫn có bóng đổ nhẹ cho công trình & cây đứng yên (không hoạt hình nên rẻ) */
 .gd-stage:not(.gd-hq) .gt svg.sp, .gd-stage:not(.gd-hq) .bigart svg { filter: drop-shadow(0 1.5px 1px rgba(40,22,6,.26)); }
 /* nâng cấp đồ hoạ: bóng đổ mềm cho cây/công trình, viền tối nhẹ quanh vườn, thẻ món sáng lên khi rê chuột */
@@ -787,6 +800,16 @@ function gfxInit() {
   setHq(saved === '' ? auto : saved === '1');
   try { if (localStorage.getItem('ewt-garden-iso') === '1') $('stage').classList.add('gd-iso'); } catch (er) {}
 }
+/* 2.5D: tính tỉ lệ co để vườn vừa khung (theo số cột/hàng, kích thước ô và khung hiện có), gọi lặp nhẹ vì vườn có thể đổi/mở rộng bất cứ lúc nào */
+var isoKey = '';
+function fitIso() {
+  var st = $('stage'), lw = $('lawn'); if (!st || !lw || !st.classList.contains('gd-iso')) { isoKey = ''; return; }
+  var cs = getComputedStyle(lw), cols = +cs.getPropertyValue('--cols') || 7, rows = +cs.getPropertyValue('--rows') || 5, ts = parseFloat(cs.getPropertyValue('--ts')) || 64, r = st.getBoundingClientRect(), key = cols + 'x' + rows + ':' + ts + ':' + Math.round(r.width) + 'x' + Math.round(window.innerHeight); if (key === isoKey) return; isoKey = key;
+  var side = (cols + rows) / 2 * ts, w = side * 2 * .77 * .98, h = side * 2 * .5 * .81 + ts * 1.6;   // chiều ngang & dọc sau khi nghiêng (xấp xỉ)
+  var availW = Math.max(240, r.width - 150), availH = Math.max(220, Math.min(window.innerHeight, r.height || 700) - 280);
+  lw.style.setProperty('--isos', Math.max(.28, Math.min(1, availW / w, availH / h)).toFixed(3));
+}
+setInterval(fitIso, 700); window.addEventListener('resize', function () { isoKey = ''; fitIso(); });
 function setHq(on) { $('stage').classList.toggle('gd-hq', on); var b = $('hq'); if (b) { b.textContent = on ? '✨ Đồ hoạ cao' : '🍃 Tiết kiệm'; b.title = on ? 'Đang bật hiệu ứng ánh sáng đẹp. Bấm để tắt nếu máy bị chậm.' : 'Đang ở chế độ tiết kiệm. Bấm để bật hiệu ứng ánh sáng đẹp.'; } }
 
 /* ───────── cảnh nền: cây cối, hàng rào, hoa cỏ ───────── */
@@ -1426,7 +1449,7 @@ document.addEventListener('click', async function (e) {
   if ((el = t.closest('[data-ofbuy]'))) { buyOutfit(el.getAttribute('data-ofbuy')); return; }
   if ((el = t.closest('[data-sm]'))) { SMODE = el.getAttribute('data-sm'); renderShop(); return; }
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); if (SMODE === 'bd') SMODE = 'zone'; renderShop(); return; }
-  if (t.closest('#iso')) { var io = !$('stage').classList.contains('gd-iso'); $('stage').classList.toggle('gd-iso', io); try { localStorage.setItem('ewt-garden-iso', io ? '1' : '0'); } catch (er) {} toast(io ? '🧊 Đã bật góc nhìn nghiêng 2.5D' : 'Đã về góc nhìn phẳng'); return; }
+  if (t.closest('#iso')) { var io = !$('stage').classList.contains('gd-iso'); $('stage').classList.toggle('gd-iso', io); isoKey = ''; fitIso(); try { localStorage.setItem('ewt-garden-iso', io ? '1' : '0'); } catch (er) {} toast(io ? '🧊 Đã bật góc nhìn nghiêng 2.5D' : 'Đã về góc nhìn phẳng'); return; }
   if (t.closest('#hq')) { var on = !$('stage').classList.contains('gd-hq'); setHq(on); try { localStorage.setItem('ewt-garden-hq', on ? '1' : '0'); } catch (er) {} return; }
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
   if (t.closest('[data-more]')) { SHOPN += 60; renderShop(); return; }
