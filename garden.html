@@ -109,6 +109,8 @@
 .gt.has::after { content: ""; position: absolute; left: 20%; right: 20%; bottom: 8%; height: 16%; border-radius: 50%; background: rgba(60,35,10,.32); }
 .gt:not(.blk):hover::before { box-shadow: inset 0 0 0 3px rgba(255,255,255,.85), 0 3px 0 rgba(70,40,10,.3); } .gt.sel::before { box-shadow: inset 0 0 0 3px #FFD23F, 0 3px 0 rgba(70,40,10,.3); }
 .gt:hover, .gt.sel { z-index: 3; }
+/* chế độ Tiết kiệm (điện thoại): vẫn có bóng đổ nhẹ cho công trình & cây đứng yên (không hoạt hình nên rẻ) */
+.gd-stage:not(.gd-hq) .gt svg.sp, .gd-stage:not(.gd-hq) .bigart svg { filter: drop-shadow(0 1.5px 1px rgba(40,22,6,.26)); }
 /* nâng cấp đồ hoạ: bóng đổ mềm cho cây/công trình, viền tối nhẹ quanh vườn, thẻ món sáng lên khi rê chuột */
 .gd-hq .gt svg.sp, .gd-hq .bigart svg { filter: drop-shadow(0 2px 1.5px rgba(40,22,6,.30)); }
 .gd-hq .gt:not(.blk):hover svg.sp { filter: drop-shadow(0 3px 2px rgba(40,22,6,.34)) brightness(1.07) saturate(1.1); }
@@ -691,12 +693,12 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-cat-f.js?v=1"></script>
 <script src="js/garden-cat-g.js?v=1"></script>
 <script src="js/garden-cat-h.js?v=1"></script>
-<script src="js/garden-cat-i.js?v=1"></script>
+<script src="js/garden-cat-i.js?v=2"></script>
 <script src="js/garden-cat-j.js?v=2"></script>
 <script src="js/garden-cat-k.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
 <script src="js/garden-bundles.js?v=2"></script>
-<script src="js/garden-data.js?v=30"></script>
+<script src="js/garden-data.js?v=31"></script>
 <script src="js/garden-blueprints.js?v=6"></script>
 <script src="js/garden-art.js?v=7"></script>
 <script src="js/garden-art2.js?v=1"></script>
@@ -730,6 +732,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen4.js?v=5"></script>
 <script src="js/garden-gen5.js?v=1"></script>
 <script src="js/garden-gen6.js?v=1"></script>
+<script src="js/garden-gen7.js?v=2"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
