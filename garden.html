@@ -112,9 +112,15 @@
 /* góc nhìn nghiêng 2.5D (giống EWT City): khu vườn nghiêng như bản đồ, cây & công trình đứng thẳng (billboard). Bật bằng nút 🧊 2.5D.
    --isos: tỉ lệ vừa khung (JS fitIso tính theo kích thước vườn & màn hình). Hoạt hình lắc cây/thú nhún đã viết lại để giữ tư thế đứng. */
 #stage.gd-iso .gd-lawn { --isos: .8; transform: perspective(1500px) rotateX(54deg) rotateZ(-40deg) scale(var(--isos)); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
-#stage.gd-iso .gd-lawn .gd-zwrap, #stage.gd-iso .gd-lawn .gd-grid, #stage.gd-iso .gd-lawn .gd-pets, #stage.gd-iso .gd-lawn .gt { transform-style: preserve-3d; overflow: visible; }
+#stage.gd-iso .gd-lawn .gd-zwrap, #stage.gd-iso .gd-lawn .gd-isob, #stage.gd-iso .gd-lawn .gd-grid, #stage.gd-iso .gd-lawn .gd-pets, #stage.gd-iso .gd-lawn .gt { transform-style: preserve-3d; overflow: visible; }
 #stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
 #stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready, #stage.gd-iso .gd-lawn .gt .tm, #stage.gd-iso .gd-lawn .gt .wd { transform: rotateZ(40deg) rotateX(-54deg); }
+/* phong cảnh dựng sẵn tách từng khối: vật ĐỨNG (nhà, cây, giếng…) dựng thẳng lên, vật NẰM (đường, ao, ruộng, bến…) nằm sát mặt đất */
+.gd-isob { position: absolute; display: block; overflow: visible; pointer-events: none; }
+#stage.gd-iso .gd-lawn .gd-isob:not(.flat) { transform: rotateZ(40deg) rotateX(-54deg) scale(1.04); transform-origin: 50% 96%; filter: drop-shadow(0 3px 2px rgba(30,15,0,.3)); }
+#stage.gd-iso .gd-lawn .gd-isob.flat { transform: none; }
+#stage.gd-iso .gd-lawn .gt.flatg svg.sp { transform: none; animation: none; filter: none; } #stage.gd-iso .gd-lawn .gt.flatg.has::after { display: none; }
+#stage.gd-iso.night .gd-lawn .gd-isob:not(.flat) { filter: drop-shadow(0 -1px .6px rgba(175,205,255,.6)) drop-shadow(0 3px 2px rgba(0,0,25,.5)); }
 @keyframes isoSway { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) rotate(-1.8deg); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) rotate(1.8deg); } }
 @keyframes isoHop { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) translateY(-9%); } }
 @keyframes isoBreath { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.15, 1.07); } }
@@ -126,6 +132,7 @@
 #stage.gd-iso.night .gd-lawn .gd-grid::before { background: rgba(8,14,60,.34); }
 #stage.gd-iso.dusk .gd-lawn .gd-grid::before { background: rgba(160,70,10,.16); }
 #stage.gd-iso.night .gd-lawn .gt svg.sp, #stage.gd-iso.night .gd-lawn .bigart svg, #stage.gd-iso.night .gd-lawn .gd-pet svg { filter: drop-shadow(0 -1px .6px rgba(175,205,255,.65)) drop-shadow(0 3px 2px rgba(0,0,25,.55)); }
+#stage.gd-iso.night .gd-lawn .gt.flatg svg.sp { filter: none; }
 #stage.gd-iso.night .gd-lawn .gt.has::after { background: rgba(0,0,25,.5); }
 #stage.gd-iso.night .gd-lawn .win, #stage.gd-iso.dusk .gd-lawn .win { filter: drop-shadow(0 0 7px #FFC93C) brightness(1.25); }
 /* chế độ Tiết kiệm (điện thoại): vẫn có bóng đổ nhẹ cho công trình & cây đứng yên (không hoạt hình nên rẻ) */
@@ -798,10 +805,12 @@ function gfxInit() {
   var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches, lowMem = navigator.deviceMemory && navigator.deviceMemory <= 4;
   var auto = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) && !coarse && !lowMem && innerWidth > 900 && (navigator.hardwareConcurrency || 4) >= 6;   // điện thoại / iPad mặc định ở chế độ tiết kiệm (vẫn bật tay được)
   setHq(saved === '' ? auto : saved === '1');
-  try { if (localStorage.getItem('ewt-garden-iso') === '1') $('stage').classList.add('gd-iso'); } catch (er) {}
+  try { if (localStorage.getItem('ewt-garden-iso') !== '0') $('stage').classList.add('gd-iso'); } catch (er) { $('stage').classList.add('gd-iso'); }
+  isoBtn();
 }
 /* 2.5D: tính tỉ lệ co để vườn vừa khung (theo số cột/hàng, kích thước ô và khung hiện có), gọi lặp nhẹ vì vườn có thể đổi/mở rộng bất cứ lúc nào */
 var isoKey = '';
+function isoBtn() { var b = $('iso'), on = $('stage').classList.contains('gd-iso'); if (b) { b.textContent = on ? '🧊 2.5D' : '▦ Phẳng'; b.title = on ? 'Đang xem góc nghiêng 2.5D. Bấm để về chế độ phẳng tiết kiệm.' : 'Đang xem phẳng (tiết kiệm). Bấm để bật góc nghiêng 2.5D.'; } }
 function fitIso() {
   var st = $('stage'), lw = $('lawn'); if (!st || !lw || !st.classList.contains('gd-iso')) { isoKey = ''; return; }
   var cs = getComputedStyle(lw), cols = +cs.getPropertyValue('--cols') || 7, rows = +cs.getPropertyValue('--rows') || 5, ts = parseFloat(cs.getPropertyValue('--ts')) || 64, r = st.getBoundingClientRect(), key = cols + 'x' + rows + ':' + ts + ':' + Math.round(r.width) + 'x' + Math.round(window.innerHeight); if (key === isoKey) return; isoKey = key;
@@ -858,7 +867,7 @@ function cellsHtml(z, ts, mini) {
     if (t && t.ref != null) cls += ' cov';
     if (it && it.kind === 'big') { cls += ' bigc'; inner = '<div class="bigart" style="width:calc(var(--ts) * ' + it.w + ');height:calc(var(--ts) * ' + it.h + ')">' + W.bigSvg(it.id) + '</div>'; }
     else if (it) {
-      var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has';
+      var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has' + (it.kind === 'ground' ? ' flatg' : '');
       inner = A.itemSvg(it, st, '100%', 'sp'); if (it.kind === 'plant' || it.kind === 'tree') cls += ' ' + (it.kind === 'tree' ? 'tree ' : '') + 'grow';
       if (!mini) {
         if (grow) { var tot = D.growMs(it, t.w), el = now - t.at; inner += '<div class="tm"><i><b style="width:' + Math.min(100, Math.max(4, el / tot * 100)) + '%"></b></i>' + fmtT(D.remainMs(it, t, now)) + '</div>'; if (t.w) inner += '<div class="wd">' + new Array(t.w + 1).join('💧') + '</div>'; }
@@ -931,11 +940,23 @@ function renderMap() {
   });
   if (changed) observeCards(m);
 }
+/* Vật nằm sát đất (không dựng thẳng): đường đi, ao hồ, sông, biển, ruộng, bến… — mọi khối khác là vật đứng */
+var LAYB = { pathv: 1, pathh: 1, river: 1, pond: 1, koipond: 1, icepond: 1, sea: 1, glowpool: 1, lavapool: 1, chocoriver: 1, cropfield: 1, leafpile: 1, pumpkinpatch: 1, oasis: 1, pier: 1, dock: 1, waterhole: 1, crater: 1, xmark: 1, coralreef: 1, tulipfield: 1, carpet: 1, floatmarket: 1, paellapan: 1, eggnest: 1 };
+function isoScene(z, lv) {
+  var full = W.zoneSvg(z), cut = full.indexOf('<svg class="gd-zscn"'), ground = cut > 0 ? full.slice(0, cut) : full, list = [], out = '', defs = '<defs>' + W.DEFS + '</defs>';
+  (z.blocks || []).forEach(function (b) { list.push(b); }); (z.decor || []).forEach(function (d) { if (d.L <= lv) list.push(d); });
+  list.sort(function (a, b) { return (a.y + a.h) - (b.y + b.h) || a.x - b.x; });
+  list.forEach(function (b) {
+    var fn = W.ART[b.k]; if (!fn) return; var raw; try { raw = W.lit(fn(b), 'bvL'); } catch (e) { return; }
+    out += '<svg class="gd-isob' + (LAYB[b.k] || /pond|river|path|field|pool|lake|sea$|reef|deck|pier|dock/.test(b.k) ? ' flat' : '') + '" style="left:calc(var(--ts) * ' + b.x + ');top:calc(var(--ts) * ' + b.y + ');width:calc(var(--ts) * ' + b.w + ');height:calc(var(--ts) * ' + b.h + ')" viewBox="' + b.x * 100 + ' ' + b.y * 100 + ' ' + b.w * 100 + ' ' + b.h * 100 + '" preserveAspectRatio="none" overflow="visible" aria-hidden="true">' + defs + raw + '</svg>';
+  });
+  return ground + out;
+}
 function ensureLawn(z) {
   var lawn = $('lawn');
-  var key = z.id + ':' + zlv(z);
+  var iso = $('stage').classList.contains('gd-iso'), key = z.id + ':' + zlv(z) + (iso ? ':i' : '');
   if (LAWNZ !== key) {
-    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + W.zoneSvg(z) + W.decorSvg(z, zlv(z)) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-hot-l" id="hot"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
+    LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + (iso ? isoScene(z, zlv(z)) : W.zoneSvg(z) + W.decorSvg(z, zlv(z))) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-hot-l" id="hot"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
     var dm = zdim(z); lawn.style.setProperty('--cols', dm.c); lawn.style.setProperty('--rows', dm.r);
   }
 }
@@ -1449,7 +1470,7 @@ document.addEventListener('click', async function (e) {
   if ((el = t.closest('[data-ofbuy]'))) { buyOutfit(el.getAttribute('data-ofbuy')); return; }
   if ((el = t.closest('[data-sm]'))) { SMODE = el.getAttribute('data-sm'); renderShop(); return; }
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); if (SMODE === 'bd') SMODE = 'zone'; renderShop(); return; }
-  if (t.closest('#iso')) { var io = !$('stage').classList.contains('gd-iso'); $('stage').classList.toggle('gd-iso', io); isoKey = ''; fitIso(); try { localStorage.setItem('ewt-garden-iso', io ? '1' : '0'); } catch (er) {} toast(io ? '🧊 Đã bật góc nhìn nghiêng 2.5D' : 'Đã về góc nhìn phẳng'); return; }
+  if (t.closest('#iso')) { var io = !$('stage').classList.contains('gd-iso'); $('stage').classList.toggle('gd-iso', io); isoKey = ''; isoBtn(); LAWNZ = null; try { render(); } catch (er) {} fitIso(); try { localStorage.setItem('ewt-garden-iso', io ? '1' : '0'); } catch (er) {} toast(io ? '🧊 Góc nhìn nghiêng 2.5D' : '▦ Chế độ phẳng tiết kiệm'); return; }
   if (t.closest('#hq')) { var on = !$('stage').classList.contains('gd-hq'); setHq(on); try { localStorage.setItem('ewt-garden-hq', on ? '1' : '0'); } catch (er) {} return; }
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
   if (t.closest('[data-more]')) { SHOPN += 60; renderShop(); return; }
