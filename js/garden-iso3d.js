@@ -3,7 +3,7 @@
    Hình sprite được tạo 1 lần mỗi (kiểu, màu, kích thước) rồi dùng lại dưới dạng ảnh; đặt thẳng đứng (billboard) tại tâm chân công trình. */
 (function (root) {
   'use strict';
-  var SCRIPTS = ['js/city-art.js?v=10', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = { ax: 32, ay: 0, bx: -3, by: 14 }, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
+  var SCRIPTS = ['js/city-art.js?v=10', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
   function load() {
     if (loading) return loading;
     loading = SCRIPTS.reduce(function (p, src) { return p.then(function () { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); }); }, Promise.resolve())
@@ -44,7 +44,6 @@
         p.wall = wall; p.roof = roof; p.c1 = wall; p.c2 = roof; p.acc = acc || roof; p.door = acc || '#7A4B2A'; p.stripe = roof; p.base = wall; p.lot = 'rgba(0,0,0,0)'; p.id = key; p.glass = '#BFE6F5';
         fn(g, rw, rh, 1, p, A.kit6.rng(A.kit6.hashS(key)));   // cấp 1: không hàng rào/viền thừa quanh chân
       };
-      A.ART[key].proj = PROJ;
     }
     return key;
   }
@@ -69,34 +68,28 @@
       [[.04, .04], [rw - .04 - t, .04], [.04, rh - .04 - t], [rw - .04 - t, rh - .04 - t]].forEach(function (q) { g.box(q[0] - .02, q[1] - .02, t + .04, t + .04, 0, hb + 4, sh(wd, .8)); });
       for (i = 1; i < Math.round(rw * 2); i++) g.box(.04 + i * (rw - .08) / Math.round(rw * 2) - .015, rh - .04 - t - .005, .03, t + .01, hf, hf + 5, sh(wd, .85));
     };
-    A.ART[key].proj = PROJ;
     return key;
   }
-  // sinh sprite + địa chỉ ảnh (1 lần)
+  // sinh sprite khối đẳng cự của City (cache theo kiểu+màu+kích thước) → { sp, w, h } với sp.c = canvas, sp.ox/oy = gốc, sp.w/h = kích thước logic
   function spriteFor(style, wall, roof, acc, w, h) {
     if (!okay) return null; var A = root.EWTCityArt, key;
     if (wall && roof && wall.toLowerCase() === roof.toLowerCase()) roof = A.shade(roof, .72);   // tường & mái cùng màu → tối mái cho rõ
     key = PENS[style] ? penKey(style, wall, roof, acc) : reg(style, wall, roof, acc); if (!key) return null;
-    var ck = key + '|' + w + 'x' + h; if (urlC[ck]) return urlC[ck];
+    var ck = key + '|' + w + 'x' + h; if (urlC[ck] !== undefined) return urlC[ck];
     var sp; try { sp = A.getSprite('b', key, 1, w, h, '', 0); } catch (e) { return (urlC[ck] = null); }
     if (!sp || !sp.c || !sp.c.width) return (urlC[ck] = null);
-    var r = { url: sp.c.toDataURL('image/png'), w: sp.w, h: sp.h, ax: sp.ox + w * PROJ.ax / 2 + h * PROJ.bx, ay: sp.oy + h * PROJ.by };   // mốc = GIỮA CẠNH TRƯỚC của chân công trình (điểm thấp nhất) → dựng thẳng từ đó, không bị lún
-    return (urlC[ck] = r);
-  }
-  function imgHtml(r, w, h) {
-    var X = (w / 2 - r.ax * K), Y = (h - r.ay * K);
-    return '<img class="gd-b3d" alt="" draggable="false" src="' + r.url + '" style="width:calc(var(--ts) * ' + (r.w * K).toFixed(4) + ');height:calc(var(--ts) * ' + (r.h * K).toFixed(4) + ');left:calc(var(--ts) * ' + X.toFixed(4) + ');top:calc(var(--ts) * ' + Y.toFixed(4) + ');transform-origin:calc(var(--ts) * ' + (r.ax * K).toFixed(4) + ') calc(var(--ts) * ' + (r.ay * K).toFixed(4) + ')">';
+    return (urlC[ck] = { sp: sp, w: w, h: h });
   }
   var API = {
     load: load, ready: function () { return okay; },
-    // công trình lớn người chơi đặt: item {id,w,h}; spec = EWTGardenCatalog.SPEC[id] = ['b', w, h, kiểu, tường, mái, nhấn, …]
-    bigHtml: function (it) {
-      var CAT = root.EWTGardenCatalog, e = CAT && CAT.SPEC && CAT.SPEC[it.id], sp = e && e[1]; if (!okay || !e || e[0] !== 'b' || !sp) return '';
-      var r = spriteFor(sp[3], sp[4], sp[5], sp[6], sp[1], sp[2]); return r ? imgHtml(r, sp[1], sp[2]) : '';
+    // công trình lớn người chơi đặt: item {id}; spec = EWTGardenCatalog.SPEC[id] = ['b', [tên, w, h, kiểu, tường, mái, nhấn, …]]
+    bigSprite: function (it) {
+      var CAT = root.EWTGardenCatalog, e = CAT && CAT.SPEC && CAT.SPEC[it.id], sp = e && e[1]; if (!okay || !e || e[0] !== 'b' || !sp) return null;
+      return spriteFor(sp[3], sp[4], sp[5], sp[6], sp[1], sp[2]);
     },
     // khối phong cảnh dựng sẵn: block {k,x,y,w,h}
-    blockHtml: function (b) {
-      var m = SCN[b.k]; if (!okay || !m) return ''; var w = Math.max(1, b.w), h = Math.max(1, b.h), r = spriteFor(m[0], m[1], m[2], m[3] || '', w, h); return r ? imgHtml(r, w, h) : '';
+    blockSprite: function (b) {
+      var m = SCN[b.k]; if (!okay || !m) return null; return spriteFor(m[0], m[1], m[2], m[3] || '', Math.max(1, b.w), Math.max(1, b.h));
     },
     has: function (k) { return !!SCN[k]; }
   };
