@@ -111,7 +111,7 @@
 .gt:hover, .gt.sel { z-index: 3; }
 /* góc nhìn nghiêng 2.5D (giống EWT City): khu vườn nghiêng như bản đồ, cây & công trình đứng thẳng (billboard). Bật bằng nút 🧊 2.5D.
    --isos: tỉ lệ vừa khung (JS fitIso tính theo kích thước vườn & màn hình). Hoạt hình lắc cây/thú nhún đã viết lại để giữ tư thế đứng. */
-#stage.gd-iso .gd-lawn { --isos: .8; transform: perspective(1500px) rotateX(52deg) scale(var(--isos)); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
+#stage.gd-iso .gd-lawn { --isos: .8; transform: rotateX(52deg) scale(var(--isos));   /* không dùng perspective: mặt đất chỉ nén theo chiều dọc, cây & nhà đứng không bị méo/xéo ở hai bên */ transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
 #stage.gd-iso .gd-lawn .gd-zwrap, #stage.gd-iso .gd-lawn .gd-isob, #stage.gd-iso .gd-lawn .gd-grid, #stage.gd-iso .gd-lawn .gd-pets, #stage.gd-iso .gd-lawn .gt { transform-style: preserve-3d; overflow: visible; }
 #stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateX(-52deg) scale(var(--ss, 1)); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
 #stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready, #stage.gd-iso .gd-lawn .gt .tm, #stage.gd-iso .gd-lawn .gt .wd { transform: rotateX(-52deg); }
@@ -134,8 +134,8 @@
 #stage.gd-iso .gd-lawn .gt.flatg svg.sp { transform: none; animation: none; filter: none; } #stage.gd-iso .gd-lawn .gt.flatg.has::after { display: none; }
 #stage.gd-iso.night .gd-lawn .gd-isob:not(.flat) { filter: drop-shadow(0 -1px .6px rgba(175,205,255,.6)) drop-shadow(0 3px 2px rgba(0,0,25,.5)); }
 /* thứ bậc kích thước trong 2.5D: công trình to nhất; cây vừa; hoa, đồ nhỏ và thú nhỏ hơn để không chồng chéo */
-#stage.gd-iso .gd-lawn { --bs: 1; }
-#stage.gd-iso .gd-lawn .gd-b3d { transform: rotateX(-52deg) scale(var(--bs, 1)); }
+#stage.gd-iso .gd-lawn { --bs: .92; }
+#stage.gd-iso .gd-lawn .gd-b3d { transform: rotateX(-52deg) scale(var(--bs, .92)); }
 #stage.gd-iso .gd-lawn .gt { --ss: .82; } #stage.gd-iso .gd-lawn .gt.k-tree { --ss: .9; } #stage.gd-iso .gd-lawn .gt.k-plant { --ss: .78; } #stage.gd-iso .gd-lawn .gt.k-deco { --ss: .8; } #stage.gd-iso .gd-lawn .gt.k-big { --ss: 1.1; }
 #stage.gd-iso .gd-lawn .gd-pet { --ss: .76; }
 #stage.gd-iso .gd-lawn { align-self: flex-start; }
@@ -777,7 +777,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen5.js?v=1"></script>
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
-<script src="js/garden-iso3d.js?v=4"></script>
+<script src="js/garden-iso3d.js?v=6"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>

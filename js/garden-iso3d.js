@@ -3,7 +3,7 @@
    Hình sprite được tạo 1 lần mỗi (kiểu, màu, kích thước) rồi dùng lại dưới dạng ảnh; đặt thẳng đứng (billboard) tại tâm chân công trình. */
 (function (root) {
   'use strict';
-  var SCRIPTS = ['js/city-art.js?v=10', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = { ax: 32, ay: 0, bx: -18, by: 19 }, K = 1 / 32;   // chiếu xiên (cabinet): mặt trước thẳng, mặt hông & mặt trên lùi lên phải — dễ nhìn hơn khối đẳng cự 45°
+  var SCRIPTS = ['js/city-art.js?v=10', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = { ax: 32, ay: 0, bx: -3, by: 14 }, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
   function load() {
     if (loading) return loading;
     loading = SCRIPTS.reduce(function (p, src) { return p.then(function () { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); }); }, Promise.resolve())
@@ -20,7 +20,7 @@
   };
   // khối phong cảnh dựng sẵn (khoá ART của khu) → kiểu + màu mặc định
   var SCN = {
-    house: ['house', '#F6E7C8', '#D95A42'], gate: ['gate', '#C9503C', '#2E8A6A'], cabin: ['cabin', '#B58555', '#7A4B2A'], hut: ['hut', '#D9B885', '#C69C5E'], barn: ['barn', '#C9503C', '#6B4A2E'], windmill: ['mill', '#F2EAD8', '#D95A42'], tavern: ['house', '#F5ECD7', '#7A4B2A'],
+    house: ['house', '#F6E7C8', '#D95A42'], cabin: ['cabin', '#B58555', '#7A4B2A'], hut: ['hut', '#D9B885', '#C69C5E'], barn: ['barn', '#C9503C', '#6B4A2E'], windmill: ['mill', '#F2EAD8', '#D95A42'], tavern: ['house', '#F5ECD7', '#7A4B2A'],
     palace: ['castle', '#F2E6C8', '#B8485E'], pagoda: ['pagoda', '#C9503C', '#2E8A6A'], lighthouse: ['lighthouse', '#F2F2F2', '#E9573F'], tikihut: ['stilt', '#C9A06A', '#B8452E'], mushhouse: ['dome', '#F6F0E0', '#E9573F'],
     candyhouse: ['house', '#FFD0E4', '#FF7AA8'], bamboohouse: ['stilt', '#C8DC9A', '#6B9E3A'], wizard: ['tower', '#DCCFF2', '#6B4AA8'], tent: ['tent', '#F6F0E0', '#E9573F'], pyramid: ['pyramid', '#E8C080', '#D9A441'],
     jungletemple: ['temple', '#9AA88A', '#4E6B3A'], safaritower: ['stilt', '#C9A06A', '#8A5A33'], neontower: ['tower', '#3C2E6B', '#6FD0FF'], cloudcastle: ['castle', '#FFFFFF', '#B9A0F0'], moonbase: ['dome', '#E8EDF2', '#8FA3BD'],
@@ -42,7 +42,7 @@
       A.ART[key] = function (g, rw, rh, lv) {
         var p = {}; Object.keys(m[2] || {}).forEach(function (q) { p[q] = m[2][q]; });
         p.wall = wall; p.roof = roof; p.c1 = wall; p.c2 = roof; p.acc = acc || roof; p.door = acc || '#7A4B2A'; p.stripe = roof; p.base = wall; p.lot = 'rgba(0,0,0,0)'; p.id = key; p.glass = '#BFE6F5';
-        fn(g, rw, rh, 2, p, A.kit6.rng(A.kit6.hashS(key)));
+        fn(g, rw, rh, 1, p, A.kit6.rng(A.kit6.hashS(key)));   // cấp 1: không hàng rào/viền thừa quanh chân
       };
       A.ART[key].proj = PROJ;
     }
@@ -78,7 +78,7 @@
     if (wall && roof && wall.toLowerCase() === roof.toLowerCase()) roof = A.shade(roof, .72);   // tường & mái cùng màu → tối mái cho rõ
     key = PENS[style] ? penKey(style, wall, roof, acc) : reg(style, wall, roof, acc); if (!key) return null;
     var ck = key + '|' + w + 'x' + h; if (urlC[ck]) return urlC[ck];
-    var sp; try { sp = A.getSprite('b', key, 2, w, h, '', 0); } catch (e) { return (urlC[ck] = null); }
+    var sp; try { sp = A.getSprite('b', key, 1, w, h, '', 0); } catch (e) { return (urlC[ck] = null); }
     if (!sp || !sp.c || !sp.c.width) return (urlC[ck] = null);
     var r = { url: sp.c.toDataURL('image/png'), w: sp.w, h: sp.h, ax: sp.ox + w * PROJ.ax / 2 + h * PROJ.bx, ay: sp.oy + h * PROJ.by };   // mốc = GIỮA CẠNH TRƯỚC của chân công trình (điểm thấp nhất) → dựng thẳng từ đó, không bị lún
     return (urlC[ck] = r);
