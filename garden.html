@@ -764,7 +764,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
 <script src="js/garden-iso3d.js?v=10"></script>
-<script src="js/garden-isoview.js?v=3"></script>
+<script src="js/garden-isoview.js?v=4"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
@@ -918,7 +918,7 @@ function isoApply(z, ts) {
     if (it.kind === 'big') {
       var bs = window.EWTGardenIso && EWTGardenIso.ready() ? EWTGardenIso.bigSprite(it) : null;
       if (bs) items.push(V.sprItem(bs.sp, c, r, it.w, it.h, { i: gi, ov: ov, kind: 'big' }));
-      else { var sz = (W.BIGSIZE && W.BIGSIZE[it.id]) || [it.w, it.h], aspect = 1; items.push(V.imgItem('big|' + it.id + '|' + nk, function (id) { return function () { return V.prep(W.bigSvg(id), night); }; }(it.id), c + it.w / 2, r + it.h / 2 + (it.w + it.h) * .18, it.w * 1.05, it.w * 1.05 * (sz[1] + .12) / sz[0], { i: gi, ov: ov, kind: 'big', base: .98, sh: .4, hw: .5, dz: .2 })); }
+      else { var sz = (W.BIGSIZE && W.BIGSIZE[it.id]) || [it.w, it.h], aspect = 1; items.push(V.imgItem('big|' + it.id + '|' + nk, function (id) { return function () { return V.prep(W.bigSvg(id), night); }; }(it.id), c + it.w / 2, r + it.h / 2 + (it.w + it.h) * .08, it.w * 1.05, it.w * 1.05 * (sz[1] + .12) / sz[0], { i: gi, ov: ov, kind: 'big', base: .98, sh: .4, hw: .5, dz: .2 })); }
     } else if (it.kind === 'plant') {
       var svgP = function (it2, st2) { return function () { return V.prep(A.itemSvg(it2, st2, 128, ''), night); }; };
       CLUS.forEach(function (q, k) { items.push(V.imgItem('p|' + it.id + '|' + st + '|' + nk, svgP(it, st), c + q[0], r + q[1], .6, .6, { kind: 'plant', sh: .26, dz: -.01 * k })); });
