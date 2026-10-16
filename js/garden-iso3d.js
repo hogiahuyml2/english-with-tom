@@ -3,7 +3,7 @@
    Hình sprite được tạo 1 lần mỗi (kiểu, màu, kích thước) rồi dùng lại dưới dạng ảnh; đặt thẳng đứng (billboard) tại tâm chân công trình. */
 (function (root) {
   'use strict';
-  var SCRIPTS = ['js/city-art.js?v=9', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, HW = 32, HH = 16, K = 1.41421356 / 64;
+  var SCRIPTS = ['js/city-art.js?v=10', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = { ax: 32, ay: 0, bx: -18, by: 19 }, K = 1 / 32;   // chiếu xiên (cabinet): mặt trước thẳng, mặt hông & mặt trên lùi lên phải — dễ nhìn hơn khối đẳng cự 45°
   function load() {
     if (loading) return loading;
     loading = SCRIPTS.reduce(function (p, src) { return p.then(function () { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); }); }, Promise.resolve())
@@ -44,6 +44,7 @@
         p.wall = wall; p.roof = roof; p.c1 = wall; p.c2 = roof; p.acc = acc || roof; p.door = acc || '#7A4B2A'; p.stripe = roof; p.base = wall; p.lot = 'rgba(0,0,0,0)'; p.id = key; p.glass = '#BFE6F5';
         fn(g, rw, rh, 2, p, A.kit6.rng(A.kit6.hashS(key)));
       };
+      A.ART[key].proj = PROJ;
     }
     return key;
   }
@@ -68,6 +69,7 @@
       [[.04, .04], [rw - .04 - t, .04], [.04, rh - .04 - t], [rw - .04 - t, rh - .04 - t]].forEach(function (q) { g.box(q[0] - .02, q[1] - .02, t + .04, t + .04, 0, hb + 4, sh(wd, .8)); });
       for (i = 1; i < Math.round(rw * 2); i++) g.box(.04 + i * (rw - .08) / Math.round(rw * 2) - .015, rh - .04 - t - .005, .03, t + .01, hf, hf + 5, sh(wd, .85));
     };
+    A.ART[key].proj = PROJ;
     return key;
   }
   // sinh sprite + địa chỉ ảnh (1 lần)
@@ -78,11 +80,11 @@
     var ck = key + '|' + w + 'x' + h; if (urlC[ck]) return urlC[ck];
     var sp; try { sp = A.getSprite('b', key, 2, w, h, '', 0); } catch (e) { return (urlC[ck] = null); }
     if (!sp || !sp.c || !sp.c.width) return (urlC[ck] = null);
-    var r = { url: sp.c.toDataURL('image/png'), w: sp.w, h: sp.h, ax: sp.ox + (w - h) * HW, ay: sp.oy + (w + h) * HH };   // mốc = GÓC TRƯỚC của chân công trình (điểm thấp nhất) → dựng thẳng từ đó, không bị lún xuống mặt đất
+    var r = { url: sp.c.toDataURL('image/png'), w: sp.w, h: sp.h, ax: sp.ox + w * PROJ.ax / 2 + h * PROJ.bx, ay: sp.oy + h * PROJ.by };   // mốc = GIỮA CẠNH TRƯỚC của chân công trình (điểm thấp nhất) → dựng thẳng từ đó, không bị lún
     return (urlC[ck] = r);
   }
   function imgHtml(r, w, h) {
-    var X = (w - r.ax * K), Y = (h - r.ay * K);
+    var X = (w / 2 - r.ax * K), Y = (h - r.ay * K);
     return '<img class="gd-b3d" alt="" draggable="false" src="' + r.url + '" style="width:calc(var(--ts) * ' + (r.w * K).toFixed(4) + ');height:calc(var(--ts) * ' + (r.h * K).toFixed(4) + ');left:calc(var(--ts) * ' + X.toFixed(4) + ');top:calc(var(--ts) * ' + Y.toFixed(4) + ');transform-origin:calc(var(--ts) * ' + (r.ax * K).toFixed(4) + ') calc(var(--ts) * ' + (r.ay * K).toFixed(4) + ')">';
   }
   var API = {

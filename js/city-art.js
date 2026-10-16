@@ -10,7 +10,8 @@
 
   function Gfx(ctx, ox, oy) { this.c = ctx; this.ox = ox; this.oy = oy; this.sw = false; this.nf = false; this.keep = false; this.b = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }; this.glow = []; this.meta = { smoke: [], flags: [], water: [], duck: [], crane: [], swing: [], rot: [] }; }
   var G = Gfx.prototype;
-  G.P = function (cx, cy, z) { if (this.sw) { var t = cx; cx = cy; cy = t; } return [this.ox + (cx - cy) * HW, this.oy + (cx + cy) * HH - (z || 0)]; };   // sw: lật tựa theo đường chéo → mặt trước nhìn sang bên kia
+  G.P = function (cx, cy, z) { if (this.proj) { var q = this.proj; return [this.ox + cx * q.ax + cy * q.bx, this.oy + cx * q.ay + cy * q.by - (z || 0)]; }   // chiếu xiên kiểu "cabinet" (mặt trước thẳng, chiều sâu lùi lên phải) — dùng cho EWT Garden 2.5D nhìn thẳng
+    if (this.sw) { var t = cx; cx = cy; cy = t; } return [this.ox + (cx - cy) * HW, this.oy + (cx + cy) * HH - (z || 0)]; };   // sw: lật tựa theo đường chéo → mặt trước nhìn sang bên kia
   G.ext = function (x, y, r) { var b = this.b; r = r || 0; if (x - r < b.x0) b.x0 = x - r; if (y - r < b.y0) b.y0 = y - r; if (x + r > b.x1) b.x1 = x + r; if (y + r > b.y1) b.y1 = y + r; };
   G.poly = function (pts, fill, stroke, lw) { var c = this.c, i; c.beginPath(); for (i = 0; i < pts.length; i++) { if (i) c.lineTo(pts[i][0], pts[i][1]); else c.moveTo(pts[i][0], pts[i][1]); this.ext(pts[i][0], pts[i][1], 2); } c.closePath(); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke !== false) { c.strokeStyle = stroke || INK; c.lineWidth = lw || 1.1; c.lineJoin = 'round'; c.stroke(); } };
   G.ell = function (x, y, rx, ry, fill, stroke) { var c = this.c; c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); this.ext(x, y, Math.max(rx, ry) + 2); if (fill) { c.fillStyle = fill; c.fill(); } if (stroke) { c.strokeStyle = stroke; c.lineWidth = 1; c.stroke(); } };
@@ -477,7 +478,7 @@
     var padX = 40, W0 = ((rw + rh) * HW + 140) * SS, H0 = ((rw + rh) * HH + 1140) * SS;
     if (!tmp) tmp = document.createElement('canvas'); if (tmp.width < W0 || tmp.height < H0) { tmp.width = Math.max(tmp.width, W0); tmp.height = Math.max(tmp.height, H0); }
     var ctx = tmp.getContext('2d'); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, tmp.width, tmp.height); ctx.scale(SS, SS);
-    var ox = rh * HW + 70, oy = 1100, g = new Gfx(ctx, ox, oy), P = pal && root.EWTCityData && root.EWTCityData.PAL_BY[pal]; face = face | 0; g.sw = !!(face & 1); g.nf = face >= 2;
+    var ox = rh * HW + 70, oy = 1100, g = new Gfx(ctx, ox, oy), fproj = fn && fn.proj; if (fproj) g.proj = fproj; var _unused = 0, P = pal && root.EWTCityData && root.EWTCityData.PAL_BY[pal]; face = face | 0; g.sw = !!(face & 1); g.nf = face >= 2;
     if (P) { curG = g; hookCtx(ctx, P); }
     try { if (g.sw) fn(g, rh, rw, lv); else fn(g, rw, rh, lv); } finally { if (P) { unhookCtx(ctx); curG = null; } }
     var b = g.b, x0 = Math.max(0, Math.floor(b.x0 - 9)), y0 = Math.max(0, Math.floor(b.y0 - 9)), x1 = Math.ceil(b.x1 + 9), y1 = Math.ceil(b.y1 + 9), w = x1 - x0, h = y1 - y0;
