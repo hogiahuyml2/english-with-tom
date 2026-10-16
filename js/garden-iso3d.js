@@ -53,11 +53,11 @@
     var ck = key + '|' + w + 'x' + h; if (urlC[ck]) return urlC[ck];
     var sp; try { sp = A.getSprite('b', key, 2, w, h, '', 0); } catch (e) { return (urlC[ck] = null); }
     if (!sp || !sp.c || !sp.c.width) return (urlC[ck] = null);
-    var r = { url: sp.c.toDataURL('image/png'), w: sp.w, h: sp.h, ax: sp.ox + (w - h) / 2 * HW, ay: sp.oy + (w + h) / 2 * HH };
+    var r = { url: sp.c.toDataURL('image/png'), w: sp.w, h: sp.h, ax: sp.ox + (w - h) * HW, ay: sp.oy + (w + h) * HH };   // mốc = GÓC TRƯỚC của chân công trình (điểm thấp nhất) → dựng thẳng từ đó, không bị lún xuống mặt đất
     return (urlC[ck] = r);
   }
   function imgHtml(r, w, h) {
-    var X = (w / 2 - r.ax * K), Y = (h / 2 - r.ay * K);
+    var X = (w - r.ax * K), Y = (h - r.ay * K);
     return '<img class="gd-b3d" alt="" draggable="false" src="' + r.url + '" style="width:calc(var(--ts) * ' + (r.w * K).toFixed(4) + ');height:calc(var(--ts) * ' + (r.h * K).toFixed(4) + ');left:calc(var(--ts) * ' + X.toFixed(4) + ');top:calc(var(--ts) * ' + Y.toFixed(4) + ');transform-origin:calc(var(--ts) * ' + (r.ax * K).toFixed(4) + ') calc(var(--ts) * ' + (r.ay * K).toFixed(4) + ')">';
   }
   var API = {
