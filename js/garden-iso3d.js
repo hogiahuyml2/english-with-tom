@@ -47,9 +47,34 @@
     }
     return key;
   }
+
+  /* chuồng / khu nuôi (pen*): sàn + hàng rào thấp (mặt trước thấp để thấy thú bên trong), cột góc, có mái lán / ao tuỳ kiểu */
+  var PENS = { pen: 1, penger: 1, penst: 1, pencoop: 1, penshed: 1, penhut: 1, penpond: 1 };
+  function penKey(style, wall, roof, acc) {
+    var A = root.EWTCityArt, key = 'gdn|' + style + '|' + wall + '|' + roof + '|' + (acc || '');
+    if (A.ART[key]) return key;
+    A.ART[key] = function (g, rw, rh, lv) {
+      var K6 = A.kit6, lot = A.kit.lot, sh = A.shade, wd = wall || '#B58555', fl = style === 'pencoop' ? '#E8D7A0' : style === 'penpond' ? '#8FD06A' : '#B9D87A', t = .09, hb = 16, hf = 8, i;
+      lot(g, rw, rh, fl); g.poly(g.faceT(.06, .06, rw - .12, rh - .12, 0), sh(fl, .95), false);
+      if (style === 'penpond') { var c = g.P(rw / 2, rh / 2, 0); g.ell(c[0], c[1], (rw + rh) / 2 * 20, (rw + rh) / 2 * 9.5, '#5FB7E8', 'rgba(20,50,90,.35)'); g.ell(c[0] - 6, c[1] - 2, (rw + rh) / 2 * 8, (rw + rh) / 2 * 3, 'rgba(255,255,255,.35)'); }
+      if (style === 'penshed' || style === 'pencoop' || style === 'penhut') {   // lán / chuồng nhỏ ở góc sau
+        var sw = Math.min(rw * .5, 1.6), sd = Math.min(rh * .45, 1.2), sx = .18, sy = .18, zh = 20;
+        g.box(sx, sy, sw, sd, 0, zh, sh(wd, 1.08)); g.winsL(sx, sy, sw, sd, 6, zh - 3, 1, 1, { m: .3 });
+        g.gable(sx - .05, sy - .05, sw + .1, sd + .1, zh, zh + 9, true, roof || '#B8452E', { wall: sh(wd, 1.08) }); g.doorL(sx, sy, sw, sd, .7, 0, .26, 10, acc || '#6B4A2B');
+      }
+      var Z = function (x, y, w, h, z, col) { g.box(x, y, w, h, 0, z, col || wd); };
+      Z(.04, .04, rw - .08, t, hb); Z(.04, .04, t, rh - .08, hb);                 // rào sau (cao)
+      Z(.04, rh - .04 - t, rw - .08, t, hf); Z(rw - .04 - t, .04, t, rh - .08, hf);   // rào trước (thấp)
+      [[.04, .04], [rw - .04 - t, .04], [.04, rh - .04 - t], [rw - .04 - t, rh - .04 - t]].forEach(function (q) { g.box(q[0] - .02, q[1] - .02, t + .04, t + .04, 0, hb + 4, sh(wd, .8)); });
+      for (i = 1; i < Math.round(rw * 2); i++) g.box(.04 + i * (rw - .08) / Math.round(rw * 2) - .015, rh - .04 - t - .005, .03, t + .01, hf, hf + 5, sh(wd, .85));
+    };
+    return key;
+  }
   // sinh sprite + địa chỉ ảnh (1 lần)
   function spriteFor(style, wall, roof, acc, w, h) {
-    if (!okay) return null; var A = root.EWTCityArt, key = reg(style, wall, roof, acc); if (!key) return null;
+    if (!okay) return null; var A = root.EWTCityArt, key;
+    if (wall && roof && wall.toLowerCase() === roof.toLowerCase()) roof = A.shade(roof, .72);   // tường & mái cùng màu → tối mái cho rõ
+    key = PENS[style] ? penKey(style, wall, roof, acc) : reg(style, wall, roof, acc); if (!key) return null;
     var ck = key + '|' + w + 'x' + h; if (urlC[ck]) return urlC[ck];
     var sp; try { sp = A.getSprite('b', key, 2, w, h, '', 0); } catch (e) { return (urlC[ck] = null); }
     if (!sp || !sp.c || !sp.c.width) return (urlC[ck] = null);
