@@ -3,7 +3,7 @@
 (function (root) {
   'use strict';
   var HW = 32, HH = 16, SS = 2;                       // SS: độ nét sprite (vẽ gấp đôi rồi thu nhỏ khi dán)
-  var hex = function (h) { h = h.replace('#', ''); if (h.length === 3) h = h.replace(/./g, '$&$&'); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; };
+  var hex = function (h) { if (h.charAt(0) === 'r') { var m = /\d+(\.\d+)?/g, n = h.match(m) || [128, 128, 128]; return [+n[0], +n[1], +n[2]]; } h = h.replace('#', ''); if (h.length === 3) h = h.replace(/./g, '$&$&'); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; };
   var cache = {};
   function shade(c, f) { var k = c + f; if (cache[k]) return cache[k]; var a = hex(c), r = Math.max(0, Math.min(255, Math.round(a[0] * f))), g = Math.max(0, Math.min(255, Math.round(a[1] * f))), b = Math.max(0, Math.min(255, Math.round(a[2] * f))); return (cache[k] = 'rgb(' + r + ',' + g + ',' + b + ')'); }
   var INK = 'rgba(40,28,60,.38)';

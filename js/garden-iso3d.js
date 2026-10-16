@@ -3,7 +3,7 @@
    Hình sprite được tạo 1 lần mỗi (kiểu, màu, kích thước) rồi dùng lại dưới dạng ảnh; đặt thẳng đứng (billboard) tại tâm chân công trình. */
 (function (root) {
   'use strict';
-  var SCRIPTS = ['js/city-art.js?v=10', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
+  var SCRIPTS = ['js/city-art.js?v=11', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
   function load() {
     if (loading) return loading;
     loading = SCRIPTS.reduce(function (p, src) { return p.then(function () { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); }); }, Promise.resolve())
@@ -16,7 +16,9 @@
     pagoda: ['q', 'tiers', { n: 4 }], dome: ['k6', 'domehome'], cave: ['k6', 'cliff'], stilt: ['q', 'stilt'], lighthouse: ['k6', 'lighthouse'], dock: ['k6', 'boathouse'], tent: ['k6', 'yurt'], mill: ['k6', 'mill'], ship: ['k6', 'boathouse'],
     tech: ['k6', 'modern'], igloo: ['k6', 'domehome'], pyramid: ['q', 'stupa', { k: 'candi' }], school: ['k6', 'colonial'], campus: ['k6', 'condo2'], academy: ['k6', 'colonial'], kinder: ['k6', 'cottage'], library: ['k6', 'colonial'],
     villa: ['k6', 'med'], treehouse: ['q', 'stilt'], bungalow: ['k6', 'ranch'], glasshouse: ['k6', 'glasshome'], ziggurat: ['k7', 'ziggur'], amphi: ['k7', 'wave'], bubble: ['k6', 'domehome'], mansion: ['k6', 'colonial'],
-    skyrise: ['q', 'skyscraper'], gate: ['q', 'gate'], clocktower: ['k8', 'clock2'], lotushouse: ['k7', 'petal'], windmill2: ['k6', 'mill']
+    skyrise: ['q', 'skyscraper'], gate: ['q', 'gate'], clocktower: ['k8', 'clock2'], lotushouse: ['k7', 'petal'], windmill2: ['k6', 'mill'],
+    mountain: ['x', 'mountain'], eiffelx: ['x', 'eiffel'], colonnade: ['x', 'colonnade'], eiffel: ['k7', 'hyper'], arch: ['k7', 'arch'], cluster: ['k7', 'cluster'], needle: ['k7', 'needle'], terrace: ['k6', 'terrace'], cliff: ['k6', 'cliff'], carousel: ['k8', 'carousel'], circus: ['k8', 'circus'],
+    rowh: ['q', 'row'], asia: ['q', 'asia'], torii: ['q', 'gate', { t: 'torii' }], bentar: ['q', 'gate', { t: 'bentar' }], boat: ['k6', 'boathouse'], liberty: ['q', 'liberty'], domeh: ['k6', 'domehome'], rock: ['q', 'uluru'], yurt: ['k6', 'yurt'], glass: ['k6', 'glasshome'], stupa: ['q', 'stupa'], modern: ['k6', 'modern']
   };
   // khối phong cảnh dựng sẵn (khoá ART của khu) → kiểu + màu mặc định
   var SCN = {
@@ -31,12 +33,42 @@
     hacienda: ['villa', '#F6E7C8', '#C9703A'], pueblo: ['hut', '#E3B98A', '#C9703A'], riad: ['villa', '#F6E7C8', '#2E8A8A'], santorini: ['villa', '#FFFFFF', '#4F80BA'], redcottage: ['house', '#F6E7C8', '#C9503C'], lalibela: ['temple', '#B9A27A', '#8A7A55'],
     tukul: ['hut', '#C9A06A', '#C9A55A'], maasaiboma: ['hut', '#C9A06A', '#8A5A33'], palafito: ['stilt', '#E8D7B5', '#4F80BA'], andeanhouse: ['hut', '#E3B98A', '#B8452E'], outbackhouse: ['bungalow', '#F6EAD2', '#C9503C'],
     cafe: ['shop', '#F6E7C8', '#E9573F'], pizzeria: ['shop', '#F2D27A', '#C9503C'], tower: ['tower', '#E8E4D8', '#6B7686'], koutoubia: ['tower', '#E3B98A', '#2E8A6A'], cntower: ['tower', '#DCE3EC', '#8FA3BD'],
-    colosseum: ['amphi', '#E3C9A0', '#9A7A55'], greatwall: ['castle', '#B9B3A6', '#8A7A55'], matterhorn: ['pyramid', '#E8EDF2', '#9AA3AE']
+    colosseum: ['amphi', '#E3C9A0', '#9A7A55'], greatwall: ['castle', '#B9B3A6', '#8A7A55'],
+    /* mở rộng: mọi công trình lớn của các khu quốc gia đều thành khối đặc đúng chân ô (không còn tranh phẳng đứng lệch) */
+    peak: ['mountain', '#8D97A6', '#F6F8FB'], volcano: ['mountain', '#6B5A55', '#E9573F'], iceberg: ['mountain', '#BFE6F5', '#FFFFFF'], fuji: ['mountain', '#6C86B8', '#FFFFFF'], kilimanjaro: ['mountain', '#8A7A5A', '#F6F8FB'], matterhorn: ['mountain', '#9AA3AE', '#FFFFFF'],
+    tablemountain: ['rock', '#B8A27A', '#D9C69A'], perito: ['mountain', '#CFE6F2', '#FFFFFF'], cappadocia: ['rock', '#D9B88A', '#C9A06A'], tsingy: ['rock', '#9AA3AE', '#7A8794'], skullrock: ['rock', '#B9B3A6', '#8A8F99'], moai: ['rock', '#8A8F99', '#6B7686'],
+    eiffel: ['eiffelx', '#8A7A6A', '#6B5A4A'], brandenburg: ['colonnade', '#E8DCC0', '#8A8F99'], parthenon: ['colonnade', '#F2E8D0', '#E8DCC0'], capitolio: ['colonnade', '#F6F0E0', '#C9D1DA', '#2E6B8A'], karnak: ['colonnade', '#E3C9A0', '#C9A06A'],
+    chichen: ['stupa', '#B9B3A6', '#9AA3AE'], sagrada: ['cluster', '#E3C9A0', '#C9A06A'], christredeemer: ['liberty', '#F2F2F2', '#E8EDF2'], machupicchu: ['terrace', '#B9B3A6', '#7CC25F'], moher: ['cliff', '#9AA3AE', '#7CC25F'],
+    pirateship: ['boat', '#8A5A33', '#F2EAD8'], ferriswheel: ['carousel', '#F2EAD8', '#E9573F'], rocket: ['needle', '#F6F8FB', '#E9573F'], circustent: ['circus', '#FFFFFF', '#E9573F'], carousel: ['carousel', '#F2EAD8', '#E9573F'], igloo: ['domeh', '#F2F8FF', '#9AB8D8'],
+    rorbu: ['stilt', '#B8452E', '#4A3A2E'], laboca: ['rowh', '#2B9BD8', '#E5334B'], ndebele: ['house', '#FFD84A', '#2B9BD8'], izba: ['cabin', '#A67444', '#4E6B3A'], baligate: ['bentar', '#9AA3AE', '#3A3A44'], torii: ['torii', '#D9503C', '#2A2A36'],
+    pavilion: ['pavilion', '#F2EAD8', '#B8452E'], marketstall: ['shop', '#F2D27A', '#E9573F'], pagoda: ['pagoda', '#C9503C', '#2E8A6A'], shipwreck: ['boat', '#6B4A2E', '#8A8F99'], lighthouse: ['lighthouse', '#F2F2F2', '#E9573F']
+  };
+  // khu chủ đề (th_*): *_house 3×3 = công trình chính, *_big 2×2 = công trình phụ
+  var TH = { aq: [['domeh', '#CFEFFA', '#4DB1EA'], ['domeh', '#E8F7FF', '#6FC8F2']], an: [['colonnade', '#F2E6C8', '#C9A06A'], ['pavilion', '#E8DCC0', '#8A8F99']], md: [['glass', '#DCE8F4', '#7FB8E0'], ['modern', '#F2F2F2', '#4F80BA']], pk: [['castle', '#FDE4EC', '#E27DA2'], ['pavilion', '#FFD0E4', '#E27DA2']], gl: [['pagoda', '#F6E7A8', '#E2B33C'], ['yurt', '#FFF3D0', '#E2B33C']], vl: [['castle', '#E4D8F5', '#8A56E0'], ['tower', '#DCCFF2', '#6B4AA8']], em: [['pagoda', '#DCEEDD', '#2E8A6A'], ['stilt', '#E8F2E4', '#3E9E6B']], ss: [['lighthouse', '#FFE9D2', '#E9573F'], ['boat', '#F6CBA2', '#C9503C']], sv: [['castle', '#E8F4FA', '#6FC8F2'], ['domeh', '#F2F8FF', '#9AB8D8']], cl: [['dome', '#E4E8F8', '#7C6FE0'], ['tower', '#DCE3F2', '#5C4FD0']] };
+  function scnOf(k) { if (SCN[k]) return SCN[k]; var m = /^([a-z]{2})_(house|big)$/.exec(k); return m && TH[m[1]] ? TH[m[1]][m[2] === 'house' ? 0 : 1] : null; }
+  /* kiểu riêng cho Garden (núi, đền cột) — vẽ bằng bộ vẽ City */
+  var XS = {
+    mountain: function (A, g, rw, rh, p) { var cx = rw / 2, cy = rh / 2, r = Math.min(rw, rh) * .5, H = 30 + (rw + rh) * 7; A.kit6.cone(g, cx, cy, r, 0, H, p.wall); A.kit6.cone(g, cx - .08, cy - .05, r * .46, H * .6, H + 3, p.roof || '#F6F8FB'); },
+    eiffel: function (A, g, rw, rh, p) {   // tháp lưới 4 chân: chân, sàn, thân giữa, ngọn
+      var sh = A.shade, c = p.wall, cx = rw / 2, cy = rh / 2, a = Math.min(rw, rh) * .38;
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (q) { g.cyl(cx + q[0] * a, cy + q[1] * a, .06, 0, 36, c); });
+      g.box(cx - a - .08, cy - a - .08, a * 2 + .16, a * 2 + .16, 36, 41, sh(c, 1.08));
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (q) { g.cyl(cx + q[0] * a * .5, cy + q[1] * a * .5, .05, 41, 70, c); });
+      g.box(cx - a * .62, cy - a * .62, a * 1.24, a * 1.24, 70, 74, sh(c, 1.08)); g.cyl(cx, cy, .06, 74, 104, c); g.cyl(cx, cy, .025, 104, 122, sh(c, .8));
+      var t = g.P(cx, cy, 124); g.ell(t[0], t[1], 2.2, 2.2, '#FF5A5A');
+    },
+    colonnade: function (A, g, rw, rh, p) {
+      var sh = A.shade, wd = p.wall, n = Math.max(4, Math.round(rw * 2.4)), i, zh = 26, pf = .12;
+      g.box(.04, .04, rw - .08, rh - .08, 0, 5, sh(wd, .86)); g.box(.14, .14, rw - .28, rh - .3, 5, 8, sh(wd, .95));
+      for (i = 0; i < n; i++) { var x = .26 + (rw - .52) * i / (n - 1); g.cyl(x, rh - .3, .06, 8, 8 + zh, wd); g.cyl(x, .34, .06, 8, 8 + zh, sh(wd, .9)); }
+      g.box(.14, .2, rw - .28, rh - .38, 8 + zh, 8 + zh + 5, sh(wd, 1.06)); g.gable(.1, .16, rw - .2, rh - .3, 13 + zh, 13 + zh + 12 + rw * 2, true, p.roof, { wall: sh(wd, 1.05) });
+      g.box(.04, rh - .22, rw - .08, .12, 0, 3, sh(wd, 1.1)); if (p.acc) { var f = g.P(rw / 2, rh - .3, 8 + zh * .5); g.ell(f[0], f[1], 4, 4, p.acc); }
+    }
   };
   var ring = ['wall', 'roof'];
   function reg(style, wall, roof, acc) {
     var A = root.EWTCityArt, m = MAP[style]; if (!A || !m) return null;
-    var tbl = m[0] === 'k6' ? A.kit6.styles : m[0] === 'k7' ? A.kit7 : m[0] === 'k8' ? A.kit8 : A.kit9, fn = tbl && tbl[m[1]]; if (!fn) return null;
+    var tbl = m[0] === 'k6' ? A.kit6.styles : m[0] === 'k7' ? A.kit7 : m[0] === 'k8' ? A.kit8 : A.kit9, fn = m[0] === 'x' ? function (g, rw, rh, lv, p) { XS[m[1]](A, g, rw, rh, p); } : tbl && tbl[m[1]]; if (!fn) return null;
     var key = 'gdn|' + style + '|' + wall + '|' + roof + '|' + (acc || '');
     if (!A.ART[key]) {
       A.ART[key] = function (g, rw, rh, lv) {
@@ -89,9 +121,9 @@
     },
     // khối phong cảnh dựng sẵn: block {k,x,y,w,h}
     blockSprite: function (b) {
-      var m = SCN[b.k]; if (!okay || !m) return null; return spriteFor(m[0], m[1], m[2], m[3] || '', Math.max(1, b.w), Math.max(1, b.h));
+      var m = scnOf(b.k); if (!okay || !m) return null; return spriteFor(m[0], m[1], m[2], m[3] || '', Math.max(1, b.w), Math.max(1, b.h));
     },
-    has: function (k) { return !!SCN[k]; }
+    has: function (k) { return !!scnOf(k); }
   };
   root.EWTGardenIso = API;
 })(typeof window !== 'undefined' ? window : this);
