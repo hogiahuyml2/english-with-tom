@@ -34,6 +34,7 @@
     tukul: ['hut', '#C9A06A', '#C9A55A'], maasaiboma: ['hut', '#C9A06A', '#8A5A33'], palafito: ['stilt', '#E8D7B5', '#4F80BA'], andeanhouse: ['hut', '#E3B98A', '#B8452E'], outbackhouse: ['bungalow', '#F6EAD2', '#C9503C'],
     cafe: ['shop', '#F6E7C8', '#E9573F'], pizzeria: ['shop', '#F2D27A', '#C9503C'], tower: ['tower', '#E8E4D8', '#6B7686'], koutoubia: ['tower', '#E3B98A', '#2E8A6A'], cntower: ['tower', '#DCE3EC', '#8FA3BD'],
     colosseum: ['amphi', '#E3C9A0', '#9A7A55'], greatwall: ['castle', '#B9B3A6', '#8A7A55'],
+    hutbig: ['hut', '#D9B885', '#C69C5E'], cabinbig: ['cabin', '#B58555', '#7A4B2A'], barnbig: ['barn', '#C9503C', '#6B4A2E'], castle: ['castle', '#E8E4D8', '#6B7686'], glasshouse: ['glasshouse', '#DCE8F4', '#7FB8E0'], gazebo: ['pavilion', '#F2EAD8', '#4F80BA'], teahouse: ['pavilion', '#E8DCC0', '#2E8A6A'], treehouse: ['treehouse', '#B58555', '#4E8A3A'], pyramidbig: ['pyramid', '#E8C080', '#D9A441'], gingerbread: ['house', '#C98A55', '#FFD0E4'], cloudhouse: ['dome', '#FFFFFF', '#B9D8F5'], rocketbig: ['needle', '#F6F8FB', '#E9573F'], observatory: ['dome', '#E8EDF2', '#6B7686'], liberty: ['liberty', '#8EC9B0', '#6BAA95'],
     /* mở rộng: mọi công trình lớn của các khu quốc gia đều thành khối đặc đúng chân ô (không còn tranh phẳng đứng lệch) */
     peak: ['mountain', '#8D97A6', '#F6F8FB'], volcano: ['mountain', '#6B5A55', '#E9573F'], iceberg: ['mountain', '#BFE6F5', '#FFFFFF'], fuji: ['mountain', '#6C86B8', '#FFFFFF'], kilimanjaro: ['mountain', '#8A7A5A', '#F6F8FB'], matterhorn: ['mountain', '#9AA3AE', '#FFFFFF'],
     tablemountain: ['rock', '#B8A27A', '#D9C69A'], perito: ['mountain', '#CFE6F2', '#FFFFFF'], cappadocia: ['rock', '#D9B88A', '#C9A06A'], tsingy: ['rock', '#9AA3AE', '#7A8794'], skullrock: ['rock', '#B9B3A6', '#8A8F99'], moai: ['rock', '#8A8F99', '#6B7686'],
@@ -116,7 +117,8 @@
     load: load, ready: function () { return okay; },
     // công trình lớn người chơi đặt: item {id}; spec = EWTGardenCatalog.SPEC[id] = ['b', [tên, w, h, kiểu, tường, mái, nhấn, …]]
     bigSprite: function (it) {
-      var CAT = root.EWTGardenCatalog, e = CAT && CAT.SPEC && CAT.SPEC[it.id], sp = e && e[1]; if (!okay || !e || e[0] !== 'b' || !sp) return null;
+      var CAT = root.EWTGardenCatalog, e = CAT && CAT.SPEC && CAT.SPEC[it.id], sp = e && e[1]; if (!okay) return null;
+      if (!e || e[0] !== 'b' || !sp) { var m = scnOf(it.id); return m ? spriteFor(m[0], m[1], m[2], m[3] || '', Math.max(1, it.w), Math.max(1, it.h)) : null; }   // công trình lớn viết tay (không có SPEC) → khối đặc theo tên
       return spriteFor(sp[3], sp[4], sp[5], sp[6], sp[1], sp[2]);
     },
     // khối phong cảnh dựng sẵn: block {k,x,y,w,h}
