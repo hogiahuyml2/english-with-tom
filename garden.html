@@ -113,7 +113,7 @@
    --isos: tỉ lệ vừa khung (JS fitIso tính theo kích thước vườn & màn hình). Hoạt hình lắc cây/thú nhún đã viết lại để giữ tư thế đứng. */
 #stage.gd-iso .gd-lawn { --isos: .8; transform: perspective(1500px) rotateX(60deg) rotateZ(-45deg) scale(var(--isos)); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
 #stage.gd-iso .gd-lawn .gd-zwrap, #stage.gd-iso .gd-lawn .gd-isob, #stage.gd-iso .gd-lawn .gd-grid, #stage.gd-iso .gd-lawn .gd-pets, #stage.gd-iso .gd-lawn .gt { transform-style: preserve-3d; overflow: visible; }
-#stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
+#stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, 1)); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
 #stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready, #stage.gd-iso .gd-lawn .gt .tm, #stage.gd-iso .gd-lawn .gt .wd { transform: rotateZ(45deg) rotateX(-60deg); }
 /* phong cảnh dựng sẵn tách từng khối: vật ĐỨNG (nhà, cây, giếng…) dựng thẳng lên, vật NẰM (đường, ao, ruộng, bến…) nằm sát mặt đất */
 .gd-b3d { position: absolute; display: block; pointer-events: none; max-width: none; user-select: none; }
@@ -121,13 +121,19 @@
 #stage.gd-iso.night .gd-lawn .gd-b3d { filter: brightness(.78) saturate(1.1) drop-shadow(0 -1px .6px rgba(175,205,255,.5)); }
 .gd-isob3 { position: absolute; pointer-events: none; transform-style: preserve-3d; } #stage.gd-iso .gd-lawn .gd-isob3, #stage.gd-iso .gd-lawn .bigart.b3 { transform-style: preserve-3d; overflow: visible; }
 .gd-isob { position: absolute; display: block; overflow: visible; pointer-events: none; }
-#stage.gd-iso .gd-lawn .gd-isob:not(.flat) { transform: rotateZ(45deg) rotateX(-60deg) scale(1.04); transform-origin: 50% 96%; filter: drop-shadow(0 3px 2px rgba(30,15,0,.3)); }
+#stage.gd-iso .gd-lawn .gd-isob:not(.flat) { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, .95)); transform-origin: 50% 96%; filter: drop-shadow(0 3px 2px rgba(30,15,0,.3)); }
 #stage.gd-iso .gd-lawn .gd-isob.flat { transform: none; }
 #stage.gd-iso .gd-lawn .gt.flatg svg.sp { transform: none; animation: none; filter: none; } #stage.gd-iso .gd-lawn .gt.flatg.has::after { display: none; }
 #stage.gd-iso.night .gd-lawn .gd-isob:not(.flat) { filter: drop-shadow(0 -1px .6px rgba(175,205,255,.6)) drop-shadow(0 3px 2px rgba(0,0,25,.5)); }
-@keyframes isoSway { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1) rotate(-1.8deg); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1) rotate(1.8deg); } }
-@keyframes isoHop { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1) translateY(-9%); } }
-@keyframes isoBreath { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.15, 1.07); } }
+/* thứ bậc kích thước trong 2.5D: công trình to nhất; cây vừa; hoa, đồ nhỏ và thú nhỏ hơn để không chồng chéo */
+#stage.gd-iso .gd-lawn { --bs: 1.15; }
+#stage.gd-iso .gd-lawn .gd-b3d { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--bs, 1.15)); }
+#stage.gd-iso .gd-lawn .gt { --ss: .82; } #stage.gd-iso .gd-lawn .gt.k-tree { --ss: .9; } #stage.gd-iso .gd-lawn .gt.k-plant { --ss: .78; } #stage.gd-iso .gd-lawn .gt.k-deco { --ss: .8; } #stage.gd-iso .gd-lawn .gt.k-big { --ss: 1.1; }
+#stage.gd-iso .gd-lawn .gd-pet { --ss: .76; }
+#stage.gd-iso .gd-lawn { align-self: flex-start; }
+@keyframes isoSway { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, 1)) rotate(-1.8deg); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, 1)) rotate(1.8deg); } }
+@keyframes isoHop { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, 1)); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, 1)) translateY(-9%); } }
+@keyframes isoBreath { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(var(--ss, 1)); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(calc(var(--ss, 1) * 1.05), calc(var(--ss, 1) * .97)); } }
 #stage.gd-iso.gd-hq .gd-lawn .gt.grow svg.sp { animation: isoSway 4.5s ease-in-out infinite; } #stage.gd-iso.gd-hq .gd-lawn .gt.tree svg.sp { animation-duration: 6s; }
 #stage.gd-iso.gd-hq .gd-lawn .gd-pet svg { animation: isoHop .7s ease-in-out infinite; } #stage.gd-iso.gd-hq .gd-lawn .gd-pet.rest svg { animation: isoBreath 2.4s ease-in-out infinite; }
 /* ban đêm / hoàng hôn trong 2.5D: nền vườn tối ấm hơn, bóng chân đậm, sprite có viền sáng ánh trăng, đèn & cửa sổ vẫn toả sáng */
@@ -876,7 +882,7 @@ function cellsHtml(z, ts, mini) {
       cls += ' bigc'; inner = '<div class="bigart' + (b3 ? ' b3' : '') + '" style="width:calc(var(--ts) * ' + it.w + ');height:calc(var(--ts) * ' + it.h + ')">' + (b3 || W.bigSvg(it.id)) + '</div>';
     }
     else if (it) {
-      var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has' + (it.kind === 'ground' ? ' flatg' : '');
+      var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has k-' + it.kind + (it.kind === 'ground' ? ' flatg' : '');
       inner = A.itemSvg(it, st, '100%', 'sp'); if (it.kind === 'plant' || it.kind === 'tree') cls += ' ' + (it.kind === 'tree' ? 'tree ' : '') + 'grow';
       if (!mini) {
         if (grow) { var tot = D.growMs(it, t.w), el = now - t.at; inner += '<div class="tm"><i><b style="width:' + Math.min(100, Math.max(4, el / tot * 100)) + '%"></b></i>' + fmtT(D.remainMs(it, t, now)) + '</div>'; if (t.w) inner += '<div class="wd">' + new Array(t.w + 1).join('💧') + '</div>'; }
@@ -890,6 +896,9 @@ function cellsHtml(z, ts, mini) {
 function planted(z) { var n = 0, c, r, d = zdim(z); for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) if (!D.isBlocked(z.i * PER + r * MAXC + c) && S.tiles[z.i * PER + r * MAXC + c]) n++; return n; }
 function layout(z) {
   var d = zdim(z), pl = $('play'), W0 = pl.clientWidth, Hh = pl.clientHeight - 34, fit = Math.floor(Math.min((W0 - 44) / d.c, (Hh - 44) / d.r)), mn = innerWidth <= 640 ? 26 : 22;
+  if ($('stage').classList.contains('gd-iso')) {   // 2.5D: ô được tính theo hình chiếu nghiêng (rộng ≈ 0,707·(cột+hàng)·ô, cao ≈ nửa đó) nên ô lớn hơn chế độ phẳng
+    var sum = d.c + d.r; fit = Math.floor((W0 - 40) / (sum * .7071));   // theo chiều ngang; chiều cao do fitIso co lại (--isos) để vừa khung
+  }
   var ts = Math.max(mn, Math.min(100, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
   $('lawn').style.setProperty('--ts', ts + 'px'); $('lawn').classList.toggle('tiny', ts < 34); return ts;
 }
