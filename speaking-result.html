@@ -104,7 +104,7 @@ function hl(tr, errs) {
 }
 function turnHtml(t, k) {
   var q = D.turns[t.i], ur = D.clips[t.i];
-  var h = '<details class="sr-t"><summary><span class="sr-tag">Part ' + q.part + '</span><span style="flex:1;min-width:140px">' + esc(String(q.q || q.say).split('\n')[0].slice(0, 90)) + '</span>' + (t.ok ? '<small style="color:var(--text-muted)">' + fmt(t.dur) + ' · ' + t.words + ' từ</small>' : '<span class="sr-tag" style="background:#fee2e2;color:#b91c1c">chưa trả lời</span>') + '</summary><div class="bd">';
+  var h = '<details class="sr-t"' + (D.mine ? '' : ' open') + '><summary><span class="sr-tag">Part ' + q.part + '</span><span style="flex:1;min-width:140px">' + esc(String(q.q || q.say).split('\n')[0].slice(0, 90)) + '</span>' + (t.ok ? '<small style="color:var(--text-muted)">' + fmt(t.dur) + ' · ' + t.words + ' từ</small>' : '<span class="sr-tag" style="background:#fee2e2;color:#b91c1c">chưa trả lời</span>') + '</summary><div class="bd">';
   h += '<div class="sr-note"><b>Câu hỏi:</b> ' + esc(q.say) + '</div>';
   if (ur) h += '<audio controls preload="none" src="' + esc(ur) + '" style="width:100%;margin-top:6px"></audio>';
   if (!t.ok) return h + '<div class="sr-note" style="margin-top:6px">Không có bản ghi hợp lệ cho câu này.</div></div></details>';

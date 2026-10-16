@@ -3333,7 +3333,7 @@ tr.cf-row td { background:var(--primary-soft); font-weight:800; padding:8px 12px
     <div id="gpLeft">
       <details class="gp-prompt-details" open style="margin-bottom:14px;">
         <summary class="gp-section-title" style="cursor:pointer;user-select:none;display:inline-flex;">📋 Đề bài <span style="font-size:11px;font-weight:400;color:var(--text-faint);margin-left:6px;">(bấm để thu gọn)</span></summary>
-        <div id="gpPromptContent" style="margin-top:8px;background:var(--bg-soft,#f8f7ff);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.8;color:var(--text);"></div>
+        <div id="gpPromptContent" style="margin-top:8px;max-height:42vh;overflow:auto;resize:vertical;background:var(--bg-soft,#f8f7ff);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.8;color:var(--text);"></div>
       </details>
       <div class="gp-section-title">📝 Bài làm học sinh</div>
       <div style="font-size:12px;color:var(--text-faint);">Bôi đen text → chọn màu → highlight & ghi chú lỗi</div>
@@ -3462,6 +3462,26 @@ var _gpTaskOverride = null;
 var _gpTeacherNote  = null;
 var _gpAIResult     = null;
 
+/* APTIS Writing (nhiều phần): hiện ĐỀ từng phần và BÀI LÀM tương ứng thay vì chuỗi JSON thô */
+function aptisPromptHtml(c) {
+  var e = escHtml, h = '', box = function (t, body) { return '<div style="margin:0 0 10px"><div style="font-weight:800;font-size:12.5px;color:#5b21b6;margin-bottom:3px">' + t + '</div>' + body + '</div>'; }, p = function (t) { return t ? '<div style="white-space:pre-wrap">' + e(t) + '</div>' : ''; };
+  if (c.part1) { var q1 = (c.part1.questions || []).map(function (q, i) { return '<div>' + (i + 1) + '. ' + e(q) + '</div>'; }).join(''); h += box('PART 1 — Trả lời ngắn', (c.part1.example_q ? '<div style="color:var(--text-muted)">Ví dụ: ' + e(c.part1.example_q) + (c.part1.example_a ? ' → ' + e(c.part1.example_a) : '') + '</div>' : '') + q1); }
+  if (c.part2) h += box('PART 2 — ' + e(c.part2.word_range || '20–30') + ' từ', p(c.part2.context) + p(c.part2.instruction) + (c.part2.prompt ? '<div style="font-weight:700;margin-top:4px">' + e(c.part2.prompt) + '</div>' : ''));
+  if (c.part3) h += box('PART 3 — ' + e(c.part3.word_range || '30–40') + ' từ mỗi câu', p(c.part3.context) + p(c.part3.instruction) + (c.part3.messages || []).map(function (m, i) { return '<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:6px 10px;margin-top:5px"><b>' + (i + 1) + '. ' + e(m.name) + ':</b> ' + e(m.text) + '</div>'; }).join(''));
+  if (c.part4) { var p4 = c.part4, t1 = p4.task1 || {}, t2 = p4.task2 || {}; h += box('PART 4 — Email', (p4.email_context ? '<div style="color:var(--text-muted)">' + e(p4.email_context) + '</div>' : '') + (p4.email_body ? '<div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 10px;white-space:pre-wrap;margin:4px 0">' + e(p4.email_body) + '</div>' : '') + '<div><b>Task 1' + (t1.word_target ? ' (~' + e(t1.word_target) + ' từ)' : '') + ':</b> ' + e(t1.prompt || '') + '</div><div style="margin-top:4px"><b>Task 2' + (t2.word_target ? ' (' + e(t2.word_target) + ' từ)' : '') + ':</b> ' + e(t2.prompt || '') + '</div>'); }
+  return h || '<span style="color:var(--text-faint)">(Đề không có nội dung)</span>';
+}
+function aptisAnswerText(a, c) {
+  var out = [], clean = function (v) { return String(v == null ? '' : v).trim(); };
+  var q1 = c && c.part1 && c.part1.questions || [];
+  out.push('PART 1'); (a.part1 || []).forEach(function (v, i) { out.push((i + 1) + '. ' + (q1[i] ? '[' + q1[i] + '] ' : '') + (clean(v) || '(bỏ trống)')); });
+  out.push('', 'PART 2', clean(a.part2) || '(bỏ trống)');
+  var m3 = c && c.part3 && c.part3.messages || [];
+  out.push('', 'PART 3'); (a.part3 || []).forEach(function (v, i) { out.push((i + 1) + '. ' + (m3[i] && m3[i].name ? '[' + m3[i].name + '] ' : '') + (clean(v) || '(bỏ trống)')); });
+  var p4 = a.part4 || {};
+  out.push('', 'PART 4 — Task 1', clean(p4.task1) || '(bỏ trống)', '', 'PART 4 — Task 2', clean(p4.task2) || '(bỏ trống)');
+  return out.join('\n');
+}
 function openGradingPanel(subId) {
   _gpSubId        = subId;
   _gpProgram      = null;
@@ -3514,7 +3534,8 @@ function openGradingPanel(subId) {
       document.getElementById('gpExerciseTitle').innerHTML = escHtml(sub.title + (sub.skill ? ' · ' + sub.skill : '')) + integ;
 
       // Đề bài — để giáo viên biết chính xác yêu cầu học sinh đang làm là gì
-      var promptHtml = (window.RichEditor && RichEditor.sanitize) ? RichEditor.sanitize(sub.exercise_content || '') : escHtml(sub.exercise_content || '');
+      var _aptis = null; try { var _c = typeof sub.exercise_content === 'string' ? JSON.parse(sub.exercise_content) : sub.exercise_content; if (_c && _c._aptis_full) _aptis = _c; } catch (e) { /* đề thường */ }
+      var promptHtml = _aptis ? aptisPromptHtml(_aptis) : ((window.RichEditor && RichEditor.sanitize) ? RichEditor.sanitize(sub.exercise_content || '') : escHtml(sub.exercise_content || ''));
       if (sub.exercise_image_url) {
         promptHtml += '<img src="'+escHtml(sub.exercise_image_url)+'" alt="Hình ảnh đề bài" style="max-width:100%;border-radius:8px;margin-top:10px;display:block;">';
       }
@@ -3536,6 +3557,7 @@ function openGradingPanel(subId) {
       try {
         var ans = typeof sub.answers === 'string' ? JSON.parse(sub.answers) : sub.answers;
         if (ans && ans.audio_url) speakingAudio = ans.audio_url;
+        else if (ans && !ans.essay && (ans.part1 || ans.part2 || ans.part3 || ans.part4)) essayText = aptisAnswerText(ans, _aptis);
         else essayText = (ans && ans.essay) || JSON.stringify(ans);
       } catch(e) { essayText = sub.answers || ''; }
       var essayEl = document.getElementById('gpEssay');

@@ -30,6 +30,7 @@
 .wb-name { font-weight: 800; font-size: 15.5px; color: inherit; text-decoration: none; } .wb-name:hover { color: var(--primary); }
 .wb-chip { display: inline-block; background: var(--primary-soft); color: var(--primary); border-radius: 99px; padding: 2px 10px; font-size: 12px; font-weight: 700; } .wb-chip.ex { background: var(--bg-soft); color: var(--text-muted); } .wb-chip.rd { background: #fde68a; color: #92400e; } .wb-chip.st { background: var(--success-soft); color: #166534; }
 .wb-meta { color: var(--text-muted); font-size: 12.5px; }
+.wb-prompt { border: 1.5px solid #c7d2fe; background: #eef2ff; border-radius: 12px; margin: 8px 0 4px; } .wb-prompt summary { cursor: pointer; font-weight: 800; font-size: 13.5px; padding: 8px 12px; color: #3730a3; user-select: none; } .wb-pbody { padding: 2px 14px 12px; font-size: 14px; line-height: 1.7; max-height: 320px; overflow: auto; } .wb-pbody img { max-width: 100%; }
 .wb-essay { white-space: pre-wrap; background: var(--bg-soft); border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.7; max-height: 7.2em; overflow: hidden; position: relative; } .wb-essay.open { max-height: none; }
 .wb-more { background: none; border: none; color: var(--primary); font: 700 12.5px inherit; font-family: inherit; cursor: pointer; padding: 4px 0; }
 .wb-grade { display: grid; grid-template-columns: 210px 1fr; gap: 14px; margin-top: 12px; } @media (max-width: 760px) { .wb-grade { grid-template-columns: 1fr; } }
@@ -73,6 +74,7 @@
 </main>
 <div class="wb-toast" id="toast"></div>
 <div id="site-footer"></div>
+<script src="js/editor.js"></script>
 <script src="js/track.js?v=1" defer></script>
 <script src="js/main.js?v=53"></script>
 <script>
@@ -126,6 +128,14 @@ function renderBar() {
 }
 function find(id) { for (var i = 0; i < DATA.items.length; i++) if (DATA.items[i].id === id) return DATA.items[i]; return null; }
 
+/* ĐỀ BÀI hiện ngay trên mỗi bài (chữ có định dạng, ảnh, âm thanh) — bấm tiêu đề để thu gọn */
+function promptBox(it) {
+  var pr = (DATA.prompts || {})[it.exercise.id] || {}, html = pr.content || '', has = html || pr.image_url || pr.audio_url;
+  var body = (window.RichEditor && RichEditor.sanitize) ? RichEditor.sanitize(html) : esc(String(html).replace(/<[^>]+>/g, ' '));
+  if (pr.image_url) body += '<img src="' + esc(pr.image_url) + '" alt="Hình đề bài" style="max-width:100%;max-height:380px;border-radius:10px;margin-top:8px;display:block;background:#fff">';
+  if (pr.audio_url) body += '<audio controls preload="none" style="width:100%;margin-top:8px" src="' + esc(pr.audio_url) + '"></audio>';
+  return '<details class="wb-prompt" open><summary>📋 Đề bài — ' + esc(it.exercise.title) + '</summary><div class="wb-pbody">' + (has ? body : '<span style="color:var(--text-faint)">(Đề này không có nội dung chữ/ảnh để hiển thị — mở “Chi tiết” để xem đầy đủ.)</span>') + '</div></details>';
+}
 function cardHtml(it) {
   var h = '<div class="wb-card' + (SEL[it.id] ? ' sel' : '') + '" id="c' + it.id + '" data-id="' + it.id + '"><div class="wb-head">' +
     (TAB !== 'sent' ? '<input type="checkbox" data-sel="' + it.id + '"' + (SEL[it.id] ? ' checked' : '') + '>' : '') +
@@ -135,7 +145,7 @@ function cardHtml(it) {
     (it.ai && it.ai.round > 1 ? '<span class="wb-chip rd">Lần chấm ' + it.ai.round + '</span>' : '') +
     ((it.leaves || it.pastes) ? '<span class="wb-chip rd" title="Chế độ thi: số lần rời trang / thử dán nội dung">⚠️ Rời trang ' + (it.leaves || 0) + (it.pastes ? ' · dán ' + it.pastes : '') + '</span>' : '') +
     '<span style="flex:1"></span>' + (it.status === 'graded' ? '<span class="wb-chip st">Đã gửi</span>' : '') + '</div>';
-  h += '<div class="wb-essay" id="e' + it.id + '">' + esc(it.essay) + '</div>' + (it.words > 90 ? '<button class="wb-more" data-more="' + it.id + '">▼ Xem hết bài</button>' : '');
+  h += promptBox(it) + '<div class="wb-lab" style="margin-top:10px">📝 Bài làm của học sinh</div>' + '<div class="wb-essay" id="e' + it.id + '">' + esc(it.essay) + '</div>' + (it.words > 90 ? '<button class="wb-more" data-more="' + it.id + '">▼ Xem hết bài</button>' : '');
   if (it.ai) {
     var a = it.ai, mx = it.max_score || (a.criteria[0] ? null : null), canEdit = it.status === 'pending_review';
     h += '<div class="wb-grade"><div><div class="wb-score"><div class="big"><input type="number" step="0.5" min="0" data-score="' + it.id + '" value="' + (it.score == null ? '' : it.score) + '"' + (canEdit ? '' : ' disabled') + '><span class="mx">/ ' + (it.max_score == null ? '?' : it.max_score) + '</span></div><small>' + esc(a.scale_label || 'Điểm') + '</small><small>' + a.error_count + ' lỗi/gợi ý được đánh dấu</small></div></div><div>' +

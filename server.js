@@ -2016,7 +2016,10 @@ app.get('/api/teacher/writing-queue', requireRole('teacher','admin'), (req, res)
     };
   });
   const exMap = new Map(); for (const r of db.prepare(`SELECT e.id, e.title, COUNT(*) AS c ${base} AND ${stCond} GROUP BY e.id ORDER BY e.title`).all(...sa)) exMap.set(r.id, { id: r.id, title: r.title, count: r.c });
-  res.json({ counts: { todo: cnt.pending || 0, draft: cnt.pending_review || 0, sent: cnt.graded || 0 }, items, exercises: [...exMap.values()], ai_ready: aiEnabled() });
+  // đề bài (chữ / ảnh / âm thanh) của từng đề có trong danh sách — để giáo viên đối chiếu ngay khi chấm
+  const prompts = {};
+  for (const id of new Set(rows.map(r => r.exercise_id))) { const e = db.prepare('SELECT content, image_url, audio_url FROM exercises WHERE id = ?').get(id); if (e) prompts[id] = { content: e.content || '', image_url: e.image_url || '', audio_url: e.audio_url || '' }; }
+  res.json({ counts: { todo: cnt.pending || 0, draft: cnt.pending_review || 0, sent: cnt.graded || 0 }, items, exercises: [...exMap.values()], prompts, ai_ready: aiEnabled() });
 });
 // Duyệt & gửi hàng loạt: chỉ các bài đã có điểm nháp (AI hoặc giáo viên) và đang ở trạng thái chờ duyệt
 app.post('/api/teacher/send-grade-batch', requireRole('teacher','admin'), (req, res) => {
