@@ -111,19 +111,23 @@
 .gt:hover, .gt.sel { z-index: 3; }
 /* góc nhìn nghiêng 2.5D (giống EWT City): khu vườn nghiêng như bản đồ, cây & công trình đứng thẳng (billboard). Bật bằng nút 🧊 2.5D.
    --isos: tỉ lệ vừa khung (JS fitIso tính theo kích thước vườn & màn hình). Hoạt hình lắc cây/thú nhún đã viết lại để giữ tư thế đứng. */
-#stage.gd-iso .gd-lawn { --isos: .8; transform: perspective(1500px) rotateX(54deg) rotateZ(-40deg) scale(var(--isos)); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
+#stage.gd-iso .gd-lawn { --isos: .8; transform: perspective(1500px) rotateX(60deg) rotateZ(-45deg) scale(var(--isos)); transform-style: preserve-3d; margin-top: 46px; margin-bottom: 20px; box-shadow: 0 30px 40px -10px rgba(10,30,10,.5); }
 #stage.gd-iso .gd-lawn .gd-zwrap, #stage.gd-iso .gd-lawn .gd-isob, #stage.gd-iso .gd-lawn .gd-grid, #stage.gd-iso .gd-lawn .gd-pets, #stage.gd-iso .gd-lawn .gt { transform-style: preserve-3d; overflow: visible; }
-#stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
-#stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready, #stage.gd-iso .gd-lawn .gt .tm, #stage.gd-iso .gd-lawn .gt .wd { transform: rotateZ(40deg) rotateX(-54deg); }
+#stage.gd-iso .gd-lawn .gt svg.sp, #stage.gd-iso .gd-lawn .bigart svg, #stage.gd-iso .gd-lawn .gd-pet svg { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1); transform-origin: 50% 88%; animation: none; filter: drop-shadow(0 3px 2px rgba(30,15,0,.35)); }
+#stage.gd-iso .gd-lawn .gd-pet .mood, #stage.gd-iso .gd-lawn .gt .ready, #stage.gd-iso .gd-lawn .gt .tm, #stage.gd-iso .gd-lawn .gt .wd { transform: rotateZ(45deg) rotateX(-60deg); }
 /* phong cảnh dựng sẵn tách từng khối: vật ĐỨNG (nhà, cây, giếng…) dựng thẳng lên, vật NẰM (đường, ao, ruộng, bến…) nằm sát mặt đất */
+.gd-b3d { position: absolute; display: block; pointer-events: none; max-width: none; user-select: none; }
+#stage.gd-iso .gd-lawn .gd-b3d { transform: rotateZ(45deg) rotateX(-60deg); filter: drop-shadow(0 2px 1.5px rgba(20,10,0,.25)); }
+#stage.gd-iso.night .gd-lawn .gd-b3d { filter: brightness(.78) saturate(1.1) drop-shadow(0 -1px .6px rgba(175,205,255,.5)); }
+.gd-isob3 { position: absolute; pointer-events: none; transform-style: preserve-3d; } #stage.gd-iso .gd-lawn .gd-isob3, #stage.gd-iso .gd-lawn .bigart.b3 { transform-style: preserve-3d; overflow: visible; }
 .gd-isob { position: absolute; display: block; overflow: visible; pointer-events: none; }
-#stage.gd-iso .gd-lawn .gd-isob:not(.flat) { transform: rotateZ(40deg) rotateX(-54deg) scale(1.04); transform-origin: 50% 96%; filter: drop-shadow(0 3px 2px rgba(30,15,0,.3)); }
+#stage.gd-iso .gd-lawn .gd-isob:not(.flat) { transform: rotateZ(45deg) rotateX(-60deg) scale(1.04); transform-origin: 50% 96%; filter: drop-shadow(0 3px 2px rgba(30,15,0,.3)); }
 #stage.gd-iso .gd-lawn .gd-isob.flat { transform: none; }
 #stage.gd-iso .gd-lawn .gt.flatg svg.sp { transform: none; animation: none; filter: none; } #stage.gd-iso .gd-lawn .gt.flatg.has::after { display: none; }
 #stage.gd-iso.night .gd-lawn .gd-isob:not(.flat) { filter: drop-shadow(0 -1px .6px rgba(175,205,255,.6)) drop-shadow(0 3px 2px rgba(0,0,25,.5)); }
-@keyframes isoSway { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) rotate(-1.8deg); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) rotate(1.8deg); } }
-@keyframes isoHop { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1) translateY(-9%); } }
-@keyframes isoBreath { 0%, 100% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.1); } 50% { transform: rotateZ(40deg) rotateX(-54deg) scale(1.15, 1.07); } }
+@keyframes isoSway { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1) rotate(-1.8deg); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1) rotate(1.8deg); } }
+@keyframes isoHop { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1) translateY(-9%); } }
+@keyframes isoBreath { 0%, 100% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.1); } 50% { transform: rotateZ(45deg) rotateX(-60deg) scale(1.15, 1.07); } }
 #stage.gd-iso.gd-hq .gd-lawn .gt.grow svg.sp { animation: isoSway 4.5s ease-in-out infinite; } #stage.gd-iso.gd-hq .gd-lawn .gt.tree svg.sp { animation-duration: 6s; }
 #stage.gd-iso.gd-hq .gd-lawn .gd-pet svg { animation: isoHop .7s ease-in-out infinite; } #stage.gd-iso.gd-hq .gd-lawn .gd-pet.rest svg { animation: isoBreath 2.4s ease-in-out infinite; }
 /* ban đêm / hoàng hôn trong 2.5D: nền vườn tối ấm hơn, bóng chân đậm, sprite có viền sáng ánh trăng, đèn & cửa sổ vẫn toả sáng */
@@ -759,6 +763,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen5.js?v=1"></script>
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
+<script src="js/garden-iso3d.js?v=1"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
@@ -806,15 +811,16 @@ function gfxInit() {
   var auto = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) && !coarse && !lowMem && innerWidth > 900 && (navigator.hardwareConcurrency || 4) >= 6;   // điện thoại / iPad mặc định ở chế độ tiết kiệm (vẫn bật tay được)
   setHq(saved === '' ? auto : saved === '1');
   try { if (localStorage.getItem('ewt-garden-iso') !== '0') $('stage').classList.add('gd-iso'); } catch (er) { $('stage').classList.add('gd-iso'); }
-  isoBtn();
+  isoBtn(); isoLoad3d();
 }
 /* 2.5D: tính tỉ lệ co để vườn vừa khung (theo số cột/hàng, kích thước ô và khung hiện có), gọi lặp nhẹ vì vườn có thể đổi/mở rộng bất cứ lúc nào */
 var isoKey = '';
+function isoLoad3d() { if (!window.EWTGardenIso || !$('stage').classList.contains('gd-iso')) return; EWTGardenIso.load().then(function (ok) { if (ok) { LAWNZ = null; try { render(); } catch (er) {} } }); }
 function isoBtn() { var b = $('iso'), on = $('stage').classList.contains('gd-iso'); if (b) { b.textContent = on ? '🧊 2.5D' : '▦ Phẳng'; b.title = on ? 'Đang xem góc nghiêng 2.5D. Bấm để về chế độ phẳng tiết kiệm.' : 'Đang xem phẳng (tiết kiệm). Bấm để bật góc nghiêng 2.5D.'; } }
 function fitIso() {
   var st = $('stage'), lw = $('lawn'); if (!st || !lw || !st.classList.contains('gd-iso')) { isoKey = ''; return; }
   var cs = getComputedStyle(lw), cols = +cs.getPropertyValue('--cols') || 7, rows = +cs.getPropertyValue('--rows') || 5, ts = parseFloat(cs.getPropertyValue('--ts')) || 64, r = st.getBoundingClientRect(), key = cols + 'x' + rows + ':' + ts + ':' + Math.round(r.width) + 'x' + Math.round(window.innerHeight); if (key === isoKey) return; isoKey = key;
-  var side = (cols + rows) / 2 * ts, w = side * 2 * .77 * .98, h = side * 2 * .5 * .81 + ts * 1.6;   // chiều ngang & dọc sau khi nghiêng (xấp xỉ)
+  var diag = (cols + rows) * ts * .7071, w = diag * 1.04, h = diag * .5 + ts * 2.4;   // chiều ngang & dọc sau khi nghiêng (xấp xỉ)
   var availW = Math.max(240, r.width - 150), availH = Math.max(220, Math.min(window.innerHeight, r.height || 700) - 280);
   lw.style.setProperty('--isos', Math.max(.28, Math.min(1, availW / w, availH / h)).toFixed(3));
 }
@@ -865,7 +871,10 @@ function cellsHtml(z, ts, mini) {
     r = Math.floor(tc / d.c); c = tc % d.c;
     gi = z.i * PER + r * MAXC + c; blocked = D.isBlocked(gi); t = S.tiles[gi]; it = t && D.BY[t.k]; inner = ''; alt = ((r + c) % 2) ? ' alt' : ''; cls = 'gt' + alt + (blocked ? ' blk' : '');
     if (t && t.ref != null) cls += ' cov';
-    if (it && it.kind === 'big') { cls += ' bigc'; inner = '<div class="bigart" style="width:calc(var(--ts) * ' + it.w + ');height:calc(var(--ts) * ' + it.h + ')">' + W.bigSvg(it.id) + '</div>'; }
+    if (it && it.kind === 'big') {
+      var b3 = (!mini && window.EWTGardenIso && EWTGardenIso.ready() && $('stage').classList.contains('gd-iso')) ? EWTGardenIso.bigHtml(it) : '';
+      cls += ' bigc'; inner = '<div class="bigart' + (b3 ? ' b3' : '') + '" style="width:calc(var(--ts) * ' + it.w + ');height:calc(var(--ts) * ' + it.h + ')">' + (b3 || W.bigSvg(it.id)) + '</div>';
+    }
     else if (it) {
       var st = D.stageOf(it, t, now), grow = (it.kind === 'plant' || it.kind === 'tree') && st < 3; cls += ' has' + (it.kind === 'ground' ? ' flatg' : '');
       inner = A.itemSvg(it, st, '100%', 'sp'); if (it.kind === 'plant' || it.kind === 'tree') cls += ' ' + (it.kind === 'tree' ? 'tree ' : '') + 'grow';
@@ -947,6 +956,8 @@ function isoScene(z, lv) {
   (z.blocks || []).forEach(function (b) { list.push(b); }); (z.decor || []).forEach(function (d) { if (d.L <= lv) list.push(d); });
   list.sort(function (a, b) { return (a.y + a.h) - (b.y + b.h) || a.x - b.x; });
   list.forEach(function (b) {
+    var h3 = window.EWTGardenIso && EWTGardenIso.ready() ? EWTGardenIso.blockHtml(b) : '';
+    if (h3) { out += '<div class="gd-isob3" style="left:calc(var(--ts) * ' + b.x + ');top:calc(var(--ts) * ' + b.y + ');width:calc(var(--ts) * ' + b.w + ');height:calc(var(--ts) * ' + b.h + ')">' + h3 + '</div>'; return; }
     var fn = W.ART[b.k]; if (!fn) return; var raw; try { raw = W.lit(fn(b), 'bvL'); } catch (e) { return; }
     out += '<svg class="gd-isob' + (LAYB[b.k] || /pond|river|path|field|pool|lake|sea$|reef|deck|pier|dock/.test(b.k) ? ' flat' : '') + '" style="left:calc(var(--ts) * ' + b.x + ');top:calc(var(--ts) * ' + b.y + ');width:calc(var(--ts) * ' + b.w + ');height:calc(var(--ts) * ' + b.h + ')" viewBox="' + b.x * 100 + ' ' + b.y * 100 + ' ' + b.w * 100 + ' ' + b.h * 100 + '" preserveAspectRatio="none" overflow="visible" aria-hidden="true">' + defs + raw + '</svg>';
   });
@@ -954,7 +965,7 @@ function isoScene(z, lv) {
 }
 function ensureLawn(z) {
   var lawn = $('lawn');
-  var iso = $('stage').classList.contains('gd-iso'), key = z.id + ':' + zlv(z) + (iso ? ':i' : '');
+  var iso = $('stage').classList.contains('gd-iso'), key = z.id + ':' + zlv(z) + (iso ? (window.EWTGardenIso && EWTGardenIso.ready() ? ':i3' : ':i') : '');
   if (LAWNZ !== key) {
     LAWNZ = key; lawn.className = 'gd-lawn z-' + z.id; lawn.innerHTML = '<div class="gd-zwrap">' + (iso ? isoScene(z, zlv(z)) : W.zoneSvg(z) + W.decorSvg(z, zlv(z))) + '<div class="gd-grid" id="grid"></div><div class="gd-pets" id="pets"></div><div class="gd-hot-l" id="hot"></div><div class="gd-fx">' + fxHtml(z.id) + '</div></div>';
     var dm = zdim(z); lawn.style.setProperty('--cols', dm.c); lawn.style.setProperty('--rows', dm.r);
@@ -1470,7 +1481,7 @@ document.addEventListener('click', async function (e) {
   if ((el = t.closest('[data-ofbuy]'))) { buyOutfit(el.getAttribute('data-ofbuy')); return; }
   if ((el = t.closest('[data-sm]'))) { SMODE = el.getAttribute('data-sm'); renderShop(); return; }
   if ((el = t.closest('[data-tab]'))) { TAB = el.getAttribute('data-tab'); if (SMODE === 'bd') SMODE = 'zone'; renderShop(); return; }
-  if (t.closest('#iso')) { var io = !$('stage').classList.contains('gd-iso'); $('stage').classList.toggle('gd-iso', io); isoKey = ''; isoBtn(); LAWNZ = null; try { render(); } catch (er) {} fitIso(); try { localStorage.setItem('ewt-garden-iso', io ? '1' : '0'); } catch (er) {} toast(io ? '🧊 Góc nhìn nghiêng 2.5D' : '▦ Chế độ phẳng tiết kiệm'); return; }
+  if (t.closest('#iso')) { var io = !$('stage').classList.contains('gd-iso'); $('stage').classList.toggle('gd-iso', io); isoKey = ''; isoBtn(); LAWNZ = null; try { render(); } catch (er) {} fitIso(); isoLoad3d(); try { localStorage.setItem('ewt-garden-iso', io ? '1' : '0'); } catch (er) {} toast(io ? '🧊 Góc nhìn nghiêng 2.5D' : '▦ Chế độ phẳng tiết kiệm'); return; }
   if (t.closest('#hq')) { var on = !$('stage').classList.contains('gd-hq'); setHq(on); try { localStorage.setItem('ewt-garden-hq', on ? '1' : '0'); } catch (er) {} return; }
   if (t.closest('#fold')) { var fo = $('stage').classList.toggle('fold'); $('fold').textContent = fo ? '▴' : '▾'; try { localStorage.setItem('ewt-garden-fold', fo ? '1' : ''); } catch (er) {} setTimeout(function () { if (S) render(); }, 280); return; }
   if (t.closest('[data-more]')) { SHOPN += 60; renderShop(); return; }

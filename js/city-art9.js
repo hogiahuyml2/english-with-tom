@@ -150,6 +150,7 @@
   [['k6_', K6.styles], ['k7_', K7], ['k8_', K8]].forEach(function (pr) {
     Object.keys(pr[1]).forEach(function (n) { var f = pr[1][n]; if (typeof f !== 'function') return; Q[pr[0] + n] = function (g, rw, rh, lv, p) { f(g, rw, rh, lv, p, K6.rng(K6.hashS(p.id || n))); }; });
   });
+  A.kit9 = Q;
   var reg = function (key, style, p) { var f = Q[style]; if (!f) return; p = p || {}; p.id = key; def(key, function (g, rw, rh, lv) { f(g, rw, rh, lv || 1, p); }); };
   var fx = function (key, style, p) { var f = Q[style]; if (!f) return; p = p || {}; p.id = key; A.FX[key] = function (g, rw, rh) { f(g, rw, rh, 2, p); }; };
   var R = reg, F = fx;
