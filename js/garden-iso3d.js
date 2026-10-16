@@ -18,6 +18,7 @@
     villa: ['k6', 'med'], treehouse: ['q', 'stilt'], bungalow: ['k6', 'ranch'], glasshouse: ['k6', 'glasshome'], ziggurat: ['k7', 'ziggur'], amphi: ['k7', 'wave'], bubble: ['k6', 'domehome'], mansion: ['k6', 'colonial'],
     skyrise: ['q', 'skyscraper'], gate: ['q', 'gate'], clocktower: ['k8', 'clock2'], lotushouse: ['k7', 'petal'], windmill2: ['k6', 'mill'],
     mountain: ['x', 'mountain'], eiffelx: ['x', 'eiffel'], colonnade: ['x', 'colonnade'], eiffel: ['k7', 'hyper'], arch: ['k7', 'arch'], cluster: ['k7', 'cluster'], needle: ['k7', 'needle'], terrace: ['k6', 'terrace'], cliff: ['k6', 'cliff'], carousel: ['k8', 'carousel'], circus: ['k8', 'circus'],
+    pondx: ['x', 'pondx'], fountainx: ['x', 'fountainx'], bridgex: ['x', 'bridgex'], archx: ['x', 'archx'], subx: ['x', 'subx'], dinox: ['x', 'dinox'], carx: ['x', 'carx'], baobabx: ['x', 'baobabx'],
     rowh: ['q', 'row'], asia: ['q', 'asia'], torii: ['q', 'gate', { t: 'torii' }], bentar: ['q', 'gate', { t: 'bentar' }], boat: ['k6', 'boathouse'], liberty: ['q', 'liberty'], domeh: ['k6', 'domehome'], rock: ['q', 'uluru'], yurt: ['k6', 'yurt'], glass: ['k6', 'glasshome'], stupa: ['q', 'stupa'], modern: ['k6', 'modern']
   };
   // khối phong cảnh dựng sẵn (khoá ART của khu) → kiểu + màu mặc định
@@ -35,6 +36,9 @@
     cafe: ['shop', '#F6E7C8', '#E9573F'], pizzeria: ['shop', '#F2D27A', '#C9503C'], tower: ['tower', '#E8E4D8', '#6B7686'], koutoubia: ['tower', '#E3B98A', '#2E8A6A'], cntower: ['tower', '#DCE3EC', '#8FA3BD'],
     colosseum: ['amphi', '#E3C9A0', '#9A7A55'], greatwall: ['castle', '#B9B3A6', '#8A7A55'],
     hutbig: ['hut', '#D9B885', '#C69C5E'], cabinbig: ['cabin', '#B58555', '#7A4B2A'], barnbig: ['barn', '#C9503C', '#6B4A2E'], castle: ['castle', '#E8E4D8', '#6B7686'], glasshouse: ['glasshouse', '#DCE8F4', '#7FB8E0'], gazebo: ['pavilion', '#F2EAD8', '#4F80BA'], teahouse: ['pavilion', '#E8DCC0', '#2E8A6A'], treehouse: ['treehouse', '#B58555', '#4E8A3A'], pyramidbig: ['pyramid', '#E8C080', '#D9A441'], gingerbread: ['house', '#C98A55', '#FFD0E4'], cloudhouse: ['dome', '#FFFFFF', '#B9D8F5'], rocketbig: ['needle', '#F6F8FB', '#E9573F'], observatory: ['dome', '#E8EDF2', '#6B7686'], liberty: ['liberty', '#8EC9B0', '#6BAA95'],
+    pondbig: ['pondx', '#5FB7E8', '#B9A57A'], fountainbig: ['fountainx', '#6FC8EC', '#CFC8BC'], bridge: ['bridgex', '#CFC8BC', '#5FB7E8'], flowerarch: ['archx', '#F2EAD8', '#FF7AA8'], submarine: ['subx', '#F2C94C', '#5FB7E8'],
+    brontosaurus: ['dinox', '#6DB36A', '#5A9E5A'], vintagecar: ['carx', '#D9503C', '#BFE6F5'], baobabs: ['baobabx', '#9A7A5A', '#5FA84A'], uluru: ['rock', '#C9703A', '#A8552A'], clocktower: ['clocktower', '#E8D7B5', '#4A4F5C'],
+    tet_b1: ['gate', '#C9503C', '#E2B33C'], tt_b1: ['gate', '#8A6A3A', '#E2B33C'], tet_b2: ['pavilion', '#C9503C', '#E2B33C'], tt_b2: ['pavilion', '#DDD6CA', '#E2B33C'], nl_b1: ['domeh', '#F4FAFF', '#9AB8D8'], nl_b2: ['cabin', '#F4FAFF', '#6B4A2E'],
     /* mở rộng: mọi công trình lớn của các khu quốc gia đều thành khối đặc đúng chân ô (không còn tranh phẳng đứng lệch) */
     peak: ['mountain', '#8D97A6', '#F6F8FB'], volcano: ['mountain', '#6B5A55', '#E9573F'], iceberg: ['mountain', '#BFE6F5', '#FFFFFF'], fuji: ['mountain', '#6C86B8', '#FFFFFF'], kilimanjaro: ['mountain', '#8A7A5A', '#F6F8FB'], matterhorn: ['mountain', '#9AA3AE', '#FFFFFF'],
     tablemountain: ['rock', '#B8A27A', '#D9C69A'], perito: ['mountain', '#CFE6F2', '#FFFFFF'], cappadocia: ['rock', '#D9B88A', '#C9A06A'], tsingy: ['rock', '#9AA3AE', '#7A8794'], skullrock: ['rock', '#B9B3A6', '#8A8F99'], moai: ['rock', '#8A8F99', '#6B7686'],
@@ -49,6 +53,73 @@
   function scnOf(k) { if (SCN[k]) return SCN[k]; var m = /^([a-z]{2})_(house|big)$/.exec(k); return m && TH[m[1]] ? TH[m[1]][m[2] === 'house' ? 0 : 1] : null; }
   /* kiểu riêng cho Garden (núi, đền cột) — vẽ bằng bộ vẽ City */
   var XS = {
+    /* ao: bờ cát + mặt nước phẳng + lá sen/hoa */
+    pondx: function (A, g, rw, rh, p) {
+      g.flat(.04, .04, rw - .08, rh - .08, 3, p.wall, p.roof); g.poly(g.faceT(.2, .2, rw - .4, rh - .4, 3.4), A.shade(p.wall, 1.12), false);
+      [[.32, .4], [.62, .66], [.45, .78]].forEach(function (q, i) { var c = g.P(rw * q[0], rh * q[1], 3.8); g.ell(c[0], c[1], 6 - i, 2.8 - i * .3, '#4FAE62'); if (i < 2) g.ell(c[0] + 1, c[1] - 1.5, 2, 1.2, i ? '#FFD84A' : '#FF8AB8'); });
+      var h = g.P(rw * .7, rh * .35, 3.8); g.ell(h[0], h[1], 8, 2.4, 'rgba(255,255,255,.45)');
+    },
+    /* đài phun nước: hồ tròn nhiều tầng */
+    fountainx: function (A, g, rw, rh, p) {
+      var cx = rw / 2, cy = rh / 2, sh = A.shade, st = p.roof || '#CFC8BC';
+      g.flat(.06, .06, rw - .12, rh - .12, 3, p.wall, st); g.cyl(cx, cy, .36, 3, 9, sh(st, 1.05)); g.cyl(cx, cy, .3, 9, 10, p.wall); g.cyl(cx, cy, .12, 10, 28, sh(st, .95)); g.cyl(cx, cy, .26, 28, 31, sh(st, 1.08)); g.cyl(cx, cy, .22, 31, 32, p.wall); g.cyl(cx, cy, .06, 32, 42, sh(st, .9));
+      var t = g.P(cx, cy, 44); g.ell(t[0], t[1], 3, 2, '#E8F7FF');
+      [-1, 1].forEach(function (d) { var a = g.P(cx + d * .2, cy, 30), b = g.P(cx + d * .42, cy, 12); g.ell((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 - 4, 1.6, 6, 'rgba(232,247,255,.8)'); });
+    },
+    /* cầu đá vòm bắc qua suối (dài theo trục x) */
+    bridgex: function (A, g, rw, rh, p) {
+      var sh = A.shade, st = p.wall;
+      g.flat(.02, .02, rw - .04, rh - .04, 2, p.roof, sh('#B9A57A', 1));
+      g.box(.0, .12, .42, rh - .24, 0, 12, sh(st, .92)); g.box(rw - .42, .12, .42, rh - .24, 0, 12, sh(st, .92));
+      g.box(.35, .16, rw - .7, rh - .32, 6, 15, st); g.box(.3, .12, .4, rh - .24, 5, 12, sh(st, 1.05)); g.box(rw - .7, .12, .4, rh - .24, 5, 12, sh(st, 1.05));
+      g.box(.0, .12, rw, .07, 12, 20, sh(st, 1.08)); g.box(.0, rh - .19, rw, .07, 12, 20, sh(st, 1.08));
+      var a = g.P(rw / 2, rh - .16, 7); g.ell(a[0], a[1], 20, 7.5, '#2A4A66'); g.ell(a[0], a[1] + 1, 17, 5.5, '#3F78A8');
+    },
+    /* cổng vòm hoa */
+    archx: function (A, g, rw, rh, p) {
+      var sh = A.shade, c = p.wall, i, cols = [p.roof, '#FFD84A', '#B48CFF', '#FFFFFF', '#FF9A4A'];
+      g.flat(.05, .1, rw - .1, rh - .2, 0, '#C9D6A0', null);
+      g.cyl(.34, rh / 2, .08, 0, 46, c); g.cyl(rw - .34, rh / 2, .08, 0, 46, c); g.box(.28, rh / 2 - .1, rw - .56, .2, 46, 52, sh(c, 1.05)); g.box(.5, rh / 2 - .08, rw - 1, .16, 52, 57, sh(c, 1.1));
+      for (i = 0; i < 16; i++) { var t = i / 15, x = .3 + (rw - .6) * t, z = i % 3 ? 49 : 56, q = g.P(x, rh / 2 + .12, z); g.ell(q[0], q[1], 3.2, 3.2, cols[i % 5]); }
+      for (i = 0; i < 7; i++) { var q1 = g.P(.36, rh / 2 + .1, 6 + i * 6), q2 = g.P(rw - .36, rh / 2 + .1, 6 + i * 6); g.ell(q1[0], q1[1], 2.8, 2.8, cols[i % 5]); g.ell(q2[0], q2[1], 2.8, 2.8, cols[(i + 2) % 5]); g.ell(q1[0] + 3, q1[1] + 2, 2.4, 2.4, '#4FAE62'); }
+    },
+    /* tàu ngầm nổi trên nước */
+    subx: function (A, g, rw, rh, p) {
+      var sh = A.shade, c = p.wall;
+      g.flat(.02, .02, rw - .04, rh - .04, 2, p.roof, '#9FB4C4');
+      var m = g.P(rw / 2, rh / 2, 8); g.ell(m[0], m[1] + 5, 46, 10, 'rgba(20,60,100,.35)'); g.ell(m[0], m[1], 46, 13, sh(c, .86)); g.ell(m[0], m[1] - 3, 44, 11, c); g.ell(m[0] - 8, m[1] - 7, 26, 3.2, 'rgba(255,255,255,.4)');
+      g.box(rw / 2 - .25, rh / 2 - .14, .5, .28, 8, 26, sh(c, 1.04)); g.cyl(rw / 2 - .05, rh / 2, .035, 26, 40, '#5A6470'); g.box(rw / 2 - .05, rh / 2 - .03, .22, .06, 36, 40, '#5A6470');
+      [-1, 0, 1].forEach(function (d) { var w = g.P(rw / 2 + d * .52, rh / 2 + .02, 9); g.ell(w[0], w[1], 3.2, 3.2, '#BFE6F5', '#3A5A70'); });
+      var pr = g.P(rw - .34, rh / 2, 9); g.ell(pr[0], pr[1], 6, 6, sh(c, .7));
+    },
+    /* khủng long cổ dài */
+    dinox: function (A, g, rw, rh, p) {
+      var sh = A.shade, c = p.wall, d = p.roof, cx = rw / 2, cy = rh / 2, i;
+      g.flat(.1, .1, rw - .2, rh - .2, 0, '#9ACB6A', null);
+      [[-.55, -.28], [-.55, .28], [.5, -.28], [.5, .28]].forEach(function (q) { g.cyl(cx + q[0], cy + q[1], .11, 0, 22, d); });
+      var b = g.P(cx, cy, 34); g.ell(b[0], b[1], 40, 20, sh(c, .88)); g.ell(b[0], b[1] - 3, 38, 18, c); g.ell(b[0] - 6, b[1] - 9, 22, 5, 'rgba(255,255,255,.22)');
+      for (i = 0; i < 6; i++) { var n = g.P(cx - .7 - i * .05, cy, 40 + i * 8); g.ell(n[0] - i * 3, n[1], 10 - i * .9, 9 - i * .8, i % 2 ? c : sh(c, 1.04)); }
+      var h = g.P(cx - 1.02, cy, 90); g.ell(h[0] - 4, h[1], 9, 6.5, c); g.ell(h[0] - 8, h[1] - 1, 1.8, 1.8, '#2A2A34');
+      for (i = 0; i < 7; i++) { var tl = g.P(cx + .75 + i * .16, cy, 30 - i * 2.2); g.ell(tl[0], tl[1], 11 - i * 1.2, 7 - i * .7, i % 2 ? c : sh(c, .93)); }
+      [-1, 0, 1].forEach(function (k) { var sp = g.P(cx + k * .38, cy, 52); g.ell(sp[0], sp[1], 4, 5, d); });
+    },
+    /* ô tô cổ */
+    carx: function (A, g, rw, rh, p) {
+      var sh = A.shade, c = p.wall, gl = p.roof;
+      g.flat(.1, .1, rw - .2, rh - .2, 0, '#CFC8BC', null);
+      g.box(.35, .55, rw - .7, rh - 1.1, 5, 15, c); g.box(.55, .6, rw - 1.2, rh - 1.2, 15, 27, sh(c, 1.05));
+      g.box(.62, .66, rw - 1.34, rh - 1.32, 18, 25, gl); g.box(.28, .58, .1, rh - 1.16, 6, 12, '#E8E8F0'); g.box(rw - .38, .58, .1, rh - 1.16, 6, 12, '#E8E8F0');
+      [[.62, rh - .52], [rw - .62, rh - .52], [.62, .52], [rw - .62, .52]].forEach(function (q) { var w = g.P(q[0], q[1], 5); g.ell(w[0], w[1], 5.5, 5.5, '#2A2A34'); g.ell(w[0], w[1], 2.4, 2.4, '#D9D9E0'); });
+      var l = g.P(.32, rh - .75, 11); g.ell(l[0], l[1], 2.2, 2.2, '#FFF2A8');
+    },
+    /* cây baobab */
+    baobabx: function (A, g, rw, rh, p) {
+      var sh = A.shade, tr = p.wall, lf = p.roof;
+      g.flat(.1, .1, rw - .2, rh - .2, 0, '#D9C690', null);
+      [[.5, .52, 1], [.2, .8, .7]].forEach(function (q) { var x = rw * q[0], y = rh * q[1], k = q[2], b;
+        g.cyl(x, y, .36 * k, 0, 30 * k, tr); g.cyl(x, y, .27 * k, 30 * k, 52 * k, sh(tr, .93));
+        b = g.P(x, y, 64 * k); g.ell(b[0] - 18 * k, b[1] + 3 * k, 17 * k, 9 * k, sh(lf, .9), 'rgba(30,70,20,.5)'); g.ell(b[0] + 18 * k, b[1] + 3 * k, 17 * k, 9 * k, sh(lf, .95), 'rgba(30,70,20,.5)'); g.ell(b[0], b[1] - 4 * k, 24 * k, 12 * k, lf, 'rgba(30,70,20,.5)'); g.ell(b[0] - 6 * k, b[1] - 8 * k, 11 * k, 4 * k, 'rgba(255,255,255,.22)'); });
+    },
     mountain: function (A, g, rw, rh, p) { var cx = rw / 2, cy = rh / 2, r = Math.min(rw, rh) * .5, H = 30 + (rw + rh) * 7; A.kit6.cone(g, cx, cy, r, 0, H, p.wall); A.kit6.cone(g, cx - .08, cy - .05, r * .46, H * .6, H + 3, p.roof || '#F6F8FB'); },
     eiffel: function (A, g, rw, rh, p) {   // tháp lưới 4 chân: chân, sàn, thân giữa, ngọn
       var sh = A.shade, c = p.wall, cx = rw / 2, cy = rh / 2, a = Math.min(rw, rh) * .38;
