@@ -3356,6 +3356,7 @@ tr.cf-row td { background:var(--primary-soft); font-weight:800; padding:8px 12px
       <!-- ─── Pane: AI ─── -->
       <div class="gp-pane active" id="gpPaneAI">
         <div id="gpAIActions">
+          <div class="aiEngineBox" style="margin:0 0 8px"></div>
           <button class="btn btn-primary" id="gpAIBtn" onclick="doAiGrade()" style="width:100%;">✅ Chấm bài tự động ngay</button>
           <p style="font-size:12px;color:var(--text-faint);margin:6px 0 0;text-align:center;">Chấm theo tiêu chí chuẩn của kỳ thi · ~15–30 giây</p>
         </div>
@@ -4247,5 +4248,6 @@ window._gpAnnSaveHook = async function() {
 </script>
 <script src="js/snippets.js?v=1"></script>
 <script>EWTSnippets.watch(['#gpFeedback']);</script>
+<script src="js/ai-engine.js"></script>
 </body>
 </html>

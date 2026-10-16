@@ -41,6 +41,7 @@
 <div id="site-header"></div>
 <main class="te-wrap">
   <div class="te-top"><h1>✍️ Bài tự luận viết</h1><a class="te-btn" href="teacher.html">← Khu vực giáo viên</a></div>
+  <div id="aiEngineBox" style="margin:8px 0"></div>
   <div class="te-tabs"><button class="te-tab on" data-t="list" type="button">📋 Bài đã giao</button><button class="te-tab" data-t="new" type="button">➕ Tạo & giao bài mới</button></div>
   <div id="vList"></div><div id="vNew" style="display:none"></div><div id="vTask" style="display:none"></div>
 </main>
@@ -228,5 +229,6 @@ api('/api/essay/teacher/tasks').then(function (d) { GROUPS = d.groups || []; AIO
 </script>
 <script src="js/snippets.js?v=1"></script>
 <script>EWTSnippets.watch(['#gTc']);</script>
+<script src="js/ai-engine.js"></script>
 </body>
 </html>

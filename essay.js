@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = function registerEssay(app, { db, requireAuth, requireRole, now, notifyUser, ai }) {
+module.exports = function registerEssay(app, { db, requireAuth, requireRole, now, notifyUser, ai, teacherEngine }) {
   const MOCK = ai && ai.aiMock && ai.aiMock();
   const aiReady = () => !!(MOCK || (ai && ai.aiEnabled && ai.aiEnabled()));
   const one = (sql, ...a) => db.prepare(sql).get(...a);
@@ -276,10 +276,10 @@ Return JSON only.`;
       strengths: (r.strengths || []).slice(0, 8).map((x) => clip(x, 400)), improvements: (r.improvements || []).slice(0, 8).map((x) => clip(x, 400)),
       errors: (r.errors || []).slice(0, 20).map((e) => ({ quote: clip(e.quote, 200), correction: clip(e.correction, 200), explanation: clip(e.explanation, 400), category: clip(e.category, 30) })) };
   }
-  async function runAI(t, sub, note, prev) {
+  async function runAI(t, sub, note, prev, engine) {
     if (MOCK) { await new Promise((r) => setTimeout(r, 300)); return normalize(mockResult(t, sub, note), t); }
     const p = buildPrompt(t, sub, note, prev), files = []; if (t.prompt_image) { const f = readImage(t.prompt_image); if (f) files.push(f); }
-    return normalize(await ai.generateJSON({ system: p.system, user: p.user, schema: SCHEMA, maxTokens: 8000, temperature: 0.2, files }), t);
+    return normalize(await ai.generateJSON({ system: p.system, user: p.user, schema: SCHEMA, maxTokens: 8000, temperature: 0.2, files, engine }), t);
   }
   const aiBusy = new Set();
   app.post('/api/essay/teacher/sub/:id/ai', requireRole('teacher', 'admin'), async (req, res) => {
@@ -291,7 +291,9 @@ Return JSON only.`;
     if (aiBusy.has(s.id)) return bad(res, 'Bài này đang được chấm, chờ một chút nhé.', 409);
     const note = clip((req.body || {}).note, 1500).trim(), prev = s.result ? J(s.result, null) : null; aiBusy.add(s.id);
     try {
-      const result = await runAI(t, s, note, prev), rounds = ((prev && prev.rounds) || []).slice(-4);
+      const engine = (ai.ENGINES && teacherEngine) ? teacherEngine(req.user.id, (req.body || {}).engine) : undefined;
+      if (!MOCK && engine && !ai.engineReady(engine)) return bad(res, engine.startsWith('claude') ? 'Chưa cấu hình khoá Claude trên máy chủ — hãy chọn Gemini.' : 'AI chưa sẵn sàng.', 503);
+      const result = await runAI(t, s, note, prev, engine), rounds = ((prev && prev.rounds) || []).slice(-4); result.engine = engine || 'gemini';
       if (prev) rounds.push({ at: now(), score: prev.overall_score, note: note || '' });
       result.rounds = rounds; result.round = (prev && prev.round ? prev.round : 0) + 1; result.teacher_comment = prev ? prev.teacher_comment || '' : '';
       db.prepare("UPDATE essay_subs SET result=?, score=?, max_score=?, status=CASE WHEN status='released' THEN 'released' ELSE 'ai_draft' END, graded_at=? WHERE id=?").run(JSON.stringify(result), result.overall_score, t.max_score, now(), s.id);

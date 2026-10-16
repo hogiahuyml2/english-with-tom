@@ -659,13 +659,13 @@ app.post('/api/grade-writing', requireAuth, async (req, res) => {
     ? { submission_type: 'image', image_mime: student_image.mimeType }
     : { essay };
 
-  if (!aiEnabled()) {
+  if (!aiMod.engineReady('gemini')) {
     db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
       .run(req.user.id, exercise_id, JSON.stringify(savedAnswers), 'pending', now());
     return res.json({ pending: true });
   }
   try {
-    const result = await gradeWriting(ex, essay || '', isImageMode ? student_image : null);
+    const result = await gradeWriting(ex, essay || '', isImageMode ? student_image : null, null, null, 'gemini');
     const r = db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,feedback,submitted_at) VALUES (?,?,?,?,?,?)')
       .run(req.user.id, exercise_id, JSON.stringify(savedAnswers), 'graded', JSON.stringify(result), now());
     res.json({ id: Number(r.lastInsertRowid), result });
@@ -681,9 +681,9 @@ app.post('/api/writing-hints', requireAuth, async (req, res) => {
   const { exercise_id } = req.body || {};
   const ex = db.prepare('SELECT * FROM exercises WHERE id=?').get(exercise_id);
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
-  if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
+  if (!aiMod.engineReady('gemini')) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
   try {
-    const hints = await getWritingHints(ex);
+    const hints = await getWritingHints(ex, 'gemini');
     res.json({ hints });
   } catch (e) {
     console.error('Writing hints error', e.message);
@@ -695,7 +695,7 @@ app.post('/api/writing-hints', requireAuth, async (req, res) => {
 app.post('/api/writing-vocab', requireAuth, async (req, res) => {
   const id = parseInt((req.body || {}).exercise_id, 10);
   if (!id) return res.status(400).json({ error: 'ID đề không hợp lệ.' });
-  if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
+  if (!aiMod.engineReady('gemini')) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
   let ex;
   try {
     ex = await fetchExerciseById(id);
@@ -704,7 +704,7 @@ app.post('/api/writing-vocab', requireAuth, async (req, res) => {
   }
   if (!ex) return res.status(404).json({ error: 'Không tìm thấy đề.' });
   try {
-    const vocab = await getVocabSuggestions(ex);
+    const vocab = await getVocabSuggestions(ex, 'gemini');
     res.json({ vocab });
   } catch (e) {
     console.error('Writing vocab error', e.message);
@@ -760,14 +760,14 @@ app.post('/api/grade-aptis-writing', requireAuth, async (req, res) => {
     || (answers.part2 && answers.part2.trim().split(/\s+/).length >= 5);
   if (!hasContent) return res.status(400).json({ error: 'Bài viết quá ngắn. Hãy hoàn thành ít nhất Part 2 và Part 4.' });
 
-  if (!aiEnabled()) {
+  if (!aiMod.engineReady('gemini')) {
     db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,submitted_at) VALUES (?,?,?,?,?)')
       .run(req.user.id, exercise_id, JSON.stringify(answers), 'pending', now());
     return res.json({ pending: true });
   }
 
   try {
-    const result = await gradeAptisWriting(ex, testContent, answers);
+    const result = await gradeAptisWriting(ex, testContent, answers, 'gemini');
     db.prepare('INSERT INTO submissions (user_id,exercise_id,answers,status,feedback,submitted_at) VALUES (?,?,?,?,?,?)')
       .run(req.user.id, exercise_id, JSON.stringify(answers), 'graded', JSON.stringify(result), now());
     res.json({ result });
@@ -1804,6 +1804,24 @@ app.post('/api/teacher/grade/:id', requireRole('teacher','admin'), async (req, r
   res.json({ ok: true });
 });
 
+db.exec("CREATE TABLE IF NOT EXISTS teacher_prefs (user_id INTEGER NOT NULL, k TEXT NOT NULL, v TEXT, PRIMARY KEY (user_id, k))");
+const aiMod = require('./ai');
+// Bộ máy chấm do GIÁO VIÊN chọn (Gemini Flash/Pro hoặc Claude Haiku/Sonnet). Học sinh tự chấm trên web luôn dùng Gemini.
+function teacherEngine(userId, override) {
+  if (override && aiMod.ENGINES[override]) return override;
+  const r = db.prepare("SELECT v FROM teacher_prefs WHERE user_id=? AND k='ai_engine'").get(userId);
+  return r && aiMod.ENGINES[r.v] ? r.v : 'gemini';
+}
+app.get('/api/teacher/ai-engine', requireRole('teacher','admin'), (req, res) => {
+  res.json({ engine: teacherEngine(req.user.id), options: aiMod.engineList() });
+});
+app.put('/api/teacher/ai-engine', requireRole('teacher','admin'), (req, res) => {
+  const id = String((req.body || {}).engine || '');
+  if (!aiMod.ENGINES[id]) return res.status(400).json({ error: 'Lựa chọn không hợp lệ.' });
+  db.prepare("INSERT INTO teacher_prefs (user_id,k,v) VALUES (?,?,?) ON CONFLICT(user_id,k) DO UPDATE SET v=excluded.v").run(req.user.id, 'ai_engine', id);
+  res.json({ ok: true, engine: id, ready: aiMod.engineReady(id) });
+});
+
 const _aiGradeHits = new Map();
 // Giáo viên chấm bài bằng AI (dùng lại gradeWriting đã có)
 app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req, res) => {
@@ -1840,7 +1858,8 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
   } catch (e) { essay = sub.answers || ''; }
 
   if (!essay.trim()) return res.status(400).json({ error: 'Bài nộp không có nội dung text để chấm AI.' });
-  if (!aiEnabled()) return res.status(503).json({ error: 'Hệ thống AI chưa sẵn sàng.' });
+  const engine = teacherEngine(req.user.id, (req.body || {}).engine);
+  if (!aiMod.engineReady(engine)) return res.status(503).json({ error: engine.startsWith('claude') ? 'Chưa cấu hình khoá Claude (ANTHROPIC_API_KEY) trên máy chủ. Hãy chọn Gemini hoặc báo quản trị viên.' : 'Hệ thống AI chưa sẵn sàng.' });
 
   try {
     const ex = {
@@ -1849,7 +1868,7 @@ app.post('/api/teacher/ai-grade/:id', requireRole('teacher','admin'), async (req
       title: sub.exercise_title,
       _task_override: task_type_override || null
     };
-    const result = await gradeWriting(ex, essay, null, teacher_note || null, previousResult);
+    const result = await gradeWriting(ex, essay, null, teacher_note || null, previousResult, engine);
     // Tính max_score từ scale_label (ví dụ "A2 Key (0–15)" → 15, "B2 First (0–20)" → 20)
     let maxScore = 5;
     if (result.scale_label) {
@@ -2019,7 +2038,7 @@ app.get('/api/teacher/writing-queue', requireRole('teacher','admin'), (req, res)
   // đề bài (chữ / ảnh / âm thanh) của từng đề có trong danh sách — để giáo viên đối chiếu ngay khi chấm
   const prompts = {};
   for (const id of new Set(rows.map(r => r.exercise_id))) { const e = db.prepare('SELECT content, image_url, audio_url FROM exercises WHERE id = ?').get(id); if (e) prompts[id] = { content: e.content || '', image_url: e.image_url || '', audio_url: e.audio_url || '' }; }
-  res.json({ counts: { todo: cnt.pending || 0, draft: cnt.pending_review || 0, sent: cnt.graded || 0 }, items, exercises: [...exMap.values()], prompts, ai_ready: aiEnabled() });
+  res.json({ counts: { todo: cnt.pending || 0, draft: cnt.pending_review || 0, sent: cnt.graded || 0 }, items, exercises: [...exMap.values()], prompts, ai_ready: aiMod.engineReady(teacherEngine(req.user.id)), ai_engine: teacherEngine(req.user.id) });
 });
 // Duyệt & gửi hàng loạt: chỉ các bài đã có điểm nháp (AI hoặc giáo viên) và đang ở trạng thái chờ duyệt
 app.post('/api/teacher/send-grade-batch', requireRole('teacher','admin'), (req, res) => {
@@ -2044,9 +2063,10 @@ app.post('/api/teacher/model-answer/:id', requireRole('teacher','admin'), async 
     SELECT e.* FROM submissions s JOIN exercises e ON e.id=s.exercise_id WHERE s.id=?
   `).get(subId);
   if (!sub) return res.status(404).json({ error: 'Không tìm thấy.' });
-  if (!aiEnabled()) return res.status(503).json({ error: 'AI chưa sẵn sàng.' });
+  const engine = teacherEngine(req.user.id, (req.body || {}).engine);
+  if (!aiMod.engineReady(engine)) return res.status(503).json({ error: 'AI chưa sẵn sàng.' });
   try {
-    const hints = await getWritingHints(sub);
+    const hints = await getWritingHints(sub, engine);
     res.json({ hints });
   } catch (e) {
     console.error('[model-answer]', e.message); res.status(500).json({ error: 'Không thể tạo bài mẫu, vui lòng thử lại sau.' });
@@ -2396,7 +2416,7 @@ require('./dictation')(app, { db, requireAuth, now });
 require('./exam-guard')(app, { db, requireAuth, requireRole, now });
 require('./speaking')(app, { db, requireAuth, requireRole, now, notifyUser, upload, checkUpload, uploadsDir });
 require('./parent-report')(app, { db, requireRole, notifyUser, now, sendBrevoEmail, emailEnabled, htmlEsc });
-require('./essay')(app, { db, requireAuth, requireRole, now, notifyUser, ai: require('./ai') });   // bài tự luận viết do giáo viên ra đề
+require('./essay')(app, { db, requireAuth, requireRole, now, notifyUser, ai: require('./ai'), teacherEngine });   // bài tự luận viết do giáo viên ra đề
 require('./teacher-tools')(app, { db, requireRole, notifyUser, now, applySelfJoin, backfillGroupAssignments, sendInviteEmail });
 
 // ───────────── Bảng theo dõi bài nộp (bộ lọc thông minh) ─────────────

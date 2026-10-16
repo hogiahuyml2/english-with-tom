@@ -147,6 +147,32 @@ function aiEnabled() {
   return false;
 }
 
+
+// ===== Chọn "bộ máy" chấm: giáo viên chọn Gemini/Claude; học sinh tự chấm luôn dùng Gemini =====
+const ENGINES = {
+  'gemini':        { provider: 'gemini', model: () => process.env.GEMINI_MODEL || 'gemini-2.5-flash', label: 'Gemini Flash', note: 'Nhanh, rẻ — mặc định của website' },
+  'gemini-pro':    { provider: 'gemini', model: () => process.env.GEMINI_PRO_MODEL || 'gemini-2.5-pro', label: 'Gemini Pro', note: 'Kỹ hơn, chậm hơn (cùng khoá Gemini)' },
+  'claude':        { provider: 'claude', model: () => process.env.CLAUDE_MODEL_LIGHT || 'claude-haiku-5-5', label: 'Claude Haiku', note: 'Tiết kiệm, đủ tốt để chấm nháp' },
+  'claude-sonnet': { provider: 'claude', model: () => process.env.CLAUDE_MODEL_STD || 'claude-sonnet-5-5', label: 'Claude Sonnet', note: 'Chấm sâu hơn, tốn hơn Haiku' },
+};
+function engineReady(id) {
+  const e = ENGINES[id]; if (!e) return false;
+  if (AI_MOCK()) return true;
+  return e.provider === 'gemini' ? getGeminiKeys().length > 0 : !!process.env.ANTHROPIC_API_KEY;
+}
+function engineList() { return Object.keys(ENGINES).map(id => ({ id, label: ENGINES[id].label, note: ENGINES[id].note, model: ENGINES[id].model(), provider: ENGINES[id].provider, ready: engineReady(id) })); }
+// Trả { p, model, id }. Không truyền engine → hành vi cũ (theo AI_PROVIDER). Truyền engine không dùng được → báo lỗi rõ ràng.
+function resolveEngine(engine) {
+  if (engine && ENGINES[engine]) {
+    if (!engineReady(engine)) throw new Error(ENGINES[engine].provider === 'claude' ? 'Chưa cấu hình ANTHROPIC_API_KEY để chấm bằng Claude.' : 'Chưa cấu hình GEMINI_API_KEY.');
+    return { id: engine, p: ENGINES[engine].provider, model: ENGINES[engine].model() };
+  }
+  const p = provider();
+  return { id: p === 'claude' ? 'claude' : 'gemini', p, model: p === 'claude' ? (process.env.ANTHROPIC_MODEL || ENGINES.claude.model()) : (process.env.GEMINI_MODEL || 'gemini-2.5-flash') };
+}
+// Gemini Pro không cho tắt "suy nghĩ" (thinkingBudget=0) → cho ngân sách nhỏ và nới thêm token đầu ra
+function geminiCfg(model, maxTok) { return /pro/i.test(model) ? { maxOutputTokens: maxTok + 3000, thinkingBudget: 1024 } : { maxOutputTokens: maxTok, thinkingBudget: 0 }; }
+
 // Rubric KET — bám sát 100% Cambridge A2 Key for Schools Teacher Guide (UCLES 2020)
 // Cả Part 1 (email) lẫn Part 2 (story) đều dùng CÙNG 3 tiêu chí: Content, Organisation, Language
 // KET KHÔNG có tiêu chí "Communicative Achievement" (chỉ FCE/PET mới có)
@@ -777,9 +803,9 @@ const CLAUDE_SCHEMA = {
   additionalProperties: false
 };
 
-async function gradeWithClaude(exercise, essay, imageData, studentImage, teacherNote, previousResult) {
+async function gradeWithClaude(exercise, essay, imageData, studentImage, teacherNote, previousResult, model) {
   const client = new Anthropic();
-  const model  = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+  model = model || process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
   const contentParts = [];
   if (imageData) {
     contentParts.push({ type: 'image', source: { type: 'base64', media_type: imageData.mimeType, data: imageData.base64 } });
@@ -855,8 +881,8 @@ const GEMINI_SCHEMA = {
   required: ['overall_score', 'scale_label', 'criteria', 'summary', 'suggestions', 'suggested_writing', 'suggested_notes', 'annotations']
 };
 
-async function gradeWithGemini(exercise, essay, imageData, studentImage, teacherNote, previousResult) {
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+async function gradeWithGemini(exercise, essay, imageData, studentImage, teacherNote, previousResult, model) {
+  model = model || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
   const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
   const parts = [];
   if (imageData) {
@@ -879,8 +905,8 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage, teacher
   // 8192 tokens đủ cho: criteria+summary+suggestions+suggested_writing+error_list+annotations
   // 5000 trước đây quá thấp → JSON bị cắt → parse fail mọi lần
   const attempts = [
-    { maxOutputTokens: 8192, thinkingBudget: 0 },
-    { maxOutputTokens: 6000, thinkingBudget: 0 }
+    geminiCfg(model, 8192),
+    geminiCfg(model, 6000)
   ];
   let lastErr;
   for (let i = 0; i < attempts.length; i++) {
@@ -889,7 +915,7 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage, teacher
       return await rateLimitedGeminiCall(() => callGemini(url, process.env.GEMINI_API_KEY, {
         ...baseBody,
         generationConfig: { ...baseBody.generationConfig, maxOutputTokens: cfg.maxOutputTokens, thinkingConfig: { thinkingBudget: cfg.thinkingBudget } }
-      }, 65000));
+      }, /pro/i.test(model) ? 110000 : 65000));
     } catch (e) {
       lastErr = e;
       if (i < attempts.length - 1) console.warn('[AI] grading attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...');
@@ -898,12 +924,14 @@ async function gradeWithGemini(exercise, essay, imageData, studentImage, teacher
   throw lastErr;
 }
 
-async function gradeWriting(exercise, essay, studentImage, teacherNote, previousResult) {
-  if (AI_MOCK()) { await new Promise(r => setTimeout(r, 400)); return mockGrade(exercise, essay, teacherNote, previousResult); }
-  const p         = provider();
+async function gradeWriting(exercise, essay, studentImage, teacherNote, previousResult, engine) {
+  if (AI_MOCK()) { await new Promise(r => setTimeout(r, 400)); const m = mockGrade(exercise, essay, teacherNote, previousResult); m.engine = (engine && ENGINES[engine]) ? engine : 'gemini'; return m; }
+  const E         = resolveEngine(engine), p = E.p;
   const imageData = await fetchImageBase64(exercise.image_url);
-  if (p === 'gemini') return gradeWithGemini(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null);
-  if (p === 'claude') return gradeWithClaude(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null);
+  let out;
+  if (p === 'gemini') out = await gradeWithGemini(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null, E.model);
+  else if (p === 'claude') out = await gradeWithClaude(exercise, essay, imageData, studentImage || null, teacherNote || null, previousResult || null, E.model);
+  if (out) { out.engine = E.id; out.engine_model = E.model; return out; }
   throw new Error('Chưa cấu hình AI');
 }
 
@@ -1031,14 +1059,14 @@ function buildAptisUser(exercise, testContent, answers) {
   return txt;
 }
 
-async function gradeAptisWriting(exercise, testContent, answers) {
-  const p = provider();
+async function gradeAptisWriting(exercise, testContent, answers, engine) {
+  const E = resolveEngine(engine), p = E.p;
 
   const systemPrompt = buildAptisSystem();
   const userPrompt = buildAptisUser(exercise, testContent, answers);
 
   if (p === 'gemini') {
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = E.model;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const baseBody = {
       system_instruction: { parts: [{ text: systemPrompt }] },
@@ -1046,8 +1074,8 @@ async function gradeAptisWriting(exercise, testContent, answers) {
       generationConfig: { responseMimeType: 'application/json', responseSchema: GEMINI_SCHEMA }
     };
     const attempts = [
-      { maxOutputTokens: 7000, thinkingBudget: 0 },
-      { maxOutputTokens: 5000, thinkingBudget: 0 }
+      geminiCfg(model, 7000),
+      geminiCfg(model, 5000)
     ];
     let lastErr;
     for (let i = 0; i < attempts.length; i++) {
@@ -1067,7 +1095,7 @@ async function gradeAptisWriting(exercise, testContent, answers) {
 
   if (p === 'claude') {
     const client = new Anthropic();
-    const model = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const model = E.model;
     const resp = await client.messages.create({
       model, max_tokens: 8000, system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
@@ -1188,7 +1216,7 @@ dos_and_donts: 5–6 lưu ý mix ✅ DOs và ❌ DON'Ts. CỤ THỂ cho đề n�
 time_guide: Gợi ý phân bổ thời gian phù hợp kỳ thi + dạng bài này.`;
 }
 
-async function getWritingHints(exercise) {
+async function getWritingHints(exercise, engine) {
   // Cache hit: cùng đề bài thì trả ngay, không gọi API
   const cached = getCachedHints(exercise.id);
   if (cached) {
@@ -1196,13 +1224,13 @@ async function getWritingHints(exercise) {
     return cached;
   }
 
-  const p         = provider();
+  const E0 = resolveEngine(engine), p = E0.p;
   const sysPrompt = buildHintsSystem(exercise);
   const userText  = `KỲ THI: ${exercise.program} — Kỹ năng: ${exercise.skill}\nĐỀ BÀI: ${exercise.title}\n\n${exercise.content || ''}`;
   const imageData = await fetchImageBase64(exercise.image_url);
 
   if (p === 'gemini') {
-    const model  = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model  = E0.model;
     const url    = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const parts  = [];
     if (imageData) parts.push({ inline_data: { mime_type: imageData.mimeType, data: imageData.base64 } });
@@ -1213,8 +1241,8 @@ async function getWritingHints(exercise) {
       generationConfig: { responseMimeType: 'application/json', responseSchema: HINTS_GEMINI_SCHEMA }
     };
     const attempts = [
-      { maxOutputTokens: 4000, thinkingBudget: 0 },
-      { maxOutputTokens: 3000, thinkingBudget: 0 }
+      geminiCfg(model, 4000),
+      geminiCfg(model, 3000)
     ];
     let lastErr;
     for (let i = 0; i < attempts.length; i++) {
@@ -1236,7 +1264,7 @@ async function getWritingHints(exercise) {
 
   if (p === 'claude') {
     const client       = new Anthropic();
-    const model        = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const model        = E0.model;
     const contentParts = [];
     if (imageData) contentParts.push({ type: 'image', source: { type: 'base64', media_type: imageData.mimeType, data: imageData.base64 } });
     contentParts.push({ type: 'text', text: userText });
@@ -1353,20 +1381,20 @@ const VOCAB_CLAUDE_SCHEMA = {
   additionalProperties: false
 };
 
-async function getVocabSuggestions(exercise) {
+async function getVocabSuggestions(exercise, engine) {
   const cached = getCachedVocab(exercise.id);
   if (cached) {
     console.log('[AI] vocab cache hit — exercise', exercise.id, '(tiết kiệm 1 API call)');
     return cached;
   }
 
-  const p         = provider();
+  const E0 = resolveEngine(engine), p = E0.p;
   const sysPrompt = buildVocabSystem(exercise);
   const userText  = `KỲ THI: ${exercise.program} — Kỹ năng: ${exercise.skill}\nĐỀ BÀI: ${exercise.title}\n\n${exercise.content || ''}`;
   const imageData = await fetchImageBase64(exercise.image_url);
 
   if (p === 'gemini') {
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = E0.model;
     const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const parts = [];
     if (imageData) parts.push({ inline_data: { mime_type: imageData.mimeType, data: imageData.base64 } });
@@ -1377,8 +1405,8 @@ async function getVocabSuggestions(exercise) {
       generationConfig: { responseMimeType: 'application/json', responseSchema: VOCAB_GEMINI_SCHEMA }
     };
     const attempts = [
-      { maxOutputTokens: 4000, thinkingBudget: 0 },
-      { maxOutputTokens: 3000, thinkingBudget: 0 }
+      geminiCfg(model, 4000),
+      geminiCfg(model, 3000)
     ];
     let lastErr;
     for (let i = 0; i < attempts.length; i++) {
@@ -1400,7 +1428,7 @@ async function getVocabSuggestions(exercise) {
 
   if (p === 'claude') {
     const client       = new Anthropic();
-    const model        = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const model        = E0.model;
     const contentParts = [];
     if (imageData) contentParts.push({ type: 'image', source: { type: 'base64', media_type: imageData.mimeType, data: imageData.base64 } });
     contentParts.push({ type: 'text', text: userText });
@@ -1441,33 +1469,33 @@ function toClaudeSchema(sc) {
   return out;
 }
 
-async function generateJSON({ system, user, schema, maxTokens, temperature, files, timeoutMs }) {
+async function generateJSON({ system, user, schema, maxTokens, temperature, files, timeoutMs, engine }) {
   // files: [{ mime, data(base64) }] — ảnh hoặc PDF để AI đọc (Gemini inlineData / Claude image|document)
   const fileList = Array.isArray(files) ? files : [];
-  const p = provider();
+  const E = resolveEngine(engine), p = E.p;
   if (p === 'gemini') {
-    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = E.model;
     const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const baseBody = {
       system_instruction: { parts: [{ text: system }] },
       contents: [{ role: 'user', parts: [...fileList.map(f => ({ inlineData: { mimeType: f.mime, data: f.data } })), { text: user }] }],
       generationConfig: { responseMimeType: 'application/json', responseSchema: toGeminiSchema(schema), temperature: temperature == null ? 0.2 : temperature }
     };
-    const attempts = [maxTokens || 8192, Math.min(6000, maxTokens || 6000)];
+    const attempts = [maxTokens || 8192, Math.min(6000, maxTokens || 6000)], pro = /pro/i.test(model);
     let lastErr;
     for (let i = 0; i < attempts.length; i++) {
       try {
         return await rateLimitedGeminiCall(() => callGemini(url, null, {
           ...baseBody,
-          generationConfig: { ...baseBody.generationConfig, maxOutputTokens: attempts[i], thinkingConfig: { thinkingBudget: 0 } }
-        }, timeoutMs || 75000));
+          generationConfig: { ...baseBody.generationConfig, maxOutputTokens: attempts[i] + (pro ? 3000 : 0), thinkingConfig: { thinkingBudget: pro ? 1024 : 0 } }
+        }, pro ? Math.max(timeoutMs || 0, 110000) : (timeoutMs || 75000)));
       } catch (e) { lastErr = e; if (i < attempts.length - 1) console.warn('[AI] generateJSON attempt ' + (i + 1) + ' failed: ' + e.message + ' — retrying...'); }
     }
     throw lastErr;
   }
   if (p === 'claude') {
     const client = new Anthropic();
-    const model  = process.env.ANTHROPIC_MODEL || 'claude-opus-4-8';
+    const model  = E.model;
     const resp = await client.messages.create({
       model, max_tokens: maxTokens || 8000, system,
       messages: [{ role: 'user', content: [...fileList.map(f => f.mime === 'application/pdf'
@@ -1482,4 +1510,4 @@ async function generateJSON({ system, user, schema, maxTokens, temperature, file
   throw new Error('Chưa cấu hình AI');
 }
 
-module.exports = { aiMock: AI_MOCK, aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider, generateJSON, toGeminiSchema, toClaudeSchema };
+module.exports = { engineList, engineReady, ENGINES, aiMock: AI_MOCK, aiEnabled, gradeWriting, gradeAptisWriting, getWritingHints, getVocabSuggestions, provider, generateJSON, toGeminiSchema, toClaudeSchema };
