@@ -764,7 +764,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
 <script src="js/garden-iso3d.js?v=13"></script>
-<script src="js/garden-isoview.js?v=4"></script>
+<script src="js/garden-isoview.js?v=5"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
@@ -853,7 +853,8 @@ function buildScene() {
 function timeOfDay() { var h = new Date().getHours(); $('stage').classList.toggle('night', h >= 19 || h < 5); $('stage').classList.toggle('dusk', (h >= 17 && h < 19) || (h >= 5 && h < 6.5)); }
 
 /* ───────── bản đồ các khu & vẽ từng khu ───────── */
-var JUSTPLACED = -1, VIEW = 'map', MAXC = D.MAXC, BASEC = D.BASEC, BASER = D.BASER, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null, ZOOM = 1;
+var JUSTPLACED = -1, VIEW = 'map', MAXC = D.MAXC, BASEC = D.BASEC, BASER = D.BASER, PER = D.PER, W = window.EWTGardenWorld, LAWNZ = null, ZOOM = 1.3, ZMIN = .5, ZMAX = 4;   // ô đất mặc định to hơn vừa khít (1,3×); nhớ mức phóng to của người chơi
+try { var _zs = parseFloat(localStorage.getItem('ewt_gd_zoom')); if (_zs >= ZMIN && _zs <= ZMAX) ZOOM = _zs; } catch (e) {}
 var ZORDER = D.ZONES.slice().sort(function (a, b) { return (a.lvl - b.lvl) || (a.cost - b.cost); });
 function zlv(z) { return (S && S.land && S.land[z.id]) | 0; }
 function zdim(z) { return D.landOf(zlv(z)); }
@@ -935,12 +936,40 @@ function isoApply(z, ts) {
   V.repaint = function () { if (ISOLAST && VIEW !== 'map' && $('stage').classList.contains('gd-iso')) { try { var z2 = ISOLAST[0]; if (D.ZBY[VIEW] === z2) isoApply(z2, ISOLAST[1]); } catch (e) { /* bỏ qua */ } } };
 }
 function planted(z) { var n = 0, c, r, d = zdim(z); for (r = 0; r < d.r; r++) for (c = 0; c < d.c; c++) if (!D.isBlocked(z.i * PER + r * MAXC + c) && S.tiles[z.i * PER + r * MAXC + c]) n++; return n; }
+/* Phóng to / thu nhỏ vùng đất: nút +/−, hai ngón chụm (điện thoại/iPad), Ctrl+lăn chuột hoặc chụm trên touchpad. Giữ nguyên điểm đang nhìn. */
+var PINCHUNTIL = 0, _zlT = null, CENTERED = null;
+function zoomLabel() {
+  var el = $('zlbl'); if (!el) { el = document.createElement('div'); el.id = 'zlbl'; el.style.cssText = 'position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:99;background:rgba(40,30,20,.82);color:#fff;font:700 15px system-ui;padding:7px 15px;border-radius:99px;pointer-events:none;transition:opacity .25s'; document.body.appendChild(el); }
+  el.textContent = '🔍 ' + Math.round(ZOOM * 100) + '%'; el.style.opacity = 1; clearTimeout(_zlT); _zlT = setTimeout(function () { el.style.opacity = 0; }, 900);
+}
+function setZoom(nz, ax, ay) {
+  nz = Math.max(ZMIN, Math.min(ZMAX, nz)); if (Math.abs(nz - ZOOM) < .002) return;
+  var pl = $('play'), fx = (pl.scrollLeft + ax) / Math.max(1, pl.scrollWidth), fy = (pl.scrollTop + ay) / Math.max(1, pl.scrollHeight);
+  ZOOM = nz; try { localStorage.setItem('ewt_gd_zoom', String(nz)); } catch (e) {}
+  render(); pl = $('play'); pl.scrollLeft = fx * pl.scrollWidth - ax; pl.scrollTop = fy * pl.scrollHeight - ay; zoomLabel();
+}
+(function () {
+  var pl = $('play'); if (!pl) return; pl.style.touchAction = 'pan-x pan-y';
+  var pts = {}, d0 = 0, z0 = 1, tm = null;
+  function dist() { var k = Object.keys(pts); if (k.length < 2) return 0; var a = pts[k[0]], b = pts[k[1]]; return Math.hypot(a[0] - b[0], a[1] - b[1]) || 1; }
+  function mid() { var k = Object.keys(pts), a = pts[k[0]], b = pts[k[1]], r = pl.getBoundingClientRect(); return [(a[0] + b[0]) / 2 - r.left, (a[1] + b[1]) / 2 - r.top]; }
+  pl.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'touch') return; pts[e.pointerId] = [e.clientX, e.clientY]; if (Object.keys(pts).length === 2) { d0 = dist(); z0 = ZOOM; PINCHUNTIL = Date.now() + 600; } });
+  pl.addEventListener('pointermove', function (e) {
+    if (!pts[e.pointerId]) return; pts[e.pointerId] = [e.clientX, e.clientY];
+    if (d0 && Object.keys(pts).length >= 2) { PINCHUNTIL = Date.now() + 600; var nz = z0 * dist() / d0, m = mid(); clearTimeout(tm); tm = setTimeout(function () { setZoom(nz, m[0], m[1]); }, 70); }
+  });
+  function up(e) { delete pts[e.pointerId]; if (Object.keys(pts).length < 2) d0 = 0; }
+  pl.addEventListener('pointerup', up); pl.addEventListener('pointercancel', up);
+  pl.addEventListener('click', function (e) { if (Date.now() < PINCHUNTIL) { e.stopPropagation(); e.preventDefault(); } }, true);
+  pl.addEventListener('wheel', function (e) { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); var r = pl.getBoundingClientRect(); setZoom(ZOOM * Math.exp(-Math.max(-40, Math.min(40, e.deltaY)) * .01), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+})();
 function layout(z) {
   var d = zdim(z), pl = $('play'), W0 = pl.clientWidth, Hh = pl.clientHeight - 34, fit = Math.floor(Math.min((W0 - 44) / d.c, (Hh - 44) / d.r)), mn = innerWidth <= 640 ? 26 : 22;
   if ($('stage').classList.contains('gd-iso')) {   // 2.5D đẳng cự: rộng ≈ 0,707·(cột+hàng)·ô; cao ≈ 0,354·(cột+hàng)·ô + chỗ cho công trình cao
     var sum = d.c + d.r; fit = Math.floor(Math.min((W0 - 24) / (sum * .7071), (Hh + 20) / (sum * .3536 + 4.1)));
   }
-  var ts = Math.max(mn, Math.min(100, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
+  var ts = Math.max(mn, Math.min(170, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
+  if (CENTERED !== z.id) { CENTERED = z.id; setTimeout(function () { var p = $('play'); if (p) { p.scrollLeft = (p.scrollWidth - p.clientWidth) / 2; p.scrollTop = (p.scrollHeight - p.clientHeight) / 2; } }, 80); }   // vào khu: đưa đất vào giữa khung
   $('lawn').style.setProperty('--ts', ts + 'px'); $('lawn').classList.toggle('tiny', ts < 34); return ts;
 }
 /* Bản đồ khu vườn: chỉ dựng "khung" thẻ ngay; phần tranh phong cảnh nặng chỉ dựng khi thẻ gần lọt vào màn hình (IntersectionObserver),
@@ -1047,7 +1076,7 @@ function render() {
   if ($('stage').classList.contains('gd-iso')) isoApply(z, ts);
   renderPets(ts); renderHot(z); renderShop(); renderTools();
 }
-function enterZone(id) {
+function enterZone(id) { CENTERED = null;
   if (!D.ZBY[id]) return; var z = D.ZBY[id];
   if (!zoneUnlocked(id)) { if (VISIT) return toast('Khu này bạn ấy chưa mở.'); return askUnlock(z); }
   VIEW = id; LAWNZ = null; TOOL = null; BRUSH = null; MSEL = {}; closePop(); render(); $('lawn').classList.remove('gd-zin'); void $('lawn').offsetWidth; $('lawn').classList.add('gd-zin');
@@ -1554,7 +1583,7 @@ document.addEventListener('click', async function (e) {
   if ((el = t.closest('[data-zone]'))) { enterZone(el.getAttribute('data-zone')); return; }
   if (t.closest('#toMap') || t.closest('#toMapTool')) { toMap(); return; }
   if (t.closest('#zprev') || t.closest('#znext')) { var ul = ZORDER.filter(function (q) { return zoneUnlocked(q.id); }), ix = ul.indexOf(D.ZBY[VIEW]) + (t.closest('#znext') ? 1 : -1); if (ul[ix]) enterZone(ul[ix].id); return; }
-  if (t.closest('#zplus') || t.closest('#zminus') || t.closest('#zfit')) { ZOOM = t.closest('#zfit') ? 1 : Math.max(.5, Math.min(3, ZOOM * (t.closest('#zplus') ? 1.25 : .8))); render(); return; }
+  if (t.closest('#zplus') || t.closest('#zminus') || t.closest('#zfit')) { var _p = $('play'), _r = _p.getBoundingClientRect(); setZoom(t.closest('#zfit') ? 1 : ZOOM * (t.closest('#zplus') ? 1.25 : .8), _r.width / 2, _r.height / 2); return; }
   if (t.closest('#zexp')) { expandLand(); return; }
   if (t.closest('#gname') && !VISIT) { var nm = (await ewtPrompt('Đặt tên cho khu vườn của bạn:', S.name)); if (nm && nm.trim()) api('/api/garden/name', { name: nm }).then(setState).catch(function (er) { toast(er.message); }); return; }
   if ((el = t.closest('.gd-pet'))) { openPet(el.getAttribute('data-pid')); return; }

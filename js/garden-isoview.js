@@ -56,7 +56,7 @@
   };
   // vẽ toàn bộ vào canvas, trả về danh sách vùng bấm theo thứ tự xa → gần
   G.paint = function (canvas, g, items, o) {
-    o = o || {}; var dpr = Math.min(2, root.devicePixelRatio || 1), ctx = canvas.getContext('2d');
+    o = o || {}; var dpr = Math.min(2, root.devicePixelRatio || 1), ctx = canvas.getContext('2d'); dpr = Math.min(dpr, Math.sqrt(14e6 / Math.max(1, g.W * g.H)));   // giới hạn số điểm ảnh khi phóng to rất lớn (iPad/điện thoại)
     canvas.width = Math.round(g.W * dpr); canvas.height = Math.round(g.H * dpr); canvas.style.width = g.W + 'px'; canvas.style.height = g.H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, g.W, g.H);
     items.sort(function (a, b) { return a.d - b.d || a.y - b.y; });
