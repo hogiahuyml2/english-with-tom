@@ -82,9 +82,9 @@
     g.box(.2, .5, rw - .4, rh - 1, 8, 28, '#F2C94C'); g.winsL(.2, .5, rw - .4, rh - 1, 12, 24, 3, 1, { m: .2 }); g.box(.2, .5, rw - .4, rh - 1, 28, 31, '#EDEDED');
     [[.4, rh - .5], [rw - .4, rh - .5]].forEach(function (q) { var w = g.P(q[0], q[1], 6); g.ell(w[0], w[1], 5, 5, '#2A2A34'); }); pole(A, g, rw / 2, rh / 2, 31, 44, '#5A6470');
   };
-  LM.pl_house = function (A, g, rw, rh, p) {   // phố cổ Warsaw: 3 nhà màu có mái dốc
-    var cols = ['#F2C94C', '#E8742E', '#7FA8E0'], hs = [46, 58, 40], i, w = (rw - .3) / 3;
-    for (i = 0; i < 3; i++) { var x = .15 + i * w; g.box(x, .5, w - .04, rh - 1, 0, hs[i], cols[i]); g.winsL(x, .5, w - .04, rh - 1, 8, hs[i] - 4, 1, 2, { m: .25 }); g.gable(x - .02, .46, w, rh - .92, hs[i], hs[i] + 18, false, i % 2 ? '#6B5A4A' : '#B8402F', { wall: cols[i] }); }
+  LM.pl_house = function (A, g, rw, rh, p) {   // phố cổ Warsaw: 3 nhà màu so le nhau, mỗi nhà lộ rõ mặt tiền
+    var cols = ['#F2C94C', '#E8742E', '#7FA8E0'], hs = [44, 54, 40], i, w = (rw - .5) / 3;
+    for (i = 0; i < 3; i++) { var x = .15 + i * (w + .1), y = .2 + (2 - i) * .55, d = 1.0; g.box(x, y, w, d, 0, hs[i], cols[i]); g.winsL(x, y, w, d, 8, hs[i] - 4, 1, 2, { m: .25 }); g.winsR(x, y, w, d, 8, hs[i] - 4, 1, 2, { m: .25 }); g.gable(x - .03, y - .03, w + .06, d + .06, hs[i], hs[i] + 16, true, i % 2 ? '#6B5A4A' : '#B8402F', { wall: cols[i] }); }
   };
   LM.pl_big = function (A, g, rw, rh, p) { g.box(rw / 2 - .4, rh / 2 - .3, .8, .6, 0, 12, '#9AA3AE'); g.box(rw / 2 - .3, rh / 2 - .22, .6, .44, 12, 20, '#B8C0C8'); fig(A, g, rw / 2, rh / 2, 20, '#2E9B6A'); var s = g.P(rw / 2 + .3, rh / 2, 36); g.ell(s[0], s[1], 7, 2, '#B8C0C8'); };
   LM.at_house = function (A, g, rw, rh, p) {   // pháo đài Hohensalzburg trên đồi
@@ -166,9 +166,10 @@
     var c = '#D9906A'; g.box(.1, .5, rw - .2, rh - 1, 0, 76, '#B8704A'); g.box(.5, rh - .55, rw - 1, .25, 0, 52, c); var i; for (i = 0; i < 4; i++) g.cyl(.7 + i * (rw - 1.4) / 3, rh - .3, .1, 0, 44, sh(A, c, 1.1)); g.box(.45, rh - .55, rw - .9, .3, 44, 52, sh(A, c, 1.05)); A.kit6.dome(g, rw / 2, rh - .45, .5, 52, 14, sh(A, c, 1.05)); g.box(rw / 2 - .2, rh - .3, .4, .1, 0, 30, '#5A3A2E');
   };
   LM.jo_big = function (A, g, rw, rh, p) { [[.7, .8, .55, 44], [rw - .6, .7, .45, 36], [rw / 2, rh - .6, .5, 28]].forEach(function (q) { g.cyl(q[0], q[1], q[2] * .8, 0, q[3], '#C9703A'); A.kit6.cone(g, q[0], q[1], q[2], q[3], q[3] + 8, '#B8602F'); }); };
-  LM.be_house = function (A, g, rw, rh, p) {   // Grand Place: nhà phường hội mạ vàng + tháp
-    var cols = ['#E8D7B5', '#D9B85A', '#C9A06A', '#E8D7B5'], i, w = (rw - .5) / 4; for (i = 0; i < 4; i++) { var x = .1 + i * w, hz = 40 + (i % 2) * 10; g.box(x, .8, w - .03, rh - 1.2, 0, hz, cols[i]); g.winsL(x, .8, w - .03, rh - 1.2, 8, hz - 4, 1, 2, { m: .24 }); g.gable(x - .02, .76, w, rh - 1.12, hz, hz + 12, false, '#6B5A3A', { wall: cols[i] }); }
-    tower(A, g, rw - .55, .3, .4, .4, 0, 84, '#DCCBA5', '#5A8A72', 22);
+  LM.be_house = function (A, g, rw, rh, p) {   // Grand Place: nhà phường hội mạ vàng + tháp, so le
+    var cols = ['#E8D7B5', '#D9B85A', '#C9A06A'], i, w = (rw - .9) / 3;
+    for (i = 0; i < 3; i++) { var x = .1 + i * (w + .08), y = .3 + (2 - i) * .5, hz = 38 + (i % 2) * 10, d = 1.0; g.box(x, y, w, d, 0, hz, cols[i]); g.winsL(x, y, w, d, 8, hz - 4, 1, 2, { m: .24 }); g.winsR(x, y, w, d, 8, hz - 4, 1, 2, { m: .24 }); g.gable(x - .02, y - .02, w + .04, d + .04, hz, hz + 12, true, '#6B5A3A', { wall: cols[i] }); }
+    tower(A, g, rw - .6, rh - .75, .45, .45, 0, 84, '#DCCBA5', '#5A8A72', 22);
   };
   LM.be_big = function (A, g, rw, rh, p) {   // Atomium: 9 quả cầu
     var pts = [[0, 0, 1], [-.5, -.5, 0], [.5, -.5, 0], [-.5, .5, 0], [.5, .5, 0]], i; pts.forEach(function (q) { var c = g.P(rw / 2 + q[0] * .9, rh / 2 + q[1] * .9, 8); g.cyl(rw / 2 + q[0] * .9, rh / 2 + q[1] * .9, .03, 0, 30, '#9AA3AE'); });
@@ -182,8 +183,9 @@
     var i; for (i = 0; i < 3; i++) { var z = (2 - i) * 7 + 3; g.box(.15 + i * .06, .15 + i * .5, rw - .3 - i * .12, .62, 0, z, '#6A9A5A'); g.poly(g.faceT(.2 + i * .06, .2 + i * .5, rw - .4 - i * .12, .52, z + .5), '#5BC6C8', false); }
     bush(A, g, .3, rh - .3, .28, '#4F8A3A'); bush(A, g, rw - .3, rh - .3, .28, '#4F8A3A');
   };
-  LM.co_house = function (A, g, rw, rh, p) {   // Cartagena: nhà thuộc địa nhiều màu + ban công
-    var cols = ['#F2C94C', '#E5334B', '#2B9BD8', '#E8742E'], i, w = (rw - .3) / 4; for (i = 0; i < 4; i++) { var x = .15 + i * w, hz = 36 + (i % 2) * 10; g.box(x, .6, w - .03, rh - 1.2, 0, hz, cols[i]); g.winsL(x, .6, w - .03, rh - 1.2, 8, hz - 4, 1, 2, { m: .2 }); g.box(x, rh - .65, w - .03, .14, 20, 22, '#6B4A2E'); g.hip(x - .02, .56, w + .01, rh - 1.12, hz, hz + 8, '#C9703A', .3); }
+  LM.co_house = function (A, g, rw, rh, p) {   // Cartagena: nhà thuộc địa nhiều màu + ban công, so le
+    var cols = ['#F2C94C', '#E5334B', '#2B9BD8', '#E8742E'], i, w = (rw - .45) / 4;
+    for (i = 0; i < 4; i++) { var x = .1 + i * (w + .05), y = .25 + (3 - i) * .42, hz = 34 + (i % 2) * 8, d = .95; g.box(x, y, w, d, 0, hz, cols[i]); g.winsL(x, y, w, d, 8, hz - 4, 1, 2, { m: .2 }); g.winsR(x, y, w, d, 8, hz - 4, 1, 2, { m: .2 }); g.box(x, y + d - .02, w, .12, 20, 22, '#6B4A2E'); g.hip(x - .02, y - .02, w + .04, d + .04, hz, hz + 8, '#C9703A', .3); }
   };
   LM.co_big = function (A, g, rw, rh, p) {   // thung lũng Cocora: cọ sáp cao
     [[.5, .5, 70], [rw - .5, .6, 82], [rw / 2, rh / 2, 64], [.6, rh - .5, 76], [rw - .6, rh - .5, 60]].forEach(function (q) { g.cyl(q[0], q[1], .05, 0, q[2], '#D8D0B8'); var c = g.P(q[0], q[1], q[2] + 6); g.ell(c[0], c[1], 14, 5, '#4F9A3A', 'rgba(20,60,20,.4)'); g.ell(c[0], c[1] - 3, 9, 3, '#6AAA4A'); });

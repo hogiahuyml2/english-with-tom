@@ -26,7 +26,7 @@
   G.imgItem = function (key, build, cx, cy, w, h, o) {
     o = o || {};
     return {
-      d: cx + cy + (o.dz || 0), y: cy, i: o.i, ov: o.ov, kind: o.kind,
+      d: cx + cy + (o.dz || 0), y: cy, fp: [cx - w * .22, cy - w * .22, cx + w * .22, cy + w * .22], i: o.i, ov: o.ov, kind: o.kind,
       draw: function (ctx, g) {
         var p = G.pt(g, cx, cy), W = w * g.ts, Hh = h * g.ts, im = img(key, build);
         ctx.fillStyle = 'rgba(25,45,20,.24)'; ctx.beginPath(); ctx.ellipse(p[0], p[1] + g.ts * .02, W * (o.sh || .3), W * (o.sh || .3) * .42, 0, 0, 6.2832); ctx.fill();
@@ -39,7 +39,7 @@
   G.sprItem = function (sp, x, y, fw, fh, o) {
     o = o || {};
     return {
-      d: x + fw + y + fh, y: y + fh, i: o.i, ov: o.ov, kind: o.kind || 'big',
+      d: x + fw + y + fh, y: y + fh, fp: [x, y, x + fw, y + fh], i: o.i, ov: o.ov, kind: o.kind || 'big',
       draw: function (ctx, g) { var p = G.pt(g, x, y), k = g.S / 32; ctx.drawImage(sp.c, p[0] - sp.ox * k, p[1] - sp.oy * k, sp.w * k, sp.h * k); },
       rect: function (g) { var p = G.pt(g, x, y), k = g.S / 32, l = p[0] - sp.ox * k, t = p[1] - sp.oy * k, w = sp.w * k, h = sp.h * k; return [l + w * .06, t + h * .08, w * .88, h * .9]; }
     };
@@ -47,7 +47,7 @@
   // tranh SVG của một khối phong cảnh (viewBox nới rộng để không bị cắt phần cao); b = {x,y,w,h}
   G.blockItem = function (key, build, b, vb, feet) {
     return {
-      d: b.x + b.w + b.y + b.h, y: b.y + b.h, kind: 'scene',
+      d: b.x + b.w + b.y + b.h, y: b.y + b.h, fp: [b.x, b.y, b.x + b.w, b.y + b.h], kind: 'scene',
       draw: function (ctx, g) {
         var im = img(key, build); if (!im) return; var u = g.ts * 1.12 / 100, a = G.pt(g, b.x + b.w / 2, b.y + b.h / 2), gy = a[1] + (b.w + b.h) * g.S * .25 * .3,   /* chân vật nằm TRONG ô đất (không lệch ra mép trước) → ao/nước không còn tràn ra ngoài đất */ w = vb[2] * u, h = vb[3] * u;
         if (feet != null) gy = a[1] - (b.y * 100 + feet - vb[1]) * u + h - vb[4] * u;   // chân tranh (đường 'feet') đặt đúng tâm nền đất
@@ -71,12 +71,32 @@
       }
     };
   };
+  /* Thứ tự vẽ xa → gần theo KHOẢNH ĐẤT chiếm (không chỉ theo điểm giữa): vật nằm hẳn về phía +x hoặc +y của vật kia luôn được vẽ SAU (đè lên) —
+     nên cờ/cây đứng cạnh nhà không bị nhà vẽ đè nữa. Sắp xếp topo, hoà thì theo d cũ. */
+  G.order = function (items) {
+    items.sort(function (a, b) { return a.d - b.d || a.y - b.y; });
+    var n = items.length, i, j, indeg = new Array(n), adj = new Array(n), E = 1e-6;
+    for (i = 0; i < n; i++) { indeg[i] = 0; adj[i] = []; }
+    function behind(a, b) { return !!(a.fp && b.fp && (a.fp[2] <= b.fp[0] + E || a.fp[3] <= b.fp[1] + E)); }
+    for (i = 0; i < n; i++) for (j = i + 1; j < n; j++) {
+      var A = items[i], B = items[j]; if (!A.fp || !B.fp) continue;
+      var ab = behind(A, B), ba = behind(B, A);
+      if (ab && !ba) { adj[i].push(j); indeg[j]++; } else if (ba && !ab) { adj[j].push(i); indeg[i]++; }
+    }
+    var out = [], done = new Array(n), picked = 0, k, best;
+    for (picked = 0; picked < n; picked++) {
+      best = -1; for (k = 0; k < n; k++) if (!done[k] && indeg[k] === 0) { best = k; break; }
+      if (best < 0) { for (k = 0; k < n; k++) if (!done[k]) { best = k; break; } }   // vòng lặp hiếm: rơi về thứ tự d
+      done[best] = 1; out.push(items[best]); adj[best].forEach(function (m) { indeg[m]--; });
+    }
+    return out;
+  };
   // vẽ toàn bộ vào canvas, trả về danh sách vùng bấm theo thứ tự xa → gần
   G.paint = function (canvas, g, items, o) {
     o = o || {}; var dpr = Math.min(2, root.devicePixelRatio || 1), ctx = canvas.getContext('2d'); dpr = Math.min(dpr, Math.sqrt(14e6 / Math.max(1, g.W * g.H)));   // giới hạn số điểm ảnh khi phóng to rất lớn (iPad/điện thoại)
     canvas.width = Math.round(g.W * dpr); canvas.height = Math.round(g.H * dpr); canvas.style.width = g.W + 'px'; canvas.style.height = g.H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, g.W, g.H);
-    items.sort(function (a, b) { return a.d - b.d || a.y - b.y; });
+    items = G.order(items);
     var XR = G.XRAY ? { big: 1, scene: 1, tree: 1 } : null;
     items.forEach(function (it) { try { if (XR && XR[it.kind]) ctx.globalAlpha = .42; it.draw(ctx, g); } catch (e) { /* bỏ qua vật lỗi */ } ctx.globalAlpha = 1; });
     if (o.tint) { ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = o.tint; ctx.fillRect(0, 0, g.W, g.H); ctx.globalCompositeOperation = 'source-over'; }
