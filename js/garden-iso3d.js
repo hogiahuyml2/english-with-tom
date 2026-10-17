@@ -3,11 +3,11 @@
    Hình sprite được tạo 1 lần mỗi (kiểu, màu, kích thước) rồi dùng lại dưới dạng ảnh; đặt thẳng đứng (billboard) tại tâm chân công trình. */
 (function (root) {
   'use strict';
-  var SCRIPTS = ['js/city-art.js?v=11', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
+  var SCRIPTS = ['js/city-art.js?v=11', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1', 'js/garden-lm.js?v=2'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
   function load() {
     if (loading) return loading;
     loading = SCRIPTS.reduce(function (p, src) { return p.then(function () { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); }); }, Promise.resolve())
-      .then(function () { var A = root.EWTCityArt; okay = !!(A && A.kit && A.kit6 && A.kit9 && A.getSprite); return okay; });
+      .then(function () { var A = root.EWTCityArt; okay = !!(A && A.kit && A.kit6 && A.kit9 && A.getSprite); var L = root.EWTGardenLM; if (L) Object.keys(L.LM).forEach(function (k) { XS[k] = function (A2, g, rw, rh, p) { L.LM[k](A2, g, rw, rh, p); }; MAP[k] = ['x', k]; SCN[k] = [k, L.COL[k][0], L.COL[k][1]]; }); return okay; });
     return loading;
   }
   // kiểu của Garden → hàm vẽ khối của City ('k6' art6, 'k7' art7, 'k8' art8, 'q' art9) + tham số cố định
