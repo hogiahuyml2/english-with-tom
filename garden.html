@@ -764,7 +764,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
 <script src="js/garden-iso3d.js?v=13"></script>
-<script src="js/garden-isoview.js?v=7"></script>
+<script src="js/garden-isoview.js?v=9"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
@@ -894,28 +894,44 @@ function tileOverlay(it, t, st, now) {
 /* ───────── 2.5D kiểu City: vẽ vật đứng vào canvas ───────── */
 var ISOG = null, ISOLAST = null, CLUS = [[.2, .2], [.55, .14], [.85, .26], [.3, .5], [.66, .5], [.14, .82], [.5, .86], [.84, .76]];
 function isoXY(x, y) { var g = ISOG; if (!g) return [x * 64, y * 64]; return EWTGardenIsoView.pt(g, x, y); }
-/* Cảnh có mặt nước nằm dưới chân công trình (Nyhavn, Marina Bay Sands, Nàng tiên cá…): tách phần nước khỏi tranh đứng → vẽ nước + nền đất NẰM PHẲNG trên mặt đất, công trình đứng trên nền đó (không còn tấm nước dựng đứng lơ lửng) */
-var GROUNDED = { pt_house: 1, dk_house: 1, dk_big: 1, is_big: 1, hu_house: 1, nz_big: 1, sg_house: 1, sg_big: 1, kh_house: 1, hr_house: 1 }, GCACHE = {};
-function groundSplit(k, b, raw) {
-  var key = k + '|' + b.w + 'x' + b.h; if (GCACHE[key]) return GCACHE[key];
-  var out = { raw: raw, feet: null, water: '#5BA8D8' }, H = b.h * 100;
+/* Phong cảnh vẽ tay (SVG nhìn thẳng) → dựng thành "mặt tường" đẳng cự: tranh được nghiêng theo trục x của mặt đất (chân tranh chạy dọc cạnh khoảnh đất, đúng góc 2:1)
+   nên chân công trình DÍNH liền mặt đất, không còn tấm tranh phẳng đứng lơ lửng. Phần nước/bóng đổ ở chân được tách ra và vẽ PHẲNG trên mặt đất. */
+var SCI = {};
+function sceneInfo(k, b, fn) {
+  var key = k + '|' + b.w + 'x' + b.h; if (SCI[key]) return SCI[key];
+  var H = b.h * 100, raw = '', out;
+  try { raw = fn({ k: k, x: 0, y: 0, w: b.w, h: b.h }); } catch (e) { raw = ''; }
+  out = { raw: raw, feet: H - 14, flats: [] };
   try {
-    var doc = new DOMParser().parseFromString('<svg xmlns="http://www.w3.org/2000/svg">' + raw + '</svg>', 'image/svg+xml'), root = doc.documentElement, feet = null, wcol = null;
+    var doc = new DOMParser().parseFromString('<svg xmlns="http://www.w3.org/2000/svg">' + raw + '</svg>', 'image/svg+xml'), root = doc.documentElement, rm = [], feet = null;
     function water(c) { var m = /^#([0-9a-f]{6})$/i.exec(c || ''); if (!m) return false; var n = parseInt(m[1], 16), r = n >> 16, g = (n >> 8) & 255, bb = n & 255; return bb > 150 && bb > r + 40 && g > r; }
-    var els = Array.prototype.slice.call(root.querySelectorAll('rect,ellipse,path')), rm = [];
-    els.forEach(function (e) {
-      var t = e.tagName, f = e.getAttribute('fill');
-      if (t === 'ellipse' && water(f)) { var rx = +e.getAttribute('rx'), ry = +e.getAttribute('ry'), cy = +e.getAttribute('cy'); if (ry / rx < .4 && rx >= 20 && cy >= H * .55) { rm.push(e); feet = feet == null ? cy : Math.min(feet, cy); wcol = wcol || f; } }
-      else if (t === 'rect' && water(f)) { var w = +e.getAttribute('width'), h = +e.getAttribute('height'), y = +e.getAttribute('y'); if (w >= 60 && h >= 14 && h <= 60 && y >= H * .6) { rm.push(e); feet = feet == null ? y : Math.min(feet, y); wcol = wcol || f; } }
-      else if (t === 'path' && /rgba\(255,\s*255,\s*255,\s*\.[56]/.test(e.getAttribute('stroke') || '') && (!f || f === 'none') && /^M[\d.\s-]+q/.test(e.getAttribute('d') || '')) { var mm = /^M[\d.-]+\s+([\d.-]+)/.exec(e.getAttribute('d')); if (mm && +mm[1] >= H * .55) rm.push(e); }
+    Array.prototype.slice.call(root.querySelectorAll('rect,ellipse,path')).forEach(function (e) {
+      var t = e.tagName, f = e.getAttribute('fill') || '';
+      if (t === 'ellipse') {
+        var rx = +e.getAttribute('rx'), ry = +e.getAttribute('ry'), cx = +e.getAttribute('cx'), cy = +e.getAttribute('cy');
+        if (ry / rx < .4 && rx >= 14 && cy >= H * .55) {
+          if (water(f)) { out.flats.push({ t: 'e', cx: cx, cy: cy, rx: rx, ry: Math.max(ry * 2.3, rx * .3), f: f, st: e.getAttribute('stroke') }); rm.push(e); feet = feet == null ? cy : Math.min(feet, cy); }
+          else if (/^rgba\(/.test(f)) { out.flats.push({ t: 'e', cx: cx, cy: cy, rx: rx, ry: ry * 2.1, f: f }); rm.push(e); }
+        }
+      } else if (t === 'rect' && water(f)) {
+        var w = +e.getAttribute('width'), h = +e.getAttribute('height'), y = +e.getAttribute('y');
+        if (w >= 60 && h >= 14 && h <= 60 && y >= H * .6) { out.flats.push({ t: 'r', x: +e.getAttribute('x'), y: y, w: w, h: h, f: f, st: e.getAttribute('stroke') }); rm.push(e); feet = feet == null ? y : Math.min(feet, y); }
+      } else if (t === 'path' && /rgba\(255,\s*255,\s*255,\s*\.[56]/.test(e.getAttribute('stroke') || '') && (!f || f === 'none') && /^M[\d.\s-]+q/.test(e.getAttribute('d') || '')) {
+        var mm = /^M[\d.-]+\s+([\d.-]+)/.exec(e.getAttribute('d')); if (mm && +mm[1] >= H * .55) rm.push(e);
+      }
     });
-    if (rm.length && feet != null) {
-      rm.forEach(function (e) { e.parentNode.removeChild(e); });
-      var ser = new XMLSerializer(), str = ''; Array.prototype.forEach.call(root.childNodes, function (n) { str += ser.serializeToString(n); });
-      out = { raw: str, feet: feet, water: wcol || '#5BA8D8' };
+    // ruộng/ao lớn vẽ trong tranh (hình chữ nhật nước lớn + vạch + mạ): cả cụm là mặt đất phẳng → dựng riêng, chân công trình đứng trong ruộng
+    var kids = Array.prototype.slice.call((root.firstElementChild && root.firstElementChild.tagName === 'g' ? root.firstElementChild : root).children), r0 = null, gi, grp = [];
+    for (gi = 0; gi < kids.length; gi++) { var kk = kids[gi]; if (kk.tagName === 'rect' && water(kk.getAttribute('fill')) && +kk.getAttribute('width') >= 120 && +kk.getAttribute('height') >= 60) { r0 = kk; break; } }
+    if (r0) {
+      grp.push(r0); for (gi = kids.indexOf(r0) + 1; gi < kids.length; gi++) { var q = kids[gi], qf = q.getAttribute('fill'); if (q.tagName === 'path' && (!qf || qf === 'none') && q.getAttribute('stroke')) grp.push(q); else break; }
+      var ser0 = new XMLSerializer(), g0 = ''; grp.forEach(function (e) { g0 += ser0.serializeToString(e); }); grp.forEach(function (e) { e.parentNode.removeChild(e); });
+      out.flats.push({ t: 'g', raw: g0, W: b.w * 100, H: H, key: k + '|' + b.w + 'x' + b.h }); feet = +r0.getAttribute('y') + .2 * +r0.getAttribute('height');
+      var ser1 = new XMLSerializer(), s1 = ''; Array.prototype.forEach.call(root.childNodes, function (n) { s1 += ser1.serializeToString(n); }); out.raw = s1; out.feet = feet;
     }
-  } catch (e) { /* giữ nguyên tranh gốc */ }
-  return (GCACHE[key] = out);
+    if (rm.length) { rm.forEach(function (e) { if (e.parentNode) e.parentNode.removeChild(e); }); var ser = new XMLSerializer(), str = ''; Array.prototype.forEach.call(root.childNodes, function (n) { str += ser.serializeToString(n); }); out.raw = str; if (feet != null) out.feet = feet; }
+  } catch (e) { /* giữ nguyên */ }
+  return (SCI[key] = out);
 }
 function isoApply(z, ts) {
   var V = window.EWTGardenIsoView; if (!V) return; ISOLAST = [z, ts];
@@ -929,12 +945,11 @@ function isoApply(z, ts) {
     if (isFlatBlock(b.k) || b.x + b.w > d.c || b.y + b.h > d.r) return;
     var spr = window.EWTGardenIso && EWTGardenIso.ready() ? EWTGardenIso.blockSprite(b) : null;
     if (spr) { items.push(V.sprItem(spr.sp, b.x, b.y, b.w, b.h, { kind: 'scene' })); return; }
-    var fn = W.ART[b.k]; if (!fn) return; var vb = [b.x * 100 - 100, b.y * 100 - 280, b.w * 100 + 200, b.h * 100 + 280 + 40, 40], gi0 = null;
-    if (GROUNDED[b.k]) { var raw0 = ''; try { raw0 = fn(b); } catch (e) { raw0 = ''; } gi0 = groundSplit(b.k, b, raw0); if (gi0.feet == null) gi0 = null; else items.push(V.patchItem(b, gi0.water)); }
-    items.push(V.blockItem('blk|' + z.id + '|' + b.k + '|' + b.x + '|' + b.y + '|' + (night ? 'n' : 'd') + (gi0 ? '|g' : ''), function () {
-      var raw = ''; if (gi0) raw = gi0.raw; else { try { raw = fn(b); } catch (e) { raw = ''; } }
-      return V.prep('<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb[0] + ' ' + vb[1] + ' ' + vb[2] + ' ' + vb[3] + '" width="' + vb[2] + '" height="' + vb[3] + '"><defs>' + W.DEFS + '</defs>' + raw + '</svg>', night);
-    }, b, vb, gi0 ? gi0.feet : null));
+    var fn = W.ART[b.k]; if (!fn) return; var si = sceneInfo(b.k, b, fn), vb = [-100, -280, b.w * 100 + 200, b.h * 100 + 280 + 40, 40];
+    if (si.flats.length) items.push(V.flatItem(b, si.flats));
+    items.push(V.blockItem('blk2|' + b.k + '|' + b.w + 'x' + b.h + '|' + (night ? 'n' : 'd'), function () {
+      return V.prep('<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb[0] + ' ' + vb[1] + ' ' + vb[2] + ' ' + vb[3] + '" width="' + vb[2] + '" height="' + vb[3] + '"><defs>' + W.DEFS + '</defs>' + si.raw + '</svg>', night);
+    }, b, vb, si.feet));
   });
   // 2) món người chơi đặt
   for (tc = 0; tc < d.c * d.r; tc++) {
@@ -954,7 +969,7 @@ function isoApply(z, ts) {
       items.push(V.imgItem('i|' + it.id + '|' + st + '|' + nk, function (it2, st2) { return function () { return V.prep(A.itemSvg(it2, st2, 160, ''), night); }; }(it, st), c + .5, r + .62, sz2, sz2, { i: gi, ov: ov, kind: it.kind, hw: big ? .5 : .55 }));
     }
   }
-  V.XRAY = !!BRUSH && !VISIT;   // đang cầm món để đặt → công trình/cây cao mờ đi để thấy ô bị che
+  V.night = night;   V.XRAY = !!BRUSH && !VISIT;   // đang cầm món để đặt → công trình/cây cao mờ đi để thấy ô bị che
   var hits = V.paint(cv, g, items, { tint: night ? 'rgba(10,18,70,.34)' : dusk ? 'rgba(160,80,20,.14)' : null });
   var hh = ''; hits.forEach(function (q) { var r2 = q.r; if (!r2) return; hh += '<div class="gt ghit" data-i="' + q.i + '" style="left:' + r2[0].toFixed(1) + 'px;top:' + r2[1].toFixed(1) + 'px;width:' + r2[2].toFixed(1) + 'px;height:' + r2[3].toFixed(1) + 'px" role="button" tabindex="-1">' + q.ov + '</div>'; });
   $('hits').innerHTML = hh;

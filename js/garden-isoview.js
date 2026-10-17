@@ -44,30 +44,32 @@
       rect: function (g) { var p = G.pt(g, x, y), k = g.S / 32, l = p[0] - sp.ox * k, t = p[1] - sp.oy * k, w = sp.w * k, h = sp.h * k; return [l + w * .06, t + h * .08, w * .88, h * .9]; }
     };
   };
-  // tranh SVG của một khối phong cảnh (viewBox nới rộng để không bị cắt phần cao); b = {x,y,w,h}
+  // tranh SVG của một khối phong cảnh → "mặt tường" đẳng cự: nghiêng theo trục x của mặt đất, chân tranh (đường feet) chạy dọc cạnh trước-trái của khoảnh đất. b = {x,y,w,h}; vb = khung tranh (toạ độ cục bộ)
   G.blockItem = function (key, build, b, vb, feet) {
     return {
       d: b.x + b.w + b.y + b.h, y: b.y + b.h, kind: 'scene',
       draw: function (ctx, g) {
-        var im = img(key, build); if (!im) return; var u = g.ts * 1.12 / 100, a = G.pt(g, b.x + b.w / 2, b.y + b.h / 2), gy = a[1] + (b.w + b.h) * g.S * .25 * .3,   /* chân vật nằm TRONG ô đất (không lệch ra mép trước) → ao/nước không còn tràn ra ngoài đất */ w = vb[2] * u, h = vb[3] * u;
-        if (feet != null) gy = a[1] - (b.y * 100 + feet - vb[1]) * u + h - vb[4] * u;   // chân tranh (đường 'feet') đặt đúng tâm nền đất
-        ctx.shadowColor = 'rgba(20,35,10,.25)'; ctx.shadowBlur = g.ts * .06; ctx.shadowOffsetY = g.ts * .03; ctx.drawImage(im, a[0] - w / 2, gy - (h - vb[4] * u), w, h); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+        var im = img(key, build); if (!im) return; var W0 = b.w * 100, k = 1.12 * g.S / 100, dv = 1.3 * g.S / 100, gc = G.pt(g, b.x + b.w / 2, b.y + feet / 100);
+        ctx.save(); ctx.transform(k, k * .5, 0, dv, gc[0] - k * W0 / 2, gc[1] - k * .5 * W0 / 2 - dv * feet);
+        ctx.shadowColor = 'rgba(20,35,10,.25)'; ctx.shadowBlur = g.ts * .05; ctx.shadowOffsetY = g.ts * .02;
+        ctx.drawImage(im, vb[0], vb[1], vb[2], vb[3]); ctx.restore();
       }
     };
   };
-  // nền phẳng cho cảnh có nước: mặt nước phủ cả khoảnh đất + một nền đất/đá nhỏ ở giữa để công trình đứng lên
-  G.patchItem = function (b, water) {
+  // vật phẳng nằm trên mặt đất của khối phong cảnh (nước, bóng đổ): vẽ theo phép chiếu mặt đất, luôn nằm dưới mọi vật đứng
+  G.flatItem = function (b, flats) {
     return {
       d: -1, y: -1, kind: 'ground',
       draw: function (ctx, g) {
-        function dia(x0, y0, w, h, fill, stroke, lw) { var p = [G.pt(g, x0, y0), G.pt(g, x0 + w, y0), G.pt(g, x0 + w, y0 + h), G.pt(g, x0, y0 + h)]; ctx.beginPath(); ctx.moveTo(p[0][0], p[0][1]); for (var i = 1; i < 4; i++) ctx.lineTo(p[i][0], p[i][1]); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); } }
-        var ix = Math.min(.45, b.w * .15), iy = Math.min(.45, b.h * .15);
-        dia(b.x + .06, b.y + .06, b.w - .12, b.h - .12, '#C9B98C', 'rgba(70,50,20,.35)', 1.2);      // bờ cát/đá viền ngoài
-        dia(b.x + .16, b.y + .16, b.w - .32, b.h - .32, water, 'rgba(20,70,120,.45)', 1);          // mặt nước
-        ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = Math.max(1, g.ts * .03);
-        [[.3, .78], [.62, .84], [.78, .4], [.2, .3]].forEach(function (q) { var c = G.pt(g, b.x + b.w * q[0], b.y + b.h * q[1]); ctx.beginPath(); ctx.moveTo(c[0] - g.ts * .22, c[1]); ctx.quadraticCurveTo(c[0] - g.ts * .11, c[1] - g.ts * .06, c[0], c[1]); ctx.quadraticCurveTo(c[0] + g.ts * .11, c[1] + g.ts * .06, c[0] + g.ts * .22, c[1]); ctx.stroke(); });
-        dia(b.x + b.w * .22, b.y + b.h * .22, b.w * .56, b.h * .56, '#DDD3B8', 'rgba(70,50,20,.4)', 1.2);   // nền đất/đá giữa: công trình đứng trên đây
-        dia(b.x + b.w * .22 + ix * .15, b.y + b.h * .22 + iy * .15, b.w * .56 - ix * .3, b.h * .56 - iy * .3, '#CFE3A8', null);
+        var o = G.pt(g, b.x, b.y), q = g.S / 100;
+        ctx.save(); ctx.transform(q, q * .5, -q, q * .5, o[0], o[1]);
+        flats.forEach(function (f) {
+          if (f.t === 'g') { var gim = img('flat|' + f.key + '|' + (G.night ? 'n' : 'd'), function () { return G.prep('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + f.W + ' ' + f.H + '" width="' + f.W + '" height="' + f.H + '">' + f.raw + '</svg>', G.night); }); if (gim) ctx.drawImage(gim, 0, 0, f.W, f.H); return; }
+          ctx.fillStyle = f.f; ctx.beginPath();
+          if (f.t === 'r') { ctx.rect(f.x, f.y, f.w, f.h); } else { ctx.ellipse(f.cx, f.cy, f.rx, f.ry, 0, 0, 6.2832); }
+          ctx.fill(); if (f.st && f.st !== 'none') { ctx.strokeStyle = f.st; ctx.lineWidth = 2.5; ctx.stroke(); }
+        });
+        ctx.restore();
       }
     };
   };
