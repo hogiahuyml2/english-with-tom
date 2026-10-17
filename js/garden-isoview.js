@@ -60,7 +60,8 @@
     canvas.width = Math.round(g.W * dpr); canvas.height = Math.round(g.H * dpr); canvas.style.width = g.W + 'px'; canvas.style.height = g.H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, g.W, g.H);
     items.sort(function (a, b) { return a.d - b.d || a.y - b.y; });
-    items.forEach(function (it) { try { it.draw(ctx, g); } catch (e) { /* bỏ qua vật lỗi */ } });
+    var XR = G.XRAY ? { big: 1, scene: 1, tree: 1 } : null;
+    items.forEach(function (it) { try { if (XR && XR[it.kind]) ctx.globalAlpha = .42; it.draw(ctx, g); } catch (e) { /* bỏ qua vật lỗi */ } ctx.globalAlpha = 1; });
     if (o.tint) { ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = o.tint; ctx.fillRect(0, 0, g.W, g.H); ctx.globalCompositeOperation = 'source-over'; }
     return items.filter(function (it) { return it.i != null && it.rect; }).map(function (it) { return { i: it.i, r: it.rect(g), ov: it.ov || '', kind: it.kind }; });
   };

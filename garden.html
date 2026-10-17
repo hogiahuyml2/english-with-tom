@@ -764,7 +764,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
 <script src="js/garden-iso3d.js?v=13"></script>
-<script src="js/garden-isoview.js?v=5"></script>
+<script src="js/garden-isoview.js?v=6"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
@@ -930,6 +930,7 @@ function isoApply(z, ts) {
       items.push(V.imgItem('i|' + it.id + '|' + st + '|' + nk, function (it2, st2) { return function () { return V.prep(A.itemSvg(it2, st2, 160, ''), night); }; }(it, st), c + .5, r + .62, sz2, sz2, { i: gi, ov: ov, kind: it.kind, hw: big ? .5 : .55 }));
     }
   }
+  V.XRAY = !!BRUSH && !VISIT;   // đang cầm món để đặt → công trình/cây cao mờ đi để thấy ô bị che
   var hits = V.paint(cv, g, items, { tint: night ? 'rgba(10,18,70,.34)' : dusk ? 'rgba(160,80,20,.14)' : null });
   var hh = ''; hits.forEach(function (q) { var r2 = q.r; if (!r2) return; hh += '<div class="gt ghit" data-i="' + q.i + '" style="left:' + r2[0].toFixed(1) + 'px;top:' + r2[1].toFixed(1) + 'px;width:' + r2[2].toFixed(1) + 'px;height:' + r2[3].toFixed(1) + 'px" role="button" tabindex="-1">' + q.ov + '</div>'; });
   $('hits').innerHTML = hh;
@@ -1325,6 +1326,13 @@ function renderBp() {
   if (short) h += '<p class="gd-sub" style="color:#C0392B">Chưa đủ xu — hãy 🌟 Kiếm xu hoặc chọn mẫu rẻ hơn nhé.</p>';
   $('bpbody').innerHTML = h.replace(/🪙/g, COIN);
 }
+/* Ô đất bị công trình/cây cao che khuất: khi đang cầm món để đặt, bấm lên hình công trình vẫn đặt được vào ô TRỐNG nằm ngay dưới điểm bấm (công trình tự mờ đi để thấy ô). */
+function freeTileUnder(x, y) {
+  if (!BRUSH || VISIT || !$('stage').classList.contains('gd-iso') || !document.elementsFromPoint) return null;
+  var L = document.elementsFromPoint(x, y), k, e2, i;
+  for (k = 0; k < L.length; k++) { e2 = L[k]; if (e2.classList && e2.classList.contains('gt') && !e2.classList.contains('ghit') && !e2.classList.contains('blk')) { i = +e2.getAttribute('data-i'); return (!S.tiles[i] && !D.isBlocked(i)) ? i : null; } }
+  return null;
+}
 document.addEventListener('click', async function (e) {
   var t = e.target, el;
   if (t.closest('#feedAll')) { feedAllZone(); return; } if (t.closest('#clearZ')) { clearZone(); return; } if (t.closest('#bpBtn')) { openBp(); return; }
@@ -1560,7 +1568,7 @@ function closePop() { var p = $('pop'); if (p) p.remove(); if (SEL != null) { va
 document.addEventListener('click', async function (e) {
   var t = e.target, el;
   if ((el = t.closest('.gd-pop [data-pa]'))) { var a = el.getAttribute('data-pa'), i = +$('pop').getAttribute('data-i'); closePop(); if (a === 'water') { TOOL = 'water'; onTile(i); TOOL = null; } else if (a === 'harvest') doHarvest(i); else if (a === 'grow') doGrow(i, +el.getAttribute('data-bc')); else if (a === 'pen') openPenMgr(i); else if (a === 'remove') { var tl = TOOL; TOOL = 'remove'; onTile(i); TOOL = tl; } return; }
-  if ((el = t.closest('.gt'))) { if (TOOL === 'multi') return; onTile(+el.getAttribute('data-i')); return; }
+  if ((el = t.closest('.gt'))) { if (TOOL === 'multi') return; var _fi = el.classList.contains('ghit') ? freeTileUnder(e.clientX, e.clientY) : null; onTile(_fi != null ? _fi : +el.getAttribute('data-i')); return; }
   if ($('pop') && !t.closest('.gd-pop')) closePop();
   if ((el = t.closest('[data-tool]'))) { var tn = el.getAttribute('data-tool'); TOOL = TOOL === tn ? null : tn; if (tn !== 'multi') BRUSH = null; MSEL = {}; closePop(); render(); return; }
   if ((el = t.closest('[data-bdbuy]'))) { buyBundle(el.getAttribute('data-bdbuy')); return; }
@@ -1602,6 +1610,7 @@ var PV = [];
 function clearPv() { PV.forEach(function (e) { e.classList.remove('pv-ok', 'pv-bad'); }); PV = []; }
 document.addEventListener('mouseover', function (e) {
   var c = e.target.closest && e.target.closest('.gt'); if (PV.length) clearPv();
+  if (c && c.classList.contains('ghit')) { var _f = freeTileUnder(e.clientX, e.clientY); if (_f != null && tileEl(_f)) c = tileEl(_f); }
   if (!c || VISIT || !BRUSH || BRUSH.kind !== 'big' || c.classList.contains('blk')) return;
   var i = +c.getAttribute('data-i'), fp = D.footprint(i, D.BY[BRUSH.id], zlv(D.zoneOfCell(i))), ok = !!fp && fp.every(function (k) { return !D.isBlocked(k) && !S.tiles[k]; });
   (fp || [i]).forEach(function (k) { var el = tileEl(k); if (el) { el.classList.add(ok ? 'pv-ok' : 'pv-bad'); PV.push(el); } });
