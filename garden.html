@@ -968,7 +968,8 @@ function layout(z) {
   if ($('stage').classList.contains('gd-iso')) {   // 2.5D đẳng cự: rộng ≈ 0,707·(cột+hàng)·ô; cao ≈ 0,354·(cột+hàng)·ô + chỗ cho công trình cao
     var sum = d.c + d.r; fit = Math.floor(Math.min((W0 - 24) / (sum * .7071), (Hh + 20) / (sum * .3536 + 4.1)));
   }
-  var ts = Math.max(mn, Math.min(170, Math.floor(fit * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
+  var comfy = innerWidth <= 640 ? 40 : 56;   // cỡ ô tối thiểu dễ bấm: đất càng rộng thì cuộn xem, KHÔNG thu nhỏ ô nữa
+  var ts = Math.max(mn, Math.min(170, Math.floor(Math.max(fit, comfy) * ZOOM)));   // đất càng rộng ô càng nhỏ; quá nhỏ thì cuộn/phóng to
   if (CENTERED !== z.id) { CENTERED = z.id; setTimeout(function () { var p = $('play'); if (p) { p.scrollLeft = (p.scrollWidth - p.clientWidth) / 2; p.scrollTop = (p.scrollHeight - p.clientHeight) / 2; } }, 80); }   // vào khu: đưa đất vào giữa khung
   $('lawn').style.setProperty('--ts', ts + 'px'); $('lawn').classList.toggle('tiny', ts < 34); return ts;
 }
