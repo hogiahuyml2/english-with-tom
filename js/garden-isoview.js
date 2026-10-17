@@ -45,12 +45,29 @@
     };
   };
   // tranh SVG của một khối phong cảnh (viewBox nới rộng để không bị cắt phần cao); b = {x,y,w,h}
-  G.blockItem = function (key, build, b, vb) {
+  G.blockItem = function (key, build, b, vb, feet) {
     return {
       d: b.x + b.w + b.y + b.h, y: b.y + b.h, kind: 'scene',
       draw: function (ctx, g) {
         var im = img(key, build); if (!im) return; var u = g.ts * 1.12 / 100, a = G.pt(g, b.x + b.w / 2, b.y + b.h / 2), gy = a[1] + (b.w + b.h) * g.S * .25 * .3,   /* chân vật nằm TRONG ô đất (không lệch ra mép trước) → ao/nước không còn tràn ra ngoài đất */ w = vb[2] * u, h = vb[3] * u;
+        if (feet != null) gy = a[1] - (b.y * 100 + feet - vb[1]) * u + h - vb[4] * u;   // chân tranh (đường 'feet') đặt đúng tâm nền đất
         ctx.shadowColor = 'rgba(20,35,10,.25)'; ctx.shadowBlur = g.ts * .06; ctx.shadowOffsetY = g.ts * .03; ctx.drawImage(im, a[0] - w / 2, gy - (h - vb[4] * u), w, h); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+      }
+    };
+  };
+  // nền phẳng cho cảnh có nước: mặt nước phủ cả khoảnh đất + một nền đất/đá nhỏ ở giữa để công trình đứng lên
+  G.patchItem = function (b, water) {
+    return {
+      d: -1, y: -1, kind: 'ground',
+      draw: function (ctx, g) {
+        function dia(x0, y0, w, h, fill, stroke, lw) { var p = [G.pt(g, x0, y0), G.pt(g, x0 + w, y0), G.pt(g, x0 + w, y0 + h), G.pt(g, x0, y0 + h)]; ctx.beginPath(); ctx.moveTo(p[0][0], p[0][1]); for (var i = 1; i < 4; i++) ctx.lineTo(p[i][0], p[i][1]); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); } }
+        var ix = Math.min(.45, b.w * .15), iy = Math.min(.45, b.h * .15);
+        dia(b.x + .06, b.y + .06, b.w - .12, b.h - .12, '#C9B98C', 'rgba(70,50,20,.35)', 1.2);      // bờ cát/đá viền ngoài
+        dia(b.x + .16, b.y + .16, b.w - .32, b.h - .32, water, 'rgba(20,70,120,.45)', 1);          // mặt nước
+        ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = Math.max(1, g.ts * .03);
+        [[.3, .78], [.62, .84], [.78, .4], [.2, .3]].forEach(function (q) { var c = G.pt(g, b.x + b.w * q[0], b.y + b.h * q[1]); ctx.beginPath(); ctx.moveTo(c[0] - g.ts * .22, c[1]); ctx.quadraticCurveTo(c[0] - g.ts * .11, c[1] - g.ts * .06, c[0], c[1]); ctx.quadraticCurveTo(c[0] + g.ts * .11, c[1] + g.ts * .06, c[0] + g.ts * .22, c[1]); ctx.stroke(); });
+        dia(b.x + b.w * .22, b.y + b.h * .22, b.w * .56, b.h * .56, '#DDD3B8', 'rgba(70,50,20,.4)', 1.2);   // nền đất/đá giữa: công trình đứng trên đây
+        dia(b.x + b.w * .22 + ix * .15, b.y + b.h * .22 + iy * .15, b.w * .56 - ix * .3, b.h * .56 - iy * .3, '#CFE3A8', null);
       }
     };
   };

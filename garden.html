@@ -764,7 +764,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
 <script src="js/garden-iso3d.js?v=13"></script>
-<script src="js/garden-isoview.js?v=6"></script>
+<script src="js/garden-isoview.js?v=7"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
 <script src="js/garden-groove.js?v=1"></script>
@@ -894,6 +894,29 @@ function tileOverlay(it, t, st, now) {
 /* ───────── 2.5D kiểu City: vẽ vật đứng vào canvas ───────── */
 var ISOG = null, ISOLAST = null, CLUS = [[.2, .2], [.55, .14], [.85, .26], [.3, .5], [.66, .5], [.14, .82], [.5, .86], [.84, .76]];
 function isoXY(x, y) { var g = ISOG; if (!g) return [x * 64, y * 64]; return EWTGardenIsoView.pt(g, x, y); }
+/* Cảnh có mặt nước nằm dưới chân công trình (Nyhavn, Marina Bay Sands, Nàng tiên cá…): tách phần nước khỏi tranh đứng → vẽ nước + nền đất NẰM PHẲNG trên mặt đất, công trình đứng trên nền đó (không còn tấm nước dựng đứng lơ lửng) */
+var GROUNDED = { pt_house: 1, dk_house: 1, dk_big: 1, is_big: 1, hu_house: 1, nz_big: 1, sg_house: 1, sg_big: 1, kh_house: 1, hr_house: 1 }, GCACHE = {};
+function groundSplit(k, b, raw) {
+  var key = k + '|' + b.w + 'x' + b.h; if (GCACHE[key]) return GCACHE[key];
+  var out = { raw: raw, feet: null, water: '#5BA8D8' }, H = b.h * 100;
+  try {
+    var doc = new DOMParser().parseFromString('<svg xmlns="http://www.w3.org/2000/svg">' + raw + '</svg>', 'image/svg+xml'), root = doc.documentElement, feet = null, wcol = null;
+    function water(c) { var m = /^#([0-9a-f]{6})$/i.exec(c || ''); if (!m) return false; var n = parseInt(m[1], 16), r = n >> 16, g = (n >> 8) & 255, bb = n & 255; return bb > 150 && bb > r + 40 && g > r; }
+    var els = Array.prototype.slice.call(root.querySelectorAll('rect,ellipse,path')), rm = [];
+    els.forEach(function (e) {
+      var t = e.tagName, f = e.getAttribute('fill');
+      if (t === 'ellipse' && water(f)) { var rx = +e.getAttribute('rx'), ry = +e.getAttribute('ry'), cy = +e.getAttribute('cy'); if (ry / rx < .4 && rx >= 20 && cy >= H * .55) { rm.push(e); feet = feet == null ? cy : Math.min(feet, cy); wcol = wcol || f; } }
+      else if (t === 'rect' && water(f)) { var w = +e.getAttribute('width'), h = +e.getAttribute('height'), y = +e.getAttribute('y'); if (w >= 60 && h >= 14 && h <= 60 && y >= H * .6) { rm.push(e); feet = feet == null ? y : Math.min(feet, y); wcol = wcol || f; } }
+      else if (t === 'path' && /rgba\(255,\s*255,\s*255,\s*\.[56]/.test(e.getAttribute('stroke') || '') && (!f || f === 'none') && /^M[\d.\s-]+q/.test(e.getAttribute('d') || '')) { var mm = /^M[\d.-]+\s+([\d.-]+)/.exec(e.getAttribute('d')); if (mm && +mm[1] >= H * .55) rm.push(e); }
+    });
+    if (rm.length && feet != null) {
+      rm.forEach(function (e) { e.parentNode.removeChild(e); });
+      var ser = new XMLSerializer(), str = ''; Array.prototype.forEach.call(root.childNodes, function (n) { str += ser.serializeToString(n); });
+      out = { raw: str, feet: feet, water: wcol || '#5BA8D8' };
+    }
+  } catch (e) { /* giữ nguyên tranh gốc */ }
+  return (GCACHE[key] = out);
+}
 function isoApply(z, ts) {
   var V = window.EWTGardenIsoView; if (!V) return; ISOLAST = [z, ts];
   var d = zdim(z), g = ISOG = V.geom(d.c, d.r, ts), zw = $('zwrap'), pl = $('plane'), cv = $('gscene'); if (!zw || !pl || !cv) return;
@@ -906,11 +929,12 @@ function isoApply(z, ts) {
     if (isFlatBlock(b.k) || b.x + b.w > d.c || b.y + b.h > d.r) return;
     var spr = window.EWTGardenIso && EWTGardenIso.ready() ? EWTGardenIso.blockSprite(b) : null;
     if (spr) { items.push(V.sprItem(spr.sp, b.x, b.y, b.w, b.h, { kind: 'scene' })); return; }
-    var fn = W.ART[b.k]; if (!fn) return; var vb = [b.x * 100 - 100, b.y * 100 - 280, b.w * 100 + 200, b.h * 100 + 280 + 40, 40];
-    items.push(V.blockItem('blk|' + z.id + '|' + b.k + '|' + b.x + '|' + b.y + '|' + (night ? 'n' : 'd'), function () {
-      var raw = ''; try { raw = fn(b); } catch (e) { raw = ''; }
+    var fn = W.ART[b.k]; if (!fn) return; var vb = [b.x * 100 - 100, b.y * 100 - 280, b.w * 100 + 200, b.h * 100 + 280 + 40, 40], gi0 = null;
+    if (GROUNDED[b.k]) { var raw0 = ''; try { raw0 = fn(b); } catch (e) { raw0 = ''; } gi0 = groundSplit(b.k, b, raw0); if (gi0.feet == null) gi0 = null; else items.push(V.patchItem(b, gi0.water)); }
+    items.push(V.blockItem('blk|' + z.id + '|' + b.k + '|' + b.x + '|' + b.y + '|' + (night ? 'n' : 'd') + (gi0 ? '|g' : ''), function () {
+      var raw = ''; if (gi0) raw = gi0.raw; else { try { raw = fn(b); } catch (e) { raw = ''; } }
       return V.prep('<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb[0] + ' ' + vb[1] + ' ' + vb[2] + ' ' + vb[3] + '" width="' + vb[2] + '" height="' + vb[3] + '"><defs>' + W.DEFS + '</defs>' + raw + '</svg>', night);
-    }, b, vb));
+    }, b, vb, gi0 ? gi0.feet : null));
   });
   // 2) món người chơi đặt
   for (tc = 0; tc < d.c * d.r; tc++) {
