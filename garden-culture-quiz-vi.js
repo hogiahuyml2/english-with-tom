@@ -142,6 +142,30 @@ module.exports = {
     ['Vượn cáo (lemur) là loài thú hoang đến từ ___.', ['Madagascar', 'Canada', 'Na Uy', 'Peru'], 'Vượn cáo là loài thú hoang đến từ Madagascar.'],
     ['Vani đến từ một loài ___.', ['hoa lan', 'quả táo', 'củ hành', 'quả trứng'], 'Vani đến từ một loài hoa lan.'],
     ['Trên quốc kỳ Madagascar, màu trắng nằm ở bên ___.', ['trái', 'phải', 'trên', 'dưới'], 'Màu trắng nằm ở bên trái.'] ]
+  ,farmjp: [
+    ['Ở Nhật, lúa thường được trồng trên các ___ ở đồi.', ['bậc thang', 'mái nhà', 'con thuyền', 'đám mây'], 'Lúa được trồng trên những bậc cắt vào sườn đồi.'],
+    ['Koi là loài ___ lớn, nhiều màu.', ['cá', 'chim', 'ngựa', 'cây'], 'Koi là loài cá chép lớn, nhiều màu.'],
+    ['Giữa quốc kỳ Nhật Bản có gì?', ['Hình tròn đỏ', 'Ngôi sao xanh', 'Cây xanh', 'Vạch đen'], 'Giữa quốc kỳ Nhật Bản là hình tròn đỏ lớn.'] ]
+  ,farmcn: [
+    ['Cây chè mọc thành các ___ xanh trên đồi.', ['hàng', 'con thuyền', 'đám mây', 'bức tường'], 'Cây chè mọc thành hàng xanh trên đồi.'],
+    ['Người ta hái ___ chè non bằng tay.', ['lá', 'đá', 'cá', 'trứng'], 'Người ta hái lá non bằng tay.'],
+    ['Các ngôi sao trên quốc kỳ Trung Quốc có màu gì?', ['Màu vàng', 'Màu xanh dương', 'Màu xanh lá', 'Màu đen'], 'Quốc kỳ Trung Quốc nền đỏ, sao vàng.'] ]
+  ,farmbr: [
+    ['Brazil trồng nhiều ___ hơn bất kỳ nước nào.', ['cà phê', 'tuyết', 'băng', 'muối'], 'Brazil trồng nhiều cà phê hơn bất kỳ nước nào.'],
+    ['Quả cà phê chín màu đỏ, gọi là ___.', ['cherry', 'đá', 'vỏ sò', 'lá'], 'Quả đỏ gọi là cherry.'],
+    ['Nông dân cho hạt cà phê vào những ___ lớn.', ['bao tải', 'con thuyền', 'đôi giày', 'chiếc mũ'], 'Nông dân cho hạt vào những bao lớn.'] ]
+  ,farmit: [
+    ['Người ta làm rượu vang từ ___.', ['nho', 'đá', 'tuyết', 'cát'], 'Người ta làm rượu vang từ nho.'],
+    ['Dầu ô liu được làm từ quả ___.', ['ô liu', 'táo', 'trứng', 'cá'], 'Dầu ô liu được làm từ quả ô liu.'],
+    ['Quốc kỳ Ý có màu xanh lá, trắng và ___.', ['đỏ', 'xanh dương', 'đen', 'hồng'], 'Quốc kỳ Ý: xanh lá, trắng, đỏ.'] ]
+  ,farmin: [
+    ['Lúa mì chuyển màu ___ khi chín.', ['vàng óng', 'xanh dương', 'hồng', 'đen'], 'Lúa mì chuyển màu vàng khi chín.'],
+    ['Giữa quốc kỳ Ấn Độ có một ___ xanh dương.', ['bánh xe', 'ngôi sao', 'cái cây', 'mặt trăng'], 'Giữa quốc kỳ Ấn Độ có bánh xe xanh dương.'],
+    ['Ấn Độ sản xuất nhiều ___ hơn bất kỳ nước nào.', ['sữa', 'tuyết', 'muối', 'thuỷ tinh'], 'Ấn Độ sản xuất nhiều sữa hơn bất kỳ nước nào.'] ]
+  ,farmth: [
+    ['Nhiều nhà ở Thái Lan dựng trên ___ cao phía trên mặt nước.', ['cột', 'đám mây', 'đôi giày', 'quyển sách'], 'Nhiều nhà ở Thái Lan dựng trên cột cao trên mặt nước.'],
+    ['Ở chợ nổi, người ta bán trái cây trên những ___ nhỏ.', ['thuyền', 'ô tô', 'tàu hoả', 'máy bay'], 'Người ta bán trái cây trên những chiếc thuyền nhỏ.'],
+    ['Màu nào ở giữa quốc kỳ Thái Lan?', ['Xanh dương', 'Xanh lá', 'Hồng', 'Đen'], 'Dải xanh dương ở giữa quốc kỳ Thái Lan.'] ]
   ,farmvn: [
     ['Ở Việt Nam, lúa được trồng trong ___.', ['nước', 'cát', 'tuyết', 'lửa'], 'Lúa được trồng trong nước.'],
     ['Nông dân dùng ___ để giúp làm ruộng lúa.', ['trâu', 'hổ', 'chim cánh cụt', 'lạc đà'], 'Nông dân dùng trâu để giúp làm đồng.'],

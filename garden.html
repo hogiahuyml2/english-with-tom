@@ -33,6 +33,14 @@
 .gd-fx .lf.o { background: linear-gradient(135deg, #FFC46B, #E0833A); } .gd-fx .pt { width: 9px; height: 6px; border-radius: 100% 0 100% 0; background: linear-gradient(135deg, #FFD0E2, #FF8FB8); animation: gdLf 12s linear infinite; }
 .gd-fx .ff { width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle, #FFFBB0, rgba(255,240,120,0) 70%); box-shadow: 0 0 10px 4px rgba(255,240,120,.7); animation: gdFf 6s ease-in-out infinite; display: none; } .night .gd-fx .ff { display: block; }
 .gd-fx .gl { width: 9px; height: 9px; background: radial-gradient(circle, #fff, rgba(255,255,255,0) 70%); animation: gdGl 3.4s ease-in-out infinite; }
+.gd-fx .ln { width: 12px; height: 16px; border-radius: 40% 40% 46% 46%; background: radial-gradient(circle at 50% 40%, #FFE9A0, #FF9A3A 60%, #D9503C); box-shadow: 0 0 12px 4px rgba(255,170,60,.55); animation: gdLn 16s linear infinite; opacity: 0; } .gd-fx .ln::after { content: ''; position: absolute; left: 4px; top: -4px; width: 4px; height: 4px; background: #8A5A2E; border-radius: 1px; }
+.gd-fx .kt { width: 18px; height: 18px; background: linear-gradient(135deg, #FF5A7A 50%, #FFD84A 50%); transform: rotate(45deg); animation: gdKt 13s ease-in-out infinite; } .gd-fx .kt:nth-child(3n) { background: linear-gradient(135deg, #2B9BD8 50%, #FFFFFF 50%); } .gd-fx .kt:nth-child(3n+1) { background: linear-gradient(135deg, #2E9B6A 50%, #F2842E 50%); } .gd-fx .kt::after { content: ''; position: absolute; left: 8px; top: 18px; width: 2px; height: 26px; background: rgba(255,255,255,.7); transform: rotate(-45deg); transform-origin: top; }
+.gd-fx .bt { width: 14px; height: 10px; background: linear-gradient(90deg, #FFB347 0 48%, #4A3A2A 48% 52%, #FFB347 52%); border-radius: 60% 60% 50% 50%; animation: gdBt 10s ease-in-out infinite, gdBtF .32s ease-in-out infinite alternate; } .gd-fx .bt:nth-child(2n) { background: linear-gradient(90deg, #5BC6F2 0 48%, #2A3A5A 48% 52%, #5BC6F2 52%); } .gd-fx .bt:nth-child(3n) { background: linear-gradient(90deg, #FF8AC0 0 48%, #4A3A2A 48% 52%, #FF8AC0 52%); }
+@keyframes gdLn { 0% { transform: translate(0, 40px) scale(.7); opacity: 0; } 12% { opacity: .95; } 85% { opacity: .85; } 100% { transform: translate(34px, -260px) scale(1); opacity: 0; } }
+@keyframes gdKt { 0%, 100% { transform: translate(0, 0) rotate(40deg); } 50% { transform: translate(60px, -26px) rotate(52deg); } }
+@keyframes gdBt { 0%, 100% { translate: 0 0; } 25% { translate: 50px -24px; } 50% { translate: 100px 6px; } 75% { translate: 40px 30px; } }
+@keyframes gdBtF { from { scale: 1 1; } to { scale: .35 1; } }
+@media (prefers-reduced-motion: reduce) { .gd-fx .ln, .gd-fx .kt, .gd-fx .bt { animation: none; } }
 .gd-fx .rn { width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle, #F4E4FF, rgba(190,140,255,0) 70%); box-shadow: 0 0 9px 3px rgba(190,140,255,.6); animation: gdRn 9s ease-in-out infinite; }
 @keyframes gdPf { 0% { transform: translate(0, 0) scale(.5); opacity: 0; } 15% { opacity: .95; } 80% { opacity: .8; } 100% { transform: translate(60px, -90px) scale(1.1); opacity: 0; } }
 @keyframes gdLf { 0% { transform: translate(0, -30px) rotate(0); opacity: 0; } 10% { opacity: .95; } 50% { transform: translate(40px, 200px) rotate(200deg); } 100% { transform: translate(-30px, 480px) rotate(420deg); opacity: 0; } }
@@ -366,6 +374,12 @@ body.visit .gd-visit { display: flex; } body.visit .gd-dock, body.visit .gd-tray
 .gd-lawn.z-farmmn { --bed: #CCE49A; --bed2: #BCD884; --bedl: rgba(120,160,50,.4); background: repeating-linear-gradient(90deg, #2B9BD8 0 12px, #16609A 12px 14px); border-color: #E5334B; }
 .gd-lawn.z-farmfr { --bed: #C4E4A0; --bed2: #B2D88A; --bedl: rgba(100,150,60,.4); background: repeating-linear-gradient(90deg, #A878D8 0 12px, #6A3A9A 12px 14px); border-color: #8E5FC4; }
 .gd-lawn.z-farmke { --bed: #E8DC98; --bed2: #DCCE80; --bedl: rgba(160,130,50,.4); background: repeating-linear-gradient(90deg, #BB0000 0 12px, #7A0000 12px 14px); border-color: #006600; }
+.gd-lawn.z-farmjp { --bed: #D8EFC0; --bed2: #C6E4A8; --bedl: rgba(70,130,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 12px, #BC002D 12px 14px); border-color: #FFFFFF; }
+.gd-lawn.z-farmcn { --bed: #CFEFB0; --bed2: #BFE49E; --bedl: rgba(60,130,50,.4); background: repeating-linear-gradient(90deg, #DE2910 0 12px, #FFDE00 12px 14px); border-color: #DE2910; }
+.gd-lawn.z-farmbr { --bed: #D9EFB0; --bed2: #C8E49A; --bedl: rgba(70,130,40,.4); background: repeating-linear-gradient(90deg, #009C3B 0 12px, #FFDF00 12px 14px); border-color: #009C3B; }
+.gd-lawn.z-farmit { --bed: #E0EAB8; --bed2: #D2E0A0; --bedl: rgba(110,140,50,.4); background: repeating-linear-gradient(90deg, #009246 0 12px, #CE2B37 12px 14px); border-color: #009246; }
+.gd-lawn.z-farmin { --bed: #F0E8B8; --bed2: #E4DC9E; --bedl: rgba(150,130,50,.4); background: repeating-linear-gradient(90deg, #FF9933 0 12px, #138808 12px 14px); border-color: #FF9933; }
+.gd-lawn.z-farmth { --bed: #C8F0B8; --bed2: #B4E4A0; --bedl: rgba(50,140,60,.4); background: repeating-linear-gradient(90deg, #A51931 0 12px, #2D2A4A 12px 14px); border-color: #A51931; }
 .gd-lawn.z-madagascar { --bed: #C4EEA8; --bed2: #B2E496; --bedl: rgba(50,140,60,.4); background: repeating-linear-gradient(90deg, #FFFFFF 0 10px,#FC3D32 10px 20px,#007E3A 20px 30px); border-color: #007E3A; }
 .gd-nof { font-size: 40px; line-height: 1; height: 56px; display: grid; place-items: center; }
 .gd-modal { position: fixed; inset: 0; z-index: 120; background: rgba(20,24,60,.55); display: none; place-items: center; padding: 14px; } .gd-modal.on { display: grid; }
@@ -726,6 +740,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-cat-i.js?v=2"></script>
 <script src="js/garden-cat-j.js?v=2"></script>
 <script src="js/garden-cat-k.js?v=1"></script>
+<script src="js/garden-cat-l.js?v=1"></script>
 <script src="js/garden-events.js?v=1"></script>
 <script src="js/garden-bundles.js?v=2"></script>
 <script src="js/garden-data.js?v=31"></script>
@@ -749,6 +764,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-world13.js?v=1"></script>
 <script src="js/garden-world14.js?v=1"></script>
 <script src="js/garden-world15.js?v=1"></script>
+<script src="js/garden-world16.js?v=1"></script>
 <script src="js/garden-art4.js?v=1"></script>
 <script src="js/garden-art5.js?v=1"></script>
 <script src="js/garden-art6.js?v=2"></script>
@@ -763,7 +779,7 @@ body.fx-nomotion .gd-nb, .fx-nomotion .gd-nb { left: var(--x, 8%); animation: no
 <script src="js/garden-gen5.js?v=1"></script>
 <script src="js/garden-gen6.js?v=1"></script>
 <script src="js/garden-gen7.js?v=2"></script>
-<script src="js/garden-iso3d.js?v=17"></script>
+<script src="js/garden-iso3d.js?v=18"></script>
 <script src="js/garden-isoview.js?v=11"></script>
 <script src="js/garden-events-art.js?v=2"></script>
 <script src="js/garden-events-art2.js?v=1"></script>
@@ -800,7 +816,8 @@ function paintIcons() { [].forEach.call(document.querySelectorAll('[data-ic]'), 
 /* ───────── hạt chuyển động trong khu (phấn hoa, lá rơi, cánh hoa, đom đóm, ánh sao…) ───────── */
 function fxHtml(zid) {
   var seed = 7, i, out = '', rr = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-  var mix = { cottage: [['pf', 8], ['lf', 4], ['pt', 3]], hill: [['pf', 9], ['lf', 3]], river: [['pf', 5], ['gl', 8]], pond: [['pf', 5], ['pt', 5], ['gl', 5]], forest: [['pf', 6], ['lf', 9]], palace: [['pf', 6], ['pt', 7], ['gl', 5]], winter: [['gl', 14]], beach: [['gl', 10], ['pf', 3]], magic: [['rn', 14], ['gl', 5]], bamboo: [['lf', 6], ['pf', 4]], jungle: [['lf', 8], ['gl', 6]], funfair: [['pt', 10], ['pf', 3]], arctic: [['gl', 14]], volcano: [['gl', 14], ['pf', 3]], cyber: [['gl', 12], ['pt', 4]], savanna: [['pf', 8]] }[zid] || [['pf', 8]];
+  var mix = { cottage: [['pf', 8], ['lf', 4], ['pt', 3]], hill: [['pf', 9], ['lf', 3]], river: [['pf', 5], ['gl', 8]], pond: [['pf', 5], ['pt', 5], ['gl', 5]], forest: [['pf', 6], ['lf', 9]], palace: [['pf', 6], ['pt', 7], ['gl', 5]], winter: [['gl', 14]], beach: [['gl', 10], ['pf', 3]], magic: [['rn', 14], ['gl', 5]], bamboo: [['lf', 6], ['pf', 4]], jungle: [['lf', 8], ['gl', 6]], funfair: [['pt', 10], ['pf', 3]], arctic: [['gl', 14]], volcano: [['gl', 14], ['pf', 3]], cyber: [['gl', 12], ['pt', 4]], savanna: [['pf', 8]], farmjp: [['pt', 14], ['pf', 4], ['bt', 3]], farmcn: [['ln', 6], ['pf', 6], ['lf', 4]], farmbr: [['bt', 6], ['pf', 5], ['lf', 3]], farmit: [['bt', 4], ['lf', 6], ['pf', 4]], farmin: [['kt', 5], ['pt', 8], ['pf', 3]], farmth: [['ln', 7], ['bt', 4], ['pf', 5]],
+    japan: [['pt', 14], ['ln', 3], ['pf', 4]], china: [['ln', 6], ['pf', 5], ['pt', 3]], thailand: [['ln', 7], ['bt', 3], ['pf', 4]], india: [['kt', 5], ['pt', 6], ['pf', 3]], brazil: [['bt', 6], ['lf', 4], ['pf', 4]], mexico: [['bt', 4], ['pt', 6], ['pf', 3]], colombia: [['bt', 5], ['lf', 4], ['pf', 3]], vietnam: [['ln', 4], ['pf', 5], ['bt', 2]], indonesia: [['bt', 4], ['pf', 5]], philippines: [['bt', 4], ['pf', 5]] }[zid] || [['pf', 8]];
   mix.forEach(function (m) { for (i = 0; i < m[1]; i++) out += '<i class="' + m[0] + (m[0] === 'lf' && i % 3 === 0 ? ' o' : '') + '" style="left:' + (rr() * 96).toFixed(1) + '%;top:' + (m[0] === 'lf' || m[0] === 'pt' ? (rr() * 20).toFixed(1) : (30 + rr() * 66).toFixed(1)) + '%;animation-delay:' + (-rr() * 10).toFixed(2) + 's;animation-duration:' + (6 + rr() * 6).toFixed(1) + 's"></i>'; });
   if (zid !== 'winter' && zid !== 'arctic') for (i = 0; i < 8; i++) out += '<i class="ff" style="left:' + (rr() * 94).toFixed(1) + '%;top:' + (20 + rr() * 70).toFixed(1) + '%;animation-delay:' + (-rr() * 6).toFixed(2) + 's"></i>';
   return out;
@@ -1737,7 +1754,7 @@ $('femail').addEventListener('keydown', function (e) { if (e.key === 'Enter') go
 $('fopen').addEventListener('change', function () { api('/api/garden/share', { open: $('fopen').checked }).then(function (d) { drawShare(d); toast(d.open ? 'Bạn bè có thể ghé thăm vườn của bạn 🌷' : 'Đã tắt chế độ cho bạn bè xem vườn.'); }); });
 
 /* ───────── nhiệm vụ · quà thầy cô · lớp học ───────── */
-var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { belgium: 'be', colombia: 'co', scotland: 'sct', vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma', cuba: 'cu', chile: 'cl', norway: 'no', russia: 'ru', ireland: 'ie', madagascar: 'mg', farmvn: 'vn', farmnl: 'nl', farmch: 'ch', farmau: 'au', farmus: 'us', farmfr: 'fr', poland: 'pl', austria: 'at', denmark: 'dk', finland: 'fi', iceland: 'is', czechia: 'cz', hungary: 'hu' };
+var INBOX = 0, TRADES = 0, QTAB = 'q', FLAGOF = { belgium: 'be', colombia: 'co', scotland: 'sct', vietnam: 'vn', thailand: 'th', japan: 'jp', china: 'cn', india: 'in', indonesia: 'id', france: 'fr', italy: 'it', netherlands: 'nl', uk: 'uk', germany: 'de', usa: 'us', greece: 'gr', sweden: 'se', switzerland: 'ch', korea: 'kr', turkey: 'tr', australia: 'au', canada: 'ca', morocco: 'ma', cuba: 'cu', chile: 'cl', norway: 'no', russia: 'ru', ireland: 'ie', madagascar: 'mg', farmvn: 'vn', farmnl: 'nl', farmch: 'ch', farmau: 'au', farmus: 'us', farmfr: 'fr', farmjp: 'jp', farmcn: 'cn', farmit: 'it', farmin: 'in', farmth: 'th', poland: 'pl', austria: 'at', denmark: 'dk', finland: 'fi', iceland: 'is', czechia: 'cz', hungary: 'hu' };
 function say(t) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); } catch (e) {} }
 function claimable() { var q = S && S.quests; if (!q) return 0; var n = 0; q.daily.concat(q.weekly).forEach(function (x) { if (x.p >= x.goal && !x.claimed) n++; }); q.streak.miles.forEach(function (m) { if (m.ready) n++; }); return n; }
 window.updDots = function () { var n = (S && !VISIT ? claimable() : 0) + INBOX + TRADES, d = $('questDot'); if (d) { d.textContent = n; d.style.display = n ? '' : 'none'; } };

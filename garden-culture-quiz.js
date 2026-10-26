@@ -142,6 +142,30 @@ module.exports = {
     ['Lemurs are wild animals from ___.', ['Madagascar', 'Canada', 'Norway', 'Peru'], 'Lemurs are wild animals from Madagascar.'],
     ['Vanilla comes from an ___.', ['orchid', 'apple', 'onion', 'egg'], 'Vanilla comes from an orchid.'],
     ['On the flag of Madagascar, white is on the ___.', ['left', 'right', 'top', 'bottom'], 'White is on the left.'] ]
+  ,farmjp: [
+    ['Rice in Japan often grows on ___ in the hills.', ['steps', 'roofs', 'boats', 'clouds'], 'Rice grows on steps cut into the hills.'],
+    ['A koi is a big, colourful ___.', ['fish', 'bird', 'horse', 'tree'], 'Koi are big, colourful carp.'],
+    ['What is in the middle of the flag of Japan?', ['A red circle', 'A blue star', 'A green tree', 'A black line'], 'The flag of Japan has a big red circle in the middle.'] ]
+  ,farmcn: [
+    ['Tea bushes grow in green ___ on the hills.', ['rows', 'boats', 'clouds', 'walls'], 'Tea bushes grow in green rows on the hills.'],
+    ['People pick young tea ___ by hand.', ['leaves', 'stones', 'fish', 'eggs'], 'People pick the young leaves by hand.'],
+    ['What colour are the stars on the flag of China?', ['Yellow', 'Blue', 'Green', 'Black'], 'The flag of China is red with yellow stars.'] ]
+  ,farmbr: [
+    ['Brazil grows more ___ than any other country.', ['coffee', 'snow', 'ice', 'salt'], 'Brazil grows more coffee than any other country.'],
+    ['A coffee ___ is red. Inside there are two beans.', ['cherry', 'stone', 'shell', 'leaf'], 'The red fruit is called a cherry.'],
+    ['Farmers put coffee beans in big ___.', ['sacks', 'boats', 'shoes', 'hats'], 'Farmers put the beans in big sacks.'] ]
+  ,farmit: [
+    ['People make wine from ___.', ['grapes', 'stones', 'snow', 'sand'], 'People make wine from the grapes.'],
+    ['Olive oil is made from ___.', ['olives', 'apples', 'eggs', 'fish'], 'Olive oil is made from olives.'],
+    ['The flag of Italy is green, white and ___.', ['red', 'blue', 'black', 'pink'], 'The flag of Italy has green, white and red.'] ]
+  ,farmin: [
+    ['Wheat turns ___ when it is ready.', ['golden', 'blue', 'pink', 'black'], 'Wheat turns golden when it is ready.'],
+    ['There is a blue ___ in the middle of the flag of India.', ['wheel', 'star', 'tree', 'moon'], 'The flag of India has a blue wheel in the middle.'],
+    ['India makes more ___ than any other country.', ['milk', 'snow', 'salt', 'glass'], 'India makes more milk than any other country.'] ]
+  ,farmth: [
+    ['Many Thai houses stand on tall ___ above the water.', ['posts', 'clouds', 'shoes', 'books'], 'Many Thai houses stand on tall posts above the water.'],
+    ['At a floating market, people sell fruit from small ___.', ['boats', 'cars', 'trains', 'planes'], 'People sell fruit and food from small boats.'],
+    ['Which colour is in the middle of the flag of Thailand?', ['Blue', 'Green', 'Pink', 'Black'], 'Blue is in the middle of the flag of Thailand.'] ]
   ,farmvn: [
     ['Rice grows in ___ in Vietnam.', ['water', 'sand', 'snow', 'fire'], 'Rice grows in water in Vietnam.'],
     ['Farmers use ___ to help in the rice fields.', ['water buffaloes', 'tigers', 'penguins', 'camels'], 'Farmers use water buffaloes to help in the fields.'],

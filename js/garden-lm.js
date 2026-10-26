@@ -203,6 +203,58 @@
     water(g, rw, rh, '#4F7FA8', .05); [[.6, rh / 2, 14], [rw / 2, rh / 2 + .1, 20], [rw - .6, rh / 2, 12]].forEach(function (q) { var c = g.P(q[0], q[1], 3); g.ell(c[0], c[1] - q[2] / 2, 9, q[2] * .6, '#3F7A4A', 'rgba(10,40,20,.5)'); });
   };
 
+
+  /* ───── 6 NÔNG TRẠI MỚI (Nhật, Trung Quốc, Brazil, Ý, Ấn Độ, Thái) ───── */
+  function rows(A, g, x0, y0, w, h, nx, ny, z, col, r) { var i, j; for (j = 0; j < ny; j++) for (i = 0; i < nx; i++) { var q = g.P(x0 + w * (i + .5) / nx, y0 + h * (j + .5) / ny, z); g.ell(q[0], q[1] - 3, r || 4, (r || 4) * .8, col, 'rgba(20,60,20,.35)'); } }
+  LM.fjp_house = function (A, g, rw, rh, p) {   // nhà minka mái tranh dốc + ruộng bậc thang
+    var i; for (i = 0; i < 3; i++) g.box(.1 + i * .06, rh - .5 - i * .42, rw - .2 - i * .12, .36, 0, 5 + i * 5, i % 2 ? '#C8D860' : '#8CC84A');
+    B(A, g, .5, .2, rw - 1, rh * .5, 0, 26, '#F2E8D0', 3, 1); g.gable(.36, .1, rw - .72, rh * .5 + .2, 26, 62, true, '#C9A55A', { wall: '#F2E8D0', over: .16 }); g.box(rw - .75, .3, .3, .3, 26, 66, '#8A7A5A');
+  };
+  LM.fjp_big = function (A, g, rw, rh, p) {   // ao cá koi + đèn đá
+    water(g, rw, rh, '#6FB8D8', .1); g.poly(g.faceT(.04, .04, rw - .08, rh - .08, 1.5), 'rgba(0,0,0,0)', 'rgba(150,140,120,.8)');
+    [[.8, .8, '#F2842E'], [1.3, 1.2, '#FFFFFF'], [.9, 1.4, '#E5334B']].forEach(function (q) { var c = g.P(q[0], q[1], 2); g.ell(c[0], c[1], 7, 3, q[2]); });
+    g.box(rw - .55, .2, .3, .3, 0, 6, '#9A9488'); g.cyl(rw - .4, .35, .06, 6, 18, '#B8B0A0'); g.box(rw - .52, .23, .24, .24, 18, 24, '#B8B0A0'); A.kit6.cone(g, rw - .4, .35, .22, 24, 32, '#8A8478');
+  };
+  LM.fcn_house = function (A, g, rw, rh, p) {   // nhà sân vườn: 3 dãy nhà quanh sân, mái ngói xám
+    B(A, g, .2, .25, rw - .4, .7, 0, 24, '#F0E6D2', 4, 1); g.gable(.12, .2, rw - .24, .8, 24, 40, true, '#7A8490', { wall: '#F0E6D2' });
+    B(A, g, .2, rh - .85, rw - .4, .6, 0, 20, '#F0E6D2', 3, 1); g.gable(.12, rh - .9, rw - .24, .7, 20, 34, true, '#7A8490', { wall: '#F0E6D2' });
+    g.box(rw / 2 - .18, rh - .62, .36, .02, 0, 14, '#B8402F');
+  };
+  LM.fcn_big = function (A, g, rw, rh, p) {   // đồi chè bậc thang
+    var i; for (i = 0; i < 3; i++) { g.box(.1 + i * .06, .1 + i * .6, rw - .2 - i * .12, .55, 0, (3 - i) * 7, '#5FA04A'); rows(A, g, .2 + i * .06, .12 + i * .6, rw - .4 - i * .12, .5, 6, 1, (3 - i) * 7 + 1, i % 2 ? '#7AC25A' : '#3F8A32', 6); }
+    g.cyl(rw - .35, .3, .04, 21, 40, '#8A5A2E'); A.kit6.cone(g, rw - .35, .3, .24, 40, 52, '#C9503C');
+  };
+  LM.fbr_house = function (A, g, rw, rh, p) {   // fazenda vàng có hiên và tháp chuông
+    B(A, g, .2, .35, rw - .4, rh * .5, 0, 28, '#F2C94C', 4, 1); g.hip(.14, .29, rw - .28, rh * .5 + .12, 28, 44, '#C9503C', .2); var i; for (i = 0; i < 5; i++) g.cyl(.35 + i * (rw - .7) / 4, .35 + rh * .5 + .12, .035, 0, 22, '#F2E8D0'); g.box(.3, .35 + rh * .5, rw - .6, .26, 22, 25, '#F2E8D0'); tower(A, g, rw - .7, .2, .4, .4, 28, 56, '#F2C94C', '#C9503C', 12);
+  };
+  LM.fbr_big = function (A, g, rw, rh, p) {   // đồi cà phê chín đỏ + bao tải
+    g.box(.05, .05, rw - .1, rh - .1, 0, 3, '#8A5A3A'); rows(A, g, .2, .2, rw - .4, rh - .7, 5, 3, 4, '#2E7A3A', 6); var i; for (i = 0; i < 10; i++) { var c = g.P(.35 + (i % 5) * (rw - .7) / 4, .35 + Math.floor(i / 5) * .55, 11); g.ell(c[0] + 2, c[1] - 2, 1.6, 1.6, '#E5334B'); }
+    g.box(rw - .6, rh - .5, .26, .26, 3, 14, '#C9A66A'); g.box(rw - .85, rh - .45, .24, .24, 3, 11, '#C9A66A');
+  };
+  LM.fit_house = function (A, g, rw, rh, p) {   // biệt thự đá Tuscany + hàng bách
+    B(A, g, .2, .35, rw - .9, rh * .5, 0, 30, '#EAD9B8', 3, 1); g.hip(.14, .29, rw - .78, rh * .5 + .12, 30, 46, '#C9703A', .2); tower(A, g, rw - .95, .25, .45, .45, 0, 58, '#EAD9B8', '#C9703A', 12);
+    [.2, .5, .8, 1.1].forEach(function (d, i) { A.kit6.cone(g, rw - .3, rh - .3 - d * 1.6, .13, 0, 40 - i * 3, '#2E6A3A'); });
+  };
+  LM.fit_big = function (A, g, rw, rh, p) {   // vườn nho
+    g.box(.05, .05, rw - .1, rh - .1, 0, 3, '#B8D880'); var j, i; for (j = 0; j < 3; j++) { for (i = 0; i < 6; i++) { var q = g.P(.3 + i * (rw - .6) / 5, .35 + j * .5, 6); g.cyl(.3 + i * (rw - .6) / 5, .35 + j * .5, .02, 3, 12, '#8A5A2E'); g.ell(q[0], q[1] - 4, 5, 3.6, i % 2 ? '#5A9A3A' : '#7AB24A'); g.ell(q[0] + 2, q[1] - 1, 1.8, 1.8, '#8A3A9A'); } }
+  };
+  LM.fin_house = function (A, g, rw, rh, p) {   // nhà đất làng quê: 2 nhà tròn mái tranh + tường sân
+    [[.9, .9, .5], [rw - .9, rh - .9, .55]].forEach(function (q) { g.cyl(q[0], q[1], q[2], 0, 18, '#D9A070'); A.kit6.cone(g, q[0], q[1], q[2] * 1.15, 18, 18 + q[2] * 44, '#C9A55A'); g.box(q[0] - .12, q[1] + q[2] - .02, .24, .04, 0, 12, '#5A3A1E'); });
+    g.box(.2, rh - .45, rw * .5, .1, 0, 8, '#C98A5A'); g.box(rw - .5, .2, .1, rh * .5, 0, 8, '#C98A5A');
+  };
+  LM.fin_big = function (A, g, rw, rh, p) {   // cánh đồng lúa mì + giếng
+    g.box(.05, .05, rw - .1, rh - .1, 0, 3, '#E8C75A'); var j, i; for (j = 0; j < 4; j++) for (i = 0; i < 8; i++) { var q = g.P(.2 + i * (rw - .5) / 7, .25 + j * (rh - .5) / 3, 4); g.cyl(.2 + i * (rw - .5) / 7, .25 + j * (rh - .5) / 3, .02, 3, 14, '#C98A1A'); g.ell(q[0], q[1] - 11, 1.8, 3.2, '#F2C94C'); }
+    g.cyl(rw - .35, .35, .22, 0, 10, '#B8B0A0'); g.cyl(rw - .35, .35, .15, 10, 11, '#6FB8D8');
+  };
+  LM.fth_house = function (A, g, rw, rh, p) {   // nhà sàn Thái trên nước
+    water(g, rw, rh, '#5BA8D8', .05); var i; for (i = 0; i < 4; i++) g.cyl(.8 + (i % 2) * (rw - 1.6), .8 + Math.floor(i / 2) * (rh - 1.6), .05, 0, 24, '#6A4A2A');
+    B(A, g, .7, .7, rw - 1.4, rh - 1.4, 24, 44, '#C9A06A', 2, 1); g.gable(.58, .58, rw - 1.16, rh - 1.16, 44, 66, true, '#8A5A2E', { wall: '#C9A06A', over: .16 }); g.box(.6, rh - .55, rw - 1.2, .16, 20, 23, '#6A4A2A');
+    var m = g.P(rw - .45, rh - .4, 4); g.ell(m[0], m[1], 10, 3, '#C9503C');
+  };
+  LM.fth_big = function (A, g, rw, rh, p) {   // chợ nổi: 2 thuyền mui chất trái cây
+    water(g, rw, rh, '#5BC6E8', .05); [[.7, .7, '#E5334B'], [1.3, 1.3, '#F2C94C']].forEach(function (q) { var m = g.P(q[0], q[1], 4); g.ell(m[0], m[1], 24, 7, '#8A5A2E'); g.ell(m[0], m[1] - 2, 22, 6, '#C9503C'); g.poly([[m[0] - 14, m[1] - 4], [m[0], m[1] - 20], [m[0] + 14, m[1] - 4]], q[2], 'rgba(0,0,0,.3)'); [-10, 0, 10].forEach(function (d, i) { g.ell(m[0] + d, m[1] - 4, 3, 3, ['#F2842E', '#F2D84A', '#E5334B'][i]); }); });
+  };
+
   // màu mặc định khi tạo sprite (không quan trọng với kiểu tự chọn màu)
   Object.keys(LM).forEach(function (k) { COL[k] = ['#E8DCC0', '#B8402F']; });
   root.EWTGardenLM = { LM: LM, COL: COL };

@@ -3,7 +3,7 @@
    Hình sprite được tạo 1 lần mỗi (kiểu, màu, kích thước) rồi dùng lại dưới dạng ảnh; đặt thẳng đứng (billboard) tại tâm chân công trình. */
 (function (root) {
   'use strict';
-  var SCRIPTS = ['js/city-art.js?v=11', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1', 'js/garden-lm.js?v=3'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
+  var SCRIPTS = ['js/city-art.js?v=11', 'js/city-art3.js?v=3', 'js/city-art6.js?v=3', 'js/city-art7.js?v=2', 'js/city-art8.js?v=2', 'js/city-art9.js?v=1', 'js/garden-lm.js?v=4'], loading = null, okay = false, urlC = {}, PROJ = null, K = 1 / 32;   // nhìn thẳng mặt trước, mặt trên lùi thẳng lên (chiều sâu 20px/ô ≈ độ nén mặt đất) — gần như không có mặt hông nên không xéo/méo và không tràn sang ô bên cạnh
   function load() {
     if (loading) return loading;
     loading = SCRIPTS.reduce(function (p, src) { return p.then(function () { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); }); }, Promise.resolve())
