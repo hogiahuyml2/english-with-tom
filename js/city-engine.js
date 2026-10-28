@@ -62,6 +62,44 @@
   /* ───── nền: Path2D dựng sẵn mỗi hướng ───── */
   function dia(path, r, x, y) { var q = rotRect(r, x, y, 1, 1), X = q.rx, Y = q.ry, a = [(X - Y) * HW, (X + Y) * HH], b = [(X + 1 - Y) * HW, (X + 1 + Y) * HH], c = [(X + 1 - Y - 1) * HW, (X + 1 + Y + 1) * HH], d = [(X - Y - 1) * HW, (X + Y + 1) * HH]; path.moveTo(a[0], a[1]); path.lineTo(b[0], b[1]); path.lineTo(c[0], c[1]); path.lineTo(d[0], d[1]); path.closePath(); }
   function quadW(path, r, pts) { var i, s; for (i = 0; i < pts.length; i++) { s = scr(r, pts[i][0], pts[i][1]); if (i) path.lineTo(s[0], s[1]); else path.moveTo(s[0], s[1]); } path.closePath(); }
+  /* ───── MẶT ĐẤT RIÊNG CHO TỪNG QUẬN / KHỐI ĐẤT: mỗi loại khối (nhà ở, thương mại, công viên, nông trại…) và mỗi quận (bãi biển, tuyết, sa mạc, phố Hoa, phố Nhật…) có màu & hoạ tiết nền riêng ───── */
+  var GS = {   // [màu nền, độ phủ, hoạ tiết]
+    lawn: ['#7FCB5A', .3, 'flowers'], meadow: ['#5FB85A', .5, 'tufts'], plaza: ['#C3CCD6', .86, 'tiles'], service: ['#E8DCC0', .7, 'tiles'], cobble: ['#E2B88A', .8, 'cobble'], sand: ['#F0D9A0', .94, 'dunes'],
+    farm: ['#B8935A', .82, 'rows'], turf: ['#5DBB4E', .72, 'mow'], tarmac: ['#8A94A0', .92, 'lane'], concrete: ['#B8B2A6', .9, 'cracks'], confetti: ['#FFD6E6', .68, 'dots'], campus: ['#D7CDF2', .62, 'tufts'],
+    tech: ['#B8D4EE', .88, 'grid'], moss: ['#4E9A5A', .58, 'tufts'], regolith: ['#9AA0AE', .92, 'craters'], snow: ['#F4F8FC', .95, 'flakes'], desert: ['#EBC77A', .93, 'dunes'], boardwalk: ['#B58A5A', .93, 'planks'],
+    redtile: ['#D96A55', .8, 'tiles2'], zen: ['#E8E2D0', .93, 'rake'], paddy: ['#7FC85A', .8, 'rows2'], goldtile: ['#E8C76A', .84, 'tiles'], terrace: ['#6FBF5A', .74, 'rows'], greycobble: ['#A8ADB4', .88, 'cobble'],
+    asphalt: ['#6E7480', .88, 'lane'], ochre: ['#D98A55', .9, 'dunes'], sandstone: ['#D9B98A', .88, 'cobble'], teal: ['#7FD0B8', .55, 'ripples'], floral: ['#B8E69A', .58, 'flowers'], pastel: ['#F6D6E6', .58, 'dots'], alpine: ['#9CC9A0', .62, 'tufts']
+  };
+  var DST = ['lawn', 'plaza', 'concrete', 'confetti', 'campus', 'cobble', 'sand', 'alpine', 'farm', 'tarmac', 'meadow', 'turf', 'tech', 'teal', 'sandstone', 'moss', 'regolith', 'pastel', 'floral', 'snow', 'boardwalk', 'desert', 'redtile', 'zen', 'paddy', 'goldtile', 'terrace', 'greycobble', 'asphalt', 'ochre', 'sand', 'sand'];
+  var THEMED = { 6: 1, 9: 1, 13: 1, 14: 1, 16: 1, 19: 1, 20: 1, 21: 1, 22: 1, 23: 1, 24: 1, 25: 1, 26: 1, 27: 1, 28: 1, 29: 1, 30: 1, 31: 1 };   // quận có chủ đề mạnh: giữ một kiểu nền cho cả quận
+  var ZST = { c: 'plaza', s: 'service', p: 'meadow', f: 'confetti', e: 'campus', i: 'concrete', h: 'concrete', w: 'cobble', b: 'sand', m: 'alpine', a: 'farm', t: 'tarmac', g: 'turf' };
+  function styleAt(i) {
+    var d = C.DIST[i]; if (d === 255) return null; var base = DST[d] || 'lawn'; if (THEMED[d]) return base;
+    var z = C.ZONE[i] ? ZST[String.fromCharCode(C.ZONE[i])] : null; return z || base;
+  }
+  var FLW = ['#FFFFFF', '#FFE066', '#FF9EC4', '#C4A8FF'], CONF = ['#FF6B9A', '#FFD84A', '#5BC6F2', '#8FDB6A', '#B48CFF'];
+  var ACC = {   // chi tiết nhỏ trên từng ô đất (chỉ vẽ khi đủ gần): (ctx, sx, sy, x, y, t)
+    flowers: function (c, X, Y, x, y) { var h = C.hash(x, y, 51); if (h < .45) return; c.fillStyle = FLW[Math.floor(h * 9) % 4]; c.fillRect(X - 12 + h * 20, Y - 4 + C.hash(x, y, 52) * 8, 1.8, 1.8); c.fillStyle = FLW[Math.floor(h * 7) % 4]; c.fillRect(X + 6 - h * 14, Y + 1 + C.hash(x, y, 53) * 5, 1.6, 1.6); },
+    tufts: function (c, X, Y, x, y) { var h = C.hash(x, y, 54); if (h < .35) return; c.strokeStyle = 'rgba(30,100,45,.5)'; c.lineWidth = .9; c.beginPath(); var px = X - 10 + h * 18, py = Y - 3 + C.hash(x, y, 55) * 7; c.moveTo(px - 2, py); c.lineTo(px, py - 3); c.lineTo(px + 2, py); c.moveTo(px + 3, py + 1); c.lineTo(px + 4.5, py - 2); c.stroke(); },
+    tiles: function (c, X, Y) { c.strokeStyle = 'rgba(255,255,255,.4)'; c.lineWidth = .8; c.beginPath(); c.moveTo(X - 20, Y); c.lineTo(X, Y - 10); c.lineTo(X + 20, Y); c.lineTo(X, Y + 10); c.closePath(); c.stroke(); },
+    tiles2: function (c, X, Y) { c.strokeStyle = 'rgba(255,214,90,.6)'; c.lineWidth = .9; c.beginPath(); c.moveTo(X - 18, Y); c.lineTo(X, Y - 9); c.lineTo(X + 18, Y); c.lineTo(X, Y + 9); c.closePath(); c.stroke(); c.fillStyle = 'rgba(255,214,90,.7)'; c.fillRect(X - 1, Y - 1, 2, 2); },
+    cobble: function (c, X, Y, x, y) { c.fillStyle = 'rgba(70,50,30,.22)'; var h = C.hash(x, y, 56); c.beginPath(); c.ellipse(X - 9 + h * 4, Y - 2, 4, 2, 0, 0, TAU); c.ellipse(X + 6, Y + 3 - h * 3, 4.4, 2, 0, 0, TAU); c.ellipse(X - 2, Y + 5, 3.4, 1.7, 0, 0, TAU); c.fill(); },
+    dunes: function (c, X, Y, x, y) { var h = C.hash(x, y, 57); if (h < .3) return; c.strokeStyle = h > .65 ? 'rgba(255,246,210,.7)' : 'rgba(176,134,70,.42)'; c.lineWidth = 1; c.beginPath(); c.moveTo(X - 11, Y + 1); c.quadraticCurveTo(X - 3, Y - 4, X + 5, Y + 1); c.stroke(); if (h > .85) { c.fillStyle = 'rgba(255,255,255,.65)'; c.fillRect(X + 8, Y - 3, 2, 1.4); } },
+    rows: function (c, X, Y) { c.strokeStyle = 'rgba(60,110,30,.6)'; c.lineWidth = 1.1; c.beginPath(); var k; for (k = -1; k <= 1; k++) { c.moveTo(X - 14 + k * 5, Y - 7 + k * 2.5 + 4); c.lineTo(X + 14 + k * 5 - 28 * 0, Y + 7 + k * 2.5 + 4 - 14); } c.stroke(); },
+    rows2: function (c, X, Y) { c.strokeStyle = 'rgba(120,195,235,.55)'; c.lineWidth = 1.3; c.beginPath(); var k; for (k = -1; k <= 1; k++) { c.moveTo(X - 15 + k * 5, Y - 6 + k * 2.5); c.lineTo(X + 13 + k * 5, Y + 8 + k * 2.5 - 14); } c.stroke(); c.fillStyle = 'rgba(50,120,40,.7)'; c.fillRect(X - 6, Y - 2, 1.6, 3); c.fillRect(X + 5, Y + 1, 1.6, 3); },
+    mow: function (c, X, Y, x, y) { if (x & 1) { c.fillStyle = 'rgba(255,255,255,.14)'; c.beginPath(); c.moveTo(X - 32, Y); c.lineTo(X, Y - 16); c.lineTo(X + 32, Y); c.lineTo(X, Y + 16); c.closePath(); c.fill(); } },
+    lane: function (c, X, Y, x, y) { if ((x + y) % 3) return; c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1.2; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(X - 12, Y - 5); c.lineTo(X + 12, Y + 5); c.stroke(); c.setLineDash([]); },
+    cracks: function (c, X, Y, x, y) { var h = C.hash(x, y, 58); if (h < .55) return; c.strokeStyle = 'rgba(60,60,60,.3)'; c.lineWidth = .8; c.beginPath(); c.moveTo(X - 8 + h * 6, Y - 4); c.lineTo(X - 2, Y); c.lineTo(X + 3, Y - 2); c.lineTo(X + 8, Y + 3); c.stroke(); },
+    dots: function (c, X, Y, x, y) { var h = C.hash(x, y, 59), k; for (k = 0; k < 3; k++) { c.fillStyle = CONF[Math.floor(C.hash(x, y, 60 + k) * 5)]; c.fillRect(X - 14 + C.hash(x, y, 63 + k) * 26, Y - 6 + C.hash(x, y, 66 + k) * 12, 2.2, 2.2); } },
+    grid: function (c, X, Y) { c.strokeStyle = 'rgba(70,120,180,.38)'; c.lineWidth = .8; c.beginPath(); c.moveTo(X - 24, Y); c.lineTo(X, Y - 12); c.lineTo(X + 24, Y); c.stroke(); c.fillStyle = 'rgba(255,255,255,.8)'; c.fillRect(X - 1, Y - 1, 2, 2); },
+    craters: function (c, X, Y, x, y) { var h = C.hash(x, y, 70); if (h < .72) return; c.strokeStyle = 'rgba(60,64,80,.42)'; c.lineWidth = 1; c.beginPath(); c.ellipse(X - 4 + h * 6, Y, 6 + h * 4, 3 + h * 2, 0, 0, TAU); c.stroke(); c.fillStyle = 'rgba(60,64,80,.12)'; c.fill(); },
+    flakes: function (c, X, Y, x, y) { var h = C.hash(x, y, 71); if (h < .45) return; c.fillStyle = 'rgba(255,255,255,.95)'; c.fillRect(X - 10 + h * 16, Y - 3, 1.8, 1.8); c.fillStyle = 'rgba(170,205,235,.7)'; c.fillRect(X + 4, Y + 3 - h * 4, 1.6, 1.6); },
+    planks: function (c, X, Y) { c.strokeStyle = 'rgba(90,58,28,.42)'; c.lineWidth = 1; c.beginPath(); var k; for (k = -1; k <= 1; k++) { c.moveTo(X - 10 + k * 6, Y + 5 + k * 3 - 6); c.lineTo(X + 10 + k * 6 - 20, Y - 5 + k * 3 + 6 - 6); } c.stroke(); },
+    rake: function (c, X, Y) { c.strokeStyle = 'rgba(150,140,110,.5)'; c.lineWidth = .9; c.beginPath(); c.arc(X, Y, 8, 0, Math.PI); c.stroke(); c.strokeStyle = 'rgba(255,255,255,.6)'; c.beginPath(); c.arc(X, Y, 4.5, 0, Math.PI); c.stroke(); },
+    ripples: function (c, X, Y, x, y) { var h = C.hash(x, y, 72); if (h < .4) return; c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = .9; c.beginPath(); c.moveTo(X - 9, Y); c.quadraticCurveTo(X - 4, Y - 3, X, Y); c.quadraticCurveTo(X + 4, Y + 3, X + 9, Y); c.stroke(); }
+  };
+  var BEACH = C.BEACHD || {};
+
   /* ───── nền: chia thành các mảnh (chunk) 24×24 ô, dựng Path2D theo từng hướng xoay, chỉ vẽ mảnh đang nhìn thấy ───── */
   var CHK = 24;
   // gộp các ô liên tiếp trên một hàng thành một dải (ít đường vẽ hơn nhiều)
@@ -72,7 +110,7 @@
   P.chunk = function (cx, cy) {
     var E = this, r = E.rot, key = 'c' + r + ':' + cx + ':' + cy; if (E.gcache[key]) return E.gcache[key];
     var x0 = cx * CHK, y0 = cy * CHK, x1 = Math.min(W, x0 + CHK), y1 = Math.min(H, y0 + CHK), x, y, i, T = C.TERR, R = C.ROAD;
-    var g = { land: new Path2D(), sand: new Path2D(), rock: new Path2D(), snow: new Path2D(), forest: new Path2D(), tarmac: new Path2D(), check: new Path2D(), road: new Path2D(), walk: new Path2D(), dash: new Path2D(), rail: new Path2D(), wavesT: [], sandDots: [] };
+    var g = { land: new Path2D(), sand: new Path2D(), rock: new Path2D(), snow: new Path2D(), forest: new Path2D(), tarmac: new Path2D(), check: new Path2D(), road: new Path2D(), walk: new Path2D(), dash: new Path2D(), rail: new Path2D(), wavesT: [], sandDots: [], gnd: {}, acc: [], shallow: new Path2D(), wet: new Path2D(), foam: new Path2D() };
     var isRd = function (a, b) { return E.isRoad(a, b); }, snowy = function (x, y) { return y < 6 + 2.5 * Math.sin(x * .37) + (C.hash(x, y, 11) * 2.5); };
     runs(g.land, r, x0, y0, x1, y1, function (x, y) { return T[y * W + x] !== 1; });
     runs(g.sand, r, x0, y0, x1, y1, function (x, y) { return T[y * W + x] === 2; });
@@ -86,9 +124,26 @@
     for (x = x0; x < x1; x++) { a = -1; for (y = y0; y <= y1; y++) { var rd2 = y < y1 && isRd(x, y) && !inRun[(y - y0) * CHK + (x - x0)]; if (rd2 && a < 0) a = y; if (!rd2 && a >= 0) { quadW(g.road, r, [[x, a], [x + 1, a], [x + 1, y], [x, y]]); a = -1; } } }
     for (y = y0; y < y1; y++) for (x = x0; x < x1; x++) {
       i = y * W + x; var t = T[i], road = isRd(x, y);
-      if (t === 1) { if ((x * 7 + y * 3) % 5 === 0) g.wavesT.push([x, y]); }
-      else if (t === 2) { if ((x + y) % 3 === 0) g.sandDots.push([x, y]); }
-      else if (t === 0 && !road && (x + y) % 2 === 0) dia(g.check, r, x, y);
+      if (t === 1) {
+        if ((x * 7 + y * 3) % 5 === 0) g.wavesT.push([x, y]);
+        var sh = false, a1, b1; for (b1 = -2; b1 <= 2 && !sh; b1++) for (a1 = -2; a1 <= 2; a1++) { var xx = x + a1, yy = y + b1; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue; var jj = yy * W + xx; if (T[jj] === 2 && BEACH[C.DIST[jj]]) { sh = true; break; } }
+        if (sh) dia(g.shallow, r, x, y);   // nước nông trong xanh ngay sát bãi biển
+      }
+      else if (t === 2) {
+        if ((x + y) % 3 === 0) g.sandDots.push([x, y]);
+        if (BEACH[C.DIST[i]]) {   // cát ướt + bọt sóng dọc mép nước
+          var wE = x + 1 < W && T[i + 1] === 1, wW = x > 0 && T[i - 1] === 1, wS = y + 1 < H && T[i + W] === 1, wN = y > 0 && T[i - W] === 1;
+          if (wE || wW || wS || wN) {
+            dia(g.wet, r, x, y);
+            var seg = function (x0, y0, x1, y1) { var p0 = scr(r, x0, y0), p1 = scr(r, x1, y1); g.foam.moveTo(p0[0], p0[1]); g.foam.lineTo(p1[0], p1[1]); };
+            if (wE) seg(x + 1, y, x + 1, y + 1); if (wW) seg(x, y, x, y + 1); if (wS) seg(x, y + 1, x + 1, y + 1); if (wN) seg(x, y, x + 1, y);
+          }
+        }
+      }
+      else if (t === 0 && !road) {
+        if ((x + y) % 2 === 0) dia(g.check, r, x, y);
+        var sid = styleAt(i); if (sid) { (g.gnd[sid] || (g.gnd[sid] = new Path2D())); dia(g.gnd[sid], r, x, y); g.acc.push([x, y, sid]); }
+      }
       if (road) {
         var nE = isRd(x + 1, y), nW = isRd(x - 1, y), nS = isRd(x, y + 1), nN = isRd(x, y - 1), br = R[i] === 2;
         var e = .11, edge = function (dx, dy) { return dx ? [[x + (dx > 0 ? 1 - e : 0), y], [x + (dx > 0 ? 1 : e), y], [x + (dx > 0 ? 1 : e), y + 1], [x + (dx > 0 ? 1 - e : 0), y + 1]] : [[x, y + (dy > 0 ? 1 - e : 0)], [x + 1, y + (dy > 0 ? 1 - e : 0)], [x + 1, y + (dy > 0 ? 1 : e)], [x, y + (dy > 0 ? 1 : e)]]; };
@@ -428,12 +483,18 @@
     // đất liền, cát, núi, rừng, đường băng
     ctx.fillStyle = '#92D56A'; chs.forEach(function (c) { ctx.fill(c.land); });
     if (z >= .5) { ctx.fillStyle = 'rgba(70,140,50,.12)'; chs.forEach(function (c) { ctx.fill(c.check); }); }
+    Object.keys(GS).forEach(function (sid) { var gs = GS[sid]; ctx.globalAlpha = gs[1]; ctx.fillStyle = gs[0]; chs.forEach(function (c) { if (c.gnd[sid]) ctx.fill(c.gnd[sid]); }); }); ctx.globalAlpha = 1;   // mặt đất riêng từng khối/quận
     ctx.fillStyle = '#6FBF5A'; chs.forEach(function (c) { ctx.fill(c.forest); });
     ctx.fillStyle = '#8F98A6'; chs.forEach(function (c) { ctx.fill(c.rock); });
     ctx.fillStyle = '#F2F6FC'; chs.forEach(function (c) { ctx.fill(c.snow); });
+    ctx.fillStyle = 'rgba(112,224,226,.58)'; chs.forEach(function (c) { ctx.fill(c.shallow); });   // vùng nước nông xanh ngọc ở bãi biển
     ctx.fillStyle = '#F3E0AE'; chs.forEach(function (c) { ctx.fill(c.sand); });
+    ctx.fillStyle = 'rgba(205,170,108,.55)'; chs.forEach(function (c) { ctx.fill(c.wet); });   // cát ướt sát mép nước
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.setLineDash([8, 6]); ctx.lineDashOffset = -((E.t * 9) % 14); ctx.strokeStyle = 'rgba(255,255,255,.88)'; ctx.lineWidth = Math.max(1.6, 2.4 / Math.max(.6, z)); chs.forEach(function (c) { ctx.stroke(c.foam); });
+    ctx.lineDashOffset = ((E.t * 6) % 14); ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 1.2; chs.forEach(function (c) { ctx.stroke(c.foam); }); ctx.restore();   // bọt sóng nhấp nhô
     ctx.fillStyle = '#6B7280'; chs.forEach(function (c) { ctx.fill(c.tarmac); });
     if (E.fx.shimmer || true) E.drawWaterFx(ctx, chs);
+    if (z >= .55) E.drawAccents(ctx, chs);
     // khu quy hoạch khi đang xây
     if (E.mode === 'place' && E.ghost) {   // ô đất khả dụng PHÁT SÁNG nhịp nhàng để dễ thấy chỗ xây được
       var al = E.allowedPath(), gp = .5 + .5 * Math.sin(E.t * 3.2); ctx.fillStyle = 'rgba(50,235,125,' + (.32 + .24 * gp).toFixed(2) + ')'; ctx.fill(al.ok); ctx.fillStyle = 'rgba(255,200,60,' + (.2 + .14 * gp).toFixed(2) + ')'; ctx.fill(al.near);
@@ -466,6 +527,10 @@
     var t = this.t, i; ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = 1.4; ctx.beginPath(); var cx = scr(this.rot, W / 2, H / 2);
     for (i = 0; i < 90; i++) { var a = i * 2.399, rr = 1500 + (i % 9) * 420, x = cx[0] + Math.cos(a) * rr * 1.3, y = cx[1] + Math.sin(a) * rr * .72, w = 26 + (i % 5) * 8, o = Math.sin(t * .8 + i) * 6; ctx.moveTo(x - w + o, y); ctx.quadraticCurveTo(x + o, y - 4, x + w + o, y); }
     ctx.stroke();
+  };
+  P.drawAccents = function (ctx, chs) {
+    var E = this, vis = E.visBox(), step = E.cam.z < .85 ? 2 : 1;
+    ctx.save(); chs.forEach(function (c) { var a = c.acc, n = a.length, k, q, s2, fn; for (k = 0; k < n; k++) { q = a[k]; if (step > 1 && ((q[0] + q[1]) & 1)) continue; s2 = scr(E.rot, q[0] + .5, q[1] + .5); if (s2[0] < vis[0] - 40 || s2[0] > vis[2] + 40 || s2[1] < vis[1] - 30 || s2[1] > vis[3] + 30) continue; fn = ACC[GS[q[2]][2]]; if (fn) fn(ctx, s2[0], s2[1], q[0], q[1]); } }); ctx.restore();
   };
   P.drawWaterFx = function (ctx, chs) {
     var t = this.t, i, w, vis = this.visBox(), z = this.cam.z, step = z < .35 ? 4 : z < .6 ? 2 : 1; ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1.2; ctx.beginPath();
@@ -524,7 +589,7 @@
     items.sort(function (a, b) { return a.d - b.d; }); E.stCache = { a: list, b: F, c: sc, items: items }; return items;
   };
   // cảnh quan nhỏ bị bỏ khi thu nhỏ bản đồ (không nhìn thấy gì mà vẫn tốn công vẽ)
-  var TINY = { lamp: 1, buoy: 1, umbrella: 1, lounger: 1, rock: 1 };
+  var TINY = { lamp: 1, buoy: 1, umbrella: 1, lounger: 1, rock: 1, shell: 1, starfish: 1, crab: 1, towel: 1, seagrass: 1, driftwood: 1, beachball: 1 };
   P.drawObjects = function (ctx, now, night) {
     var E = this, list = E.sortedBuildings(), vis = E.visBox(), items = [], i, e, en = E.entities, t = E.t, z = E.cam.z, st = E.staticItems(list, E.fixedList(), E.sceneryList()), dyn = [];
     var skipTiny = z < .38, onlyBig = z < .2;
@@ -584,6 +649,22 @@
         ctx.fillStyle = 'rgba(70,90,120,.25)'; ctx.beginPath(); ctx.moveTo(x - 4 * s, y - hh); ctx.lineTo(x + 15 * s, y - hh * .62); ctx.lineTo(x + 9 * s, y - hh * .66); ctx.closePath(); ctx.fill(); break;
       case 'umbrella': var uc = ['#E9573F', '#F2C21B', '#4F80BA', '#2E9E7F', '#FF7AA8'][e.c % 5]; ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 9, 3, 0, 0, TAU); ctx.fill(); ctx.strokeStyle = '#E8E4D8'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x, y + 1); ctx.lineTo(x, y - 17); ctx.stroke(); ctx.fillStyle = uc; ctx.beginPath(); ctx.moveTo(x - 11, y - 14); ctx.quadraticCurveTo(x, y - 27, x + 11, y - 14); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(x - 3, y - 14); ctx.quadraticCurveTo(x, y - 24, x + 3, y - 14); ctx.closePath(); ctx.fill(); break;
       case 'lounger': ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 9, 3, 0, 0, TAU); ctx.fill(); ctx.fillStyle = ['#fff', '#FFE08A', '#9FD8F5'][e.c % 3]; ctx.strokeStyle = 'rgba(40,40,60,.5)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(x - 8, y - 1); ctx.lineTo(x + 3, y - 3); ctx.lineTo(x + 8, y - 8); ctx.lineTo(x + 8, y - 5); ctx.lineTo(x + 4, y + 1); ctx.lineTo(x - 8, y + 2); ctx.closePath(); ctx.fill(); ctx.stroke(); break;
+      case 'seagrass': ctx.strokeStyle = '#4F9A5A'; ctx.lineWidth = 1.3; ctx.beginPath(); for (k = -1; k <= 1; k++) { ctx.moveTo(x + k * 2.4, y + 1); ctx.quadraticCurveTo(x + k * 3 + Math.sin(t * 1.6 + k + e.k) * 1.4, y - 5, x + k * 4, y - 9 + Math.abs(k)); } ctx.stroke(); break;
+      case 'shell': ctx.fillStyle = ['#FFD0DC', '#FFF3E0', '#F6C9A0', '#E8D0F0', '#FFE8A8'][e.c % 5]; ctx.strokeStyle = 'rgba(120,80,60,.55)'; ctx.lineWidth = .6; ctx.beginPath(); ctx.ellipse(x, y - 1, 3.4, 2.4, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - 2, y); ctx.lineTo(x, y - 3); ctx.lineTo(x + 2, y); ctx.stroke(); break;
+      case 'starfish': ctx.fillStyle = ['#F2842E', '#E9573F', '#FFB347', '#FF7AA8', '#F2C21B'][e.c % 5]; ctx.beginPath(); for (k = 0; k < 10; k++) { var sr = k % 2 ? 1.9 : 4.4, sa = k * .628 - 1.57; ctx[k ? 'lineTo' : 'moveTo'](x + Math.cos(sa) * sr * 1.3, y - 1 + Math.sin(sa) * sr * .7); } ctx.closePath(); ctx.fill(); break;
+      case 'crab': var cx0 = x + Math.sin(t * .7 + e.k) * 3; ctx.fillStyle = '#E8543F'; ctx.strokeStyle = '#B83A2A'; ctx.lineWidth = .8; ctx.beginPath(); for (k = -1; k <= 1; k += 2) { ctx.moveTo(cx0 + k * 3, y - 1); ctx.lineTo(cx0 + k * 7, y + 1); ctx.moveTo(cx0 + k * 3, y); ctx.lineTo(cx0 + k * 6, y + 3); } ctx.stroke(); ctx.beginPath(); ctx.ellipse(cx0, y - 1.5, 4, 2.6, 0, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.arc(cx0 - 6, y - 5 + Math.sin(t * 3 + e.k), 1.8, 0, TAU); ctx.arc(cx0 + 6, y - 5 - Math.sin(t * 3 + e.k), 1.8, 0, TAU); ctx.fill(); ctx.fillStyle = '#222'; ctx.fillRect(cx0 - 2, y - 5, 1, 1.6); ctx.fillRect(cx0 + 1, y - 5, 1, 1.6); break;
+      case 'towel': ctx.fillStyle = ['#E9573F', '#4F9ED8', '#F2C21B', '#2E9E7F', '#FF7AA8'][e.c % 5]; ctx.beginPath(); ctx.moveTo(x - 9, y); ctx.lineTo(x - 1, y - 4); ctx.lineTo(x + 9, y); ctx.lineTo(x + 1, y + 4); ctx.closePath(); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x - 5, y + 1.6); ctx.lineTo(x + 3, y - 2.4); ctx.moveTo(x - 2, y + 2.8); ctx.lineTo(x + 6, y - 1.2); ctx.stroke(); break;
+      case 'sandcastle': ctx.fillStyle = 'rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 12, 4, 0, 0, TAU); ctx.fill();
+        [[-6, 7, '#E8C788'], [0, 10, '#EBCD93'], [6, 6, '#E2BC7C']].forEach(function (a) { ctx.fillStyle = a[2]; ctx.beginPath(); ctx.moveTo(x + a[0] - 4, y + 1); ctx.lineTo(x + a[0] - 3, y - a[1]); ctx.lineTo(x + a[0] + 3, y - a[1]); ctx.lineTo(x + a[0] + 4, y + 1); ctx.closePath(); ctx.fill(); ctx.fillStyle = 'rgba(160,120,60,.45)'; ctx.fillRect(x + a[0] - 3, y - a[1], 6, 1.4); });
+        ctx.strokeStyle = '#8A5A33'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y - 10); ctx.lineTo(x, y - 17); ctx.stroke(); ctx.fillStyle = ['#E9573F', '#4F9ED8', '#F2C21B', '#2E9E7F', '#FF7AA8'][e.c % 5]; ctx.beginPath(); ctx.moveTo(x, y - 17); ctx.lineTo(x + 6, y - 15); ctx.lineTo(x, y - 13); ctx.closePath(); ctx.fill(); break;
+      case 'volley': ctx.fillStyle = 'rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 15, 4, 0, 0, TAU); ctx.fill(); ctx.strokeStyle = '#6B4A2E'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x - 13, y + 1); ctx.lineTo(x - 13, y - 18); ctx.moveTo(x + 13, y + 1); ctx.lineTo(x + 13, y - 18); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(x - 13, y - 17, 26, 9); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = .7; ctx.beginPath(); for (k = 0; k <= 6; k++) { ctx.moveTo(x - 13 + k * 4.3, y - 17); ctx.lineTo(x - 13 + k * 4.3, y - 8); } for (k = 0; k <= 3; k++) { ctx.moveTo(x - 13, y - 17 + k * 3); ctx.lineTo(x + 13, y - 17 + k * 3); } ctx.stroke(); ctx.fillStyle = '#fff'; ctx.strokeStyle = '#4F80BA'; ctx.beginPath(); ctx.arc(x + 4, y - 22 + Math.abs(Math.sin(t * 2 + e.k)) * -5, 2.8, 0, TAU); ctx.fill(); ctx.stroke(); break;
+      case 'lifeguard': ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 11, 4, 0, 0, TAU); ctx.fill(); ctx.strokeStyle = '#8A5A33'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x - 7, y + 1); ctx.lineTo(x - 5, y - 15); ctx.moveTo(x + 7, y + 1); ctx.lineTo(x + 5, y - 15); ctx.moveTo(x - 6, y - 5); ctx.lineTo(x + 6, y - 5); ctx.stroke();
+        ctx.fillStyle = '#F6F0E0'; ctx.fillRect(x - 8, y - 22, 16, 8); ctx.fillStyle = '#E9573F'; ctx.fillRect(x - 8, y - 20, 16, 2.6); ctx.fillStyle = '#E9573F'; ctx.beginPath(); ctx.moveTo(x - 10, y - 22); ctx.lineTo(x, y - 29); ctx.lineTo(x + 10, y - 22); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#6B4A2E'; ctx.lineWidth = .9; ctx.beginPath(); ctx.moveTo(x + 8, y - 29); ctx.lineTo(x + 8, y - 36); ctx.stroke(); ctx.fillStyle = '#FFD84A'; ctx.beginPath(); ctx.moveTo(x + 8, y - 36); ctx.lineTo(x + 14, y - 34 + Math.sin(t * 4) * .8); ctx.lineTo(x + 8, y - 32); ctx.closePath(); ctx.fill(); break;
+      case 'surfboard': ctx.fillStyle = 'rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 5, 2, 0, 0, TAU); ctx.fill(); ctx.fillStyle = ['#E9573F', '#4F9ED8', '#F2C21B', '#2E9E7F', '#FF7AA8'][e.c % 5]; ctx.beginPath(); ctx.ellipse(x, y - 9, 3.6, 10, .12, 0, TAU); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x - .6, y - 18); ctx.lineTo(x + .6, y); ctx.stroke(); break;
+      case 'driftwood': ctx.fillStyle = '#9A7A56'; ctx.strokeStyle = '#6B4A2E'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(x - 9, y + 1); ctx.lineTo(x - 4, y - 3); ctx.lineTo(x + 8, y - 1); ctx.lineTo(x + 10, y + 2); ctx.lineTo(x, y + 3); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - 2, y - 2); ctx.lineTo(x - 4, y - 6); ctx.stroke(); break;
+      case 'beachball': ctx.fillStyle = 'rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x, y + 2, 4.6, 1.6, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#fff'; ctx.strokeStyle = 'rgba(0,0,0,.3)'; ctx.lineWidth = .6; ctx.beginPath(); ctx.arc(x, y - 3, 4, 0, TAU); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#E9573F'; ctx.beginPath(); ctx.moveTo(x, y - 3); ctx.arc(x, y - 3, 4, -.2, 1.0); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#4F9ED8'; ctx.beginPath(); ctx.moveTo(x, y - 3); ctx.arc(x, y - 3, 4, 2.4, 3.6); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#F2C21B'; ctx.beginPath(); ctx.moveTo(x, y - 3); ctx.arc(x, y - 3, 4, 4.4, 5.6); ctx.closePath(); ctx.fill(); break;
       case 'buoy': var bb = Math.sin(t * 1.8 + e.k) * 1.6; ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.beginPath(); ctx.ellipse(x, y + 3, 8, 3, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#E9573F'; ctx.beginPath(); ctx.ellipse(x, y - 3 + bb, 4.6, 6, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillRect(x - 4.6, y - 5 + bb, 9.2, 2.4); ctx.fillStyle = '#FFD84A'; ctx.beginPath(); ctx.arc(x, y - 10 + bb, 1.6, 0, TAU); ctx.fill(); break;
     }
   };

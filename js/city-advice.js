@@ -131,7 +131,7 @@
   };
 
   // quận mới dùng chung gợi ý với quận mẫu: Công nghệ ← Trung tâm · Hồ ← Giải trí · Phố cổ ← Phố quốc tế · Làng xanh ← Nông trại · Cảng vũ trụ ← Thể thao
-  R[12] = R[1]; R[13] = R[3]; R[14] = R[5]; R[15] = R[8]; R[16] = R[11]; R[17] = R[1]; R[18] = R[10]; R[19] = R[7]; R[20] = R[2]; R[21] = R[5]; R[22] = R[5]; R[23] = R[5]; R[24] = R[5]; R[25] = R[5]; R[26] = R[5]; R[27] = R[5]; R[28] = R[1]; R[29] = R[6];
+  R[12] = R[1]; R[13] = R[3]; R[14] = R[5]; R[15] = R[8]; R[16] = R[11]; R[17] = R[1]; R[18] = R[10]; R[19] = R[7]; R[20] = R[2]; R[21] = R[5]; R[22] = R[5]; R[23] = R[5]; R[24] = R[5]; R[25] = R[5]; R[26] = R[5]; R[27] = R[5]; R[28] = R[1]; R[29] = R[6]; R[30] = R[6]; R[31] = R[6];
 
   function analyze(C, S, role) {
     var W = C.W, lvl = S.stats.level, ch = S.chapters || [], evs = S.ev || [];

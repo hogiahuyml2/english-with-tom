@@ -215,7 +215,7 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=21"></script>
+<script src="js/city-data.js?v=23"></script>
 <script src="js/city-learn.js?v=1"></script>
 <script src="js/city-ambient.js?v=1"></script>
 <script src="js/city-advice.js?v=2b"></script>
@@ -231,8 +231,8 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art9.js?v=1"></script>
 <script src="js/city-art10.js?v=1"></script>
 <script src="js/garden-lm.js?v=4"></script>
-<script src="js/city-art11.js?v=1"></script>
-<script src="js/city-engine.js?v=24"></script>
+<script src="js/city-art11.js?v=2"></script>
+<script src="js/city-engine.js?v=25"></script>
 <script>
 (function () {
 'use strict';
@@ -271,6 +271,8 @@ ENG = new EWTCityEngine($('cv'), $('mm'), {
   onMulti: function () { updateMbar(); },
   onPaint: function (cells) { paintDone(cells); }
 });
+window.__ENG = ENG;   // cho kiểm thử
+
 function applySettings() {
   var f = ENG.fx; f.cars = !!setting.cars; f.people = !!setting.people; f.boats = !!setting.boats; f.sky = !!setting.sky; f.lasers = !!setting.lasers; f.magic = !!setting.magic;
   ENG.weather = setting.weather === 'auto' ? autoWeather() : setting.weather; ENG.hourOverride = setting.time === 'day' ? 12 : setting.time === 'night' ? 23 : null;
@@ -997,7 +999,7 @@ function planQuote() {
 }
 
 /* ───── nhạc nền theo quận (dùng bộ phát nhạc của Garden) ───── */
-var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna', 'cyber', 'ocean', 'palace', 'forest', 'space', 'candy', 'cottage', 'arctic', 'pirate', 'desert', 'china', 'japan', 'vietnam', 'thailand', 'indonesia', 'uk', 'usa', 'australia'], lastScene = '', WATERD = { 6: 1, 10: .8, 13: 1, 20: 1, 24: .6, 29: .7, 15: .4, 9: .3 };
+var DSCENE = ['farm', 'candy', 'pirate', 'funfair', 'palace', 'sakura', 'beach', 'mountain', 'cottage', 'sky', 'river', 'savanna', 'cyber', 'ocean', 'palace', 'forest', 'space', 'candy', 'cottage', 'arctic', 'pirate', 'desert', 'china', 'japan', 'vietnam', 'thailand', 'indonesia', 'uk', 'usa', 'australia', 'beach', 'beach'], lastScene = '', WATERD = { 6: 1, 10: .8, 13: 1, 20: 1, 24: .6, 29: .7, 15: .4, 9: .3, 30: 1, 31: 1 };
 function sndScene() {
   if (window.EWTAmbient && window.EWTSound && ENG && S) { try { var st0 = EWTSound.state(); EWTAmbient.set(st0.on); EWTAmbient.tick({ night: ENG.nightK(), weather: ENG.weather, water: WATERD[sndScene.last || 0] || 0 }); } catch (e) {} }
   if (!window.EWTSound || !ENG || !S) return; var c = ENG.cam, t = ENG.screenToTile(ENG.cw / 2, ENG.ch / 2), x = Math.max(0, Math.min(C.W - 1, t[0])), y = Math.max(0, Math.min(C.H - 1, t[1])), d = C.DIST[y * C.W + x], dd = DSCENE[d] ? d : (sndScene.last || 0); sndScene.last = dd;

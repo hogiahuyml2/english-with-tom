@@ -75,6 +75,11 @@
     g.poly([[x - 3, y - 20], [x - 13, y - 30], [x - 9, y - 16]], 'rgba(244,240,232,.95)', INK); g.poly([[x + 3, y - 20], [x + 13, y - 30], [x + 9, y - 16]], 'rgba(244,240,232,.95)', INK);
   };
 
+  D.coconutstand = function (g, rw, rh, c) {
+    var x = c[0], y = c[1]; sh(g, c, 12); g.poly([[x - 10, y - 1], [x + 10, y - 1], [x + 9, y - 10], [x - 9, y - 10]], '#C9A06A', INK);
+    [[-6, '#6B4A2E'], [0, '#8A5A33'], [6, '#6B4A2E']].forEach(function (n) { g.ell(x + n[0], y - 13, 3.4, 3.4, n[1], INK); });
+    g.line([x - 9, y - 10], [x - 9, y - 26], '#8A5A33', 1.8); g.line([x + 9, y - 10], [x + 9, y - 26], '#8A5A33', 1.8); g.poly([[x - 13, y - 26], [x + 13, y - 26], [x + 9, y - 20], [x - 9, y - 20]], '#E8C86A', INK);
+  };
   var reg = function (key, style, p) { var f = Q[style]; if (!f) return; p = p || {}; p.id = key; def(key, function (g, rw, rh, lv) { f(g, rw, rh, lv || 1, p); }); };
   var R = reg;
   R('pastelrow', 'row', {"cols": ["#F6CBA2", "#C3DCF3", "#F3B9B9", "#D8F0C8"], "roofs": ["#B8708A"], "h": 30});
@@ -174,4 +179,17 @@
   R('littlelibrary', 'deco', {"t": "freelibrary"});
   R('giantlantern', 'deco', {"t": "giantlantern"});
   R('angelstatue', 'deco', {"t": "angelstatue"});
+  R('tikibar', 'stilt', {"wall": "#C9A06A", "roof": "#B8452E"});
+  R('snorkelhut', 'k6_cottage', {"wall": "#BFE6F5", "roof": "#2B8AD0"});
+  R('kayakrental', 'k6_boathouse', {"wall": "#F6E2B8", "roof": "#E9573F", "boat": "#F2C94C"});
+  R('coconutstand', 'deco', {"t": "coconutstand"});
+  R('beachfirepit', 'deco', {"t": "campfire"});
+  R('surfschool', 'k6_cottage', {"wall": "#FFD84A", "roof": "#E9573F"});
+  R('windsurfshop', 'k6_cottage', {"wall": "#E8F4FA", "roof": "#4F9ED8"});
+  R('pierrestaurant', 'k6_boathouse', {"wall": "#F4F6F8", "roof": "#2B8AD0", "boat": "#FFD84A"});
+  R('seashellmuseum', 'k6_domehome', {"wall": "#FFE8D8"});
+  R('beachclub', 'k6_modern', {"wall": "#F4F6F8", "roof": "#2B8AD0", "glass": "#8FD0FF"});
+  R('sandcastlestage', 'k6_castle', {"wall": "#E8C788", "roof": "#D9A441", "flag": "#E9573F"});
+  R('sunsetchalet', 'k6_ranch', {"wall": "#FFE0B8", "roof": "#E9573F", "wall2": "#C98A55"});
+  R('lagoonhotel', 'k6_glasshome', {"glass": "#BFE6F5", "roof": "#2BA8C8"});
 })(typeof window !== 'undefined' ? window : this);

@@ -41,7 +41,10 @@
     { id: 26, key: 'bali', en: 'Bali Quarter', vi: 'Khu phố Indonesia', icon: '🌴', lvl: 46, cost: 60000, auto: 62, rects: [[132, 152, 29, 24]], blurb: 'Đền bậc thang, cổng Bali, nhà joglo và ruộng bậc thang xanh.' },
     { id: 27, key: 'british', en: 'British Quarter', vi: 'Khu phố Anh', icon: '☎️', lvl: 50, cost: 75000, auto: 66, rects: [[4, 180, 29, 24]], blurb: 'Tháp đồng hồ, hộp điện thoại đỏ, xe buýt hai tầng và lâu đài cổ.' },
     { id: 28, key: 'american', en: 'American Quarter', vi: 'Khu phố Mỹ', icon: '🗽', lvl: 54, cost: 90000, auto: 70, rects: [[36, 180, 29, 24]], blurb: 'Nhà chọc trời, quán diner, nhà gạch nâu và tượng Nữ thần Tự do.' },
-    { id: 29, key: 'aussie', en: 'Aussie Quarter', vi: 'Khu phố Úc', icon: '🦘', lvl: 58, cost: 110000, auto: 74, rects: [[68, 180, 29, 24]], blurb: 'Nhà hát vỏ sò, cầu cảng, núi đá đỏ, bãi biển lướt sóng và kangaroo.' }
+    { id: 29, key: 'aussie', en: 'Aussie Quarter', vi: 'Khu phố Úc', icon: '🦘', lvl: 58, cost: 110000, auto: 74, rects: [[68, 180, 29, 24]], blurb: 'Nhà hát vỏ sò, cầu cảng, núi đá đỏ, bãi biển lướt sóng và kangaroo.' },
+    // ── 2 bãi biển mới ở dải đảo cuối (hàng 180–203) ──
+    { id: 30, key: 'cove', en: 'Coral Cove', vi: 'Vịnh San hô', icon: '🐚', lvl: 62, cost: 130000, auto: 78, rects: [[100, 180, 29, 24]], blurb: 'Vịnh cát trắng nước xanh ngọc: rạn san hô, chòi lặn, quán dừa và cầu gỗ ra biển.' },
+    { id: 31, key: 'sunsetbay', en: 'Sunset Bay', vi: 'Bán đảo Hoàng hôn', icon: '🌅', lvl: 66, cost: 150000, auto: 82, rects: [[132, 180, 29, 24]], blurb: 'Bãi cát vàng ngắm hoàng hôn: khu nghỉ dưỡng, sân bóng chuyền, hải đăng và hội lướt sóng.' }
   ];
   var ZONE_NAME = { r: 'Nhà ở', c: 'Thương mại', s: 'Dịch vụ công', p: 'Công viên', f: 'Vui chơi', e: 'Học đường', i: 'Công nghiệp', h: 'Cảng', w: 'Phố quốc tế', b: 'Du lịch biển', m: 'Du lịch núi', a: 'Nông trại', t: 'Giao thông', g: 'Thể thao & Triển lãm' };
   var ZONE_COLOR = { r: '#9BD36B', c: '#8CC8E8', s: '#F2C86B', p: '#6FC98B', f: '#F29BC0', e: '#B7A0E8', i: '#B8B2A6', h: '#7FB4C9', w: '#F0A56B', b: '#FFD36B', m: '#9DB8E8', a: '#C9D96B', t: '#A8B0BC', g: '#FF9A7A' };
@@ -99,7 +102,7 @@
     fillRect(108, 128, 109, 133, 1);                                   // kênh nhỏ trong bến du thuyền
     fillEll(140, 130.5, 4.4, 3.4, 2, 0); fillEll(140, 130.5, 3.2, 2.2, 1); // ao ốc đảo
     // 8 khu phố văn hoá: hai dải đảo ở hàng 152–175 và 180–203 (viền cát bên ngoài, đất bên trong, ao ở khối công viên)
-    [[4, 152],[36, 152],[68, 152],[100, 152],[132, 152],[4, 180],[36, 180],[68, 180]].forEach(function (a) { fillRect(a[0], a[1], a[0] + 28, a[1] + 23, 2); fillRect(a[0] + 2, a[1] + 2, a[0] + 26, a[1] + 21, 0); var cx = [[6, 14, 30], [38, 54, 62], [70, 82, 94], [102, 112, 126], [134, 146, 158]][[4, 36, 68, 100, 132].indexOf(a[0])], px = (cx[1] + cx[2]) / 2 + .5, py = a[1] + 16.5, rr = Math.min(4.5, (cx[2] - cx[1]) / 2 - 1.8); fillEll(px, py, rr + 1, 3.2, 2, 0); fillEll(px, py, rr, 2.2, 1); });
+    [[4, 152],[36, 152],[68, 152],[100, 152],[132, 152],[4, 180],[36, 180],[68, 180],[100, 180],[132, 180]].forEach(function (a) { fillRect(a[0], a[1], a[0] + 28, a[1] + 23, 2); fillRect(a[0] + 2, a[1] + 2, a[0] + 26, a[1] + 21, 0); var cx = [[6, 14, 30], [38, 54, 62], [70, 82, 94], [102, 112, 126], [134, 146, 158]][[4, 36, 68, 100, 132].indexOf(a[0])], px = (cx[1] + cx[2]) / 2 + .5, py = a[1] + 16.5, rr = Math.min(4.5, (cx[2] - cx[1]) / 2 - 1.8); fillEll(px, py, rr + 1, 3.2, 2, 0); fillEll(px, py, rr, 2.2, 1); });
     // thành phố cũ: nguyên bản
     for (y = 0; y < OH; y++) for (x = 0; x < OW; x++) TERR[idx(OX + x, OY + y)] = oldTerr(x, y);
     // cầu dẫn ra đảo: cát hai đầu để đường nối liền
@@ -234,9 +237,9 @@
       gridRoads(q[1], sy2, q[1][0], 126, q[1][2], 145); gridZones(q[0], q[1], sy2, q[2]); link(q[3], q[4], q[3], 125, q[0]);
     });
     // ─── 8 khu phố văn hoá ───
-    [[22, 4, 152, 14, 146], [23, 36, 152, 54, 146], [24, 68, 152, 82, 146], [25, 100, 152, 112, 146], [26, 132, 152, 146, 146], [27, 4, 180, 14, 174], [28, 36, 180, 54, 174], [29, 68, 180, 82, 174]].forEach(function (q) {
+    [[22, 4, 152, 14, 146], [23, 36, 152, 54, 146], [24, 68, 152, 82, 146], [25, 100, 152, 112, 146], [26, 132, 152, 146, 146], [27, 4, 180, 14, 174], [28, 36, 180, 54, 174], [29, 68, 180, 82, 174], [30, 100, 180, 112, 174], [31, 132, 180, 146, 174]].forEach(function (q) {
       var cx = [[6, 14, 30], [38, 54, 62], [70, 82, 94], [102, 112, 126], [134, 146, 158]][[4, 36, 68, 100, 132].indexOf(q[1])], cy = [q[2] + 2, q[2] + 11, q[2] + 21];
-      gridRoads(cx, cy, cx[0], cy[0], cx[2], cy[2]); gridZones(q[0], cx, cy, ['cw', 'rp']); link(q[3], q[4], q[3], q[2] + 1, q[0]);
+      gridRoads(cx, cy, cx[0], cy[0], cx[2], cy[2]); gridZones(q[0], cx, cy, q[0] >= 30 ? ['bb', 'pb'] : ['cw', 'rp']); link(q[3], q[4], q[3], q[2] + 1, q[0]);
     });
     BLOCKS.forEach(function (b) { if (b.d === 18 && b.z === 'p') { var a, c, q; for (c = b.y; c < b.y + b.h; c++) for (a = b.x; a < b.x + b.w; a++) { q = idx(a, c); if (TERR[q] === 0 && !ROAD[q] && hash(a, c, 31) > .55) { TERR[q] = 4; ZONE[q] = 0; } } }
       if (b.d === 19 && b.z === 'm') { var a2, c2, q2, hv; for (c2 = b.y; c2 < b.y + b.h; c2++) for (a2 = b.x; a2 < b.x + b.w; a2++) { q2 = idx(a2, c2); hv = hash(a2, c2, 41); if (TERR[q2] === 0 && !ROAD[q2] && hv > .82) { TERR[q2] = hv > .94 ? 3 : 4; ZONE[q2] = 0; } } } });
@@ -282,7 +285,7 @@
   var FOCC = new Int16Array(W * H).fill(-1); FIXED.forEach(function (f, n) { var a, b; for (b = 0; b < f.h; b++) for (a = 0; a < f.w; a++) if (inW(f.x + a, f.y + b)) FOCC[idx(f.x + a, f.y + b)] = n; });
 
   /* ───── cảnh quan có sẵn: núi, rừng, cọ biển, dù bãi biển, đá, phao, đèn đường… ───── */
-  var PROPS = [], LAMPS = [];
+  var PROPS = [], LAMPS = [], BEACHD = { 6: 1, 20: 1, 29: 1, 30: 1, 31: 1 };
   (function () {
     var x, y, i, t;
     var near = function (x, y, v, r) { var a, b; for (b = -r; b <= r; b++) for (a = -r; a <= r; a++) if (inW(x + a, y + b) && TERR[idx(x + a, y + b)] === v) return true; return false; };
@@ -291,8 +294,23 @@
       if (t === 3) { if (r > .93) PROPS.push({ t: 'peak', x: x, y: y, s: .8 + hash(x, y, 2) * .9 }); else if (r > .75) PROPS.push({ t: 'rock', x: x, y: y, s: .7 + hash(x, y, 6) * .5 }); }
       else if (t === 4) { if (r > .2) PROPS.push({ t: hash(x, y, 7) > .25 ? 'pine' : 'tree', x: x, y: y, s: .8 + hash(x, y, 8) * .5 }); }
       else if (t === 2 && DIST[i] !== 255 && DIST[i] !== 7) {
-        if (r > .84 && (DIST[i] === 6 || DIST[i] === 9 || DIST[i] === 3 || DIST[i] === 5 || DIST[i] === 2 || DIST[i] === 11 || DIST[i] === 13 || DIST[i] === 14 || DIST[i] === 20 || DIST[i] === 21)) PROPS.push({ t: 'palm', x: x, y: y });
-        else if (r > .66 && DIST[i] === 6 && ((x + y) % 3 === 0)) PROPS.push({ t: r > .78 ? 'lounger' : 'umbrella', x: x, y: y, c: Math.floor(hash(x, y, 1) * 5) });
+        if (BEACHD[DIST[i]]) {   // bãi biển thật: nhiều đặc trưng — cọ, dù, ghế, khăn, vỏ sò, sao biển, cua, lâu đài cát, lưới bóng chuyền, chòi cứu hộ, ván lướt, gỗ trôi, bóng biển
+          var r2 = hash(x, y, 12), c5 = Math.floor(hash(x, y, 1) * 5), wet = near(x, y, 1, 1);
+          if (wet) { if (r2 > .86) PROPS.push({ t: 'seagrass', x: x, y: y }); else if (r2 > .8) PROPS.push({ t: 'shell', x: x, y: y, c: c5 }); else if (r2 > .76) PROPS.push({ t: 'starfish', x: x, y: y, c: c5 }); }
+          else if ((x * 5 + y * 3) % 41 === 0) PROPS.push({ t: 'sandcastle', x: x, y: y, c: c5 });
+          else if ((x + y * 2) % 47 === 0) PROPS.push({ t: 'volley', x: x, y: y });
+          else if ((x * 3 + y) % 53 === 0) PROPS.push({ t: 'lifeguard', x: x, y: y });
+          else if ((x * 2 + y * 7) % 43 === 0) PROPS.push({ t: 'surfboard', x: x, y: y, c: c5 });
+          else if (r > .9) PROPS.push({ t: 'palm', x: x, y: y });
+          else if (r > .84 && ((x + y) % 2 === 0)) PROPS.push({ t: 'umbrella', x: x, y: y, c: c5 });
+          else if (r > .8 && ((x + y) % 2 === 0)) PROPS.push({ t: 'lounger', x: x, y: y, c: c5 });
+          else if (r > .76) PROPS.push({ t: 'towel', x: x, y: y, c: c5 });
+          else if (r > .72) PROPS.push({ t: 'shell', x: x, y: y, c: c5 });
+          else if (r > .69) PROPS.push({ t: 'crab', x: x, y: y });
+          else if (r > .66) PROPS.push({ t: 'driftwood', x: x, y: y });
+          else if (r2 > .965) PROPS.push({ t: 'beachball', x: x, y: y, c: c5 });
+        }
+        else if (r > .84 && (DIST[i] === 9 || DIST[i] === 3 || DIST[i] === 5 || DIST[i] === 2 || DIST[i] === 11 || DIST[i] === 13 || DIST[i] === 14 || DIST[i] === 21)) PROPS.push({ t: 'palm', x: x, y: y });
       } else if (t === 1) {
         if (r > .985 && near(x, y, 2, 5)) PROPS.push({ t: 'rock', x: x, y: y, s: 1, sea: 1 });
         else if (r > .975 && (DIST[i] === 255) && near(x, y, 2, 4) && x > 56 && y > 82) PROPS.push({ t: 'buoy', x: x, y: y });
@@ -1449,12 +1467,40 @@
       ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
     });
   })();
+  /* ───── BÃI BIỂN: món đặc trưng mới (quầy Tiki, lặn ống thở, kayak, lướt sóng, cầu tàu, lâu đài cát…) ───── */
+  (function () {
+    var T = [
+      ['tikibar', 'Tiki Bar', 'Quầy Tiki', 'beach', 2, 2, 'b', 14, [6], 'world1', 'shop', 'Fruit drinks under a straw roof.', 28200],
+      ['snorkelhut', 'Snorkel Hut', 'Chòi Lặn ống thở', 'beach', 2, 2, 'b', 16, [6], 'world1', 'shop', 'Masks and fins for the reef.', 37900],
+      ['kayakrental', 'Kayak Rental', 'Cho thuê Thuyền kayak', 'beach', 2, 2, 'b', 18, [6], 'world1', 'shop', 'Paddle across the calm bay.', 49100],
+      ['coconutstand', 'Coconut Stand', 'Quầy Dừa', 'beach', 1, 1, 'b', 15, [6], 'world1', 'shop', 'Fresh coconut water on a hot day.', 16400],
+      ['beachfirepit', 'Beach Fire Pit', 'Hố Lửa Bãi biển', 'beach', 1, 1, 'b', 17, [6], 'world1', 'deco', 'A warm fire for evening songs.', 21600],
+      ['surfschool', 'Surf School', 'Trường Lướt sóng', 'beach', 2, 2, 'b', 20, [6], 'world1', 'shop', 'Learn to ride the big waves.', 61900],
+      ['windsurfshop', 'Windsurf Shop', 'Tiệm Lướt ván Buồm', 'beach', 2, 2, 'b', 22, [6], 'world1', 'shop', 'Colourful sails for windy days.', 76300],
+      ['pierrestaurant', 'Pier Restaurant', 'Nhà hàng Cầu tàu', 'beach', 3, 2, 'b', 24, [6, 20], 'world1', 'shop', 'Eat fresh fish over the water.', 113200],
+      ['seashellmuseum', 'Seashell Museum', 'Bảo tàng Vỏ sò', 'beach', 3, 3, 'b', 28, [6], 'world1', 'park', 'Thousands of shells from every sea.', 194600],
+      ['beachclub', 'Beach Club', 'Câu lạc bộ Biển', 'beach', 3, 3, 'b', 32, [6, 20], 'world1', 'shop', 'Music, pools and sunset parties.', 261000],
+      ['sandcastlestage', 'Sandcastle Stage', 'Lâu đài Cát', 'beach', 3, 3, 'b', 36, [6], 'world1', 'fun', 'A giant castle made of sand.', 338200],
+      ['sunsetchalet', 'Sunset Chalet', 'Nhà nghỉ Hoàng hôn', 'beach', 3, 2, 'b', 40, [6, 20], 'home2', 'home', 'Wake up with the sea in front of you.', 348200],
+      ['lagoonhotel', 'Lagoon Hotel', 'Khách sạn Đầm phá', 'beach', 4, 3, 'b', 54, [6, 20], 'world1', 'shop', 'A glass hotel over a blue lagoon.', 953000]
+    ];
+    T.forEach(function (r) {
+      var kind = r[10], lvl = r[7], cost = r[12], inc = 0, pop = 0, hp = 0, secs = Math.max(8, Math.min(2400, Math.round(cost / (lvl < 23 ? 45 : 80))));
+      if (kind === 'home') { inc = Math.round(cost / 21); pop = Math.round(cost / 85); }
+      else if (kind === 'shop') { inc = Math.round(cost / 15); hp = 1; }
+      else if (kind === 'fun') { inc = Math.round(cost / 12); hp = 6 + Math.round(lvl / 4); }
+      else if (kind === 'park') { inc = Math.round(cost / 22); hp = 20 + Math.round(lvl * 1.1); }
+      else if (kind === 'deco') { hp = 2 + Math.round(lvl / 6); secs = Math.max(4, Math.min(300, Math.round(cost / 40))); }
+      else { inc = Math.round(cost / 16); hp = 60 + Math.round(lvl * 1.4); }
+      ITEMS.push(B(r[0], r[1], r[2], r[3], r[4], r[5], r[6], lvl, cost, secs, inc, pop, hp, r[8].slice(), r[11], { ch: r[9] }));
+    });
+  })();
   var BY = {}; ITEMS.forEach(function (i) { BY[i.k] = i; });
   /* ───── xây "lấn khu": nhà ở, công viên, dịch vụ, cửa hàng nhỏ… vẫn cần ở mọi nơi (nhà gần trường, công viên cạnh nhà máy) ─────
      Mở rộng chữ khối đất (z) được phép + danh sách quận (ds) cho các nhóm công trình "dùng chung". Giữ bản gốc ở z0 / ds0. */
   /* ───── quận mới "thừa hưởng" danh mục của các quận mẫu: công trình xây được ở quận mẫu cũng xây được ở quận mới (khối đất mới dùng cùng chữ khối) ───── */
   (function () {
-    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4], 17: [1, 4, 5], 18: [0, 10], 19: [7, 3], 20: [2, 6], 21: [5, 11], 22: [1, 5], 23: [1, 5], 24: [0, 5], 25: [5, 3], 26: [5, 6], 27: [1, 5], 28: [1, 11], 29: [6, 11] };
+    var MIRROR = { 12: [1, 4], 13: [3, 6], 14: [5], 15: [8, 7, 10], 16: [9, 11, 4], 17: [1, 4, 5], 18: [0, 10], 19: [7, 3], 20: [2, 6], 21: [5, 11], 22: [1, 5], 23: [1, 5], 24: [0, 5], 25: [5, 3], 26: [5, 6], 27: [1, 5], 28: [1, 11], 29: [6, 11], 30: [6, 20], 31: [6, 29] };
     ITEMS.forEach(function (it) { Object.keys(MIRROR).forEach(function (nd) { nd = +nd; if (it.ds.indexOf(nd) < 0 && MIRROR[nd].some(function (m) { return it.ds.indexOf(m) >= 0; })) it.ds = it.ds.concat([nd]); }); });
   })();
   (function () {
@@ -1646,7 +1692,10 @@
     { id: 'b-farm2', d: 8, icon: '🌾', en: 'Rice & Tea Farm Pack', vi: 'Gói Nông trại Lúa & Trà', items: { minkafarm: 1, koipondfarm: 1, courtyardfarm: 1, teaterrace2: 1 } },
     { id: 'b-farm3', d: 8, icon: '☕', en: 'Coffee & Wine Farm Pack', vi: 'Gói Nông trại Cà phê & Nho', items: { fazendahouse: 1, coffeehill: 1, tuscanvilla: 1, vineyardrows: 1 } },
     { id: 'b-farm4', d: 8, icon: '🛶', en: 'River Farm Pack', vi: 'Gói Nông trại Sông nước', items: { stilthomeriver: 1, floatingmarketx: 1, mudvillage: 1, wheatfieldx: 1 } },
-    { id: 'b-orna2', d: -1, icon: '🪴', en: 'Little Decor Pack', vi: 'Gói Trang trí Nhỏ', items: { topiaryx: 2, wishwell: 1, bellpost: 1, streetclockx: 1, giantlantern: 1, angelstatue: 1 } }
+    { id: 'b-orna2', d: -1, icon: '🪴', en: 'Little Decor Pack', vi: 'Gói Trang trí Nhỏ', items: { topiaryx: 2, wishwell: 1, bellpost: 1, streetclockx: 1, giantlantern: 1, angelstatue: 1 } },
+    { id: 'b-lagoon', d: 6, icon: '🐚', en: 'Lagoon Resort Pack', vi: 'Gói Khu nghỉ Đầm phá', items: { lagoonhotel: 1, pierrestaurant: 1, beachclub: 1, tikibar: 1 } },
+    { id: 'b-surfcamp', d: 6, icon: '🏄', en: 'Surf Camp Pack', vi: 'Gói Trại Lướt sóng', items: { surfschool: 1, windsurfshop: 1, kayakrental: 1, snorkelhut: 1, coconutstand: 2 } },
+    { id: 'b-sandy', d: 6, icon: '🏰', en: 'Sand & Shell Pack', vi: 'Gói Cát & Vỏ sò', items: { sandcastlestage: 1, seashellmuseum: 1, beachfirepit: 2, sunsetchalet: 1 } }
   ];
   var BUNDLE_BY = {}; BUNDLES.forEach(function (b) { BUNDLE_BY[b.id] = b; });
   function bundleFull(b) { var t = 0, k; for (k in b.items) t += BY[k].cost * b.items[k]; return t; }
@@ -1673,7 +1722,7 @@
   );
   PLANS.forEach(function (pl) { pl.roads = Y5.map(function (y) { return [2, y]; }); });
   var PLAN_BY = {}; PLANS.forEach(function (pl) { PLAN_BY[pl.id] = pl; });
-  var API = { recolorCost: recolorCost, PALETTES: PALETTES, PAL_BY: PAL_BY, PAL_GROUPS: PAL_GROUPS, suggestFor: suggestFor, facingToRoad: facingToRoad, FESTIVALS: FESTIVALS, FEST_BY: FEST_BY, festivalsOn: festivalsOn, BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
+  var API = { BEACHD: BEACHD, recolorCost: recolorCost, PALETTES: PALETTES, PAL_BY: PAL_BY, PAL_GROUPS: PAL_GROUPS, suggestFor: suggestFor, facingToRoad: facingToRoad, FESTIVALS: FESTIVALS, FEST_BY: FEST_BY, festivalsOn: festivalsOn, BUNDLES: BUNDLES, BUNDLE_BY: BUNDLE_BY, bundlePrice: bundlePrice, bundleFull: bundleFull, bundleLvl: bundleLvl, PLANS: PLANS, PLAN_BY: PLAN_BY, W: W, H: H, OX: OX, OY: OY, PER: PER, BLOCKS: BLOCKS, PROPS: PROPS, LAMPS: LAMPS, LANES: LANES, migrateState: migrateState, hash: hash, DISTRICTS: DISTRICTS, ZONE_NAME: ZONE_NAME, ZONE_COLOR: ZONE_COLOR, TERR: TERR, ROAD: ROAD, DIST: DIST, ZONE: ZONE, FIXED: FIXED, FOCC: FOCC, FIXED_DEF: FIXED_DEF,
     CATS: CATS, ITEMS: ITEMS, BY: BY, MAXLV: MAXLV, RULES: RULES, LEVEL_AT: LEVEL_AT, MAXLEVEL: MAXLEVEL, levelTitle: levelTitle, levelBonus: levelBonus, idx: idx, inW: inW, itemCost: itemCost, buildSecs: buildSecs, incomeH: incomeH, popOf: popOf, hpOf: hpOf, speedCost: speedCost,
     levelOfScore: levelOfScore, scoreOf: scoreOf, buildOcc: buildOcc, canPlace: canPlace, canRoad: canRoad, adjacentRoad: adjacentRoad, zoneList: zoneList, isRoadAt: isRoadAt };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.EWTCityData = API;
