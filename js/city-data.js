@@ -314,7 +314,34 @@
       } else if (t === 1) {
         if (r > .985 && near(x, y, 2, 5)) PROPS.push({ t: 'rock', x: x, y: y, s: 1, sea: 1 });
         else if (r > .975 && (DIST[i] === 255) && near(x, y, 2, 4) && x > 56 && y > 82) PROPS.push({ t: 'buoy', x: x, y: y });
+        // cảnh quan BIỂN riêng quanh các bãi biển: san hô dưới nước nông, hàng phao bơi, thuyền buồm neo, cá heo nhảy, đảo đá nhỏ có cọ
+        var nb = function (rad) { var a, b; for (b = -rad; b <= rad; b++) for (a = -rad; a <= rad; a++) { var xx = x + a, yy = y + b; if (inW(xx, yy)) { var j = idx(xx, yy); if (TERR[j] === 2 && BEACHD[DIST[j]]) return true; } } return false; };
+        if (nb(6)) {
+          var rs = hash(x, y, 14);
+          if (nb(2)) { if (rs > .9) PROPS.push({ t: 'coral', x: x, y: y, c: Math.floor(hash(x, y, 15) * 4) }); }
+          else if (nb(3) && (x + y) % 4 === 0 && ((x > y) || (x % 2 === 0))) PROPS.push({ t: 'buoy', x: x, y: y });
+          else if (nb(5)) { if (rs > .985) PROPS.push({ t: 'sailboat', x: x, y: y, c: Math.floor(hash(x, y, 16) * 4) }); else if (rs > .978) PROPS.push({ t: 'dolphin', x: x, y: y, c: Math.floor(hash(x, y, 17) * 5) }); }
+          else if (rs > .994) PROPS.push({ t: 'islet', x: x, y: y });
+        }
       }
+    }
+    // CẢNH QUAN KHỐI ĐẤT LIỀN: mỗi quận một bộ trang trí riêng đặt thưa trên đất trống (tự ẩn khi người chơi xây lên ô đó hoặc làm đường)
+    var LD = {
+      0: [['flowerpatch', 4], ['bush', 3], ['tree', 1]], 1: [['bush', 3], ['flowerpatch', 2], ['cone', 1]], 2: [['crate', 4], ['cone', 1], ['bush', 1]], 3: [['balloon', 4], ['flowerpatch', 2]], 4: [['bush', 3], ['flowerpatch', 3]],
+      5: [['stonelantern', 3], ['bush', 2]], 6: 'B', 7: [['rock', 3], ['pine', 4]], 8: [['haybale', 4], ['bush', 2], ['tree', 1]], 9: [['cone', 3], ['crate', 1]], 10: [['bush', 3], ['flowerpatch', 3], ['tree', 2]],
+      11: [['cone', 2], ['balloon', 2], ['bush', 1]], 12: [['bush', 2], ['cone', 1], ['crate', 1]], 13: [['seagrass', 3], ['bush', 2], ['tree', 1]], 14: [['stonelantern', 3], ['bush', 2]], 15: [['tree', 4], ['bush', 3], ['flowerpatch', 1]],
+      16: [['rock', 3], ['cone', 2]], 17: [['balloon', 3], ['flowerpatch', 3], ['bush', 1]], 18: [['flowerpatch', 6], ['bush', 3]], 19: [['snowman', 2], ['pine', 4], ['rock', 1]], 20: 'B', 21: [['cactus', 4], ['palm', 2], ['rock', 2]],
+      22: [['redlantern', 5], ['bush', 1]], 23: [['stonelantern', 4], ['bush', 3]], 24: [['haybale', 3], ['bush', 3], ['flowerpatch', 1]], 25: [['bush', 2], ['flowerpatch', 2], ['redlantern', 1]], 26: [['palm', 3], ['bush', 3], ['flowerpatch', 2]],
+      27: [['bush', 3], ['flowerpatch', 3], ['cone', 1]], 28: [['cone', 2], ['crate', 2], ['bush', 1]], 29: 'B', 30: 'B', 31: 'B'
+    };
+    var LDB = [['palm', 3], ['umbrella', 3], ['towel', 3], ['sandcastle', 1], ['shell', 3], ['surfboard', 1], ['beachball', 1], ['volley', 1]];
+    for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+      i = idx(x, y); if (TERR[i] !== 0 || ROAD[i] || DIST[i] === 255 || !ZONE[i]) continue;
+      var lp = LD[DIST[i]]; if (!lp) continue; if (lp === 'B') lp = LDB;
+      var rr = hash(x, y, 18); if (rr > .09) continue;
+      var tot = 0, k2; lp.forEach(function (q) { tot += q[1]; }); var pick = hash(x, y, 19) * tot, tp = lp[0][0];
+      for (k2 = 0; k2 < lp.length; k2++) { pick -= lp[k2][1]; if (pick <= 0) { tp = lp[k2][0]; break; } }
+      PROPS.push({ t: tp, x: x, y: y, c: Math.floor(hash(x, y, 20) * 5), s: .8 + hash(x, y, 21) * .4, land: 1 });
     }
     // đèn đường ở các ngã tư
     for (y = 1; y < H - 1; y++) for (x = 1; x < W - 1; x++) {

@@ -215,10 +215,10 @@ button { font-family: inherit; cursor: pointer; }
 
 <script src="js/garden-groove.js?v=1"></script>
 <script src="js/garden-sound.js?v=8"></script>
-<script src="js/city-data.js?v=23"></script>
+<script src="js/city-data.js?v=24"></script>
 <script src="js/city-learn.js?v=1"></script>
 <script src="js/city-ambient.js?v=1"></script>
-<script src="js/city-advice.js?v=2b"></script>
+<script src="js/city-advice.js?v=3"></script>
 <script src="js/city-plans.js?v=3b"></script>
 <script src="js/city-art.js?v=11"></script>
 <script src="js/city-art2.js?v=3"></script>
@@ -232,7 +232,7 @@ button { font-family: inherit; cursor: pointer; }
 <script src="js/city-art10.js?v=1"></script>
 <script src="js/garden-lm.js?v=4"></script>
 <script src="js/city-art11.js?v=2"></script>
-<script src="js/city-engine.js?v=25"></script>
+<script src="js/city-engine.js?v=26"></script>
 <script>
 (function () {
 'use strict';
@@ -593,6 +593,22 @@ function openAuto(d) {
   if (!ADVA) return; var rows = autoRows(d); if (!rows.length) return toast('Quận này đã đủ theo gợi ý rồi 🎉', 2600);
   AUTO = { d: d, rows: rows, plan: null, deco: true }; $('autoT').textContent = '🏗️ Dựng đủ theo gợi ý — ' + C.DISTRICTS[d].vi; closeSheets(); $('autoS').classList.add('on'); renderAuto(); autoPlanSoon();
 }
+/* 🧩 LẤP ĐẦY ĐẤT TRỐNG: chọn 1 trong nhiều phương án (cân bằng, khu ở, xanh mát, sầm uất, vui chơi, đặc trưng quận, tiết kiệm) → mở bảng "Dựng đủ" để xem lại rồi xây */
+function openFill(d) {
+  if (VIS) return; closeSheets(); setMode('view'); AUTO = null; $('autoT').textContent = '🧩 Lấp đầy đất trống — ' + C.DISTRICTS[d].vi; $('autoS').classList.add('on'); $('autoB').innerHTML = '<p class="empty">Đang kiểm tra đất trống…</p>'; $('autoF').innerHTML = '';
+  api('/api/city/fill-options', { d: d }).then(function (r) {
+    var h = '<p class="sub" style="margin:0 0 8px">Còn khoảng <b>' + r.free + '</b> ô đất trống trong khối đất của quận. Chọn một phương án — hệ thống tự tính chỗ, bạn xem lại danh sách và bỏ tick món nào chưa muốn trước khi xây.</p>';
+    r.options.forEach(function (o) { h += '<button type="button" class="ar" data-fillopt="' + o.id + '" data-filld="' + d + '" style="width:100%;text-align:left;cursor:pointer;border:0;background:none"><div style="font-size:30px;width:46px;text-align:center">' + o.ic + '</div><div class="mid"><b>' + esc(o.n) + '</b><small>' + esc(o.desc) + ' <i>(' + o.items + ' loại công trình)</i></small></div></button>'; });
+    $('autoB').innerHTML = h;
+  }).catch(function (e) { toast(e.message, 3500); closeSheets(); });
+}
+function pickFill(d, opt) {
+  $('autoB').innerHTML = '<p class="empty">Đang tính cách lấp đầy…</p>';
+  api('/api/city/fill-options', { d: d, opt: opt }).then(function (r) {
+    AUTO = { d: d, rows: r.rows.map(function (x) { var it = C.BY[x.k]; return { label: '🧩 ' + it.vi, cands: [x.k], k: x.k, n: x.n, on: true, res: { type: 'skip' } }; }), plan: null, deco: true };
+    $('autoT').textContent = '🧩 Lấp đầy — ' + C.DISTRICTS[d].vi; renderAuto(); autoPlanSoon();
+  }).catch(function (e) { toast(e.message, 3800); openFill(d); });
+}
 function autoCost(r) { var it = C.BY[r.k]; return it ? it.cost * r.n : 0; }
 function renderAuto() {
   var A2 = AUTO, h = '<p class="sub" style="margin:0 0 8px">Bỏ tick món nào bạn chưa muốn. Hệ thống tự tính chỗ đất, sắp xếp cho đẹp (cùng loại gom thành cụm, sát đường) rồi xây khi bạn xác nhận.</p>';
@@ -686,7 +702,7 @@ function openAdvice() {
   ord.forEach(function (x) {
     var dd = C.DISTRICTS[x.d];
     if (!x.open) { if (x.soon) return; h += '<div class="adv-d"><h4>' + dd.icon + ' ' + esc(dd.vi) + ' <span class="sub">🔒 chưa mở</span><span class="sp"></span>' + (x.canOpen ? '<button class="btn sm good" type="button" data-advopen="' + x.d + '">🔓 Mở quận · ' + COIN + fmt(x.cost) + '</button>' : '<span class="sub">cần thành phố cấp ' + x.needLvl + '</span>') + '</div><div class="sub">' + esc(dd.blurb) + '</div></div>'; return; }
-    h += '<div class="adv-d"><h4>' + dd.icon + ' ' + esc(dd.vi) + ' <span class="sub">(' + esc(dd.en.split(' ')[0]) + ')</span><span class="sp"></span>' + (x.tips.some(function (t) { return t.miss > 0 && t.anyOpen; }) ? '<button class="btn sm good" type="button" data-advplan="' + x.d + '">🏗️ Dựng đủ gợi ý</button> ' : '') + '<button class="btn sm" type="button" data-advgo="' + x.d + '">📍 Đến khu</button></h4><div class="sub">' + x.built + ' công trình · hoàn thiện <b>' + x.pct + '%</b></div><div class="adv-bar"><i style="width:' + x.pct + '%"></i></div>';
+    h += '<div class="adv-d"><h4>' + dd.icon + ' ' + esc(dd.vi) + ' <span class="sub">(' + esc(dd.en.split(' ')[0]) + ')</span><span class="sp"></span>' + (x.tips.some(function (t) { return t.miss > 0 && t.anyOpen; }) ? '<button class="btn sm good" type="button" data-advplan="' + x.d + '">🏗️ Dựng đủ gợi ý</button> ' : '') + (x.free >= 6 ? '<button class="btn sm" type="button" data-advfill="' + x.d + '">🧩 Lấp đầy đất trống</button> ' : '') + '<button class="btn sm" type="button" data-advgo="' + x.d + '">📍 Đến khu</button></h4><div class="sub">' + x.built + ' công trình · hoàn thiện <b>' + x.pct + '%</b></div><div class="adv-bar"><i style="width:' + x.pct + '%"></i></div>';
     if (x.empty) h += '<div class="sub" style="margin-bottom:4px">🌱 Quận này còn trống — hãy bắt đầu theo gợi ý bên dưới, hoặc dùng 📐 <b>Quy hoạch</b> trong cửa hàng để xây cả khu nhanh.</div>';
     if (!x.tips.length) h += '<div class="sub">✅ Khu này đã khá đầy đủ — cứ tiếp tục thêm hoa, cây và trang trí cho đẹp!</div>';
     x.tips.forEach(function (t) { h += advTip(t, x.d); });
@@ -1124,6 +1140,8 @@ document.addEventListener('click', function (e) {
   if ((el = t.closest('[data-rs]'))) { RS = el.getAttribute('data-rs'); renderPlans(); return; }
   if ((el = t.closest('[data-ach]'))) { var aid = el.getAttribute('data-ach'); el.disabled = true; api('/api/city/ach/claim', { id: aid }).then(function (r) { S.coins = r.coins; hud(); SND('coin'); burst(['🏅', '🪙', '✨'], 14); toast('🏅 Nhận thưởng <b>' + fmt(r.xu) + '</b> xu!', 2600); openAch(); }).catch(function (e) { toast(e.message, 3000); el.disabled = false; }); return; }
   if ((el = t.closest('[data-advplan]'))) { openAuto(+el.getAttribute('data-advplan')); return; }
+  if ((el = t.closest('[data-advfill]'))) { openFill(+el.getAttribute('data-advfill')); return; }
+  if ((el = t.closest('[data-fillopt]'))) { pickFill(+el.getAttribute('data-filld'), el.getAttribute('data-fillopt')); return; }
   if (t.closest('#autoGo')) { autoGo(); return; }
   if ((el = t.closest('[data-arq]'))) { var qp = el.getAttribute('data-arq').split(':'), qr = AUTO && AUTO.rows[+qp[0]]; if (qr) { qr.n = Math.max(1, Math.min(12, qr.n + +qp[1])); renderAuto(); autoPlanSoon(); } return; }
   if ((el = t.closest('[data-advm]'))) { advToggle(el.getAttribute('data-advm'), el.getAttribute('data-advd'), null, -1); return; }

@@ -132,6 +132,20 @@
 
   // quận mới dùng chung gợi ý với quận mẫu: Công nghệ ← Trung tâm · Hồ ← Giải trí · Phố cổ ← Phố quốc tế · Làng xanh ← Nông trại · Cảng vũ trụ ← Thể thao
   R[12] = R[1]; R[13] = R[3]; R[14] = R[5]; R[15] = R[8]; R[16] = R[11]; R[17] = R[1]; R[18] = R[10]; R[19] = R[7]; R[20] = R[2]; R[21] = R[5]; R[22] = R[5]; R[23] = R[5]; R[24] = R[5]; R[25] = R[5]; R[26] = R[5]; R[27] = R[5]; R[28] = R[1]; R[29] = R[6]; R[30] = R[6]; R[31] = R[6];
+  /* gợi ý bổ sung: mọi quận đều được nhắc thêm đồ trang trí & công trình nổi bật; các bãi biển có thêm nhóm gợi ý riêng (lặn, ăn uống, vui chơi trên cát, cứu hộ, nghỉ dưỡng, tham quan) */
+  var EXTRA_ALL = [
+    { id: 'orna', ic: '🎀', t: 'đồ trang trí đặc sắc', why: 'Tượng, đài phun, chuông gió, giếng ước… làm khu có nét riêng và tăng hạnh phúc.', cats: ['orna'], need: { per: 6, of: 'core' }, from: 4, pri: 3 },
+    { id: 'wond', ic: '🗿', t: 'công trình nổi bật / kỳ quan', why: 'Một điểm nhấn (tháp, đền, kỳ quan) giúp khu có bản sắc và thu hút khách.', cats: ['world'], need: 1, from: 8, pri: 3 }
+  ];
+  var BEACH_EXTRA = [
+    { id: 'bsafe', ic: '🛟', t: 'chòi cứu hộ & an toàn', why: 'Chòi cứu hộ giúp khách tắm biển an toàn.', ks: ['lifeguard'], need: { per: 8, of: 'core' }, from: 2, pri: 1 },
+    { id: 'swim', ic: '🤿', t: 'hoạt động dưới nước (lặn, kayak, lướt sóng)', why: 'Cho khách xuống biển: chòi lặn, thuê kayak, lướt sóng, lướt ván buồm.', ks: ['divecenter', 'snorkelhut', 'kayakrental', 'surfschool', 'windsurfshop', 'surfshop'], need: 2, from: 2, pri: 2 },
+    { id: 'bfood', ic: '🥥', t: 'quán ăn uống ven biển', why: 'Nước dừa, kem, hải sản — khách bãi biển luôn đói và khát.', ks: ['beachbar', 'tikibar', 'coconutstand', 'seafood', 'pierrestaurant', 'icecream', 'souvenir'], need: { per: 6, of: 'core' }, from: 2, pri: 2 },
+    { id: 'bfun', ic: '🏐', t: 'vui chơi trên cát', why: 'Bóng chuyền, lâu đài cát, hố lửa — bãi biển thêm sôi động.', ks: ['volleyball', 'sandcastlestage', 'beachfirepit', 'minigolf'], need: 1, from: 3, pri: 2 },
+    { id: 'bstay', ic: '🏨', t: 'khu nghỉ dưỡng ven biển', why: 'Khách sạn, bungalow, khu nghỉ giúp khách ở lại dài ngày.', ks: ['resorthotel', 'beachclub', 'lagoonhotel', 'bungalow', 'sunsetchalet', 'beachhouse', 'beachvilla', 'grandresort'], need: 2, from: 3, pri: 2 },
+    { id: 'bsee', ic: '🐚', t: 'điểm tham quan biển', why: 'Bảo tàng vỏ sò, spa, câu lạc bộ du thuyền… thêm điểm đến cho khách.', ks: ['seashellmuseum', 'spa', 'yachtclub'], need: 1, from: 5, pri: 3 }
+  ];
+  (function () { var done = []; Object.keys(R).forEach(function (k) { var a = R[k]; if (!a || done.indexOf(a) >= 0) return; done.push(a); EXTRA_ALL.forEach(function (e) { if (!a.some(function (q) { return q.id === e.id; })) a.push(Object.assign({}, e)); }); }); BEACH_EXTRA.forEach(function (e) { if (!R[6].some(function (q) { return q.id === e.id; })) R[6].push(Object.assign({}, e)); }); })();
 
   function analyze(C, S, role) {
     var W = C.W, lvl = S.stats.level, ch = S.chapters || [], evs = S.ev || [];
@@ -139,9 +153,11 @@
     S.bs.forEach(function (b) { if (b.lv > 0 || b.tg > 0) { var d = C.DIST[b.y * W + b.x]; if (byD[d]) byD[d].push(b); } });
     var locked = function (it) { return it.lvl > lvl || (it.ch && role !== 'admin' && ch.indexOf(it.ch) < 0) || (it.ev && evs.indexOf(it.ev) < 0); };
     var out = { districts: [], global: [], urgent: 0 };
+    var occAll = C.buildOcc(S.bs.map(function (b) { return { k: b.k, x: b.x, y: b.y }; }));
     C.DISTRICTS.forEach(function (dd) {
       var open = S.districts.indexOf(dd.id) >= 0, bl = byD[dd.id] || [], core = bl.filter(function (b) { return !DECOR[(C.BY[b.k] || {}).cat]; }), homes = bl.filter(function (b) { return (C.BY[b.k] || {}).cat === 'home'; });
       var D = { d: dd.id, open: open, built: bl.length, core: core.length, tips: [], done: 0, total: 0, pct: 0, soon: !!dd.soon };
+      if (open) { var fo = 0; C.BLOCKS.forEach(function (b) { if (b.d !== dd.id) return; var q, w2; for (q = b.y; q < b.y + b.h; q++) for (w2 = b.x; w2 < b.x + b.w; w2++) if (!occAll[C.idx(w2, q)]) fo++; }); D.free = fo; }
       if (open && R[dd.id]) {
         var kinds = {}; bl.forEach(function (b) { kinds[b.k] = (kinds[b.k] || 0) + 1; });
         var wsum = 0, wok = 0;
@@ -156,7 +172,7 @@
           if (sl.from && core.length < sl.from) return;   // chưa đến lúc nhắc
           var w = sl.pri === 1 ? 3 : sl.pri === 2 ? 2 : 1; wsum += w; if (got >= need) { wok += w; return; } wok += w * Math.min(1, got / need) * .5;
           cand.sort(function (a, b) { var na = kinds[a.k] ? 1 : 0, nb = kinds[b.k] ? 1 : 0, la = locked(a) ? 1 : 0, lb = locked(b) ? 1 : 0; return la - lb || na - nb || a.cost - b.cost; });
-          D.tips.push({ id: sl.id, ic: sl.ic, t: sl.t, why: sl.why, have: got, need: need, miss: need - got, pri: sl.pri, variety: !!sl.variety, cands: cand.slice(0, 5).map(function (it) { return { k: it.k, locked: locked(it) }; }), anyOpen: cand.some(function (it) { return !locked(it); }) });
+          D.tips.push({ id: sl.id, ic: sl.ic, t: sl.t, why: sl.why, have: got, need: need, miss: need - got, pri: sl.pri, variety: !!sl.variety, cands: cand.slice(0, 8).map(function (it) { return { k: it.k, locked: locked(it) }; }), anyOpen: cand.some(function (it) { return !locked(it); }) });
         });
         D.tips.sort(function (a, b) { return a.pri - b.pri; });
         D.pct = wsum ? Math.round(wok / wsum * 100) : 100; D.urgent = D.tips.filter(function (t) { return t.pri === 1; }).length;

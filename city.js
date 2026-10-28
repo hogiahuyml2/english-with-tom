@@ -229,6 +229,50 @@ module.exports = function (app, { db, requireAuth, now, notifyUser }) {
     reply(res, out.st, uid, { auto: { placed: out.placed, failed: out.failed, refund: out.back, replaced: out.refunded.length } });
   });
 
+  /* ───── LẤP ĐẦY ĐẤT TRỐNG: nhiều phương án (cân bằng, khu ở, xanh mát, sầm uất, vui chơi, đặc trưng quận, tiết kiệm) — mô phỏng bố trí trên bản sao rồi trả danh sách để dựng bằng /auto-layout ───── */
+  const FILL = {
+    balanced: { ic: '⚖️', n: 'Cân bằng', desc: 'Nhà ở, cửa hàng, công viên, dịch vụ trộn đều — khu phố sống động, đủ mọi thứ.', g: [{ c: ['home'], s: .34 }, { c: ['shop'], s: .24, mx: 4 }, { c: ['park'], s: .2 }, { c: ['civic'], s: .12, mx: 6 }, { c: ['fun'], s: .1, mx: 6 }] },
+    homes: { ic: '🏘️', n: 'Khu ở đông đúc', desc: 'Nhiều kiểu nhà, vài cửa hàng nhỏ và công viên gần nhà — dân đông, thuế nhà cao.', g: [{ c: ['home'], s: .66 }, { c: ['shop'], s: .14, mx: 2 }, { c: ['park'], s: .12 }, { c: ['civic'], s: .08, mx: 4 }] },
+    green: { ic: '🌳', n: 'Xanh mát & công viên', desc: 'Công viên, vườn hoa, cây xanh — hạnh phúc cao, đẹp nhất để chụp ảnh.', g: [{ c: ['park'], s: .72 }, { c: ['tree', 'flower'], s: .28, mx: 1 }] },
+    commerce: { ic: '🛍️', n: 'Sầm uất thương mại', desc: 'Cửa hàng, nhà hàng, văn phòng — nhiều thuế; thêm ít nhà ở và dịch vụ.', g: [{ c: ['shop'], s: .66 }, { c: ['civic'], s: .1, mx: 6 }, { c: ['home'], s: .16, mx: 4 }, { c: ['park'], s: .08 }] },
+    fun: { ic: '🎡', n: 'Vui chơi giải trí', desc: 'Trò chơi, thể thao và công viên — khách đông, hạnh phúc tăng nhanh.', g: [{ c: ['fun'], s: .5 }, { c: ['sport'], s: .2 }, { c: ['park'], s: .2 }, { c: ['shop'], s: .1, mx: 2 }] },
+    theme: { ic: '⭐', n: 'Đặc trưng của quận', desc: 'Chỉ dùng các món đặc trưng riêng của quận này (bãi biển: quầy Tiki, lặn, lướt sóng…) để khu nổi bật.', g: [{ sp: 1, s: 1 }] },
+    cheap: { ic: '💰', n: 'Tiết kiệm xu', desc: 'Chọn các món rẻ nhất để phủ kín đất với chi phí thấp.', g: [{ ch: 1, s: 1 }] }
+  };
+  const FDEC = { tree: 1, flower: 1, bench: 1, lamp: 1, orna: 1, event: 1 };
+  const freeTiles = (st, d) => { const occ = C.buildOcc(st.bs); let n = 0; C.BLOCKS.filter((b) => b.d === d).forEach((b) => { n += b.w * b.h - countIn(occ, b); }); return n; };
+  function fillPool(st, s, d, role, g, key) {
+    let pool = C.ITEMS.filter((it) => it.ds.indexOf(d) >= 0 && !itemGate(st, s, it, role));
+    if (g.c) pool = pool.filter((it) => g.c.indexOf(it.cat) >= 0 && (!g.mx || it.w * it.h <= g.mx));
+    else if (g.sp) { const iw = C.BEACHD && C.BEACHD[d]; pool = pool.filter((it) => !FDEC[it.cat] && ((it.ds.length <= 4 && it.ds[0] === d) || (iw && it.cat === 'beach'))); }
+    else pool = pool.filter((it) => !FDEC[it.cat]);
+    if (g.ch) pool.sort((a, b) => a.cost - b.cost); else pool.sort((a, b) => C.hash(a.cost, a.w * 7 + a.h, key) - C.hash(b.cost, b.w * 7 + b.h, key));
+    return pool;
+  }
+  app.post('/api/city/fill-options', requireAuth, (req, res) => {
+    const uid = req.user.id, b = req.body || {}, d = Number(b.d); if (!C.DISTRICTS[d]) return bad(res, 'Quận không hợp lệ.');
+    const st = load(uid), s = stats(st); if (st.districts.indexOf(d) < 0) return bad(res, 'Quận này chưa mở.');
+    const free = freeTiles(st, d);
+    if (!b.opt) {
+      const opts = Object.keys(FILL).map((id) => { const f = FILL[id]; let cnt = 0; f.g.forEach((g) => { cnt += fillPool(st, s, d, req.user.role, g, d).length; }); return { id, ic: f.ic, n: f.n, desc: f.desc, items: cnt }; }).filter((o) => o.items > 0);
+      return res.json({ free, options: opts, coins: coinsOf(uid) });
+    }
+    const f = FILL[String(b.opt)]; if (!f) return bad(res, 'Phương án không hợp lệ.');
+    if (free < 2) return bad(res, 'Quận này gần như đã kín đất — không còn chỗ trống để lấp.');
+    const units = [], maxItems = Math.max(2, Math.floor(30 / f.g.length));
+    f.g.forEach((g, gi) => {
+      const pool = fillPool(st, s, d, req.user.role, g, d + gi * 3).slice(0, maxItems); if (!pool.length) return;
+      const share = (free * g.s * 1.25) / pool.length;
+      pool.forEach((it) => { const n = Math.max(1, Math.min(60, Math.ceil(share / (it.w * it.h)))); for (let i = 0; i < n; i++) units.push({ it }); });
+    });
+    if (!units.length) return bad(res, 'Chưa có món nào mở khoá cho phương án này ở quận này.');
+    const lay = layoutUnits(st, d, units.slice(0, 360), C.buildOcc(st.bs), catMap(st)), cnt = {}; let cost = 0;
+    lay.placed.forEach((pl) => { cnt[pl.u.it.k] = (cnt[pl.u.it.k] || 0) + 1; cost += pl.u.it.cost; });
+    const rows = []; Object.keys(cnt).sort((a, c) => (C.BY[c].w * C.BY[c].h) - (C.BY[a].w * C.BY[a].h)).forEach((k) => { let left = cnt[k]; while (left > 0) { rows.push({ k, n: Math.min(12, left) }); left -= 12; } });
+    if (!rows.length) return bad(res, 'Không tìm được chỗ phù hợp để xây theo phương án này.');
+    res.json({ rows: rows.slice(0, 30), placed: lay.placed.length, cost, free, coins: coinsOf(uid) });
+  });
+
   /* ───── xây / dỡ đường ───── */
   app.post('/api/city/road', requireAuth, (req, res) => {
     const cells = Array.isArray((req.body || {}).cells) ? req.body.cells.map(Number) : [], uid = req.user.id;
